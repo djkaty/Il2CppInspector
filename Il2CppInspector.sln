@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.9
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bin2Object", "Bin2Object\Bin2Object\Bin2Object.csproj", "{55382D6C-01B6-4AFD-850C-7A79DAB6F270}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Il2CppInspector", "Il2CppInspector\Il2CppInspector.csproj", "{E4721466-CC6F-47EB-AD48-F4DE70D77E5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Il2CppDumper", "Il2CppDumper\Il2CppDumper.csproj", "{EA4C27DF-4640-48DF-8CAF-5587884CAF30}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55382D6C-01B6-4AFD-850C-7A79DAB6F270}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55382D6C-01B6-4AFD-850C-7A79DAB6F270}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55382D6C-01B6-4AFD-850C-7A79DAB6F270}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55382D6C-01B6-4AFD-850C-7A79DAB6F270}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4721466-CC6F-47EB-AD48-F4DE70D77E5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4721466-CC6F-47EB-AD48-F4DE70D77E5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4721466-CC6F-47EB-AD48-F4DE70D77E5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4721466-CC6F-47EB-AD48-F4DE70D77E5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA4C27DF-4640-48DF-8CAF-5587884CAF30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA4C27DF-4640-48DF-8CAF-5587884CAF30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA4C27DF-4640-48DF-8CAF-5587884CAF30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA4C27DF-4640-48DF-8CAF-5587884CAF30}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
