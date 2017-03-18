@@ -7,12 +7,25 @@ Extract types, methods, properties and fields from Unity IL2CPP binaries.
 * No manual reverse-engineering required; all data is calculated automatically
 * **Il2CppInspector** re-usable class library
 
-Targets .NET Standard 1.5 / .NET Core 1.1. Built with Visual Studio 2017.
+Targets .NET Standard 1.6. Built with Visual Studio 2017.
+
+### Build instructions
+
+```
+git clone --recursive https://github.com/djkaty/Il2CppInspector
+cd Il2CppInspector
+dotnet restore -r win7-x86
+dotnet publish -c Release -r win7-x86
+```
+
+This will build Il2CppInspector for Windows 7 and later. For MacOS and Linux, replace `win7-x86` with a RID from https://docs.microsoft.com/en-us/dotnet/articles/core/rid-catalog
+
+The output binary is placed in `Il2CppInspector/Il2CppDumper/bin/Release/netstandard1.6/win7-x86/publish`.
 
 ### Usage
 
 ```
-dotnet run [<binary-file> [<metadata-file> [<output-file>]]]
+Il2CppDumper [<binary-file> [<metadata-file> [<output-file>]]]
 ```
 
 Defaults if not specified:
