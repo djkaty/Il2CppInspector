@@ -14,6 +14,7 @@ namespace Il2CppInspector
         public Il2CppReaderX86(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) : base(stream, codeRegistration, metadataRegistration) { }
         protected override (uint, uint) Search(uint loc, uint globalOffset) {
             uint funcPtr, metadata, code;
+            ushort opcode;
 
             // Variant 1
 
@@ -48,10 +49,29 @@ namespace Il2CppInspector
             funcPtr = Image.MapVATR(Image.ReadUInt32() + globalOffset);
             if (funcPtr > Image.Stream.BaseStream.Length)
                 return (0, 0);
-            Image.Position = funcPtr + 0x22;
+
+            // Extract Metadata pointer
+            // An 0x838D opcode indicates LEA (no indirection)
+            Image.Position = funcPtr + 0x20;
+            opcode = Image.ReadUInt16();
             metadata = Image.ReadUInt32() + globalOffset;
-            Image.Position = funcPtr + 0x2C;
+
+            // An 8x838B opcode indicates MOV (pointer indirection)
+            if (opcode == 0x838B) {
+                Image.Position = Image.MapVATR(metadata);
+                metadata = Image.ReadUInt32();
+            }
+
+            // Repeat the same logic for extracting the Code pointer
+            Image.Position = funcPtr + 0x2A;
+            opcode = Image.ReadUInt16();
             code = Image.ReadUInt32() + globalOffset;
+
+            if (opcode == 0x838B) {
+                Image.Position = Image.MapVATR(code);
+                code = Image.ReadUInt32();
+            }
+
             return (code, metadata);
         }
     }
