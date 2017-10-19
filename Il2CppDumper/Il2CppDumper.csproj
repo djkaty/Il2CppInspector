@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Il2CppInspector\Il2CppInspector.csproj" />
-    <PackageReference Include="Microsoft.NETCore.Runtime.CoreCLR" Version="1.0.2" />
-    <PackageReference Include="Microsoft.NETCore.DotNetHostPolicy" Version="1.0.1" />
+    <PackageReference Include="Microsoft.NETCore.Runtime.CoreCLR" Version="2.0.0" />
+    <PackageReference Include="Microsoft.NETCore.DotNetHostPolicy" Version="2.0.0" />
   </ItemGroup>
 
 </Project>
