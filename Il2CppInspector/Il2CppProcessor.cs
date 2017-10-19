@@ -22,7 +22,14 @@ namespace Il2CppInspector
 
         public static Il2CppProcessor LoadFromFile(string codeFile, string metadataFile) {
             // Load the metadata file
-            var metadata = new Metadata(new MemoryStream(File.ReadAllBytes(metadataFile)));
+            Metadata metadata;
+            try {
+                metadata = new Metadata(new MemoryStream(File.ReadAllBytes(metadataFile)));
+            }
+            catch (Exception ex) {
+                Console.Error.WriteLine(ex.Message);
+                return null;
+            }
 
             // Load the il2cpp code file (try ELF and PE)
             var memoryStream = new MemoryStream(File.ReadAllBytes(codeFile));

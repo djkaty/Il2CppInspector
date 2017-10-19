@@ -39,7 +39,7 @@ namespace Il2CppInspector
             }
             if (pMetadataHdr.version != 21 && pMetadataHdr.version != 22)
             {
-                throw new Exception($"ERROR: Metadata file supplied is not a supported version[{pMetadataHdr.version}].");
+                throw new Exception($"ERROR: Metadata file supplied is not a supported version ({pMetadataHdr.version}).");
             }
             var uiImageCount = pMetadataHdr.imagesCount / MySizeOf(typeof(Il2CppImageDefinition));
             var uiNumTypes = pMetadataHdr.typeDefinitionsCount / MySizeOf(typeof(Il2CppTypeDefinition));
