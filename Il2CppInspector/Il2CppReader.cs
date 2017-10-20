@@ -27,7 +27,8 @@ namespace Il2CppInspector
         protected abstract (uint, uint) Search(uint loc, uint globalOffset);
 
         // Check all search locations
-        public bool Load() {
+        public bool Load(int version) {
+            Image.Stream.Version = version;
             var addrs = Image.GetSearchLocations();
             foreach (var loc in addrs)
                 if (loc != 0) {

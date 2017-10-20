@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
@@ -7,23 +8,49 @@ namespace Il2CppInspector
     {
         public uint methodPointersCount;
         public uint pmethodPointers;
-        public uint delegateWrappersFromNativeToManagedCount;
-        public uint delegateWrappersFromNativeToManaged; // note the double indirection to handle different calling conventions
+        public uint delegateWrappersFromNativeToManagedCount; // (was renamed to reversePInvokeWrapperCount in v22)
+        public uint delegateWrappersFromNativeToManaged; // (was renamed to reversePInvokeWrappers in v22)
+
+        // Removed in metadata v23
+        [Version(Max = 22)]
         public uint delegateWrappersFromManagedToNativeCount;
+        [Version(Max = 22)]
         public uint delegateWrappersFromManagedToNative;
+        [Version(Max = 22)]
         public uint marshalingFunctionsCount;
+        [Version(Max = 22)]
         public uint marshalingFunctions;
+        [Version(Max = 22)]
         public uint ccwMarshalingFunctionsCount;
+        [Version(Max = 22)]
         public uint ccwMarshalingFunctions;
+
         public uint genericMethodPointersCount;
         public uint genericMethodPointers;
         public uint invokerPointersCount;
         public uint invokerPointers;
         public int customAttributeCount;
         public uint customAttributeGenerators;
+
+        // Removed in metadata v23
+        [Version(Max = 22)]
         public int guidCount;
+        [Version(Max = 22)]
         public uint guids; // Il2CppGuid
 
+        // Added in metadata v22
+        [Version(Min = 22)]
+        public uint unresolvedVirtualCallCount;
+        [Version(Min = 22)]
+        public uint unresolvedVirtualCallPointers;
+
+        // Added in metadata v23
+        [Version(Min = 23)]
+        public uint interopDataCount;
+        [Version(Min = 23)]
+        public uint interopData;
+
+        // Properties
         public uint[] methodPointers
         {
             get; set;

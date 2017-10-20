@@ -55,7 +55,7 @@ namespace Il2CppInspector
             }
 
             // Find code and metadata regions
-            if (!il2cpp.Load()) {
+            if (!il2cpp.Load(metadata.Version)) {
                 Console.Error.WriteLine("Could not process IL2CPP image");
                 return null;
             }

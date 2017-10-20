@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
 #pragma warning disable CS0649
     public class Il2CppGlobalMetadataHeader
     {
+        // Metadata v21
         public uint sanity;
         public int version;
         public int stringLiteralOffset; // string data for managed code
@@ -68,6 +70,22 @@ namespace Il2CppInspector
         public int attributesInfoCount;
         public int attributeTypesOffset; // TypeIndex
         public int attributeTypesCount;
+
+        // Added in metadata v22
+        [Version(Min = 22)]
+        public int unresolvedVirtualCallParameterTypesOffset; // TypeIndex
+        [Version(Min = 22)]
+        public int unresolvedVirtualCallParameterTypesCount;
+        [Version(Min = 22)]
+        public int unresolvedVirtualCallParameterRangesOffset; // Il2CppRange
+        [Version(Min = 22)]
+        public int unresolvedVirtualCallParameterRangesCount;
+
+        // Added in metadata v23
+        [Version(Min = 23)]
+        public int windowsRuntimeTypeNamesOffset; // Il2CppWindowsRuntimeTypeNamePair
+        [Version(Min = 23)]
+        public int windowsRuntimeTypeNamesSize;
     }
 
     public class Il2CppImageDefinition
@@ -100,9 +118,14 @@ namespace Il2CppInspector
 
         public int genericContainerIndex;
 
-        public int delegateWrapperFromManagedToNativeIndex;
+        // Removed in metadata v23
+        [Version(Max = 22)]
+        public int delegateWrapperFromManagedToNativeIndex; // (was renamed to reversePInvokeWrapperIndex in v22)
+        [Version(Max = 22)]
         public int marshalingFunctionsIndex;
+        [Version(Max = 22)]
         public int ccwFunctionIndex;
+        [Version(Max = 22)]
         public int guidIndex;
 
         public uint flags;
@@ -131,7 +154,7 @@ namespace Il2CppInspector
         // 03 - has_finalize;
         // 04 - has_cctor;
         // 05 - is_blittable;
-        // 06 - is_import;
+        // 06 - is_import; (from v22: is_import_or_windows_runtime)
         // 07-10 - One of nine possible PackingSize values (0, 1, 2, 4, 8, 16, 32, 64, or 128)
         public uint bitfield;
         public uint token;
@@ -147,7 +170,7 @@ namespace Il2CppInspector
         public int genericContainerIndex;
         public int methodIndex;
         public int invokerIndex;
-        public int delegateWrapperIndex;
+        public int delegateWrapperIndex; // (was renamed to reversePInvokeWrapperIndex in v22)
         public int rgctxStartIndex;
         public int rgctxCount;
         public uint token;

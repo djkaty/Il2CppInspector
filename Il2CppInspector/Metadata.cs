@@ -28,32 +28,37 @@ namespace Il2CppInspector
         public string GetTypeNamespace(Il2CppTypeDefinition type) => GetString(type.namespaceIndex);
         public string GetTypeName(Il2CppTypeDefinition type) => GetString(type.nameIndex);
 
-
-
         public Metadata(Stream stream) : base(stream)
         {
-            pMetadataHdr = ReadObject<Il2CppGlobalMetadataHeader>();
-            if (pMetadataHdr.sanity != 0xFAB11BAF)
-            {
+            // Read magic bytes
+            if (ReadUInt32() != 0xFAB11BAF) {
                 throw new Exception("ERROR: Metadata file supplied is not valid metadata file.");
             }
-            if (pMetadataHdr.version != 21 && pMetadataHdr.version != 22)
+
+            // Set object versioning for Bin2Object from metadata version
+            Version = ReadInt32();
+
+            // Rewind and read metadata header in full
+            Position -= 8;
+            pMetadataHdr = ReadObject<Il2CppGlobalMetadataHeader>();
+            if (Version != 21 && Version != 22 && Version != 23)
             {
                 throw new Exception($"ERROR: Metadata file supplied is not a supported version ({pMetadataHdr.version}).");
             }
-            var uiImageCount = pMetadataHdr.imagesCount / MySizeOf(typeof(Il2CppImageDefinition));
-            var uiNumTypes = pMetadataHdr.typeDefinitionsCount / MySizeOf(typeof(Il2CppTypeDefinition));
+
+            var uiImageCount = pMetadataHdr.imagesCount / Sizeof(typeof(Il2CppImageDefinition));
+            var uiNumTypes = pMetadataHdr.typeDefinitionsCount / Sizeof(typeof(Il2CppTypeDefinition));
             Images = ReadArray<Il2CppImageDefinition>(pMetadataHdr.imagesOffset, uiImageCount);
             //GetTypeDefFromIndex
             Types = ReadArray<Il2CppTypeDefinition>(pMetadataHdr.typeDefinitionsOffset, uiNumTypes);
             //GetMethodDefinition
-            Methods = ReadArray<Il2CppMethodDefinition>(pMetadataHdr.methodsOffset, pMetadataHdr.methodsCount / MySizeOf(typeof(Il2CppMethodDefinition)));
+            Methods = ReadArray<Il2CppMethodDefinition>(pMetadataHdr.methodsOffset, pMetadataHdr.methodsCount / Sizeof(typeof(Il2CppMethodDefinition)));
             //GetParameterFromIndex
-            parameterDefs = ReadArray<Il2CppParameterDefinition>(pMetadataHdr.parametersOffset, pMetadataHdr.parametersCount / MySizeOf(typeof(Il2CppParameterDefinition)));
+            parameterDefs = ReadArray<Il2CppParameterDefinition>(pMetadataHdr.parametersOffset, pMetadataHdr.parametersCount / Sizeof(typeof(Il2CppParameterDefinition)));
             //GetFieldDefFromIndex
-            Fields = ReadArray<Il2CppFieldDefinition>(pMetadataHdr.fieldsOffset, pMetadataHdr.fieldsCount / MySizeOf(typeof(Il2CppFieldDefinition)));
+            Fields = ReadArray<Il2CppFieldDefinition>(pMetadataHdr.fieldsOffset, pMetadataHdr.fieldsCount / Sizeof(typeof(Il2CppFieldDefinition)));
             //GetFieldDefaultFromIndex
-            fieldDefaultValues = ReadArray<Il2CppFieldDefaultValue>(pMetadataHdr.fieldDefaultValuesOffset, pMetadataHdr.fieldDefaultValuesCount / MySizeOf(typeof(Il2CppFieldDefaultValue)));
+            fieldDefaultValues = ReadArray<Il2CppFieldDefaultValue>(pMetadataHdr.fieldDefaultValuesOffset, pMetadataHdr.fieldDefaultValuesCount / Sizeof(typeof(Il2CppFieldDefaultValue)));
         }
 
         public Il2CppFieldDefaultValue GetFieldDefaultFromIndex(int idx)
@@ -71,27 +76,24 @@ namespace Il2CppInspector
             return ReadNullTerminatedString(pMetadataHdr.stringOffset + idx);
         }
 
-        private int MySizeOf(Type type)
+        private int Sizeof(Type type)
         {
             int size = 0;
             foreach (var i in type.GetTypeInfo().GetFields())
             {
-                if (i.FieldType == typeof(int))
-                {
+                // Only process fields for our selected object versioning
+                var versionAttr = i.GetCustomAttribute<VersionAttribute>(false);
+                if (versionAttr != null) {
+                    if (versionAttr.Min != -1 && versionAttr.Min > Version)
+                        continue;
+                    if (versionAttr.Max != -1 && versionAttr.Max < Version)
+                        continue;
+                }
+
+                if (i.FieldType == typeof(int) || i.FieldType == typeof(uint))
                     size += 4;
-                }
-                else if (i.FieldType == typeof(uint))
-                {
-                    size += 4;
-                }
-                else if (i.FieldType == typeof(short))
-                {
+                if (i.FieldType == typeof(short) || i.FieldType == typeof(ushort))
                     size += 2;
-                }
-                else if (i.FieldType == typeof(ushort))
-                {
-                    size += 2;
-                }
             }
             return size;
         }
