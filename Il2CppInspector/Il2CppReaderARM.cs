@@ -35,6 +35,27 @@ namespace Il2CppInspector
                 return (codeRegistration, metadataRegistration);
             }
 
+            // ARM metadata v23
+            Image.Position = loc;
+
+            // Check for ADD Rx, PC in relevant parts of function
+            var func = Image.ReadBytes(0x20);
+            if (func[0x0C] == 0x79 && func[0x0D] == 0x44 && // ADD R1, PC
+                func[0x16] == 0x78 && func[0x17] == 0x44 && // ADD R0, PC
+                func[0x1E] == 0x7A && func[0x1F] == 0x44)   // ADD R2, PC
+            {
+                // Follow path to metadata pointer
+                var ppMetadata = decodeMovImm32(func) + loc + 0x10;
+                Image.Position = ppMetadata;
+                metadataRegistration = Image.ReadUInt32();
+
+                // Follow path to code pointer
+                var pCode = decodeMovImm32(func.Skip(8).Take(4).Concat(func.Skip(14).Take(4)).ToArray());
+                codeRegistration = pCode + loc + 0x1A - globalOffset;
+
+                return (codeRegistration, metadataRegistration);
+            }
+
             // ARMv7 Thumb (T1)
             // http://liris.cnrs.fr/~mmrissa/lib/exe/fetch.php?media=armv7-a-r-manual.pdf - A8.8.106
             // http://armconverter.com/hextoarm/
