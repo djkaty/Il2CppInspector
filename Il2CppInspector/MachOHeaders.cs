@@ -31,7 +31,7 @@ namespace Il2CppInspector
         CPU_TYPE_ARM64 = 0x01000000 + CPU_TYPE_ARM
     }
 
-    public class MachOHeader
+    internal class MachOHeader
     {
         public uint Magic;
         public uint CPUType;
@@ -43,13 +43,13 @@ namespace Il2CppInspector
         // 64-bit header has an extra 32-bit Reserved field
     }
 
-    public class MachOLoadCommand
+    internal class MachOLoadCommand
     {
         public uint Command;
         public uint Size;
     }
 
-    public class MachOSegmentCommand
+    internal class MachOSegmentCommand
     {
         // MachOLoadCommand
         [String(FixedSize = 16)]
@@ -64,7 +64,7 @@ namespace Il2CppInspector
         public uint Flags;
     }
 
-    public class MachOSegmentCommand64
+    internal class MachOSegmentCommand64
     {
         // MachOLoadCommand
         [String(FixedSize = 16)]
@@ -79,7 +79,7 @@ namespace Il2CppInspector
         public uint Flags;
     }
 
-    public class MachOSection
+    internal class MachOSection
     {
         [String(FixedSize = 16)]
         public string Name;
@@ -96,7 +96,7 @@ namespace Il2CppInspector
         public uint Reserved2;
     }
 
-    public class MachOSection64
+    internal class MachOSection64
     {
         [String(FixedSize = 16)]
         public string Name;
@@ -114,7 +114,7 @@ namespace Il2CppInspector
         public uint Reserved3;
     }
 
-    public class MachOLinkEditDataCommand
+    internal class MachOLinkEditDataCommand
     {
         // MachOLoadCommand
         public uint Offset;
