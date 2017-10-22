@@ -33,7 +33,10 @@ namespace Il2CppInspector
 
             // Load the il2cpp code file (try ELF and PE)
             var memoryStream = new MemoryStream(File.ReadAllBytes(codeFile));
-            IFileFormatReader stream = (IFileFormatReader) ElfReader.Load(memoryStream) ?? PEReader.Load(memoryStream);
+            IFileFormatReader stream =
+                ((IFileFormatReader) ElfReader.Load(memoryStream) ??
+                                     PEReader.Load(memoryStream)) ??
+                                     MachOReader.Load(memoryStream);
             if (stream == null) {
                 Console.Error.WriteLine("Unsupported executable file format");
                 return null;

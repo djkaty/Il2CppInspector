@@ -20,6 +20,7 @@ namespace Il2CppInspector
         U ReadMappedObject<U>(uint uiAddr) where U : new();
         U[] ReadMappedArray<U>(uint uiAddr, int count) where U : new();
         uint MapVATR(uint uiAddr);
+        void FinalizeInit(Il2CppReader il2cpp);
 
         byte[] ReadBytes(int count);
         ulong ReadUInt64();
@@ -38,13 +39,13 @@ namespace Il2CppInspector
 
         public virtual string Arch => throw new NotImplementedException();
 
-        public static T Load(string filename) {
+        public static T Load(string filename, uint offset = 0) {
             using (var stream = new FileStream(filename, FileMode.Open))
-                return Load(stream);
+                return Load(stream, offset);
         }
 
-        public static T Load(Stream stream) {
-            stream.Position = 0;
+        public static T Load(Stream stream, uint offset = 0) {
+            stream.Position = offset;
             var pe = (T) Activator.CreateInstance(typeof(T), stream);
             return pe.Init() ? pe : null;
         }
@@ -66,5 +67,8 @@ namespace Il2CppInspector
         public U[] ReadMappedArray<U>(uint uiAddr, int count) where U : new() {
             return ReadArray<U>(MapVATR(uiAddr), count);
         }
+
+        // Perform file format-based post-load manipulations to the IL2Cpp data
+        public virtual void FinalizeInit(Il2CppReader il2cpp) { }
     }
 }

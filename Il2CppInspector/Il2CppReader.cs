@@ -35,6 +35,7 @@ namespace Il2CppInspector
                     var (code, metadata) = Search(loc, Image.GlobalOffset);
                     if (code != 0) {
                         Configure(code, metadata);
+                        Image.FinalizeInit(this);
                         return true;
                     }
                 }
