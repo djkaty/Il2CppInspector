@@ -19,7 +19,7 @@ namespace Il2CppInspector
             // Assembly bytes to search for at start of each function
             uint metadataRegistration, codeRegistration;
 
-            // ARM
+            // ARMv7
             var bytes = new byte[] { 0x1c, 0x0, 0x9f, 0xe5, 0x1c, 0x10, 0x9f, 0xe5, 0x1c, 0x20, 0x9f, 0xe5 };
             Image.Position = loc;
             var buff = Image.ReadBytes(12);
@@ -35,7 +35,7 @@ namespace Il2CppInspector
                 return (codeRegistration, metadataRegistration);
             }
 
-            // ARM metadata v23
+            // ARMv7 metadata v23
             Image.Position = loc;
 
             // Check for ADD Rx, PC in relevant parts of function
@@ -51,7 +51,7 @@ namespace Il2CppInspector
 
                 // Follow path to code pointer
                 var pCode = decodeMovImm32(func.Skip(8).Take(4).Concat(func.Skip(14).Take(4)).ToArray());
-                codeRegistration = pCode + loc + 0x1A - globalOffset;
+                codeRegistration = pCode + loc + 0x1A + globalOffset;
 
                 return (codeRegistration, metadataRegistration);
             }

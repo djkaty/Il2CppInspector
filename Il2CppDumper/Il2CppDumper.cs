@@ -43,7 +43,7 @@ namespace Il2CppInspector
                     var fieldEnd = typeDef.fieldStart + typeDef.field_count;
                     for (int i = typeDef.fieldStart; i < fieldEnd; ++i) {
                         var pField = metadata.Fields[i];
-                        var pType = il2cpp.Code.GetTypeFromTypeIndex(pField.typeIndex);
+                        var pType = il2cpp.GetTypeFromTypeIndex(pField.typeIndex);
                         var pDefault = metadata.GetFieldDefaultFromIndex(i);
                         writer.Write("\t");
                         if ((pType.attrs & DefineConstants.FIELD_ATTRIBUTE_PRIVATE) ==
@@ -59,7 +59,7 @@ namespace Il2CppInspector
                         writer.Write($"{il2cpp.GetTypeName(pType)} {metadata.GetString(pField.nameIndex)}");
                         if (pDefault != null && pDefault.dataIndex != -1) {
                             var pointer = metadata.GetDefaultValueFromIndex(pDefault.dataIndex);
-                            Il2CppType pTypeToUse = il2cpp.Code.GetTypeFromTypeIndex(pDefault.typeIndex);
+                            Il2CppType pTypeToUse = il2cpp.GetTypeFromTypeIndex(pDefault.typeIndex);
                             if (pointer > 0) {
                                 metadata.Position = pointer;
                                 object multi = null;
@@ -110,14 +110,14 @@ namespace Il2CppInspector
                             }
                         }
                         writer.Write("; // 0x{0:x}\n",
-                            il2cpp.Code.GetFieldOffsetFromIndex(idx, i - typeDef.fieldStart));
+                            il2cpp.GetFieldOffsetFromIndex(idx, i - typeDef.fieldStart));
                     }
                     writer.Write("\t// Methods\n");
                     var methodEnd = typeDef.methodStart + typeDef.method_count;
                     for (int i = typeDef.methodStart; i < methodEnd; ++i) {
                         var methodDef = metadata.Methods[i];
                         writer.Write("\t");
-                        Il2CppType pReturnType = il2cpp.Code.GetTypeFromTypeIndex(methodDef.returnType);
+                        Il2CppType pReturnType = il2cpp.GetTypeFromTypeIndex(methodDef.returnType);
                         if ((methodDef.flags & DefineConstants.METHOD_ATTRIBUTE_MEMBER_ACCESS_MASK) ==
                             DefineConstants.METHOD_ATTRIBUTE_PRIVATE)
                             writer.Write("private ");
@@ -133,7 +133,7 @@ namespace Il2CppInspector
                         for (int j = 0; j < methodDef.parameterCount; ++j) {
                             Il2CppParameterDefinition pParam = metadata.parameterDefs[methodDef.parameterStart + j];
                             string szParamName = metadata.GetString(pParam.nameIndex);
-                            Il2CppType pType = il2cpp.Code.GetTypeFromTypeIndex(pParam.typeIndex);
+                            Il2CppType pType = il2cpp.GetTypeFromTypeIndex(pParam.typeIndex);
                             string szTypeName = il2cpp.GetTypeName(pType);
                             if ((pType.attrs & DefineConstants.PARAM_ATTRIBUTE_OPTIONAL) != 0)
                                 writer.Write("optional ");

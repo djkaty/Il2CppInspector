@@ -17,7 +17,9 @@ namespace Il2CppInspector
         private MachOHeader header;
         private uint pFuncTable;
         private uint sFuncTable;
-        private uint fatIndex;
+        private bool is64;
+        private List<MachOSection> sections = new List<MachOSection>();
+        private List<MachOSection64> sections64 = new List<MachOSection64>();
 
         public MachOReader(Stream stream) : base(stream) { }
 
@@ -37,8 +39,6 @@ namespace Il2CppInspector
         }
 
         protected override bool Init() {
-            fatIndex = (uint)Position;
-
             // Detect endianness - default is little-endianness
             MachO magic = (MachO)ReadUInt32();
             if (magic == MachO.MH_CIGAM || magic == MachO.MH_CIGAM_64) {
@@ -50,11 +50,11 @@ namespace Il2CppInspector
 
             Console.WriteLine("Endianness: {0}", Endianness);
 
-            Position = fatIndex;
+            Position -= sizeof(uint);
             header = ReadObject<MachOHeader>();
 
             // 64-bit files have an extra 4 bytes after the header
-            bool is64 = false;
+            is64 = false;
             if (magic == MachO.MH_MAGIC_64) {
                 is64 = true;
                 ReadUInt32();
@@ -75,21 +75,23 @@ namespace Il2CppInspector
 
                 if ((MachO)loadCommand.Command == MachO.LC_SEGMENT) {
                     var segment = ReadObject<MachOSegmentCommand>();
-                    if (segment.Name == "__TEXT") {
+                    if (segment.Name == "__TEXT" || segment.Name == "__DATA") {
                         for (int s = 0; s < segment.NumSections; s++) {
                             var section = ReadObject<MachOSection>();
+                            sections.Add(section);
                             if (section.Name == "__text")
-                                GlobalOffset = section.ImageOffset - section.Address + fatIndex;
+                                GlobalOffset = section.Address - section.ImageOffset;
                         }
                     }
                 }
                 else if ((MachO)loadCommand.Command == MachO.LC_SEGMENT_64) {
                     var segment = ReadObject<MachOSegmentCommand64>();
-                    if (segment.Name == "__TEXT") {
+                    if (segment.Name == "__TEXT" || segment.Name == "__DATA") {
                         for (int s = 0; s < segment.NumSections; s++) {
-                            var section = ReadObject<MachOSection64>();
-                            if (section.Name == "__text")
-                                GlobalOffset = section.ImageOffset - (uint)section.Address + fatIndex;
+                            var section64 = ReadObject<MachOSection64>();
+                            sections64.Add(section64);
+                            if (section64.Name == "__text")
+                                GlobalOffset = (uint)section64.Address - section64.ImageOffset;
                         }
                     }
                 }
@@ -106,7 +108,7 @@ namespace Il2CppInspector
             if (functionStarts == null)
                 return false;
 
-            pFuncTable = functionStarts.Offset + fatIndex;
+            pFuncTable = functionStarts.Offset;
             sFuncTable = functionStarts.Size;
             return true;
         }
@@ -131,20 +133,25 @@ namespace Il2CppInspector
                     if (previous == 0)
                         result &= 0xffffffc;
                     previous += result;
-                    functionPointers.Add(previous + fatIndex);
+                    functionPointers.Add(previous);
                 }
             }
             return functionPointers.ToArray();
-        }
-
-        public override uint MapVATR(uint uiAddr) {
-            return uiAddr + GlobalOffset;
         }
 
         public override void FinalizeInit(Il2CppReader il2cpp) {
             // Mach-O function pointers have an annoying habit of being 1-off
             il2cpp.PtrCodeRegistration.methodPointers =
                 il2cpp.PtrCodeRegistration.methodPointers.Select(x => x - 1).ToArray();
+        }
+
+        public override uint MapVATR(uint uiAddr) {
+            if (!is64) {
+                var section = sections.First(x => uiAddr >= x.Address && uiAddr <= (x.Address + x.Size));
+                return uiAddr - (section.Address - section.ImageOffset);
+            }
+            var section64 = sections64.First(x => uiAddr >= x.Address && uiAddr <= (x.Address + x.Size));
+            return uiAddr - ((uint)section64.Address - section64.ImageOffset);
         }
     }
 }

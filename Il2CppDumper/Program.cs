@@ -40,13 +40,14 @@ namespace Il2CppInspector
             }
 
             // Analyze data
-            var il2cpp = Il2CppProcessor.LoadFromFile(imageFile, metaFile);
-            if (il2cpp == null)
+            var il2cppProcessors = Il2CppProcessor.LoadFromFile(imageFile, metaFile);
+            if (il2cppProcessors == null)
                 Environment.Exit(1);
 
             // Write output file
-            var dumper = new Il2CppDumper(il2cpp);
-            dumper.WriteFile(outFile);
+            int i = 0;
+            foreach (var il2cpp in il2cppProcessors)
+                new Il2CppDumper(il2cpp).WriteFile(outFile + "-" + (i++));
         }
     }
 }

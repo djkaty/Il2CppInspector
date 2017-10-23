@@ -17,7 +17,7 @@ namespace Il2CppInspector
 
         protected Il2CppReader(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) {
             Image = stream;
-            Configure(codeRegistration, metadataRegistration);
+            Configure(Image, codeRegistration, metadataRegistration);
         }
 
         public Il2CppCodeRegistration PtrCodeRegistration { get; protected set; }
@@ -27,44 +27,35 @@ namespace Il2CppInspector
         protected abstract (uint, uint) Search(uint loc, uint globalOffset);
 
         // Check all search locations
-        public bool Load(int version) {
+        public bool Load(int version, uint imageIndex = 0) {
+            var subImage = Image[imageIndex];
             Image.Stream.Version = version;
-            var addrs = Image.GetSearchLocations();
+            var addrs = subImage.GetSearchLocations();
             foreach (var loc in addrs)
                 if (loc != 0) {
                     var (code, metadata) = Search(loc, Image.GlobalOffset);
                     if (code != 0) {
-                        Configure(code, metadata);
-                        Image.FinalizeInit(this);
+                        Configure(subImage, code, metadata);
+                        subImage.FinalizeInit(this);
                         return true;
                     }
                 }
             return false;
         }
 
-        private void Configure(uint codeRegistration, uint metadataRegistration) {
-            PtrCodeRegistration = Image.ReadMappedObject<Il2CppCodeRegistration>(codeRegistration);
-            PtrMetadataRegistration = Image.ReadMappedObject<Il2CppMetadataRegistration>(metadataRegistration);
-            PtrCodeRegistration.methodPointers = Image.ReadMappedArray<uint>(PtrCodeRegistration.pmethodPointers,
+        private void Configure(IFileFormatReader image, uint codeRegistration, uint metadataRegistration) {
+            PtrCodeRegistration = image.ReadMappedObject<Il2CppCodeRegistration>(codeRegistration);
+            PtrMetadataRegistration = image.ReadMappedObject<Il2CppMetadataRegistration>(metadataRegistration);
+            PtrCodeRegistration.methodPointers = image.ReadMappedArray<uint>(PtrCodeRegistration.pmethodPointers,
                 (int) PtrCodeRegistration.methodPointersCount);
-            PtrMetadataRegistration.fieldOffsets = Image.ReadMappedArray<int>(PtrMetadataRegistration.pfieldOffsets,
+            PtrMetadataRegistration.fieldOffsets = image.ReadMappedArray<int>(PtrMetadataRegistration.pfieldOffsets,
                 PtrMetadataRegistration.fieldOffsetsCount);
-            var types = Image.ReadMappedArray<uint>(PtrMetadataRegistration.ptypes, PtrMetadataRegistration.typesCount);
+            var types = image.ReadMappedArray<uint>(PtrMetadataRegistration.ptypes, PtrMetadataRegistration.typesCount);
             PtrMetadataRegistration.types = new Il2CppType[PtrMetadataRegistration.typesCount];
             for (int i = 0; i < PtrMetadataRegistration.typesCount; ++i) {
-                PtrMetadataRegistration.types[i] = Image.ReadMappedObject<Il2CppType>(types[i]);
+                PtrMetadataRegistration.types[i] = image.ReadMappedObject<Il2CppType>(types[i]);
                 PtrMetadataRegistration.types[i].Init();
             }
-        }
-
-        public Il2CppType GetTypeFromTypeIndex(int idx) {
-            return PtrMetadataRegistration.types[idx];
-        }
-
-        public int GetFieldOffsetFromIndex(int typeIndex, int fieldIndexInType) {
-            var ptr = PtrMetadataRegistration.fieldOffsets[typeIndex];
-            Image.Stream.Position = Image.MapVATR((uint) ptr) + 4 * fieldIndexInType;
-            return Image.Stream.ReadInt32();
         }
     }
 }

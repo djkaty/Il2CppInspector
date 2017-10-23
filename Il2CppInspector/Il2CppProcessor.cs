@@ -20,7 +20,7 @@ namespace Il2CppInspector
             Metadata = metadata;
         }
 
-        public static Il2CppProcessor LoadFromFile(string codeFile, string metadataFile) {
+        public static List<Il2CppProcessor> LoadFromFile(string codeFile, string metadataFile) {
             // Load the metadata file
             Metadata metadata;
             try {
@@ -34,36 +34,41 @@ namespace Il2CppInspector
             // Load the il2cpp code file (try ELF and PE)
             var memoryStream = new MemoryStream(File.ReadAllBytes(codeFile));
             IFileFormatReader stream =
-                ((IFileFormatReader) ElfReader.Load(memoryStream) ??
-                                     PEReader.Load(memoryStream)) ??
-                                     MachOReader.Load(memoryStream);
+                (((IFileFormatReader) ElfReader.Load(memoryStream) ??
+                                      PEReader.Load(memoryStream)) ??
+                                      MachOReader.Load(memoryStream)) ??
+                                      UBReader.Load(memoryStream);
             if (stream == null) {
                 Console.Error.WriteLine("Unsupported executable file format");
                 return null;
             }
 
-            Il2CppReader il2cpp;
+            var processors = new List<Il2CppProcessor>();
+            foreach (var image in stream.Images) {
+                Il2CppReader il2cpp;
 
-            // We are currently supporting x86 and ARM architectures
-            switch (stream.Arch) {
-                case "x86":
-                    il2cpp = new Il2CppReaderX86(stream);
-                    break;
-                case "ARM":
-                    il2cpp = new Il2CppReaderARM(stream);
-                    break;
-                default:
-                    Console.Error.WriteLine("Unsupported architecture");
-                    return null;
+                // We are currently supporting x86 and ARM architectures
+                switch (image.Arch) {
+                    case "x86":
+                        il2cpp = new Il2CppReaderX86(image);
+                        break;
+                    case "ARM":
+                        il2cpp = new Il2CppReaderARM(image);
+                        break;
+                    default:
+                        Console.Error.WriteLine("Unsupported architecture");
+                        return null;
+                }
+
+                // Find code and metadata regions
+                if (!il2cpp.Load(metadata.Version)) {
+                    Console.Error.WriteLine("Could not process IL2CPP image");
+                }
+                else {
+                    processors.Add(new Il2CppProcessor(il2cpp, metadata));
+                }
             }
-
-            // Find code and metadata regions
-            if (!il2cpp.Load(metadata.Version)) {
-                Console.Error.WriteLine("Could not process IL2CPP image");
-                return null;
-            }
-
-            return new Il2CppProcessor(il2cpp, metadata);
+            return processors;
         }
 
         public string GetTypeName(Il2CppType pType) {
@@ -104,6 +109,31 @@ namespace Il2CppInspector
                     ret = szTypeString[(int)pType.type];
             }
             return ret;
+        }
+
+        public Il2CppType GetTypeFromTypeIndex(int idx) {
+            return Code.PtrMetadataRegistration.types[idx];
+        }
+
+        public int GetFieldOffsetFromIndex(int typeIndex, int fieldIndexInType) {
+            // Versions from 22 onwards use an array of pointers in fieldOffsets
+            bool fieldOffsetsArePointers = (Metadata.Version >= 22);
+
+            // Some variants of 21 also use an array of pointers
+            if (Metadata.Version == 21) {
+                var f = Code.PtrMetadataRegistration.fieldOffsets;
+                fieldOffsetsArePointers = (f[0] == 0 && f[1] == 0 && f[2] == 0 && f[3] == 0 && f[4] == 0 && f[5] > 0);
+            }
+
+            // All older versions use values directly in the array
+            if (!fieldOffsetsArePointers) {
+                var typeDef = Metadata.Types[typeIndex];
+                return Code.PtrMetadataRegistration.fieldOffsets[typeDef.fieldStart + fieldIndexInType];
+            }
+
+            var ptr = Code.PtrMetadataRegistration.fieldOffsets[typeIndex];
+            Code.Image.Stream.Position = Code.Image.MapVATR((uint)ptr) + 4 * fieldIndexInType;
+            return Code.Image.Stream.ReadInt32();
         }
 
         private readonly string[] szTypeString =
