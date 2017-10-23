@@ -1,13 +1,13 @@
 # Il2CppInspector
 Extract types, methods, properties and fields from Unity IL2CPP binaries.
 
-* Supports ELF (Android .so) and PE (Windows .exe) file formats
-* Supports ARM, ARMv7 Thumb (T1) and x86 architectures regardless of file format
-* Supports metadata versions 21 and 22
+* Supports ELF (Android .so), PE (Windows .exe), Mach-O (Apple iOS/Mac) and Universal Binary (Fat Mach-O) file formats
+* Supports ARMv7, ARMv7 Thumb T1 and x86 architectures regardless of file format
+* Supports metadata versions 21, 22 and 23
 * No manual reverse-engineering required; all data is calculated automatically
 * **Il2CppInspector** re-usable class library
 
-Targets .NET Standard 1.6. Built with Visual Studio 2017.
+Class library targets .NET Standard 1.5. Application targets .NET Core 2.0. Built with Visual Studio 2017.
 
 ### Build instructions
 
@@ -36,9 +36,15 @@ Defaults if not specified:
 
 File format and architecture are automatically detected.
 
-### Help with iOS support
+For Apple Universal Binaries, multiple output files will be generated, with each filename suffixed by the index of the image in the Universal Binary. Unsupported images will be skipped.
 
-Mach-O (iOS) file format is not currently supported. Please contact me via the contact form at http://www.djkaty.com if you have a rooted iOS device and can produce cracked IPA files.
+### 64-bit binaries
+
+Il2CppInspector does not currently support 64-bit IL2CPP binaries. 64-bit Mach-O files will be parsed without crashing but there is currently no support for 64-bit CPU architectures so automatic inspection will fail.
+
+### Problems
+
+If you have files that don't work or are in an unsupported format, please open a new issue on GitHub and attach a sample with details on the file format, and I'll try to add support.
 
 ### Acknowledgements
 
