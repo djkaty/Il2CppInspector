@@ -47,7 +47,7 @@ namespace Il2CppInspector
             // Write output file
             int i = 0;
             foreach (var il2cpp in il2cppProcessors)
-                new Il2CppDumper(il2cpp).WriteFile(outFile + "-" + (i++));
+                new Il2CppDumper(il2cpp).WriteFile(outFile + (i++ > 0 ? "-" + (i-1) : ""));
         }
     }
 }
