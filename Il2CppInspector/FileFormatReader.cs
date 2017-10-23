@@ -21,11 +21,11 @@ namespace Il2CppInspector
         long Position { get; set; }
         string Arch { get; }
         uint GlobalOffset { get; }
-        uint[] GetSearchLocations();
+        uint[] GetFunctionTable();
         U ReadMappedObject<U>(uint uiAddr) where U : new();
         U[] ReadMappedArray<U>(uint uiAddr, int count) where U : new();
         uint MapVATR(uint uiAddr);
-        void FinalizeInit(Il2CppReader il2cpp);
+        void FinalizeInit(Il2CppBinary il2cpp);
 
         byte[] ReadBytes(int count);
         ulong ReadUInt64();
@@ -77,7 +77,7 @@ namespace Il2CppInspector
         }
 
         // Find search locations in the machine code for Il2Cpp data
-        public virtual uint[] GetSearchLocations() => throw new NotImplementedException();
+        public virtual uint[] GetFunctionTable() => throw new NotImplementedException();
 
         // Map an RVA to an offset into the file image
         // No mapping by default
@@ -93,6 +93,6 @@ namespace Il2CppInspector
         }
 
         // Perform file format-based post-load manipulations to the IL2Cpp data
-        public virtual void FinalizeInit(Il2CppReader il2cpp) { }
+        public virtual void FinalizeInit(Il2CppBinary il2cpp) { }
     }
 }

@@ -12,17 +12,17 @@ using System.Text;
 
 namespace Il2CppInspector
 {
-    public class Il2CppProcessor
+    public class Il2CppInspector
     {
-        public Il2CppReader Code { get; }
+        public Il2CppBinary Binary { get; }
         public Metadata Metadata { get; }
 
-        public Il2CppProcessor(Il2CppReader code, Metadata metadata) {
-            Code = code;
+        public Il2CppInspector(Il2CppBinary binary, Metadata metadata) {
+            Binary = binary;
             Metadata = metadata;
         }
 
-        public static List<Il2CppProcessor> LoadFromFile(string codeFile, string metadataFile) {
+        public static List<Il2CppInspector> LoadFromFile(string codeFile, string metadataFile) {
             // Load the metadata file
             Metadata metadata;
             try {
@@ -33,7 +33,7 @@ namespace Il2CppInspector
                 return null;
             }
 
-            // Load the il2cpp code file (try ELF and PE)
+            // Load the il2cpp code file (try ELF, PE, Mach-O and Universal Binary)
             var memoryStream = new MemoryStream(File.ReadAllBytes(codeFile));
             IFileFormatReader stream =
                 (((IFileFormatReader) ElfReader.Load(memoryStream) ??
@@ -45,17 +45,18 @@ namespace Il2CppInspector
                 return null;
             }
 
-            var processors = new List<Il2CppProcessor>();
+            // Multi-image binaries may contain more than one Il2Cpp image
+            var processors = new List<Il2CppInspector>();
             foreach (var image in stream.Images) {
-                Il2CppReader il2cpp;
+                Il2CppBinary binary;
 
                 // We are currently supporting x86 and ARM architectures
                 switch (image.Arch) {
                     case "x86":
-                        il2cpp = new Il2CppReaderX86(image);
+                        binary = new Il2CppBinaryX86(image);
                         break;
                     case "ARM":
-                        il2cpp = new Il2CppReaderARM(image);
+                        binary = new Il2CppBinaryARM(image);
                         break;
                     default:
                         Console.Error.WriteLine("Unsupported architecture");
@@ -63,11 +64,11 @@ namespace Il2CppInspector
                 }
 
                 // Find code and metadata regions
-                if (!il2cpp.Load(metadata.Version)) {
+                if (!binary.Initialize(metadata.Version)) {
                     Console.Error.WriteLine("Could not process IL2CPP image");
                 }
                 else {
-                    processors.Add(new Il2CppProcessor(il2cpp, metadata));
+                    processors.Add(new Il2CppInspector(binary, metadata));
                 }
             }
             return processors;
@@ -76,32 +77,29 @@ namespace Il2CppInspector
         public string GetTypeName(Il2CppType pType) {
             string ret;
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_CLASS || pType.type == Il2CppTypeEnum.IL2CPP_TYPE_VALUETYPE) {
-                Il2CppTypeDefinition klass = Metadata.Types[pType.data.klassIndex];
+                Il2CppTypeDefinition klass = Metadata.Types[pType.datapoint];
                 ret = Metadata.Strings[klass.nameIndex];
             }
             else if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST) {
-                Il2CppGenericClass generic_class = Code.Image.ReadMappedObject<Il2CppGenericClass>(pType.data.generic_class);
+                Il2CppGenericClass generic_class = Binary.Image.ReadMappedObject<Il2CppGenericClass>(pType.datapoint);
                 Il2CppTypeDefinition pMainDef = Metadata.Types[generic_class.typeDefinitionIndex];
                 ret = Metadata.Strings[pMainDef.nameIndex];
                 var typeNames = new List<string>();
-                Il2CppGenericInst pInst = Code.Image.ReadMappedObject<Il2CppGenericInst>(generic_class.context.class_inst);
-                var pointers = Code.Image.ReadMappedArray<uint>(pInst.type_argv, (int)pInst.type_argc);
+                Il2CppGenericInst pInst = Binary.Image.ReadMappedObject<Il2CppGenericInst>(generic_class.context.class_inst);
+                var pointers = Binary.Image.ReadMappedArray<uint>(pInst.type_argv, (int)pInst.type_argc);
                 for (int i = 0; i < pInst.type_argc; ++i) {
-                    var pOriType = Code.Image.ReadMappedObject<Il2CppType>(pointers[i]);
-                    pOriType.Init();
+                    var pOriType = Binary.Image.ReadMappedObject<Il2CppType>(pointers[i]);
                     typeNames.Add(GetTypeName(pOriType));
                 }
                 ret += $"<{string.Join(", ", typeNames)}>";
             }
             else if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_ARRAY) {
-                Il2CppArrayType arrayType = Code.Image.ReadMappedObject<Il2CppArrayType>(pType.data.array);
-                var type = Code.Image.ReadMappedObject<Il2CppType>(arrayType.etype);
-                type.Init();
+                Il2CppArrayType arrayType = Binary.Image.ReadMappedObject<Il2CppArrayType>(pType.datapoint);
+                var type = Binary.Image.ReadMappedObject<Il2CppType>(arrayType.etype);
                 ret = $"{GetTypeName(type)}[]";
             }
             else if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY) {
-                var type = Code.Image.ReadMappedObject<Il2CppType>(pType.data.type);
-                type.Init();
+                var type = Binary.Image.ReadMappedObject<Il2CppType>(pType.datapoint);
                 ret = $"{GetTypeName(type)}[]";
             }
             else {
@@ -114,7 +112,7 @@ namespace Il2CppInspector
         }
 
         public Il2CppType GetTypeFromTypeIndex(int idx) {
-            return Code.PtrMetadataRegistration.types[idx];
+            return Binary.Types[idx];
         }
 
         public int GetFieldOffsetFromIndex(int typeIndex, int fieldIndexInType) {
@@ -123,19 +121,19 @@ namespace Il2CppInspector
 
             // Some variants of 21 also use an array of pointers
             if (Metadata.Version == 21) {
-                var f = Code.PtrMetadataRegistration.fieldOffsets;
+                var f = Binary.FieldOffsets;
                 fieldOffsetsArePointers = (f[0] == 0 && f[1] == 0 && f[2] == 0 && f[3] == 0 && f[4] == 0 && f[5] > 0);
             }
 
             // All older versions use values directly in the array
             if (!fieldOffsetsArePointers) {
                 var typeDef = Metadata.Types[typeIndex];
-                return Code.PtrMetadataRegistration.fieldOffsets[typeDef.fieldStart + fieldIndexInType];
+                return Binary.FieldOffsets[typeDef.fieldStart + fieldIndexInType];
             }
 
-            var ptr = Code.PtrMetadataRegistration.fieldOffsets[typeIndex];
-            Code.Image.Stream.Position = Code.Image.MapVATR((uint)ptr) + 4 * fieldIndexInType;
-            return Code.Image.Stream.ReadInt32();
+            var ptr = Binary.FieldOffsets[typeIndex];
+            Binary.Image.Stream.Position = Binary.Image.MapVATR((uint)ptr) + 4 * fieldIndexInType;
+            return Binary.Image.Stream.ReadInt32();
         }
 
 

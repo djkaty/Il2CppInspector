@@ -49,12 +49,6 @@ namespace Il2CppInspector
         public uint interopDataCount;
         [Version(Min = 23)]
         public uint interopData;
-
-        // Properties
-        public uint[] methodPointers
-        {
-            get; set;
-        }
     }
 
 #pragma warning disable CS0649
@@ -78,16 +72,6 @@ namespace Il2CppInspector
         public uint typeDefinitionsSizes;
         public uint metadataUsagesCount;
         public uint metadataUsages;
-
-        public int[] fieldOffsets
-        {
-            get; set;
-        }
-
-        public Il2CppType[] types
-        {
-            get; set;
-        }
     }
 #pragma warning restore CS0649
 
@@ -136,68 +120,13 @@ namespace Il2CppInspector
     public class Il2CppType
     {
         public uint datapoint;
-        public Anonymous data { get; set; }
         public uint bits;
-        public uint attrs { get; set; }
-        public Il2CppTypeEnum type { get; set; }
-        public uint num_mods { get; set; }
-        public uint byref { get; set; }
-        public uint pinned { get; set; }
 
-        public void Init()
-        {
-            var str = Convert.ToString(bits, 2);
-            if (str.Length != 32)
-            {
-                str = new string(Enumerable.Repeat('0', 32 - str.Length).Concat(str.ToCharArray()).ToArray());
-            }
-            attrs = Convert.ToUInt32(str.Substring(16, 16), 2);
-            type = (Il2CppTypeEnum)Convert.ToInt32(str.Substring(8, 8), 2);
-            num_mods = Convert.ToUInt32(str.Substring(2, 6), 2);
-            byref = Convert.ToUInt32(str.Substring(1, 1), 2);
-            pinned = Convert.ToUInt32(str.Substring(0, 1), 2);
-            data = new Anonymous() { dummy = datapoint };
-        }
-
-        public class Anonymous
-        {
-            public uint dummy;
-            public int klassIndex
-            {
-                get
-                {
-                    return (int)dummy;
-                }
-            }
-            public uint type
-            {
-                get
-                {
-                    return dummy;
-                }
-            }
-            public uint array
-            {
-                get
-                {
-                    return dummy;
-                }
-            }
-            public int genericParameterIndex
-            {
-                get
-                {
-                    return (int)dummy;
-                }
-            }
-            public uint generic_class
-            {
-                get
-                {
-                    return dummy;
-                }
-            }
-        }
+        public uint attrs => bits & 0xffff;
+        public Il2CppTypeEnum type => (Il2CppTypeEnum)((bits >> 16) & 0xff);
+        public uint num_mods => (bits >> 24) & 0x3f;
+        public bool byref => ((bits >> 30) & 1) == 1;
+        public bool pinned => (bits >> 31) == 1;
     }
 
     public class Il2CppGenericClass

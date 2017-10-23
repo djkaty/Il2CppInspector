@@ -80,7 +80,7 @@ namespace Il2CppInspector
             return true;
         }
 
-        public override uint[] GetSearchLocations() {
+        public override uint[] GetFunctionTable() {
             Position = pFuncTable;
             var addrs = new List<uint>();
             uint addr;

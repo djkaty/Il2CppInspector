@@ -113,7 +113,7 @@ namespace Il2CppInspector
             return true;
         }
 
-        public override uint[] GetSearchLocations() {
+        public override uint[] GetFunctionTable() {
             Position = pFuncTable;
             var functionPointers = new List<uint>();
 
@@ -139,10 +139,9 @@ namespace Il2CppInspector
             return functionPointers.ToArray();
         }
 
-        public override void FinalizeInit(Il2CppReader il2cpp) {
+        public override void FinalizeInit(Il2CppBinary il2cpp) {
             // Mach-O function pointers have an annoying habit of being 1-off
-            il2cpp.PtrCodeRegistration.methodPointers =
-                il2cpp.PtrCodeRegistration.methodPointers.Select(x => x - 1).ToArray();
+            il2cpp.MethodPointers = il2cpp.MethodPointers.Select(x => x - 1).ToArray();
         }
 
         public override uint MapVATR(uint uiAddr) {

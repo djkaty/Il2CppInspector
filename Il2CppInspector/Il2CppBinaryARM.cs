@@ -9,13 +9,13 @@ using System.Linq;
 
 namespace Il2CppInspector
 {
-    internal class Il2CppReaderARM : Il2CppReader
+    internal class Il2CppBinaryARM : Il2CppBinary
     {
-        public Il2CppReaderARM(IFileFormatReader stream) : base(stream) { }
+        public Il2CppBinaryARM(IFileFormatReader stream) : base(stream) { }
 
-        public Il2CppReaderARM(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) : base(stream, codeRegistration, metadataRegistration) { }
+        public Il2CppBinaryARM(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) : base(stream, codeRegistration, metadataRegistration) { }
 
-        protected override (uint, uint) Search(uint loc, uint globalOffset) {
+        protected override (uint, uint) ConsiderCode(uint loc, uint globalOffset) {
             // Assembly bytes to search for at start of each function
             uint metadataRegistration, codeRegistration;
 

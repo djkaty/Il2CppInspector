@@ -47,7 +47,7 @@ namespace Il2CppInspector
             return true;
         }
 
-        public override uint[] GetSearchLocations() {
+        public override uint[] GetFunctionTable() {
             // Find dynamic section
             var dynamic = new elf_32_shdr();
             var PT_DYNAMIC = program_table_element.First(x => x.p_type == 2u);

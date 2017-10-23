@@ -8,11 +8,11 @@ using System.Linq;
 
 namespace Il2CppInspector
 {
-    internal class Il2CppReaderX86 : Il2CppReader
+    internal class Il2CppBinaryX86 : Il2CppBinary
     {
-        public Il2CppReaderX86(IFileFormatReader stream) : base(stream) { }
-        public Il2CppReaderX86(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) : base(stream, codeRegistration, metadataRegistration) { }
-        protected override (uint, uint) Search(uint loc, uint globalOffset) {
+        public Il2CppBinaryX86(IFileFormatReader stream) : base(stream) { }
+        public Il2CppBinaryX86(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) : base(stream, codeRegistration, metadataRegistration) { }
+        protected override (uint, uint) ConsiderCode(uint loc, uint globalOffset) {
             uint funcPtr, metadata, code;
             ushort opcode;
 

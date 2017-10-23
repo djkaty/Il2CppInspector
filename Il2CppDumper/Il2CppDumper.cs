@@ -8,9 +8,9 @@ namespace Il2CppInspector
 {
     public class Il2CppDumper
     {
-        private readonly Il2CppProcessor il2cpp;
+        private readonly Il2CppInspector il2cpp;
 
-        public Il2CppDumper(Il2CppProcessor proc) {
+        public Il2CppDumper(Il2CppInspector proc) {
             il2cpp = proc;
         }
 
@@ -100,7 +100,7 @@ namespace Il2CppInspector
                         }
                         if (methodDef.methodIndex >= 0)
                             writer.Write("); // {0:x} - {1}\n",
-                                il2cpp.Code.PtrCodeRegistration.methodPointers[methodDef.methodIndex],
+                                il2cpp.Binary.MethodPointers[methodDef.methodIndex],
                                 methodDef.methodIndex);
                         else
                             writer.Write("); // 0 - -1\n");
