@@ -6,8 +6,8 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using NoisyCowStudios.Bin2Object;
 
@@ -15,18 +15,15 @@ namespace Il2CppInspector
 {
     public class Metadata : BinaryObjectReader
     {
-        private Il2CppGlobalMetadataHeader pMetadataHdr;
+        public Il2CppGlobalMetadataHeader Header;
 
         public Il2CppImageDefinition[] Images { get; }
         public Il2CppTypeDefinition[] Types { get; }
         public Il2CppMethodDefinition[] Methods { get; }
-        public Il2CppParameterDefinition[] parameterDefs;
+        public Il2CppParameterDefinition[] Params { get; }
         public Il2CppFieldDefinition[] Fields { get; }
-        public Il2CppFieldDefaultValue[] fieldDefaultValues;
-
-        public string GetImageName(Il2CppImageDefinition image) => GetString(image.nameIndex);
-        public string GetTypeNamespace(Il2CppTypeDefinition type) => GetString(type.namespaceIndex);
-        public string GetTypeName(Il2CppTypeDefinition type) => GetString(type.nameIndex);
+        public Il2CppFieldDefaultValue[] FieldDefaultValues { get; }
+        public Dictionary<int, string> Strings { get; } = new Dictionary<int, string>();
 
         public Metadata(Stream stream) : base(stream)
         {
@@ -40,40 +37,24 @@ namespace Il2CppInspector
 
             // Rewind and read metadata header in full
             Position -= 8;
-            pMetadataHdr = ReadObject<Il2CppGlobalMetadataHeader>();
+            Header = ReadObject<Il2CppGlobalMetadataHeader>();
             if (Version != 21 && Version != 22 && Version != 23)
             {
-                throw new Exception($"ERROR: Metadata file supplied is not a supported version ({pMetadataHdr.version}).");
+                throw new Exception($"ERROR: Metadata file supplied is not a supported version ({Header.version}).");
             }
 
-            var uiImageCount = pMetadataHdr.imagesCount / Sizeof(typeof(Il2CppImageDefinition));
-            var uiNumTypes = pMetadataHdr.typeDefinitionsCount / Sizeof(typeof(Il2CppTypeDefinition));
-            Images = ReadArray<Il2CppImageDefinition>(pMetadataHdr.imagesOffset, uiImageCount);
-            //GetTypeDefFromIndex
-            Types = ReadArray<Il2CppTypeDefinition>(pMetadataHdr.typeDefinitionsOffset, uiNumTypes);
-            //GetMethodDefinition
-            Methods = ReadArray<Il2CppMethodDefinition>(pMetadataHdr.methodsOffset, pMetadataHdr.methodsCount / Sizeof(typeof(Il2CppMethodDefinition)));
-            //GetParameterFromIndex
-            parameterDefs = ReadArray<Il2CppParameterDefinition>(pMetadataHdr.parametersOffset, pMetadataHdr.parametersCount / Sizeof(typeof(Il2CppParameterDefinition)));
-            //GetFieldDefFromIndex
-            Fields = ReadArray<Il2CppFieldDefinition>(pMetadataHdr.fieldsOffset, pMetadataHdr.fieldsCount / Sizeof(typeof(Il2CppFieldDefinition)));
-            //GetFieldDefaultFromIndex
-            fieldDefaultValues = ReadArray<Il2CppFieldDefaultValue>(pMetadataHdr.fieldDefaultValuesOffset, pMetadataHdr.fieldDefaultValuesCount / Sizeof(typeof(Il2CppFieldDefaultValue)));
-        }
+            // Load all the relevant metadata using offsets provided in the header
+            Images = ReadArray<Il2CppImageDefinition>(Header.imagesOffset, Header.imagesCount / Sizeof(typeof(Il2CppImageDefinition)));
+            Types = ReadArray<Il2CppTypeDefinition>(Header.typeDefinitionsOffset, Header.typeDefinitionsCount / Sizeof(typeof(Il2CppTypeDefinition)));
+            Methods = ReadArray<Il2CppMethodDefinition>(Header.methodsOffset, Header.methodsCount / Sizeof(typeof(Il2CppMethodDefinition)));
+            Params = ReadArray<Il2CppParameterDefinition>(Header.parametersOffset, Header.parametersCount / Sizeof(typeof(Il2CppParameterDefinition)));
+            Fields = ReadArray<Il2CppFieldDefinition>(Header.fieldsOffset, Header.fieldsCount / Sizeof(typeof(Il2CppFieldDefinition)));
+            FieldDefaultValues = ReadArray<Il2CppFieldDefaultValue>(Header.fieldDefaultValuesOffset, Header.fieldDefaultValuesCount / Sizeof(typeof(Il2CppFieldDefaultValue)));
+            // TODO: Events, Properties, ParameterDefaultValue, GenericParameters, ParameterConstraints, GenericContainers, Interfaces, MetadataUsage, CustomAttributes
 
-        public Il2CppFieldDefaultValue GetFieldDefaultFromIndex(int idx)
-        {
-            return fieldDefaultValues.FirstOrDefault(x => x.fieldIndex == idx);
-        }
-
-        public int GetDefaultValueFromIndex(int idx)
-        {
-            return pMetadataHdr.fieldAndParameterDefaultValueDataOffset + idx;
-        }
-
-        public string GetString(int idx)
-        {
-            return ReadNullTerminatedString(pMetadataHdr.stringOffset + idx);
+            Position = Header.stringOffset;
+            while (Position < Header.stringOffset + Header.stringCount)
+                Strings.Add((int)Position - Header.stringOffset, ReadNullTerminatedString());
         }
 
         private int Sizeof(Type type)

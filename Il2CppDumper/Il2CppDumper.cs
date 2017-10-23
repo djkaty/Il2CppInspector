@@ -20,11 +20,11 @@ namespace Il2CppInspector
 
                 for (int imageIndex = 0; imageIndex < metadata.Images.Length; imageIndex++) {
                     var imageDef = metadata.Images[imageIndex];
-                    writer.Write($"// Image {imageIndex}: {metadata.GetImageName(imageDef)} - {imageDef.typeStart}\n");
+                    writer.Write($"// Image {imageIndex}: {metadata.Strings[imageDef.nameIndex]} - {imageDef.typeStart}\n");
                 }
                 for (int idx = 0; idx < metadata.Types.Length; ++idx) {
                     var typeDef = metadata.Types[idx];
-                    writer.Write($"// Namespace: {metadata.GetTypeNamespace(typeDef)}\n");
+                    writer.Write($"// Namespace: {metadata.Strings[typeDef.namespaceIndex]}\n");
                     if ((typeDef.flags & DefineConstants.TYPE_ATTRIBUTE_SERIALIZABLE) != 0)
                         writer.Write("[Serializable]\n");
                     if ((typeDef.flags & DefineConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) ==
@@ -38,13 +38,12 @@ namespace Il2CppInspector
                         writer.Write("interface ");
                     else
                         writer.Write("class ");
-                    writer.Write($"{metadata.GetTypeName(typeDef)} // TypeDefIndex: {idx}\n{{\n");
+                    writer.Write($"{metadata.Strings[typeDef.nameIndex]} // TypeDefIndex: {idx}\n{{\n");
                     writer.Write("\t// Fields\n");
                     var fieldEnd = typeDef.fieldStart + typeDef.field_count;
                     for (int i = typeDef.fieldStart; i < fieldEnd; ++i) {
                         var pField = metadata.Fields[i];
                         var pType = il2cpp.GetTypeFromTypeIndex(pField.typeIndex);
-                        var pDefault = metadata.GetFieldDefaultFromIndex(i);
                         writer.Write("\t");
                         if ((pType.attrs & DefineConstants.FIELD_ATTRIBUTE_PRIVATE) ==
                             DefineConstants.FIELD_ATTRIBUTE_PRIVATE)
@@ -56,59 +55,12 @@ namespace Il2CppInspector
                             writer.Write("static ");
                         if ((pType.attrs & DefineConstants.FIELD_ATTRIBUTE_INIT_ONLY) != 0)
                             writer.Write("readonly ");
-                        writer.Write($"{il2cpp.GetTypeName(pType)} {metadata.GetString(pField.nameIndex)}");
-                        if (pDefault != null && pDefault.dataIndex != -1) {
-                            var pointer = metadata.GetDefaultValueFromIndex(pDefault.dataIndex);
-                            Il2CppType pTypeToUse = il2cpp.GetTypeFromTypeIndex(pDefault.typeIndex);
-                            if (pointer > 0) {
-                                metadata.Position = pointer;
-                                object multi = null;
-                                switch (pTypeToUse.type) {
-                                    case Il2CppTypeEnum.IL2CPP_TYPE_BOOLEAN:
-                                        multi = metadata.ReadBoolean();
-                                        break;
-                                    case Il2CppTypeEnum.IL2CPP_TYPE_U1:
-                                    case Il2CppTypeEnum.IL2CPP_TYPE_I1:
-                                        multi = metadata.ReadByte();
-                                        break;
-                                    case Il2CppTypeEnum.IL2CPP_TYPE_CHAR:
-                                        multi = metadata.ReadChar();
-                                        break;
-                                    case Il2CppTypeEnum.IL2CPP_TYPE_U2:
-                                        multi = metadata.ReadUInt16();
-                                        break;
-                                    case Il2CppTypeEnum.IL2CPP_TYPE_I2:
-                                        multi = metadata.ReadInt16();
-                                        break;
-                                    case Il2CppTypeEnum.IL2CPP_TYPE_U4:
-                                        multi = metadata.ReadUInt32();
-                                        break;
-                                    case Il2CppTypeEnum.IL2CPP_TYPE_I4:
-                                        multi = metadata.ReadInt32();
-                                        break;
-                                    case Il2CppTypeEnum.IL2CPP_TYPE_U8:
-                                        multi = metadata.ReadUInt64();
-                                        break;
-                                    case Il2CppTypeEnum.IL2CPP_TYPE_I8:
-                                        multi = metadata.ReadInt64();
-                                        break;
-                                    case Il2CppTypeEnum.IL2CPP_TYPE_R4:
-                                        multi = metadata.ReadSingle();
-                                        break;
-                                    case Il2CppTypeEnum.IL2CPP_TYPE_R8:
-                                        multi = metadata.ReadDouble();
-                                        break;
-                                    case Il2CppTypeEnum.IL2CPP_TYPE_STRING:
-                                        var uiLen = metadata.ReadInt32();
-                                        multi = Encoding.UTF8.GetString(metadata.ReadBytes(uiLen));
-                                        break;
-                                }
-                                if (multi is string)
-                                    writer.Write($" = \"{multi}\"");
-                                else if (multi != null)
-                                    writer.Write($" = {multi}");
-                            }
-                        }
+                        writer.Write($"{il2cpp.GetTypeName(pType)} {metadata.Strings[pField.nameIndex]}");
+                        object multi = il2cpp.GetDefaultValueForField(i);
+                        if (multi is string)
+                            writer.Write($" = \"{multi}\"");
+                        else if (multi != null)
+                            writer.Write($" = {multi}");
                         writer.Write("; // 0x{0:x}\n",
                             il2cpp.GetFieldOffsetFromIndex(idx, i - typeDef.fieldStart));
                     }
@@ -129,10 +81,10 @@ namespace Il2CppInspector
                         if ((methodDef.flags & DefineConstants.METHOD_ATTRIBUTE_STATIC) != 0)
                             writer.Write("static ");
 
-                        writer.Write($"{il2cpp.GetTypeName(pReturnType)} {metadata.GetString(methodDef.nameIndex)}(");
+                        writer.Write($"{il2cpp.GetTypeName(pReturnType)} {metadata.Strings[methodDef.nameIndex]}(");
                         for (int j = 0; j < methodDef.parameterCount; ++j) {
-                            Il2CppParameterDefinition pParam = metadata.parameterDefs[methodDef.parameterStart + j];
-                            string szParamName = metadata.GetString(pParam.nameIndex);
+                            Il2CppParameterDefinition pParam = metadata.Params[methodDef.parameterStart + j];
+                            string szParamName = metadata.Strings[pParam.nameIndex];
                             Il2CppType pType = il2cpp.GetTypeFromTypeIndex(pParam.typeIndex);
                             string szTypeName = il2cpp.GetTypeName(pType);
                             if ((pType.attrs & DefineConstants.PARAM_ATTRIBUTE_OPTIONAL) != 0)

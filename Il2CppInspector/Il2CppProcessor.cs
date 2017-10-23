@@ -7,6 +7,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Il2CppInspector
 {
@@ -75,12 +77,12 @@ namespace Il2CppInspector
             string ret;
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_CLASS || pType.type == Il2CppTypeEnum.IL2CPP_TYPE_VALUETYPE) {
                 Il2CppTypeDefinition klass = Metadata.Types[pType.data.klassIndex];
-                ret = Metadata.GetString(klass.nameIndex);
+                ret = Metadata.Strings[klass.nameIndex];
             }
             else if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST) {
                 Il2CppGenericClass generic_class = Code.Image.ReadMappedObject<Il2CppGenericClass>(pType.data.generic_class);
                 Il2CppTypeDefinition pMainDef = Metadata.Types[generic_class.typeDefinitionIndex];
-                ret = Metadata.GetString(pMainDef.nameIndex);
+                ret = Metadata.Strings[pMainDef.nameIndex];
                 var typeNames = new List<string>();
                 Il2CppGenericInst pInst = Code.Image.ReadMappedObject<Il2CppGenericInst>(generic_class.context.class_inst);
                 var pointers = Code.Image.ReadMappedArray<uint>(pInst.type_argv, (int)pInst.type_argc);
@@ -134,6 +136,63 @@ namespace Il2CppInspector
             var ptr = Code.PtrMetadataRegistration.fieldOffsets[typeIndex];
             Code.Image.Stream.Position = Code.Image.MapVATR((uint)ptr) + 4 * fieldIndexInType;
             return Code.Image.Stream.ReadInt32();
+        }
+
+
+        public object GetDefaultValueForField(int fieldIndex) {
+            var def = Metadata.FieldDefaultValues.FirstOrDefault(x => x.fieldIndex == fieldIndex);
+
+            if (def == null || def.dataIndex == -1)
+                return null;
+
+            var pValue = Metadata.Header.fieldAndParameterDefaultValueDataOffset + def.dataIndex;
+            Il2CppType type = GetTypeFromTypeIndex(def.typeIndex);
+            if (pValue == 0)
+                return null;
+
+            object value = null;
+            Metadata.Position = pValue;
+            switch (type.type) {
+                case Il2CppTypeEnum.IL2CPP_TYPE_BOOLEAN:
+                    value = Metadata.ReadBoolean();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_U1:
+                case Il2CppTypeEnum.IL2CPP_TYPE_I1:
+                    value = Metadata.ReadByte();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_CHAR:
+                    value = Metadata.ReadChar();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_U2:
+                    value = Metadata.ReadUInt16();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_I2:
+                    value = Metadata.ReadInt16();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_U4:
+                    value = Metadata.ReadUInt32();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_I4:
+                    value = Metadata.ReadInt32();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_U8:
+                    value = Metadata.ReadUInt64();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_I8:
+                    value = Metadata.ReadInt64();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_R4:
+                    value = Metadata.ReadSingle();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_R8:
+                    value = Metadata.ReadDouble();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_STRING:
+                    var uiLen = Metadata.ReadInt32();
+                    value = Encoding.UTF8.GetString(Metadata.ReadBytes(uiLen));
+                    break;
+            }
+            return value;
         }
 
         private readonly string[] szTypeString =
