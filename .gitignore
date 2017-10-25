@@ -250,3 +250,9 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+/test
+*.so
+*.dat
+*.i64
+/Il2CppDumper/Properties/launchSettings.json
+/Il2CppDumper/test.bat
