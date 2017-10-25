@@ -256,3 +256,5 @@ paket-files/
 *.i64
 /Il2CppDumper/Properties/launchSettings.json
 /Il2CppDumper/test.bat
+/Il2CppDumper/types.cs
+*.zip
