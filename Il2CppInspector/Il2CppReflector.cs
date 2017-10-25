@@ -7,15 +7,10 @@ namespace Il2CppInspector.Reflection
     {
         public List<Assembly> Assemblies { get; } = new List<Assembly>();
 
-        // Factory instantiation via Il2CppReflector.Parse only
-        private Il2CppReflector() { }
-
-        public static Il2CppReflector Parse(Il2CppInspector package) {
-            var r = new Il2CppReflector();
-
-            // TODO: Populate reflection classes
-
-            return r;
+        public Il2CppReflector(Il2CppInspector package) {
+            // Create Assembly objects from Il2Cpp package
+            for (var image = 0; image < package.Metadata.Images.Length; image++)
+                Assemblies.Add(new Assembly(package, image));
         }
 
         // Get the assembly in which a type is defined

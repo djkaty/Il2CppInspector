@@ -4,25 +4,6 @@ using System.Reflection;
 
 namespace Il2CppInspector.Reflection
 {
-    public class Assembly
-    {
-        // TODO: CustomAttributes
-
-        // Name of the assembly
-        public string FullName { get; set; }
-
-        // Entry point method for the assembly
-        public MethodInfo EntryPoint { get; set; }
-
-        // List of types defined in the assembly
-        public List<Type> DefinedTypes { get; } = new List<Type>();
-
-        // Get a type from its string name
-        public Type GetType(string typeName) {
-            throw new NotImplementedException();
-        }
-    }
-
     public abstract class MemberInfo
     {
         // Assembly that this member is defined in
