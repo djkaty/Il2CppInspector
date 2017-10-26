@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Il2CppInspector.Reflection {
     public class Assembly
@@ -19,10 +20,8 @@ namespace Il2CppInspector.Reflection {
         // List of types defined in the assembly
         public List<Type> DefinedTypes { get; } = new List<Type>();
 
-        // Get a type from its string name
-        public Type GetType(string typeName) {
-            throw new NotImplementedException();
-        }
+        // Get a type from its string name (including namespace)
+        public Type GetType(string typeName) => DefinedTypes.FirstOrDefault(x => x.FullName == typeName);
 
         // Initialize from specified assembly index in package
         public Assembly(Il2CppInspector pkg, int imageIndex) {
@@ -34,7 +33,9 @@ namespace Il2CppInspector.Reflection {
                 // TODO: Generate EntryPoint method from entryPointIndex
             }
 
-            // TODO: Generate types in DefinedTypes from typeStart to typeStart+typeCount-1
+            // Generate types in DefinedTypes from typeStart to typeStart+typeCount-1
+            for (int t = Definition.typeStart; t < Definition.typeStart + Definition.typeCount; t++)
+                DefinedTypes.Add(new Type(pkg, t, this));
         }
     }
 }

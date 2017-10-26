@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Il2CppInspector.Reflection
 {
@@ -14,8 +15,9 @@ namespace Il2CppInspector.Reflection
         }
 
         // Get the assembly in which a type is defined
-        public Assembly GetAssembly(Type type) {
-            throw new NotImplementedException();
-        }
+        public Assembly GetAssembly(Type type) => Assemblies.FirstOrDefault(x => x.DefinedTypes.Contains(type));
+
+        // Get a type from its IL2CPP type index
+        public Type GetTypeFromIndex(int typeIndex) => Assemblies.SelectMany(x => x.DefinedTypes).FirstOrDefault(x => x.Index == typeIndex);
     }
 }
