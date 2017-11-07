@@ -3,6 +3,7 @@ using System.Reflection;
 
 namespace Il2CppInspector.Reflection
 {
+    /*
     public abstract class MethodBase : MemberInfo
     {
         // (not code attributes)
@@ -21,11 +22,6 @@ namespace Il2CppInspector.Reflection
         // TODO
     }
 
-    public class FieldInfo : MemberInfo
-    {
-        // TODO
-    }
-
     public class PropertyInfo : MemberInfo
     {
         // TODO
@@ -35,4 +31,5 @@ namespace Il2CppInspector.Reflection
     {
         // TODO
     }
+    */
 }

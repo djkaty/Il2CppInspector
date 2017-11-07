@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Il2CppInspector
@@ -103,18 +104,13 @@ namespace Il2CppInspector
                 ret = $"{GetTypeName(type)}[]";
             }
             else {
-                if ((int)pType.type >= szTypeString.Length)
+                if ((int)pType.type >= DefineConstants.CSharpTypeString.Count)
                     ret = "unknow";
                 else
-                    ret = szTypeString[(int)pType.type];
+                    ret = DefineConstants.CSharpTypeString[(int)pType.type];
             }
             return ret;
         }
-
-        public Il2CppType GetTypeFromTypeIndex(int idx) {
-            return Binary.Types[idx];
-        }
-
         public int GetFieldOffsetFromIndex(int typeIndex, int fieldIndexInType) {
             // Versions from 22 onwards use an array of pointers in fieldOffsets
             bool fieldOffsetsArePointers = (Metadata.Version >= 22);
@@ -144,7 +140,7 @@ namespace Il2CppInspector
                 return null;
 
             var pValue = Metadata.Header.fieldAndParameterDefaultValueDataOffset + def.dataIndex;
-            Il2CppType type = GetTypeFromTypeIndex(def.typeIndex);
+            Il2CppType type = Binary.Types[def.typeIndex];
             if (pValue == 0)
                 return null;
 
@@ -192,43 +188,5 @@ namespace Il2CppInspector
             }
             return value;
         }
-
-        private readonly string[] szTypeString =
-        {
-            "END",
-            "void",
-            "bool",
-            "char",
-            "sbyte",
-            "byte",
-            "short",
-            "ushort",
-            "int",
-            "uint",
-            "long",
-            "ulong",
-            "float",
-            "double",
-            "string",
-            "PTR",//eg. void*
-            "BYREF",
-            "VALUETYPE",
-            "CLASS",
-            "T",
-            "ARRAY",
-            "GENERICINST",
-            "TYPEDBYREF",
-            "None",
-            "IntPtr",
-            "UIntPtr",
-            "None",
-            "FNPTR",
-            "object",
-            "SZARRAY",
-            "T",
-            "CMOD_REQD",
-            "CMOD_OPT",
-            "INTERNAL",
-        };
     }
 }

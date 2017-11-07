@@ -6,6 +6,7 @@ namespace Il2CppInspector.Reflection {
     public class Assembly
     {
         // IL2CPP-specific data
+        public Il2CppReflector Model { get; }
         public Il2CppImageDefinition Definition { get; }
         public int Index { get; }
 
@@ -15,27 +16,28 @@ namespace Il2CppInspector.Reflection {
         public string FullName { get; }
 
         // Entry point method for the assembly
-        public MethodInfo EntryPoint { get; }
+        //public MethodInfo EntryPoint { get; } // TODO
 
         // List of types defined in the assembly
-        public List<Type> DefinedTypes { get; } = new List<Type>();
+        public List<TypeInfo> DefinedTypes { get; } = new List<TypeInfo>();
 
         // Get a type from its string name (including namespace)
-        public Type GetType(string typeName) => DefinedTypes.FirstOrDefault(x => x.FullName == typeName);
+        public TypeInfo GetType(string typeName) => DefinedTypes.FirstOrDefault(x => x.FullName == typeName);
 
         // Initialize from specified assembly index in package
-        public Assembly(Il2CppInspector pkg, int imageIndex) {
-            Definition = pkg.Metadata.Images[imageIndex];
+        public Assembly(Il2CppReflector model, int imageIndex) {
+            Model = model;
+            Definition = Model.Package.Metadata.Images[imageIndex];
             Index = Definition.assemblyIndex;
-            FullName = pkg.Metadata.Strings[Definition.nameIndex];
+            FullName = Model.Package.Metadata.Strings[Definition.nameIndex];
 
             if (Definition.entryPointIndex != -1) {
                 // TODO: Generate EntryPoint method from entryPointIndex
             }
 
             // Generate types in DefinedTypes from typeStart to typeStart+typeCount-1
-            for (int t = Definition.typeStart; t < Definition.typeStart + Definition.typeCount; t++)
-                DefinedTypes.Add(new Type(pkg, t, this));
+            for (var t = Definition.typeStart; t < Definition.typeStart + Definition.typeCount; t++)
+                DefinedTypes.Add(new TypeInfo(Model.Package, t, this));
         }
     }
 }
