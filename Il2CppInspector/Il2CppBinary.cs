@@ -17,7 +17,13 @@ namespace Il2CppInspector
         public Il2CppMetadataRegistration MetadataRegistration { get; protected set; }
 
         public uint[] MethodPointers { get; set; }
-        public int[] FieldOffsets { get; private set; }
+
+        // NOTE: In versions <21 and earlier releases of v21, this array has the format:
+        // global field index => field offset
+        // In versions >=22 and later releases of v21, this array has the format:
+        // type index => RVA in image where the list of field offsets for the type start (4 bytes per field)
+        public int[] FieldOffsetData { get; private set; }
+
         public List<Il2CppType> Types { get; } = new List<Il2CppType>();
 
         protected Il2CppBinary(IFileFormatReader stream) {
@@ -53,7 +59,7 @@ namespace Il2CppInspector
             CodeRegistration = image.ReadMappedObject<Il2CppCodeRegistration>(codeRegistration);
             MetadataRegistration = image.ReadMappedObject<Il2CppMetadataRegistration>(metadataRegistration);
             MethodPointers = image.ReadMappedArray<uint>(CodeRegistration.pmethodPointers, (int) CodeRegistration.methodPointersCount);
-            FieldOffsets = image.ReadMappedArray<int>(MetadataRegistration.pfieldOffsets, MetadataRegistration.fieldOffsetsCount);
+            FieldOffsetData = image.ReadMappedArray<int>(MetadataRegistration.pfieldOffsets, MetadataRegistration.fieldOffsetsCount);
             var types = image.ReadMappedArray<uint>(MetadataRegistration.ptypes, MetadataRegistration.typesCount);
             for (int i = 0; i < MetadataRegistration.typesCount; i++)
                 Types.Add(image.ReadMappedObject<Il2CppType>(types[i]));

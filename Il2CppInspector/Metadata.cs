@@ -53,6 +53,7 @@ namespace Il2CppInspector
             FieldDefaultValues = ReadArray<Il2CppFieldDefaultValue>(Header.fieldDefaultValuesOffset, Header.fieldDefaultValuesCount / Sizeof(typeof(Il2CppFieldDefaultValue)));
             // TODO: Events, Properties, ParameterDefaultValue, GenericParameters, ParameterConstraints, GenericContainers, Interfaces, MetadataUsage, CustomAttributes
 
+            // Get all string literals
             Position = Header.stringOffset;
             while (Position < Header.stringOffset + Header.stringCount)
                 Strings.Add((int)Position - Header.stringOffset, ReadNullTerminatedString());

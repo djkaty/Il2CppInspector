@@ -19,10 +19,10 @@ namespace Il2CppInspector
 
         // Shortcuts
         public Dictionary<int, string> Strings => Metadata.Strings;
-
         public Il2CppTypeDefinition[] TypeDefinitions => Metadata.Types;
         public List<Il2CppType> TypeUsages => Binary.Types;
         public Dictionary<int, object> FieldDefaultValue { get; } = new Dictionary<int, object>();
+        public List<int> FieldOffsets { get; }
 
         public Il2CppInspector(Il2CppBinary binary, Metadata metadata) {
             // Store stream representations
@@ -90,6 +90,39 @@ namespace Il2CppInspector
                         break;
                 }
                 FieldDefaultValue.Add(fdv.fieldIndex, value);
+            }
+
+            // Get all field offsets
+
+            // Versions from 22 onwards use an array of pointers in Binary.FieldOffsetData
+            bool fieldOffsetsArePointers = (Metadata.Version >= 22);
+
+            // Some variants of 21 also use an array of pointers
+            if (Metadata.Version == 21) {
+                var f = Binary.FieldOffsetData;
+                // We detect this by relying on the fact Module, Object, ValueType, Attribute, _Attribute and Int32
+                // are always the first six defined types, and that all but Int32 have no fields
+                fieldOffsetsArePointers = (f[0] == 0 && f[1] == 0 && f[2] == 0 && f[3] == 0 && f[4] == 0 && f[5] > 0);
+            }
+
+            // All older versions use values directly in the array
+            if (!fieldOffsetsArePointers) {
+                FieldOffsets = Binary.FieldOffsetData.ToList();
+            }
+            // Convert pointer list into fields
+            else {
+                var offsets = new Dictionary<int, int>();
+                for (var i = 0; i < TypeDefinitions.Length; i++) {
+                    var def = TypeDefinitions[i];
+                    var pFieldOffsets = Binary.FieldOffsetData[i];
+                    if (pFieldOffsets != 0) {
+                        Binary.Image.Stream.Position = Binary.Image.MapVATR((uint) pFieldOffsets);
+
+                        for (var f = 0; f < def.field_count; f++)
+                            offsets.Add(def.fieldStart + f, Binary.Image.Stream.ReadInt32());
+                    }
+                }
+                FieldOffsets = offsets.OrderBy(x => x.Key).Select(x => x.Value).ToList();
             }
         }
 
@@ -181,27 +214,6 @@ namespace Il2CppInspector
                     ret = DefineConstants.CSharpTypeString[(int) pType.type];
             }
             return ret;
-        }
-
-        public int GetFieldOffsetFromIndex(int typeIndex, int fieldIndexInType) {
-            // Versions from 22 onwards use an array of pointers in fieldOffsets
-            bool fieldOffsetsArePointers = (Metadata.Version >= 22);
-
-            // Some variants of 21 also use an array of pointers
-            if (Metadata.Version == 21) {
-                var f = Binary.FieldOffsets;
-                fieldOffsetsArePointers = (f[0] == 0 && f[1] == 0 && f[2] == 0 && f[3] == 0 && f[4] == 0 && f[5] > 0);
-            }
-
-            // All older versions use values directly in the array
-            if (!fieldOffsetsArePointers) {
-                var typeDef = TypeDefinitions[typeIndex];
-                return Binary.FieldOffsets[typeDef.fieldStart + fieldIndexInType];
-            }
-
-            var ptr = Binary.FieldOffsets[typeIndex];
-            Binary.Image.Stream.Position = Binary.Image.MapVATR((uint) ptr) + 4 * fieldIndexInType;
-            return Binary.Image.Stream.ReadInt32();
         }
     }
 }
