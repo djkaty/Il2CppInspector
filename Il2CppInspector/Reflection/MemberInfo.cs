@@ -40,5 +40,7 @@ namespace Il2CppInspector.Reflection {
                 DeclaringType = declaringType;
             }
         }
+
+        public override string ToString() => Name;
     }
 }

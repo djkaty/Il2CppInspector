@@ -44,5 +44,7 @@ namespace Il2CppInspector.Reflection {
             for (var t = Definition.typeStart; t < Definition.typeStart + Definition.typeCount; t++)
                 DefinedTypes.Add(new TypeInfo(Model.Package, t, this));
         }
+
+        public override string ToString() => FullName;
     }
 }
