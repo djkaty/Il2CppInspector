@@ -4,10 +4,7 @@
     All rights reserved.
 */
 
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector

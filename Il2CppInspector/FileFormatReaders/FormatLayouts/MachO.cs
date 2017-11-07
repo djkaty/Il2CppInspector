@@ -4,7 +4,6 @@
     All rights reserved.
 */
 
-using System;
 using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector

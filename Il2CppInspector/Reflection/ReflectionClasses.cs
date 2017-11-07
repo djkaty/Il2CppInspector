@@ -1,5 +1,8 @@
-﻿using System;
-using System.Reflection;
+﻿/*
+    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+
+    All rights reserved.
+*/
 
 namespace Il2CppInspector.Reflection
 {
