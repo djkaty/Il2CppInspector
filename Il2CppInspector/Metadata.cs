@@ -23,6 +23,7 @@ namespace Il2CppInspector
         public Il2CppParameterDefinition[] Params { get; }
         public Il2CppFieldDefinition[] Fields { get; }
         public Il2CppFieldDefaultValue[] FieldDefaultValues { get; }
+
         public Dictionary<int, string> Strings { get; } = new Dictionary<int, string>();
 
         public Metadata(Stream stream) : base(stream)

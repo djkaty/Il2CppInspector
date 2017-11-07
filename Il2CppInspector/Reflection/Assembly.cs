@@ -34,7 +34,7 @@ namespace Il2CppInspector.Reflection {
             Model = model;
             Definition = Model.Package.Metadata.Images[imageIndex];
             Index = Definition.assemblyIndex;
-            FullName = Model.Package.Metadata.Strings[Definition.nameIndex];
+            FullName = Model.Package.Strings[Definition.nameIndex];
 
             if (Definition.entryPointIndex != -1) {
                 // TODO: Generate EntryPoint method from entryPointIndex

@@ -53,9 +53,9 @@ namespace Il2CppInspector.Reflection {
             base(declaringType) {
             Definition = pkg.Metadata.Fields[fieldIndex];
             Index = fieldIndex;
-            Name = pkg.Metadata.Strings[pkg.Metadata.Fields[fieldIndex].nameIndex];
+            Name = pkg.Strings[pkg.Metadata.Fields[fieldIndex].nameIndex];
 
-            fieldType = pkg.Binary.Types[Definition.typeIndex];
+            fieldType = pkg.TypeUsages[Definition.typeIndex];
             if ((fieldType.attrs & DefineConstants.FIELD_ATTRIBUTE_PRIVATE) == DefineConstants.FIELD_ATTRIBUTE_PRIVATE)
                 Attributes |= FieldAttributes.Private;
             if ((fieldType.attrs & DefineConstants.FIELD_ATTRIBUTE_PUBLIC) == DefineConstants.FIELD_ATTRIBUTE_PUBLIC)

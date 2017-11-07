@@ -116,10 +116,10 @@ namespace Il2CppInspector.Reflection {
         // Initialize from specified type index in metadata
         public TypeInfo(Il2CppInspector pkg, int typeIndex, Assembly owner) :
             base(owner) {
-            Definition = pkg.Metadata.Types[typeIndex];
+            Definition = pkg.TypeDefinitions[typeIndex];
             Index = typeIndex;
-            Namespace = pkg.Metadata.Strings[Definition.namespaceIndex];
-            Name = pkg.Metadata.Strings[pkg.Metadata.Types[typeIndex].nameIndex];
+            Namespace = pkg.Strings[Definition.namespaceIndex];
+            Name = pkg.Strings[pkg.TypeDefinitions[typeIndex].nameIndex];
 
             IsSerializable = (Definition.flags & DefineConstants.TYPE_ATTRIBUTE_SERIALIZABLE) != 0;
             IsPublic = (Definition.flags & DefineConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == DefineConstants.TYPE_ATTRIBUTE_PUBLIC;

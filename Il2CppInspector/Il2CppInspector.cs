@@ -17,9 +17,80 @@ namespace Il2CppInspector
         public Il2CppBinary Binary { get; }
         public Metadata Metadata { get; }
 
+        // Shortcuts
+        public Dictionary<int, string> Strings => Metadata.Strings;
+
+        public Il2CppTypeDefinition[] TypeDefinitions => Metadata.Types;
+        public List<Il2CppType> TypeUsages => Binary.Types;
+        public Dictionary<int, object> FieldDefaultValue { get; } = new Dictionary<int, object>();
+
         public Il2CppInspector(Il2CppBinary binary, Metadata metadata) {
+            // Store stream representations
             Binary = binary;
             Metadata = metadata;
+
+            // Get all field default values
+            foreach (var fdv in Metadata.FieldDefaultValues) {
+                // No default
+                if (fdv.dataIndex == -1) {
+                    FieldDefaultValue.Add(fdv.fieldIndex, null);
+                    continue;
+                }
+
+                // Get pointer in binary to default value
+                var pValue = Metadata.Header.fieldAndParameterDefaultValueDataOffset + fdv.dataIndex;
+                var type = TypeUsages[fdv.typeIndex];
+
+                // Default value is null
+                if (pValue == 0) {
+                    FieldDefaultValue.Add(fdv.fieldIndex, null);
+                    continue;
+                }
+
+                object value = null;
+                Metadata.Position = pValue;
+                switch (type.type) {
+                    case Il2CppTypeEnum.IL2CPP_TYPE_BOOLEAN:
+                        value = Metadata.ReadBoolean();
+                        break;
+                    case Il2CppTypeEnum.IL2CPP_TYPE_U1:
+                    case Il2CppTypeEnum.IL2CPP_TYPE_I1:
+                        value = Metadata.ReadByte();
+                        break;
+                    case Il2CppTypeEnum.IL2CPP_TYPE_CHAR:
+                        value = Metadata.ReadChar();
+                        break;
+                    case Il2CppTypeEnum.IL2CPP_TYPE_U2:
+                        value = Metadata.ReadUInt16();
+                        break;
+                    case Il2CppTypeEnum.IL2CPP_TYPE_I2:
+                        value = Metadata.ReadInt16();
+                        break;
+                    case Il2CppTypeEnum.IL2CPP_TYPE_U4:
+                        value = Metadata.ReadUInt32();
+                        break;
+                    case Il2CppTypeEnum.IL2CPP_TYPE_I4:
+                        value = Metadata.ReadInt32();
+                        break;
+                    case Il2CppTypeEnum.IL2CPP_TYPE_U8:
+                        value = Metadata.ReadUInt64();
+                        break;
+                    case Il2CppTypeEnum.IL2CPP_TYPE_I8:
+                        value = Metadata.ReadInt64();
+                        break;
+                    case Il2CppTypeEnum.IL2CPP_TYPE_R4:
+                        value = Metadata.ReadSingle();
+                        break;
+                    case Il2CppTypeEnum.IL2CPP_TYPE_R8:
+                        value = Metadata.ReadDouble();
+                        break;
+                    case Il2CppTypeEnum.IL2CPP_TYPE_STRING:
+                        var uiLen = Metadata.ReadInt32();
+                        value = Encoding.UTF8.GetString(Metadata.ReadBytes(uiLen));
+                        break;
+                }
+                FieldDefaultValue.Add(fdv.fieldIndex, value);
+            }
         }
 
         public static List<Il2CppInspector> LoadFromFile(string codeFile, string metadataFile) {
@@ -37,9 +108,9 @@ namespace Il2CppInspector
             var memoryStream = new MemoryStream(File.ReadAllBytes(codeFile));
             IFileFormatReader stream =
                 (((IFileFormatReader) ElfReader.Load(memoryStream) ??
-                                      PEReader.Load(memoryStream)) ??
-                                      MachOReader.Load(memoryStream)) ??
-                                      UBReader.Load(memoryStream);
+                  PEReader.Load(memoryStream)) ??
+                 MachOReader.Load(memoryStream)) ??
+                UBReader.Load(memoryStream);
             if (stream == null) {
                 Console.Error.WriteLine("Unsupported executable file format");
                 return null;
@@ -77,16 +148,17 @@ namespace Il2CppInspector
         public string GetTypeName(Il2CppType pType) {
             string ret;
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_CLASS || pType.type == Il2CppTypeEnum.IL2CPP_TYPE_VALUETYPE) {
-                Il2CppTypeDefinition klass = Metadata.Types[pType.datapoint];
-                ret = Metadata.Strings[klass.nameIndex];
+                Il2CppTypeDefinition klass = TypeDefinitions[pType.datapoint];
+                ret = Strings[klass.nameIndex];
             }
             else if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST) {
                 Il2CppGenericClass generic_class = Binary.Image.ReadMappedObject<Il2CppGenericClass>(pType.datapoint);
-                Il2CppTypeDefinition pMainDef = Metadata.Types[generic_class.typeDefinitionIndex];
-                ret = Metadata.Strings[pMainDef.nameIndex];
+                Il2CppTypeDefinition pMainDef = TypeDefinitions[generic_class.typeDefinitionIndex];
+                ret = Strings[pMainDef.nameIndex];
                 var typeNames = new List<string>();
-                Il2CppGenericInst pInst = Binary.Image.ReadMappedObject<Il2CppGenericInst>(generic_class.context.class_inst);
-                var pointers = Binary.Image.ReadMappedArray<uint>(pInst.type_argv, (int)pInst.type_argc);
+                Il2CppGenericInst pInst =
+                    Binary.Image.ReadMappedObject<Il2CppGenericInst>(generic_class.context.class_inst);
+                var pointers = Binary.Image.ReadMappedArray<uint>(pInst.type_argv, (int) pInst.type_argc);
                 for (int i = 0; i < pInst.type_argc; ++i) {
                     var pOriType = Binary.Image.ReadMappedObject<Il2CppType>(pointers[i]);
                     typeNames.Add(GetTypeName(pOriType));
@@ -103,13 +175,14 @@ namespace Il2CppInspector
                 ret = $"{GetTypeName(type)}[]";
             }
             else {
-                if ((int)pType.type >= DefineConstants.CSharpTypeString.Count)
+                if ((int) pType.type >= DefineConstants.CSharpTypeString.Count)
                     ret = "unknow";
                 else
-                    ret = DefineConstants.CSharpTypeString[(int)pType.type];
+                    ret = DefineConstants.CSharpTypeString[(int) pType.type];
             }
             return ret;
         }
+
         public int GetFieldOffsetFromIndex(int typeIndex, int fieldIndexInType) {
             // Versions from 22 onwards use an array of pointers in fieldOffsets
             bool fieldOffsetsArePointers = (Metadata.Version >= 22);
@@ -122,70 +195,13 @@ namespace Il2CppInspector
 
             // All older versions use values directly in the array
             if (!fieldOffsetsArePointers) {
-                var typeDef = Metadata.Types[typeIndex];
+                var typeDef = TypeDefinitions[typeIndex];
                 return Binary.FieldOffsets[typeDef.fieldStart + fieldIndexInType];
             }
 
             var ptr = Binary.FieldOffsets[typeIndex];
-            Binary.Image.Stream.Position = Binary.Image.MapVATR((uint)ptr) + 4 * fieldIndexInType;
+            Binary.Image.Stream.Position = Binary.Image.MapVATR((uint) ptr) + 4 * fieldIndexInType;
             return Binary.Image.Stream.ReadInt32();
-        }
-
-
-        public object GetDefaultValueForField(int fieldIndex) {
-            var def = Metadata.FieldDefaultValues.FirstOrDefault(x => x.fieldIndex == fieldIndex);
-
-            if (def == null || def.dataIndex == -1)
-                return null;
-
-            var pValue = Metadata.Header.fieldAndParameterDefaultValueDataOffset + def.dataIndex;
-            Il2CppType type = Binary.Types[def.typeIndex];
-            if (pValue == 0)
-                return null;
-
-            object value = null;
-            Metadata.Position = pValue;
-            switch (type.type) {
-                case Il2CppTypeEnum.IL2CPP_TYPE_BOOLEAN:
-                    value = Metadata.ReadBoolean();
-                    break;
-                case Il2CppTypeEnum.IL2CPP_TYPE_U1:
-                case Il2CppTypeEnum.IL2CPP_TYPE_I1:
-                    value = Metadata.ReadByte();
-                    break;
-                case Il2CppTypeEnum.IL2CPP_TYPE_CHAR:
-                    value = Metadata.ReadChar();
-                    break;
-                case Il2CppTypeEnum.IL2CPP_TYPE_U2:
-                    value = Metadata.ReadUInt16();
-                    break;
-                case Il2CppTypeEnum.IL2CPP_TYPE_I2:
-                    value = Metadata.ReadInt16();
-                    break;
-                case Il2CppTypeEnum.IL2CPP_TYPE_U4:
-                    value = Metadata.ReadUInt32();
-                    break;
-                case Il2CppTypeEnum.IL2CPP_TYPE_I4:
-                    value = Metadata.ReadInt32();
-                    break;
-                case Il2CppTypeEnum.IL2CPP_TYPE_U8:
-                    value = Metadata.ReadUInt64();
-                    break;
-                case Il2CppTypeEnum.IL2CPP_TYPE_I8:
-                    value = Metadata.ReadInt64();
-                    break;
-                case Il2CppTypeEnum.IL2CPP_TYPE_R4:
-                    value = Metadata.ReadSingle();
-                    break;
-                case Il2CppTypeEnum.IL2CPP_TYPE_R8:
-                    value = Metadata.ReadDouble();
-                    break;
-                case Il2CppTypeEnum.IL2CPP_TYPE_STRING:
-                    var uiLen = Metadata.ReadInt32();
-                    value = Encoding.UTF8.GetString(Metadata.ReadBytes(uiLen));
-                    break;
-            }
-            return value;
         }
     }
 }
