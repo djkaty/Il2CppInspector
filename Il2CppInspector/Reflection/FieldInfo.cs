@@ -12,6 +12,10 @@ namespace Il2CppInspector.Reflection {
         // IL2CPP-specific data
         public Il2CppFieldDefinition Definition { get; }
         public int Index { get; }
+        
+        public bool HasDefaultValue { get; }
+        public object DefaultValue { get; }
+        public string DefaultValueString => !HasDefaultValue ? "" : (DefaultValue is string? $"\"{DefaultValue}\"" : (DefaultValue?.ToString() ?? "null"));
 
         // Information/flags about the field
         public FieldAttributes Attributes { get; }
@@ -62,8 +66,15 @@ namespace Il2CppInspector.Reflection {
                 Attributes |= FieldAttributes.Public;
             if ((fieldType.attrs & DefineConstants.FIELD_ATTRIBUTE_STATIC) == DefineConstants.FIELD_ATTRIBUTE_STATIC)
                 Attributes |= FieldAttributes.Static;
-            if ((fieldType.attrs & DefineConstants.FIELD_ATTRIBUTE_INIT_ONLY) == DefineConstants.FIELD_ATTRIBUTE_INIT_ONLY)
+            if ((fieldType.attrs & DefineConstants.FIELD_ATTRIBUTE_INIT_ONLY) ==
+                DefineConstants.FIELD_ATTRIBUTE_INIT_ONLY)
                 Attributes |= FieldAttributes.InitOnly;
+
+            // Default initialization value if present
+            if (pkg.FieldDefaultValue.TryGetValue(fieldIndex, out object variant)) {
+                HasDefaultValue = true;
+                DefaultValue = variant;
+            }
         }
     }
 }
