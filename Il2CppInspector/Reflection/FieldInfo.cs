@@ -12,6 +12,7 @@ namespace Il2CppInspector.Reflection {
         // IL2CPP-specific data
         public Il2CppFieldDefinition Definition { get; }
         public int Index { get; }
+        public int Offset { get; }
         
         public bool HasDefaultValue { get; }
         public object DefaultValue { get; }
@@ -57,6 +58,7 @@ namespace Il2CppInspector.Reflection {
             base(declaringType) {
             Definition = pkg.Metadata.Fields[fieldIndex];
             Index = fieldIndex;
+            Offset = pkg.FieldOffsets[fieldIndex];
             Name = pkg.Strings[pkg.Metadata.Fields[fieldIndex].nameIndex];
 
             fieldType = pkg.TypeUsages[Definition.typeIndex];
