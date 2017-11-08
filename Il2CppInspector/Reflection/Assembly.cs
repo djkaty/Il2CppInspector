@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,7 +22,7 @@ namespace Il2CppInspector.Reflection {
         public string FullName { get; }
 
         // Entry point method for the assembly
-        //public MethodInfo EntryPoint { get; } // TODO
+        public MethodInfo EntryPoint => throw new NotImplementedException();
 
         // List of types defined in the assembly
         public List<TypeInfo> DefinedTypes { get; } = new List<TypeInfo>();

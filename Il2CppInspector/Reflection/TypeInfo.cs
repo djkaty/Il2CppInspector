@@ -18,10 +18,10 @@ namespace Il2CppInspector.Reflection {
 
         // Information/flags about the type
         // Undefined if the Type represents a generic type parameter
-        public TypeAttributes Attributes { get; } // TODO
+        public TypeAttributes Attributes => throw new NotImplementedException();
 
         // Type that this type inherits from
-        public TypeInfo BaseType { get; } // TODO
+        public TypeInfo BaseType => throw new NotImplementedException();
 
         // True if the type contains unresolved generic type parameters
         public bool ContainsGenericParameters { get; }
@@ -39,16 +39,16 @@ namespace Il2CppInspector.Reflection {
             }
         }
 
-        public List<ConstructorInfo> DeclaredConstructors { get; } // TODO
-        public List<EventInfo> DeclaredEvents { get; } // TODO
+        public List<ConstructorInfo> DeclaredConstructors => throw new NotImplementedException();
+        public List<EventInfo> DeclaredEvents => throw new NotImplementedException();
         public List<FieldInfo> DeclaredFields { get; } = new List<FieldInfo>();
-        public List<MemberInfo> DeclaredMembers { get; } // TODO
-        public List<MethodInfo> DeclaredMethods { get; } // TODO
-        public List<TypeInfo> DeclaredNestedTypes { get; } // TODO
-        public List<PropertyInfo> DeclaredProperties { get; } // TODO
+        public List<MemberInfo> DeclaredMembers => throw new NotImplementedException();
+        public List<MethodInfo> DeclaredMethods => throw new NotImplementedException();
+        public List<TypeInfo> DeclaredNestedTypes => throw new NotImplementedException();
+        public List<PropertyInfo> DeclaredProperties => throw new NotImplementedException();
 
         // Method that the type is declared in if this is a type parameter of a generic method
-        public MethodBase DeclaringMethod { get; } // TODO
+        public MethodBase DeclaringMethod => throw new NotImplementedException();
 
         // Gets the type of the object encompassed or referred to by the current array, pointer or reference type
         public TypeInfo ElementType { get; }
@@ -68,22 +68,22 @@ namespace Il2CppInspector.Reflection {
         public bool HasElementType => ElementType != null;
         public bool IsAbstract { get; }
         public bool IsArray { get; }
-        public bool IsByRef { get; } // TODO
+        public bool IsByRef => throw new NotImplementedException();
         public bool IsClass { get; }
-        public bool IsEnum { get; } // TODO
+        public bool IsEnum => throw new NotImplementedException();
         public bool IsGenericParameter { get; }
-        public bool IsGenericType { get; } // TODO
-        public bool IsGenericTypeDefinition { get; } // TODO
+        public bool IsGenericType => throw new NotImplementedException();
+        public bool IsGenericTypeDefinition => throw new NotImplementedException();
         public bool IsInterface { get; }
-        public bool IsNested { get; } // TODO
-        public bool IsNestedPrivate { get; } // TODO
-        public bool IsNestedPublic { get; } // TODO
-        public bool IsPointer { get; } // TODO
-        public bool IsPrimitive { get; } // TODO
+        public bool IsNested { get; } // TODO: Partially implemented
+        public bool IsNestedPrivate => throw new NotImplementedException();
+        public bool IsNestedPublic => throw new NotImplementedException();
+        public bool IsPointer { get; }
+        public bool IsPrimitive => throw new NotImplementedException();
         public bool IsPublic { get; }
         public bool IsSealed { get; }
         public bool IsSerializable { get; }
-        public bool IsValueType { get; } // TODO
+        public bool IsValueType => throw new NotImplementedException();
 
         public override MemberTypes MemberType { get; }
 

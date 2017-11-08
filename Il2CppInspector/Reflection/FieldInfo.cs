@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System;
 using System.Reflection;
 
 namespace Il2CppInspector.Reflection {
@@ -29,16 +30,16 @@ namespace Il2CppInspector.Reflection {
         // https://docs.microsoft.com/en-us/dotnet/api/system.reflection.fieldinfo.isfamilyandassembly?view=netframework-4.7.1#System_Reflection_FieldInfo_IsFamilyAndAssembly
 
         // True if the field is declared as internal
-        public bool IsAssembly { get; } // TODO
+        public bool IsAssembly => throw new NotImplementedException();
 
         // True if the field is declared as protected
-        public bool IsFamily { get; } // TODO
+        public bool IsFamily => throw new NotImplementedException();
 
         // True if the field is declared as 'protected private' (always false)
         public bool IsFamilyAndAssembly => false;
 
         // True if the field is declared as protected public
-        public bool IsFamilyOrAssembly { get; } // TODO
+        public bool IsFamilyOrAssembly => throw new NotImplementedException();
 
         // True if the field is declared as readonly
         public bool IsInitOnly => (Attributes & FieldAttributes.InitOnly) == FieldAttributes.InitOnly;
@@ -52,7 +53,7 @@ namespace Il2CppInspector.Reflection {
         // True if the field is declared as static
         public bool IsStatic => (Attributes & FieldAttributes.Static) == FieldAttributes.Static;
 
-        public override MemberTypes MemberType { get; }
+        public override MemberTypes MemberType => MemberTypes.Field;
 
         public FieldInfo(Il2CppInspector pkg, int fieldIndex, TypeInfo declaringType) :
             base(declaringType) {

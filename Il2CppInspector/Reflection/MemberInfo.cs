@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -14,7 +15,7 @@ namespace Il2CppInspector.Reflection {
         public Assembly Assembly { get; }
 
         // Custom attributes for this member
-        public IEnumerable<CustomAttributeData> CustomAttributes { get; } // TODO
+        public IEnumerable<CustomAttributeData> CustomAttributes => throw new NotImplementedException();
 
         // Type that this type is declared in for nested types
         public TypeInfo DeclaringType { get; }
