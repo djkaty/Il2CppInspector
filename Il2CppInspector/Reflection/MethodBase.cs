@@ -20,7 +20,7 @@ namespace Il2CppInspector.Reflection
 
         // TODO: Custom attribute stuff
 
-        public List<ParameterInfo> DeclaredParameters => throw new NotImplementedException();
+        public List<ParameterInfo> DeclaredParameters { get; } = new List<ParameterInfo>();
 
         public bool IsAbstract => (Attributes & MethodAttributes.Abstract) == MethodAttributes.Abstract;
         public bool IsAssembly => throw new NotImplementedException();
@@ -38,7 +38,6 @@ namespace Il2CppInspector.Reflection
         public bool IsVirtual => (Attributes & MethodAttributes.Virtual) == MethodAttributes.Virtual;
 
         // TODO: GetMethodBody()
-        // TODO: GetParameters()
 
         protected MethodBase(TypeInfo declaringType) : base(declaringType) { }
     }

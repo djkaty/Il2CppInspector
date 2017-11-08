@@ -5,6 +5,7 @@
 */
 
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace Il2CppInspector.Reflection
@@ -24,7 +25,6 @@ namespace Il2CppInspector.Reflection
 
         // Return type of the method
         private readonly Il2CppType returnType;
-
         public TypeInfo ReturnType => Assembly.Model.GetType(returnType, MemberTypes.TypeInfo);
 
         // TODO: ReturnTypeCustomAttributes
@@ -39,8 +39,6 @@ namespace Il2CppInspector.Reflection
             }
             Name = pkg.Strings[Definition.nameIndex];
 
-            returnType = pkg.TypeUsages[Definition.returnType];
-
             if ((Definition.flags & DefineConstants.METHOD_ATTRIBUTE_MEMBER_ACCESS_MASK) == DefineConstants.METHOD_ATTRIBUTE_PRIVATE)
                 Attributes |= MethodAttributes.Private;
             if ((Definition.flags & DefineConstants.METHOD_ATTRIBUTE_MEMBER_ACCESS_MASK) == DefineConstants.METHOD_ATTRIBUTE_PUBLIC)
@@ -49,6 +47,16 @@ namespace Il2CppInspector.Reflection
                 Attributes |= MethodAttributes.Virtual;
             if ((Definition.flags & DefineConstants.METHOD_ATTRIBUTE_STATIC) != 0)
                 Attributes |= MethodAttributes.Static;
+
+            // Add return parameter
+            returnType = pkg.TypeUsages[Definition.returnType];
+            ReturnParameter = new ParameterInfo(pkg, -1, this);
+
+            // Add arguments
+            for (var p = Definition.parameterStart; p < Definition.parameterStart + Definition.parameterCount; p++)
+                DeclaredParameters.Add(new ParameterInfo(pkg, p, this));
         }
+
+        public override string ToString() => ReturnType.Name + " " + Name + "(" + string.Join(", ", DeclaredParameters.Select(x => x.ParameterType.Name)) + ")";
     }
 }
