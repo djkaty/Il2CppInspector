@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System;
 using System.Reflection;
 
 namespace Il2CppInspector.Reflection
@@ -14,6 +15,7 @@ namespace Il2CppInspector.Reflection
         public Il2CppMethodDefinition Definition { get; }
         public int Index { get; }
         public uint VirtualAddress { get; }
+        public bool HasBody { get; }
 
         public override MemberTypes MemberType => MemberTypes.Method;
 
@@ -31,7 +33,10 @@ namespace Il2CppInspector.Reflection
             base(declaringType) {
             Definition = pkg.Metadata.Methods[methodIndex];
             Index = methodIndex;
-            VirtualAddress = pkg.Binary.MethodPointers[methodIndex];
+            if (Definition.methodIndex >= 0) {
+                VirtualAddress = pkg.Binary.MethodPointers[Definition.methodIndex];
+                HasBody = true;
+            }
             Name = pkg.Strings[Definition.nameIndex];
 
             returnType = pkg.TypeUsages[Definition.returnType];

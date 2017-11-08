@@ -43,7 +43,7 @@ namespace Il2CppInspector.Reflection {
         public List<EventInfo> DeclaredEvents => throw new NotImplementedException();
         public List<FieldInfo> DeclaredFields { get; } = new List<FieldInfo>();
         public List<MemberInfo> DeclaredMembers => throw new NotImplementedException();
-        public List<MethodInfo> DeclaredMethods => throw new NotImplementedException();
+        public List<MethodInfo> DeclaredMethods { get; } = new List<MethodInfo>();
         public List<TypeInfo> DeclaredNestedTypes => throw new NotImplementedException();
         public List<PropertyInfo> DeclaredProperties => throw new NotImplementedException();
 
@@ -136,8 +136,13 @@ namespace Il2CppInspector.Reflection {
             if (!IsInterface)
                 Attributes |= TypeAttributes.Class;
 
+            // Add all fields
             for (var f = Definition.fieldStart; f < Definition.fieldStart + Definition.field_count; f++)
                 DeclaredFields.Add(new FieldInfo(pkg, f, this));
+
+            // Add all methods
+            for (var m = Definition.methodStart; m < Definition.methodStart + Definition.method_count; m++)
+                DeclaredMethods.Add(new MethodInfo(pkg, m, this));
 
             MemberType = MemberTypes.TypeInfo;
         }
@@ -198,7 +203,7 @@ namespace Il2CppInspector.Reflection {
             }
 
             // Unresolved generic type variable
-            if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_VAR) {
+            if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_VAR || pType.type == Il2CppTypeEnum.IL2CPP_TYPE_MVAR) {
                 ContainsGenericParameters = true;
                 Attributes |= TypeAttributes.Class;
                 IsGenericParameter = true;

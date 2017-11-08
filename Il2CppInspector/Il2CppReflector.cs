@@ -43,6 +43,7 @@ namespace Il2CppInspector.Reflection
                 case Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY:
                 case Il2CppTypeEnum.IL2CPP_TYPE_PTR:
                 case Il2CppTypeEnum.IL2CPP_TYPE_VAR:
+                case Il2CppTypeEnum.IL2CPP_TYPE_MVAR:
                     // Everything that requires special handling
                     return new TypeInfo(this, pType, memberType);
 

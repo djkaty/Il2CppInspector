@@ -39,7 +39,7 @@ public static class DefineConstants
         "string",
         "PTR",          // Processed separately
         "BYREF",
-        "VALUETYPE",    // Processed separately
+        "ValueType",    // Processed separately
         "CLASS",        // Processed separately
         "T",
         "Array",        // Processed separately
