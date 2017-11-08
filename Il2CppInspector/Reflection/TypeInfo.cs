@@ -18,7 +18,7 @@ namespace Il2CppInspector.Reflection {
 
         // Information/flags about the type
         // Undefined if the Type represents a generic type parameter
-        public TypeAttributes Attributes => throw new NotImplementedException();
+        public TypeAttributes Attributes { get; }
 
         // Type that this type inherits from
         public TypeInfo BaseType => throw new NotImplementedException();
@@ -66,23 +66,23 @@ namespace Il2CppInspector.Reflection {
         public List<TypeInfo> GenericTypeParameters { get; }
 
         public bool HasElementType => ElementType != null;
-        public bool IsAbstract { get; }
+        public bool IsAbstract => (Attributes & TypeAttributes.Abstract) == TypeAttributes.Abstract;
         public bool IsArray { get; }
         public bool IsByRef => throw new NotImplementedException();
-        public bool IsClass { get; }
+        public bool IsClass => (Attributes & TypeAttributes.Class) == TypeAttributes.Class;
         public bool IsEnum => throw new NotImplementedException();
         public bool IsGenericParameter { get; }
         public bool IsGenericType => throw new NotImplementedException();
         public bool IsGenericTypeDefinition => throw new NotImplementedException();
-        public bool IsInterface { get; }
+        public bool IsInterface => (Attributes & TypeAttributes.Interface) == TypeAttributes.Interface;
         public bool IsNested { get; } // TODO: Partially implemented
         public bool IsNestedPrivate => throw new NotImplementedException();
         public bool IsNestedPublic => throw new NotImplementedException();
         public bool IsPointer { get; }
         public bool IsPrimitive => throw new NotImplementedException();
-        public bool IsPublic { get; }
-        public bool IsSealed { get; }
-        public bool IsSerializable { get; }
+        public bool IsPublic => (Attributes & TypeAttributes.Public) == TypeAttributes.Public;
+        public bool IsSealed => (Attributes & TypeAttributes.Sealed) == TypeAttributes.Sealed;
+        public bool IsSerializable => (Attributes & TypeAttributes.Serializable) == TypeAttributes.Serializable;
         public bool IsValueType => throw new NotImplementedException();
 
         public override MemberTypes MemberType { get; }
@@ -121,12 +121,20 @@ namespace Il2CppInspector.Reflection {
             Namespace = pkg.Strings[Definition.namespaceIndex];
             Name = pkg.Strings[pkg.TypeDefinitions[typeIndex].nameIndex];
 
-            IsSerializable = (Definition.flags & DefineConstants.TYPE_ATTRIBUTE_SERIALIZABLE) != 0;
-            IsPublic = (Definition.flags & DefineConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == DefineConstants.TYPE_ATTRIBUTE_PUBLIC;
-            IsAbstract = (Definition.flags & DefineConstants.TYPE_ATTRIBUTE_ABSTRACT) != 0;
-            IsSealed = (Definition.flags & DefineConstants.TYPE_ATTRIBUTE_SEALED) != 0;
-            IsInterface = (Definition.flags & DefineConstants.TYPE_ATTRIBUTE_INTERFACE) != 0;
-            IsClass = !IsInterface;
+            if ((Definition.flags & DefineConstants.TYPE_ATTRIBUTE_SERIALIZABLE) != 0)
+                Attributes |= TypeAttributes.Serializable;
+            if ((Definition.flags & DefineConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == DefineConstants.TYPE_ATTRIBUTE_PUBLIC)
+                Attributes |= TypeAttributes.Public;
+            if ((Definition.flags & DefineConstants.TYPE_ATTRIBUTE_ABSTRACT) != 0)
+                Attributes |= TypeAttributes.Abstract;
+            if ((Definition.flags & DefineConstants.TYPE_ATTRIBUTE_SEALED) != 0)
+                Attributes |= TypeAttributes.Sealed;
+            if ((Definition.flags & DefineConstants.TYPE_ATTRIBUTE_INTERFACE) != 0)
+                Attributes |= TypeAttributes.Interface;
+
+            // Not sure about this, works for now
+            if (!IsInterface)
+                Attributes |= TypeAttributes.Class;
 
             for (var f = Definition.fieldStart; f < Definition.fieldStart + Definition.field_count; f++)
                 DeclaredFields.Add(new FieldInfo(pkg, f, this));
@@ -164,9 +172,7 @@ namespace Il2CppInspector.Reflection {
                     // TODO: GenericParameterPosition etc. in types we generate here
                     GenericTypeParameters.Add(model.GetType(argType)); // TODO: Fix MemberType here
                 }
-
-                IsClass = true;
-                IsInterface = !IsClass;
+                Attributes |= TypeAttributes.Class;
             }
 
             // Array with known dimensions and bounds
@@ -194,7 +200,7 @@ namespace Il2CppInspector.Reflection {
             // Unresolved generic type variable
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_VAR) {
                 ContainsGenericParameters = true;
-                IsClass = true;
+                Attributes |= TypeAttributes.Class;
                 IsGenericParameter = true;
                 Name = "T"; // TODO: Don't hardcode parameter name
 

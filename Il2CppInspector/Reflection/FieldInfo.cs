@@ -60,7 +60,7 @@ namespace Il2CppInspector.Reflection {
             Definition = pkg.Metadata.Fields[fieldIndex];
             Index = fieldIndex;
             Offset = pkg.FieldOffsets[fieldIndex];
-            Name = pkg.Strings[pkg.Metadata.Fields[fieldIndex].nameIndex];
+            Name = pkg.Strings[Definition.nameIndex];
 
             fieldType = pkg.TypeUsages[Definition.typeIndex];
             if ((fieldType.attrs & DefineConstants.FIELD_ATTRIBUTE_PRIVATE) == DefineConstants.FIELD_ATTRIBUTE_PRIVATE)
