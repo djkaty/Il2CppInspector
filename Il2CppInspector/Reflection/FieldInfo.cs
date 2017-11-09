@@ -63,14 +63,14 @@ namespace Il2CppInspector.Reflection {
             Name = pkg.Strings[Definition.nameIndex];
 
             fieldType = pkg.TypeUsages[Definition.typeIndex];
-            if ((fieldType.attrs & DefineConstants.FIELD_ATTRIBUTE_PRIVATE) == DefineConstants.FIELD_ATTRIBUTE_PRIVATE)
+            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_PRIVATE) == Il2CppConstants.FIELD_ATTRIBUTE_PRIVATE)
                 Attributes |= FieldAttributes.Private;
-            if ((fieldType.attrs & DefineConstants.FIELD_ATTRIBUTE_PUBLIC) == DefineConstants.FIELD_ATTRIBUTE_PUBLIC)
+            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_PUBLIC) == Il2CppConstants.FIELD_ATTRIBUTE_PUBLIC)
                 Attributes |= FieldAttributes.Public;
-            if ((fieldType.attrs & DefineConstants.FIELD_ATTRIBUTE_STATIC) == DefineConstants.FIELD_ATTRIBUTE_STATIC)
+            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_STATIC) == Il2CppConstants.FIELD_ATTRIBUTE_STATIC)
                 Attributes |= FieldAttributes.Static;
-            if ((fieldType.attrs & DefineConstants.FIELD_ATTRIBUTE_INIT_ONLY) ==
-                DefineConstants.FIELD_ATTRIBUTE_INIT_ONLY)
+            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_INIT_ONLY) ==
+                Il2CppConstants.FIELD_ATTRIBUTE_INIT_ONLY)
                 Attributes |= FieldAttributes.InitOnly;
 
             // Default initialization value if present

@@ -30,8 +30,8 @@ namespace Il2CppInspector.Reflection {
         public string CSharpName {
             get {
                 var s = Namespace + "." + base.Name;
-                var i = DefineConstants.FullNameTypeString.IndexOf(s);
-                var n = (i != -1 ? DefineConstants.CSharpTypeString[i] : base.Name);
+                var i = Il2CppConstants.FullNameTypeString.IndexOf(s);
+                var n = (i != -1 ? Il2CppConstants.CSharpTypeString[i] : base.Name);
                 if (IsArray)
                     n = ElementType.CSharpName;
                 var g = (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.CSharpName)) + ">" : "");
@@ -121,15 +121,15 @@ namespace Il2CppInspector.Reflection {
             Namespace = pkg.Strings[Definition.namespaceIndex];
             Name = pkg.Strings[pkg.TypeDefinitions[typeIndex].nameIndex];
 
-            if ((Definition.flags & DefineConstants.TYPE_ATTRIBUTE_SERIALIZABLE) != 0)
+            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_SERIALIZABLE) != 0)
                 Attributes |= TypeAttributes.Serializable;
-            if ((Definition.flags & DefineConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == DefineConstants.TYPE_ATTRIBUTE_PUBLIC)
+            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_PUBLIC)
                 Attributes |= TypeAttributes.Public;
-            if ((Definition.flags & DefineConstants.TYPE_ATTRIBUTE_ABSTRACT) != 0)
+            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_ABSTRACT) != 0)
                 Attributes |= TypeAttributes.Abstract;
-            if ((Definition.flags & DefineConstants.TYPE_ATTRIBUTE_SEALED) != 0)
+            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_SEALED) != 0)
                 Attributes |= TypeAttributes.Sealed;
-            if ((Definition.flags & DefineConstants.TYPE_ATTRIBUTE_INTERFACE) != 0)
+            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_INTERFACE) != 0)
                 Attributes |= TypeAttributes.Interface;
 
             // Not sure about this, works for now

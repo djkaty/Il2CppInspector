@@ -208,10 +208,10 @@ namespace Il2CppInspector
                 ret = $"{GetTypeName(type)}[]";
             }
             else {
-                if ((int) pType.type >= DefineConstants.CSharpTypeString.Count)
+                if ((int) pType.type >= Il2CppConstants.CSharpTypeString.Count)
                     ret = "unknow";
                 else
-                    ret = DefineConstants.CSharpTypeString[(int) pType.type];
+                    ret = Il2CppConstants.CSharpTypeString[(int) pType.type];
             }
             return ret;
         }

@@ -49,10 +49,10 @@ namespace Il2CppInspector.Reflection
 
                 default:
                     // Basic primitive types
-                    if ((int) pType.type >= DefineConstants.FullNameTypeString.Count)
+                    if ((int) pType.type >= Il2CppConstants.FullNameTypeString.Count)
                         return null;
 
-                    return Assemblies.SelectMany(x => x.DefinedTypes).First(x => x.FullName == DefineConstants.FullNameTypeString[(int)pType.type]);
+                    return Assemblies.SelectMany(x => x.DefinedTypes).First(x => x.FullName == Il2CppConstants.FullNameTypeString[(int)pType.type]);
             }
         }
     }

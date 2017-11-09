@@ -39,13 +39,13 @@ namespace Il2CppInspector.Reflection
             }
             Name = pkg.Strings[Definition.nameIndex];
 
-            if ((Definition.flags & DefineConstants.METHOD_ATTRIBUTE_MEMBER_ACCESS_MASK) == DefineConstants.METHOD_ATTRIBUTE_PRIVATE)
+            if ((Definition.flags & Il2CppConstants.METHOD_ATTRIBUTE_MEMBER_ACCESS_MASK) == Il2CppConstants.METHOD_ATTRIBUTE_PRIVATE)
                 Attributes |= MethodAttributes.Private;
-            if ((Definition.flags & DefineConstants.METHOD_ATTRIBUTE_MEMBER_ACCESS_MASK) == DefineConstants.METHOD_ATTRIBUTE_PUBLIC)
+            if ((Definition.flags & Il2CppConstants.METHOD_ATTRIBUTE_MEMBER_ACCESS_MASK) == Il2CppConstants.METHOD_ATTRIBUTE_PUBLIC)
                 Attributes |= MethodAttributes.Public;
-            if ((Definition.flags & DefineConstants.METHOD_ATTRIBUTE_VIRTUAL) != 0)
+            if ((Definition.flags & Il2CppConstants.METHOD_ATTRIBUTE_VIRTUAL) != 0)
                 Attributes |= MethodAttributes.Virtual;
-            if ((Definition.flags & DefineConstants.METHOD_ATTRIBUTE_STATIC) != 0)
+            if ((Definition.flags & Il2CppConstants.METHOD_ATTRIBUTE_STATIC) != 0)
                 Attributes |= MethodAttributes.Static;
 
             // Add return parameter

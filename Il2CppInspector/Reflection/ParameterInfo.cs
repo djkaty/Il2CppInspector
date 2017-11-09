@@ -56,9 +56,9 @@ namespace Il2CppInspector.Reflection
             Position = paramIndex - declaringMethod.Definition.parameterStart;
             paramType = pkg.TypeUsages[param.typeIndex];
 
-            if ((paramType.attrs & DefineConstants.PARAM_ATTRIBUTE_OPTIONAL) != 0)
+            if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_OPTIONAL) != 0)
                 Attributes |= ParameterAttributes.Optional;
-            if ((paramType.attrs & DefineConstants.PARAM_ATTRIBUTE_OUT) != 0)
+            if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_OUT) != 0)
                 Attributes |= ParameterAttributes.Out;
 
             if (Position == -1)
