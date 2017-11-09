@@ -36,7 +36,11 @@ namespace Il2CppInspector
                         writer.Write("interface ");
                     else
                         writer.Write("class ");
-                    writer.Write($"{type.Name} // TypeDefIndex: {type.Index}\n{{\n");
+
+                    var baseText = type.BaseType?.CSharpName ?? "object";
+                    baseText = baseText == "object" ? string.Empty : " : " + baseText;
+
+                    writer.Write($"{type.Name}{baseText} // TypeDefIndex: {type.Index}\n{{\n");
 
                     if (type.DeclaredFields.Count > 0)
                         writer.Write("\t// Fields\n");
@@ -56,6 +60,8 @@ namespace Il2CppInspector
                             writer.Write($" = {field.DefaultValueString}");
                         writer.Write("; // 0x{0:X}\n", field.Offset);
                     }
+                    if (type.DeclaredFields.Count > 0)
+                        writer.Write("\n");
 
                     if (type.DeclaredMethods.Count > 0)
                         writer.Write("\t// Methods\n");

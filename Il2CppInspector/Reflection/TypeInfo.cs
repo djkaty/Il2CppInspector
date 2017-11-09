@@ -21,7 +21,8 @@ namespace Il2CppInspector.Reflection {
         public TypeAttributes Attributes { get; }
 
         // Type that this type inherits from
-        public TypeInfo BaseType => throw new NotImplementedException();
+        private Il2CppType baseType;
+        public TypeInfo BaseType => baseType != null? Assembly.Model.GetType(baseType, MemberTypes.TypeInfo) : null;
 
         // True if the type contains unresolved generic type parameters
         public bool ContainsGenericParameters { get; }
@@ -120,6 +121,9 @@ namespace Il2CppInspector.Reflection {
             Index = typeIndex;
             Namespace = pkg.Strings[Definition.namespaceIndex];
             Name = pkg.Strings[pkg.TypeDefinitions[typeIndex].nameIndex];
+
+            if (Definition.parentIndex >= 0)
+                baseType = pkg.TypeUsages[Definition.parentIndex];
 
             if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_SERIALIZABLE) != 0)
                 Attributes |= TypeAttributes.Serializable;
