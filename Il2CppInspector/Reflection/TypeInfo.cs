@@ -84,7 +84,7 @@ namespace Il2CppInspector.Reflection {
         public bool IsPublic => (Attributes & TypeAttributes.Public) == TypeAttributes.Public;
         public bool IsSealed => (Attributes & TypeAttributes.Sealed) == TypeAttributes.Sealed;
         public bool IsSerializable => (Attributes & TypeAttributes.Serializable) == TypeAttributes.Serializable;
-        public bool IsValueType => throw new NotImplementedException();
+        public bool IsValueType => BaseType?.FullName == "System.ValueType";
 
         public override MemberTypes MemberType { get; }
 

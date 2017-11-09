@@ -30,15 +30,17 @@ namespace Il2CppInspector
                         writer.Write("public ");
                     if (type.IsAbstract)
                         writer.Write("abstract ");
-                    if (type.IsSealed)
+                    if (type.IsSealed && !type.IsValueType)
                         writer.Write("sealed ");
                     if (type.IsInterface)
                         writer.Write("interface ");
+                    else if (type.IsValueType)
+                        writer.Write("struct ");
                     else
                         writer.Write("class ");
 
-                    var baseText = type.BaseType?.CSharpName ?? "object";
-                    baseText = baseText == "object" ? string.Empty : " : " + baseText;
+                    var baseText = type.BaseType?.CSharpName ?? string.Empty;
+                    baseText = (baseText == "object" || baseText == "ValueType" || baseText == string.Empty)? string.Empty : " : " + baseText;
 
                     writer.Write($"{type.Name}{baseText} // TypeDefIndex: {type.Index}\n{{\n");
 
