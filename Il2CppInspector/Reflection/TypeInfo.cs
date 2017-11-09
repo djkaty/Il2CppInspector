@@ -67,6 +67,10 @@ namespace Il2CppInspector.Reflection {
         public List<TypeInfo> GenericTypeParameters { get; }
 
         public bool HasElementType => ElementType != null;
+
+        private Il2CppType[] implementedInterfaces;
+        public IEnumerable<TypeInfo> ImplementedInterfaces => implementedInterfaces.Select(x => Assembly.Model.GetType(x, MemberTypes.TypeInfo));
+
         public bool IsAbstract => (Attributes & TypeAttributes.Abstract) == TypeAttributes.Abstract;
         public bool IsArray { get; }
         public bool IsByRef => throw new NotImplementedException();
@@ -139,6 +143,11 @@ namespace Il2CppInspector.Reflection {
             // Not sure about this, works for now
             if (!IsInterface)
                 Attributes |= TypeAttributes.Class;
+
+            // Add all implemented interfaces
+            implementedInterfaces = new Il2CppType[Definition.interfaces_count];
+            for (var i = 0; i < Definition.interfaces_count; i++)
+                implementedInterfaces[i] = pkg.TypeUsages[pkg.Metadata.InterfaceUsageIndices[Definition.interfacesStart + i]];
 
             // Add all fields
             for (var f = Definition.fieldStart; f < Definition.fieldStart + Definition.field_count; f++)

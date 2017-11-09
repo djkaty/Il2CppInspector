@@ -39,8 +39,10 @@ namespace Il2CppInspector
                     else
                         writer.Write("class ");
 
-                    var baseText = type.BaseType?.CSharpName ?? string.Empty;
-                    baseText = (baseText == "object" || baseText == "ValueType" || baseText == string.Empty)? string.Empty : " : " + baseText;
+                    var @base = type.ImplementedInterfaces.Select(x => x.CSharpName).ToList();
+                    if (type.BaseType != null && type.BaseType.FullName != "System.Object" && type.BaseType.FullName != "System.ValueType")
+                        @base.Insert(0, type.BaseType.CSharpName);
+                    var baseText = @base.Count > 0 ? " : " + string.Join(", ", @base) : string.Empty;
 
                     writer.Write($"{type.Name}{baseText} // TypeDefIndex: {type.Index}\n{{\n");
 
