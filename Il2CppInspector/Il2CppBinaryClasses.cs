@@ -149,7 +149,6 @@ namespace Il2CppInspector
         public uint method_inst;
     }
 
-
     public class Il2CppGenericInst
     {
         public uint type_argc;

@@ -89,6 +89,12 @@ namespace Il2CppInspector
         public int windowsRuntimeTypeNamesOffset; // Il2CppWindowsRuntimeTypeNamePair
         [Version(Min = 23)]
         public int windowsRuntimeTypeNamesSize;
+
+        // Added in metadata v24
+        [Version(Min = 24)]
+        public int exportedTypeDefinitionsOffset; // TypeDefinitionIndex
+        [Version(Min = 24)]
+        public int exportedTypeDefinitionsCount;
     }
 
     public class Il2CppImageDefinition
@@ -98,6 +104,11 @@ namespace Il2CppInspector
 
         public int typeStart;
         public uint typeCount;
+
+        [Version(Min = 24)]
+        public int exportedTypeStart;
+        [Version(Min = 24)]
+        public uint exportedTypeCount;
 
         public int entryPointIndex;
         public uint token;
