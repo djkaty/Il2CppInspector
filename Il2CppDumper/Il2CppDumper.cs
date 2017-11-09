@@ -28,7 +28,7 @@ namespace Il2CppInspector
                         writer.Write("[Serializable]\n");
                     if (type.IsPublic)
                         writer.Write("public ");
-                    if (type.IsAbstract)
+                    if (type.IsAbstract && !type.IsInterface)
                         writer.Write("abstract ");
                     if (type.IsSealed && !type.IsValueType)
                         writer.Write("sealed ");
