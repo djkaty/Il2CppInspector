@@ -23,6 +23,7 @@ namespace Il2CppInspector
 
                 foreach (var type in model.Assemblies.SelectMany(x => x.DefinedTypes)) {
                     writer.Write($"// Namespace: {type.Namespace}\n");
+
                     if (type.IsSerializable)
                         writer.Write("[Serializable]\n");
                     if (type.IsPublic)
@@ -36,7 +37,10 @@ namespace Il2CppInspector
                     else
                         writer.Write("class ");
                     writer.Write($"{type.Name} // TypeDefIndex: {type.Index}\n{{\n");
-                    writer.Write("\t// Fields\n");
+
+                    if (type.DeclaredFields.Count > 0)
+                        writer.Write("\t// Fields\n");
+
                     foreach (var field in type.DeclaredFields) {
                         writer.Write("\t");
                         if (field.IsPrivate)
@@ -50,9 +54,12 @@ namespace Il2CppInspector
                         writer.Write($"{field.FieldType.CSharpName} {field.Name}");
                         if (field.HasDefaultValue)
                             writer.Write($" = {field.DefaultValueString}");
-                        writer.Write("; // 0x{0:x}\n", field.Offset);
+                        writer.Write("; // 0x{0:X}\n", field.Offset);
                     }
-                    writer.Write("\t// Methods\n");
+
+                    if (type.DeclaredMethods.Count > 0)
+                        writer.Write("\t// Methods\n");
+
                     foreach (var method in type.DeclaredMethods) {
                         writer.Write("\t");
                         if (method.IsPrivate)
@@ -77,9 +84,8 @@ namespace Il2CppInspector
                                 writer.Write("out ");
                             writer.Write($"{param.ParameterType.CSharpName} {param.Name}");
                         }
-                        writer.Write("); // {0:x} - {1}\n",
-                            method.VirtualAddress,
-                            method.Definition.methodIndex >= 0 ? method.Definition.methodIndex : -1);
+                        writer.Write("); // 0x{0:X}\n",
+                            method.VirtualAddress);
                     }
                     writer.Write("}\n");
                 }
