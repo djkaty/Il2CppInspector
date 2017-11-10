@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 
 namespace Il2CppInspector.Reflection
 {
@@ -41,5 +42,37 @@ namespace Il2CppInspector.Reflection
         // TODO: GetMethodBody()
 
         protected MethodBase(TypeInfo declaringType) : base(declaringType) { }
+
+        public string GetModifierString() {
+            StringBuilder modifiers = new StringBuilder();
+
+            if (IsPrivate)
+                modifiers.Append("private ");
+            if (IsPublic)
+                modifiers.Append("public ");
+            if (IsFamily)
+                modifiers.Append("protected ");
+            if (IsAssembly)
+                modifiers.Append("internal ");
+            if (IsFamilyOrAssembly)
+                modifiers.Append("protected internal ");
+            if (IsFamilyAndAssembly)
+                modifiers.Append("[family and assembly] ");
+
+            if (IsAbstract)
+                modifiers.Append("abstract ");
+            // Methods that implement interfaces are IsVirtual && IsFinal with MethodAttributes.NewSlot (don't show 'virtual sealed' for these)
+            if (IsFinal && (Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.ReuseSlot)
+                modifiers.Append("sealed override ");
+            // All abstract, override and sealed methods are also virtual by nature
+            if (IsVirtual && !IsAbstract && !IsFinal)
+                modifiers.Append((Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot ? "virtual " : "override ");
+            if (IsStatic)
+                modifiers.Append("static ");
+            if ((Attributes & MethodAttributes.PinvokeImpl) != 0)
+                modifiers.Append("extern ");
+
+            return modifiers.ToString().Trim();
+        }
     }
 }

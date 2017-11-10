@@ -17,14 +17,6 @@ namespace Il2CppInspector.Reflection
             base(declaringType) { }
     }
 
-    public class PropertyInfo : MemberInfo
-    {
-        // TODO
-        public override MemberTypes MemberType => MemberTypes.Property | MemberTypes.Method;
-        public PropertyInfo(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) :
-            base(declaringType) { }
-    }
-
     public class CustomAttributeData
     {
         // TODO

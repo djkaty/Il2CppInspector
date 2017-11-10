@@ -46,7 +46,7 @@ namespace Il2CppInspector.Reflection {
         public List<MemberInfo> DeclaredMembers => throw new NotImplementedException();
         public List<MethodInfo> DeclaredMethods { get; } = new List<MethodInfo>();
         public List<TypeInfo> DeclaredNestedTypes => throw new NotImplementedException();
-        public List<PropertyInfo> DeclaredProperties => throw new NotImplementedException();
+        public List<PropertyInfo> DeclaredProperties { get; } = new List<PropertyInfo>();
 
         // Method that the type is declared in if this is a type parameter of a generic method
         public MethodBase DeclaringMethod => throw new NotImplementedException();
@@ -179,6 +179,10 @@ namespace Il2CppInspector.Reflection {
             // Add all methods
             for (var m = Definition.methodStart; m < Definition.methodStart + Definition.method_count; m++)
                 DeclaredMethods.Add(new MethodInfo(pkg, m, this));
+
+            // Add all properties
+            for (var p = Definition.propertyStart; p < Definition.propertyStart + Definition.property_count; p++)
+                DeclaredProperties.Add(new PropertyInfo(pkg, p, this));
 
             MemberType = MemberTypes.TypeInfo;
         }

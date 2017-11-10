@@ -24,6 +24,8 @@ namespace Il2CppInspector
                 }
 
                 foreach (var type in model.Assemblies.SelectMany(x => x.DefinedTypes)) {
+
+                    // Type declaration
                     writer.Write($"\n// Namespace: {type.Namespace}\n");
 
                     if (type.IsImport)
@@ -65,6 +67,7 @@ namespace Il2CppInspector
 
                     writer.Write($"{type.Name}{baseText} // TypeDefIndex: {type.Index}\n{{\n");
 
+                    // Fields
                     if (type.DeclaredFields.Count > 0)
                         writer.Write("\t// Fields\n");
 
@@ -102,38 +105,25 @@ namespace Il2CppInspector
                     if (type.DeclaredFields.Count > 0)
                         writer.Write("\n");
 
+                    // Properties
+                    if (type.DeclaredProperties.Count > 0)
+                        writer.Write("\t// Properties\n");
+
+                    foreach (var prop in type.DeclaredProperties) {
+                        string modifiers = prop.GetMethod?.GetModifierString() ?? prop.SetMethod.GetModifierString();
+                        writer.Write($"\t{modifiers} {prop.PropertyType.CSharpName} {prop.Name} {{ ");
+                        writer.Write((prop.GetMethod != null ? "get; " : "") + (prop.SetMethod != null ? "set; " : ""));
+                        writer.Write("}\n");
+                    }
+                    if (type.DeclaredProperties.Count > 0)
+                        writer.Write("\n");
+
+                    // Methods
                     if (type.DeclaredMethods.Count > 0)
                         writer.Write("\t// Methods\n");
 
                     foreach (var method in type.DeclaredMethods) {
-                        writer.Write("\t");
-                        if (method.IsPrivate)
-                            writer.Write("private ");
-                        if (method.IsPublic)
-                            writer.Write("public ");
-                        if (method.IsFamily)
-                            writer.Write("protected ");
-                        if (method.IsAssembly)
-                            writer.Write("internal ");
-                        if (method.IsFamilyOrAssembly)
-                            writer.Write("protected internal ");
-                        if (method.IsFamilyAndAssembly)
-                            writer.Write("[family and assembly] ");
-
-                        if (method.IsAbstract)
-                            writer.Write("abstract ");
-                        // Methods that implement interfaces are IsVirtual && IsFinal with MethodAttributes.NewSlot (don't show 'virtual sealed' for these)
-                        if (method.IsFinal && (method.Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.ReuseSlot)
-                            writer.Write("sealed override ");
-                        // All abstract, override and sealed methods are also virtual by nature
-                        if (method.IsVirtual && !method.IsAbstract && !method.IsFinal)
-                            writer.Write((method.Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot? "virtual " : "override ");
-                        if (method.IsStatic)
-                            writer.Write("static ");
-                        if ((method.Attributes & MethodAttributes.PinvokeImpl) != 0)
-                            writer.Write("extern ");
-
-                        writer.Write($"{method.ReturnType.CSharpName} {method.Name}(");
+                        writer.Write($"\t{method.GetModifierString()} {method.ReturnType.CSharpName} {method.Name}(");
 
                         bool first = true;
                         foreach (var param in method.DeclaredParameters) {

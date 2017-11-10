@@ -216,4 +216,14 @@ namespace Il2CppInspector
         public int typeIndex;
         public int dataIndex;
     }
+
+    public class Il2CppPropertyDefinition
+    {
+        public int nameIndex;
+        public int get;
+        public int set;
+        public uint attrs;
+        public int customAttributeIndex;
+        public uint token;
+    }
 }
