@@ -3,6 +3,7 @@
 
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Il2CppInspector.Reflection;
 
 namespace Il2CppInspector
@@ -22,7 +23,7 @@ namespace Il2CppInspector
                 }
 
                 foreach (var type in model.Assemblies.SelectMany(x => x.DefinedTypes)) {
-                    writer.Write($"// Namespace: {type.Namespace}\n");
+                    writer.Write($"\n// Namespace: {type.Namespace}\n");
 
                     if (type.IsSerializable)
                         writer.Write("[Serializable]\n");
@@ -76,10 +77,27 @@ namespace Il2CppInspector
                             writer.Write("private ");
                         if (method.IsPublic)
                             writer.Write("public ");
-                        if (method.IsVirtual)
-                            writer.Write("virtual ");
+                        if (method.IsFamily)
+                            writer.Write("protected ");
+                        if (method.IsAssembly)
+                            writer.Write("internal ");
+                        if (method.IsFamilyOrAssembly)
+                            writer.Write("protected internal ");
+                        if (method.IsFamilyAndAssembly)
+                            writer.Write("[family and assembly] ");
+
+                        if (method.IsAbstract)
+                            writer.Write("abstract ");
+                        // Methods that implement interfaces are IsVirtual && IsFinal with MethodAttributes.NewSlot (don't show 'virtual sealed' for these)
+                        if (method.IsFinal && (method.Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.ReuseSlot)
+                            writer.Write("sealed override ");
+                        // All abstract, override and sealed methods are also virtual by nature
+                        if (method.IsVirtual && !method.IsAbstract && !method.IsFinal)
+                            writer.Write((method.Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot? "virtual " : "override ");
                         if (method.IsStatic)
                             writer.Write("static ");
+                        if ((method.Attributes & MethodAttributes.PinvokeImpl) != 0)
+                            writer.Write("extern ");
 
                         writer.Write($"{method.ReturnType.CSharpName} {method.Name}(");
 

@@ -23,17 +23,18 @@ namespace Il2CppInspector.Reflection
         public List<ParameterInfo> DeclaredParameters { get; } = new List<ParameterInfo>();
 
         public bool IsAbstract => (Attributes & MethodAttributes.Abstract) == MethodAttributes.Abstract;
-        public bool IsAssembly => throw new NotImplementedException();
+        public bool IsAssembly => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Assembly;
         public bool IsConstructor => throw new NotImplementedException();
-        public bool IsFamily => throw new NotImplementedException();
-        public bool IsFamilyAndAssembly => throw new NotImplementedException();
-        public bool IsFamilyOrAssembly => throw new NotImplementedException();
-        public bool IsFinal => throw new NotImplementedException();
+        public bool IsFamily => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Family;
+        public bool IsFamilyAndAssembly => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.FamANDAssem;
+        public bool IsFamilyOrAssembly => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.FamORAssem;
+        public bool IsFinal => (Attributes & MethodAttributes.Final) == MethodAttributes.Final;
         public bool IsGenericMethod => throw new NotImplementedException();
         public bool IsGenericMethodDefinition => throw new NotImplementedException();
-        public bool IsHideBySig => throw new NotImplementedException();
-        public bool IsPrivate => (Attributes & MethodAttributes.Private) == MethodAttributes.Private;
-        public bool IsPublic => (Attributes & MethodAttributes.Public) == MethodAttributes.Public;
+        public bool IsHideBySig => (Attributes & MethodAttributes.HideBySig) == MethodAttributes.HideBySig;
+        public bool IsPrivate => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Private;
+        public bool IsPublic => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Public;
+        public bool IsSpecialName => (Attributes & MethodAttributes.SpecialName) == MethodAttributes.SpecialName;
         public bool IsStatic => (Attributes & MethodAttributes.Static) == MethodAttributes.Static;
         public bool IsVirtual => (Attributes & MethodAttributes.Virtual) == MethodAttributes.Virtual;
 
