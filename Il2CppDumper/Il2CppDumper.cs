@@ -4,6 +4,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Il2CppInspector.Reflection;
 
 namespace Il2CppInspector
@@ -17,7 +18,7 @@ namespace Il2CppInspector
         }
 
         public void WriteFile(string outFile) {
-            using (var writer = new StreamWriter(new FileStream(outFile, FileMode.Create))) {
+            using (var writer = new StreamWriter(new FileStream(outFile, FileMode.Create), Encoding.UTF8)) {
                 foreach (var asm in model.Assemblies) {
                     writer.Write($"// Image {asm.Index}: {asm.FullName} - {asm.Definition.typeStart}\n");
                 }
