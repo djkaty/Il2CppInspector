@@ -74,20 +74,27 @@ namespace Il2CppInspector.Reflection {
         public bool IsAbstract => (Attributes & TypeAttributes.Abstract) == TypeAttributes.Abstract;
         public bool IsArray { get; }
         public bool IsByRef => throw new NotImplementedException();
-        public bool IsClass => (Attributes & TypeAttributes.Class) == TypeAttributes.Class;
+        public bool IsClass => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Class;
         public bool IsEnum => throw new NotImplementedException();
         public bool IsGenericParameter { get; }
         public bool IsGenericType => throw new NotImplementedException();
         public bool IsGenericTypeDefinition => throw new NotImplementedException();
-        public bool IsInterface => (Attributes & TypeAttributes.Interface) == TypeAttributes.Interface;
+        public bool IsImport => (Attributes & TypeAttributes.Import) == TypeAttributes.Import;
+        public bool IsInterface => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Interface;
         public bool IsNested { get; } // TODO: Partially implemented
-        public bool IsNestedPrivate => throw new NotImplementedException();
-        public bool IsNestedPublic => throw new NotImplementedException();
+        public bool IsNestedAssembly => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedAssembly;
+        public bool IsNestedFamANDAssem => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedFamANDAssem;
+        public bool IsNestedFamily => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedFamily;
+        public bool IsNestedFamORAssem => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedFamORAssem;
+        public bool IsNestedPrivate => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedPrivate;
+        public bool IsNestedPublic => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedPublic;
+        public bool IsNotPublic => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NotPublic;
         public bool IsPointer { get; }
-        public bool IsPrimitive => throw new NotImplementedException();
-        public bool IsPublic => (Attributes & TypeAttributes.Public) == TypeAttributes.Public;
+        public bool IsPrimitive => Namespace == "System" && new[] { "Boolean", "Byte", "SByte", "Int16", "UInt16", "Int32", "UInt32", "Int64", "UInt64", "IntPtr", "UIntPtr", "Char", "Double", "Single" }.Contains(Name);
+        public bool IsPublic => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.Public;
         public bool IsSealed => (Attributes & TypeAttributes.Sealed) == TypeAttributes.Sealed;
         public bool IsSerializable => (Attributes & TypeAttributes.Serializable) == TypeAttributes.Serializable;
+        public bool IsSpecialName => (Attributes & TypeAttributes.SpecialName) == TypeAttributes.SpecialName;
         public bool IsValueType => BaseType?.FullName == "System.ValueType";
 
         public override MemberTypes MemberType { get; }
@@ -133,16 +140,32 @@ namespace Il2CppInspector.Reflection {
                 Attributes |= TypeAttributes.Serializable;
             if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_PUBLIC)
                 Attributes |= TypeAttributes.Public;
+            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_NOT_PUBLIC)
+                Attributes |= TypeAttributes.NotPublic;
+            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_NESTED_PUBLIC)
+                Attributes |= TypeAttributes.NestedPublic;
+            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_NESTED_PRIVATE)
+                Attributes |= TypeAttributes.NestedPrivate;
+            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_NESTED_ASSEMBLY)
+                Attributes |= TypeAttributes.NestedAssembly;
+            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_NESTED_FAMILY)
+                Attributes |= TypeAttributes.NestedFamily;
+            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_NESTED_FAM_AND_ASSEM)
+                Attributes |= TypeAttributes.NestedFamANDAssem;
+            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_NESTED_FAM_OR_ASSEM)
+                Attributes |= TypeAttributes.NestedFamORAssem;
             if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_ABSTRACT) != 0)
                 Attributes |= TypeAttributes.Abstract;
             if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_SEALED) != 0)
                 Attributes |= TypeAttributes.Sealed;
+            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_SPECIAL_NAME) != 0)
+                Attributes |= TypeAttributes.SpecialName;
+            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_IMPORT) != 0)
+                Attributes |= TypeAttributes.Import;
+
+            // TypeAttributes.Class == 0 so we only care about setting TypeAttributes.Interface (it's a non-interface class by default)
             if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_INTERFACE) != 0)
                 Attributes |= TypeAttributes.Interface;
-
-            // Not sure about this, works for now
-            if (!IsInterface)
-                Attributes |= TypeAttributes.Class;
 
             // Add all implemented interfaces
             implementedInterfaces = new Il2CppType[Definition.interfaces_count];
@@ -226,6 +249,7 @@ namespace Il2CppInspector.Reflection {
             }
 
             // Pointer type
+            // TODO: Should set ElementType etc.
             IsPointer = (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_PTR);
         }
     }

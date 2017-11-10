@@ -25,14 +25,31 @@ namespace Il2CppInspector
                 foreach (var type in model.Assemblies.SelectMany(x => x.DefinedTypes)) {
                     writer.Write($"\n// Namespace: {type.Namespace}\n");
 
+                    if (type.IsImport)
+                        writer.Write("[ComImport]");
                     if (type.IsSerializable)
                         writer.Write("[Serializable]\n");
-                    if (type.IsPublic)
+                    if (type.IsPublic || type.IsNestedPublic)
                         writer.Write("public ");
-                    if (type.IsAbstract && !type.IsInterface)
-                        writer.Write("abstract ");
-                    if (type.IsSealed && !type.IsValueType)
-                        writer.Write("sealed ");
+                    if (type.IsNestedPrivate)
+                        writer.Write("private ");
+                    if (type.IsNestedFamily)
+                        writer.Write("protected ");
+                    if (type.IsNestedAssembly || type.IsNotPublic)
+                        writer.Write("internal ");
+                    if (type.IsNestedFamORAssem)
+                        writer.Write("protected internal ");
+                    if (type.IsNestedFamANDAssem)
+                        writer.Write("[family and assembly] ");
+                    // An abstract sealed class is a static class
+                    if (type.IsAbstract && type.IsSealed)
+                        writer.Write("static ");
+                    else {
+                        if (type.IsAbstract && !type.IsInterface)
+                            writer.Write("abstract ");
+                        if (type.IsSealed && !type.IsValueType)
+                            writer.Write("sealed ");
+                    }
                     if (type.IsInterface)
                         writer.Write("interface ");
                     else if (type.IsValueType)
