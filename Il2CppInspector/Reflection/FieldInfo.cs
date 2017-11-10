@@ -17,7 +17,21 @@ namespace Il2CppInspector.Reflection {
         
         public bool HasDefaultValue { get; }
         public object DefaultValue { get; }
-        public string DefaultValueString => !HasDefaultValue ? "" : (DefaultValue is string? $"\"{DefaultValue}\"" : (DefaultValue?.ToString() ?? "null"));
+
+        public string DefaultValueString {
+            get {
+                if (!HasDefaultValue)
+                    return "";
+                if (DefaultValue is string)
+                    return $"\"{DefaultValue}\"";
+                if (!(DefaultValue is char))
+                    return (DefaultValue?.ToString() ?? "null");
+                var cValue = (int) (char) DefaultValue;
+                if (cValue < 32 || cValue > 126)
+                    return $"'\\x{cValue:x4}'";
+                return $"'{DefaultValue}'";
+            }
+        }
 
         // Information/flags about the field
         public FieldAttributes Attributes { get; }
