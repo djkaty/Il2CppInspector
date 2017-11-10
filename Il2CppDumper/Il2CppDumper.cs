@@ -52,14 +52,30 @@ namespace Il2CppInspector
 
                     foreach (var field in type.DeclaredFields) {
                         writer.Write("\t");
+                        if (field.IsNotSerialized)
+                            writer.Write("[NonSerialized]\t");
+
                         if (field.IsPrivate)
                             writer.Write("private ");
                         if (field.IsPublic)
                             writer.Write("public ");
-                        if (field.IsStatic)
+                        if (field.IsFamily)
+                            writer.Write("protected ");
+                        if (field.IsAssembly)
+                            writer.Write("internal ");
+                        if (field.IsFamilyOrAssembly)
+                            writer.Write("protected internal ");
+                        if (field.IsFamilyAndAssembly)
+                            writer.Write("[family and assembly] ");
+                        if (field.IsLiteral)
+                            writer.Write("const ");
+                        // All const fields are also static by implication
+                        else if (field.IsStatic)
                             writer.Write("static ");
                         if (field.IsInitOnly)
                             writer.Write("readonly ");
+                        if (field.IsPinvokeImpl)
+                            writer.Write("extern ");
                         writer.Write($"{field.FieldType.CSharpName} {field.Name}");
                         if (field.HasDefaultValue)
                             writer.Write($" = {field.DefaultValueString}");
