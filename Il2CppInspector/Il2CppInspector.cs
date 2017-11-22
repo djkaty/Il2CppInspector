@@ -178,43 +178,5 @@ namespace Il2CppInspector
             }
             return processors;
         }
-
-        public string GetTypeName(Il2CppType pType) {
-            string ret;
-            if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_CLASS || pType.type == Il2CppTypeEnum.IL2CPP_TYPE_VALUETYPE) {
-                Il2CppTypeDefinition klass = TypeDefinitions[pType.datapoint];
-                ret = Strings[klass.nameIndex];
-            }
-            else if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST) {
-                Il2CppGenericClass generic_class = Binary.Image.ReadMappedObject<Il2CppGenericClass>(pType.datapoint);
-                Il2CppTypeDefinition pMainDef = TypeDefinitions[generic_class.typeDefinitionIndex];
-                ret = Strings[pMainDef.nameIndex];
-                var typeNames = new List<string>();
-                Il2CppGenericInst pInst =
-                    Binary.Image.ReadMappedObject<Il2CppGenericInst>(generic_class.context.class_inst);
-                var pointers = Binary.Image.ReadMappedArray<uint>(pInst.type_argv, (int) pInst.type_argc);
-                for (int i = 0; i < pInst.type_argc; ++i) {
-                    var pOriType = Binary.Image.ReadMappedObject<Il2CppType>(pointers[i]);
-                    typeNames.Add(GetTypeName(pOriType));
-                }
-                ret += $"<{string.Join(", ", typeNames)}>";
-            }
-            else if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_ARRAY) {
-                Il2CppArrayType arrayType = Binary.Image.ReadMappedObject<Il2CppArrayType>(pType.datapoint);
-                var type = Binary.Image.ReadMappedObject<Il2CppType>(arrayType.etype);
-                ret = $"{GetTypeName(type)}[]";
-            }
-            else if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY) {
-                var type = Binary.Image.ReadMappedObject<Il2CppType>(pType.datapoint);
-                ret = $"{GetTypeName(type)}[]";
-            }
-            else {
-                if ((int) pType.type >= Il2CppConstants.CSharpTypeString.Count)
-                    ret = "unknow";
-                else
-                    ret = Il2CppConstants.CSharpTypeString[(int) pType.type];
-            }
-            return ret;
-        }
     }
 }
