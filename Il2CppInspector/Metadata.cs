@@ -42,7 +42,7 @@ namespace Il2CppInspector
             // Rewind and read metadata header in full
             Position -= 8;
             Header = ReadObject<Il2CppGlobalMetadataHeader>();
-            if (Version != 21 && Version != 22 && Version != 23)
+            if (Version < 21 || Version > 24)
             {
                 throw new Exception($"ERROR: Metadata file supplied is not a supported version ({Header.version}).");
             }
