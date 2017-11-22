@@ -48,12 +48,16 @@ namespace Il2CppInspector.Reflection
                     return new TypeInfo(this, pType, memberType);
 
                 default:
-                    // Basic primitive types
-                    if ((int) pType.type >= Il2CppConstants.FullNameTypeString.Count)
-                        return null;
-
-                    return Assemblies.SelectMany(x => x.DefinedTypes).First(x => x.FullName == Il2CppConstants.FullNameTypeString[(int)pType.type]);
+                    return GetTypeFromEnum(pType.type);
             }
+        }
+
+        // Basic primitive types
+        public TypeInfo GetTypeFromEnum(Il2CppTypeEnum t) {
+            if ((int)t >= Il2CppConstants.FullNameTypeString.Count)
+                return null;
+
+            return Assemblies.SelectMany(x => x.DefinedTypes).First(x => x.FullName == Il2CppConstants.FullNameTypeString[(int)t]);
         }
     }
 }

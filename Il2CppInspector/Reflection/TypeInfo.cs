@@ -52,7 +52,15 @@ namespace Il2CppInspector.Reflection {
         public MethodBase DeclaringMethod => throw new NotImplementedException();
 
         // Gets the type of the object encompassed or referred to by the current array, pointer or reference type
-        public TypeInfo ElementType { get; }
+        private Il2CppType enumElementType;
+        private TypeInfo elementType;
+        public TypeInfo ElementType {
+            get {
+                if (IsEnum && elementType == null)
+                    elementType = Assembly.Model.GetType(enumElementType, MemberTypes.TypeInfo);
+                return elementType;
+            }
+        }
 
         // Type name including namespace
         public string FullName => (IsPointer? "void *" : "")
@@ -75,7 +83,7 @@ namespace Il2CppInspector.Reflection {
         public bool IsArray { get; }
         public bool IsByRef => throw new NotImplementedException();
         public bool IsClass => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Class;
-        public bool IsEnum => throw new NotImplementedException();
+        public bool IsEnum { get; }
         public bool IsGenericParameter { get; }
         public bool IsGenericType => throw new NotImplementedException();
         public bool IsGenericTypeDefinition => throw new NotImplementedException();
@@ -115,11 +123,11 @@ namespace Il2CppInspector.Reflection {
 
         // TODO: Custom attribute stuff
 
-        public string[] GetEnumNames() => throw new NotImplementedException();
+        public string[] GetEnumNames() => IsEnum? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.Name).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
 
-        public TypeInfo GetEnumUnderlyingType() => throw new NotImplementedException();
+        public TypeInfo GetEnumUnderlyingType() => ElementType;
 
-        public Array GetEnumValues() => throw new NotImplementedException();
+        public Array GetEnumValues() => IsEnum? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.DefaultValue).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
 
         // TODO: Event stuff
 
@@ -166,6 +174,12 @@ namespace Il2CppInspector.Reflection {
             // TypeAttributes.Class == 0 so we only care about setting TypeAttributes.Interface (it's a non-interface class by default)
             if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_INTERFACE) != 0)
                 Attributes |= TypeAttributes.Interface;
+
+            // Enumerations - bit 1 of bitfield indicates this (also the baseType will be System.Enum)
+            if (((Definition.bitfield >> 1) & 1) == 1) {
+                IsEnum = true;
+                enumElementType = pkg.TypeUsages[Definition.elementTypeIndex];
+            }
 
             // Add all implemented interfaces
             implementedInterfaces = new Il2CppType[Definition.interfaces_count];
@@ -224,7 +238,7 @@ namespace Il2CppInspector.Reflection {
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_ARRAY) {
                 var descriptor = image.ReadMappedObject<Il2CppArrayType>(pType.datapoint);
                 var elementType = image.ReadMappedObject<Il2CppType>(descriptor.etype);
-                ElementType = model.GetType(elementType);
+                this.elementType = model.GetType(elementType);
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
 
@@ -235,7 +249,7 @@ namespace Il2CppInspector.Reflection {
             // Dynamically allocated array
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY) {
                 var elementType = image.ReadMappedObject<Il2CppType>(pType.datapoint);
-                ElementType = model.GetType(elementType);
+                this.elementType = model.GetType(elementType);
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
 

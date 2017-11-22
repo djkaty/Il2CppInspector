@@ -4,6 +4,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Il2CppInspector.Reflection;
 
@@ -50,60 +51,70 @@ namespace Il2CppInspector
                     else {
                         if (type.IsAbstract && !type.IsInterface)
                             writer.Write("abstract ");
-                        if (type.IsSealed && !type.IsValueType)
+                        if (type.IsSealed && !type.IsValueType && !type.IsEnum)
                             writer.Write("sealed ");
                     }
                     if (type.IsInterface)
                         writer.Write("interface ");
                     else if (type.IsValueType)
                         writer.Write("struct ");
+                    else if (type.IsEnum)
+                        writer.Write("enum ");
                     else
                         writer.Write("class ");
 
                     var @base = type.ImplementedInterfaces.Select(x => x.CSharpName).ToList();
-                    if (type.BaseType != null && type.BaseType.FullName != "System.Object" && type.BaseType.FullName != "System.ValueType")
+                    if (type.BaseType != null && type.BaseType.FullName != "System.Object" && type.BaseType.FullName != "System.ValueType" && !type.IsEnum)
                         @base.Insert(0, type.BaseType.CSharpName);
+                    if (type.IsEnum && type.ElementType.CSharpName != "int") // enums derive from int by default
+                        @base.Insert(0, type.ElementType.CSharpName);
                     var baseText = @base.Count > 0 ? " : " + string.Join(", ", @base) : string.Empty;
 
                     writer.Write($"{type.Name}{baseText} // TypeDefIndex: {type.Index}\n{{\n");
 
                     // Fields
-                    if (type.DeclaredFields.Count > 0)
-                        writer.Write("\t// Fields\n");
+                    if (!type.IsEnum) {
+                        if (type.DeclaredFields.Count > 0)
+                            writer.Write("\t// Fields\n");
 
-                    foreach (var field in type.DeclaredFields) {
-                        writer.Write("\t");
-                        if (field.IsNotSerialized)
-                            writer.Write("[NonSerialized]\t");
+                        foreach (var field in type.DeclaredFields) {
+                            writer.Write("\t");
+                            if (field.IsNotSerialized)
+                                writer.Write("[NonSerialized]\t");
 
-                        if (field.IsPrivate)
-                            writer.Write("private ");
-                        if (field.IsPublic)
-                            writer.Write("public ");
-                        if (field.IsFamily)
-                            writer.Write("protected ");
-                        if (field.IsAssembly)
-                            writer.Write("internal ");
-                        if (field.IsFamilyOrAssembly)
-                            writer.Write("protected internal ");
-                        if (field.IsFamilyAndAssembly)
-                            writer.Write("[family and assembly] ");
-                        if (field.IsLiteral)
-                            writer.Write("const ");
-                        // All const fields are also static by implication
-                        else if (field.IsStatic)
-                            writer.Write("static ");
-                        if (field.IsInitOnly)
-                            writer.Write("readonly ");
-                        if (field.IsPinvokeImpl)
-                            writer.Write("extern ");
-                        writer.Write($"{field.FieldType.CSharpName} {field.Name}");
-                        if (field.HasDefaultValue)
-                            writer.Write($" = {field.DefaultValueString}");
-                        writer.Write("; // 0x{0:X}\n", field.Offset);
+                            if (field.IsPrivate)
+                                writer.Write("private ");
+                            if (field.IsPublic)
+                                writer.Write("public ");
+                            if (field.IsFamily)
+                                writer.Write("protected ");
+                            if (field.IsAssembly)
+                                writer.Write("internal ");
+                            if (field.IsFamilyOrAssembly)
+                                writer.Write("protected internal ");
+                            if (field.IsFamilyAndAssembly)
+                                writer.Write("[family and assembly] ");
+                            if (field.IsLiteral)
+                                writer.Write("const ");
+                            // All const fields are also static by implication
+                            else if (field.IsStatic)
+                                writer.Write("static ");
+                            if (field.IsInitOnly)
+                                writer.Write("readonly ");
+                            if (field.IsPinvokeImpl)
+                                writer.Write("extern ");
+                            writer.Write($"{field.FieldType.CSharpName} {field.Name}");
+                            if (field.HasDefaultValue)
+                                writer.Write($" = {field.DefaultValueString}");
+                            writer.Write("; // 0x{0:X}\n", field.Offset);
+                        }
+                        if (type.DeclaredFields.Count > 0)
+                            writer.Write("\n");
                     }
-                    if (type.DeclaredFields.Count > 0)
-                        writer.Write("\n");
+                    else {
+                        writer.Write(string.Join(",\n", type.GetEnumNames().Zip(type.GetEnumValues().OfType<object>(),
+                            (k, v) => new { k, v }).OrderBy(x => x.v).Select(x => $"\t{x.k} = {x.v}")) + "\n");
+                    }
 
                     // Properties
                     if (type.DeclaredProperties.Count > 0)
