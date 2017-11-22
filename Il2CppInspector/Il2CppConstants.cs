@@ -183,7 +183,7 @@ namespace Il2CppInspector
             "T",
             "Array",        // Processed separately
             "GENERICINST",  // Processed separately
-            "TYPEDBYREF",
+            "TypedReference", // params
             "None",
             "IntPtr",
             "UIntPtr",
@@ -221,7 +221,7 @@ namespace Il2CppInspector
             "T",
             "System.Array",        // Processed separately
             "GENERICINST",         // Processed separately
-            "TYPEDBYREF",
+            "System.TypedReference", // params
             "None",
             "System.IntPtr",
             "System.UIntPtr",
