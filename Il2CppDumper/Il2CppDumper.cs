@@ -117,6 +117,8 @@ namespace Il2CppInspector
                             (k, v) => new { k, v }).OrderBy(x => x.v).Select(x => $"\t{x.k} = {x.v}")) + "\n");
                     }
 
+                    var usedMethods = new List<Reflection.MethodInfo>();
+
                     // Properties
                     if (type.DeclaredProperties.Count > 0)
                         writer.Write("\t// Properties\n");
@@ -126,6 +128,8 @@ namespace Il2CppInspector
                         writer.Write($"\t{modifiers} {prop.PropertyType.CSharpName} {prop.Name} {{ ");
                         writer.Write((prop.GetMethod != null ? "get; " : "") + (prop.SetMethod != null ? "set; " : "") + "} // ");
                         writer.Write((prop.GetMethod != null ? "0x{0:X8} " : "") + (prop.SetMethod != null? "0x{1:X8}" : "") + "\n", prop.GetMethod?.VirtualAddress, prop.SetMethod?.VirtualAddress);
+                        usedMethods.Add(prop.GetMethod);
+                        usedMethods.Add(prop.SetMethod);
                     }
                     if (type.DeclaredProperties.Count > 0)
                         writer.Write("\n");
@@ -142,6 +146,9 @@ namespace Il2CppInspector
                         if (evt.RemoveMethod != null) m.Add("remove", evt.RemoveMethod.VirtualAddress);
                         if (evt.RaiseMethod != null) m.Add("raise", evt.RaiseMethod.VirtualAddress);
                         writer.Write(string.Join("\n", m.Select(x => $"\t\t{x.Key}; // 0x{x.Value:X8}")) + "\n\t}\n");
+                        usedMethods.Add(evt.AddMethod);
+                        usedMethods.Add(evt.RemoveMethod);
+                        usedMethods.Add(evt.RaiseMethod);
                     }
 
                     if (type.DeclaredEvents.Count > 0)
@@ -152,6 +159,10 @@ namespace Il2CppInspector
                         writer.Write("\t// Methods\n");
 
                     foreach (var method in type.DeclaredMethods) {
+                        // Don't re-output methods for constructors, properties, events etc.
+                        if (usedMethods.Contains(method))
+                            continue;
+
                         writer.Write($"\t{method.GetModifierString()} {method.ReturnType.CSharpName} {method.Name}(");
 
                         bool first = true;
