@@ -226,4 +226,15 @@ namespace Il2CppInspector
         public int customAttributeIndex;
         public uint token;
     }
+
+    public class Il2CppEventDefinition
+    {
+        public int nameIndex;
+        public int typeIndex;
+        public int add;
+        public int remove;
+        public int raise;
+        public int customAttributeIndex;
+        public uint token;
+    }
 }

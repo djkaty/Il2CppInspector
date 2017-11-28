@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Il2CppInspector.Reflection {
     public class TypeInfo : MemberInfo
@@ -41,7 +42,7 @@ namespace Il2CppInspector.Reflection {
         }
 
         public List<ConstructorInfo> DeclaredConstructors => throw new NotImplementedException();
-        public List<EventInfo> DeclaredEvents => throw new NotImplementedException();
+        public List<EventInfo> DeclaredEvents { get; } = new List<EventInfo>();
         public List<FieldInfo> DeclaredFields { get; } = new List<FieldInfo>();
         public List<MemberInfo> DeclaredMembers => throw new NotImplementedException();
         public List<MethodInfo> DeclaredMethods { get; } = new List<MethodInfo>();
@@ -129,8 +130,6 @@ namespace Il2CppInspector.Reflection {
 
         public Array GetEnumValues() => IsEnum? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.DefaultValue).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
 
-        // TODO: Event stuff
-
         // TODO: Generic stuff
 
         // Initialize from specified type index in metadata
@@ -198,6 +197,9 @@ namespace Il2CppInspector.Reflection {
             for (var p = Definition.propertyStart; p < Definition.propertyStart + Definition.property_count; p++)
                 DeclaredProperties.Add(new PropertyInfo(pkg, p, this));
 
+            // Add all events
+            for (var e = Definition.eventStart; e < Definition.eventStart + Definition.event_count; e++)
+                DeclaredEvents.Add(new EventInfo(pkg, e, this));
             MemberType = MemberTypes.TypeInfo;
         }
 

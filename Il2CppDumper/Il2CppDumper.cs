@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2017 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
 // All rights reserved
 
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -129,6 +130,23 @@ namespace Il2CppInspector
                     if (type.DeclaredProperties.Count > 0)
                         writer.Write("\n");
 
+                    // Events
+                    if (type.DeclaredEvents.Count > 0)
+                        writer.Write("\t// Events\n");
+
+                    foreach (var evt in type.DeclaredEvents) {
+                        string modifiers = evt.AddMethod?.GetModifierString();
+                        writer.Write($"\t{modifiers} event {evt.EventHandlerType.CSharpName} {evt.Name} {{\n");
+                        var m = new Dictionary<string, uint>();
+                        if (evt.AddMethod != null) m.Add("add", evt.AddMethod.VirtualAddress);
+                        if (evt.RemoveMethod != null) m.Add("remove", evt.RemoveMethod.VirtualAddress);
+                        if (evt.RaiseMethod != null) m.Add("raise", evt.RaiseMethod.VirtualAddress);
+                        writer.Write(string.Join("\n", m.Select(x => $"\t\t{x.Key}; // 0x{x.Value:X8}")) + "\n\t}\n");
+                    }
+
+                    if (type.DeclaredEvents.Count > 0)
+                        writer.Write("\n");
+
                     // Methods
                     if (type.DeclaredMethods.Count > 0)
                         writer.Write("\t// Methods\n");
@@ -147,7 +165,7 @@ namespace Il2CppInspector
                                 writer.Write("out ");
                             writer.Write($"{param.ParameterType.CSharpName} {param.Name}");
                         }
-                        writer.Write("); // 0x{0:X}\n",
+                        writer.Write("); // 0x{0:X8}\n",
                             method.VirtualAddress);
                     }
                     writer.Write("}\n");
