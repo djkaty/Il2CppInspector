@@ -44,6 +44,10 @@ namespace Il2CppInspector.Reflection
         protected MethodBase(TypeInfo declaringType) : base(declaringType) { }
 
         public string GetModifierString() {
+            // Interface methods and properties have no visible modifiers (they are always declared 'public abstract')
+            if (DeclaringType.IsInterface)
+                return string.Empty;
+
             StringBuilder modifiers = new StringBuilder();
 
             if (IsPrivate)
@@ -72,7 +76,8 @@ namespace Il2CppInspector.Reflection
             if ((Attributes & MethodAttributes.PinvokeImpl) != 0)
                 modifiers.Append("extern ");
 
-            return modifiers.ToString().Trim();
+            // Will include a trailing space
+            return modifiers.ToString();
         }
     }
 }

@@ -133,6 +133,8 @@ namespace Il2CppInspector
                         if (type.DeclaredFields.Count > 0)
                             writer.Write("\n");
                     }
+
+                    // Enumeration
                     else {
                         writer.Write(string.Join(",\n", type.GetEnumNames().Zip(type.GetEnumValues().OfType<object>(),
                             (k, v) => new { k, v }).OrderBy(x => x.v).Select(x => $"\t{x.k} = {x.v}")) + "\n");
@@ -146,9 +148,13 @@ namespace Il2CppInspector
 
                     foreach (var prop in type.DeclaredProperties) {
                         string modifiers = prop.GetMethod?.GetModifierString() ?? prop.SetMethod.GetModifierString();
-                        writer.Write($"\t{modifiers} {prop.PropertyType.CSharpName} {prop.Name} {{ ");
-                        writer.Write((prop.GetMethod != null ? "get; " : "") + (prop.SetMethod != null ? "set; " : "") + "} // ");
-                        writer.Write((prop.GetMethod != null ? "0x{0:X8} " : "") + (prop.SetMethod != null? "0x{1:X8}" : "") + "\n", prop.GetMethod?.VirtualAddress, prop.SetMethod?.VirtualAddress);
+                        writer.Write($"\t{modifiers}{prop.PropertyType.CSharpName} {prop.Name} {{ ");
+                        writer.Write((prop.GetMethod != null ? "get; " : "") + (prop.SetMethod != null ? "set; " : "") + "}");
+                        if ((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0) || (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0))
+                            writer.Write(" // ");
+                        writer.Write((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0? "0x{0:X8} " : "")
+                                    + (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0? "0x{1:X8}" : "") + "\n",
+                                    prop.GetMethod?.VirtualAddress, prop.SetMethod?.VirtualAddress);
                         usedMethods.Add(prop.GetMethod);
                         usedMethods.Add(prop.SetMethod);
                     }
@@ -161,7 +167,7 @@ namespace Il2CppInspector
 
                     foreach (var evt in type.DeclaredEvents) {
                         string modifiers = evt.AddMethod?.GetModifierString();
-                        writer.Write($"\t{modifiers} event {evt.EventHandlerType.CSharpName} {evt.Name} {{\n");
+                        writer.Write($"\t{modifiers}event {evt.EventHandlerType.CSharpName} {evt.Name} {{\n");
                         var m = new Dictionary<string, uint>();
                         if (evt.AddMethod != null) m.Add("add", evt.AddMethod.VirtualAddress);
                         if (evt.RemoveMethod != null) m.Add("remove", evt.RemoveMethod.VirtualAddress);
@@ -171,20 +177,16 @@ namespace Il2CppInspector
                         usedMethods.Add(evt.RemoveMethod);
                         usedMethods.Add(evt.RaiseMethod);
                     }
-
                     if (type.DeclaredEvents.Count > 0)
                         writer.Write("\n");
 
                     // Methods
-                    if (type.DeclaredMethods.Count > 0)
+                    if (type.DeclaredMethods.Except(usedMethods).Any())
                         writer.Write("\t// Methods\n");
 
-                    foreach (var method in type.DeclaredMethods) {
-                        // Don't re-output methods for constructors, properties, events etc.
-                        if (usedMethods.Contains(method))
-                            continue;
-
-                        writer.Write($"\t{method.GetModifierString()} {method.ReturnType.CSharpName} {method.Name}(");
+                    // Don't re-output methods for constructors, properties, events etc.
+                    foreach (var method in type.DeclaredMethods.Except(usedMethods)) {
+                        writer.Write($"\t{method.GetModifierString()}{method.ReturnType.CSharpName} {method.Name}(");
 
                         bool first = true;
                         foreach (var param in method.DeclaredParameters) {
@@ -197,8 +199,7 @@ namespace Il2CppInspector
                                 writer.Write("out ");
                             writer.Write($"{param.ParameterType.CSharpName} {param.Name}");
                         }
-                        writer.Write("); // 0x{0:X8}\n",
-                            method.VirtualAddress);
+                        writer.Write(");" + (method.VirtualAddress != 0? $" // 0x{method.VirtualAddress:X8}" : "") + "\n");
                     }
                     writer.Write("}\n");
                 }
