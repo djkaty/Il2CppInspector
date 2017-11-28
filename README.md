@@ -5,7 +5,7 @@ Extract types, methods, properties and fields from Unity IL2CPP binaries.
 * Supports ARMv7, ARMv7 Thumb T1 and x86 architectures regardless of file format
 * Supports metadata versions 21, 22, 23 and 24
 * No manual reverse-engineering required; all data is calculated automatically
-* Special language construct/syntax support for enumerations and events
+* Syntax support for enumerations, events and delegates
 * **Il2CppInspector** re-usable class library for low-level access to IL2CPP binaries and metadata
 * **Il2CppReflector** re-usable class library for high-level .NET Reflection-style access to IL2CPP types and data as a tree model
 

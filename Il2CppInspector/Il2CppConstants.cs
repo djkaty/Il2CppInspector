@@ -188,7 +188,7 @@ namespace Il2CppInspector
             "IntPtr",
             "UIntPtr",
             "None",
-            "delegate",
+            "Delegate",
             "object",
             "SZARRAY",      // Processed separately
             "T",

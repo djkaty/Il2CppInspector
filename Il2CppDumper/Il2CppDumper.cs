@@ -46,6 +46,27 @@ namespace Il2CppInspector
                         writer.Write("protected internal ");
                     if (type.IsNestedFamANDAssem)
                         writer.Write("[family and assembly] ");
+
+                    // Roll-up multicast delegates to use the 'delegate' syntactic sugar
+                    if (type.IsClass && type.IsSealed && type.BaseType?.FullName == "System.MulticastDelegate") {
+                        var del = type.DeclaredMethods.First(x => x.Name == "Invoke");
+                        writer.Write($"delegate {del.ReturnType.CSharpName} {type.Name}(");
+
+                        bool first = true;
+                        foreach (var param in del.DeclaredParameters) {
+                            if (!first)
+                                writer.Write(", ");
+                            first = false;
+                            if (param.IsOptional)
+                                writer.Write("optional ");
+                            if (param.IsOut)
+                                writer.Write("out ");
+                            writer.Write($"{param.ParameterType.CSharpName} {param.Name}");
+                        }
+                        writer.Write($"); // TypeDefIndex: {type.Index}; 0x{del.VirtualAddress:X8}\n");
+                        continue;
+                    }
+
                     // An abstract sealed class is a static class
                     if (type.IsAbstract && type.IsSealed)
                         writer.Write("static ");
