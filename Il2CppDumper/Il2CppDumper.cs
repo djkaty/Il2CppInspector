@@ -107,7 +107,7 @@ namespace Il2CppInspector
                             writer.Write($"{field.FieldType.CSharpName} {field.Name}");
                             if (field.HasDefaultValue)
                                 writer.Write($" = {field.DefaultValueString}");
-                            writer.Write("; // 0x{0:X}\n", field.Offset);
+                            writer.Write("; // 0x{0:X2}\n", field.Offset);
                         }
                         if (type.DeclaredFields.Count > 0)
                             writer.Write("\n");
@@ -124,8 +124,8 @@ namespace Il2CppInspector
                     foreach (var prop in type.DeclaredProperties) {
                         string modifiers = prop.GetMethod?.GetModifierString() ?? prop.SetMethod.GetModifierString();
                         writer.Write($"\t{modifiers} {prop.PropertyType.CSharpName} {prop.Name} {{ ");
-                        writer.Write((prop.GetMethod != null ? "get; " : "") + (prop.SetMethod != null ? "set; " : ""));
-                        writer.Write("}\n");
+                        writer.Write((prop.GetMethod != null ? "get; " : "") + (prop.SetMethod != null ? "set; " : "") + "} // ");
+                        writer.Write((prop.GetMethod != null ? "0x{0:X8} " : "") + (prop.SetMethod != null? "0x{1:X8}" : "") + "\n", prop.GetMethod?.VirtualAddress, prop.SetMethod?.VirtualAddress);
                     }
                     if (type.DeclaredProperties.Count > 0)
                         writer.Write("\n");
