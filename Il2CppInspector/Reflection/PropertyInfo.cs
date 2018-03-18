@@ -17,7 +17,7 @@ namespace Il2CppInspector.Reflection {
         public MethodInfo GetMethod { get; }
         public MethodInfo SetMethod { get; }
 
-        public string Name { get; }
+        public override string Name { get; protected set; }
 
         public TypeInfo PropertyType => GetMethod?.ReturnType ?? SetMethod.DeclaredParameters[0].ParameterType;
 
