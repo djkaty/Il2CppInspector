@@ -88,6 +88,10 @@ namespace Il2CppInspector
             return addrs.ToArray();
         }
 
+        public override void FinalizeInit(Il2CppBinary il2cpp) {
+            il2cpp.MethodPointers = il2cpp.MethodPointers.Select(x => x - 1).ToArray();
+        }
+
         public override uint MapVATR(uint uiAddr) {
             if (uiAddr == 0)
                 return 0;

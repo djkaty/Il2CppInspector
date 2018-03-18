@@ -140,7 +140,6 @@ namespace Il2CppInspector
         }
 
         public override void FinalizeInit(Il2CppBinary il2cpp) {
-            // Mach-O function pointers have an annoying habit of being 1-off
             il2cpp.MethodPointers = il2cpp.MethodPointers.Select(x => x - 1).ToArray();
         }
 
