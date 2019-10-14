@@ -5,7 +5,9 @@
     All rights reserved.
 */
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Il2CppInspector
 {
@@ -43,6 +45,10 @@ namespace Il2CppInspector
             var subImage = Image[imageIndex];
             Image.Stream.Version = version;
             var addrs = subImage.GetFunctionTable();
+
+            Console.WriteLine("Function Table:");
+            Console.WriteLine(string.Join(", ", from a in addrs select string.Format($"0x{a:X8}")));
+
             foreach (var loc in addrs)
                 if (loc != 0) {
                     var (code, metadata) = ConsiderCode(loc, Image.GlobalOffset);
