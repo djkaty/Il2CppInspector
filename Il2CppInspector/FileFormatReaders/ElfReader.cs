@@ -84,9 +84,12 @@ namespace Il2CppInspector
             return ReadArray<uint>(init_array.sh_offset, (int) init_array.sh_size / 4);
         }
 
+        // Map a virtual address to an offset into the image file. Throws an exception if the virtual address is not mapped into the file.
+        // Note if uiAddr is a valid segment but filesz < memsz and the adjusted uiAddr falls between the range of filesz and memsz,
+        // an exception will be thrown. This area of memory is assumed to contain all zeroes.
         public override uint MapVATR(uint uiAddr)
         {
-            var program_header_table = program_table_element.First(x => uiAddr >= x.p_vaddr && uiAddr <= (x.p_vaddr + x.p_memsz));
+            var program_header_table = program_table_element.First(x => uiAddr >= x.p_vaddr && uiAddr <= (x.p_vaddr + x.p_filesz));
             return uiAddr - (program_header_table.p_vaddr - program_header_table.p_offset);
         }
     }

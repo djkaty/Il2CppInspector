@@ -133,10 +133,10 @@ namespace Il2CppInspector
                     var def = TypeDefinitions[i];
                     var pFieldOffsets = Binary.FieldOffsetData[i];
                     if (pFieldOffsets != 0) {
-                        Binary.Image.Stream.Position = Binary.Image.MapVATR((uint) pFieldOffsets);
+                        BinaryImage.Position = BinaryImage.MapVATR((uint) pFieldOffsets);
 
                         for (var f = 0; f < def.field_count; f++)
-                            offsets.Add(def.fieldStart + f, Binary.Image.Stream.ReadInt32());
+                            offsets.Add(def.fieldStart + f, BinaryImage.Stream.ReadInt32());
                     }
                 }
 

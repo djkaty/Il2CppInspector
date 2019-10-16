@@ -46,9 +46,16 @@ namespace Il2CppInspector.Reflection
                 // Per-module method pointer array uses the bottom 24 bits of the method's metadata token
                 // Derived from il2cpp::vm::MetadataCache::GetMethodPointer
                 else {
-                    var method = (Definition.token & 0xffffff) - 1;
-                    pkg.BinaryImage.Position = pkg.BinaryImage.MapVATR(Assembly.Module.methodPointers + method * 4);
-                    VirtualAddress = pkg.BinaryImage.ReadUInt32();
+                    var method = (Definition.token & 0xffffff);
+                    if (method != 0) {
+                        // In the event of an exception, the method pointer is not set in the file
+                        // This probably means it has been optimized away by the compiler, or is an unused generic method
+                        try {
+                            pkg.BinaryImage.Position =
+                                pkg.BinaryImage.MapVATR(Assembly.Module.methodPointers + (method - 1) * 4);
+                            VirtualAddress = pkg.BinaryImage.ReadUInt32();
+                        } catch (Exception) { }
+                    }
                 }
 
                 // Remove ARM Thumb marker LSB if necessary

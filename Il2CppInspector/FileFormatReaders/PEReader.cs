@@ -93,7 +93,7 @@ namespace Il2CppInspector
                 return 0;
 
             var section = sections.First(x => uiAddr - GlobalOffset >= x.BaseMemory &&
-                                              uiAddr - GlobalOffset < x.BaseMemory + x.SizeMemory);
+                                              uiAddr - GlobalOffset < x.BaseMemory + x.SizeImage);
             return uiAddr - section.BaseMemory - GlobalOffset + section.BaseImage;
         }
     }
