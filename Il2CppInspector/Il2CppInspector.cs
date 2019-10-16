@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -137,6 +137,8 @@ namespace Il2CppInspector
                 Console.Error.WriteLine(ex.Message);
                 return null;
             }
+
+            Console.WriteLine("Detected metadata version " + metadata.Version);
 
             // Load the il2cpp code file (try ELF, PE, Mach-O and Universal Binary)
             var memoryStream = new MemoryStream(File.ReadAllBytes(codeFile));
