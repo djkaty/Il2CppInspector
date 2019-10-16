@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -50,6 +50,9 @@ namespace Il2CppInspector.Reflection
                     pkg.Binary.Image.Position = pkg.Binary.Image.MapVATR(Assembly.Module.methodPointers + method * 4);
                     VirtualAddress = pkg.Binary.Image.ReadUInt32();
                 }
+
+                // Remove ARM Thumb marker LSB if necessary
+                VirtualAddress &= 0xfffffffe;
 
                 HasBody = true;
             }

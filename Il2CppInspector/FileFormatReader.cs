@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -24,7 +24,6 @@ namespace Il2CppInspector
         U ReadMappedObject<U>(uint uiAddr) where U : new();
         U[] ReadMappedArray<U>(uint uiAddr, int count) where U : new();
         uint MapVATR(uint uiAddr);
-        void FinalizeInit(Il2CppBinary il2cpp);
 
         byte[] ReadBytes(int count);
         ulong ReadUInt64();
@@ -105,8 +104,5 @@ namespace Il2CppInspector
                 array.Add(ReadMappedObject<U>(pointers[i]));
             return array;
         }
-
-        // Perform file format-based post-load manipulations to the IL2Cpp data
-        public virtual void FinalizeInit(Il2CppBinary il2cpp) { }
     }
 }

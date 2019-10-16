@@ -59,7 +59,6 @@ namespace Il2CppInspector
                     var (code, metadata) = ConsiderCode(loc, Image.GlobalOffset);
                     if (code != 0) {
                         Configure(subImage, code, metadata); 
-                        subImage.FinalizeInit(this);
                         return true;
                     }
                 }

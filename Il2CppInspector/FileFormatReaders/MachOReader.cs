@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -137,10 +137,6 @@ namespace Il2CppInspector
                 }
             }
             return functionPointers.ToArray();
-        }
-
-        public override void FinalizeInit(Il2CppBinary il2cpp) {
-            il2cpp.MethodPointers = il2cpp.MethodPointers.Select(x => x - 1).ToArray();
         }
 
         public override uint MapVATR(uint uiAddr) {
