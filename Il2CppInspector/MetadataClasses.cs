@@ -61,8 +61,12 @@ namespace Il2CppInspector
         public int interfaceOffsetsCount;
         public int typeDefinitionsOffset; // Il2CppTypeDefinition
         public int typeDefinitionsCount;
+
+        [Version(Max = 24.0)]
         public int rgctxEntriesOffset; // Il2CppRGCTXDefinition
+        [Version(Max = 24.0)]
         public int rgctxEntriesCount;
+
         public int imagesOffset; // Il2CppImageDefinition
         public int imagesCount;
         public int assembliesOffset; // Il2CppAssemblyDefinition
