@@ -31,6 +31,7 @@ namespace Il2CppInspector
         uint ReadUInt32();
         ushort ReadUInt16();
         byte ReadByte();
+        string ReadMappedNullTerminatedString(uint uiAddr);
     }
 
     internal class FileFormatReader<T> : BinaryObjectReader, IFileFormatReader where T : FileFormatReader<T>
@@ -89,6 +90,10 @@ namespace Il2CppInspector
 
         public U[] ReadMappedArray<U>(uint uiAddr, int count) where U : new() {
             return ReadArray<U>(MapVATR(uiAddr), count);
+        }
+
+        public string ReadMappedNullTerminatedString(uint uiAddr) {
+            return ReadNullTerminatedString(MapVATR(uiAddr));
         }
 
         // Perform file format-based post-load manipulations to the IL2Cpp data
