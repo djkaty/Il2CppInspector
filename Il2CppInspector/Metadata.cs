@@ -81,8 +81,8 @@ namespace Il2CppInspector
             Params = ReadArray<Il2CppParameterDefinition>(Header.parametersOffset, Header.parametersCount / Sizeof(typeof(Il2CppParameterDefinition)));
             Fields = ReadArray<Il2CppFieldDefinition>(Header.fieldsOffset, Header.fieldsCount / Sizeof(typeof(Il2CppFieldDefinition)));
             FieldDefaultValues = ReadArray<Il2CppFieldDefaultValue>(Header.fieldDefaultValuesOffset, Header.fieldDefaultValuesCount / Sizeof(typeof(Il2CppFieldDefaultValue)));
-            Properties = ReadArray<Il2CppPropertyDefinition>(Header.propertiesOffset, Header.propertiesOffset / Sizeof(typeof(Il2CppPropertyDefinition)));
-            Events = ReadArray<Il2CppEventDefinition>(Header.eventsOffset, Header.eventsOffset / Sizeof(typeof(Il2CppEventDefinition)));
+            Properties = ReadArray<Il2CppPropertyDefinition>(Header.propertiesOffset, Header.propertiesCount / Sizeof(typeof(Il2CppPropertyDefinition)));
+            Events = ReadArray<Il2CppEventDefinition>(Header.eventsOffset, Header.eventsCount / Sizeof(typeof(Il2CppEventDefinition)));
             InterfaceUsageIndices = ReadArray<int>(Header.interfacesOffset, Header.interfacesCount / sizeof(int));
             // TODO: ParameterDefaultValue, GenericParameters, ParameterConstraints, GenericContainers, MetadataUsage, CustomAttributes
 
