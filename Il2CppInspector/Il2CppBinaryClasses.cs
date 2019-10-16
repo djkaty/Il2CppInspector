@@ -11,10 +11,14 @@ namespace Il2CppInspector
 {
     public class Il2CppCodeRegistration
     {
+        // Moved to Il2CppCodeGenModule in later versions of v24
+        [Version(Max = 24.0)]
         public uint methodPointersCount;
+        [Version(Max = 24.0)]
         public uint pmethodPointers;
-        public uint delegateWrappersFromNativeToManagedCount; // (was renamed to reversePInvokeWrapperCount in v22)
-        public uint delegateWrappersFromNativeToManaged; // (was renamed to reversePInvokeWrappers in v22)
+
+        public uint reversePInvokeWrapperCount; // (was renamed from delegateWrappersFromNativeToManagedCount in v22)
+        public uint reversePInvokeWrappers; // (was renamed from delegateWrappersFromNativeToManaged in v22)
 
         // Removed in metadata v23
         [Version(Max = 22)]
@@ -54,6 +58,12 @@ namespace Il2CppInspector
         public uint interopDataCount;
         [Version(Min = 23)]
         public uint interopData;
+
+        // Added in later versions of metadata v24
+        [Version(Min = 24.1)]
+        public uint codeGenModulesCount;
+        [Version(Min = 24.1)]
+        public uint pcodeGenModules;
     }
 
 #pragma warning disable CS0649
