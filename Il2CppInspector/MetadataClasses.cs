@@ -146,7 +146,9 @@ namespace Il2CppInspector
         public int parentIndex;
         public int elementTypeIndex; // we can probably remove this one. Only used for enums
 
+        [Version(Max = 24.0)]
         public int rgctxStartIndex;
+        [Version(Max = 24.0)]
         public int rgctxCount;
 
         public int genericContainerIndex;
