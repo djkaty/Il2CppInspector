@@ -26,7 +26,12 @@ namespace Il2CppInspector
         // type index => RVA in image where the list of field offsets for the type start (4 bytes per field)
         public int[] FieldOffsetData { get; private set; }
 
-        public List<Il2CppType> Types { get; } = new List<Il2CppType>();
+        // Every defined type
+        public List<Il2CppType> Types { get; private set; }
+
+        // From later versions of v24 onwards, this structure is stored for each module (image)
+        // One assembly may contain multiple modules
+        public Dictionary<string, Il2CppCodeGenModule> Modules { get; private set; }
 
         protected Il2CppBinary(IFileFormatReader stream) {
             Image = stream;
@@ -53,7 +58,7 @@ namespace Il2CppInspector
                 if (loc != 0) {
                     var (code, metadata) = ConsiderCode(loc, Image.GlobalOffset);
                     if (code != 0) {
-                        Configure(subImage, code, metadata);
+                        Configure(subImage, code, metadata); 
                         subImage.FinalizeInit(this);
                         return true;
                     }
@@ -62,13 +67,32 @@ namespace Il2CppInspector
         }
 
         private void Configure(IFileFormatReader image, uint codeRegistration, uint metadataRegistration) {
+            // Root structures from which we find everything else
             CodeRegistration = image.ReadMappedObject<Il2CppCodeRegistration>(codeRegistration);
             MetadataRegistration = image.ReadMappedObject<Il2CppMetadataRegistration>(metadataRegistration);
-            MethodPointers = image.ReadMappedArray<uint>(CodeRegistration.pmethodPointers, (int) CodeRegistration.methodPointersCount);
+
+            // The global method pointer list was deprecated in later versions of v24 in favour of Il2CppCodeGenModule
+            if (Image.Stream.Version <= 24.0)
+                MethodPointers = image.ReadMappedArray<uint>(CodeRegistration.pmethodPointers, (int) CodeRegistration.methodPointersCount);
+
+            // After v24 method pointers and RGCTX data were stored in Il2CppCodeGenModules
+            if (Image.Stream.Version >= 24.1) {
+                Modules = new Dictionary<string, Il2CppCodeGenModule>();
+
+                // Array of pointers to Il2CppCodeGenModule
+                var modules = image.ReadMappedObjectPointerArray<Il2CppCodeGenModule>(CodeRegistration.pcodeGenModules, (int) CodeRegistration.codeGenModulesCount);
+
+                foreach (var module in modules) {
+                    var name = image.ReadMappedNullTerminatedString(module.moduleName);
+                    Modules.Add(name, module);
+                }
+            }
+            
+            // Field offset data. Metadata <=21.x uses a value-type array; >=21.x uses a pointer array
             FieldOffsetData = image.ReadMappedArray<int>(MetadataRegistration.pfieldOffsets, MetadataRegistration.fieldOffsetsCount);
-            var types = image.ReadMappedArray<uint>(MetadataRegistration.ptypes, MetadataRegistration.typesCount);
-            for (int i = 0; i < MetadataRegistration.typesCount; i++)
-                Types.Add(image.ReadMappedObject<Il2CppType>(types[i]));
+            
+            // Type definitions (pointer array)
+            Types = image.ReadMappedObjectPointerArray<Il2CppType>(MetadataRegistration.ptypes, MetadataRegistration.typesCount);
         }
     }
 }

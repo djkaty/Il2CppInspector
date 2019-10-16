@@ -14,6 +14,7 @@ namespace Il2CppInspector.Reflection {
         // IL2CPP-specific data
         public Il2CppReflector Model { get; }
         public Il2CppImageDefinition Definition { get; }
+        public Il2CppCodeGenModule Module { get; }
         public int Index { get; }
 
         // TODO: CustomAttributes
@@ -40,6 +41,10 @@ namespace Il2CppInspector.Reflection {
             if (Definition.entryPointIndex != -1) {
                 // TODO: Generate EntryPoint method from entryPointIndex
             }
+
+            // Find corresponding module (we'll need this for method pointers)
+            if (Model.Package.Metadata.Version >= 24.1)
+                Module = Model.Package.Binary.Modules[FullName];
 
             // Generate types in DefinedTypes from typeStart to typeStart+typeCount-1
             for (var t = Definition.typeStart; t < Definition.typeStart + Definition.typeCount; t++)
