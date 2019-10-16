@@ -1,6 +1,6 @@
 ﻿/*
     Copyright 2017 Perfare - https://github.com/Perfare/Il2CppDumper
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -9,6 +9,7 @@ using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
+    // From class-internals.h / il2cpp-class-internals.h
     public class Il2CppCodeRegistration
     {
         // Moved to Il2CppCodeGenModule in later versions of v24
@@ -66,6 +67,22 @@ namespace Il2CppInspector
         public uint pcodeGenModules;
     }
 
+    // Introduced in metadata v24.1 (replaces method pointers in Il2CppCodeRegistration)
+    public class Il2CppCodeGenModule
+    {
+        public uint moduleName;
+        public uint methodPointerCount;
+        public uint methodPointers;
+        public uint invokerIndices;
+        public uint reversePInvokeWrapperCount;
+        public uint reversePInvokeWrapperIndices;
+        public uint rgctxRangesCount;
+        public uint rgctxRanges;
+        public uint rgctxsCount;
+        public uint rgctxs;
+        public uint debuggerMetadata;
+    }
+
 #pragma warning disable CS0649
     public class Il2CppMetadataRegistration
     {
@@ -90,6 +107,7 @@ namespace Il2CppInspector
     }
 #pragma warning restore CS0649
 
+    // From blob.h / il2cpp-blob.h
     public enum Il2CppTypeEnum
     {
         IL2CPP_TYPE_END = 0x00,       /* End of List */
@@ -132,16 +150,27 @@ namespace Il2CppInspector
         IL2CPP_TYPE_ENUM = 0x55        /* an enumeration */
     }
 
+    // From metadata.h / il2cpp-runtime-metadata.h
     public class Il2CppType
     {
+        /*
+        union
+        {
+            TypeDefinitionIndex klassIndex; // for VALUETYPE and CLASS 
+            const Il2CppType* type; // for PTR and SZARRAY 
+            Il2CppArrayType* array; // for ARRAY 
+            GenericParameterIndex genericParameterIndex; // for VAR and MVAR 
+            Il2CppGenericClass* generic_class; // for GENERICINST
+        }
+        */
         public uint datapoint;
-        public uint bits;
+        public uint bits; // this should be private but we need it to be public for BinaryObjectReader to work
 
-        public uint attrs => bits & 0xffff;
+        public uint attrs => bits & 0xffff; /* param attributes or field flags */
         public Il2CppTypeEnum type => (Il2CppTypeEnum)((bits >> 16) & 0xff);
-        public uint num_mods => (bits >> 24) & 0x3f;
+        public uint num_mods => (bits >> 24) & 0x3f; /* max 64 modifiers follow at the end */
         public bool byref => ((bits >> 30) & 1) == 1;
-        public bool pinned => (bits >> 31) == 1;
+        public bool pinned => (bits >> 31) == 1; /* valid when included in a local var signature */
     }
 
     public class Il2CppGenericClass

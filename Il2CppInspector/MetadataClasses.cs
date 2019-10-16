@@ -1,6 +1,6 @@
 ﻿/*
     Copyright 2017 Perfare - https://github.com/Perfare/Il2CppDumper
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -9,6 +9,12 @@ using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
+    // Unity 5.6.2p3 -> v23
+    // Unity 5.6.4f1 -> v23
+    // Unity 2017.2f3 -> v24
+    // Unity 2019.2.8f1 -> v24.1
+
+    // From il2cpp-metadata.h
 #pragma warning disable CS0649
     public class Il2CppGlobalMetadataHeader
     {
@@ -112,6 +118,11 @@ namespace Il2CppInspector
 
         public int entryPointIndex;
         public uint token;
+
+        [Version(Min = 24.1)]
+        public int customAttributeStart;
+        [Version(Min = 24.1)]
+        public uint customAttributeCount;
     }
 #pragma warning restore CS0649
 
@@ -119,7 +130,11 @@ namespace Il2CppInspector
     {
         public int nameIndex;
         public int namespaceIndex;
+
+        // Removed in later versions of metadata v24
+        [Version(Max = 24.0)]
         public int customAttributeIndex;
+
         public int byvalTypeIndex;
         public int byrefTypeIndex;
 
@@ -180,13 +195,23 @@ namespace Il2CppInspector
         public int declaringType;
         public int returnType;
         public int parameterStart;
+
+        [Version(Max = 24.0)]
         public int customAttributeIndex;
+
         public int genericContainerIndex;
+
+        [Version(Max = 24.0)]
         public int methodIndex;
+        [Version(Max = 24.0)]
         public int invokerIndex;
-        public int delegateWrapperIndex; // (was renamed to reversePInvokeWrapperIndex in v22)
+        [Version(Max = 24.0)]
+        public int reversePInvokeWrapperIndex; // (was renamed from delegateWrapperIndex in v22)
+        [Version(Max = 24.0)]
         public int rgctxStartIndex;
+        [Version(Max = 24.0)]
         public int rgctxCount;
+
         public uint token;
         public ushort flags;
         public ushort iflags;
@@ -198,7 +223,10 @@ namespace Il2CppInspector
     {
         public int nameIndex;
         public uint token;
+
+        [Version(Max = 24.0)]
         public int customAttributeIndex;
+
         public int typeIndex;
     }
 
@@ -206,7 +234,10 @@ namespace Il2CppInspector
     {
         public int nameIndex;
         public int typeIndex;
+
+        [Version(Max = 24.0)]
         public int customAttributeIndex;
+
         public uint token;
     }
 
@@ -223,7 +254,10 @@ namespace Il2CppInspector
         public int get;
         public int set;
         public uint attrs;
+
+        [Version(Max = 24.0)]
         public int customAttributeIndex;
+
         public uint token;
     }
 
@@ -234,7 +268,10 @@ namespace Il2CppInspector
         public int add;
         public int remove;
         public int raise;
+
+        [Version(Max = 24.0)]
         public int customAttributeIndex;
+
         public uint token;
     }
 }
