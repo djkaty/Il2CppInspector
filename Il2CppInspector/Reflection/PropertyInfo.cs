@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -25,7 +25,7 @@ namespace Il2CppInspector.Reflection {
 
         public PropertyInfo(Il2CppInspector pkg, int propIndex, TypeInfo declaringType) :
             base(declaringType) {
-            var prop = pkg.Metadata.Properties[propIndex];
+            var prop = pkg.Properties[propIndex];
 
             Name = pkg.Strings[prop.nameIndex];
 

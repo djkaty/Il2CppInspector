@@ -31,7 +31,7 @@ namespace Il2CppInspector.Reflection
 
         public MethodInfo(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) :
             base(declaringType) {
-            Definition = pkg.Metadata.Methods[methodIndex];
+            Definition = pkg.Methods[methodIndex];
             Index = methodIndex;
             Name = pkg.Strings[Definition.nameIndex];
 
@@ -39,16 +39,16 @@ namespace Il2CppInspector.Reflection
             if (Definition.methodIndex >= 0) {
 
                 // Global method pointer array
-                if (pkg.Metadata.Version < 24.1) {
-                    VirtualAddress = pkg.Binary.MethodPointers[Definition.methodIndex];
+                if (pkg.Version < 24.1) {
+                    VirtualAddress = pkg.MethodPointers[Definition.methodIndex];
                 }
 
                 // Per-module method pointer array uses the bottom 24 bits of the method's metadata token
                 // Derived from il2cpp::vm::MetadataCache::GetMethodPointer
                 else {
                     var method = (Definition.token & 0xffffff) - 1;
-                    pkg.Binary.Image.Position = pkg.Binary.Image.MapVATR(Assembly.Module.methodPointers + method * 4);
-                    VirtualAddress = pkg.Binary.Image.ReadUInt32();
+                    pkg.BinaryImage.Position = pkg.BinaryImage.MapVATR(Assembly.Module.methodPointers + method * 4);
+                    VirtualAddress = pkg.BinaryImage.ReadUInt32();
                 }
 
                 // Remove ARM Thumb marker LSB if necessary

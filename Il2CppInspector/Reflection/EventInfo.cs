@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -33,7 +33,7 @@ namespace Il2CppInspector.Reflection
 
         public EventInfo(Il2CppInspector pkg, int eventIndex, TypeInfo declaringType) :
             base(declaringType) {
-            Definition = pkg.Metadata.Events[eventIndex];
+            Definition = pkg.Events[eventIndex];
             Index = eventIndex;
             Name = pkg.Strings[Definition.nameIndex];
 

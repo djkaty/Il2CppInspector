@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -51,8 +51,8 @@ namespace Il2CppInspector.Reflection
                 return;
             }
 
-            var param = pkg.Metadata.Params[paramIndex];
-            Name = pkg.Metadata.Strings[param.nameIndex];
+            var param = pkg.Params[paramIndex];
+            Name = pkg.Strings[param.nameIndex];
             Position = paramIndex - declaringMethod.Definition.parameterStart;
             paramType = pkg.TypeUsages[param.typeIndex];
 

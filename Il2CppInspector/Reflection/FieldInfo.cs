@@ -1,5 +1,5 @@
 /*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -83,7 +83,7 @@ namespace Il2CppInspector.Reflection {
 
         public FieldInfo(Il2CppInspector pkg, int fieldIndex, TypeInfo declaringType) :
             base(declaringType) {
-            Definition = pkg.Metadata.Fields[fieldIndex];
+            Definition = pkg.Fields[fieldIndex];
             Index = fieldIndex;
             Offset = pkg.FieldOffsets[fieldIndex];
             Name = pkg.Strings[Definition.nameIndex];

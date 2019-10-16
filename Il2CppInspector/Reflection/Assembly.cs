@@ -1,5 +1,5 @@
 /*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -34,7 +34,7 @@ namespace Il2CppInspector.Reflection {
         // Initialize from specified assembly index in package
         public Assembly(Il2CppReflector model, int imageIndex) {
             Model = model;
-            Definition = Model.Package.Metadata.Images[imageIndex];
+            Definition = Model.Package.Images[imageIndex];
             Index = Definition.assemblyIndex;
             FullName = Model.Package.Strings[Definition.nameIndex];
 
@@ -43,8 +43,8 @@ namespace Il2CppInspector.Reflection {
             }
 
             // Find corresponding module (we'll need this for method pointers)
-            if (Model.Package.Metadata.Version >= 24.1)
-                Module = Model.Package.Binary.Modules[FullName];
+            if (Model.Package.Version >= 24.1)
+                Module = Model.Package.Modules[FullName];
 
             // Generate types in DefinedTypes from typeStart to typeStart+typeCount-1
             for (var t = Definition.typeStart; t < Definition.typeStart + Definition.typeCount; t++)

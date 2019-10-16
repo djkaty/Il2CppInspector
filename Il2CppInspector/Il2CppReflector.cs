@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -19,7 +19,7 @@ namespace Il2CppInspector.Reflection
             Package = package;
 
             // Create Assembly objects from Il2Cpp package
-            for (var image = 0; image < package.Metadata.Images.Length; image++)
+            for (var image = 0; image < package.Images.Length; image++)
                 Assemblies.Add(new Assembly(this, image));
         }
 

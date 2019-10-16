@@ -12,17 +12,32 @@ using System.Text;
 
 namespace Il2CppInspector
 {
+    // Il2CppInspector ties together the binary and metadata files into a congruent API surface
     public class Il2CppInspector
     {
-        public Il2CppBinary Binary { get; }
-        public Metadata Metadata { get; }
+        private Il2CppBinary Binary { get; }
+        private Metadata Metadata { get; }
 
         // Shortcuts
+        public double Version => Metadata.Version;
+
         public Dictionary<int, string> Strings => Metadata.Strings;
         public Il2CppTypeDefinition[] TypeDefinitions => Metadata.Types;
-        public List<Il2CppType> TypeUsages => Binary.Types;
+        public Il2CppImageDefinition[] Images => Metadata.Images;
+        public Il2CppMethodDefinition[] Methods => Metadata.Methods;
+        public Il2CppParameterDefinition[] Params => Metadata.Params;
+        public Il2CppFieldDefinition[] Fields => Metadata.Fields;
+        public Il2CppPropertyDefinition[] Properties => Metadata.Properties;
+        public Il2CppEventDefinition[] Events => Metadata.Events;
+        public int[] InterfaceUsageIndices => Metadata.InterfaceUsageIndices;
         public Dictionary<int, object> FieldDefaultValue { get; } = new Dictionary<int, object>();
         public List<int> FieldOffsets { get; }
+        public List<Il2CppType> TypeUsages => Binary.Types;
+        public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
+        public uint[] MethodPointers => Binary.MethodPointers;
+
+        // TODO: Finish all file access in the constructor and eliminate the need for this
+        public IFileFormatReader BinaryImage { get; }
 
         public Il2CppInspector(Il2CppBinary binary, Metadata metadata) {
             // Store stream representations
@@ -96,10 +111,10 @@ namespace Il2CppInspector
             // Get all field offsets
 
             // Versions from 22 onwards use an array of pointers in Binary.FieldOffsetData
-            bool fieldOffsetsArePointers = (Metadata.Version >= 22);
+            bool fieldOffsetsArePointers = (Version >= 22);
 
             // Some variants of 21 also use an array of pointers
-            if (Metadata.Version == 21) {
+            if (Version == 21) {
                 var f = Binary.FieldOffsetData;
                 // We detect this by relying on the fact Module, Object, ValueType, Attribute, _Attribute and Int32
                 // are always the first six defined types, and that all but Int32 have no fields

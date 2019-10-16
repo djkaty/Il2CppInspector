@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -183,7 +183,7 @@ namespace Il2CppInspector.Reflection {
             // Add all implemented interfaces
             implementedInterfaces = new Il2CppType[Definition.interfaces_count];
             for (var i = 0; i < Definition.interfaces_count; i++)
-                implementedInterfaces[i] = pkg.TypeUsages[pkg.Metadata.InterfaceUsageIndices[Definition.interfacesStart + i]];
+                implementedInterfaces[i] = pkg.TypeUsages[pkg.InterfaceUsageIndices[Definition.interfacesStart + i]];
 
             // Add all fields
             for (var f = Definition.fieldStart; f < Definition.fieldStart + Definition.field_count; f++)
@@ -205,7 +205,7 @@ namespace Il2CppInspector.Reflection {
 
         // Initialize type from binary usage
         public TypeInfo(Il2CppReflector model, Il2CppType pType, MemberTypes memberType) : base(null) {
-            var image = model.Package.Binary.Image;
+            var image = model.Package.BinaryImage;
 
             IsNested = true;
             MemberType = memberType;
