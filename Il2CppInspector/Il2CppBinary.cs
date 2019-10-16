@@ -18,7 +18,8 @@ namespace Il2CppInspector
         public Il2CppCodeRegistration CodeRegistration { get; protected set; }
         public Il2CppMetadataRegistration MetadataRegistration { get; protected set; }
 
-        public uint[] MethodPointers { get; set; }
+        // Only for <=v24.0
+        public uint[] GlobalMethodPointers { get; set; }
 
         // NOTE: In versions <21 and earlier releases of v21, this array has the format:
         // global field index => field offset
@@ -72,7 +73,7 @@ namespace Il2CppInspector
 
             // The global method pointer list was deprecated in later versions of v24 in favour of Il2CppCodeGenModule
             if (Image.Stream.Version <= 24.0)
-                MethodPointers = image.ReadMappedArray<uint>(CodeRegistration.pmethodPointers, (int) CodeRegistration.methodPointersCount);
+                GlobalMethodPointers = image.ReadMappedArray<uint>(CodeRegistration.pmethodPointers, (int) CodeRegistration.methodPointersCount);
 
             // After v24 method pointers and RGCTX data were stored in Il2CppCodeGenModules
             if (Image.Stream.Version >= 24.1) {
@@ -86,7 +87,7 @@ namespace Il2CppInspector
                     Modules.Add(name, module);
                 }
             }
-            
+
             // Field offset data. Metadata <=21.x uses a value-type array; >=21.x uses a pointer array
             FieldOffsetData = image.ReadMappedArray<int>(MetadataRegistration.pfieldOffsets, MetadataRegistration.fieldOffsetsCount);
             

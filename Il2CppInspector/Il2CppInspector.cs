@@ -34,10 +34,10 @@ namespace Il2CppInspector
         public List<int> FieldOffsets { get; }
         public List<Il2CppType> TypeUsages => Binary.Types;
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
-        public uint[] MethodPointers => Binary.MethodPointers;
+        public uint[] GlobalMethodPointers => Binary.GlobalMethodPointers; // <=v24.0 only
 
         // TODO: Finish all file access in the constructor and eliminate the need for this
-        public IFileFormatReader BinaryImage { get; }
+        public IFileFormatReader BinaryImage => Binary.Image;
 
         public Il2CppInspector(Il2CppBinary binary, Metadata metadata) {
             // Store stream representations
@@ -105,6 +105,7 @@ namespace Il2CppInspector
                         value = Encoding.UTF8.GetString(Metadata.ReadBytes(uiLen));
                         break;
                 }
+
                 FieldDefaultValue.Add(fdv.fieldIndex, value);
             }
 
@@ -138,6 +139,7 @@ namespace Il2CppInspector
                             offsets.Add(def.fieldStart + f, Binary.Image.Stream.ReadInt32());
                     }
                 }
+
                 FieldOffsets = offsets.OrderBy(x => x.Key).Select(x => x.Value).ToList();
             }
         }

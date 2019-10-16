@@ -40,7 +40,7 @@ namespace Il2CppInspector.Reflection
 
                 // Global method pointer array
                 if (pkg.Version < 24.1) {
-                    VirtualAddress = pkg.MethodPointers[Definition.methodIndex];
+                    VirtualAddress = pkg.GlobalMethodPointers[Definition.methodIndex];
                 }
 
                 // Per-module method pointer array uses the bottom 24 bits of the method's metadata token
