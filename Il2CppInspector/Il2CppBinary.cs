@@ -43,7 +43,7 @@ namespace Il2CppInspector
         // Check all search locations
         public bool Initialize(double version, uint imageIndex = 0) {
             var subImage = Image[imageIndex];
-            Image.Stream.Version = version;
+            subImage.Stream.Version = version;
             var addrs = subImage.GetFunctionTable();
 
             Console.WriteLine("Function Table:");
