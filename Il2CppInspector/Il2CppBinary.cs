@@ -41,7 +41,7 @@ namespace Il2CppInspector
         protected abstract (uint, uint) ConsiderCode(uint loc, uint globalOffset);
 
         // Check all search locations
-        public bool Initialize(int version, uint imageIndex = 0) {
+        public bool Initialize(double version, uint imageIndex = 0) {
             var subImage = Image[imageIndex];
             Image.Stream.Version = version;
             var addrs = subImage.GetFunctionTable();
