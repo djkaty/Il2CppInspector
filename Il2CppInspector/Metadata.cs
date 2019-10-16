@@ -1,6 +1,6 @@
 ﻿/*
     Copyright 2017 Perfare - https://github.com/Perfare/Il2CppDumper
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -41,15 +41,41 @@ namespace Il2CppInspector
             Version = ReadInt32();
 
             // Rewind and read metadata header in full
-            Position -= 8;
-            Header = ReadObject<Il2CppGlobalMetadataHeader>();
+            Header = ReadObject<Il2CppGlobalMetadataHeader>(0);
             if (Version < 21 || Version > 24)
             {
                 throw new Exception($"ERROR: Metadata file supplied is not a supported version ({Header.version}).");
             }
 
+            // Sanity checking
+            // Unity.IL2CPP.MetadataCacheWriter.WriteLibIl2CppMetadata always writes the metadata information in the same order it appears in the header,
+            // with each block always coming directly after the previous block, 4-byte aligned. We can use this to check the integrity of the data and
+            // detect sub-versions.
+
+            // For metadata v24, the header can either be either 0x108 (24.0) or 0x110 (24.1) bytes long. Since 'stringLiteralOffset' is the first thing
+            // in the header after the sanity and version fields, and since it will always point directly to the first byte after the end of the header,
+            // we can use this value to determine the actual header length and therefore the IL2CPP metadata sub-version used.
+
+            var realHeaderLength = Header.stringLiteralOffset;
+            if (realHeaderLength != Sizeof(typeof(Il2CppGlobalMetadataHeader))) {
+                if (Version == 24.0) {
+                    Version = 24.1;
+                    Header = ReadObject<Il2CppGlobalMetadataHeader>(0);
+                }
+            }
+
+            if (realHeaderLength != Sizeof(typeof(Il2CppGlobalMetadataHeader))) {
+                throw new Exception("ERROR: Could not verify the integrity of the metadata file or accurately identify the metadata sub-version");
+            }
+            
             // Load all the relevant metadata using offsets provided in the header
             Images = ReadArray<Il2CppImageDefinition>(Header.imagesOffset, Header.imagesCount / Sizeof(typeof(Il2CppImageDefinition)));
+
+            // As an additional sanity check, all images in the metadata should have Mono.Cecil.MetadataToken == 1
+            foreach (var i in Images)
+                if (i.token != 1)
+                    throw new Exception("ERROR: Could not verify the integrity of the metadata file image list");
+
             Types = ReadArray<Il2CppTypeDefinition>(Header.typeDefinitionsOffset, Header.typeDefinitionsCount / Sizeof(typeof(Il2CppTypeDefinition)));
             Methods = ReadArray<Il2CppMethodDefinition>(Header.methodsOffset, Header.methodsCount / Sizeof(typeof(Il2CppMethodDefinition)));
             Params = ReadArray<Il2CppParameterDefinition>(Header.parametersOffset, Header.parametersCount / Sizeof(typeof(Il2CppParameterDefinition)));
