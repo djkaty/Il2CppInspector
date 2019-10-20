@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="TestAssemblies\**" />
+    <Compile Remove="TestBinaries\**" />
+    <Compile Remove="TestExpectedResults\**" />
+    <EmbeddedResource Remove="TestAssemblies\**" />
+    <EmbeddedResource Remove="TestBinaries\**" />
+    <EmbeddedResource Remove="TestExpectedResults\**" />
+    <None Remove="TestAssemblies\**" />
+    <None Remove="TestBinaries\**" />
+    <None Remove="TestExpectedResults\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="TestExpectedResults\GameAssembly-Generics.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-Methods.cs" />
+    <Content Include="TestExpectedResults\Generics.cs" />
+    <Content Include="TestExpectedResults\Methods.cs" />
+    <Content Include="TestSources\Generics.cs" />
+    <Content Include="TestSources\Methods.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Il2CppDumper\Il2CppDumper.csproj" />
+  </ItemGroup>
+
+</Project>
