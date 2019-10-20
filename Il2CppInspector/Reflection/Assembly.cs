@@ -43,7 +43,7 @@ namespace Il2CppInspector.Reflection {
             }
 
             // Find corresponding module (we'll need this for method pointers)
-            if (Model.Package.Version >= 24.1)
+            if (Model.Package.Version >= 24.2)
                 Module = Model.Package.Modules[FullName];
 
             // Generate types in DefinedTypes from typeStart to typeStart+typeCount-1

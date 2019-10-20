@@ -12,10 +12,10 @@ namespace Il2CppInspector
     // From class-internals.h / il2cpp-class-internals.h
     public class Il2CppCodeRegistration
     {
-        // Moved to Il2CppCodeGenModule in later versions of v24
-        [Version(Max = 24.0)]
+        // Moved to Il2CppCodeGenModule in v24.2
+        [Version(Max = 24.1)]
         public uint methodPointersCount;
-        [Version(Max = 24.0)]
+        [Version(Max = 24.1)]
         public uint pmethodPointers;
 
         public uint reversePInvokeWrapperCount; // (was renamed from delegateWrappersFromNativeToManagedCount in v22)
@@ -60,14 +60,14 @@ namespace Il2CppInspector
         [Version(Min = 23)]
         public uint interopData;
 
-        // Added in later versions of metadata v24
-        [Version(Min = 24.1)]
+        // Added in metadata v24.2 to replace methodPointers and methodPointersCount
+        [Version(Min = 24.2)]
         public uint codeGenModulesCount;
-        [Version(Min = 24.1)]
+        [Version(Min = 24.2)]
         public uint pcodeGenModules;
     }
 
-    // Introduced in metadata v24.1 (replaces method pointers in Il2CppCodeRegistration)
+    // Introduced in metadata v24.2 (replaces method pointers in Il2CppCodeRegistration)
     public class Il2CppCodeGenModule
     {
         public uint moduleName;

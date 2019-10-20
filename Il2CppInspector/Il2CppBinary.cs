@@ -18,7 +18,7 @@ namespace Il2CppInspector
         public Il2CppCodeRegistration CodeRegistration { get; protected set; }
         public Il2CppMetadataRegistration MetadataRegistration { get; protected set; }
 
-        // Only for <=v24.0
+        // Only for <=v24.1
         public uint[] GlobalMethodPointers { get; set; }
 
         // NOTE: In versions <21 and earlier releases of v21, this array has the format:
@@ -30,7 +30,7 @@ namespace Il2CppInspector
         // Every defined type
         public List<Il2CppType> Types { get; private set; }
 
-        // From later versions of v24 onwards, this structure is stored for each module (image)
+        // From v24.2 onwards, this structure is stored for each module (image)
         // One assembly may contain multiple modules
         public Dictionary<string, Il2CppCodeGenModule> Modules { get; private set; }
 
@@ -71,12 +71,12 @@ namespace Il2CppInspector
             CodeRegistration = image.ReadMappedObject<Il2CppCodeRegistration>(codeRegistration);
             MetadataRegistration = image.ReadMappedObject<Il2CppMetadataRegistration>(metadataRegistration);
 
-            // The global method pointer list was deprecated in later versions of v24 in favour of Il2CppCodeGenModule
-            if (Image.Stream.Version <= 24.0)
+            // The global method pointer list was deprecated in v24.2 in favour of Il2CppCodeGenModule
+            if (Image.Stream.Version <= 24.1)
                 GlobalMethodPointers = image.ReadMappedArray<uint>(CodeRegistration.pmethodPointers, (int) CodeRegistration.methodPointersCount);
 
             // After v24 method pointers and RGCTX data were stored in Il2CppCodeGenModules
-            if (Image.Stream.Version >= 24.1) {
+            if (Image.Stream.Version >= 24.2) {
                 Modules = new Dictionary<string, Il2CppCodeGenModule>();
 
                 // Array of pointers to Il2CppCodeGenModule

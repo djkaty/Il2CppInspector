@@ -12,7 +12,8 @@ namespace Il2CppInspector
     // Unity 5.6.2p3 -> v23
     // Unity 5.6.4f1 -> v23
     // Unity 2017.2f3 -> v24
-    // Unity 2019.2.8f1 -> v24.1
+    // Unity 2018.3.0f2 -> v24.1
+    // Unity 2019.2.8f1 -> v24.2
 
     // From il2cpp-metadata.h
 #pragma warning disable CS0649
@@ -62,9 +63,9 @@ namespace Il2CppInspector
         public int typeDefinitionsOffset; // Il2CppTypeDefinition
         public int typeDefinitionsCount;
 
-        [Version(Max = 24.0)]
+        [Version(Max = 24.1)]
         public int rgctxEntriesOffset; // Il2CppRGCTXDefinition
-        [Version(Max = 24.0)]
+        [Version(Max = 24.1)]
         public int rgctxEntriesCount;
 
         public int imagesOffset; // Il2CppImageDefinition
@@ -135,7 +136,7 @@ namespace Il2CppInspector
         public int nameIndex;
         public int namespaceIndex;
 
-        // Removed in later versions of metadata v24
+        // Removed in metadata v24.1
         [Version(Max = 24.0)]
         public int customAttributeIndex;
 
@@ -146,9 +147,9 @@ namespace Il2CppInspector
         public int parentIndex;
         public int elementTypeIndex; // we can probably remove this one. Only used for enums
 
-        [Version(Max = 24.0)]
+        [Version(Max = 24.1)]
         public int rgctxStartIndex;
-        [Version(Max = 24.0)]
+        [Version(Max = 24.1)]
         public int rgctxCount;
 
         public int genericContainerIndex;
@@ -207,15 +208,15 @@ namespace Il2CppInspector
 
         public int genericContainerIndex;
 
-        [Version(Max = 24.0)]
+        [Version(Max = 24.1)]
         public int methodIndex;
-        [Version(Max = 24.0)]
+        [Version(Max = 24.1)]
         public int invokerIndex;
-        [Version(Max = 24.0)]
+        [Version(Max = 24.1)]
         public int reversePInvokeWrapperIndex; // (was renamed from delegateWrapperIndex in v22)
-        [Version(Max = 24.0)]
+        [Version(Max = 24.1)]
         public int rgctxStartIndex;
-        [Version(Max = 24.0)]
+        [Version(Max = 24.1)]
         public int rgctxCount;
 
         public uint token;

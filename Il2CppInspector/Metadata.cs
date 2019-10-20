@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using NoisyCowStudios.Bin2Object;
 
@@ -52,14 +53,15 @@ namespace Il2CppInspector
             // with each block always coming directly after the previous block, 4-byte aligned. We can use this to check the integrity of the data and
             // detect sub-versions.
 
-            // For metadata v24, the header can either be either 0x108 (24.0) or 0x110 (24.1) bytes long. Since 'stringLiteralOffset' is the first thing
+            // For metadata v24, the header can either be either 0x110 (24.0, 24.1) or 0x108 (24.2) bytes long. Since 'stringLiteralOffset' is the first thing
             // in the header after the sanity and version fields, and since it will always point directly to the first byte after the end of the header,
-            // we can use this value to determine the actual header length and therefore the IL2CPP metadata sub-version used.
+            // we can use this value to determine the actual header length and therefore narrow down the metadata version to 24.0/24.1 or 24.2.
 
             var realHeaderLength = Header.stringLiteralOffset;
+
             if (realHeaderLength != Sizeof(typeof(Il2CppGlobalMetadataHeader))) {
                 if (Version == 24.0) {
-                    Version = 24.1;
+                    Version = 24.2;
                     Header = ReadObject<Il2CppGlobalMetadataHeader>(0);
                 }
             }
@@ -72,9 +74,18 @@ namespace Il2CppInspector
             Images = ReadArray<Il2CppImageDefinition>(Header.imagesOffset, Header.imagesCount / Sizeof(typeof(Il2CppImageDefinition)));
 
             // As an additional sanity check, all images in the metadata should have Mono.Cecil.MetadataToken == 1
-            foreach (var i in Images)
-                if (i.token != 1)
-                    throw new Exception("ERROR: Could not verify the integrity of the metadata file image list");
+            // In metadata v24.1, two extra fields were added which will cause the below test to fail.
+            // In that case, we can then adjust the version number and reload
+            if (Images.Any(x => x.token != 1))
+                if (Version == 24.0) {
+                    Version = 24.1;
+
+                    // No need to re-read the header, it's the same for both sub-versions
+                    Images = ReadArray<Il2CppImageDefinition>(Header.imagesOffset, Header.imagesCount / Sizeof(typeof(Il2CppImageDefinition)));
+                }
+
+            if (Images.Any(x => x.token != 1))
+                throw new Exception("ERROR: Could not verify the integrity of the metadata file image list");
 
             Types = ReadArray<Il2CppTypeDefinition>(Header.typeDefinitionsOffset, Header.typeDefinitionsCount / Sizeof(typeof(Il2CppTypeDefinition)));
             Methods = ReadArray<Il2CppMethodDefinition>(Header.methodsOffset, Header.methodsCount / Sizeof(typeof(Il2CppMethodDefinition)));

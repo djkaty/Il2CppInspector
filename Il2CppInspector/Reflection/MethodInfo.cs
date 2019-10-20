@@ -39,7 +39,7 @@ namespace Il2CppInspector.Reflection
             if (Definition.methodIndex >= 0) {
 
                 // Global method pointer array
-                if (pkg.Version < 24.1) {
+                if (pkg.Version <= 24.1) {
                     VirtualAddress = pkg.GlobalMethodPointers[Definition.methodIndex];
                 }
 

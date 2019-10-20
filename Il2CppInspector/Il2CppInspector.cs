@@ -34,7 +34,7 @@ namespace Il2CppInspector
         public List<int> FieldOffsets { get; }
         public List<Il2CppType> TypeUsages => Binary.Types;
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
-        public uint[] GlobalMethodPointers => Binary.GlobalMethodPointers; // <=v24.0 only
+        public uint[] GlobalMethodPointers => Binary.GlobalMethodPointers; // <=v24.1 only
 
         // TODO: Finish all file access in the constructor and eliminate the need for this
         public IFileFormatReader BinaryImage => Binary.Image;
