@@ -258,3 +258,7 @@ paket-files/
 /Il2CppDumper/test.bat
 /Il2CppDumper/types.cs
 *.zip
+/Il2CppTests/TestAssemblies
+/Il2CppTests/TestBinaries
+/Il2CppTests/TestExpectedResults
+/Il2CppTests/Tests.cs
