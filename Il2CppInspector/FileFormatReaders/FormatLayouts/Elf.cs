@@ -1,6 +1,6 @@
 ﻿/*
     Copyright 2017 Perfare - https://github.com/Perfare/Il2CppDumper
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -84,6 +84,22 @@ namespace Il2CppInspector
         public uint sh_info;
         public uint sh_addralign;
         public uint sh_entsize;
+    }
+
+    internal class elf_32_sym
+    {
+        public uint st_name;
+        public uint st_value;
+        public uint st_size;
+        public byte st_info;
+        public byte st_other;
+        public ushort st_shndx;
+    }
+
+    internal class elf_32_dynamic
+    {
+        public uint d_tag;
+        public uint d_un;
     }
 #pragma warning restore CS0649
 }

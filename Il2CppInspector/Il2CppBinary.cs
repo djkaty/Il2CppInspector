@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Il2CppInspector
@@ -50,19 +51,49 @@ namespace Il2CppInspector
         public bool Initialize(double version, uint imageIndex = 0) {
             var subImage = Image[imageIndex];
             subImage.Stream.Version = version;
+
+            // Try searching the symbol table
+            var symbols = subImage.GetSymbolTable();
+
+            if (symbols?.Any() ?? false) {
+                Console.WriteLine($"Symbol table(s) found with {symbols.Count} entries");
+
+                symbols.TryGetValue("g_CodeRegistration", out var code);
+                symbols.TryGetValue("g_MetadataRegistration", out var metadata);
+
+                if (code != 0 && metadata != 0) {
+                    Console.WriteLine("Required structures acquired from symbol lookup");
+                    Configure(subImage, code, metadata);
+                    return true;
+                }
+                else {
+                    Console.WriteLine("No matches in symbol table");
+                }
+            }
+            else if (symbols != null) {
+                Console.WriteLine("No symbol table present in binary file");
+            }
+            else {
+                Console.WriteLine("Symbol table search not implemented for this binary format");
+            }
+
+            // Try searching the function table
             var addrs = subImage.GetFunctionTable();
 
-            Console.WriteLine("Function Table:");
-            Console.WriteLine(string.Join(", ", from a in addrs select string.Format($"0x{a:X8}")));
+            Debug.WriteLine("Function table:");
+            Debug.WriteLine(string.Join(", ", from a in addrs select string.Format($"0x{a:X8}")));
 
             foreach (var loc in addrs)
                 if (loc != 0) {
                     var (code, metadata) = ConsiderCode(loc, Image.GlobalOffset);
                     if (code != 0) {
+                        Console.WriteLine("Required structures acquired from code heuristics");
                         Configure(subImage, code, metadata); 
                         return true;
                     }
                 }
+
+            Console.WriteLine("No matches via code heuristics");
             return false;
         }
 

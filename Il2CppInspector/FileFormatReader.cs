@@ -20,6 +20,7 @@ namespace Il2CppInspector
         long Position { get; set; }
         string Arch { get; }
         uint GlobalOffset { get; }
+        Dictionary<string, uint> GetSymbolTable();
         uint[] GetFunctionTable();
         U ReadMappedObject<U>(uint uiAddr) where U : new();
         U[] ReadMappedArray<U>(uint uiAddr, int count) where U : new();
@@ -75,6 +76,9 @@ namespace Il2CppInspector
                 throw new IndexOutOfRangeException("Binary image index out of bounds");
             }
         }
+
+        // Find search locations in the symbol table for Il2Cpp data
+        public virtual Dictionary<string, uint> GetSymbolTable() => null;
 
         // Find search locations in the machine code for Il2Cpp data
         public virtual uint[] GetFunctionTable() => throw new NotImplementedException();
