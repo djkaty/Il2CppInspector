@@ -3,13 +3,15 @@ Extract types, methods, properties and fields from Unity IL2CPP binaries.
 
 * Supports ELF (Android .so), PE (Windows .exe), Mach-O (Apple iOS/Mac) and Universal Binary (Fat Mach-O) file formats
 * Supports ARMv7, ARMv7 Thumb T1 and x86 architectures regardless of file format
-* Supports metadata versions 21, 22, 23 and 24
+* Supports metadata versions 21, 22, 23, 24, 24.1 (Unity 2018.3+) and 24.2 (Unity 2019+)
 * No manual reverse-engineering required; all data is calculated automatically
-* Syntax support for enumerations, events and delegates
+* Support for classes, methods, fields, properties, enumerations, events, delegates, interfaces, structs and default field values
+* Static and dynamic symbol table scanning for ELF binaries if present
 * **Il2CppInspector** re-usable class library for low-level access to IL2CPP binaries and metadata
 * **Il2CppReflector** re-usable class library for high-level .NET Reflection-style access to IL2CPP types and data as a tree model
+* Test chassis for automated integration testing of IL2CPP binaries
 
-Class library targets .NET Standard 1.5. Application targets .NET Core 2.0. Built with Visual Studio 2017.
+Class library targets .NET Standard 2.1. Application targets .NET Core 3.0. Built with Visual Studio 2019.
 
 ### Build instructions
 
@@ -43,6 +45,15 @@ For Apple Universal Binaries, multiple output files will be generated, with each
 ### 64-bit binaries
 
 Il2CppInspector does not currently support 64-bit IL2CPP binaries. 64-bit Mach-O files will be parsed without crashing but there is currently no support for 64-bit CPU architectures so automatic inspection will fail.
+
+### Running tests
+
+Two Powershell scripts are provided to enable easy testing and debugging:
+
+* `generate-binaries.ps1` compiles every C# source file in `TestSources` as a separate assembly and outputs them to `TestAssemblies`. It then takes every assembly in `TestAssemblies` and compiles each one as a separate IL2CPP project twice: one for Windows x86 standalone and one for Android into the `TestBinaries`folder. It then calls `generate-tests.ps1`.
+* `generate-tests.ps1` generates a file called `Tests.cs` in the `Il2CppTests` project, containing one test per IL2CPP project in `TestBinaries`. This file will be compiled by the `Il2CppTests`project. You will then be able to see one test per IL2CPP project in Visual Studio's Test Explorer.
+
+The auto-generated tests generate a file in the test IL2CPP binary's folder called `test-result.cs` and compares it (whitespace-insensitive) with the corresponding project name `cs` file in `TestExpectedResults`. In this way, you can check for files with known structure that the analysis is being performed correctly, or step through the analysis of specific binaries in the debugger without having to change the project's command-line arguments.
 
 ### Problems
 
