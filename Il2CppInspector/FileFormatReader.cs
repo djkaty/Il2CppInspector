@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Reflection;
 using NoisyCowStudios.Bin2Object;
@@ -42,6 +43,8 @@ namespace Il2CppInspector
     internal class FileFormatReader
     {
         // Helper method to try all defined file formats when the contents of the binary is unknown
+        public static IFileFormatReader Load(string filename) => Load(new FileStream(filename, FileMode.Open, FileAccess.Read));
+
         public static IFileFormatReader Load(Stream stream) {
             var types = Assembly.GetExecutingAssembly().DefinedTypes
                         .Where(x => x.ImplementedInterfaces.Contains(typeof(IFileFormatReader)) && !x.IsGenericTypeDefinition);
@@ -79,13 +82,18 @@ namespace Il2CppInspector
         }
 
         public static T Load(string filename) {
-            using (var stream = new FileStream(filename, FileMode.Open))
+            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
                 return Load(stream);
         }
 
         public static T Load(Stream stream) {
+            // Copy the original stream in case we modify it
+            var ms = new MemoryStream();
             stream.Position = 0;
-            var pe = (T) Activator.CreateInstance(typeof(T), stream);
+            stream.CopyTo(ms);
+            
+            ms.Position = 0;
+            var pe = (T) Activator.CreateInstance(typeof(T), ms);
             return pe.Init() ? pe : null;
         }
 
