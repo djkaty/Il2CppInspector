@@ -52,7 +52,7 @@ namespace Il2CppInspector
             if (type == null)
                 return null;
 
-            var inst = (Il2CppBinary) Activator.CreateInstance(type, new object[] {stream});
+            var inst = (Il2CppBinary) Activator.CreateInstance(type, stream);
 
             // Try to process the IL2CPP image; return the instance if succeeded, otherwise null
             return inst.Initialize(metadataVersion) ? inst : null;
