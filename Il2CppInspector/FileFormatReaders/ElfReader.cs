@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -23,18 +24,13 @@ namespace Il2CppInspector
 
         public override string Format => "ELF";
 
-        public override string Arch {
-            get {
-                switch (elf_header.e_machine) {
-                    case 0x03:
-                        return "x86";
-                    case 0x28:
-                        return "ARM";
-                    default:
-                        return "Unsupported";
-                }
-            }
-        }
+        public override string Arch => elf_header.e_machine switch {
+            0x03 => "x86", // EM_386
+            0x28 => "ARM", // EM_ARM
+            0x3E => "x64", // EM_X86_64
+            0xB7 => "ARM64", // EM_AARCH64
+            _ => "Unsupported"
+        };
 
         public override int Bits => (elf_header.m_arch == 2) ? 64 : 32;
 

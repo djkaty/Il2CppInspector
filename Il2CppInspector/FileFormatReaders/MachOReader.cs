@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using NoisyCowStudios.Bin2Object;
@@ -25,20 +26,13 @@ namespace Il2CppInspector
 
         public override string Format => "Mach-O";
 
-        public override string Arch {
-            get {
-                switch ((MachO)header.CPUType) {
-                    case MachO.CPU_TYPE_ARM:
-                    case MachO.CPU_TYPE_ARM64:
-                        return "ARM";
-                    case MachO.CPU_TYPE_X86:
-                    case MachO.CPU_TYPE_X86_64:
-                        return "x86";
-                    default:
-                        return "Unsupported";
-                }
-            }
-        }
+        public override string Arch => (MachO)header.CPUType switch {
+            MachO.CPU_TYPE_ARM => "ARM",
+            MachO.CPU_TYPE_ARM64 => "ARM64",
+            MachO.CPU_TYPE_X86 => "x86",
+            MachO.CPU_TYPE_X86_64 => "x64",
+            _ => "Unsupported"
+        };
 
         public override int Bits => is64 ? 64 : 32;
 

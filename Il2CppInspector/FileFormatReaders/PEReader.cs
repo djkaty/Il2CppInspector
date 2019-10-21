@@ -21,19 +21,15 @@ namespace Il2CppInspector
 
         public override string Format => "PE";
 
-        public override string Arch {
-            get {
-                switch (coff.Machine) {
-                    case 0x14C:
-                        return "x86";
-                    case 0x1C0: // ARMv7
-                    case 0x1C4: // ARMv7 Thumb (T1)
-                        return "ARM";
-                    default:
-                        return "Unsupported";
-                }
-            }
-        }
+        public override string Arch => coff.Machine switch {
+            0x8664 => "x64", // IMAGE_FILE_MACHINE_AMD64
+            0x1C0 => "ARM", // IMAGE_FILE_MACHINE_ARM
+            0xAA64 => "ARM64", // IMAGE_FILE_MACHINE_ARM64
+            0x1C4 => "ARM", // IMAGE_FILE_MACHINE_ARMINT (Thumb-2)
+            0x14C => "x86", // IMAGE_FILE_MACHINE_I386
+            0x1C2 => "ARM", // IMAGE_FILE_MACHINE_THUMB (Thumb)
+            _ => "Unsupported"
+        };
 
         // IMAGE_NT_OPTIONAL_HDR64_MAGIC = 0x20B
         // IMAGE_NT_OPTIONAL_HDR32_MAGIC = 0x10B
