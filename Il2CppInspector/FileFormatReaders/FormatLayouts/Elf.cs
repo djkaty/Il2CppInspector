@@ -31,13 +31,33 @@ namespace Il2CppInspector
         // SHTs
         SHT_SYMTAB = 2,
         SHT_STRTAB = 3,
+        SHT_RELA = 4,
+        SHT_REL = 9,
         SHT_DYNSYM = 11,
 
         // dynamic sections
         DT_STRTAB = 5,
         DT_SYMTAB = 6,
+        DT_RELA = 7,
+        DT_RELASZ = 8,
+        DT_RELAENT = 9,
+        DT_REL = 17,
+        DT_RELSZ = 18,
+        DT_RELENT = 19,
         DT_INIT_ARRAY = 25,
-        DT_INIT_ARRAYSZ = 27
+        DT_INIT_ARRAYSZ = 27,
+
+        // relocation types
+        R_ARM_ABS32 = 2,
+        R_ARM_REL32 = 3,
+        R_ARM_COPY = 20,
+
+        R_386_32 = 1,
+        R_386_PC32 = 2,
+        R_386_GLOB_DAT = 6,
+        R_386_JMP_SLOT = 7,
+
+        R_AMD64_64 = 1
     }
 
 #pragma warning disable CS0649
@@ -90,7 +110,7 @@ namespace Il2CppInspector
         public ushort e_shtrndx;
     }
 
-    internal class program_header_table
+    internal class elf_32_phdr
     {
         public uint p_type;
         public uint p_offset;
@@ -131,6 +151,19 @@ namespace Il2CppInspector
     {
         public uint d_tag;
         public uint d_un;
+    }
+
+    internal class elf_32_rel
+    {
+        public uint r_offset;
+        public uint r_info;
+    }
+
+    internal class elf_32_rela
+    {
+        public uint r_offset;
+        public uint r_info;
+        public uint r_addend;
     }
 #pragma warning restore CS0649
 }

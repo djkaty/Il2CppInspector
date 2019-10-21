@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -15,7 +16,48 @@ namespace Il2CppInspector
 {
     internal class ElfReader : FileFormatReader<ElfReader>
     {
-        private program_header_table[] program_header_table;
+        // Internal relocation entry helper
+        private struct ElfReloc
+        {
+            public Elf Type;
+            public uint Offset;
+            public uint? Addend;
+            public uint SymbolTable;
+            public uint SymbolIndex;
+
+            // Equality based on target address
+            public override bool Equals(object obj) => obj is ElfReloc reloc && Equals(reloc);
+
+            public bool Equals(ElfReloc other) {
+                return Offset == other.Offset;
+            }
+
+            public override int GetHashCode() {
+                unchecked {
+                    var hashCode = (int)Type;
+                    hashCode = (hashCode * 397) ^ (int)Offset;
+                    hashCode = (hashCode * 397) ^ Addend.GetHashCode();
+                    hashCode = (hashCode * 397) ^ (int)SymbolTable;
+                    hashCode = (hashCode * 397) ^ (int)SymbolIndex;
+                    return hashCode;
+                }
+            }
+
+            // Cast operators (makes the below code MUCH easier to read)
+            public ElfReloc(elf_32_rel rel, uint symbolTable) {
+                Type = (Elf) (rel.r_info & 0xff);
+                Offset = rel.r_offset;
+                Addend = null;
+                SymbolIndex = rel.r_info >> 8; // r_info >> 8 is an index into the symbol table
+                SymbolTable = symbolTable;
+            }
+
+            public ElfReloc(elf_32_rela rela, uint symbolTable)
+                : this(new elf_32_rel { r_info = rela.r_info, r_offset = rela.r_offset }, symbolTable) =>
+                Addend = rela.r_addend;
+        }
+
+        private elf_32_phdr[] program_header_table;
         private elf_32_shdr[] section_header_table;
         private elf_32_dynamic[] dynamic_table;
         private elf_header elf_header;
@@ -35,7 +77,8 @@ namespace Il2CppInspector
         public override int Bits => (elf_header.m_arch == (uint) Elf.ELFCLASS64) ? 64 : 32;
 
         private elf_32_shdr getSection(Elf sectionIndex) => section_header_table.FirstOrDefault(x => x.sh_type == (uint) sectionIndex);
-        private program_header_table getProgramHeader(Elf programIndex) => program_header_table.FirstOrDefault(x => x.p_type == (uint) programIndex);
+        private IEnumerable<elf_32_shdr> getSections(Elf sectionIndex) => section_header_table.Where(x => x.sh_type == (uint)sectionIndex);
+        private elf_32_phdr getProgramHeader(Elf programIndex) => program_header_table.FirstOrDefault(x => x.p_type == (uint) programIndex);
         private elf_32_dynamic getDynamic(Elf dynamicIndex) => dynamic_table?.FirstOrDefault(x => x.d_tag == (uint) dynamicIndex);
 
         protected override bool Init() {
@@ -51,10 +94,10 @@ namespace Il2CppInspector
                 return false;
             }
 
-            program_header_table = ReadArray<program_header_table>(elf_header.e_phoff, elf_header.e_phnum);
+            program_header_table = ReadArray<elf_32_phdr>(elf_header.e_phoff, elf_header.e_phnum);
             section_header_table = ReadArray<elf_32_shdr>(elf_header.e_shoff, elf_header.e_shnum);
 
-            if (getProgramHeader(Elf.PT_DYNAMIC) is program_header_table PT_DYNAMIC)
+            if (getProgramHeader(Elf.PT_DYNAMIC) is elf_32_phdr PT_DYNAMIC)
                 dynamic_table = ReadArray<elf_32_dynamic>(PT_DYNAMIC.p_offset, (int) PT_DYNAMIC.p_filesz / 8 /* sizeof(elf_32_dynamic) */);
 
             // Get global offset table
@@ -63,8 +106,74 @@ namespace Il2CppInspector
                 throw new InvalidOperationException("Unable to get GLOBAL_OFFSET_TABLE from PT_DYNAMIC");
             GlobalOffset = (uint) _GLOBAL_OFFSET_TABLE_;
 
-            // TODO: Find all relocations
-            
+            // Find all relocations; target address => (rela header (rels are converted to rela), symbol table base address, is rela?)
+            var rels = new HashSet<ElfReloc>();
+
+            // Two types: add value from offset in image, and add value from specified addend
+            foreach (var relSection in getSections(Elf.SHT_REL))
+                rels.UnionWith(
+                    from rel in ReadArray<elf_32_rel>(relSection.sh_offset, (int) (relSection.sh_size / relSection.sh_entsize))
+                    select new ElfReloc(rel, section_header_table[relSection.sh_link].sh_offset));
+                
+            foreach (var relaSection in getSections(Elf.SHT_RELA))
+                rels.UnionWith(
+                    from rela in ReadArray<elf_32_rela>(relaSection.sh_offset, (int)(relaSection.sh_size / relaSection.sh_entsize))
+                    select new ElfReloc(rela, section_header_table[relaSection.sh_link].sh_offset));
+
+            // Relocations in dynamic section
+            if (getDynamic(Elf.DT_REL) is elf_32_dynamic dt_rel) {
+                var dt_rel_count = getDynamic(Elf.DT_RELSZ).d_un / getDynamic(Elf.DT_RELENT).d_un;
+                var dt_rel_list = ReadArray<elf_32_rel>(MapVATR(dt_rel.d_un), (int) dt_rel_count);
+                var dt_symtab = getDynamic(Elf.DT_SYMTAB).d_un;
+                rels.UnionWith(from rel in dt_rel_list select new ElfReloc(rel, dt_symtab));
+            }
+
+            if (getDynamic(Elf.DT_RELA) is elf_32_dynamic dt_rela) {
+                var dt_rela_count = getDynamic(Elf.DT_RELASZ).d_un / getDynamic(Elf.DT_RELAENT).d_un;
+                var dt_rela_list = ReadArray<elf_32_rela>(MapVATR(dt_rela.d_un), (int) dt_rela_count);
+                var dt_symtab = getDynamic(Elf.DT_SYMTAB).d_un;
+                rels.UnionWith(from rela in dt_rela_list select new ElfReloc(rela, dt_symtab));
+            }
+
+            // Process relocations
+            // WARNING: This modifies the stream passed in the constructor
+            if (BaseStream is FileStream)
+                throw new InvalidOperationException("Input stream to ElfReader is a file. Please supply a mutable stream source.");
+
+            var writer = new BinaryWriter(BaseStream);
+
+            foreach (var rel in rels) {
+                var symValue = ReadObject<elf_32_sym>(rel.SymbolTable + rel.SymbolIndex * 16 /* sizeof(elf_32_sym) */).st_value; // S
+
+                // The addend is specified in the struct for rela, and comes from the target location for rel
+                Position = MapVATR(rel.Offset);
+                var addend = rel.Addend ?? ReadUInt32(); // A
+
+                // Only handle relocation types we understand, skip the rest
+                // Relocation types from https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter6-54839.html#scrolltoc
+                // and https://studfiles.net/preview/429210/page:18/
+                (uint newValue, bool recognized) result = (rel.Type, (Elf) elf_header.e_machine) switch {
+                    (Elf.R_ARM_ABS32, Elf.EM_ARM) => (symValue + addend, true), // S + A
+                    (Elf.R_ARM_REL32, Elf.EM_ARM) => (symValue - rel.Offset + addend, true), // S - P + A
+                    (Elf.R_ARM_COPY, Elf.EM_ARM) => (symValue, true), // S
+
+                    (Elf.R_386_32, Elf.EM_386) => (symValue + addend, true), // S + A
+                    (Elf.R_386_PC32, Elf.EM_386) => (symValue + addend - rel.Offset, true), // S + A - P
+                    (Elf.R_386_GLOB_DAT, Elf.EM_386) => (symValue, true), // S
+                    (Elf.R_386_JMP_SLOT, Elf.EM_386) => (symValue, true), // S
+
+                    (Elf.R_AMD64_64, Elf.EM_AARCH64) => (symValue + addend, true), // S + A
+
+                    _ => (0, false)
+                };
+
+                if (result.recognized) {
+                    Position = MapVATR(rel.Offset);
+                    writer.Write(result.newValue);
+                }
+            }
+            Console.WriteLine($"Processed {rels.Count} relocations");
+
             return true;
         }
 
