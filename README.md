@@ -7,6 +7,7 @@ Extract types, methods, properties and fields from Unity IL2CPP binaries.
 * No manual reverse-engineering required; all data is calculated automatically
 * Support for classes, methods, fields, properties, enumerations, events, delegates, interfaces, structs and default field values
 * Static and dynamic symbol table scanning for ELF binaries if present
+* Symbol relocation handling for ELF binaries
 * **Il2CppInspector** re-usable class library for low-level access to IL2CPP binaries and metadata
 * **Il2CppReflector** re-usable class library for high-level .NET Reflection-style access to IL2CPP types and data as a tree model
 * Test chassis for automated integration testing of IL2CPP binaries
