@@ -167,27 +167,12 @@ namespace Il2CppInspector
             // Multi-image binaries may contain more than one Il2Cpp image
             var processors = new List<Il2CppInspector>();
             foreach (var image in stream.Images) {
-                Il2CppBinary binary;
-
-                // We are currently supporting x86 and ARM architectures
-                switch (image.Arch) {
-                    case "x86":
-                        binary = new Il2CppBinaryX86(image);
-                        break;
-                    case "ARM":
-                        binary = new Il2CppBinaryARM(image);
-                        break;
-                    default:
-                        Console.Error.WriteLine("Unsupported architecture");
-                        return null;
-                }
-
-                // Find code and metadata regions
-                if (!binary.Initialize(metadata.Version)) {
-                    Console.Error.WriteLine("Could not process IL2CPP image");
+                // Architecture-agnostic load attempt
+                if (Il2CppBinary.Load(image, metadata.Version) is Il2CppBinary binary) {
+                    processors.Add(new Il2CppInspector(binary, metadata));
                 }
                 else {
-                    processors.Add(new Il2CppInspector(binary, metadata));
+                    Console.Error.WriteLine("Could not process IL2CPP image");
                 }
             }
             return processors;

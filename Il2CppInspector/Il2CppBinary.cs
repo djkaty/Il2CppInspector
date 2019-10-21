@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 namespace Il2CppInspector
 {
@@ -42,6 +43,19 @@ namespace Il2CppInspector
         protected Il2CppBinary(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) {
             Image = stream;
             Configure(Image, codeRegistration, metadataRegistration);
+        }
+
+        // Load and initialize a binary of any supported architecture
+        public static Il2CppBinary Load(IFileFormatReader stream, double metadataVersion) {
+            // Get type from image architecture
+            var type = Assembly.GetExecutingAssembly().GetType("Il2CppInspector.Il2CppBinary" + stream.Arch.ToUpper());
+            if (type == null)
+                return null;
+
+            var inst = (Il2CppBinary) Activator.CreateInstance(type, new object[] {stream});
+
+            // Try to process the IL2CPP image; return the instance if succeeded, otherwise null
+            return inst.Initialize(metadataVersion) ? inst : null;
         }
 
         // Architecture-specific search function
