@@ -157,13 +157,8 @@ namespace Il2CppInspector
 
             Console.WriteLine("Detected metadata version " + metadata.Version);
 
-            // Load the il2cpp code file (try ELF, PE, Mach-O and Universal Binary)
-            var memoryStream = new MemoryStream(File.ReadAllBytes(codeFile));
-            IFileFormatReader stream =
-                (((IFileFormatReader) ElfReader.Load(memoryStream) ??
-                  PEReader.Load(memoryStream)) ??
-                 MachOReader.Load(memoryStream)) ??
-                UBReader.Load(memoryStream);
+            // Load the il2cpp code file (try all available file formats)
+            IFileFormatReader stream = FileFormatReader.Load(new MemoryStream(File.ReadAllBytes(codeFile)));
             if (stream == null) {
                 Console.Error.WriteLine("Unsupported executable file format");
                 return null;

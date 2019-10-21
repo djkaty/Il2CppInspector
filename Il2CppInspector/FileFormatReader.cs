@@ -7,6 +7,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
@@ -33,6 +35,22 @@ namespace Il2CppInspector
         byte ReadByte();
         string ReadMappedNullTerminatedString(uint uiAddr);
         List<U> ReadMappedObjectPointerArray<U>(uint uiAddr, int count) where U : new();
+    }
+
+    internal class FileFormatReader
+    {
+        // Helper method to try all defined file formats when the contents of the binary is unknown
+        public static IFileFormatReader Load(Stream stream) {
+            var types = Assembly.GetExecutingAssembly().DefinedTypes
+                        .Where(x => x.ImplementedInterfaces.Contains(typeof(IFileFormatReader)) && !x.IsGenericTypeDefinition);
+
+            foreach (var type in types) {
+                if (type.BaseType.GetMethod("Load", new [] {typeof(Stream)})
+                    .Invoke(null, new object[] { stream }) is IFileFormatReader loaded)
+                    return loaded;
+            }
+            return null;
+        }
     }
 
     internal class FileFormatReader<T> : BinaryObjectReader, IFileFormatReader where T : FileFormatReader<T>
