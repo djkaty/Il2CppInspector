@@ -9,6 +9,37 @@ using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
+    public enum Elf : uint
+    {
+        // elf_header.m_dwFormat
+        ELFMAG = 0x464c457f, // "\177ELF"
+
+        // elf_header.e_machine
+        EM_386 = 0x03,
+        EM_ARM = 0x28,
+        EM_X86_64 = 0x3E,
+        EM_AARCH64 = 0xB7,
+
+        // elf_header.m_arch
+        ELFCLASS32 = 1,
+        ELFCLASS64 = 2,
+
+        // PHTs
+        PT_DYNAMIC = 2,
+        DT_PLTGOT = 3,
+
+        // SHTs
+        SHT_SYMTAB = 2,
+        SHT_STRTAB = 3,
+        SHT_DYNSYM = 11,
+
+        // dynamic sections
+        DT_STRTAB = 5,
+        DT_SYMTAB = 6,
+        DT_INIT_ARRAY = 25,
+        DT_INIT_ARRAYSZ = 27
+    }
+
 #pragma warning disable CS0649
     internal class elf_header
     {

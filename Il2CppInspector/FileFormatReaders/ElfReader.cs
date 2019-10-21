@@ -24,40 +24,46 @@ namespace Il2CppInspector
 
         public override string Format => "ELF";
 
-        public override string Arch => elf_header.e_machine switch {
-            0x03 => "x86", // EM_386
-            0x28 => "ARM", // EM_ARM
-            0x3E => "x64", // EM_X86_64
-            0xB7 => "ARM64", // EM_AARCH64
+        public override string Arch => (Elf) elf_header.e_machine switch {
+            Elf.EM_386 => "x86",
+            Elf.EM_ARM => "ARM",
+            Elf.EM_X86_64 => "x64",
+            Elf.EM_AARCH64 => "ARM64",
             _ => "Unsupported"
         };
 
-        public override int Bits => (elf_header.m_arch == 2) ? 64 : 32;
+        public override int Bits => (elf_header.m_arch == (uint) Elf.ELFCLASS64) ? 64 : 32;
+
+        private elf_32_shdr getSection(Elf sectionIndex) => section_header_table.FirstOrDefault(x => x.sh_type == (uint) sectionIndex);
+        private program_header_table getProgramHeader(Elf programIndex) => program_header_table.FirstOrDefault(x => x.p_type == (uint) programIndex);
+        private elf_32_dynamic getDynamic(Elf dynamicIndex) => dynamic_table?.FirstOrDefault(x => x.d_tag == (uint) dynamicIndex);
 
         protected override bool Init() {
             elf_header = ReadObject<elf_header>();
 
-            if (elf_header.m_dwFormat != 0x464c457f) {
-                // Not an ELF file
+            // Check for magic bytes
+            if (elf_header.m_dwFormat != (uint) Elf.ELFMAG) {
                 return false;
             }
-            if (elf_header.m_arch == 2)//64
-            {
-                // 64-bit not supported
+
+            // 64-bit not supported
+            if (elf_header.m_arch == (uint) Elf.ELFCLASS64) {
                 return false;
             }
 
             program_header_table = ReadArray<program_header_table>(elf_header.e_phoff, elf_header.e_phnum);
             section_header_table = ReadArray<elf_32_shdr>(elf_header.e_shoff, elf_header.e_shnum);
 
-            if (program_header_table.FirstOrDefault(x => x.p_type == 2) is program_header_table PT_DYNAMIC) // PT_DYNAMIC = 2
+            if (getProgramHeader(Elf.PT_DYNAMIC) is program_header_table PT_DYNAMIC)
                 dynamic_table = ReadArray<elf_32_dynamic>(PT_DYNAMIC.p_offset, (int) PT_DYNAMIC.p_filesz / 8 /* sizeof(elf_32_dynamic) */);
 
             // Get global offset table
-            var _GLOBAL_OFFSET_TABLE_ = dynamic_table.First(x => x.d_tag == 3).d_un; // DT_PLTGOT
-            if (_GLOBAL_OFFSET_TABLE_ == 0)
+            var _GLOBAL_OFFSET_TABLE_ = getDynamic(Elf.DT_PLTGOT)?.d_un;
+            if (_GLOBAL_OFFSET_TABLE_ == null)
                 throw new InvalidOperationException("Unable to get GLOBAL_OFFSET_TABLE from PT_DYNAMIC");
-            GlobalOffset = _GLOBAL_OFFSET_TABLE_;
+            GlobalOffset = (uint) _GLOBAL_OFFSET_TABLE_;
+
+            // TODO: Find all relocations
             
             return true;
         }
@@ -67,15 +73,15 @@ namespace Il2CppInspector
             var pTables = new List<(uint offset, uint count, uint strings)>();
 
             // String table (a sequence of null-terminated strings, total length in sh_size
-            var SHT_STRTAB = section_header_table.FirstOrDefault(x => x.sh_type == 3u); // SHT_STRTAB = 3
+            var SHT_STRTAB = getSection(Elf.SHT_STRTAB);
 
             if (SHT_STRTAB != null) {
                 // Section header shared object symbol table (.symtab)
-                if (section_header_table.FirstOrDefault(x => x.sh_type == 2) is elf_32_shdr SHT_SYMTAB) // SHT_SYMTAB = 2
+                if (getSection(Elf.SHT_SYMTAB) is elf_32_shdr SHT_SYMTAB)
                     pTables.Add((SHT_SYMTAB.sh_offset, SHT_SYMTAB.sh_size / SHT_SYMTAB.sh_entsize, SHT_STRTAB.sh_offset));
                 
                 // Section header executable symbol table (.dynsym)
-                if (section_header_table.FirstOrDefault(x => x.sh_type == 11) is elf_32_shdr SHT_DYNSYM) // SHT_DYNSUM = 11
+                if (getSection(Elf.SHT_DYNSYM) is elf_32_shdr SHT_DYNSYM)
                     pTables.Add((SHT_DYNSYM.sh_offset, SHT_DYNSYM.sh_size / SHT_DYNSYM.sh_entsize, SHT_STRTAB.sh_offset));
             }
 
@@ -83,10 +89,8 @@ namespace Il2CppInspector
             // Normally the same as .dynsym except that .dynsym may be removed in stripped binaries
 
             // Dynamic string table
-            var DT_STRTAB = dynamic_table?.FirstOrDefault(x => x.d_tag == 5); // DT_STRTAB = 5
-
-            if (DT_STRTAB != null) {
-                if (dynamic_table.FirstOrDefault(x => x.d_tag == 6) is elf_32_dynamic DT_SYMTAB) { // DT_SYMTAB = 6
+            if (getDynamic(Elf.DT_STRTAB) is elf_32_dynamic DT_STRTAB) {
+                if (getDynamic(Elf.DT_SYMTAB) is elf_32_dynamic DT_SYMTAB) {
                     // Find the next pointer in the dynamic table to calculate the length of the symbol table
                     var end = (from x in dynamic_table where x.d_un > DT_SYMTAB.d_un orderby x.d_un select x).First().d_un;
 
@@ -116,8 +120,8 @@ namespace Il2CppInspector
             // INIT_ARRAY contains a list of pointers to initialization functions (not all functions in the binary)
             // INIT_ARRAYSZ contains the size of INIT_ARRAY
 
-            var init = MapVATR(dynamic_table.First(x => x.d_tag == 25).d_un); // DT_INIT_ARRAY
-            var size = dynamic_table.First(x => x.d_tag == 27).d_un; // DT_INIT_ARRAYSZ
+            var init = MapVATR(getDynamic(Elf.DT_INIT_ARRAY).d_un);
+            var size = getDynamic(Elf.DT_INIT_ARRAYSZ).d_un;
 
             return ReadArray<uint>(init, (int) size / 4);
         }
