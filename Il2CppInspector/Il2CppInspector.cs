@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using NoisyCowStudios.Bin2Object;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -167,6 +168,11 @@ namespace Il2CppInspector
             // Multi-image binaries may contain more than one Il2Cpp image
             var processors = new List<Il2CppInspector>();
             foreach (var image in stream.Images) {
+                Console.WriteLine("Container format: " + image.Format);
+                Console.WriteLine("Container endianness: " + ((BinaryObjectReader) image).Endianness);
+                Console.WriteLine("Architecture word size: {0}-bit", image.Bits);
+                Console.WriteLine("Instruction set: " + image.Arch);
+
                 // Architecture-agnostic load attempt
                 if (Il2CppBinary.Load(image, metadata.Version) is Il2CppBinary binary) {
                     processors.Add(new Il2CppInspector(binary, metadata));

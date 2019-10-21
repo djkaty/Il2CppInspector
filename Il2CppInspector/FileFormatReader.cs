@@ -20,7 +20,9 @@ namespace Il2CppInspector
         IEnumerable<IFileFormatReader> Images { get; }
         IFileFormatReader this[uint index] { get; }
         long Position { get; set; }
+        string Format { get; }
         string Arch { get; }
+        int Bits { get; }
         uint GlobalOffset { get; }
         Dictionary<string, uint> GetSymbolTable();
         uint[] GetFunctionTable();
@@ -63,7 +65,11 @@ namespace Il2CppInspector
 
         public uint GlobalOffset { get; protected set; }
 
+        public virtual string Format => throw new NotImplementedException();
+
         public virtual string Arch => throw new NotImplementedException();
+
+        public virtual int Bits => throw new NotImplementedException();
 
         public IEnumerable<IFileFormatReader> Images {
             get {

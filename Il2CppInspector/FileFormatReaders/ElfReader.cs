@@ -21,6 +21,8 @@ namespace Il2CppInspector
 
         public ElfReader(Stream stream) : base(stream) { }
 
+        public override string Format => "ELF";
+
         public override string Arch {
             get {
                 switch (elf_header.e_machine) {
@@ -33,6 +35,8 @@ namespace Il2CppInspector
                 }
             }
         }
+
+        public override int Bits => (elf_header.m_arch == 2) ? 64 : 32;
 
         protected override bool Init() {
             elf_header = ReadObject<elf_header>();

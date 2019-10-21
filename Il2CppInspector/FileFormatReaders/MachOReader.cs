@@ -23,6 +23,8 @@ namespace Il2CppInspector
 
         public MachOReader(Stream stream) : base(stream) { }
 
+        public override string Format => "Mach-O";
+
         public override string Arch {
             get {
                 switch ((MachO)header.CPUType) {
@@ -38,6 +40,8 @@ namespace Il2CppInspector
             }
         }
 
+        public override int Bits => is64 ? 64 : 32;
+
         protected override bool Init() {
             // Detect endianness - default is little-endianness
             MachO magic = (MachO)ReadUInt32();
@@ -48,8 +52,6 @@ namespace Il2CppInspector
                 return false;
             }
 
-            Console.WriteLine("Endianness: {0}", Endianness);
-
             Position -= sizeof(uint);
             header = ReadObject<MachOHeader>();
 
@@ -59,13 +61,10 @@ namespace Il2CppInspector
                 is64 = true;
                 ReadUInt32();
             }
-            Console.WriteLine("Architecture: {0}-bit", is64 ? 64 : 32);
 
             // Must be executable file
             if ((MachO) header.FileType != MachO.MH_EXECUTE)
                 return false;
-
-            Console.WriteLine("CPU Type: " + (MachO)header.CPUType);
 
             MachOLinkEditDataCommand functionStarts = null;
 

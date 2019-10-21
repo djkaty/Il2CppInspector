@@ -19,6 +19,8 @@ namespace Il2CppInspector
 
         public PEReader(Stream stream) : base(stream) {}
 
+        public override string Format => "PE";
+
         public override string Arch {
             get {
                 switch (coff.Machine) {
@@ -32,6 +34,11 @@ namespace Il2CppInspector
                 }
             }
         }
+
+        // IMAGE_NT_OPTIONAL_HDR64_MAGIC = 0x20B
+        // IMAGE_NT_OPTIONAL_HDR32_MAGIC = 0x10B
+        // Could also use coff.Characteristics (IMAGE_FILE_32BIT_MACHINE) or coff.Machine
+        public override int Bits => pe.signature == 0x20B ? 64 : 32;
 
         protected override bool Init() {
             // Check for MZ signature "MZ"
