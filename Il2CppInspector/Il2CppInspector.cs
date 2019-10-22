@@ -182,7 +182,8 @@ namespace Il2CppInspector
                         Console.Error.WriteLine("Could not process IL2CPP image");
                     }
                 }
-                catch (InvalidOperationException ex) {
+                // Unknown architecture
+                catch (NotImplementedException ex) {
                     Console.Error.WriteLine(ex.Message);
                 }
             }
