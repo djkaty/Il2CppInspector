@@ -50,7 +50,7 @@ namespace Il2CppInspector
             // Get type from image architecture
             var type = Assembly.GetExecutingAssembly().GetType("Il2CppInspector.Il2CppBinary" + stream.Arch.ToUpper());
             if (type == null)
-                return null;
+                throw new InvalidOperationException("Unsupported architecture: " + stream.Arch);
 
             var inst = (Il2CppBinary) Activator.CreateInstance(type, stream);
 

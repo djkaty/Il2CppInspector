@@ -174,11 +174,16 @@ namespace Il2CppInspector
                 Console.WriteLine("Instruction set: " + image.Arch);
 
                 // Architecture-agnostic load attempt
-                if (Il2CppBinary.Load(image, metadata.Version) is Il2CppBinary binary) {
-                    processors.Add(new Il2CppInspector(binary, metadata));
+                try {
+                    if (Il2CppBinary.Load(image, metadata.Version) is Il2CppBinary binary) {
+                        processors.Add(new Il2CppInspector(binary, metadata));
+                    }
+                    else {
+                        Console.Error.WriteLine("Could not process IL2CPP image");
+                    }
                 }
-                else {
-                    Console.Error.WriteLine("Could not process IL2CPP image");
+                catch (InvalidOperationException ex) {
+                    Console.Error.WriteLine(ex.Message);
                 }
             }
             return processors;
