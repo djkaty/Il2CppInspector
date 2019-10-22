@@ -91,13 +91,13 @@ namespace Il2CppInspector
             return addrs.ToArray();
         }
 
-        public override uint MapVATR(uint uiAddr) {
+        public override uint MapVATR(ulong uiAddr) {
             if (uiAddr == 0)
                 return 0;
 
             var section = sections.First(x => uiAddr - GlobalOffset >= x.BaseMemory &&
                                               uiAddr - GlobalOffset < x.BaseMemory + x.SizeImage);
-            return uiAddr - section.BaseMemory - GlobalOffset + section.BaseImage;
+            return (uint) (uiAddr - section.BaseMemory - GlobalOffset + section.BaseImage);
         }
     }
 }

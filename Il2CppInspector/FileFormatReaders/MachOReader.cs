@@ -132,13 +132,13 @@ namespace Il2CppInspector
             return functionPointers.ToArray();
         }
 
-        public override uint MapVATR(uint uiAddr) {
+        public override uint MapVATR(ulong uiAddr) {
             if (!is64) {
                 var section = sections.First(x => uiAddr >= x.Address && uiAddr <= (x.Address + x.Size));
-                return uiAddr - (section.Address - section.ImageOffset);
+                return (uint) (uiAddr - (section.Address - section.ImageOffset));
             }
             var section64 = sections64.First(x => uiAddr >= x.Address && uiAddr <= (x.Address + x.Size));
-            return uiAddr - ((uint)section64.Address - section64.ImageOffset);
+            return (uint) (uiAddr - ((uint)section64.Address - section64.ImageOffset));
         }
     }
 }

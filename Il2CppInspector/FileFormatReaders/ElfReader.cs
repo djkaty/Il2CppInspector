@@ -177,7 +177,7 @@ namespace Il2CppInspector
             return true;
         }
 
-        public override Dictionary<string, uint> GetSymbolTable() {
+        public override Dictionary<string, ulong> GetSymbolTable() {
             // Three possible symbol tables in ELF files
             var pTables = new List<(uint offset, uint count, uint strings)>();
 
@@ -209,7 +209,7 @@ namespace Il2CppInspector
             }
 
             // Now iterate through all of the symbol and string tables we found to build a full list
-            var symbolTable = new Dictionary<string, uint>();
+            var symbolTable = new Dictionary<string, ulong>();
 
             foreach (var pTab in pTables) {
                 var symbol_table = ReadArray<elf_32_sym>(pTab.offset, (int) pTab.count);
@@ -238,10 +238,10 @@ namespace Il2CppInspector
         // Map a virtual address to an offset into the image file. Throws an exception if the virtual address is not mapped into the file.
         // Note if uiAddr is a valid segment but filesz < memsz and the adjusted uiAddr falls between the range of filesz and memsz,
         // an exception will be thrown. This area of memory is assumed to contain all zeroes.
-        public override uint MapVATR(uint uiAddr)
-        {
-            var program_header_table = this.program_header_table.First(x => uiAddr >= x.p_vaddr && uiAddr <= (x.p_vaddr + x.p_filesz));
-            return uiAddr - (program_header_table.p_vaddr - program_header_table.p_offset);
+        public override uint MapVATR(ulong uiAddr) {
+            var addr32 = (uint) uiAddr; // 32-bit implementation
+            var program_header_table = this.program_header_table.First(x => addr32 >= x.p_vaddr && addr32 <= (x.p_vaddr + x.p_filesz));
+            return addr32 - (program_header_table.p_vaddr - program_header_table.p_offset);
         }
     }
 }

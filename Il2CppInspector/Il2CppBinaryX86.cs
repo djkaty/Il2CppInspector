@@ -12,8 +12,9 @@ namespace Il2CppInspector
     {
         public Il2CppBinaryX86(IFileFormatReader stream) : base(stream) { }
         public Il2CppBinaryX86(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) : base(stream, codeRegistration, metadataRegistration) { }
-        protected override (uint, uint) ConsiderCode(uint loc, uint globalOffset) {
-            uint funcPtr, metadata, code;
+        protected override (ulong, ulong) ConsiderCode(uint loc, ulong globalOffset) {
+            ulong metadata, code;
+            long funcPtr;
             ushort opcode;
 
             // Variant 1
@@ -31,9 +32,9 @@ namespace Il2CppInspector
                     return (0, 0);
 
                 // Jump to Il2CppCodegenRegistration
-                Image.Position = Image.MapVATR(funcPtr) + 6;
+                Image.Position = Image.MapVATR((ulong) funcPtr) + 6;
                 metadata = Image.ReadUInt32();
-                Image.Position = Image.MapVATR(funcPtr) + 11;
+                Image.Position = Image.MapVATR((ulong) funcPtr) + 11;
                 code = Image.ReadUInt32();
                 return (code, metadata);
             }

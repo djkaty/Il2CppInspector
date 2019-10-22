@@ -16,9 +16,9 @@ namespace Il2CppInspector
 
         public Il2CppBinaryARM(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) : base(stream, codeRegistration, metadataRegistration) { }
 
-        protected override (uint, uint) ConsiderCode(uint loc, uint globalOffset) {
+        protected override (ulong, ulong) ConsiderCode(uint loc, ulong globalOffset) {
             // Assembly bytes to search for at start of each function
-            uint metadataRegistration, codeRegistration;
+            ulong metadataRegistration, codeRegistration;
             byte[] buff;
 
             // ARMv7
@@ -29,9 +29,9 @@ namespace Il2CppInspector
             if (bytes.SequenceEqual(buff)) {
                 Image.Position = loc + 0x2c;
                 var subaddr = Image.ReadUInt32() + globalOffset;
-                Image.Position = subaddr + 0x28;
+                Image.Position = (uint) (subaddr + 0x28);
                 codeRegistration = Image.ReadUInt32() + globalOffset;
-                Image.Position = subaddr + 0x2C;
+                Image.Position = (uint) (subaddr + 0x2C);
                 var ptr = Image.ReadUInt32() + globalOffset;
                 Image.Position = Image.MapVATR(ptr);
                 metadataRegistration = Image.ReadUInt32();

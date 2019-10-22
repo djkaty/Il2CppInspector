@@ -24,20 +24,20 @@ namespace Il2CppInspector
         string Format { get; }
         string Arch { get; }
         int Bits { get; }
-        uint GlobalOffset { get; }
-        Dictionary<string, uint> GetSymbolTable();
+        ulong GlobalOffset { get; }
+        Dictionary<string, ulong> GetSymbolTable();
         uint[] GetFunctionTable();
-        U ReadMappedObject<U>(uint uiAddr) where U : new();
-        U[] ReadMappedArray<U>(uint uiAddr, int count) where U : new();
-        uint MapVATR(uint uiAddr);
+        U ReadMappedObject<U>(ulong uiAddr) where U : new();
+        U[] ReadMappedArray<U>(ulong uiAddr, int count) where U : new();
+        uint MapVATR(ulong uiAddr);
 
         byte[] ReadBytes(int count);
         ulong ReadUInt64();
         uint ReadUInt32();
         ushort ReadUInt16();
         byte ReadByte();
-        string ReadMappedNullTerminatedString(uint uiAddr);
-        List<U> ReadMappedObjectPointerArray<U>(uint uiAddr, int count) where U : new();
+        string ReadMappedNullTerminatedString(ulong uiAddr);
+        List<U> ReadMappedObjectPointerArray<U>(ulong uiAddr, int count) where U : new();
     }
 
     internal class FileFormatReader
@@ -50,7 +50,8 @@ namespace Il2CppInspector
                         .Where(x => x.ImplementedInterfaces.Contains(typeof(IFileFormatReader)) && !x.IsGenericTypeDefinition);
 
             foreach (var type in types) {
-                if (type.BaseType.GetMethod("Load", new [] {typeof(Stream)})
+                if (type.GetMethod("Load", BindingFlags.FlattenHierarchy | BindingFlags.Static | BindingFlags.Public,
+                        null, new [] {typeof(Stream)}, null)
                     .Invoke(null, new object[] { stream }) is IFileFormatReader loaded)
                     return loaded;
             }
@@ -66,7 +67,7 @@ namespace Il2CppInspector
 
         public uint NumImages { get; protected set; } = 1;
 
-        public uint GlobalOffset { get; protected set; }
+        public ulong GlobalOffset { get; protected set; }
 
         public virtual string Format => throw new NotImplementedException();
 
@@ -110,30 +111,30 @@ namespace Il2CppInspector
         }
 
         // Find search locations in the symbol table for Il2Cpp data
-        public virtual Dictionary<string, uint> GetSymbolTable() => null;
+        public virtual Dictionary<string, ulong> GetSymbolTable() => null;
 
         // Find search locations in the machine code for Il2Cpp data
         public virtual uint[] GetFunctionTable() => throw new NotImplementedException();
 
         // Map an RVA to an offset into the file image
         // No mapping by default
-        public virtual uint MapVATR(uint uiAddr) => uiAddr;
+        public virtual uint MapVATR(ulong uiAddr) => (uint) uiAddr;
 
         // Retrieve object(s) from specified RVA(s)
-        public U ReadMappedObject<U>(uint uiAddr) where U : new() {
+        public U ReadMappedObject<U>(ulong uiAddr) where U : new() {
             return ReadObject<U>(MapVATR(uiAddr));
         }
 
-        public U[] ReadMappedArray<U>(uint uiAddr, int count) where U : new() {
+        public U[] ReadMappedArray<U>(ulong uiAddr, int count) where U : new() {
             return ReadArray<U>(MapVATR(uiAddr), count);
         }
 
-        public string ReadMappedNullTerminatedString(uint uiAddr) {
+        public string ReadMappedNullTerminatedString(ulong uiAddr) {
             return ReadNullTerminatedString(MapVATR(uiAddr));
         }
 
         // Reads a list of pointers, then reads each object pointed to
-        public List<U> ReadMappedObjectPointerArray<U>(uint uiAddr, int count) where U : new() {
+        public List<U> ReadMappedObjectPointerArray<U>(ulong uiAddr, int count) where U : new() {
             var pointers = ReadMappedArray<uint>(uiAddr, count);
             var array = new List<U>();
             for (int i = 0; i < count; i++)
