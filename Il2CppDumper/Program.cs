@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
+﻿// Copyright (c) 2017-2019 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
 // All rights reserved
 
 using System;
@@ -9,6 +9,11 @@ namespace Il2CppInspector
     public class App
     {
         static void Main(string[] args) {
+
+            // Banner
+            Console.WriteLine("Il2CppDumper");
+            Console.WriteLine("(c) 2017-2019 Katy Coe - www.djkaty.com");
+            Console.WriteLine("");
 
             // Command-line usage: dotnet run [<binary-file> [<metadata-file> [<output-file>]]]
             // Defaults to libil2cpp.so or GameAssembly.dll if binary file not specified
