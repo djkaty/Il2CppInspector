@@ -23,6 +23,11 @@ namespace Il2CppInspector
         protected override bool checkMagicBE(MachO magic) => magic == MachO.MH_CIGAM;
 
         protected override MachO lc_Segment => MachO.LC_SEGMENT;
+
+        public override uint MapVATR(ulong uiAddr) {
+            var section = sections.First(x => uiAddr >= x.Address && uiAddr <= x.Address + x.Size);
+            return (uint) uiAddr - (section.Address - section.ImageOffset);
+        }
     }
 
     internal class MachOReader64 : MachOReader<ulong, MachOReader64>
@@ -35,6 +40,10 @@ namespace Il2CppInspector
         protected override bool checkMagicBE(MachO magic) => magic == MachO.MH_CIGAM_64;
 
         protected override MachO lc_Segment => MachO.LC_SEGMENT_64;
+        public override uint MapVATR(ulong uiAddr) {
+            var section = sections.First(x => uiAddr >= x.Address && uiAddr <= x.Address + x.Size);
+            return (uint) (uiAddr - (section.Address - section.ImageOffset));
+        }
     }
 
     // We need this convoluted generic TReader declaration so that "static T FileFormatReader.Load(Stream)"
@@ -42,7 +51,7 @@ namespace Il2CppInspector
     internal abstract class MachOReader<TWord, TReader> : FileFormatReader<TReader> where TWord : struct where TReader : FileFormatReader<TReader>
     {
         private MachOHeader<TWord> header;
-        private readonly List<MachOSection<TWord>> sections = new List<MachOSection<TWord>>();
+        protected readonly List<MachOSection<TWord>> sections = new List<MachOSection<TWord>>();
         private MachOLinkEditDataCommand funcTab;
         private MachOSymtabCommand symTab;
 
@@ -94,8 +103,7 @@ namespace Il2CppInspector
                                 var section = ReadObject<MachOSection<TWord>>();
                                 sections.Add(section);
                                 if (section.Name == "__text") {
-                                    GlobalOffset = (ulong) Convert.ChangeType(section.Address, typeof(ulong)) -
-                                                   section.ImageOffset;
+                                    GlobalOffset = (ulong) Convert.ChangeType(section.Address, typeof(ulong)) - section.ImageOffset;
                                 }
                             }
                         }
@@ -170,11 +178,6 @@ namespace Il2CppInspector
                     symbols.TryAdd(name, value);
             }
             return symbols;
-        }
-
-        public override uint MapVATR(ulong uiAddr) {
-            var section = sections.First(x => uiAddr >= (uint)(object)x.Address && uiAddr <= (uint)(object)x.Address + (uint)(object)x.Size);
-            return (uint) (uiAddr - ((ulong) Convert.ChangeType(section.Address, typeof(ulong)) - section.ImageOffset));
         }
     }
 }
