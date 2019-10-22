@@ -75,6 +75,11 @@ namespace Il2CppInspector
                 symbols.TryGetValue("g_CodeRegistration", out var code);
                 symbols.TryGetValue("g_MetadataRegistration", out var metadata);
 
+                if (code == 0)
+                    symbols.TryGetValue("_g_CodeRegistration", out code);
+                if (metadata == 0)
+                    symbols.TryGetValue("_g_MetadataRegistration", out metadata);
+
                 if (code != 0 && metadata != 0) {
                     Console.WriteLine("Required structures acquired from symbol lookup");
                     Configure(subImage, code, metadata);

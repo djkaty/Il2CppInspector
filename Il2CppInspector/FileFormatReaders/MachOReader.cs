@@ -43,8 +43,8 @@ namespace Il2CppInspector
     {
         private MachOHeader<TWord> header;
         private readonly List<MachOSection<TWord>> sections = new List<MachOSection<TWord>>();
-        private uint pFuncTable;
-        private uint sFuncTable;
+        private MachOLinkEditDataCommand funcTab;
+        private MachOSymtabCommand symTab;
 
         protected MachOReader(Stream stream) : base(stream) { }
 
@@ -79,28 +79,41 @@ namespace Il2CppInspector
             if ((MachO)header.FileType != MachO.MH_EXECUTE)
                 return false;
 
-            MachOLinkEditDataCommand functionStarts = null;
-
             // Process load commands
             for (var c = 0; c < header.NumCommands; c++) {
                 var startPos = Position;
                 var loadCommand = ReadObject<MachOLoadCommand>();
 
-                if ((MachO)loadCommand.Command == lc_Segment) {
-                    var segment = ReadObject<MachOSegmentCommand<TWord>>();
-                    if (segment.Name == "__TEXT" || segment.Name == "__DATA") {
-                        for (int s = 0; s < segment.NumSections; s++) {
-                            var section = ReadObject<MachOSection<TWord>>();
-                            sections.Add(section);
-                            if (section.Name == "__text") {
-                                GlobalOffset = (ulong)Convert.ChangeType(section.Address, typeof(ulong)) - section.ImageOffset;
+                switch ((MachO) loadCommand.Command) {
+
+                    // Segments
+                    case MachO cmd when cmd == lc_Segment:
+                        var segment = ReadObject<MachOSegmentCommand<TWord>>();
+                        if (segment.Name == "__TEXT" || segment.Name == "__DATA") {
+                            for (int s = 0; s < segment.NumSections; s++) {
+                                var section = ReadObject<MachOSection<TWord>>();
+                                sections.Add(section);
+                                if (section.Name == "__text") {
+                                    GlobalOffset = (ulong) Convert.ChangeType(section.Address, typeof(ulong)) -
+                                                   section.ImageOffset;
+                                }
                             }
                         }
-                    }
-                }
+                        break;
 
-                if ((MachO)loadCommand.Command == MachO.LC_FUNCTION_STARTS) {
-                    functionStarts = ReadObject<MachOLinkEditDataCommand>();
+                    // Location of function table
+                    case MachO.LC_FUNCTION_STARTS:
+                        funcTab = ReadObject<MachOLinkEditDataCommand>();
+                        break;
+
+                    // Location of static symbol table
+                    case MachO.LC_SYMTAB:
+                        symTab = ReadObject<MachOSymtabCommand>();
+                        break;
+
+                    case MachO.LC_DYSYMTAB:
+                        // TODO: Implement Mach-O dynamic symbol table
+                        break;
                 }
 
                 // There might be other data after the load command so always use the specified total size to step forwards
@@ -108,22 +121,17 @@ namespace Il2CppInspector
             }
 
             // Must find LC_FUNCTION_STARTS load command
-            if (functionStarts == null)
-                return false;
-
-            pFuncTable = functionStarts.Offset;
-            sFuncTable = functionStarts.Size;
-            return true;
+            return (funcTab != null);
         }
 
         public override uint[] GetFunctionTable() {
-            Position = pFuncTable;
+            Position = funcTab.Offset;
             var functionPointers = new List<uint>();
 
             // Decompress ELB128 list of function offsets
             // https://en.wikipedia.org/wiki/LEB128
             uint previous = 0;
-            while (Position < pFuncTable + sFuncTable) {
+            while (Position < funcTab.Offset + funcTab.Size) {
                 uint result = 0;
                 int shift = 0;
                 byte b;
@@ -140,6 +148,28 @@ namespace Il2CppInspector
                 }
             }
             return functionPointers.ToArray();
+        }
+
+        public override Dictionary<string, ulong> GetSymbolTable() {
+            var symbols = new Dictionary<string, ulong>();
+
+            // https://opensource.apple.com/source/cctools/cctools-795/include/mach-o/nlist.h
+            // n_sect: https://opensource.apple.com/source/cctools/cctools-795/include/mach-o/stab.h
+
+            var symbolList = ReadArray<MachO_nlist<TWord>>(symTab.SymOffset, (int) symTab.NumSyms);
+
+            // This is a really naive implementation that ignores the values of n_type and n_sect
+            // which may affect the interpretation of n_value
+            foreach (var symbol in symbolList) {
+                Position = symTab.StrOffset + symbol.n_strx;
+                var name = (symbol.n_strx != 0) ? ReadNullTerminatedString() : "";
+                var value = (ulong) Convert.ChangeType(symbol.n_value, typeof(ulong));
+
+                // Ignore duplicates for now, also ignore symbols with no address
+                if (value != 0)
+                    symbols.TryAdd(name, value);
+            }
+            return symbols;
         }
 
         public override uint MapVATR(ulong uiAddr) {

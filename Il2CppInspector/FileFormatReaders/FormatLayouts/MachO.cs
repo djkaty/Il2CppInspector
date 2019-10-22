@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -21,6 +21,8 @@ namespace Il2CppInspector
         MH_EXECUTE = 0x2,
 
         LC_SEGMENT = 0x1,
+        LC_SYMTAB = 0x2,
+        LC_DYSYMTAB = 0xb,
         LC_SEGMENT_64 = 0x19,
         LC_FUNCTION_STARTS = 0x26,
 
@@ -84,5 +86,22 @@ namespace Il2CppInspector
         // MachOLoadCommand
         public uint Offset;
         public uint Size;
+    }
+
+    internal class MachOSymtabCommand
+    {
+        public uint SymOffset;
+        public uint NumSyms;
+        public uint StrOffset;
+        public uint StrSize;
+    }
+
+    internal class MachO_nlist<TWord> where TWord : struct
+    {
+        public uint n_strx;
+        public byte n_type;
+        public byte n_sect;
+        public ushort n_desc;
+        public TWord n_value;
     }
 }
