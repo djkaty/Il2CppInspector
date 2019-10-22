@@ -13,7 +13,7 @@ namespace Il2CppInspector
         public Il2CppBinaryX86(IFileFormatReader stream) : base(stream) { }
         public Il2CppBinaryX86(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) : base(stream, codeRegistration, metadataRegistration) { }
 
-        protected override (ulong, ulong) ConsiderCode(uint loc, ulong globalOffset) {
+        protected override (ulong, ulong) ConsiderCode(IFileFormatReader image, uint loc) {
             ulong metadata, code;
             long funcPtr;
             ushort opcode;
@@ -22,60 +22,60 @@ namespace Il2CppInspector
 
             // Assembly bytes to search for at start of each function
             var bytes = new byte[] {0x6A, 0x00, 0x6A, 0x00, 0x68};
-            Image.Position = loc;
-            var buff = Image.ReadBytes(5);
+            image.Position = loc;
+            var buff = image.ReadBytes(5);
             if (bytes.SequenceEqual(buff)) {
                 // Next 4 bytes are the function pointer being pushed onto the stack
-                funcPtr = Image.ReadUInt32();
+                funcPtr = image.ReadUInt32();
 
                 // Start of next instruction
-                if (Image.ReadByte() != 0xB9)
+                if (image.ReadByte() != 0xB9)
                     return (0, 0);
 
                 // Jump to Il2CppCodegenRegistration
-                Image.Position = Image.MapVATR((ulong) funcPtr + 6);
-                metadata = Image.ReadUInt32();
-                Image.Position = Image.MapVATR((ulong) funcPtr + 11);
-                code = Image.ReadUInt32();
+                image.Position = image.MapVATR((ulong) funcPtr + 6);
+                metadata = image.ReadUInt32();
+                image.Position = image.MapVATR((ulong) funcPtr + 11);
+                code = image.ReadUInt32();
                 return (code, metadata);
             }
 
             // Variant 2
             bytes = new byte[]
                 {0x55, 0x89, 0xE5, 0x53, 0x83, 0xE4, 0xF0, 0x83, 0xEC, 0x20, 0xE8, 0x00, 0x00, 0x00, 0x00, 0x5B};
-            Image.Position = loc;
-            buff = Image.ReadBytes(16);
+            image.Position = loc;
+            buff = image.ReadBytes(16);
             if (!bytes.SequenceEqual(buff))
                 return (0, 0);
 
-            Image.Position += 8;
-            funcPtr = Image.MapVATR(Image.ReadUInt32() + globalOffset);
-            if (funcPtr > Image.Stream.BaseStream.Length)
+            image.Position += 8;
+            funcPtr = image.MapVATR(image.ReadUInt32() + image.GlobalOffset);
+            if (funcPtr > image.Stream.BaseStream.Length)
                 return (0, 0);
 
             // Extract Metadata pointer
             // An 0x838D opcode indicates LEA (no indirection)
-            Image.Position = funcPtr + 0x20;
-            opcode = Image.ReadUInt16();
-            metadata = Image.ReadUInt32() + globalOffset;
+            image.Position = funcPtr + 0x20;
+            opcode = image.ReadUInt16();
+            metadata = image.ReadUInt32() + image.GlobalOffset;
 
             // An 8x838B opcode indicates MOV (pointer indirection)
             if (opcode == 0x838B) {
-                Image.Position = Image.MapVATR(metadata);
-                metadata = Image.ReadUInt32();
+                image.Position = image.MapVATR(metadata);
+                metadata = image.ReadUInt32();
             }
 
             if (opcode != 0x838B && opcode != 0x838D)
                 return (0, 0);
 
             // Repeat the same logic for extracting the Code pointer
-            Image.Position = funcPtr + 0x2A;
-            opcode = Image.ReadUInt16();
-            code = Image.ReadUInt32() + globalOffset;
+            image.Position = funcPtr + 0x2A;
+            opcode = image.ReadUInt16();
+            code = image.ReadUInt32() + image.GlobalOffset;
 
             if (opcode == 0x838B) {
-                Image.Position = Image.MapVATR(code);
-                code = Image.ReadUInt32();
+                image.Position = image.MapVATR(code);
+                code = image.ReadUInt32();
             }
 
             if (opcode != 0x838B && opcode != 0x838D)

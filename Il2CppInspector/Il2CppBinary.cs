@@ -59,7 +59,7 @@ namespace Il2CppInspector
         }
 
         // Architecture-specific search function
-        protected abstract (ulong, ulong) ConsiderCode(uint loc, ulong globalOffset);
+        protected abstract (ulong, ulong) ConsiderCode(IFileFormatReader image, uint loc);
 
         // Check all search locations
         public bool Initialize(double version, uint imageIndex = 0) {
@@ -99,7 +99,7 @@ namespace Il2CppInspector
 
             foreach (var loc in addrs)
                 if (loc != 0) {
-                    var (code, metadata) = ConsiderCode(loc, Image.GlobalOffset);
+                    var (code, metadata) = ConsiderCode(subImage, loc);
                     if (code != 0) {
                         Console.WriteLine("Required structures acquired from code heuristics");
                         Configure(subImage, code, metadata); 
