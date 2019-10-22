@@ -20,13 +20,12 @@ Class library targets .NET Standard 2.1. Application targets .NET Core 3.0. Buil
 ```
 git clone --recursive https://github.com/djkaty/Il2CppInspector
 cd Il2CppInspector
-dotnet restore -r win7-x86
-dotnet publish -c Release -r win7-x86
+dotnet publish -c Release
 ```
 
-This will build Il2CppInspector for Windows 7 and later. For MacOS and Linux, replace `win7-x86` with a RID from https://docs.microsoft.com/en-us/dotnet/articles/core/rid-catalog
+This will build Il2CppInspector for Windows 64-bit. For MacOS and Linux, add  `-r xxx` to the final command where `xxx` is a RID from https://docs.microsoft.com/en-us/dotnet/articles/core/rid-catalog
 
-The output binary is placed in `Il2CppInspector/Il2CppDumper/bin/Release/netstandard1.6/win7-x86/publish`.
+The output binary is placed in `Il2CppInspector/Il2CppDumper/bin/Release/netcoreapp3.0/win-x64/publish`.
 
 ### Usage
 
@@ -43,10 +42,6 @@ Defaults if not specified:
 File format and architecture are automatically detected.
 
 For Apple Universal Binaries, multiple output files will be generated, with each filename suffixed by the index of the image in the Universal Binary. Unsupported images will be skipped.
-
-### 64-bit binaries
-
-Il2CppInspector does not currently support 64-bit IL2CPP binaries. 64-bit Mach-O files will be parsed without crashing but there is currently no support for 64-bit CPU architectures so automatic inspection will fail.
 
 ### Running tests
 
