@@ -75,7 +75,7 @@ namespace Il2CppInspector
         public uint ImageOffset;
         public uint Align;
         public uint ImageRelocOffset;
-        public uint NumRelocEntries;
+        public int NumRelocEntries;
         public uint Flags;
         public uint Reserved1;
         public TWord Reserved2;
@@ -103,5 +103,17 @@ namespace Il2CppInspector
         public byte n_sect;
         public ushort n_desc;
         public TWord n_value;
+    }
+
+    internal class MachO_relocation_info
+    {
+        public int r_address;
+        public uint r_data;
+
+        public uint r_symbolnum => r_data & 0x00ffffff;
+        public bool r_pcrel => ((r_data >> 24) & 1) == 1;
+        public uint r_length => (r_data >> 25) & 3;
+        public bool r_extern => ((r_data >> 27) & 1) == 1;
+        public uint r_type => r_data >> 28;
     }
 }

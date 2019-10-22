@@ -129,7 +129,20 @@ namespace Il2CppInspector
             }
 
             // Must find LC_FUNCTION_STARTS load command
-            return (funcTab != null);
+            if (funcTab == null)
+                return false;
+
+            // Process relocations
+            foreach (var section in sections) {
+                var rels = ReadArray<MachO_relocation_info>(section.ImageRelocOffset, section.NumRelocEntries);
+
+                // TODO: Implement
+                if (rels.Any()) {
+                    Console.WriteLine("Mach-O file contains relocations (feature not yet implemented)");
+                    break;
+                }
+            }
+            return true;
         }
 
         public override uint[] GetFunctionTable() {
