@@ -35,7 +35,7 @@ namespace Il2CppInspector
         {
             // Read magic bytes
             if (ReadUInt32() != 0xFAB11BAF) {
-                throw new Exception("ERROR: Metadata file supplied is not valid metadata file.");
+                throw new InvalidOperationException("ERROR: Metadata file supplied is not valid metadata file.");
             }
 
             // Set object versioning for Bin2Object from metadata version
@@ -45,7 +45,7 @@ namespace Il2CppInspector
             Header = ReadObject<Il2CppGlobalMetadataHeader>(0);
             if (Version < 21 || Version > 24)
             {
-                throw new Exception($"ERROR: Metadata file supplied is not a supported version ({Header.version}).");
+                throw new InvalidOperationException($"ERROR: Metadata file supplied is not a supported version ({Header.version}).");
             }
 
             // Sanity checking
@@ -67,7 +67,7 @@ namespace Il2CppInspector
             }
 
             if (realHeaderLength != Sizeof(typeof(Il2CppGlobalMetadataHeader))) {
-                throw new Exception("ERROR: Could not verify the integrity of the metadata file or accurately identify the metadata sub-version");
+                throw new InvalidOperationException("ERROR: Could not verify the integrity of the metadata file or accurately identify the metadata sub-version");
             }
             
             // Load all the relevant metadata using offsets provided in the header
@@ -85,7 +85,7 @@ namespace Il2CppInspector
                 }
 
             if (Images.Any(x => x.token != 1))
-                throw new Exception("ERROR: Could not verify the integrity of the metadata file image list");
+                throw new InvalidOperationException("ERROR: Could not verify the integrity of the metadata file image list");
 
             Types = ReadArray<Il2CppTypeDefinition>(Header.typeDefinitionsOffset, Header.typeDefinitionsCount / Sizeof(typeof(Il2CppTypeDefinition)));
             Methods = ReadArray<Il2CppMethodDefinition>(Header.methodsOffset, Header.methodsCount / Sizeof(typeof(Il2CppMethodDefinition)));
