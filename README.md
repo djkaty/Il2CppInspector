@@ -2,6 +2,7 @@
 Extract types, methods, properties and fields from Unity IL2CPP binaries.
 
 * Supports ELF (Android .so), PE (Windows .exe), Mach-O (Apple iOS/Mac) and Universal Binary (Fat Mach-O) file formats
+* 64-bit support for Mach-O files
 * Supports ARMv7, ARMv7 Thumb T1 and x86 architectures regardless of file format
 * Supports metadata versions 21, 22, 23, 24, 24.1 (Unity 2018.3+) and 24.2 (Unity 2019+)
 * No manual reverse-engineering required; all data is calculated automatically

@@ -30,7 +30,7 @@ namespace Il2CppInspector
         CPU_TYPE_ARM64 = 0x01000000 + CPU_TYPE_ARM
     }
 
-    internal class MachOHeader
+    internal class MachOHeader<TWord> where TWord : struct
     {
         public uint Magic;
         public uint CPUType;
@@ -38,8 +38,7 @@ namespace Il2CppInspector
         public uint FileType;
         public uint NumCommands;
         public uint SizeOfCommands;
-        public uint Flags;
-        // 64-bit header has an extra 32-bit Reserved field
+        public TWord Flags;
     }
 
     internal class MachOLoadCommand
@@ -48,69 +47,36 @@ namespace Il2CppInspector
         public uint Size;
     }
 
-    internal class MachOSegmentCommand
+    internal class MachOSegmentCommand<TWord> where TWord : struct
     {
         // MachOLoadCommand
         [String(FixedSize = 16)]
         public string Name;
-        public uint VirtualAddress;
-        public uint VirtualSize;
-        public uint ImageOffset;
-        public uint ImageSize;
+        public TWord VirtualAddress;
+        public TWord VirtualSize;
+        public TWord ImageOffset;
+        public TWord ImageSize;
         public uint VMMaxProt;
         public uint VMInitProt;
         public uint NumSections;
         public uint Flags;
     }
 
-    internal class MachOSegmentCommand64
-    {
-        // MachOLoadCommand
-        [String(FixedSize = 16)]
-        public string Name;
-        public ulong VirtualAddress;
-        public ulong VirtualSize;
-        public ulong ImageOffset;
-        public ulong ImageSize;
-        public uint VMMaxProt;
-        public uint VMInitProt;
-        public uint NumSections;
-        public uint Flags;
-    }
-
-    internal class MachOSection
+    internal class MachOSection<TWord> where TWord : struct
     {
         [String(FixedSize = 16)]
         public string Name;
         [String(FixedSize = 16)]
         public string SegmentName;
-        public uint Address;
-        public uint Size;
+        public TWord Address;
+        public TWord Size;
         public uint ImageOffset;
         public uint Align;
         public uint ImageRelocOffset;
         public uint NumRelocEntries;
         public uint Flags;
         public uint Reserved1;
-        public uint Reserved2;
-    }
-
-    internal class MachOSection64
-    {
-        [String(FixedSize = 16)]
-        public string Name;
-        [String(FixedSize = 16)]
-        public string SegmentName;
-        public ulong Address;
-        public ulong Size;
-        public uint ImageOffset;
-        public uint Align;
-        public uint ImageRelocOffset;
-        public uint NumRelocEntries;
-        public uint Flags;
-        public uint Reserved1;
-        public uint Reserved2;
-        public uint Reserved3;
+        public TWord Reserved2;
     }
 
     internal class MachOLinkEditDataCommand
