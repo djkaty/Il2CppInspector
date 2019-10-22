@@ -63,20 +63,25 @@ namespace Il2CppInspector
             if (opcode == 0x838B) {
                 Image.Position = Image.MapVATR(metadata);
                 metadata = Image.ReadUInt32();
-
-                // Repeat the same logic for extracting the Code pointer
-                Image.Position = funcPtr + 0x2A;
-                opcode = Image.ReadUInt16();
-                code = Image.ReadUInt32() + globalOffset;
-
-                if (opcode == 0x838B) {
-                    Image.Position = Image.MapVATR(code);
-                    code = Image.ReadUInt32();
-
-                    return (code, metadata);
-                }
             }
-            return (0, 0);
+
+            if (opcode != 0x838B && opcode != 0x838D)
+                return (0, 0);
+
+            // Repeat the same logic for extracting the Code pointer
+            Image.Position = funcPtr + 0x2A;
+            opcode = Image.ReadUInt16();
+            code = Image.ReadUInt32() + globalOffset;
+
+            if (opcode == 0x838B) {
+                Image.Position = Image.MapVATR(code);
+                code = Image.ReadUInt32();
+            }
+
+            if (opcode != 0x838B && opcode != 0x838D)
+                return (0, 0);
+
+            return (code, metadata);
         }
     }
 }
