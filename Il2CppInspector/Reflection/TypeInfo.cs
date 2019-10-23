@@ -224,7 +224,7 @@ namespace Il2CppInspector.Reflection {
                 var genericInstance = image.ReadMappedObject<Il2CppGenericInst>(generic.context.class_inst);
 
                 // Get list of pointers to type parameters (both unresolved and concrete)
-                var genericTypeParameters = image.ReadMappedArray<uint>(genericInstance.type_argv, (int)genericInstance.type_argc);
+                var genericTypeParameters = image.ReadMappedArray<ulong>(genericInstance.type_argv, (int)genericInstance.type_argc);
 
                 GenericTypeParameters = new List<TypeInfo>();
                 foreach (var pArg in genericTypeParameters) {
