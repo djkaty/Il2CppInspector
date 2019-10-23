@@ -52,7 +52,7 @@ namespace Il2CppInspector.Reflection
                         // This probably means it has been optimized away by the compiler, or is an unused generic method
                         try {
                             pkg.BinaryImage.Position = pkg.BinaryImage.MapVATR(Assembly.Module.methodPointers + (ulong) ((method - 1) * (pkg.BinaryImage.Bits / 8)));
-                            VirtualAddress = pkg.BinaryImage.Stream.ReadObject<ulong>();
+                            VirtualAddress = (ulong) pkg.BinaryImage.ReadWord();
                         } catch (Exception) { }
                     }
                 }

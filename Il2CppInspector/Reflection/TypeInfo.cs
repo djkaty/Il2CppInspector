@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace Il2CppInspector.Reflection {
     public class TypeInfo : MemberInfo
@@ -224,11 +223,11 @@ namespace Il2CppInspector.Reflection {
                 var genericInstance = image.ReadMappedObject<Il2CppGenericInst>(generic.context.class_inst);
 
                 // Get list of pointers to type parameters (both unresolved and concrete)
-                var genericTypeParameters = image.ReadMappedArray<ulong>(genericInstance.type_argv, (int)genericInstance.type_argc);
+                var genericTypeParameters = image.ReadMappedWordArray(genericInstance.type_argv, (int)genericInstance.type_argc);
 
                 GenericTypeParameters = new List<TypeInfo>();
                 foreach (var pArg in genericTypeParameters) {
-                    var argType = image.ReadMappedObject<Il2CppType>(pArg);
+                    var argType = image.ReadMappedObject<Il2CppType>((ulong) pArg);
                     // TODO: Detect whether unresolved or concrete (add concrete to GenericTypeArguments instead)
                     // TODO: GenericParameterPosition etc. in types we generate here
                     GenericTypeParameters.Add(model.GetType(argType)); // TODO: Fix MemberType here

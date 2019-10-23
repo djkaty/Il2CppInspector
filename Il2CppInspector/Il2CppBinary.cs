@@ -64,7 +64,7 @@ namespace Il2CppInspector
         // Check all search locations
         public bool Initialize(double version, uint imageIndex = 0) {
             var subImage = Image[imageIndex];
-            subImage.Stream.Version = version;
+            subImage.Version = version;
 
             // Try searching the symbol table
             var symbols = subImage.GetSymbolTable();
@@ -128,11 +128,11 @@ namespace Il2CppInspector
             MetadataRegistration = image.ReadMappedObject<Il2CppMetadataRegistration>(metadataRegistration);
 
             // The global method pointer list was deprecated in v24.2 in favour of Il2CppCodeGenModule
-            if (Image.Stream.Version <= 24.1)
+            if (Image.Version <= 24.1)
                 GlobalMethodPointers = image.ReadMappedArray<ulong>(CodeRegistration.pmethodPointers, (int) CodeRegistration.methodPointersCount);
 
             // After v24 method pointers and RGCTX data were stored in Il2CppCodeGenModules
-            if (Image.Stream.Version >= 24.2) {
+            if (Image.Version >= 24.2) {
                 Modules = new Dictionary<string, Il2CppCodeGenModule>();
 
                 // Array of pointers to Il2CppCodeGenModule
@@ -145,7 +145,7 @@ namespace Il2CppInspector
             }
 
             // Field offset data. Metadata <=21.x uses a value-type array; >=21.x uses a pointer array
-            FieldOffsetData = image.ReadMappedArray<long>(MetadataRegistration.pfieldOffsets, (int) MetadataRegistration.fieldOffsetsCount);
+            FieldOffsetData = image.ReadMappedWordArray(MetadataRegistration.pfieldOffsets, (int) MetadataRegistration.fieldOffsetsCount);
             
             // Type definitions (pointer array)
             Types = image.ReadMappedObjectPointerArray<Il2CppType>(MetadataRegistration.ptypes, (int) MetadataRegistration.typesCount);

@@ -137,7 +137,7 @@ namespace Il2CppInspector
                         BinaryImage.Position = BinaryImage.MapVATR((ulong) pFieldOffsets);
 
                         for (var f = 0; f < def.field_count; f++)
-                            offsets.Add(def.fieldStart + f, BinaryImage.Stream.ReadObject<long>());
+                            offsets.Add(def.fieldStart + f, BinaryImage.ReadWord());
                     }
                 }
 

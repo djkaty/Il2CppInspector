@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Reflection;
 using NoisyCowStudios.Bin2Object;
@@ -17,6 +16,8 @@ namespace Il2CppInspector
     public interface IFileFormatReader
     {
         BinaryObjectReader Stream { get; }
+        double Version { get; set; }
+        long Length { get; }
         uint NumImages { get; }
         IEnumerable<IFileFormatReader> Images { get; }
         IFileFormatReader this[uint index] { get; }
@@ -29,13 +30,21 @@ namespace Il2CppInspector
         uint[] GetFunctionTable();
         U ReadMappedObject<U>(ulong uiAddr) where U : new();
         U[] ReadMappedArray<U>(ulong uiAddr, int count) where U : new();
+        long[] ReadMappedWordArray(ulong uiAddr, int count);
         uint MapVATR(ulong uiAddr);
 
         byte[] ReadBytes(int count);
         ulong ReadUInt64();
+        ulong ReadUInt64(long uiAddr);
         uint ReadUInt32();
+        uint ReadUInt32(long uiAddr);
         ushort ReadUInt16();
+        ushort ReadUInt16(long uiAddr);
         byte ReadByte();
+        byte ReadByte(long uiAddr);
+        long ReadWord();
+        long ReadWord(long uiAddr);
+        U ReadObject<U>() where U : new();
         string ReadMappedNullTerminatedString(ulong uiAddr);
         List<U> ReadMappedObjectPointerArray<U>(ulong uiAddr, int count) where U : new();
     }
@@ -65,6 +74,8 @@ namespace Il2CppInspector
 
         public BinaryObjectReader Stream => this;
 
+        public long Length => BaseStream.Length;
+
         public uint NumImages { get; protected set; } = 1;
 
         public ulong GlobalOffset { get; protected set; }
@@ -83,8 +94,8 @@ namespace Il2CppInspector
         }
 
         public static T Load(string filename) {
-            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-                return Load(stream);
+            using var stream = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            return Load(stream);
         }
 
         public static T Load(Stream stream) {
@@ -102,13 +113,7 @@ namespace Il2CppInspector
         protected virtual bool Init() => throw new NotImplementedException();
 
         // Choose a sub-binary within the image for multi-architecture binaries
-        public virtual IFileFormatReader this[uint index] {
-            get {
-                if (index == 0)
-                    return this;
-                throw new IndexOutOfRangeException("Binary image index out of bounds");
-            }
-        }
+        public virtual IFileFormatReader this[uint index] => (index == 0)? this : throw new IndexOutOfRangeException("Binary image index out of bounds");
 
         // Find search locations in the symbol table for Il2Cpp data
         public virtual Dictionary<string, ulong> GetSymbolTable() => null;
@@ -120,18 +125,21 @@ namespace Il2CppInspector
         // No mapping by default
         public virtual uint MapVATR(ulong uiAddr) => (uint) uiAddr;
 
+        // Read a file format dependent word (32 or 64 bits)
+        // The primitive mappings in Bin2Object will automatically read a uint if the file is 32-bit
+        public long ReadWord() => ReadObject<long>();
+        public long ReadWord(long uiAddr) => ReadObject<long>(uiAddr);
+
         // Retrieve object(s) from specified RVA(s)
-        public U ReadMappedObject<U>(ulong uiAddr) where U : new() {
-            return ReadObject<U>(MapVATR(uiAddr));
-        }
+        public U ReadMappedObject<U>(ulong uiAddr) where U : new() => ReadObject<U>(MapVATR(uiAddr));
 
-        public U[] ReadMappedArray<U>(ulong uiAddr, int count) where U : new() {
-            return ReadArray<U>(MapVATR(uiAddr), count);
-        }
+        public U[] ReadMappedArray<U>(ulong uiAddr, int count) where U : new() => ReadArray<U>(MapVATR(uiAddr), count);
 
-        public string ReadMappedNullTerminatedString(ulong uiAddr) {
-            return ReadNullTerminatedString(MapVATR(uiAddr));
-        }
+        // Read a file format dependent array of words (32 or 64 bits)
+        // The primitive mappings in Bin2Object will automatically read a uint if the file is 32-bit
+        public long[] ReadMappedWordArray(ulong uiAddr, int count) => ReadArray<long>(MapVATR(uiAddr), count);
+
+        public string ReadMappedNullTerminatedString(ulong uiAddr) => ReadNullTerminatedString(MapVATR(uiAddr));
 
         // Reads a list of pointers, then reads each object pointed to
         public List<U> ReadMappedObjectPointerArray<U>(ulong uiAddr, int count) where U : new() {

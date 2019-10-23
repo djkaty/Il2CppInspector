@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -50,7 +50,7 @@ namespace Il2CppInspector
 
             image.Position += 8;
             funcPtr = image.MapVATR(image.ReadUInt32() + image.GlobalOffset);
-            if (funcPtr > image.Stream.BaseStream.Length)
+            if (funcPtr > image.Length)
                 return (0, 0);
 
             // Extract Metadata pointer
