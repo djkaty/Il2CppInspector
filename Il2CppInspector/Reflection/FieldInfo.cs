@@ -13,7 +13,7 @@ namespace Il2CppInspector.Reflection {
         // IL2CPP-specific data
         public Il2CppFieldDefinition Definition { get; }
         public int Index { get; }
-        public int Offset { get; }
+        public long Offset { get; }
         
         public bool HasDefaultValue { get; }
         public object DefaultValue { get; }

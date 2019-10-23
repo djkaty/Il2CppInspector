@@ -15,7 +15,7 @@ namespace Il2CppInspector.Reflection
         // IL2CPP-specific data
         public Il2CppMethodDefinition Definition { get; }
         public int Index { get; }
-        public uint VirtualAddress { get; }
+        public ulong VirtualAddress { get; }
         public bool HasBody { get; }
 
         public override MemberTypes MemberType => MemberTypes.Method;

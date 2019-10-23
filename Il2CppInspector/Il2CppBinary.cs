@@ -21,13 +21,13 @@ namespace Il2CppInspector
         public Il2CppMetadataRegistration MetadataRegistration { get; protected set; }
 
         // Only for <=v24.1
-        public uint[] GlobalMethodPointers { get; set; }
+        public ulong[] GlobalMethodPointers { get; set; }
 
         // NOTE: In versions <21 and earlier releases of v21, this array has the format:
         // global field index => field offset
         // In versions >=22 and later releases of v21, this array has the format:
         // type index => RVA in image where the list of field offsets for the type start (4 bytes per field)
-        public int[] FieldOffsetData { get; private set; }
+        public long[] FieldOffsetData { get; private set; }
 
         // Every defined type
         public List<Il2CppType> Types { get; private set; }
@@ -117,13 +117,19 @@ namespace Il2CppInspector
         }
 
         private void Configure(IFileFormatReader image, ulong codeRegistration, ulong metadataRegistration) {
+            // Set width of long (convert to sizeof(int) for 32-bit files)
+            if (image.Bits == 32) {
+                image.Stream.PrimitiveMappings.Add(typeof(long), typeof(int));
+                image.Stream.PrimitiveMappings.Add(typeof(ulong), typeof(uint));
+            }
+
             // Root structures from which we find everything else
             CodeRegistration = image.ReadMappedObject<Il2CppCodeRegistration>(codeRegistration);
             MetadataRegistration = image.ReadMappedObject<Il2CppMetadataRegistration>(metadataRegistration);
 
             // The global method pointer list was deprecated in v24.2 in favour of Il2CppCodeGenModule
             if (Image.Stream.Version <= 24.1)
-                GlobalMethodPointers = image.ReadMappedArray<uint>(CodeRegistration.pmethodPointers, (int) CodeRegistration.methodPointersCount);
+                GlobalMethodPointers = image.ReadMappedArray<ulong>(CodeRegistration.pmethodPointers, (int) CodeRegistration.methodPointersCount);
 
             // After v24 method pointers and RGCTX data were stored in Il2CppCodeGenModules
             if (Image.Stream.Version >= 24.2) {
@@ -139,10 +145,10 @@ namespace Il2CppInspector
             }
 
             // Field offset data. Metadata <=21.x uses a value-type array; >=21.x uses a pointer array
-            FieldOffsetData = image.ReadMappedArray<int>(MetadataRegistration.pfieldOffsets, MetadataRegistration.fieldOffsetsCount);
+            FieldOffsetData = image.ReadMappedArray<long>(MetadataRegistration.pfieldOffsets, (int) MetadataRegistration.fieldOffsetsCount);
             
             // Type definitions (pointer array)
-            Types = image.ReadMappedObjectPointerArray<Il2CppType>(MetadataRegistration.ptypes, MetadataRegistration.typesCount);
+            Types = image.ReadMappedObjectPointerArray<Il2CppType>(MetadataRegistration.ptypes, (int) MetadataRegistration.typesCount);
         }
     }
 }

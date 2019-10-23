@@ -19,6 +19,10 @@ namespace Il2CppInspector
             model = new Il2CppReflector(proc);
         }
 
+        private string formatAddress(ulong address) => model.Package.BinaryImage.Bits == 32
+            ? string.Format($"0x{(uint) address:X8}")
+            : string.Format($"0x{address:X16}");
+
         public void WriteFile(string outFile) {
             using (var writer = new StreamWriter(new FileStream(outFile, FileMode.Create), Encoding.UTF8)) {
                 foreach (var asm in model.Assemblies) {
@@ -63,7 +67,7 @@ namespace Il2CppInspector
                                 writer.Write("out ");
                             writer.Write($"{param.ParameterType.CSharpName} {param.Name}");
                         }
-                        writer.Write($"); // TypeDefIndex: {type.Index}; 0x{del.VirtualAddress:X8}\n");
+                        writer.Write($"); // TypeDefIndex: {type.Index}; {formatAddress(del.VirtualAddress)}\n");
                         continue;
                     }
 
@@ -128,7 +132,7 @@ namespace Il2CppInspector
                             writer.Write($"{field.FieldType.CSharpName} {field.Name}");
                             if (field.HasDefaultValue)
                                 writer.Write($" = {field.DefaultValueString}");
-                            writer.Write("; // 0x{0:X2}\n", field.Offset);
+                            writer.Write("; // 0x{0:X2}\n", (uint) field.Offset);
                         }
                         if (type.DeclaredFields.Count > 0)
                             writer.Write("\n");
@@ -152,9 +156,8 @@ namespace Il2CppInspector
                         writer.Write((prop.GetMethod != null ? "get; " : "") + (prop.SetMethod != null ? "set; " : "") + "}");
                         if ((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0) || (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0))
                             writer.Write(" // ");
-                        writer.Write((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0? "0x{0:X8} " : "")
-                                    + (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0? "0x{1:X8}" : "") + "\n",
-                                    prop.GetMethod?.VirtualAddress, prop.SetMethod?.VirtualAddress);
+                        writer.Write((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0? formatAddress(prop.GetMethod.VirtualAddress) + " " : "")
+                                    + (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0? formatAddress(prop.SetMethod.VirtualAddress) : "") + "\n");
                         usedMethods.Add(prop.GetMethod);
                         usedMethods.Add(prop.SetMethod);
                     }
@@ -168,11 +171,11 @@ namespace Il2CppInspector
                     foreach (var evt in type.DeclaredEvents) {
                         string modifiers = evt.AddMethod?.GetModifierString();
                         writer.Write($"\t{modifiers}event {evt.EventHandlerType.CSharpName} {evt.Name} {{\n");
-                        var m = new Dictionary<string, uint>();
+                        var m = new Dictionary<string, ulong>();
                         if (evt.AddMethod != null) m.Add("add", evt.AddMethod.VirtualAddress);
                         if (evt.RemoveMethod != null) m.Add("remove", evt.RemoveMethod.VirtualAddress);
                         if (evt.RaiseMethod != null) m.Add("raise", evt.RaiseMethod.VirtualAddress);
-                        writer.Write(string.Join("\n", m.Select(x => $"\t\t{x.Key}; // 0x{x.Value:X8}")) + "\n\t}\n");
+                        writer.Write(string.Join("\n", m.Select(x => $"\t\t{x.Key}; // {formatAddress(x.Value)}")) + "\n\t}\n");
                         usedMethods.Add(evt.AddMethod);
                         usedMethods.Add(evt.RemoveMethod);
                         usedMethods.Add(evt.RaiseMethod);
@@ -199,7 +202,7 @@ namespace Il2CppInspector
                                 writer.Write("out ");
                             writer.Write($"{param.ParameterType.CSharpName} {param.Name}");
                         }
-                        writer.Write(");" + (method.VirtualAddress != 0? $" // 0x{method.VirtualAddress:X8}" : "") + "\n");
+                        writer.Write(");" + (method.VirtualAddress != 0? $" // {formatAddress(method.VirtualAddress)}" : "") + "\n");
                     }
                     writer.Write("}\n");
                 }

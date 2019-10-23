@@ -32,10 +32,10 @@ namespace Il2CppInspector
         public Il2CppEventDefinition[] Events => Metadata.Events;
         public int[] InterfaceUsageIndices => Metadata.InterfaceUsageIndices;
         public Dictionary<int, object> FieldDefaultValue { get; } = new Dictionary<int, object>();
-        public List<int> FieldOffsets { get; }
+        public List<long> FieldOffsets { get; }
         public List<Il2CppType> TypeUsages => Binary.Types;
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
-        public uint[] GlobalMethodPointers => Binary.GlobalMethodPointers; // <=v24.1 only
+        public ulong[] GlobalMethodPointers => Binary.GlobalMethodPointers; // <=v24.1 only
 
         // TODO: Finish all file access in the constructor and eliminate the need for this
         public IFileFormatReader BinaryImage => Binary.Image;
@@ -129,15 +129,15 @@ namespace Il2CppInspector
             }
             // Convert pointer list into fields
             else {
-                var offsets = new Dictionary<int, int>();
+                var offsets = new Dictionary<int, long>();
                 for (var i = 0; i < TypeDefinitions.Length; i++) {
                     var def = TypeDefinitions[i];
                     var pFieldOffsets = Binary.FieldOffsetData[i];
                     if (pFieldOffsets != 0) {
-                        BinaryImage.Position = BinaryImage.MapVATR((uint) pFieldOffsets);
+                        BinaryImage.Position = BinaryImage.MapVATR((ulong) pFieldOffsets);
 
                         for (var f = 0; f < def.field_count; f++)
-                            offsets.Add(def.fieldStart + f, BinaryImage.Stream.ReadInt32());
+                            offsets.Add(def.fieldStart + f, BinaryImage.Stream.ReadObject<long>());
                     }
                 }
 

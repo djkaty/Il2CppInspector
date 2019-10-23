@@ -27,7 +27,7 @@ namespace Il2CppInspector.Reflection
         public Assembly GetAssembly(TypeInfo type) => Assemblies.FirstOrDefault(x => x.DefinedTypes.Contains(type));
 
         // Get a type from its IL2CPP type index
-        public TypeInfo GetTypeFromIndex(int typeIndex) => Assemblies.SelectMany(x => x.DefinedTypes).FirstOrDefault(x => x.Index == typeIndex);
+        public TypeInfo GetTypeFromIndex(long typeIndex) => Assemblies.SelectMany(x => x.DefinedTypes).FirstOrDefault(x => x.Index == typeIndex);
 
         // Get or generate a type from its IL2CPP binary type usage reference
         // (field, return type, generic type parameter etc.)
