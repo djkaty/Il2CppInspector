@@ -58,7 +58,7 @@ namespace Il2CppInspector.Reflection
                 }
 
                 // Remove ARM Thumb marker LSB if necessary
-                VirtualAddress &= 0xfffffffe;
+                VirtualAddress &= 0xffff_ffff_ffff_fffe;
 
                 HasBody = true;
             }
