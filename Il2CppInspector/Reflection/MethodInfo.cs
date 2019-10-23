@@ -51,9 +51,8 @@ namespace Il2CppInspector.Reflection
                         // In the event of an exception, the method pointer is not set in the file
                         // This probably means it has been optimized away by the compiler, or is an unused generic method
                         try {
-                            pkg.BinaryImage.Position =
-                                pkg.BinaryImage.MapVATR(Assembly.Module.methodPointers + (method - 1) * 4);
-                            VirtualAddress = pkg.BinaryImage.ReadUInt32();
+                            pkg.BinaryImage.Position = pkg.BinaryImage.MapVATR(Assembly.Module.methodPointers + (ulong) ((method - 1) * (pkg.BinaryImage.Bits / 8)));
+                            VirtualAddress = pkg.BinaryImage.Stream.ReadObject<ulong>();
                         } catch (Exception) { }
                     }
                 }
