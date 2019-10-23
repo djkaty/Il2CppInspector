@@ -1,8 +1,12 @@
-﻿using System;
+﻿/*
+    Copyright 2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+
+    All rights reserved.
+*/
+
+using System;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
-using System.Text.RegularExpressions;
 using NUnit.Framework;
 
 namespace Il2CppInspector
@@ -39,8 +43,8 @@ namespace Il2CppInspector
 
             // Compare test result with expected result
             for (i = 0; i < inspectors.Count; i++) {
-                var expected = File.ReadAllLines(testPath + @"\..\..\TestExpectedResults\" + Path.GetFileName(testPath) + (i > 0 ? "-" + (i - 1) : "") + ".cs");
-                var actual = File.ReadAllLines(testPath + @"\test-result" + (i > 0 ? "-" + (i - 1) : "") + ".cs");
+                var expected = File.ReadAllLines(testPath + @"\..\..\TestExpectedResults\" + Path.GetFileName(testPath) + (i > 0 ? "-" + i : "") + ".cs");
+                var actual = File.ReadAllLines(testPath + @"\test-result" + (i > 0 ? "-" + i : "") + ".cs");
 
                 // Get rid of blank lines and trim the remaining lines
                 expected = (from l in expected where !string.IsNullOrWhiteSpace(l) select l.Trim()).ToArray();
