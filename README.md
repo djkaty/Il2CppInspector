@@ -3,11 +3,12 @@ Extract types, methods, properties and fields from Unity IL2CPP binaries.
 
 * Supports ELF (Android .so), PE (Windows .exe), Mach-O (Apple iOS/Mac) and Universal Binary (Fat Mach-O) file formats
 * 64-bit support for Mach-O files
-* Supports ARMv7, ARMv7 Thumb T1 and x86 architectures regardless of file format
+* Supports ARMv7, ARMv7 Thumb T1, ARMv8 (A64) and x86 architectures regardless of file format
 * Supports metadata versions 21, 22, 23, 24, 24.1 (Unity 2018.3+) and 24.2 (Unity 2019+)
 * No manual reverse-engineering required; all data is calculated automatically
 * Support for classes, methods, fields, properties, enumerations, events, delegates, interfaces, structs and default field values
-* Static and dynamic symbol table scanning for ELF binaries if present
+* Static symbol table scanning for ELF and Mach-O binaries if present
+* Dynamic symbol table scanning for ELF binaries if present
 * Symbol relocation handling for ELF binaries
 * **Il2CppInspector** re-usable class library for low-level access to IL2CPP binaries and metadata
 * **Il2CppReflector** re-usable class library for high-level .NET Reflection-style access to IL2CPP types and data as a tree model
