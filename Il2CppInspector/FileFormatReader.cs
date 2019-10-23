@@ -135,7 +135,7 @@ namespace Il2CppInspector
 
         // Reads a list of pointers, then reads each object pointed to
         public List<U> ReadMappedObjectPointerArray<U>(ulong uiAddr, int count) where U : new() {
-            var pointers = ReadMappedArray<uint>(uiAddr, count);
+            var pointers = ReadMappedArray<ulong>(uiAddr, count);
             var array = new List<U>();
             for (int i = 0; i < count; i++)
                 array.Add(ReadMappedObject<U>(pointers[i]));
