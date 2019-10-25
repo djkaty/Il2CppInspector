@@ -52,6 +52,12 @@ namespace Il2CppInspector
         R_ARM_REL32 = 3,
         R_ARM_COPY = 20,
 
+        R_AARCH64_ABS64 = 0x101,
+        R_AARCH64_PREL64 = 0x104,
+        R_AARCH64_GLOB_DAT = 0x401,
+        R_AARCH64_JUMP_SLOT = 0x402,
+        R_AARCH64_RELATIVE = 0x403,
+
         R_386_32 = 1,
         R_386_PC32 = 2,
         R_386_GLOB_DAT = 6,
@@ -61,7 +67,7 @@ namespace Il2CppInspector
     }
 
 #pragma warning disable CS0649
-    internal class elf_header
+    internal class elf_header<TWord> where TWord : struct
     {
         // 0x7f followed by ELF in ascii
         public uint m_dwFormat;
@@ -98,9 +104,9 @@ namespace Il2CppInspector
 
         public uint e_version;
 
-        public uint e_entry;
-        public uint e_phoff;
-        public uint e_shoff;
+        public TWord e_entry;
+        public TWord e_phoff;
+        public TWord e_shoff;
         public uint e_flags;
         public ushort e_ehsize;
         public ushort e_phentsize;
@@ -110,60 +116,111 @@ namespace Il2CppInspector
         public ushort e_shtrndx;
     }
 
-    internal class elf_32_phdr
+    internal interface Ielf_phdr<TWord> where TWord : struct
     {
-        public uint p_type;
-        public uint p_offset;
-        public uint p_vaddr;
+        uint p_type { get; }
+        TWord p_offset { get; }
+        TWord p_filesz { get; }
+        TWord p_vaddr { get; }
+    }
+
+    internal class elf_32_phdr : Ielf_phdr<uint>
+    {
+        public uint p_type => f_p_type;
+        public uint p_offset => f_p_offset;
+        public uint p_filesz => f_p_filesz;
+        public uint p_vaddr => f_p_vaddr;
+
+        public uint f_p_type;
+        public uint f_p_offset;
+        public uint f_p_vaddr;
         public uint p_paddr;
-        public uint p_filesz;
+        public uint f_p_filesz;
         public uint p_memsz;
         public uint p_flags;
         public uint p_align;
-        //public byte[] p_data;忽略
     }
 
-    internal class elf_32_shdr
+    internal class elf_64_phdr : Ielf_phdr<ulong>
+    {
+        public uint p_type => f_p_type;
+        public ulong p_offset => f_p_offset;
+        public ulong p_filesz => f_p_filesz;
+        public ulong p_vaddr => f_p_vaddr;
+
+        public uint f_p_type;
+        public uint p_flags;
+        public ulong f_p_offset;
+        public ulong f_p_vaddr;
+        public ulong p_paddr;
+        public ulong f_p_filesz;
+        public ulong p_memsz;
+        public ulong p_align;
+    }
+
+    internal class elf_shdr<TWord> where TWord : struct
     {
         public uint sh_name;
         public uint sh_type;
-        public uint sh_flags;
-        public uint sh_addr;
-        public uint sh_offset;
-        public uint sh_size;
+        public TWord sh_flags;
+        public TWord sh_addr;
+        public TWord sh_offset;
+        public TWord sh_size;
         public uint sh_link;
         public uint sh_info;
-        public uint sh_addralign;
-        public uint sh_entsize;
+        public TWord sh_addralign;
+        public TWord sh_entsize;
     }
 
-    internal class elf_32_sym
+    internal interface Ielf_sym<TWord> where TWord : struct
     {
-        public uint st_name;
-        public uint st_value;
+        uint st_name { get; }
+        TWord st_value { get; }
+    }
+
+    internal class elf_32_sym : Ielf_sym<uint>
+    {
+        public uint st_name => f_st_name;
+        public uint st_value => f_st_value;
+
+        public uint f_st_name;
+        public uint f_st_value;
         public uint st_size;
         public byte st_info;
         public byte st_other;
         public ushort st_shndx;
     }
 
-    internal class elf_32_dynamic
+    internal class elf_64_sym : Ielf_sym<ulong>
     {
-        public uint d_tag;
-        public uint d_un;
+        public uint st_name => f_st_name;
+        public ulong st_value => f_st_value;
+
+        public uint f_st_name;
+        public byte st_info;
+        public byte st_other;
+        public ushort st_shndx;
+        public ulong f_st_value;
+        public ulong st_size;
     }
 
-    internal class elf_32_rel
+    internal class elf_dynamic<TWord> where TWord : struct
     {
-        public uint r_offset;
-        public uint r_info;
+        public TWord d_tag;
+        public TWord d_un;
     }
 
-    internal class elf_32_rela
+    internal class elf_rel<TWord> where TWord : struct
     {
-        public uint r_offset;
-        public uint r_info;
-        public uint r_addend;
+        public TWord r_offset;
+        public TWord r_info;
+    }
+
+    internal class elf_rela<TWord> where TWord : struct
+    {
+        public TWord r_offset;
+        public TWord r_info;
+        public TWord r_addend;
     }
 #pragma warning restore CS0649
 }
