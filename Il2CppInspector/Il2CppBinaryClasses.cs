@@ -30,9 +30,9 @@ namespace Il2CppInspector
         public ulong marshalingFunctionsCount;
         [Version(Max = 22)]
         public ulong marshalingFunctions;
-        [Version(Max = 22)]
+        [Version(Min = 21, Max = 22)]
         public ulong ccwMarshalingFunctionsCount;
-        [Version(Max = 22)]
+        [Version(Min = 21, Max = 22)]
         public ulong ccwMarshalingFunctions;
 
         public ulong genericMethodPointersCount;
@@ -43,9 +43,9 @@ namespace Il2CppInspector
         public ulong customAttributeGenerators;
 
         // Removed in metadata v23
-        [Version(Max = 22)]
+        [Version(Min = 21, Max = 22)]
         public long guidCount;
-        [Version(Max = 22)]
+        [Version(Min = 21, Max = 22)]
         public ulong guids; // Il2CppGuid
 
         // Added in metadata v22
@@ -96,13 +96,19 @@ namespace Il2CppInspector
         public ulong ptypes;
         public long methodSpecsCount;
         public ulong methodSpecs;
+        [Version(Max = 16)]
+        public long methodReferencesCount;
+        [Version(Max = 16)]
+        public ulong methodReferences;
 
         public long fieldOffsetsCount;
         public ulong pfieldOffsets;
 
         public long typeDefinitionsSizesCount;
         public ulong typeDefinitionsSizes;
+        [Version(Min = 19)]
         public ulong metadataUsagesCount;
+        [Version(Min = 19)]
         public ulong metadataUsages;
     }
 #pragma warning restore CS0649

@@ -19,7 +19,6 @@ namespace Il2CppInspector
 #pragma warning disable CS0649
     public class Il2CppGlobalMetadataHeader
     {
-        // Metadata v21
         public uint sanity;
         public int version;
         public int stringLiteralOffset; // string data for managed code
@@ -72,17 +71,31 @@ namespace Il2CppInspector
         public int imagesCount;
         public int assembliesOffset; // Il2CppAssemblyDefinition
         public int assembliesCount;
+
+        [Version(Min = 19)]
         public int metadataUsageListsOffset; // Il2CppMetadataUsageList
+        [Version(Min = 19)]
         public int metadataUsageListsCount;
+        [Version(Min = 19)]
         public int metadataUsagePairsOffset; // Il2CppMetadataUsagePair
+        [Version(Min = 19)]
         public int metadataUsagePairsCount;
+        [Version(Min = 19)]
         public int fieldRefsOffset; // Il2CppFieldRef
+        [Version(Min = 19)]
         public int fieldRefsCount;
+        [Version(Min = 19)]
         public int referencedAssembliesOffset; // int
+        [Version(Min = 19)]
         public int referencedAssembliesCount;
+
+        [Version(Min = 21)]
         public int attributesInfoOffset; // Il2CppCustomAttributeTypeRange
+        [Version(Min = 21)]
         public int attributesInfoCount;
+        [Version(Min = 21)]
         public int attributeTypesOffset; // TypeIndex
+        [Version(Min = 21)]
         public int attributeTypesCount;
 
         // Added in metadata v22
@@ -122,6 +135,8 @@ namespace Il2CppInspector
         public uint exportedTypeCount;
 
         public int entryPointIndex;
+
+        [Version(Min = 19)]
         public uint token;
 
         [Version(Min = 24.1)]
@@ -159,9 +174,9 @@ namespace Il2CppInspector
         public int delegateWrapperFromManagedToNativeIndex; // (was renamed to reversePInvokeWrapperIndex in v22)
         [Version(Max = 22)]
         public int marshalingFunctionsIndex;
-        [Version(Max = 22)]
+        [Version(Min = 21, Max = 22)]
         public int ccwFunctionIndex;
-        [Version(Max = 22)]
+        [Version(Min = 21, Max = 22)]
         public int guidIndex;
 
         public uint flags;
@@ -193,6 +208,8 @@ namespace Il2CppInspector
         // 06 - is_import; (from v22: is_import_or_windows_runtime)
         // 07-10 - One of nine possible PackingSize values (0, 1, 2, 4, 8, 16, 32, 64, or 128)
         public uint bitfield;
+
+        [Version(Min = 19)]
         public uint token;
     }
 
@@ -245,6 +262,7 @@ namespace Il2CppInspector
         [Version(Max = 24.0)]
         public int customAttributeIndex;
 
+        [Version(Min = 19)]
         public uint token;
     }
 
@@ -265,6 +283,7 @@ namespace Il2CppInspector
         [Version(Max = 24.0)]
         public int customAttributeIndex;
 
+        [Version(Min = 19)]
         public uint token;
     }
 
@@ -279,6 +298,7 @@ namespace Il2CppInspector
         [Version(Max = 24.0)]
         public int customAttributeIndex;
 
+        [Version(Min = 19)]
         public uint token;
     }
 }
