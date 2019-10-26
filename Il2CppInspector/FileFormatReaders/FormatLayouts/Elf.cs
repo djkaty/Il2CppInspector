@@ -5,10 +5,12 @@
     All rights reserved.
 */
 
+using System;
 using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
+    [Flags]
     public enum Elf : uint
     {
         // elf_header.m_dwFormat
@@ -27,6 +29,8 @@ namespace Il2CppInspector
         // PHTs
         PT_DYNAMIC = 2,
         DT_PLTGOT = 3,
+
+        PF_X = 1,
 
         // SHTs
         SHT_SYMTAB = 2,
@@ -122,6 +126,7 @@ namespace Il2CppInspector
         TWord p_offset { get; }
         TWord p_filesz { get; }
         TWord p_vaddr { get; }
+        uint p_flags { get; }
     }
 
     internal class elf_32_phdr : Ielf_phdr<uint>
@@ -130,6 +135,7 @@ namespace Il2CppInspector
         public uint p_offset => f_p_offset;
         public uint p_filesz => f_p_filesz;
         public uint p_vaddr => f_p_vaddr;
+        public uint p_flags => f_p_flags;
 
         public uint f_p_type;
         public uint f_p_offset;
@@ -137,7 +143,7 @@ namespace Il2CppInspector
         public uint p_paddr;
         public uint f_p_filesz;
         public uint p_memsz;
-        public uint p_flags;
+        public uint f_p_flags;
         public uint p_align;
     }
 
@@ -147,9 +153,10 @@ namespace Il2CppInspector
         public ulong p_offset => f_p_offset;
         public ulong p_filesz => f_p_filesz;
         public ulong p_vaddr => f_p_vaddr;
+        public uint p_flags => f_p_flags;
 
         public uint f_p_type;
-        public uint p_flags;
+        public uint f_p_flags;
         public ulong f_p_offset;
         public ulong f_p_vaddr;
         public ulong p_paddr;

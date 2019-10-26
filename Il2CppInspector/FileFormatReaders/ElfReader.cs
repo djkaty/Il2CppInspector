@@ -184,11 +184,9 @@ namespace Il2CppInspector
             if (getProgramHeader(Elf.PT_DYNAMIC) is TPHdr PT_DYNAMIC)
                 dynamic_table = ReadArray<elf_dynamic<TWord>>(math.Long(PT_DYNAMIC.p_offset), (int) (math.Long(PT_DYNAMIC.p_filesz) / Sizeof(typeof(elf_dynamic<TWord>))));
 
-            // Get global offset table
-            var _GLOBAL_OFFSET_TABLE_ = getDynamic(Elf.DT_PLTGOT)?.d_un;
-            if (_GLOBAL_OFFSET_TABLE_ == null)
-                throw new InvalidOperationException("Unable to get GLOBAL_OFFSET_TABLE from PT_DYNAMIC");
-            GlobalOffset = math.ULong((TWord) _GLOBAL_OFFSET_TABLE_);
+            // Get offset of code section
+            var codeSegment = program_header_table.First(x => ((Elf) x.p_flags & Elf.PF_X) == Elf.PF_X);
+            GlobalOffset = math.ULong(math.Sub(codeSegment.p_vaddr, codeSegment.p_offset));
 
             // Find all relocations; target address => (rela header (rels are converted to rela), symbol table base address, is rela?)
             var rels = new HashSet<ElfReloc>();
