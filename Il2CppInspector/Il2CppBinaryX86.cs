@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System;
 using System.Linq;
 
 namespace Il2CppInspector
@@ -51,10 +52,19 @@ namespace Il2CppInspector
                     return (0, 0);
 
                 // lea eax, (pCgr - offset)[ebx] (Position + 6 is the opcode lea eax; Position + 8 is the operand)
-                image.Position += 8;
-                pCgr = image.MapVATR(image.ReadUInt32() + plt);
-                if (pCgr > image.Length)
+                image.Position += 6;
+
+                // Ensure it's lea eax, #address
+                if (image.ReadUInt16() != 0x838D)
                     return (0, 0);
+
+                try {
+                    pCgr = image.MapVATR(image.ReadUInt32() + plt);
+                }
+                // Could not find a mapping in the section table
+                catch (InvalidOperationException) {
+                    return (0, 0);
+                }
 
                 // Extract Metadata pointer
                 // An 0x838D opcode indicates LEA (no indirection)
