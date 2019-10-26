@@ -4,17 +4,21 @@
     All rights reserved.
 */
 
+using System;
+using System.Collections.Generic;
+
 namespace Il2CppInspector
 {
+    // A64 ISA reference: https://static.docs.arm.com/ddi0596/a/DDI_0596_ARM_a64_instruction_set_architecture.pdf
     internal class Il2CppBinaryARM64 : Il2CppBinary
     {
         public Il2CppBinaryARM64(IFileFormatReader stream) : base(stream) { }
 
         public Il2CppBinaryARM64(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) : base(stream, codeRegistration, metadataRegistration) { }
 
-        private (uint reg, ulong page) getAdrp(uint inst, ulong pc) {
+        private (uint reg, ulong page)? getAdrp(uint inst, ulong pc) {
             if ((inst.Bits(24, 8) & 0b_1000_1111) != 1 << 7)
-                return (0, 0);
+                return null;
 
             var addendLo = inst.Bits(29, 2);
             var addendHi = inst.Bits(5, 19);
@@ -25,9 +29,9 @@ namespace Il2CppInspector
             return (reg, page + addend);
         }
 
-        private (uint reg_n, uint reg_d, uint imm) getAdd64(uint inst) {
+        private (uint reg_n, uint reg_d, uint imm)? getAdd64(uint inst) {
             if (inst.Bits(22, 10) != 0b_1001_0001_00)
-                return (0, 0, 0);
+                return null;
 
             var imm = inst.Bits(10, 12);
             var reg_n = inst.Bits(5, 5);
@@ -36,45 +40,116 @@ namespace Il2CppInspector
             return (reg_n, reg_d, imm);
         }
 
-        private ulong getAddressLoad(IFileFormatReader image, uint loc) {
-            // Get candidate ADRP Xa, #PAGE instruction
-            var inst = image.ReadUInt32(loc);
+        private (uint reg_t, uint reg_n, uint simm)? getLdr64ImmOffset(uint inst) {
+            if (inst.Bits(22, 10) != 0b_11_1110_0101)
+                return null;
 
-            var adrp = getAdrp(inst, loc);
-            if (adrp.page == 0)
-                return 0;
+            var imm = inst.Bits(10, 12);
+            var reg_t = inst.Bits(0, 5);
+            var reg_n = inst.Bits(5, 5);
 
-            // Get candidate ADD Xb, Xc, #OFFSET instruction
-            inst = image.ReadUInt32();
-
-            var add64 = getAdd64(inst);
-            if (add64.imm == 0)
-                return 0;
-
-            // Confirm a == b == c
-            if (adrp.reg != add64.reg_d || add64.reg_d != add64.reg_n)
-                return 0;
-
-            return adrp.page + add64.imm;
+            return (reg_t, reg_n, imm);
         }
 
+        private bool isB(uint inst) => inst.Bits(26, 6) == 0b_000101;
+
+        private Dictionary<uint, ulong> sweepForAddressLoads(List<uint> func, ulong baseAddress, IFileFormatReader image) {
+            // List of registers and addresses loaded into them
+            var regs = new Dictionary<uint, ulong>();
+
+            // Iterate each instruction
+            var pc = baseAddress;
+            foreach (var inst in func) {
+
+                // Is it an ADRP Xn, #page?
+                if (getAdrp(inst, pc) is (uint reg, ulong page)) {
+                    // If we've had an earlier ADRP for the same register, we'll discard the previous load
+                    if (regs.ContainsKey(reg))
+                        regs[reg] = page;
+                    else
+                        regs.Add(reg, page);
+                }
+
+                // Is it an ADD Xm, Xn, #offset?
+                if (getAdd64(inst) is (uint reg_n, uint reg_d, uint imm)) {
+                    // We are only interested in registers that have already had an ADRP, and the ADD must be to itself
+                    if (reg_n == reg_d && regs.ContainsKey(reg_d))
+                        regs[reg_d] += imm;
+                }
+
+                // Is it an LDR Xm, [Xn, #offset]?
+                if (getLdr64ImmOffset(inst) is (uint reg_t, uint reg_ldr_n, uint simm)) {
+                    // We are only interested in registers that have already had an ADRP, and the LDR must be to itself
+                    if (reg_t == reg_ldr_n && regs.ContainsKey(reg_ldr_n)) {
+                        regs[reg_ldr_n] += simm * 8; // simm is a byte offset in a multiple of 8
+
+                        // Now we have a pointer address, dereference it
+                        regs[reg_ldr_n] = image.ReadUInt64(image.MapVATR(regs[reg_ldr_n]));
+                    }
+                }
+
+                // Advance program counter which we need to calculate ADRP pages correctly
+                pc += 4;
+            }
+            return regs;
+        }
+
+        private List<uint> getFunctionAtFileOffset(IFileFormatReader image, uint loc, uint maxLength) {
+            // Read a function that ends in a hard branch (B) or exceeds maxLength instructions
+            var func = new List<uint>();
+            uint inst;
+
+            image.Position = loc;
+
+            do {
+                inst = image.ReadUInt32();
+                func.Add(inst);
+            } while (!isB(inst) && func.Count < maxLength);
+
+            return func;
+        }
+
+        // The method for ARM64:
+        // - We want to extract values for CodeRegistration and MetadataRegistration from Il2CppCodegenRegistration(void)
+        // - One of the functions supplied will be either Il2CppCodeGenRegistration or an initializer for Il2CppCodeGenRegistration.cpp
+        // - The initializer (if present) loads a pointer to Il2CppCodegenRegistration in X1, if the function isn't in the function table
+        // - Il2CppCodegenRegistration loads CodeRegistration into X0, MetadataRegistration into X1 and Il2CppCodeGenOptions into X2
+        // - Loads can be done either with ADRP+ADD (loads the address of the wanted struct) or ADRP+LDR (loads a pointer to the address which must be de-referenced)
+        // - Loads do not need to be pairs of sequential instructions
+        // - We need to sweep the whole function from the ADRP to the next B to find an ADD or LDR with a corresponding register
         protected override (ulong, ulong) ConsiderCode(IFileFormatReader image, uint loc) {
+            // Load function into memory
+            // In practice, the longest function length we need is not generally longer than 7 instructions (0x1C bytes)
+            var func = getFunctionAtFileOffset(image, loc, 7);
 
-            var codeRegistration = getAddressLoad(image, loc);
-            if (codeRegistration == 0)
+            // Don't accept functions longer than 7 instructions (in this case, the last instruction won't be a B)
+            if (!isB(func[^1]))
                 return (0, 0);
 
-            var metadataRegistration = getAddressLoad(image, loc + 8);
-            if (metadataRegistration == 0)
-                return (0, 0);
+            // Get a list of registers and values in them at the end of the function
+            var regs = sweepForAddressLoads(func, image.GlobalOffset + loc, image);
 
-            // There should be an Il2CppCodeGenOptions address load after the above two
-            if (getAddressLoad(image, loc + 16) == 0)
-                return (0, 0);
+            // Is it the Il2CppCodeRegistration.cpp initializer?
+            // X0-X1 will be set and they will be the only registers set
+            if (regs.Count == 2 && regs.TryGetValue(0, out _) && regs.TryGetValue(1, out ulong x1)) {
+                // Load up the function whose address is in X1
+                func = getFunctionAtFileOffset(image, (uint) image.MapVATR(x1), 7);
 
-            // TODO: Verify loc + 24 is a hard branch (B)
+                if (!isB(func[^1]))
+                    return (0, 0);
 
-            return (image.GlobalOffset + codeRegistration, image.GlobalOffset + metadataRegistration);
+                regs = sweepForAddressLoads(func, x1, image);
+            }
+
+            // Is it Il2CppCodegenRegistration(void)?
+            // X0-X2 will be set and they will be the only registers set
+            if (regs.Count == 3 && regs.TryGetValue(0, out ulong x0) &&
+                regs.TryGetValue(1, out x1) &&
+                regs.TryGetValue(2, out ulong _)) {
+                return (x0, x1);
+            }
+
+            return (0, 0);
         }
     }
 
