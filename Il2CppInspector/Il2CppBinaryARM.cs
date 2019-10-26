@@ -19,27 +19,30 @@ namespace Il2CppInspector
         protected override (ulong, ulong) ConsiderCode(IFileFormatReader image, uint loc) {
             // Assembly bytes to search for at start of each function
             ulong metadataRegistration, codeRegistration;
-            byte[] buff;
 
-            // ARMv7
-            // void Il2CppCodegenRegistration() (not available in the symbol table of later versions)
-            var bytes = new byte[] { 0x1c, 0x0, 0x9f, 0xe5, 0x1c, 0x10, 0x9f, 0xe5, 0x1c, 0x20, 0x9f, 0xe5 };
+            // ARMv7 based on ELF GOT
+            // Il2CppCodeRegistration.cpp initializer
             image.Position = loc;
-            buff = image.ReadBytes(12);
-            if (bytes.SequenceEqual(buff)) {
-                image.Position = loc + 0x2c;
-                var subaddr = image.ReadUInt32() + image.GlobalOffset;
-                image.Position = (uint) (subaddr + 0x28);
-                codeRegistration = image.ReadUInt32() + image.GlobalOffset;
-                image.Position = (uint) (subaddr + 0x2C);
-                var ptr = image.ReadUInt32() + image.GlobalOffset;
-                image.Position = image.MapVATR(ptr);
-                metadataRegistration = image.ReadUInt32();
+
+            var buff = image.ReadBytes(0xc);
+            // LDR R0, [PC, #0x1C]; LDR R1, [PC, #0x1C]; LDR R2, [PC, #0x1C]
+            if (new byte[] { 0x1c, 0x0, 0x9f, 0xe5, 0x1c, 0x10, 0x9f, 0xe5, 0x1c, 0x20, 0x9f, 0xe5 }.SequenceEqual(buff)) {
+
+                // Get offset to all addresses
+                var offset = image.ReadUInt32(loc + 0x24) + loc + 0xc + 8;
+
+                // Get pointer to Il2CppCodegenRegistration(void)
+                var pCgr = image.ReadUInt32(loc + 0x2C) + offset;
+
+                // Read pointer table at end of function
+                codeRegistration = image.ReadUInt32(pCgr + 0x28) + offset;
+                var pMetadataRegistration = image.ReadUInt32(pCgr + 0x2C) + offset;
+                metadataRegistration = image.ReadUInt32(pMetadataRegistration);
                 return (codeRegistration, metadataRegistration);
             }
 
-            // ARMv7 metadata v24
-            // void Il2CppCodeRegistration()
+            // ARMv7
+            // Il2CppCodeRegistration.cpp initializer
             image.Position = loc;
 
             buff = image.ReadBytes(0x18);
@@ -90,7 +93,7 @@ namespace Il2CppInspector
             // ARMv7 Thumb (T1)
             // http://liris.cnrs.fr/~mmrissa/lib/exe/fetch.php?media=armv7-a-r-manual.pdf - A8.8.106
             // http://armconverter.com/hextoarm/
-            bytes = new byte[] { 0x2d, 0xe9, 0x00, 0x48, 0xeb, 0x46 };
+            var bytes = new byte[] { 0x2d, 0xe9, 0x00, 0x48, 0xeb, 0x46 };
             image.Position = loc;
             buff = image.ReadBytes(6);
             if (!bytes.SequenceEqual(buff))
