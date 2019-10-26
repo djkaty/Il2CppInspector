@@ -79,7 +79,12 @@ namespace Il2CppInspector
         public uint[] UIntArray(ulong[] a) => Array.ConvertAll(a, x => (uint) x);
     }
 
-    internal abstract class ElfReader<TWord, TPHdr, TSym, TReader, TMath> : FileFormatReader<TReader>
+    interface IElfReader
+    {
+        uint GetPLTAddress();
+    }
+
+    internal abstract class ElfReader<TWord, TPHdr, TSym, TReader, TMath> : FileFormatReader<TReader>, IElfReader
         where TWord : struct
         where TPHdr : Ielf_phdr<TWord>, new()
         where TSym : Ielf_sym<TWord>, new()
@@ -335,5 +340,8 @@ namespace Il2CppInspector
              var program_header_table = this.program_header_table.First(x => uiAddr >= math.ULong(x.p_vaddr) && uiAddr <= math.ULong(math.Add(x.p_vaddr, x.p_filesz)));
             return (uint) (uiAddr - math.ULong(math.Sub(program_header_table.p_vaddr, program_header_table.p_offset)));
         }
+        
+        // Get the address of the procedure linkage table (.got.plt) which is needed for some disassemblies
+        public uint GetPLTAddress() => (uint) math.ULong(getDynamic(Elf.DT_PLTGOT).d_un);
     }
 }
