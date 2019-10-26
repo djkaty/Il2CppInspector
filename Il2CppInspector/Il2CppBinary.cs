@@ -117,6 +117,10 @@ namespace Il2CppInspector
         }
 
         private void Configure(IFileFormatReader image, ulong codeRegistration, ulong metadataRegistration) {
+            // Output locations
+            Console.WriteLine("CodeRegistration struct found at 0x{0:X16} (file offset 0x{1:X8})", image.Bits == 32 ? codeRegistration & 0xffff_ffff : codeRegistration, image.MapVATR(codeRegistration));
+            Console.WriteLine("MetadataRegistration struct found at 0x{0:X16} (file offset 0x{1:X8})", image.Bits == 32 ? metadataRegistration & 0xffff_ffff : metadataRegistration, image.MapVATR(metadataRegistration));
+
             // Set width of long (convert to sizeof(int) for 32-bit files)
             if (image.Bits == 32) {
                 image.Stream.PrimitiveMappings.Add(typeof(long), typeof(int));

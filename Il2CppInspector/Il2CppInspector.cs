@@ -172,6 +172,7 @@ namespace Il2CppInspector
                 Console.WriteLine("Container endianness: " + ((BinaryObjectReader) image).Endianness);
                 Console.WriteLine("Architecture word size: {0}-bit", image.Bits);
                 Console.WriteLine("Instruction set: " + image.Arch);
+                Console.WriteLine("Global offset: 0x{0:X16}", image.GlobalOffset);
 
                 // Architecture-agnostic load attempt
                 try {
