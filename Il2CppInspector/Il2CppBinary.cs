@@ -23,11 +23,16 @@ namespace Il2CppInspector
         // Only for <=v24.1
         public ulong[] GlobalMethodPointers { get; set; }
 
-        // NOTE: In versions <21 and earlier releases of v21, this array has the format:
+        // NOTE: In versions <21 and earlier releases of v21, use FieldOffsets:
         // global field index => field offset
-        // In versions >=22 and later releases of v21, this array has the format:
+        // In versions >=22 and later releases of v21, use FieldOffsetPointers:
         // type index => RVA in image where the list of field offsets for the type start (4 bytes per field)
-        public long[] FieldOffsetData { get; private set; }
+        
+        // Negative field offsets from start of each function
+        public uint[] FieldOffsets { get; private set; }
+
+        // Pointers to field offsets
+        public long[] FieldOffsetPointers { get; private set; }
 
         // Every defined type
         public List<Il2CppType> Types { get; private set; }
@@ -149,8 +154,26 @@ namespace Il2CppInspector
             }
 
             // Field offset data. Metadata <=21.x uses a value-type array; >=21.x uses a pointer array
-            FieldOffsetData = image.ReadMappedWordArray(MetadataRegistration.pfieldOffsets, (int) MetadataRegistration.fieldOffsetsCount);
-            
+
+            // Versions from 22 onwards use an array of pointers in Binary.FieldOffsetData
+            bool fieldOffsetsArePointers = (image.Version >= 22);
+
+            // Some variants of 21 also use an array of pointers
+            if (image.Version == 21) {
+                // Always 4-byte values even for 64-bit builds when array is NOT pointers
+                var fieldTest = image.ReadMappedArray<uint>(MetadataRegistration.pfieldOffsets, 6);
+
+                // We detect this by relying on the fact Module, Object, ValueType, Attribute, _Attribute and Int32
+                // are always the first six defined types, and that all but Int32 have no fields
+                fieldOffsetsArePointers = (fieldTest[0] == 0 && fieldTest[1] == 0 && fieldTest[2] == 0 && fieldTest[3] == 0 && fieldTest[4] == 0 && fieldTest[5] > 0);
+            }
+
+            // All older versions use values directly in the array
+            if (!fieldOffsetsArePointers)
+                FieldOffsets = image.ReadMappedArray<uint>(MetadataRegistration.pfieldOffsets, (int)MetadataRegistration.fieldOffsetsCount);
+            else
+                FieldOffsetPointers = image.ReadMappedWordArray(MetadataRegistration.pfieldOffsets, (int)MetadataRegistration.fieldOffsetsCount);
+
             // Type definitions (pointer array)
             Types = image.ReadMappedObjectPointerArray<Il2CppType>(MetadataRegistration.ptypes, (int) MetadataRegistration.typesCount);
         }

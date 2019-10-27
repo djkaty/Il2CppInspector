@@ -111,28 +111,16 @@ namespace Il2CppInspector
             }
 
             // Get all field offsets
-
-            // Versions from 22 onwards use an array of pointers in Binary.FieldOffsetData
-            bool fieldOffsetsArePointers = (Version >= 22);
-
-            // Some variants of 21 also use an array of pointers
-            if (Version == 21) {
-                var f = Binary.FieldOffsetData;
-                // We detect this by relying on the fact Module, Object, ValueType, Attribute, _Attribute and Int32
-                // are always the first six defined types, and that all but Int32 have no fields
-                fieldOffsetsArePointers = (f[0] == 0 && f[1] == 0 && f[2] == 0 && f[3] == 0 && f[4] == 0 && f[5] > 0);
+            if (Binary.FieldOffsets != null) {
+                FieldOffsets = Binary.FieldOffsets.Select(x => (long) x).ToList();
             }
 
-            // All older versions use values directly in the array
-            if (!fieldOffsetsArePointers) {
-                FieldOffsets = Binary.FieldOffsetData.ToList();
-            }
             // Convert pointer list into fields
             else {
                 var offsets = new Dictionary<int, long>();
                 for (var i = 0; i < TypeDefinitions.Length; i++) {
                     var def = TypeDefinitions[i];
-                    var pFieldOffsets = Binary.FieldOffsetData[i];
+                    var pFieldOffsets = Binary.FieldOffsetPointers[i];
                     if (pFieldOffsets != 0) {
                         BinaryImage.Position = BinaryImage.MapVATR((ulong) pFieldOffsets);
 
