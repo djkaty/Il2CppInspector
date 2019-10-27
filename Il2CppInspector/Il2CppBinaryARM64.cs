@@ -29,6 +29,22 @@ namespace Il2CppInspector
             return (reg, page + addend);
         }
 
+        // https://static.docs.arm.com/100878/0100/fundamentals_of_armv8_a_100878_0100_en.pdf states:
+        // Unlike ARMv7-A, there is no implied offset of 4 or 8 bytes
+        private (uint reg, ulong addr)? getAdr(uint inst, ulong pc) {
+            if (inst.Bits(24, 5) != 0b10000 || inst.Bits(31, 1) != 0)
+                return null;
+
+            ulong imm = (inst.Bits(5, 19) << 2) + inst.Bits(29, 2);
+
+            // Sign extend the 21-bit number to 64 bits
+            imm = (imm & (1 << 20)) == 0 ? imm : imm | unchecked((ulong) -(1 << 21));
+
+            var reg = inst.Bits(0, 5);
+
+            return (reg, pc + imm);
+        }
+
         private (uint reg_n, uint reg_d, uint imm)? getAdd64(uint inst) {
             if (inst.Bits(22, 10) != 0b_1001_0001_00)
                 return null;
@@ -68,6 +84,13 @@ namespace Il2CppInspector
                         regs[reg] = page;
                     else
                         regs.Add(reg, page);
+                }
+
+                if (getAdr(inst, pc) is (uint reg_adr, ulong addr)) {
+                    if (regs.ContainsKey(reg_adr))
+                        regs[reg_adr] = addr;
+                    else
+                        regs.Add(reg_adr, addr);
                 }
 
                 // Is it an ADD Xm, Xn, #offset?
