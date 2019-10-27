@@ -165,12 +165,13 @@ namespace Il2CppInspector
             }
 
             // Is it Il2CppCodegenRegistration(void)?
-            // X0-X2 will be set and they will be the only registers set
-            if (regs.Count == 3 && regs.TryGetValue(0, out ulong x0) &&
-                regs.TryGetValue(1, out x1) &&
-                regs.TryGetValue(2, out ulong _)) {
+            // In v21 and later, X0-X2 will be set and they will be the only registers set
+            // Pre-v21, X0-X1 will be the only registers set
+            if (image.Version >= 21 && regs.Count == 3 && regs.TryGetValue(0, out ulong x0) && regs.TryGetValue(1, out x1) && regs.TryGetValue(2, out ulong _))
                 return (x0, x1);
-            }
+
+            if (image.Version < 21 && regs.Count == 2 && regs.TryGetValue(0, out x0) && regs.TryGetValue(1, out x1))
+                return (x0, x1);
 
             return (0, 0);
         }
