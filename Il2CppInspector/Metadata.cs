@@ -43,7 +43,7 @@ namespace Il2CppInspector
 
             // Rewind and read metadata header in full
             Header = ReadObject<Il2CppGlobalMetadataHeader>(0);
-            if (Version < 21 || Version > 24)
+            if (Version < 16 || Version > 24)
             {
                 throw new InvalidOperationException($"ERROR: Metadata file supplied is not a supported version ({Header.version}).");
             }
@@ -76,16 +76,17 @@ namespace Il2CppInspector
             // As an additional sanity check, all images in the metadata should have Mono.Cecil.MetadataToken == 1
             // In metadata v24.1, two extra fields were added which will cause the below test to fail.
             // In that case, we can then adjust the version number and reload
-            if (Images.Any(x => x.token != 1))
+            // Tokens were introduced in v19 - we don't bother testing earlier versions
+            if (Version >= 19 && Images.Any(x => x.token != 1))
                 if (Version == 24.0) {
                     Version = 24.1;
 
                     // No need to re-read the header, it's the same for both sub-versions
                     Images = ReadArray<Il2CppImageDefinition>(Header.imagesOffset, Header.imagesCount / Sizeof(typeof(Il2CppImageDefinition)));
-                }
 
-            if (Images.Any(x => x.token != 1))
-                throw new InvalidOperationException("ERROR: Could not verify the integrity of the metadata file image list");
+                    if (Images.Any(x => x.token != 1))
+                        throw new InvalidOperationException("ERROR: Could not verify the integrity of the metadata file image list");
+                }
 
             Types = ReadArray<Il2CppTypeDefinition>(Header.typeDefinitionsOffset, Header.typeDefinitionsCount / Sizeof(typeof(Il2CppTypeDefinition)));
             Methods = ReadArray<Il2CppMethodDefinition>(Header.methodsOffset, Header.methodsCount / Sizeof(typeof(Il2CppMethodDefinition)));
