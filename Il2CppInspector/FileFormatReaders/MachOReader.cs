@@ -6,14 +6,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
-    internal class MachOReader32 : MachOReader<uint, MachOReader32>
+    internal class MachOReader32 : MachOReader<uint, MachOReader32, Convert32>
     {
         public MachOReader32(Stream stream) : base(stream) { }
 
@@ -30,7 +29,7 @@ namespace Il2CppInspector
         }
     }
 
-    internal class MachOReader64 : MachOReader<ulong, MachOReader64>
+    internal class MachOReader64 : MachOReader<ulong, MachOReader64, Convert64>
     {
         public MachOReader64(Stream stream) : base(stream) { }
 
@@ -48,11 +47,16 @@ namespace Il2CppInspector
 
     // We need this convoluted generic TReader declaration so that "static T FileFormatReader.Load(Stream)"
     // is inherited to MachOReader32/64 with a correct definition of T
-    internal abstract class MachOReader<TWord, TReader> : FileFormatReader<TReader> where TWord : struct where TReader : FileFormatReader<TReader>
+    internal abstract class MachOReader<TWord, TReader, TConvert> : FileFormatReader<TReader>
+        where TWord : struct
+        where TReader : FileFormatReader<TReader>
+        where TConvert : IWordConverter<TWord>, new()
     {
+        private readonly TConvert conv = new TConvert();
+
         private MachOHeader<TWord> header;
         protected readonly List<MachOSection<TWord>> sections = new List<MachOSection<TWord>>();
-        private MachOLinkEditDataCommand funcTab;
+        private MachOSection<TWord> funcTab;
         private MachOSymtabCommand symTab;
 
         protected MachOReader(Stream stream) : base(stream) { }
@@ -105,13 +109,13 @@ namespace Il2CppInspector
                                 if (section.Name == "__text") {
                                     GlobalOffset = (ulong) Convert.ChangeType(section.Address, typeof(ulong)) - section.ImageOffset;
                                 }
+
+                                // Initialization (pre-main) functions
+                                if (section.Name == "__mod_init_func") {
+                                    funcTab = section;
+                                }
                             }
                         }
-                        break;
-
-                    // Location of function table
-                    case MachO.LC_FUNCTION_STARTS:
-                        funcTab = ReadObject<MachOLinkEditDataCommand>();
                         break;
 
                     // Location of static symbol table
@@ -128,7 +132,7 @@ namespace Il2CppInspector
                 Position = startPos + loadCommand.Size;
             }
 
-            // Must find LC_FUNCTION_STARTS load command
+            // Must find __mod_init_func
             if (funcTab == null)
                 return false;
 
@@ -145,31 +149,7 @@ namespace Il2CppInspector
             return true;
         }
 
-        public override uint[] GetFunctionTable() {
-            Position = funcTab.Offset;
-            var functionPointers = new List<uint>();
-
-            // Decompress ELB128 list of function offsets
-            // https://en.wikipedia.org/wiki/LEB128
-            uint previous = 0;
-            while (Position < funcTab.Offset + funcTab.Size) {
-                uint result = 0;
-                int shift = 0;
-                byte b;
-                do {
-                    b = ReadByte();
-                    result |= (uint)((b & 0x7f) << shift);
-                    shift += 7;
-                } while ((b & 0x80) != 0);
-                if (result > 0) {
-                    if (previous == 0)
-                        result &= 0xffffffc;
-                    previous += result;
-                    functionPointers.Add(previous);
-                }
-            }
-            return functionPointers.ToArray();
-        }
+        public override uint[] GetFunctionTable() => ReadArray<TWord>(funcTab.ImageOffset, conv.Int(funcTab.Size) / (Bits / 8)).Select(x => MapVATR(conv.ULong(x)) & 0xffff_fffe).ToArray();
 
         public override Dictionary<string, ulong> GetSymbolTable() {
             var symbols = new Dictionary<string, ulong>();
