@@ -106,7 +106,7 @@ namespace Il2CppInspector
                 if (loc != 0) {
                     var (code, metadata) = ConsiderCode(subImage, loc);
                     if (code != 0) {
-                        Console.WriteLine("Required structures acquired from code heuristics");
+                        Console.WriteLine("Required structures acquired from code heuristics. Initialization function: 0x{0:X16}", loc + subImage.GlobalOffset);
                         Configure(subImage, code, metadata); 
                         return true;
                     }
