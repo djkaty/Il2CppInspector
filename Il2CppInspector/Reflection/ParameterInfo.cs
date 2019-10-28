@@ -41,7 +41,7 @@ namespace Il2CppInspector.Reflection
         public int Position { get; private set; }
 
         // Create a parameter. Specify paramIndex == -1 for a return type parameter
-        public ParameterInfo(Il2CppInspector pkg, int paramIndex, MethodInfo declaringMethod) {
+        public ParameterInfo(Il2CppInspector pkg, int paramIndex, MethodBase declaringMethod) {
             Member = declaringMethod;
 
             if (paramIndex == -1) {

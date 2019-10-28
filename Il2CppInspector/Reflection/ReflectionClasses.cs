@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -10,11 +10,15 @@ namespace Il2CppInspector.Reflection
 {
     public class ConstructorInfo : MethodBase
     {
-        // TODO
-        public override MemberTypes MemberType => MemberTypes.Constructor | MemberTypes.Method;
+        // IL names of constructor and static constructor
+        public static readonly string ConstructorName = ".ctor";
 
-        public ConstructorInfo(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) :
-            base(declaringType) { }
+        public static readonly string TypeConstructorName = ".cctor";
+
+        // TODO
+        public override MemberTypes MemberType => MemberTypes.Constructor;
+
+        public ConstructorInfo(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) : base(pkg, methodIndex, declaringType) { }
     }
 
     public class CustomAttributeData
