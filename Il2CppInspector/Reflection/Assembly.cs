@@ -47,8 +47,13 @@ namespace Il2CppInspector.Reflection {
                 Module = Model.Package.Modules[FullName];
 
             // Generate types in DefinedTypes from typeStart to typeStart+typeCount-1
-            for (var t = Definition.typeStart; t < Definition.typeStart + Definition.typeCount; t++)
-                DefinedTypes.Add(new TypeInfo(Model.Package, t, this));
+            for (var t = Definition.typeStart; t < Definition.typeStart + Definition.typeCount; t++) {
+                var type = new TypeInfo(Model.Package, t, this);
+
+                // Don't add empty module definitions
+                if (type.Name != "<Module>")
+                    DefinedTypes.Add(type);
+            }
         }
 
         public override string ToString() => FullName;
