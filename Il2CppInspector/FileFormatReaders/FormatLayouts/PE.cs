@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -8,7 +8,10 @@ using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
+    // Source: https://github.com/dotnet/llilc/blob/master/include/clr/ntimage.h
 #pragma warning disable CS0649
+
+    // _IMAGE_FILE_HEADER
     internal class COFFHeader
     {
         public ushort Machine;
@@ -20,9 +23,10 @@ namespace Il2CppInspector
         public ushort Characteristics;
     }
 
-    internal class PEOptHeader
+    // _IMAGE_OPTIONAL_HEADER
+    internal class PEOptHeader32
     {
-        public ushort signature;
+        public ushort Magic;
         public byte MajorLinkerVersion;
         public byte MinorLinkerVersion;
         public uint SizeOfCode;
@@ -56,23 +60,62 @@ namespace Il2CppInspector
         public RvaEntry[] DataDirectory;
     }
 
+    // _IMAGE_OPTIONAL_HEADER64
+    internal class PEOptHeader64
+    {
+        public ushort Magic;
+        public byte MajorLinkerVersion;
+        public byte MinorLinkerVersion;
+        public uint SizeOfCode;
+        public uint SizeOfInitializedData;
+        public uint SizeOfUninitializedData;
+        public uint AddressOfEntryPoint;
+        public uint BaseOfCode;
+        public ulong ImageBase;
+        public uint SectionAlignment;
+        public uint FileAlignment;
+        public ushort MajorOSVersion;
+        public ushort MinorOSVersion;
+        public ushort MajorImageVersion;
+        public ushort MinorImageVersion;
+        public ushort MajorSubsystemVersion;
+        public ushort MinorSubsystemVersion;
+        public uint Win32VersionValue;
+        public uint SizeOfImage;
+        public uint SizeOfHeaders;
+        public uint Checksum;
+        public ushort Subsystem;
+        public ushort DLLCharacteristics;
+        public ulong SizeOfStackReserve;
+        public ulong SizeOfStackCommit;
+        public ulong SizeOfHeapReserve;
+        public ulong SizeOfHeapCommit;
+        public uint LoaderFlags;
+        public uint NumberOfRvaAndSizes;
+        [ArrayLength(FieldName = "NumberOfRvaAndSizes")]
+        public RvaEntry[] DataDirectory;
+    }
+
     internal class RvaEntry
     {
         public uint VirtualAddress;
         public uint Size;
     }
 
+    // _IMAGE_SECTION_HEADER
     internal class PESection
     {
         [String(FixedSize=8)]
         public string Name;
-        public uint SizeMemory;
-        public uint BaseMemory; // RVA
-        public uint SizeImage; // Size in file
-        public uint BaseImage; // Base address in file
-        [ArrayLength(FixedSize=12)]
-        public byte[] Reserved;
-        public uint Flags;
+        public uint VirtualSize; // Size in memory
+        public uint VirtualAddress; // Base address in memory (RVA)
+        public uint SizeOfRawData; // Size in file
+        public uint PointerToRawData; // Base address in file
+        public uint PointerToRelocations;
+        public uint PointerToLinenumbers;
+        public ushort NumberOfRelocations;
+        public ushort NumberOfLinenumbers;
+        public uint Characteristics;
     }
 #pragma warning restore CS0649
 }

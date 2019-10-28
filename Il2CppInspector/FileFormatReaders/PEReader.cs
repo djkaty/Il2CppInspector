@@ -13,7 +13,7 @@ namespace Il2CppInspector
     internal class PEReader : FileFormatReader<PEReader>
     {
         private COFFHeader coff;
-        private PEOptHeader pe;
+        private PEOptHeader32 pe;
         private PESection[] sections;
         private uint pFuncTable;
 
@@ -34,7 +34,7 @@ namespace Il2CppInspector
         // IMAGE_NT_OPTIONAL_HDR64_MAGIC = 0x20B
         // IMAGE_NT_OPTIONAL_HDR32_MAGIC = 0x10B
         // Could also use coff.Characteristics (IMAGE_FILE_32BIT_MACHINE) or coff.Machine
-        public override int Bits => pe.signature == 0x20B ? 64 : 32;
+        public override int Bits => pe.Magic == 0x20B ? 64 : 32;
 
         protected override bool Init() {
             // Check for MZ signature "MZ"
@@ -42,8 +42,7 @@ namespace Il2CppInspector
                 return false;
 
             // Get offset to PE header from DOS header
-            Position = 0x3C;
-            Position = ReadUInt32();
+            Position = ReadUInt32(0x3C);
 
             // Check PE signature "PE\0\0"
             if (ReadUInt32() != 0x00004550)
@@ -58,10 +57,10 @@ namespace Il2CppInspector
                 return false;
 
             // Read PE optional header
-            pe = ReadObject<PEOptHeader>();
+            pe = ReadObject<PEOptHeader32>();
 
             // Ensure IMAGE_NT_OPTIONAL_HDR32_MAGIC (32-bit)
-            if (pe.signature != 0x10B)
+            if (pe.Magic != 0x10B)
                 return false;
 
             // Get IAT
@@ -73,11 +72,11 @@ namespace Il2CppInspector
 
             // Confirm that .rdata section begins at same place as IAT
             var rData = sections.First(x => x.Name == ".rdata");
-            if (rData.BaseMemory != IATStart)
+            if (rData.VirtualAddress != IATStart)
                 return false;
 
             // Calculate start of function pointer table
-            pFuncTable = rData.BaseImage + IATSize + 8;
+            pFuncTable = rData.PointerToRawData + IATSize + 8;
             GlobalOffset = pe.ImageBase;
             return true;
         }
@@ -95,9 +94,9 @@ namespace Il2CppInspector
             if (uiAddr == 0)
                 return 0;
 
-            var section = sections.First(x => uiAddr - GlobalOffset >= x.BaseMemory &&
-                                              uiAddr - GlobalOffset < x.BaseMemory + x.SizeImage);
-            return (uint) (uiAddr - section.BaseMemory - GlobalOffset + section.BaseImage);
+            var section = sections.First(x => uiAddr - GlobalOffset >= x.VirtualAddress &&
+                                              uiAddr - GlobalOffset < x.VirtualAddress + x.SizeOfRawData);
+            return (uint) (uiAddr - section.VirtualAddress - GlobalOffset + section.PointerToRawData);
         }
     }
 }
