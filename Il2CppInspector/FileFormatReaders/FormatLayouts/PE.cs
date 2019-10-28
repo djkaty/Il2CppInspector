@@ -9,8 +9,14 @@ using NoisyCowStudios.Bin2Object;
 namespace Il2CppInspector
 {
     // Source: https://github.com/dotnet/llilc/blob/master/include/clr/ntimage.h
-#pragma warning disable CS0649
 
+    public enum PE : uint
+    {
+        IMAGE_NT_OPTIONAL_HDR32_MAGIC = 0x10b,
+        IMAGE_NT_OPTIONAL_HDR64_MAGIC = 0x20b
+    }
+
+#pragma warning disable CS0649
     // _IMAGE_FILE_HEADER
     internal class COFFHeader
     {
@@ -24,9 +30,22 @@ namespace Il2CppInspector
     }
 
     // _IMAGE_OPTIONAL_HEADER
-    internal class PEOptHeader32
+    internal interface IPEOptHeader
     {
-        public ushort Magic;
+        PE ExpectedMagic { get; }
+        ushort Magic { get; }
+        ulong ImageBase { get; }
+        RvaEntry[] DataDirectory { get; }
+    }
+
+    internal class PEOptHeader32 : IPEOptHeader
+    {
+        public PE ExpectedMagic => PE.IMAGE_NT_OPTIONAL_HDR32_MAGIC;
+        public ushort Magic => f_Magic;
+        public ulong ImageBase => f_ImageBase;
+        public RvaEntry[] DataDirectory => f_DataDirectory;
+
+        public ushort f_Magic;
         public byte MajorLinkerVersion;
         public byte MinorLinkerVersion;
         public uint SizeOfCode;
@@ -35,7 +54,7 @@ namespace Il2CppInspector
         public uint AddressOfEntryPoint;
         public uint BaseOfCode;
         public uint BaseOfData;
-        public uint ImageBase;
+        public uint f_ImageBase;
         public uint SectionAlignment;
         public uint FileAlignment;
         public ushort MajorOSVersion;
@@ -57,13 +76,18 @@ namespace Il2CppInspector
         public uint LoaderFlags;
         public uint NumberOfRvaAndSizes;
         [ArrayLength(FieldName = "NumberOfRvaAndSizes")]
-        public RvaEntry[] DataDirectory;
+        public RvaEntry[] f_DataDirectory;
     }
 
     // _IMAGE_OPTIONAL_HEADER64
-    internal class PEOptHeader64
+    internal class PEOptHeader64 : IPEOptHeader
     {
-        public ushort Magic;
+        public PE ExpectedMagic => PE.IMAGE_NT_OPTIONAL_HDR64_MAGIC;
+        public ushort Magic => f_Magic;
+        public ulong ImageBase => f_ImageBase;
+        public RvaEntry[] DataDirectory => f_DataDirectory;
+
+        public ushort f_Magic;
         public byte MajorLinkerVersion;
         public byte MinorLinkerVersion;
         public uint SizeOfCode;
@@ -71,7 +95,7 @@ namespace Il2CppInspector
         public uint SizeOfUninitializedData;
         public uint AddressOfEntryPoint;
         public uint BaseOfCode;
-        public ulong ImageBase;
+        public ulong f_ImageBase;
         public uint SectionAlignment;
         public uint FileAlignment;
         public ushort MajorOSVersion;
@@ -93,7 +117,7 @@ namespace Il2CppInspector
         public uint LoaderFlags;
         public uint NumberOfRvaAndSizes;
         [ArrayLength(FieldName = "NumberOfRvaAndSizes")]
-        public RvaEntry[] DataDirectory;
+        public RvaEntry[] f_DataDirectory;
     }
 
     internal class RvaEntry

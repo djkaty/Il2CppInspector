@@ -13,13 +13,13 @@ namespace Il2CppInspector
     internal class PEReader : FileFormatReader<PEReader>
     {
         private COFFHeader coff;
-        private PEOptHeader32 pe;
+        private IPEOptHeader pe;
         private PESection[] sections;
         private uint pFuncTable;
 
         public PEReader(Stream stream) : base(stream) {}
 
-        public override string Format => "PE";
+        public override string Format => pe is PEOptHeader32 ? "PE32" : "PE32+";
 
         public override string Arch => coff.Machine switch {
             0x8664 => "x64", // IMAGE_FILE_MACHINE_AMD64
@@ -34,7 +34,7 @@ namespace Il2CppInspector
         // IMAGE_NT_OPTIONAL_HDR64_MAGIC = 0x20B
         // IMAGE_NT_OPTIONAL_HDR32_MAGIC = 0x10B
         // Could also use coff.Characteristics (IMAGE_FILE_32BIT_MACHINE) or coff.Machine
-        public override int Bits => pe.Magic == 0x20B ? 64 : 32;
+        public override int Bits => (PE) pe.Magic == PE.IMAGE_NT_OPTIONAL_HDR64_MAGIC ? 64 : 32;
 
         protected override bool Init() {
             // Check for MZ signature "MZ"
@@ -52,15 +52,20 @@ namespace Il2CppInspector
             coff = ReadObject<COFFHeader>();
 
             // Ensure presence of PE Optional header
-            // Size will always be 0x60 + (0x10 ' 0x8) for 16 RVA entries @ 8 bytes each
-            if (coff.SizeOfOptionalHeader != 0xE0)
+            // Size will always be 0x60 (32-bit) or 0x70 (64-bit) + (0x10 ' 0x8) for 16 RVA entries @ 8 bytes each
+            if (!((coff.SizeOfOptionalHeader == 0xE0 ? 32 :
+                   coff.SizeOfOptionalHeader == 0xF0 ? (int?) 64 : null) is var likelyWordSize))
                 return false;
 
             // Read PE optional header
-            pe = ReadObject<PEOptHeader32>();
+            pe = likelyWordSize switch {
+                32 => ReadObject<PEOptHeader32>(),
+                64 => ReadObject<PEOptHeader64>(),
+                _ => null
+            };
 
-            // Ensure IMAGE_NT_OPTIONAL_HDR32_MAGIC (32-bit)
-            if (pe.Magic != 0x10B)
+            // Confirm architecture magic number matches expected word size
+            if ((PE) pe.Magic != pe.ExpectedMagic)
                 return false;
 
             // Get IAT
