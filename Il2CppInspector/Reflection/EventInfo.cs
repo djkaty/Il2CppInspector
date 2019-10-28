@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System.Linq;
 using System.Reflection;
 
 namespace Il2CppInspector.Reflection
@@ -44,11 +45,11 @@ namespace Il2CppInspector.Reflection
             // NOTE: This relies on methods being added to TypeInfo.DeclaredMethods in the same order they are defined in the Il2Cpp metadata
             // add, remove and raise are method indices from the first method of the declaring type
             if (Definition.add >= 0)
-                AddMethod = declaringType.DeclaredMethods[Definition.add];
+                AddMethod = declaringType.DeclaredMethods.First(x => x.Index == declaringType.Definition.methodStart + Definition.add);
             if (Definition.remove >= 0)
-                RemoveMethod = declaringType.DeclaredMethods[Definition.remove];
+                RemoveMethod = declaringType.DeclaredMethods.First(x => x.Index == declaringType.Definition.methodStart + Definition.remove);
             if (Definition.raise >= 0)
-                RaiseMethod = declaringType.DeclaredMethods[Definition.raise];
+                RaiseMethod = declaringType.DeclaredMethods.First(x => x.Index == declaringType.Definition.methodStart + Definition.raise);
         }
     }
 }

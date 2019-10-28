@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System.Linq;
 using System.Reflection;
 
 namespace Il2CppInspector.Reflection {
@@ -29,12 +30,11 @@ namespace Il2CppInspector.Reflection {
 
             Name = pkg.Strings[prop.nameIndex];
 
-            // NOTE: This relies on methods being added to TypeInfo.DeclaredMethods in the same order they are defined in the Il2Cpp metadata
             // prop.get and prop.set are method indices from the first method of the declaring type
             if (prop.get >= 0)
-                GetMethod = declaringType.DeclaredMethods[prop.get];
+                GetMethod = declaringType.DeclaredMethods.First(x => x.Index == declaringType.Definition.methodStart + prop.get);
             if (prop.set >= 0)
-                SetMethod = declaringType.DeclaredMethods[prop.set];
+                SetMethod = declaringType.DeclaredMethods.First(x => x.Index == declaringType.Definition.methodStart + prop.set);
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Il2CppInspector.Reflection {
             }
         }
 
-        public List<ConstructorInfo> DeclaredConstructors => throw new NotImplementedException();
+        public List<ConstructorInfo> DeclaredConstructors { get; } = new List<ConstructorInfo>();
         public List<EventInfo> DeclaredEvents { get; } = new List<EventInfo>();
         public List<FieldInfo> DeclaredFields { get; } = new List<FieldInfo>();
         public List<MemberInfo> DeclaredMembers => throw new NotImplementedException();
@@ -137,7 +137,7 @@ namespace Il2CppInspector.Reflection {
             Definition = pkg.TypeDefinitions[typeIndex];
             Index = typeIndex;
             Namespace = pkg.Strings[Definition.namespaceIndex];
-            Name = pkg.Strings[pkg.TypeDefinitions[typeIndex].nameIndex];
+            Name = pkg.Strings[Definition.nameIndex];
 
             if (Definition.parentIndex >= 0)
                 baseType = pkg.TypeUsages[Definition.parentIndex];
@@ -189,8 +189,13 @@ namespace Il2CppInspector.Reflection {
                 DeclaredFields.Add(new FieldInfo(pkg, f, this));
 
             // Add all methods
-            for (var m = Definition.methodStart; m < Definition.methodStart + Definition.method_count; m++)
-                DeclaredMethods.Add(new MethodInfo(pkg, m, this));
+            for (var m = Definition.methodStart; m < Definition.methodStart + Definition.method_count; m++) {
+                var method = new MethodInfo(pkg, m, this);
+                if (method.Name == ConstructorInfo.ConstructorName || method.Name == ConstructorInfo.TypeConstructorName)
+                    DeclaredConstructors.Add(new ConstructorInfo(pkg, m, this));
+                else
+                    DeclaredMethods.Add(method);
+            }
 
             // Add all properties
             for (var p = Definition.propertyStart; p < Definition.propertyStart + Definition.property_count; p++)

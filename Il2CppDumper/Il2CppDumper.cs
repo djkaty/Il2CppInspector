@@ -1,13 +1,13 @@
-﻿// Copyright (c) 2017 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
+﻿// Copyright (c) 2017-2019 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
 // All rights reserved
 
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
+
 using System.Text;
 using Il2CppInspector.Reflection;
+using ParameterInfo = Il2CppInspector.Reflection.ParameterInfo;
 
 namespace Il2CppInspector
 {
@@ -183,6 +183,18 @@ namespace Il2CppInspector
                     if (type.DeclaredEvents.Count > 0)
                         writer.Write("\n");
 
+                    // Constructors
+                    if (type.DeclaredConstructors.Any())
+                        writer.Write("\t// Constructors\n");
+
+                    foreach (var method in type.DeclaredConstructors) {
+                        writer.Write($"\t{method.GetModifierString()}{method.DeclaringType.Name}(");
+                        writer.Write(getParametersString(method.DeclaredParameters));
+                        writer.Write(");" + (method.VirtualAddress != 0 ? $" // {formatAddress(method.VirtualAddress)}" : "") + "\n");
+                    }
+                    if (type.DeclaredConstructors.Any())
+                        writer.Write("\n");
+
                     // Methods
                     if (type.DeclaredMethods.Except(usedMethods).Any())
                         writer.Write("\t// Methods\n");
@@ -190,23 +202,29 @@ namespace Il2CppInspector
                     // Don't re-output methods for constructors, properties, events etc.
                     foreach (var method in type.DeclaredMethods.Except(usedMethods)) {
                         writer.Write($"\t{method.GetModifierString()}{method.ReturnType.CSharpName} {method.Name}(");
-
-                        bool first = true;
-                        foreach (var param in method.DeclaredParameters) {
-                            if (!first)
-                                writer.Write(", ");
-                            first = false;
-                            if (param.IsOptional)
-                                writer.Write("optional ");
-                            if (param.IsOut)
-                                writer.Write("out ");
-                            writer.Write($"{param.ParameterType.CSharpName} {param.Name}");
-                        }
+                        writer.Write(getParametersString(method.DeclaredParameters));
                         writer.Write(");" + (method.VirtualAddress != 0? $" // {formatAddress(method.VirtualAddress)}" : "") + "\n");
                     }
                     writer.Write("}\n");
                 }
             }
+        }
+
+        private string getParametersString(List<ParameterInfo> @params) {
+            StringBuilder sb = new StringBuilder();
+
+            bool first = true;
+            foreach (var param in @params) {
+                if (!first)
+                    sb.Append(", ");
+                first = false;
+                if (param.IsOptional)
+                    sb.Append("optional ");
+                if (param.IsOut)
+                    sb.Append("out ");
+                sb.Append($"{param.ParameterType.CSharpName} {param.Name}");
+            }
+            return sb.ToString();
         }
     }
 }

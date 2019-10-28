@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -30,7 +30,7 @@ namespace Il2CppInspector.Reflection
 
         public bool IsAbstract => (Attributes & MethodAttributes.Abstract) == MethodAttributes.Abstract;
         public bool IsAssembly => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Assembly;
-        public bool IsConstructor => throw new NotImplementedException();
+        public bool IsConstructor => MemberType == MemberTypes.Constructor;
         public bool IsFamily => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Family;
         public bool IsFamilyAndAssembly => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.FamANDAssem;
         public bool IsFamilyOrAssembly => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.FamORAssem;
