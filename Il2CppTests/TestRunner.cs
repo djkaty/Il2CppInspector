@@ -20,6 +20,8 @@ namespace Il2CppInspector
             // Windows
             if (!File.Exists(testFile))
                 testFile = testPath + @"\" + Path.GetFileName(testPath) + ".dll";
+            if (!File.Exists(testFile))
+                testFile = testPath + @"\GameAssembly.dll";
             // iOS
             if (!File.Exists(testFile))
                 testFile = testPath + @"\" + Path.GetFileName(testPath);
