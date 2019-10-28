@@ -111,7 +111,7 @@ namespace Il2CppInspector
 
         public ElfReader(Stream stream) : base(stream) { }
 
-        public override string Format => "ELF";
+        public override string Format => Bits == 32 ? "ELF" : "ELF64";
 
         public override string Arch => (Elf) elf_header.e_machine switch {
             Elf.EM_386 => "x86",

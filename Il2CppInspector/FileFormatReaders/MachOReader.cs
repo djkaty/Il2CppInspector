@@ -61,7 +61,7 @@ namespace Il2CppInspector
 
         protected MachOReader(Stream stream) : base(stream) { }
 
-        public override string Format => "Mach-O";
+        public override string Format => "Mach-O " + (Bits == 32 ? "32-bit" : "64-bit");
 
         public override string Arch => (MachO)header.CPUType switch
         {
