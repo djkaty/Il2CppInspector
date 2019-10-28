@@ -81,7 +81,21 @@ namespace Il2CppInspector
                 return false;
 
             // Calculate start of function pointer table
-            pFuncTable = rData.PointerToRawData + IATSize + 8;
+            pFuncTable = rData.PointerToRawData + IATSize;
+
+            // Skip over __guard_check_icall_fptr and __guard_dispatch_icall_fptr if present, then the following zero offset
+            Position = pFuncTable;
+            if (pe is PEOptHeader32) {
+                while (ReadUInt32() != 0)
+                    pFuncTable += 4;
+                pFuncTable += 4;
+            }
+            else {
+                while (ReadUInt64() != 0)
+                    pFuncTable += 8;
+                pFuncTable += 8;
+            }
+
             GlobalOffset = pe.ImageBase;
             return true;
         }
@@ -89,8 +103,8 @@ namespace Il2CppInspector
         public override uint[] GetFunctionTable() {
             Position = pFuncTable;
             var addrs = new List<uint>();
-            uint addr;
-            while ((addr = ReadUInt32()) != 0)
+            ulong addr;
+            while ((addr = pe is PEOptHeader32? ReadUInt32() : ReadUInt64()) != 0)
                 addrs.Add(MapVATR(addr) & 0xfffffffc);
             return addrs.ToArray();
         }
