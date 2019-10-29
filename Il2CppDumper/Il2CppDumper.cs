@@ -132,7 +132,11 @@ namespace Il2CppInspector
                             writer.Write($"{field.FieldType.CSharpName} {field.Name}");
                             if (field.HasDefaultValue)
                                 writer.Write($" = {field.DefaultValueString}");
-                            writer.Write("; // 0x{0:X2}\n", (uint) field.Offset);
+                            writer.Write(";");
+                            // Don't output field indices for const fields (they don't have any storage)
+                            if (!field.IsLiteral)
+                                writer.Write(" // 0x{0:X2}", (uint) field.Offset);
+                            writer.WriteLine("");
                         }
                         if (type.DeclaredFields.Count > 0)
                             writer.Write("\n");
