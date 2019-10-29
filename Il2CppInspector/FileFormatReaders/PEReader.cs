@@ -10,6 +10,9 @@ using System.Linq;
 
 namespace Il2CppInspector
 {
+    // References:
+    // PE Header file: https://github.com/dotnet/llilc/blob/master/include/clr/ntimage.h
+    // PE format specification: https://docs.microsoft.com/en-us/windows/win32/debug/pe-format?redirectedfrom=MSDN
     internal class PEReader : FileFormatReader<PEReader>
     {
         private COFFHeader coff;
@@ -96,7 +99,8 @@ namespace Il2CppInspector
                 pFuncTable += 8;
             }
 
-            GlobalOffset = pe.ImageBase;
+            // Get base of code
+            GlobalOffset = pe.ImageBase + pe.BaseOfCode - sections.First(x => x.Name == ".text").PointerToRawData;
             return true;
         }
 
@@ -113,9 +117,9 @@ namespace Il2CppInspector
             if (uiAddr == 0)
                 return 0;
 
-            var section = sections.First(x => uiAddr - GlobalOffset >= x.VirtualAddress &&
-                                              uiAddr - GlobalOffset < x.VirtualAddress + x.SizeOfRawData);
-            return (uint) (uiAddr - section.VirtualAddress - GlobalOffset + section.PointerToRawData);
+            var section = sections.First(x => uiAddr - pe.ImageBase >= x.VirtualAddress &&
+                                              uiAddr - pe.ImageBase < x.VirtualAddress + x.SizeOfRawData);
+            return (uint) (uiAddr - section.VirtualAddress - pe.ImageBase + section.PointerToRawData);
         }
     }
 }

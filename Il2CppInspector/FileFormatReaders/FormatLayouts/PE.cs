@@ -35,6 +35,7 @@ namespace Il2CppInspector
         PE ExpectedMagic { get; }
         ushort Magic { get; }
         ulong ImageBase { get; }
+        uint BaseOfCode { get; }
         RvaEntry[] DataDirectory { get; }
     }
 
@@ -43,6 +44,7 @@ namespace Il2CppInspector
         public PE ExpectedMagic => PE.IMAGE_NT_OPTIONAL_HDR32_MAGIC;
         public ushort Magic => f_Magic;
         public ulong ImageBase => f_ImageBase;
+        public uint BaseOfCode => f_BaseOfCode;
         public RvaEntry[] DataDirectory => f_DataDirectory;
 
         public ushort f_Magic;
@@ -52,7 +54,7 @@ namespace Il2CppInspector
         public uint SizeOfInitializedData;
         public uint SizeOfUninitializedData;
         public uint AddressOfEntryPoint;
-        public uint BaseOfCode;
+        public uint f_BaseOfCode;
         public uint BaseOfData;
         public uint f_ImageBase;
         public uint SectionAlignment;
@@ -85,6 +87,7 @@ namespace Il2CppInspector
         public PE ExpectedMagic => PE.IMAGE_NT_OPTIONAL_HDR64_MAGIC;
         public ushort Magic => f_Magic;
         public ulong ImageBase => f_ImageBase;
+        public uint BaseOfCode => f_BaseOfCode;
         public RvaEntry[] DataDirectory => f_DataDirectory;
 
         public ushort f_Magic;
@@ -94,7 +97,7 @@ namespace Il2CppInspector
         public uint SizeOfInitializedData;
         public uint SizeOfUninitializedData;
         public uint AddressOfEntryPoint;
-        public uint BaseOfCode;
+        public uint f_BaseOfCode;
         public ulong f_ImageBase;
         public uint SectionAlignment;
         public uint FileAlignment;
