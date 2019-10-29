@@ -33,6 +33,8 @@ namespace Il2CppInspector.Reflection {
                 var s = Namespace + "." + base.Name;
                 var i = Il2CppConstants.FullNameTypeString.IndexOf(s);
                 var n = (i != -1 ? Il2CppConstants.CSharpTypeString[i] : base.Name);
+                if (n?.IndexOf("`", StringComparison.Ordinal) != -1)
+                    n = n?.Remove(n.IndexOf("`", StringComparison.Ordinal));
                 if (IsArray)
                     n = ElementType.CSharpName;
                 var g = (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.CSharpName)) + ">" : "");
@@ -109,7 +111,7 @@ namespace Il2CppInspector.Reflection {
 
         public override string Name {
             get => (IsPointer ? "void *" : "")
-                + base.Name
+                + (base.Name.IndexOf("`", StringComparison.Ordinal) == -1? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
                 + (GenericTypeParameters != null? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.Name)) + ">" : "")
                 + (IsArray ? "[]" : "");
             protected set => base.Name = value;
