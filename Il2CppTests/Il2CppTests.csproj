@@ -27,8 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="TestExpectedResults\GameAssembly-Generics.cs" />
-    <Content Include="TestExpectedResults\GameAssembly-Methods.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-Generics-x64.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-Generics-x86.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-Methods-x64.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-Methods-x86.cs" />
     <Content Include="TestExpectedResults\Generics.cs" />
     <Content Include="TestExpectedResults\Methods.cs" />
     <Content Include="TestSources\Generics.cs" />

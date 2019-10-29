@@ -1,17 +1,14 @@
 ﻿// Image 0: mscorlib.dll - 0
 // Image 1: Methods.dll - 1810
 
-// Namespace: 
-internal class <Module> // TypeDefIndex: 0
-{
-}
-
 // Namespace: System
 [Serializable]
 public class Object // TypeDefIndex: 1
 {
+	// Constructors
+	public Object(); // 0x001AF62C
+
 	// Methods
-	public void .ctor(); // 0x001AF62C
 	public virtual bool Equals(object obj); // 0x001B0CB0
 	public static bool Equals(object objA, object objB); // 0x001B0CC4
 	protected override void Finalize(); // 0x001B0CF8
@@ -30,8 +27,10 @@ public class Object // TypeDefIndex: 1
 [Serializable]
 public abstract class ValueType // TypeDefIndex: 2
 {
+	// Constructors
+	protected ValueType(); // 0x0055BA38
+
 	// Methods
-	protected void .ctor(); // 0x0055BA38
 	private static bool InternalEquals(object o1, object o2, out object[] fields); // 0x0055BA40
 	internal static bool DefaultEquals(object o1, object o2); // 0x0055BA44
 	public override bool Equals(object obj); // 0x0055BB60
@@ -47,8 +46,10 @@ public abstract class Attribute : _Attribute // TypeDefIndex: 3
 	// Properties
 	public virtual object TypeId { get; } // 0x004F47A0 
 
+	// Constructors
+	protected Attribute(); // 0x004F4578
+
 	// Methods
-	protected void .ctor(); // 0x004F4578
 	private void System.Runtime.InteropServices._Attribute.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x004F4580
 	private void System.Runtime.InteropServices._Attribute.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x004F4608
 	private void System.Runtime.InteropServices._Attribute.GetTypeInfoCount(out uint pcTInfo); // 0x004F4690
@@ -204,8 +205,9 @@ public interface IComparable`1 // TypeDefIndex: 9
 // Namespace: System
 public sealed class SerializableAttribute : Attribute // TypeDefIndex: 10
 {
-	// Methods
-	public void .ctor(); // 0x00247520
+	// Constructors
+	public SerializableAttribute(); // 0x00247520
+
 }
 
 // Namespace: System
@@ -222,8 +224,9 @@ public sealed class AttributeUsageAttribute : Attribute // TypeDefIndex: 11
 	public bool Inherited { get; set; } // 0x004F58E0 0x004F58E8
 	public AttributeTargets ValidOn { get; } // 0x004F58F0 
 
-	// Methods
-	public void .ctor(AttributeTargets validOn); // 0x004F58A4
+	// Constructors
+	public AttributeUsageAttribute(AttributeTargets validOn); // 0x004F58A4
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -235,8 +238,9 @@ public sealed class ComVisibleAttribute : Attribute // TypeDefIndex: 12
 	// Properties
 	public bool Value { get; } // 0x002B5F10 
 
-	// Methods
-	public void .ctor(bool visibility); // 0x002B5EF0
+	// Constructors
+	public ComVisibleAttribute(bool visibility); // 0x002B5EF0
+
 }
 
 // Namespace: System
@@ -346,8 +350,9 @@ public sealed class CLSCompliantAttribute : Attribute // TypeDefIndex: 16
 	// Properties
 	public bool IsCompliant { get; } // 0x004FA55C 
 
-	// Methods
-	public void .ctor(bool isCompliant); // 0x004FA53C
+	// Constructors
+	public CLSCompliantAttribute(bool isCompliant); // 0x004FA53C
+
 }
 
 // Namespace: System
@@ -617,8 +622,10 @@ public struct Char : IConvertible, IComparable, IComparable`1<char>, IEquatable`
 	private static readonly void * to_upper_data_low; // 0x14
 	private static readonly void * to_upper_data_high; // 0x18
 
+	// Constructors
+	private static Char(); // 0x004FA64C
+
 	// Methods
-	private static void .cctor(); // 0x004FA64C
 	private object System.IConvertible.ToType(Type targetType, IFormatProvider provider); // 0x000A9A3C
 	private bool System.IConvertible.ToBoolean(IFormatProvider provider); // 0x000A9A44
 	private byte System.IConvertible.ToByte(IFormatProvider provider); // 0x000A9A54
@@ -706,16 +713,18 @@ public sealed class String : IConvertible, IComparable, IEnumerable, ICloneable,
 	public char Chars { get; } // 0x00234500 
 	public int Length { get; } // 0x00253A04 
 
+	// Constructors
+	public String(void * value); // 0x00248AA0
+	public String(void * value, int startIndex, int length); // 0x00248AA4
+	public String(void * value); // 0x00248AA8
+	public String(void * value, int startIndex, int length); // 0x00248AAC
+	public String(void * value, int startIndex, int length, Encoding enc); // 0x00248AB0
+	public String(char[] value, int startIndex, int length); // 0x00248AB4
+	public String(char[] value); // 0x00248AB8
+	public String(char c, int count); // 0x00248ABC
+	private static String(); // 0x00248AC0
+
 	// Methods
-	public void .ctor(void * value); // 0x00248AA0
-	public void .ctor(void * value, int startIndex, int length); // 0x00248AA4
-	public void .ctor(void * value); // 0x00248AA8
-	public void .ctor(void * value, int startIndex, int length); // 0x00248AAC
-	public void .ctor(void * value, int startIndex, int length, Encoding enc); // 0x00248AB0
-	public void .ctor(char[] value, int startIndex, int length); // 0x00248AB4
-	public void .ctor(char[] value); // 0x00248AB8
-	public void .ctor(char c, int count); // 0x00248ABC
-	private static void .cctor(); // 0x00248AC0
 	private bool System.IConvertible.ToBoolean(IFormatProvider provider); // 0x00248B74
 	private byte System.IConvertible.ToByte(IFormatProvider provider); // 0x00248C00
 	private char System.IConvertible.ToChar(IFormatProvider provider); // 0x00248C8C
@@ -1047,16 +1056,18 @@ public struct Decimal : IFormattable, IConvertible, IComparable, IComparable`1<D
 	private uint lo; // 0x10
 	private uint mid; // 0x14
 
+	// Constructors
+	public Decimal(int lo, int mid, int hi, bool isNegative, byte scale); // 0x000A95D8
+	public Decimal(int value); // 0x000A9600
+	public Decimal(uint value); // 0x000A9628
+	public Decimal(long value); // 0x000A9640
+	public Decimal(ulong value); // 0x000A9674
+	public Decimal(float value); // 0x000A9688
+	public Decimal(double value); // 0x000A9690
+	public Decimal(int[] bits); // 0x000A96AC
+	private static Decimal(); // 0x004C1AC8
+
 	// Methods
-	public void .ctor(int lo, int mid, int hi, bool isNegative, byte scale); // 0x000A95D8
-	public void .ctor(int value); // 0x000A9600
-	public void .ctor(uint value); // 0x000A9628
-	public void .ctor(long value); // 0x000A9640
-	public void .ctor(ulong value); // 0x000A9674
-	public void .ctor(float value); // 0x000A9688
-	public void .ctor(double value); // 0x000A9690
-	public void .ctor(int[] bits); // 0x000A96AC
-	private static void .cctor(); // 0x004C1AC8
 	private object System.IConvertible.ToType(Type targetType, IFormatProvider provider); // 0x000A96B4
 	private bool System.IConvertible.ToBoolean(IFormatProvider provider); // 0x000A96BC
 	private byte System.IConvertible.ToByte(IFormatProvider provider); // 0x000A96C4
@@ -1184,8 +1195,10 @@ public struct Boolean : IConvertible, IComparable, IComparable`1<bool>, IEquatab
 	public static readonly string TrueString; // 0x04
 	internal bool m_value; // 0x08
 
+	// Constructors
+	private static Boolean(); // 0x004F812C
+
 	// Methods
-	private static void .cctor(); // 0x004F812C
 	private object System.IConvertible.ToType(Type targetType, IFormatProvider provider); // 0x000A9838
 	private bool System.IConvertible.ToBoolean(IFormatProvider provider); // 0x000A9840
 	private byte System.IConvertible.ToByte(IFormatProvider provider); // 0x000A9850
@@ -1224,11 +1237,13 @@ public struct IntPtr : ISerializable // TypeDefIndex: 34
 	// Properties
 	public static int Size { get; } // 0x001DD95C 
 
+	// Constructors
+	public IntPtr(int value); // 0x0008B7E0
+	public IntPtr(long value); // 0x0008B7E8
+	public IntPtr(void * value); // 0x0008B7F0
+	private IntPtr(SerializationInfo info, StreamingContext context); // 0x0008B7F8
+
 	// Methods
-	public void .ctor(int value); // 0x0008B7E0
-	public void .ctor(long value); // 0x0008B7E8
-	public void .ctor(void * value); // 0x0008B7F0
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x0008B7F8
 	private void System.Runtime.Serialization.ISerializable.GetObjectData(SerializationInfo info, StreamingContext context); // 0x0008B814
 	public override bool Equals(object obj); // 0x0008B830
 	public override int GetHashCode(); // 0x0008B838
@@ -1265,11 +1280,13 @@ public struct UIntPtr : ISerializable // TypeDefIndex: 36
 	// Properties
 	public static int Size { get; } // 0x0055A7DC 
 
+	// Constructors
+	public UIntPtr(ulong value); // 0x000C7AE8
+	public UIntPtr(uint value); // 0x000C7B04
+	public UIntPtr(void * value); // 0x000C7B0C
+	private static UIntPtr(); // 0x0055A7F4
+
 	// Methods
-	public void .ctor(ulong value); // 0x000C7AE8
-	public void .ctor(uint value); // 0x000C7B04
-	public void .ctor(void * value); // 0x000C7B0C
-	private static void .cctor(); // 0x0055A7F4
 	private void System.Runtime.Serialization.ISerializable.GetObjectData(SerializationInfo info, StreamingContext context); // 0x000C7B14
 	public override bool Equals(object obj); // 0x000C7B30
 	public override int GetHashCode(); // 0x000C7B38
@@ -1295,9 +1312,11 @@ public abstract class MulticastDelegate : Delegate // TypeDefIndex: 37
 	private MulticastDelegate prev; // 0x2C
 	private MulticastDelegate kpm_next; // 0x30
 
+	// Constructors
+	protected MulticastDelegate(object target, string method); // 0x001E8C04
+	protected MulticastDelegate(Type target, string method); // 0x001E8C24
+
 	// Methods
-	protected void .ctor(object target, string method); // 0x001E8C04
-	protected void .ctor(Type target, string method); // 0x001E8C24
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x001E8C44
 	protected sealed override object DynamicInvokeImpl(object[] args); // 0x001E8C64
 	public sealed override bool Equals(object obj); // 0x001E8C98
@@ -1330,9 +1349,11 @@ public abstract class Delegate : ICloneable, ISerializable // TypeDefIndex: 38
 	public MethodInfo Method { get; } // 0x004C85D4 
 	public object Target { get; } // 0x004C86B0 
 
+	// Constructors
+	protected Delegate(object target, string method); // 0x004C8328
+	protected Delegate(Type target, string method); // 0x004C8478
+
 	// Methods
-	protected void .ctor(object target, string method); // 0x004C8328
-	protected void .ctor(Type target, string method); // 0x004C8478
 	internal static Delegate CreateDelegate_internal(Type type, object target, MethodInfo info, bool throwOnBindFailure); // 0x004C86B8
 	internal void SetMulticastInvoke(); // 0x004C86BC
 	private static bool arg_type_match(Type delArgType, Type argType); // 0x004C86C0
@@ -1376,9 +1397,11 @@ public abstract struct Enum : IFormattable, IConvertible, IComparable // TypeDef
 	// Properties
 	private object Value { get; } // 0x002D885C 
 
+	// Constructors
+	protected Enum(); // 0x002D870C
+	private static Enum(); // 0x002D8714
+
 	// Methods
-	protected void .ctor(); // 0x002D870C
-	private static void .cctor(); // 0x002D8714
 	private bool System.IConvertible.ToBoolean(IFormatProvider provider); // 0x002D87C4
 	private byte System.IConvertible.ToByte(IFormatProvider provider); // 0x002D8860
 	private char System.IConvertible.ToChar(IFormatProvider provider); // 0x002D88F8
@@ -1445,8 +1468,10 @@ public abstract class Array : IEnumerable, ICloneable, ICollection, IList // Typ
 	public bool IsFixedSize { get; } // 0x004ED300 
 	public bool IsReadOnly { get; } // 0x004ED308 
 
+	// Constructors
+	private Array(); // 0x004EC84C
+
 	// Methods
-	private void .ctor(); // 0x004EC84C
 	private int System.Collections.IList.Add(object value); // 0x004ECB18
 	private void System.Collections.IList.Clear(); // 0x004ECBA0
 	private bool System.Collections.IList.Contains(object value); // 0x004ECD9C
@@ -1603,8 +1628,10 @@ internal struct InternalEnumerator`1 : IEnumerator, IDisposable, IEnumerator`1<T
 	private object System.Collections.IEnumerator.Current { get; }
 	public T Current { get; }
 
+	// Constructors
+	internal InternalEnumerator`1(Array array);
+
 	// Methods
-	internal void .ctor(Array array);
 	private void System.Collections.IEnumerator.Reset();
 	public void Dispose();
 	public bool MoveNext();
@@ -1621,8 +1648,10 @@ internal class SimpleEnumerator : IEnumerator, ICloneable // TypeDefIndex: 42
 	// Properties
 	public object Current { get; } // 0x004F3A14 
 
+	// Constructors
+	public SimpleEnumerator(Array arrayToEnumerate); // 0x004ED380
+
 	// Methods
-	public void .ctor(Array arrayToEnumerate); // 0x004ED380
 	public bool MoveNext(); // 0x004F3B4C
 	public void Reset(); // 0x004F3B70
 	public object Clone(); // 0x004F3B7C
@@ -1639,8 +1668,10 @@ private class ArrayReadOnlyList`1 : IEnumerable, IList`1<T>, ICollection`1<T>, I
 	public int Count { get; }
 	public bool IsReadOnly { get; }
 
+	// Constructors
+	public ArrayReadOnlyList`1(T[] array);
+
 	// Methods
-	public void .ctor(T[] array);
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator();
 	public void Add(T item);
 	public void Clear();
@@ -1667,8 +1698,10 @@ private sealed class <GetEnumerator>c__Iterator0 : IEnumerator, IDisposable, IEn
 	private T System.Collections.Generic.IEnumerator<T>.Current { get; }
 	private object System.Collections.IEnumerator.Current { get; }
 
+	// Constructors
+	public <GetEnumerator>c__Iterator0();
+
 	// Methods
-	public void .ctor();
 	public bool MoveNext();
 	public void Dispose();
 	public void Reset();
@@ -1814,9 +1847,11 @@ public abstract class Type : MemberInfo, IReflect, _Type // TypeDefIndex: 51
 	public virtual StructLayoutAttribute StructLayoutAttribute { get; } // 0x004260FC 
 	internal bool IsUserType { get; } // 0x00426444 
 
+	// Constructors
+	protected Type(); // 0x00420FD8
+	private static Type(); // 0x00420FE0
+
 	// Methods
-	protected void .ctor(); // 0x00420FD8
-	private static void .cctor(); // 0x00420FE0
 	private void System.Runtime.InteropServices._Type.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x00421178
 	private void System.Runtime.InteropServices._Type.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x00421200
 	private void System.Runtime.InteropServices._Type.GetTypeInfoCount(out uint pcTInfo); // 0x00421288
@@ -1956,8 +1991,10 @@ public abstract class MemberInfo : ICustomAttributeProvider, _MemberInfo // Type
 	public virtual Module Module { get; } // 0x00281904 
 	public virtual int MetadataToken { get; } // 0x00281948 
 
+	// Constructors
+	protected MemberInfo(); // 0x0027E9E4
+
 	// Methods
-	protected void .ctor(); // 0x0027E9E4
 	private void System.Runtime.InteropServices._MemberInfo.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x002816E4
 	private void System.Runtime.InteropServices._MemberInfo.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x0028176C
 	private void System.Runtime.InteropServices._MemberInfo.GetTypeInfoCount(out uint pcTInfo); // 0x002817F4
@@ -2168,11 +2205,13 @@ public class Exception : ISerializable, _Exception // TypeDefIndex: 57
 	public MethodBase TargetSite { get; } // 0x002E1A6C 
 	public virtual IDictionary Data { get; } // 0x002E1B6C 
 
+	// Constructors
+	public Exception(); // 0x002E0854
+	public Exception(string message); // 0x002D80EC
+	protected Exception(SerializationInfo info, StreamingContext context); // 0x002E0868
+	public Exception(string message, Exception innerException); // 0x002E0C30
+
 	// Methods
-	public void .ctor(); // 0x002E0854
-	public void .ctor(string message); // 0x002D80EC
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002E0868
-	public void .ctor(string message, Exception innerException); // 0x002E0C30
 	internal void SetMessage(string s); // 0x002E0C90
 	internal void SetStackTrace(string s); // 0x002E0C98
 	public virtual Exception GetBaseException(); // 0x002E1BEC
@@ -2213,9 +2252,11 @@ public struct RuntimeFieldHandle : ISerializable // TypeDefIndex: 59
 	// Properties
 	public IntPtr Value { get; } // 0x0008BD24 
 
+	// Constructors
+	internal RuntimeFieldHandle(IntPtr v); // 0x0008BD00
+	private RuntimeFieldHandle(SerializationInfo info, StreamingContext context); // 0x0008BD08
+
 	// Methods
-	internal void .ctor(IntPtr v); // 0x0008BD00
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x0008BD08
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x0008BD2C
 	public override bool Equals(object obj); // 0x0008BD48
 	public bool Equals(RuntimeFieldHandle handle); // 0x0008BD50
@@ -2234,9 +2275,11 @@ public struct RuntimeTypeHandle : ISerializable // TypeDefIndex: 60
 	// Properties
 	public IntPtr Value { get; } // 0x0008BDFC 
 
+	// Constructors
+	internal RuntimeTypeHandle(IntPtr val); // 0x0008BDD8
+	private RuntimeTypeHandle(SerializationInfo info, StreamingContext context); // 0x0008BDE0
+
 	// Methods
-	internal void .ctor(IntPtr val); // 0x0008BDD8
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x0008BDE0
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x0008BE04
 	public override bool Equals(object obj); // 0x0008BE20
 	public bool Equals(RuntimeTypeHandle handle); // 0x0008BE28
@@ -2251,15 +2294,17 @@ public struct RuntimeTypeHandle : ISerializable // TypeDefIndex: 60
 // Namespace: System
 public sealed class ParamArrayAttribute : Attribute // TypeDefIndex: 61
 {
-	// Methods
-	public void .ctor(); // 0x001B1A2C
+	// Constructors
+	public ParamArrayAttribute(); // 0x001B1A2C
+
 }
 
 // Namespace: System.Runtime.InteropServices
 public sealed class OutAttribute : Attribute // TypeDefIndex: 62
 {
-	// Methods
-	public void .ctor(); // 0x002BD42C
+	// Constructors
+	public OutAttribute(); // 0x002BD42C
+
 }
 
 // Namespace: System
@@ -2274,10 +2319,11 @@ public sealed class ObsoleteAttribute : Attribute // TypeDefIndex: 63
 	public string Message { get; } // 0x001B0FE0 
 	public bool IsError { get; } // 0x001B0FE8 
 
-	// Methods
-	public void .ctor(); // 0x001B0F90
-	public void .ctor(string message); // 0x001B0F98
-	public void .ctor(string message, bool error); // 0x001B0FB8
+	// Constructors
+	public ObsoleteAttribute(); // 0x001B0F90
+	public ObsoleteAttribute(string message); // 0x001B0F98
+	public ObsoleteAttribute(string message, bool error); // 0x001B0FB8
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -2297,8 +2343,9 @@ public sealed class DllImportAttribute : Attribute // TypeDefIndex: 64
 	// Properties
 	public string Value { get; } // 0x002B63E4 
 
-	// Methods
-	public void .ctor(string dllName); // 0x002B63C4
+	// Constructors
+	public DllImportAttribute(string dllName); // 0x002B63C4
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -2312,10 +2359,11 @@ public sealed class MethodImplAttribute : Attribute // TypeDefIndex: 65
 	// Properties
 	public MethodImplOptions Value { get; } // 0x0037D3FC 
 
-	// Methods
-	public void .ctor(); // 0x0037D3B4
-	public void .ctor(short value); // 0x0037D3BC
-	public void .ctor(MethodImplOptions methodImplOptions); // 0x0037D3DC
+	// Constructors
+	public MethodImplAttribute(); // 0x0037D3B4
+	public MethodImplAttribute(short value); // 0x0037D3BC
+	public MethodImplAttribute(MethodImplOptions methodImplOptions); // 0x0037D3DC
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -2336,24 +2384,27 @@ public sealed class MarshalAsAttribute : Attribute // TypeDefIndex: 66
 	// Properties
 	public UnmanagedType Value { get; } // 0x002BD03C 
 
-	// Methods
-	public void .ctor(short unmanagedType); // 0x002BCFFC
-	public void .ctor(UnmanagedType unmanagedType); // 0x002BD01C
+	// Constructors
+	public MarshalAsAttribute(short unmanagedType); // 0x002BCFFC
+	public MarshalAsAttribute(UnmanagedType unmanagedType); // 0x002BD01C
+
 }
 
 // Namespace: System.Runtime.InteropServices
 public sealed class InAttribute : Attribute // TypeDefIndex: 67
 {
-	// Methods
-	public void .ctor(); // 0x002B7168
+	// Constructors
+	public InAttribute(); // 0x002B7168
+
 }
 
 // Namespace: System.Runtime.CompilerServices
 [Serializable]
 public sealed class IndexerNameAttribute : Attribute // TypeDefIndex: 68
 {
-	// Methods
-	public void .ctor(string indexerName); // 0x0037D368
+	// Constructors
+	public IndexerNameAttribute(string indexerName); // 0x0037D368
+
 }
 
 // Namespace: System.Diagnostics
@@ -2366,8 +2417,9 @@ public sealed class ConditionalAttribute : Attribute // TypeDefIndex: 69
 	// Properties
 	public string ConditionString { get; } // 0x004CB22C 
 
-	// Methods
-	public void .ctor(string conditionString); // 0x004CB20C
+	// Constructors
+	public ConditionalAttribute(string conditionString); // 0x004CB20C
+
 }
 
 // Namespace: System.Security.Permissions
@@ -2382,8 +2434,10 @@ public abstract class SecurityAttribute : Attribute // TypeDefIndex: 70
 	public bool Unrestricted { get; set; } // 0x003AA5D4 0x003AA5DC
 	public SecurityAction Action { get; set; } // 0x003AA5E4 0x003AA5EC
 
+	// Constructors
+	protected SecurityAttribute(SecurityAction action); // 0x003AA5B4
+
 	// Methods
-	protected void .ctor(SecurityAction action); // 0x003AA5B4
 	public abstract IPermission CreatePermission();
 }
 
@@ -2394,8 +2448,9 @@ public sealed class RequiredAttributeAttribute : Attribute // TypeDefIndex: 71
 	// Properties
 	public Type RequiredContract { get; } // 0x0037D414 
 
-	// Methods
-	public void .ctor(Type requiredContract); // 0x0037D40C
+	// Constructors
+	public RequiredAttributeAttribute(Type requiredContract); // 0x0037D40C
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -2407,8 +2462,9 @@ public sealed class GuidAttribute : Attribute // TypeDefIndex: 72
 	// Properties
 	public string Value { get; } // 0x002B70C8 
 
-	// Methods
-	public void .ctor(string guid); // 0x002B70A8
+	// Constructors
+	public GuidAttribute(string guid); // 0x002B70A8
+
 }
 
 // Namespace: System.Reflection
@@ -2420,8 +2476,9 @@ public sealed class AssemblyCultureAttribute : Attribute // TypeDefIndex: 73
 	// Properties
 	public string Culture { get; } // 0x001B5838 
 
-	// Methods
-	public void .ctor(string culture); // 0x001B5818
+	// Constructors
+	public AssemblyCultureAttribute(string culture); // 0x001B5818
+
 }
 
 // Namespace: System.Reflection
@@ -2433,15 +2490,17 @@ public sealed class AssemblyVersionAttribute : Attribute // TypeDefIndex: 74
 	// Properties
 	public string Version { get; } // 0x001B768C 
 
-	// Methods
-	public void .ctor(string version); // 0x001B766C
+	// Constructors
+	public AssemblyVersionAttribute(string version); // 0x001B766C
+
 }
 
 // Namespace: System.Runtime.InteropServices
 public sealed class ComImportAttribute : Attribute // TypeDefIndex: 75
 {
-	// Methods
-	public void .ctor(); // 0x0037F184
+	// Constructors
+	public ComImportAttribute(); // 0x0037F184
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -2453,15 +2512,17 @@ public sealed class CoClassAttribute : Attribute // TypeDefIndex: 76
 	// Properties
 	public Type CoClass { get; } // 0x0037F094 
 
-	// Methods
-	public void .ctor(Type coClass); // 0x0037F074
+	// Constructors
+	public CoClassAttribute(Type coClass); // 0x0037F074
+
 }
 
 // Namespace: System.Runtime.InteropServices
 public sealed class OptionalAttribute : Attribute // TypeDefIndex: 77
 {
-	// Methods
-	public void .ctor(); // 0x002BD424
+	// Constructors
+	public OptionalAttribute(); // 0x002BD424
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -2473,8 +2534,9 @@ public sealed class DefaultCharSetAttribute : Attribute // TypeDefIndex: 78
 	// Properties
 	public CharSet CharSet { get; } // 0x002B626C 
 
-	// Methods
-	public void .ctor(CharSet charSet); // 0x002B624C
+	// Constructors
+	public DefaultCharSetAttribute(CharSet charSet); // 0x002B624C
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -2486,8 +2548,9 @@ public sealed class TypeForwardedToAttribute : Attribute // TypeDefIndex: 79
 	// Properties
 	public Type Destination { get; } // 0x0037E24C 
 
-	// Methods
-	public void .ctor(Type destination); // 0x0037E22C
+	// Constructors
+	public TypeForwardedToAttribute(Type destination); // 0x0037E22C
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -2501,16 +2564,18 @@ public sealed class FixedBufferAttribute : Attribute // TypeDefIndex: 80
 	public Type ElementType { get; } // 0x0037D330 
 	public int Length { get; } // 0x0037D338 
 
-	// Methods
-	public void .ctor(Type elementType, int length); // 0x0037D308
+	// Constructors
+	public FixedBufferAttribute(Type elementType, int length); // 0x0037D308
+
 }
 
 // Namespace: System.Runtime.CompilerServices
 [Serializable]
 public sealed class CompilerGeneratedAttribute : Attribute // TypeDefIndex: 81
 {
-	// Methods
-	public void .ctor(); // 0x0037D06C
+	// Constructors
+	public CompilerGeneratedAttribute(); // 0x0037D06C
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -2524,8 +2589,9 @@ public sealed class InternalsVisibleToAttribute : Attribute // TypeDefIndex: 82
 	public string AssemblyName { get; } // 0x0037D39C 
 	public bool AllInternalsVisible { get; set; } // 0x0037D3A4 0x0037D3AC
 
-	// Methods
-	public void .ctor(string assemblyName); // 0x0037D370
+	// Constructors
+	public InternalsVisibleToAttribute(string assemblyName); // 0x0037D370
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -2538,24 +2604,27 @@ public sealed class RuntimeCompatibilityAttribute : Attribute // TypeDefIndex: 8
 	// Properties
 	public bool WrapNonExceptionThrows { get; set; } // 0x0037D4A4 0x0037D4AC
 
-	// Methods
-	public void .ctor(); // 0x0037D49C
+	// Constructors
+	public RuntimeCompatibilityAttribute(); // 0x0037D49C
+
 }
 
 // Namespace: System.Diagnostics
 [Serializable]
 public sealed class DebuggerHiddenAttribute : Attribute // TypeDefIndex: 84
 {
-	// Methods
-	public void .ctor(); // 0x002D3D18
+	// Constructors
+	public DebuggerHiddenAttribute(); // 0x002D3D18
+
 }
 
 // Namespace: System.Runtime.CompilerServices
 [Serializable]
 public sealed class UnsafeValueTypeAttribute : Attribute // TypeDefIndex: 85
 {
-	// Methods
-	public void .ctor(); // 0x0037E254
+	// Constructors
+	public UnsafeValueTypeAttribute(); // 0x0037E254
+
 }
 
 // Namespace: System.Reflection
@@ -2568,8 +2637,9 @@ public sealed class DefaultMemberAttribute : Attribute // TypeDefIndex: 86
 	// Properties
 	public string MemberName { get; } // 0x001BCDFC 
 
-	// Methods
-	public void .ctor(string memberName); // 0x001BCDDC
+	// Constructors
+	public DefaultMemberAttribute(string memberName); // 0x001BCDDC
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -2586,9 +2656,10 @@ public sealed class DecimalConstantAttribute : Attribute // TypeDefIndex: 87
 	// Properties
 	public Decimal Value { get; } // 0x00367A48 
 
-	// Methods
-	public void .ctor(byte scale, byte sign, uint hi, uint mid, uint low); // 0x0037D128
-	public void .ctor(byte scale, byte sign, int hi, int mid, int low); // 0x0037D1E0
+	// Constructors
+	public DecimalConstantAttribute(byte scale, byte sign, uint hi, uint mid, uint low); // 0x0037D128
+	public DecimalConstantAttribute(byte scale, byte sign, int hi, int mid, int low); // 0x0037D1E0
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -2603,9 +2674,10 @@ public sealed class StructLayoutAttribute : Attribute // TypeDefIndex: 88
 	// Properties
 	public LayoutKind Value { get; } // 0x002BE918 
 
-	// Methods
-	public void .ctor(short layoutKind); // 0x002BE8B0
-	public void .ctor(LayoutKind layoutKind); // 0x002BE8E4
+	// Constructors
+	public StructLayoutAttribute(short layoutKind); // 0x002BE8B0
+	public StructLayoutAttribute(LayoutKind layoutKind); // 0x002BE8E4
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -2617,8 +2689,9 @@ public sealed class FieldOffsetAttribute : Attribute // TypeDefIndex: 89
 	// Properties
 	public int Value { get; } // 0x002B6AD4 
 
-	// Methods
-	public void .ctor(int offset); // 0x002B6AB4
+	// Constructors
+	public FieldOffsetAttribute(int offset); // 0x002B6AB4
+
 }
 
 // Namespace: System
@@ -2671,9 +2744,11 @@ public struct ArgIterator // TypeDefIndex: 94
 	private int next_arg; // 0x10
 	private int num_args; // 0x14
 
+	// Constructors
+	public ArgIterator(RuntimeArgumentHandle arglist); // 0x0008C728
+	public ArgIterator(RuntimeArgumentHandle arglist, void * ptr); // 0x0008C730
+
 	// Methods
-	public void .ctor(RuntimeArgumentHandle arglist); // 0x0008C728
-	public void .ctor(RuntimeArgumentHandle arglist, void * ptr); // 0x0008C730
 	private void Setup(IntPtr argsp, IntPtr start); // 0x0008C738
 	public void End(); // 0x0008C740
 	public override bool Equals(object o); // 0x0008C74C
@@ -2697,8 +2772,10 @@ public abstract class MarshalByRefObject // TypeDefIndex: 95
 	// Properties
 	internal ServerIdentity ObjectIdentity { get; set; } // 0x001DE6DC 0x001DE6E4
 
+	// Constructors
+	protected MarshalByRefObject(); // 0x001DE5CC
+
 	// Methods
-	protected void .ctor(); // 0x001DE5CC
 	internal Identity GetObjectIdentity(MarshalByRefObject obj, out bool IsClient); // 0x001DE5D4
 	public virtual ObjRef CreateObjRef(Type requestedType); // 0x001DE6EC
 	public object GetLifetimeService(); // 0x001DE7C0
@@ -2718,8 +2795,10 @@ public struct Nullable`1 // TypeDefIndex: 96
 	public bool HasValue { get; }
 	public T Value { get; }
 
+	// Constructors
+	public Nullable`1(T value);
+
 	// Methods
-	public void .ctor(T value);
 	public override bool Equals(object other);
 	private bool Equals(Nullable`1<T> other);
 	public override int GetHashCode();
@@ -2802,8 +2881,10 @@ internal static class Consts // TypeDefIndex: 100
 // Namespace: 
 internal sealed class Locale // TypeDefIndex: 101
 {
+	// Constructors
+	private Locale(); // 0x003EC3F8
+
 	// Methods
-	private void .ctor(); // 0x003EC3F8
 	public static string GetText(string msg); // 0x003EC400
 	public static string GetText(string fmt, object[] args); // 0x003EC404
 }
@@ -2817,44 +2898,50 @@ internal class MonoTODOAttribute : Attribute // TypeDefIndex: 102
 	// Properties
 	public string Comment { get; } // 0x001E5764 
 
-	// Methods
-	public void .ctor(); // 0x001E575C
-	public void .ctor(string comment); // 0x001E4678
+	// Constructors
+	public MonoTODOAttribute(); // 0x001E575C
+	public MonoTODOAttribute(string comment); // 0x001E4678
+
 }
 
 // Namespace: System
 internal class MonoDocumentationNoteAttribute : MonoTODOAttribute // TypeDefIndex: 103
 {
-	// Methods
-	public void .ctor(string comment); // 0x001E4658
+	// Constructors
+	public MonoDocumentationNoteAttribute(string comment); // 0x001E4658
+
 }
 
 // Namespace: System
 internal class MonoExtensionAttribute : MonoTODOAttribute // TypeDefIndex: 104
 {
-	// Methods
-	public void .ctor(string comment); // 0x001E56D4
+	// Constructors
+	public MonoExtensionAttribute(string comment); // 0x001E56D4
+
 }
 
 // Namespace: System
 internal class MonoInternalNoteAttribute : MonoTODOAttribute // TypeDefIndex: 105
 {
-	// Methods
-	public void .ctor(string comment); // 0x001E56F4
+	// Constructors
+	public MonoInternalNoteAttribute(string comment); // 0x001E56F4
+
 }
 
 // Namespace: System
 internal class MonoLimitationAttribute : MonoTODOAttribute // TypeDefIndex: 106
 {
-	// Methods
-	public void .ctor(string comment); // 0x001E5714
+	// Constructors
+	public MonoLimitationAttribute(string comment); // 0x001E5714
+
 }
 
 // Namespace: System
 internal class MonoNotSupportedAttribute : MonoTODOAttribute // TypeDefIndex: 107
 {
-	// Methods
-	public void .ctor(string comment); // 0x001E573C
+	// Constructors
+	public MonoNotSupportedAttribute(string comment); // 0x001E573C
+
 }
 
 // Namespace: Microsoft.Win32.SafeHandles
@@ -2863,8 +2950,9 @@ public abstract class CriticalHandleMinusOneIsInvalid : CriticalHandle, IDisposa
 	// Properties
 	public override bool IsInvalid { get; } // 0x003F4F54 
 
-	// Methods
-	protected void .ctor(); // 0x003F4F28
+	// Constructors
+	protected CriticalHandleMinusOneIsInvalid(); // 0x003F4F28
+
 }
 
 // Namespace: Microsoft.Win32.SafeHandles
@@ -2873,16 +2961,19 @@ public abstract class CriticalHandleZeroOrMinusOneIsInvalid : CriticalHandle, ID
 	// Properties
 	public override bool IsInvalid { get; } // 0x003F4FAC 
 
-	// Methods
-	protected void .ctor(); // 0x003F4F80
+	// Constructors
+	protected CriticalHandleZeroOrMinusOneIsInvalid(); // 0x003F4F80
+
 }
 
 // Namespace: Microsoft.Win32.SafeHandles
 public sealed class SafeFileHandle : SafeHandleZeroOrMinusOneIsInvalid // TypeDefIndex: 110
 {
+	// Constructors
+	public SafeFileHandle(IntPtr preexistingHandle, bool ownsHandle); // 0x003F5034
+	internal SafeFileHandle(); // 0x003F50A4
+
 	// Methods
-	public void .ctor(IntPtr preexistingHandle, bool ownsHandle); // 0x003F5034
-	internal void .ctor(); // 0x003F50A4
 	protected override bool ReleaseHandle(); // 0x003F50D4
 }
 
@@ -2892,8 +2983,9 @@ public abstract class SafeHandleMinusOneIsInvalid : SafeHandle, IDisposable // T
 	// Properties
 	public override bool IsInvalid { get; } // 0x003F51B4 
 
-	// Methods
-	protected void .ctor(bool ownsHandle); // 0x003F5180
+	// Constructors
+	protected SafeHandleMinusOneIsInvalid(bool ownsHandle); // 0x003F5180
+
 }
 
 // Namespace: Microsoft.Win32.SafeHandles
@@ -2902,15 +2994,18 @@ public abstract class SafeHandleZeroOrMinusOneIsInvalid : SafeHandle, IDisposabl
 	// Properties
 	public override bool IsInvalid { get; } // 0x003F51E0 
 
-	// Methods
-	protected void .ctor(bool ownsHandle); // 0x003F5070
+	// Constructors
+	protected SafeHandleZeroOrMinusOneIsInvalid(bool ownsHandle); // 0x003F5070
+
 }
 
 // Namespace: Microsoft.Win32.SafeHandles
 public sealed class SafeWaitHandle : SafeHandleZeroOrMinusOneIsInvalid // TypeDefIndex: 113
 {
+	// Constructors
+	public SafeWaitHandle(IntPtr existingHandle, bool ownsHandle); // 0x003F523C
+
 	// Methods
-	public void .ctor(IntPtr existingHandle, bool ownsHandle); // 0x003F523C
 	protected override bool ReleaseHandle(); // 0x003F5278
 }
 
@@ -2948,8 +3043,10 @@ public static class Registry // TypeDefIndex: 115
 	public static readonly RegistryKey Users; // 0x18
 	private static Dictionary`2<string, int> <>f__switch$map0; // 0x1C
 
+	// Constructors
+	private static Registry(); // 0x003F1B08
+
 	// Methods
-	private static void .cctor(); // 0x003F1B08
 	private static RegistryKey ToKey(string keyName, bool setting); // 0x003F1D78
 	public static void SetValue(string keyName, string valueName, object value); // 0x003F28C0
 	public static void SetValue(string keyName, string valueName, object value, RegistryValueKind valueKind); // 0x003F2C3C
@@ -2989,11 +3086,13 @@ public sealed class RegistryKey : MarshalByRefObject, IDisposable // TypeDefInde
 	internal RegistryHive Hive { get; } // 0x003EEBB4 
 	internal object Handle { get; } // 0x003F4E04 
 
+	// Constructors
+	internal RegistryKey(RegistryHive hiveId); // 0x003F1D34
+	internal RegistryKey(RegistryHive hiveId, IntPtr keyHandle, bool remoteRoot); // 0x003F31C4
+	internal RegistryKey(object data, string keyName, bool writable); // 0x003EE1E4
+	private static RegistryKey(); // 0x003F3400
+
 	// Methods
-	internal void .ctor(RegistryHive hiveId); // 0x003F1D34
-	internal void .ctor(RegistryHive hiveId, IntPtr keyHandle, bool remoteRoot); // 0x003F31C4
-	internal void .ctor(object data, string keyName, bool writable); // 0x003EE1E4
-	private static void .cctor(); // 0x003F3400
 	private void System.IDisposable.Dispose(); // 0x003F3594
 	protected override void Finalize(); // 0x003F36F8
 	public void Flush(); // 0x003F3764
@@ -3065,8 +3164,10 @@ internal class ExpandString // TypeDefIndex: 121
 	// Fields
 	private string value; // 0x08
 
+	// Constructors
+	public ExpandString(string s); // 0x003EC490
+
 	// Methods
-	public void .ctor(string s); // 0x003EC490
 	public override string ToString(); // 0x003EC4B0
 	public string Expand(); // 0x003EC4B8
 }
@@ -3089,9 +3190,11 @@ internal class KeyHandler // TypeDefIndex: 122
 	private static string UserStore { get; } // 0x003EEC84 
 	private static string MachineStore { get; } // 0x003EED24 
 
+	// Constructors
+	private KeyHandler(RegistryKey rkey, string basedir); // 0x003EC6EC
+	private static KeyHandler(); // 0x003ED17C
+
 	// Methods
-	private void .ctor(RegistryKey rkey, string basedir); // 0x003EC6EC
-	private static void .cctor(); // 0x003ED17C
 	public void Load(); // 0x003EC89C
 	private void LoadKey(SecurityElement se); // 0x003ED264
 	public RegistryKey Ensure(RegistryKey rkey, string extra, bool writable); // 0x003EDD8C
@@ -3117,8 +3220,10 @@ internal class KeyHandler // TypeDefIndex: 122
 // Namespace: Microsoft.Win32
 internal class UnixRegistryApi : IRegistryApi // TypeDefIndex: 123
 {
+	// Constructors
+	public UnixRegistryApi(); // 0x003F358C
+
 	// Methods
-	public void .ctor(); // 0x003F358C
 	private static string ToUnix(string keyname); // 0x003F5294
 	private static bool IsWellKnownKey(string parentKeyName, string keyname); // 0x003F5310
 	public RegistryKey CreateSubKey(RegistryKey rkey, string keyname); // 0x003F553C
@@ -3149,8 +3254,10 @@ internal class Win32RegistryApi : IRegistryApi // TypeDefIndex: 124
 	private const int BufferMaxLength = 1024; // 0x00
 	private readonly int NativeBytesPerCharacter; // 0x08
 
+	// Constructors
+	public Win32RegistryApi(); // 0x003F34EC
+
 	// Methods
-	public void .ctor(); // 0x003F34EC
 	private static extern int RegCreateKey(IntPtr keyBase, string keyName, out IntPtr keyHandle); // 0x003F62B8
 	private static extern int RegCloseKey(IntPtr keyHandle); // 0x003F63D0
 	private static extern int RegConnectRegistry(string machineName, IntPtr hKey, out IntPtr keyHandle); // 0x003F64D0
@@ -3201,8 +3308,9 @@ internal class Win32ResultCode // TypeDefIndex: 125
 	public const int NoMoreEntries = 259; // 0x00
 	public const int MarkedForDeletion = 1018; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x003F9394
+	// Constructors
+	public Win32ResultCode(); // 0x003F9394
+
 }
 
 // Namespace: Mono.Globalization.Unicode
@@ -3214,8 +3322,10 @@ internal class CodePointIndexer // TypeDefIndex: 126
 	private int defaultIndex; // 0x10
 	private int defaultCP; // 0x14
 
+	// Constructors
+	public CodePointIndexer(int[] starts, int[] ends, int defaultIndex, int defaultCP); // 0x003FEBBC
+
 	// Methods
-	public void .ctor(int[] starts, int[] ends, int defaultIndex, int defaultCP); // 0x003FEBBC
 	public static Array CompressArray(Array source, Type type, CodePointIndexer indexer); // 0x003FEEC4
 	public int ToIndex(int cp); // 0x003FF078
 	public int ToCodePoint(int i); // 0x003FF1C0
@@ -3232,8 +3342,9 @@ internal struct TableRange // TypeDefIndex: 127
 	public readonly int IndexStart; // 0x14
 	public readonly int IndexEnd; // 0x18
 
-	// Methods
-	public void .ctor(int start, int end, int indexStart); // 0x000A76F8
+	// Constructors
+	public TableRange(int start, int end, int indexStart); // 0x000A76F8
+
 }
 
 // Namespace: Mono.Globalization.Unicode
@@ -3245,8 +3356,9 @@ internal class TailoringInfo // TypeDefIndex: 128
 	public readonly int TailoringCount; // 0x10
 	public readonly bool FrenchSort; // 0x14
 
-	// Methods
-	public void .ctor(int lcid, int tailoringIndex, int tailoringCount, bool frenchSort); // 0x0044B894
+	// Constructors
+	public TailoringInfo(int lcid, int tailoringIndex, int tailoringCount, bool frenchSort); // 0x0044B894
+
 }
 
 // Namespace: Mono.Globalization.Unicode
@@ -3257,8 +3369,9 @@ internal class Contraction // TypeDefIndex: 129
 	public readonly string Replacement; // 0x0C
 	public readonly byte[] SortKey; // 0x10
 
-	// Methods
-	public void .ctor(char[] source, string replacement, byte[] sortkey); // 0x003FF308
+	// Constructors
+	public Contraction(char[] source, string replacement, byte[] sortkey); // 0x003FF308
+
 }
 
 // Namespace: Mono.Globalization.Unicode
@@ -3267,9 +3380,11 @@ internal class ContractionComparer : IComparer // TypeDefIndex: 130
 	// Fields
 	public static readonly ContractionComparer Instance; // 0x00
 
+	// Constructors
+	public ContractionComparer(); // 0x003FF338
+	private static ContractionComparer(); // 0x003FF340
+
 	// Methods
-	public void .ctor(); // 0x003FF338
-	private static void .cctor(); // 0x003FF340
 	public int Compare(object o1, object o2); // 0x003FF3B4
 }
 
@@ -3280,8 +3395,9 @@ internal class Level2Map // TypeDefIndex: 131
 	public byte Source; // 0x08
 	public byte Replace; // 0x09
 
-	// Methods
-	public void .ctor(byte source, byte replace); // 0x003FF5C4
+	// Constructors
+	public Level2Map(byte source, byte replace); // 0x003FF5C4
+
 }
 
 // Namespace: Mono.Globalization.Unicode
@@ -3290,9 +3406,11 @@ internal class Level2MapComparer : IComparer // TypeDefIndex: 132
 	// Fields
 	public static readonly Level2MapComparer Instance; // 0x00
 
+	// Constructors
+	public Level2MapComparer(); // 0x003FF5EC
+	private static Level2MapComparer(); // 0x003FF5F4
+
 	// Methods
-	public void .ctor(); // 0x003FF5EC
-	private static void .cctor(); // 0x003FF5F4
 	public int Compare(object o1, object o2); // 0x003FF668
 }
 
@@ -3327,9 +3445,11 @@ internal class MSCompatUnicodeTable // TypeDefIndex: 133
 	// Properties
 	public static bool IsReady { get; } // 0x0040194C 
 
+	// Constructors
+	public MSCompatUnicodeTable(); // 0x003FF784
+	private static MSCompatUnicodeTable(); // 0x003FF78C
+
 	// Methods
-	public void .ctor(); // 0x003FF784
-	private static void .cctor(); // 0x003FF78C
 	public static TailoringInfo GetTailoringInfo(int lcid); // 0x003FFC7C
 	public static void BuildTailoringTables(CultureInfo culture, TailoringInfo t, Contraction[] contractions, Level2Map[] diacriticals); // 0x003FFE5C
 	private static void SetCJKReferences(string name, CodePointIndexer cjkIndexer, void * catTable, void * lv1Table, CodePointIndexer lv2Indexer, void * lv2Table); // 0x004006F8
@@ -3369,9 +3489,10 @@ internal class MSCompatUnicodeTableUtil // TypeDefIndex: 134
 	public static readonly CodePointIndexer CjkCHS; // 0x14
 	public static readonly CodePointIndexer Cjk; // 0x18
 
-	// Methods
-	public void .ctor(); // 0x004026C4
-	private static void .cctor(); // 0x004026CC
+	// Constructors
+	public MSCompatUnicodeTableUtil(); // 0x004026C4
+	private static MSCompatUnicodeTableUtil(); // 0x004026CC
+
 }
 
 // Namespace: Mono.Globalization.Unicode
@@ -3415,9 +3536,11 @@ internal class Normalization // TypeDefIndex: 136
 	// Properties
 	public static bool IsReady { get; } // 0x00405528 
 
+	// Constructors
+	public Normalization(); // 0x00402E10
+	private static Normalization(); // 0x00402E18
+
 	// Methods
-	public void .ctor(); // 0x00402E10
-	private static void .cctor(); // 0x00402E18
 	private static uint PropValue(int cp); // 0x00403054
 	private static int CharMapIdx(int cp); // 0x004031C8
 	private static int GetNormalizedStringLength(int ch); // 0x00403340
@@ -3456,9 +3579,11 @@ internal class NormalizationTableUtil // TypeDefIndex: 137
 	public static int PropCount { get; } // 0x00405A34 
 	public static int MapCount { get; } // 0x00405CD8 
 
+	// Constructors
+	public NormalizationTableUtil(); // 0x004055B4
+	private static NormalizationTableUtil(); // 0x004055BC
+
 	// Methods
-	public void .ctor(); // 0x004055B4
-	private static void .cctor(); // 0x004055BC
 	public static int PropIdx(int cp); // 0x0040311C
 	public static int PropCP(int index); // 0x00405988
 	public static int MapIdx(int cp); // 0x00403294
@@ -3486,9 +3611,11 @@ internal class SimpleCollator // TypeDefIndex: 138
 	private readonly Level2Map[] level2Maps; // 0x2C
 	private readonly byte[] unsafeFlags; // 0x30
 
+	// Constructors
+	public SimpleCollator(CultureInfo culture); // 0x00405D78
+	private static SimpleCollator(); // 0x00406378
+
 	// Methods
-	public void .ctor(CultureInfo culture); // 0x00405D78
-	private static void .cctor(); // 0x00406378
 	private void SetCJKTable(CultureInfo culture, CodePointIndexer cjkIndexer, void * catTable, void * lv1Table, CodePointIndexer lv2Indexer, void * lv2Table); // 0x0040626C
 	private static CultureInfo GetNeutralCulture(CultureInfo info); // 0x004064A0
 	private byte Category(int cp); // 0x0040653C
@@ -3569,8 +3696,10 @@ internal struct Context // TypeDefIndex: 139
 	public void * PrevSortKey; // 0x20
 	public readonly bool QuickCheckPossible; // 0x24
 
+	// Constructors
+	public Context(CompareOptions opt, void * alwaysMatchFlags, void * neverMatchFlags, void * buffer1, void * buffer2, void * prev1, bool quickCheckPossible); // 0x000A81AC
+
 	// Methods
-	public void .ctor(CompareOptions opt, void * alwaysMatchFlags, void * neverMatchFlags, void * buffer1, void * buffer2, void * prev1, bool quickCheckPossible); // 0x000A81AC
 	public void ClearPrevInfo(); // 0x000A81E8
 }
 
@@ -3581,8 +3710,9 @@ private struct PreviousInfo // TypeDefIndex: 140
 	public int Code; // 0x08
 	public void * SortKey; // 0x0C
 
-	// Methods
-	public void .ctor(bool dummy); // 0x000A829C
+	// Constructors
+	public PreviousInfo(bool dummy); // 0x000A829C
+
 }
 
 // Namespace: 
@@ -3621,9 +3751,11 @@ public class SortKey // TypeDefIndex: 143
 	public virtual string OriginalString { get; } // 0x004797B8 
 	public virtual byte[] KeyData { get; } // 0x004797C0 
 
+	// Constructors
+	internal SortKey(int lcid, string source, CompareOptions opt); // 0x004794D8
+	internal SortKey(int lcid, string source, byte[] buffer, CompareOptions opt, int lv1Length, int lv2Length, int lv3Length, int kanaSmallLength, int markTypeLength, int katakanaLength, int kanaWidthLength, int identLength); // 0x00479508
+
 	// Methods
-	internal void .ctor(int lcid, string source, CompareOptions opt); // 0x004794D8
-	internal void .ctor(int lcid, string source, byte[] buffer, CompareOptions opt, int lv1Length, int lv2Length, int lv3Length, int kanaSmallLength, int markTypeLength, int katakanaLength, int kanaWidthLength, int identLength); // 0x00479508
 	public static int Compare(SortKey sortkey1, SortKey sortkey2); // 0x0047953C
 	public override bool Equals(object value); // 0x004797C8
 	public override int GetHashCode(); // 0x00479898
@@ -3657,8 +3789,10 @@ internal class SortKeyBuffer // TypeDefIndex: 144
 	private int lcid; // 0x50
 	private CompareOptions options; // 0x54
 
+	// Constructors
+	public SortKeyBuffer(int lcid); // 0x0044ABA8
+
 	// Methods
-	public void .ctor(int lcid); // 0x0044ABA8
 	public void Reset(); // 0x0044ABB0
 	internal void ClearBuffer(); // 0x0044ABD0
 	internal void Initialize(CompareOptions options, int lcid, string s, bool frenchSort); // 0x0044ABE8
@@ -3683,10 +3817,12 @@ internal class ComInteropProxy : RealProxy, IRemotingTypeInfo // TypeDefIndex: 1
 	// Properties
 	public string TypeName { get; set; } // 0x0044BEAC 0x0044BEB4
 
+	// Constructors
+	private ComInteropProxy(Type t); // 0x0044B8CC
+	private ComInteropProxy(IntPtr pUnk); // 0x0044B904
+	internal ComInteropProxy(IntPtr pUnk, Type t); // 0x0044B9AC
+
 	// Methods
-	private void .ctor(Type t); // 0x0044B8CC
-	private void .ctor(IntPtr pUnk); // 0x0044B904
-	internal void .ctor(IntPtr pUnk, Type t); // 0x0044B9AC
 	private static void AddProxy(IntPtr pItf, ComInteropProxy proxy); // 0x0044BA80
 	internal static ComInteropProxy FindProxy(IntPtr pItf); // 0x0044BA84
 	private void CacheProxy(); // 0x0044BA48
@@ -3709,8 +3845,10 @@ internal interface IUnknown // TypeDefIndex: 147
 // Namespace: Mono.Math.Prime.Generator
 internal class NextPrimeFinder : SequentialSearchPrimeGeneratorBase // TypeDefIndex: 148
 {
+	// Constructors
+	public NextPrimeFinder(); // 0x0045071C
+
 	// Methods
-	public void .ctor(); // 0x0045071C
 	protected override BigInteger GenerateSearchBase(int bits, object Context); // 0x00454030
 }
 
@@ -3722,8 +3860,10 @@ internal abstract class PrimeGeneratorBase // TypeDefIndex: 149
 	public virtual PrimalityTest PrimalityTest { get; } // 0x0045416C 
 	public virtual int TrialDivisionBounds { get; } // 0x00454200 
 
+	// Constructors
+	protected PrimeGeneratorBase(); // 0x0045415C
+
 	// Methods
-	protected void .ctor(); // 0x0045415C
 	protected bool PostTrialDivisionTests(BigInteger bi); // 0x00454208
 	public abstract BigInteger GenerateNewPrime(int bits);
 }
@@ -3731,8 +3871,10 @@ internal abstract class PrimeGeneratorBase // TypeDefIndex: 149
 // Namespace: Mono.Math.Prime.Generator
 internal class SequentialSearchPrimeGeneratorBase : PrimeGeneratorBase // TypeDefIndex: 150
 {
+	// Constructors
+	public SequentialSearchPrimeGeneratorBase(); // 0x004507B8
+
 	// Methods
-	public void .ctor(); // 0x004507B8
 	protected virtual BigInteger GenerateSearchBase(int bits, object context); // 0x0045461C
 	public override BigInteger GenerateNewPrime(int bits); // 0x004546C4
 	public virtual BigInteger GenerateNewPrime(int bits, object context); // 0x004546D8
@@ -3753,8 +3895,10 @@ internal enum ConfidenceFactor // TypeDefIndex: 151
 // Namespace: Mono.Math.Prime
 internal sealed class PrimalityTests // TypeDefIndex: 152
 {
+	// Constructors
+	private PrimalityTests(); // 0x00454B80
+
 	// Methods
-	private void .ctor(); // 0x00454B80
 	private static int GetSPPRounds(BigInteger bi, ConfidenceFactor confidence); // 0x00454B88
 	public static bool Test(BigInteger n, ConfidenceFactor confidence); // 0x00450634
 	public static bool RabinMillerTest(BigInteger n, ConfidenceFactor confidence); // 0x0045500C
@@ -3775,16 +3919,18 @@ internal class BigInteger // TypeDefIndex: 153
 	// Properties
 	private static RandomNumberGenerator Rng { get; } // 0x0044DD38 
 
+	// Constructors
+	public BigInteger(); // 0x0044BFF0
+	public BigInteger(Sign sign, uint len); // 0x0044C074
+	public BigInteger(BigInteger bi); // 0x0044C0F8
+	public BigInteger(BigInteger bi, uint len); // 0x0044C1E0
+	public BigInteger(byte[] inData); // 0x0044C2FC
+	public BigInteger(uint[] inData); // 0x0044C860
+	public BigInteger(uint ui); // 0x0044C990
+	public BigInteger(ulong ul); // 0x0044CA44
+	private static BigInteger(); // 0x0044CB2C
+
 	// Methods
-	public void .ctor(); // 0x0044BFF0
-	public void .ctor(Sign sign, uint len); // 0x0044C074
-	public void .ctor(BigInteger bi); // 0x0044C0F8
-	public void .ctor(BigInteger bi, uint len); // 0x0044C1E0
-	public void .ctor(byte[] inData); // 0x0044C2FC
-	public void .ctor(uint[] inData); // 0x0044C860
-	public void .ctor(uint ui); // 0x0044C990
-	public void .ctor(ulong ul); // 0x0044CA44
-	private static void .cctor(); // 0x0044CB2C
 	public static BigInteger Parse(string number); // 0x0044CBC4
 	public static BigInteger Add(BigInteger bi1, BigInteger bi2); // 0x0044D208
 	public static BigInteger Subtract(BigInteger bi1, BigInteger bi2); // 0x0044D290
@@ -3861,8 +4007,10 @@ internal sealed class ModulusRing // TypeDefIndex: 155
 	private BigInteger mod; // 0x08
 	private BigInteger constant; // 0x0C
 
+	// Constructors
+	public ModulusRing(BigInteger modulus); // 0x00450038
+
 	// Methods
-	public void .ctor(BigInteger modulus); // 0x00450038
 	public void BarrettReduction(BigInteger x); // 0x004535DC
 	public BigInteger Multiply(BigInteger a, BigInteger b); // 0x004539B4
 	public BigInteger Difference(BigInteger a, BigInteger b); // 0x00453360
@@ -3873,8 +4021,10 @@ internal sealed class ModulusRing // TypeDefIndex: 155
 // Namespace: 
 internal sealed class Montgomery // TypeDefIndex: 156
 {
+	// Constructors
+	private Montgomery(); // 0x00453C98
+
 	// Methods
-	private void .ctor(); // 0x00453C98
 	public static uint Inverse(uint n); // 0x00453CA0
 	public static BigInteger ToMont(BigInteger n, BigInteger m); // 0x00453CD4
 	public static BigInteger Reduce(BigInteger n, BigInteger m, uint mPrime); // 0x00453DAC
@@ -3883,8 +4033,10 @@ internal sealed class Montgomery // TypeDefIndex: 156
 // Namespace: 
 private sealed class Kernel // TypeDefIndex: 157
 {
+	// Constructors
+	public Kernel(); // 0x00452694
+
 	// Methods
-	public void .ctor(); // 0x00452694
 	public static BigInteger AddSameSign(BigInteger bi1, BigInteger bi2); // 0x004509AC
 	public static BigInteger Subtract(BigInteger big, BigInteger small); // 0x00450CCC
 	public static void MinusEq(BigInteger big, BigInteger small); // 0x0045269C
@@ -3933,8 +4085,10 @@ internal class AuthenticodeBase // TypeDefIndex: 159
 	internal int CoffSymbolTableOffset { get; } // 0x004585F4 
 	internal int SecurityOffset { get; } // 0x00458618 
 
+	// Constructors
+	public AuthenticodeBase(); // 0x00458260
+
 	// Methods
-	public void .ctor(); // 0x00458260
 	internal void Open(string filename); // 0x0045863C
 	internal void Close(); // 0x004586FC
 	internal bool ReadFirstBlock(); // 0x004582F8
@@ -3972,9 +4126,11 @@ internal class AuthenticodeDeformatter : AuthenticodeBase // TypeDefIndex: 160
 	public X509CertificateCollection Certificates { get; } // 0x00459C5C 
 	public X509Certificate SigningCertificate { get; } // 0x00459C64 
 
+	// Constructors
+	public AuthenticodeDeformatter(); // 0x004591B4
+	public AuthenticodeDeformatter(string fileName); // 0x0045924C
+
 	// Methods
-	public void .ctor(); // 0x004591B4
-	public void .ctor(string fileName); // 0x0045924C
 	public bool IsTrusted(); // 0x0045999C
 	private bool CheckSignature(string fileName); // 0x004594B4
 	private bool CompareIssuerSerial(string issuer, byte[] serial, X509Certificate x509); // 0x0045AC74
@@ -3986,8 +4142,10 @@ internal class AuthenticodeDeformatter : AuthenticodeBase // TypeDefIndex: 160
 // Namespace: Mono.Security.Cryptography
 internal sealed class CryptoConvert // TypeDefIndex: 161
 {
+	// Constructors
+	private CryptoConvert(); // 0x0045D1F0
+
 	// Methods
-	private void .ctor(); // 0x0045D1F0
 	private static int ToInt32LE(byte[] bytes, int offset); // 0x0045D1F8
 	private static uint ToUInt32LE(byte[] bytes, int offset); // 0x0045D2C8
 	private static byte[] GetBytesLE(int val); // 0x0045D398
@@ -4025,8 +4183,10 @@ internal sealed class KeyBuilder // TypeDefIndex: 162
 	// Properties
 	private static RandomNumberGenerator Rng { get; } // 0x0046367C 
 
+	// Constructors
+	private KeyBuilder(); // 0x00463674
+
 	// Methods
-	private void .ctor(); // 0x00463674
 	public static byte[] Key(int size); // 0x00463710
 	public static byte[] IV(int size); // 0x004637AC
 }
@@ -4040,9 +4200,11 @@ internal class BlockProcessor // TypeDefIndex: 163
 	private int blockSize; // 0x10
 	private int blockCount; // 0x14
 
+	// Constructors
+	public BlockProcessor(ICryptoTransform transform); // 0x0045CC00
+	public BlockProcessor(ICryptoTransform transform, int blockSize); // 0x0045CCE8
+
 	// Methods
-	public void .ctor(ICryptoTransform transform); // 0x0045CC00
-	public void .ctor(ICryptoTransform transform, int blockSize); // 0x0045CCE8
 	protected override void Finalize(); // 0x0045CD6C
 	public void Initialize(); // 0x0045CDE0
 	public void Core(byte[] rgb); // 0x0045CE0C
@@ -4082,9 +4244,11 @@ internal class DSAManaged : DSA // TypeDefIndex: 164
 		remove; // 0x004609AC
 	}
 
+	// Constructors
+	public DSAManaged(); // 0x004607FC
+	public DSAManaged(int dwKeySize); // 0x00460804
+
 	// Methods
-	public void .ctor(); // 0x004607FC
-	public void .ctor(int dwKeySize); // 0x00460804
 	protected override void Finalize(); // 0x00460A3C
 	private void Generate(); // 0x00460AB4
 	private void GenerateKeyPair(); // 0x004612C8
@@ -4116,8 +4280,10 @@ internal class HMACAlgorithm // TypeDefIndex: 166
 	public string HashName { get; set; } // 0x00463168 0x00463170
 	public byte[] Key { get; set; } // 0x00463174 0x0046317C
 
+	// Constructors
+	public HMACAlgorithm(string algoName); // 0x00463010
+
 	// Methods
-	public void .ctor(string algoName); // 0x00463010
 	protected override void Finalize(); // 0x004630C8
 	private void CreateHash(string algoName); // 0x00463038
 	public void Dispose(); // 0x00463144
@@ -4152,10 +4318,12 @@ internal class KeyPairPersistence // TypeDefIndex: 167
 	private bool UseMachineKeyStore { get; } // 0x0046402C 
 	private string ContainerName { get; } // 0x00463E1C 
 
+	// Constructors
+	public KeyPairPersistence(CspParameters parameters); // 0x00463848
+	public KeyPairPersistence(CspParameters parameters, string keyPair); // 0x00463850
+	private static KeyPairPersistence(); // 0x00463A34
+
 	// Methods
-	public void .ctor(CspParameters parameters); // 0x00463848
-	public void .ctor(CspParameters parameters, string keyPair); // 0x00463850
-	private static void .cctor(); // 0x00463A34
 	public bool Load(); // 0x00464CC0
 	public void Save(); // 0x00465028
 	public void Remove(); // 0x0046575C
@@ -4184,8 +4352,10 @@ internal class MACAlgorithm // TypeDefIndex: 168
 	private int blockSize; // 0x14
 	private int blockCount; // 0x18
 
+	// Constructors
+	public MACAlgorithm(SymmetricAlgorithm algorithm); // 0x00465A40
+
 	// Methods
-	public void .ctor(SymmetricAlgorithm algorithm); // 0x00465A40
 	public void Initialize(byte[] key); // 0x00465B58
 	public void Core(byte[] rgb, int ib, int cb); // 0x00465BEC
 	public byte[] Final(); // 0x00465E84
@@ -4200,9 +4370,11 @@ internal sealed class PKCS1 // TypeDefIndex: 169
 	private static byte[] emptySHA384; // 0x08
 	private static byte[] emptySHA512; // 0x0C
 
+	// Constructors
+	private PKCS1(); // 0x0046618C
+	private static PKCS1(); // 0x00466194
+
 	// Methods
-	private void .ctor(); // 0x0046618C
-	private static void .cctor(); // 0x00466194
 	private static bool Compare(byte[] array1, byte[] array2); // 0x004662D4
 	private static byte[] xor(byte[] array1, byte[] array2); // 0x0046639C
 	private static byte[] GetEmptyHash(HashAlgorithm hash); // 0x004664DC
@@ -4227,8 +4399,10 @@ internal sealed class PKCS1 // TypeDefIndex: 169
 // Namespace: Mono.Security.Cryptography
 internal sealed class PKCS8 // TypeDefIndex: 170
 {
+	// Constructors
+	private PKCS8(); // 0x00467FF4
+
 	// Methods
-	private void .ctor(); // 0x00467FF4
 	public static KeyInfo GetType(byte[] data); // 0x00467FFC
 }
 
@@ -4255,9 +4429,11 @@ public class PrivateKeyInfo // TypeDefIndex: 172
 	public byte[] PrivateKey { get; set; } // 0x0033CEBC 0x0033CF68
 	public int Version { get; set; } // 0x0033D070 0x0033D078
 
+	// Constructors
+	public PrivateKeyInfo(); // 0x0033CA88
+	public PrivateKeyInfo(byte[] data); // 0x0033CB0C
+
 	// Methods
-	public void .ctor(); // 0x0033CA88
-	public void .ctor(byte[] data); // 0x0033CB0C
 	private void Decode(byte[] data); // 0x0033CB30
 	public byte[] GetBytes(); // 0x0033D128
 	private static byte[] RemoveLeadingZero(byte[] bigInt); // 0x0033D6A8
@@ -4284,9 +4460,11 @@ public class EncryptedPrivateKeyInfo // TypeDefIndex: 173
 	public byte[] Salt { get; set; } // 0x004687B0 0x004688C8
 	public int IterationCount { get; set; } // 0x00468980 0x00468988
 
+	// Constructors
+	public EncryptedPrivateKeyInfo(); // 0x0046822C
+	public EncryptedPrivateKeyInfo(byte[] data); // 0x00468234
+
 	// Methods
-	public void .ctor(); // 0x0046822C
-	public void .ctor(byte[] data); // 0x00468234
 	private void Decode(byte[] data); // 0x0046825C
 	public byte[] GetBytes(); // 0x00468A48
 }
@@ -4324,9 +4502,11 @@ internal class RSAManaged : RSA // TypeDefIndex: 174
 		remove; // 0x0033E588
 	}
 
+	// Constructors
+	public RSAManaged(); // 0x0033E3C4
+	public RSAManaged(int keySize); // 0x0033E3CC
+
 	// Methods
-	public void .ctor(); // 0x0033E3C4
-	public void .ctor(int keySize); // 0x0033E3CC
 	protected override void Finalize(); // 0x0033E618
 	private void GenerateKeyPair(); // 0x0033E690
 	public override byte[] DecryptValue(byte[] rgb); // 0x0033F004
@@ -4365,8 +4545,10 @@ internal abstract class SymmetricTransform : IDisposable, ICryptoTransform // Ty
 	public virtual int OutputBlockSize { get; } // 0x00341494 
 	private bool KeepLastBlock { get; } // 0x003422A4 
 
+	// Constructors
+	public SymmetricTransform(SymmetricAlgorithm symmAlgo, bool encryption, byte[] rgbIV); // 0x0034105C
+
 	// Methods
-	public void .ctor(SymmetricAlgorithm symmAlgo, bool encryption, byte[] rgbIV); // 0x0034105C
 	private void System.IDisposable.Dispose(); // 0x00341370
 	protected override void Finalize(); // 0x003413A4
 	protected virtual void Dispose(bool disposing); // 0x0034141C
@@ -4399,10 +4581,12 @@ internal class BasicConstraintsExtension : X509Extension // TypeDefIndex: 177
 	public override string Name { get; } // 0x00354500 
 	public int PathLenConstraint { get; set; } // 0x0035455C 0x00354564
 
+	// Constructors
+	public BasicConstraintsExtension(); // 0x00354114
+	public BasicConstraintsExtension(ASN1 asn1); // 0x00354188
+	public BasicConstraintsExtension(X509Extension extension); // 0x00354190
+
 	// Methods
-	public void .ctor(); // 0x00354114
-	public void .ctor(ASN1 asn1); // 0x00354188
-	public void .ctor(X509Extension extension); // 0x00354190
 	protected override void Decode(); // 0x00354198
 	protected override void Encode(); // 0x00354350
 	public override string ToString(); // 0x00354690
@@ -4433,10 +4617,12 @@ internal class KeyUsageExtension : X509Extension // TypeDefIndex: 179
 	public KeyUsages KeyUsage { get; set; } // 0x00354DB4 0x00354DBC
 	public override string Name { get; } // 0x00354EAC 
 
+	// Constructors
+	public KeyUsageExtension(ASN1 asn1); // 0x003548C0
+	public KeyUsageExtension(X509Extension extension); // 0x003548C8
+	public KeyUsageExtension(); // 0x003548D0
+
 	// Methods
-	public void .ctor(ASN1 asn1); // 0x003548C0
-	public void .ctor(X509Extension extension); // 0x003548C8
-	public void .ctor(); // 0x003548D0
 	protected override void Decode(); // 0x0035493C
 	protected override void Encode(); // 0x00354AEC
 	public bool Support(KeyUsages usage); // 0x00354F08
@@ -4453,10 +4639,12 @@ internal class SubjectKeyIdentifierExtension : X509Extension // TypeDefIndex: 18
 	public override string Name { get; } // 0x003556D0 
 	public byte[] Identifier { get; } // 0x0035572C 
 
+	// Constructors
+	public SubjectKeyIdentifierExtension(); // 0x0035553C
+	public SubjectKeyIdentifierExtension(ASN1 asn1); // 0x003555A8
+	public SubjectKeyIdentifierExtension(X509Extension extension); // 0x003555B0
+
 	// Methods
-	public void .ctor(); // 0x0035553C
-	public void .ctor(ASN1 asn1); // 0x003555A8
-	public void .ctor(X509Extension extension); // 0x003555B0
 	protected override void Decode(); // 0x003555B8
 	public override string ToString(); // 0x003557D8
 }
@@ -4472,8 +4660,9 @@ internal class PKCS5 // TypeDefIndex: 181
 	public const string pbeWithSHA1AndDESCBC = "1.2.840.113549.1.5.10"; // 0x00
 	public const string pbeWithSHA1AndRC2CBC = "1.2.840.113549.1.5.11"; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x00256118
+	// Constructors
+	public PKCS5(); // 0x00256118
+
 }
 
 // Namespace: Mono.Security.X509
@@ -4483,8 +4672,9 @@ internal class PKCS9 // TypeDefIndex: 182
 	public const string friendlyName = "1.2.840.113549.1.9.20"; // 0x00
 	public const string localKeyId = "1.2.840.113549.1.9.21"; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x00256120
+	// Constructors
+	public PKCS9(); // 0x00256120
+
 }
 
 // Namespace: Mono.Security.X509
@@ -4498,8 +4688,9 @@ internal class SafeBag // TypeDefIndex: 183
 	public string BagOID { get; } // 0x00256150 
 	public ASN1 ASN1 { get; } // 0x00256158 
 
-	// Methods
-	public void .ctor(string bagOID, ASN1 asn1); // 0x00256128
+	// Constructors
+	public SafeBag(string bagOID, ASN1 asn1); // 0x00256128
+
 }
 
 // Namespace: Mono.Security.X509
@@ -4552,12 +4743,14 @@ internal class PKCS12 : ICloneable // TypeDefIndex: 184
 	internal RandomNumberGenerator RNG { get; } // 0x00359014 
 	public static int MaximumPasswordLength { get; set; } // 0x003664F0 0x0036657C
 
+	// Constructors
+	public PKCS12(); // 0x003559AC
+	public PKCS12(byte[] data); // 0x00355AD0
+	public PKCS12(byte[] data, string password); // 0x003569E0
+	public PKCS12(byte[] data, byte[] password); // 0x00356A14
+	private static PKCS12(); // 0x00356A40
+
 	// Methods
-	public void .ctor(); // 0x003559AC
-	public void .ctor(byte[] data); // 0x00355AD0
-	public void .ctor(byte[] data, string password); // 0x003569E0
-	public void .ctor(byte[] data, byte[] password); // 0x00356A14
-	private static void .cctor(); // 0x00356A40
 	private void Decode(byte[] data); // 0x00355DCC
 	protected override void Finalize(); // 0x00357C78
 	private bool Compare(byte[] expected, byte[] actual); // 0x00356C98
@@ -4619,9 +4812,11 @@ public class DeriveBytes // TypeDefIndex: 185
 	public byte[] Password { get; set; } // 0x002553F4 0x002554AC
 	public byte[] Salt { get; set; } // 0x0025557C 0x00255634
 
+	// Constructors
+	public DeriveBytes(); // 0x002552C4
+	private static DeriveBytes(); // 0x002552CC
+
 	// Methods
-	public void .ctor(); // 0x002552C4
-	private static void .cctor(); // 0x002552CC
 	private void Adjust(byte[] a, int aOff, byte[] b); // 0x002556E4
 	private byte[] Derive(byte[] diversifier, int n); // 0x00255878
 	public byte[] DeriveKey(int size); // 0x00255F38
@@ -4658,9 +4853,11 @@ internal sealed class X501 // TypeDefIndex: 187
 	private static byte[] initial; // 0x38
 	private static Dictionary`2<string, int> <>f__switch$map10; // 0x3C
 
+	// Constructors
+	private X501(); // 0x00256160
+	private static X501(); // 0x00256168
+
 	// Methods
-	private void .ctor(); // 0x00256160
-	private static void .cctor(); // 0x00256168
 	public static string ToString(ASN1 seq); // 0x00256A94
 	public static string ToString(ASN1 seq, bool reversed, string separator, bool quotes); // 0x002579B0
 	private static void AppendEntry(StringBuilder sb, ASN1 entry, bool quotes); // 0x00256C00
@@ -4707,8 +4904,10 @@ internal class X509Crl // TypeDefIndex: 188
 	public byte Version { get; } // 0x00260818 
 	public bool IsCurrent { get; } // 0x00260820 
 
+	// Constructors
+	public X509Crl(byte[] crl); // 0x0025F48C
+
 	// Methods
-	public void .ctor(byte[] crl); // 0x0025F48C
 	private void Parse(byte[] crl); // 0x0025F5A4
 	public bool WasCurrent(DateTime instant); // 0x002608C8
 	public byte[] GetBytes(); // 0x00260AE4
@@ -4736,9 +4935,11 @@ public class X509CrlEntry // TypeDefIndex: 189
 	public DateTime RevocationDate { get; } // 0x00261AB0 
 	public X509ExtensionCollection Extensions { get; } // 0x00261AC0 
 
+	// Constructors
+	internal X509CrlEntry(byte[] serialNumber, DateTime revocationDate, X509ExtensionCollection extensions); // 0x002619F4
+	internal X509CrlEntry(ASN1 entry); // 0x0025FE48
+
 	// Methods
-	internal void .ctor(byte[] serialNumber, DateTime revocationDate, X509ExtensionCollection extensions); // 0x002619F4
-	internal void .ctor(ASN1 entry); // 0x0025FE48
 	public byte[] GetBytes(); // 0x00261AC8
 }
 
@@ -4796,10 +4997,12 @@ internal class X509Certificate : ISerializable // TypeDefIndex: 190
 	public byte[] SubjectUniqueIdentifier { get; } // 0x0025C8C0 
 	public bool IsSelfSigned { get; } // 0x0025D1B8 
 
+	// Constructors
+	public X509Certificate(byte[] data); // 0x00259E60
+	protected X509Certificate(SerializationInfo info, StreamingContext context); // 0x0025AE70
+	private static X509Certificate(); // 0x0025AF9C
+
 	// Methods
-	public void .ctor(byte[] data); // 0x00259E60
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0025AE70
-	private static void .cctor(); // 0x0025AF9C
 	private void Parse(byte[] data); // 0x0025A23C
 	private byte[] GetUnsignedBigInteger(byte[] integer); // 0x0025B180
 	public bool WasCurrent(DateTime instant); // 0x0025C6D0
@@ -4821,10 +5024,12 @@ internal class X509CertificateCollection : CollectionBase, IEnumerable // TypeDe
 	// Properties
 	public X509Certificate Item { get; set; } // 0x0025D604 0x0025D6E0
 
+	// Constructors
+	public X509CertificateCollection(); // 0x0025D30C
+	public X509CertificateCollection(X509Certificate[] value); // 0x0025D314
+	public X509CertificateCollection(X509CertificateCollection value); // 0x0025D464
+
 	// Methods
-	public void .ctor(); // 0x0025D30C
-	public void .ctor(X509Certificate[] value); // 0x0025D314
-	public void .ctor(X509CertificateCollection value); // 0x0025D464
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x0025D5C8
 	public int Add(X509Certificate value); // 0x0025D72C
 	public void AddRange(X509Certificate[] value); // 0x0025D33C
@@ -4849,8 +5054,10 @@ public class X509CertificateEnumerator : IEnumerator // TypeDefIndex: 192
 	private object System.Collections.IEnumerator.Current { get; } // 0x0025DD14 
 	public X509Certificate Current { get; } // 0x0025DF9C 
 
+	// Constructors
+	public X509CertificateEnumerator(X509CertificateCollection mappings); // 0x0025DAA0
+
 	// Methods
-	public void .ctor(X509CertificateCollection mappings); // 0x0025DAA0
 	private bool System.Collections.IEnumerator.MoveNext(); // 0x0025DDEC
 	private void System.Collections.IEnumerator.Reset(); // 0x0025DEC4
 	public bool MoveNext(); // 0x0025E0C8
@@ -4873,9 +5080,11 @@ internal class X509Chain // TypeDefIndex: 193
 	public X509ChainStatusFlags Status { get; } // 0x0025E39C 
 	public X509CertificateCollection TrustAnchors { get; set; } // 0x0025E3A4 0x0025E594
 
+	// Constructors
+	public X509Chain(); // 0x0025E278
+	public X509Chain(X509CertificateCollection chain); // 0x0025E2F4
+
 	// Methods
-	public void .ctor(); // 0x0025E278
-	public void .ctor(X509CertificateCollection chain); // 0x0025E2F4
 	public void LoadCertificate(X509Certificate x509); // 0x0025E59C
 	public void LoadCertificates(X509CertificateCollection collection); // 0x0025E5CC
 	public X509Certificate FindByIssuerName(string issuerName); // 0x0025E5FC
@@ -4916,10 +5125,12 @@ internal class X509Extension // TypeDefIndex: 195
 	public virtual string Name { get; } // 0x00262634 
 	public ASN1 Value { get; } // 0x00262460 
 
+	// Constructors
+	protected X509Extension(); // 0x00261E44
+	public X509Extension(ASN1 asn1); // 0x00261E64
+	public X509Extension(X509Extension extension); // 0x00262284
+
 	// Methods
-	protected void .ctor(); // 0x00261E44
-	public void .ctor(ASN1 asn1); // 0x00261E64
-	public void .ctor(X509Extension extension); // 0x00262284
 	protected virtual void Decode(); // 0x00262494
 	protected virtual void Encode(); // 0x00262498
 	public override bool Equals(object obj); // 0x0026263C
@@ -4939,9 +5150,11 @@ internal sealed class X509ExtensionCollection : CollectionBase, IEnumerable // T
 	public X509Extension Item { get; } // 0x00263130 
 	public X509Extension Item { get; } // 0x0025F398 
 
+	// Constructors
+	public X509ExtensionCollection(); // 0x00261AA8
+	public X509ExtensionCollection(ASN1 asn1); // 0x0025B014
+
 	// Methods
-	public void .ctor(); // 0x00261AA8
-	public void .ctor(ASN1 asn1); // 0x0025B014
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x00262CBC
 	public int Add(X509Extension extension); // 0x00262CF8
 	public void AddRange(X509Extension[] extension); // 0x00262E2C
@@ -4972,8 +5185,10 @@ internal class X509Store // TypeDefIndex: 197
 	public ArrayList Crls { get; } // 0x00263BB4 
 	public string Name { get; } // 0x00263E50 
 
+	// Constructors
+	internal X509Store(string path, bool crl); // 0x00263974
+
 	// Methods
-	internal void .ctor(string path, bool crl); // 0x00263974
 	public void Clear(); // 0x00263F3C
 	public void Import(X509Certificate certificate); // 0x00263F88
 	public void Import(X509Crl crl); // 0x002643B4
@@ -5007,8 +5222,9 @@ internal sealed class X509StoreManager // TypeDefIndex: 198
 	public static ArrayList TrustedRootCACrls { get; } // 0x00265410 
 	public static X509CertificateCollection UntrustedCertificates { get; } // 0x00265538 
 
-	// Methods
-	private void .ctor(); // 0x00264D78
+	// Constructors
+	private X509StoreManager(); // 0x00264D78
+
 }
 
 // Namespace: Mono.Security.X509
@@ -5029,8 +5245,10 @@ internal class X509Stores // TypeDefIndex: 199
 	public X509Store TrustedRoot { get; } // 0x00265334 
 	public X509Store Untrusted { get; } // 0x00265684 
 
+	// Constructors
+	internal X509Stores(string path); // 0x00264EA4
+
 	// Methods
-	internal void .ctor(string path); // 0x00264EA4
 	public void Clear(); // 0x00265918
 	public X509Store Open(string storeName, bool create); // 0x00265984
 }
@@ -5045,15 +5263,17 @@ public class Names // TypeDefIndex: 200
 	public const string TrustedRoot = "Trust"; // 0x00
 	public const string Untrusted = "Disallowed"; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x00265AC8
+	// Constructors
+	public Names(); // 0x00265AC8
+
 }
 
 // Namespace: Mono.Security.X509
 internal class X520 // TypeDefIndex: 201
 {
-	// Methods
-	public void .ctor(); // 0x00265AD0
+	// Constructors
+	public X520(); // 0x00265AD0
+
 }
 
 // Namespace: 
@@ -5069,9 +5289,11 @@ public abstract class AttributeTypeAndValue // TypeDefIndex: 202
 	public string Value { get; set; } // 0x00265B38 0x00259D18
 	public ASN1 ASN1 { get; } // 0x00265B40 
 
+	// Constructors
+	protected AttributeTypeAndValue(string oid, int upperBound); // 0x00265AD8
+	protected AttributeTypeAndValue(string oid, int upperBound, byte encoding); // 0x00265B08
+
 	// Methods
-	protected void .ctor(string oid, int upperBound); // 0x00265AD8
-	protected void .ctor(string oid, int upperBound, byte encoding); // 0x00265B08
 	internal ASN1 GetASN1(byte encoding); // 0x00265B48
 	internal ASN1 GetASN1(); // 0x00259E58
 	public byte[] GetBytes(byte encoding); // 0x00265E44
@@ -5082,120 +5304,137 @@ public abstract class AttributeTypeAndValue // TypeDefIndex: 202
 // Namespace: 
 public class Name : AttributeTypeAndValue // TypeDefIndex: 203
 {
-	// Methods
-	public void .ctor(); // 0x00265EB8
+	// Constructors
+	public Name(); // 0x00265EB8
+
 }
 
 // Namespace: 
 public class CommonName : AttributeTypeAndValue // TypeDefIndex: 204
 {
-	// Methods
-	public void .ctor(); // 0x002586FC
+	// Constructors
+	public CommonName(); // 0x002586FC
+
 }
 
 // Namespace: 
 public class SerialNumber : AttributeTypeAndValue // TypeDefIndex: 205
 {
-	// Methods
-	public void .ctor(); // 0x00265F34
+	// Constructors
+	public SerialNumber(); // 0x00265F34
+
 }
 
 // Namespace: 
 public class LocalityName : AttributeTypeAndValue // TypeDefIndex: 206
 {
-	// Methods
-	public void .ctor(); // 0x00258778
+	// Constructors
+	public LocalityName(); // 0x00258778
+
 }
 
 // Namespace: 
 public class StateOrProvinceName : AttributeTypeAndValue // TypeDefIndex: 207
 {
-	// Methods
-	public void .ctor(); // 0x002587F4
+	// Constructors
+	public StateOrProvinceName(); // 0x002587F4
+
 }
 
 // Namespace: 
 public class OrganizationName : AttributeTypeAndValue // TypeDefIndex: 208
 {
-	// Methods
-	public void .ctor(); // 0x00258604
+	// Constructors
+	public OrganizationName(); // 0x00258604
+
 }
 
 // Namespace: 
 public class OrganizationalUnitName : AttributeTypeAndValue // TypeDefIndex: 209
 {
-	// Methods
-	public void .ctor(); // 0x00258680
+	// Constructors
+	public OrganizationalUnitName(); // 0x00258680
+
 }
 
 // Namespace: 
 public class EmailAddress : AttributeTypeAndValue // TypeDefIndex: 210
 {
-	// Methods
-	public void .ctor(); // 0x00258870
+	// Constructors
+	public EmailAddress(); // 0x00258870
+
 }
 
 // Namespace: 
 public class DomainComponent : AttributeTypeAndValue // TypeDefIndex: 211
 {
-	// Methods
-	public void .ctor(); // 0x002588EC
+	// Constructors
+	public DomainComponent(); // 0x002588EC
+
 }
 
 // Namespace: 
 public class UserId : AttributeTypeAndValue // TypeDefIndex: 212
 {
-	// Methods
-	public void .ctor(); // 0x00258968
+	// Constructors
+	public UserId(); // 0x00258968
+
 }
 
 // Namespace: 
 public class Oid : AttributeTypeAndValue // TypeDefIndex: 213
 {
-	// Methods
-	public void .ctor(string oid); // 0x00258C50
+	// Constructors
+	public Oid(string oid); // 0x00258C50
+
 }
 
 // Namespace: 
 public class Title : AttributeTypeAndValue // TypeDefIndex: 214
 {
-	// Methods
-	public void .ctor(); // 0x00258A60
+	// Constructors
+	public Title(); // 0x00258A60
+
 }
 
 // Namespace: 
 public class CountryName : AttributeTypeAndValue // TypeDefIndex: 215
 {
-	// Methods
-	public void .ctor(); // 0x00258588
+	// Constructors
+	public CountryName(); // 0x00258588
+
 }
 
 // Namespace: 
 public class DnQualifier : AttributeTypeAndValue // TypeDefIndex: 216
 {
-	// Methods
-	public void .ctor(); // 0x002589E4
+	// Constructors
+	public DnQualifier(); // 0x002589E4
+
 }
 
 // Namespace: 
 public class Surname : AttributeTypeAndValue // TypeDefIndex: 217
 {
-	// Methods
-	public void .ctor(); // 0x00258ADC
+	// Constructors
+	public Surname(); // 0x00258ADC
+
 }
 
 // Namespace: 
 public class GivenName : AttributeTypeAndValue // TypeDefIndex: 218
 {
-	// Methods
-	public void .ctor(); // 0x00258B58
+	// Constructors
+	public GivenName(); // 0x00258B58
+
 }
 
 // Namespace: 
 public class Initial : AttributeTypeAndValue // TypeDefIndex: 219
 {
-	// Methods
-	public void .ctor(); // 0x00258BD4
+	// Constructors
+	public Initial(); // 0x00258BD4
+
 }
 
 // Namespace: Mono.Security
@@ -5213,11 +5452,13 @@ internal class ASN1 // TypeDefIndex: 220
 	public byte[] Value { get; set; } // 0x0045581C 0x004558F4
 	public ASN1 Item { get; } // 0x00456554 
 
+	// Constructors
+	public ASN1(); // 0x0045543C
+	public ASN1(byte tag); // 0x00455488
+	public ASN1(byte tag, byte[] data); // 0x00455460
+	public ASN1(byte[] data); // 0x004554B0
+
 	// Methods
-	public void .ctor(); // 0x0045543C
-	public void .ctor(byte tag); // 0x00455488
-	public void .ctor(byte tag, byte[] data); // 0x00455460
-	public void .ctor(byte[] data); // 0x004554B0
 	private bool CompareArray(byte[] array1, byte[] array2); // 0x004559A4
 	public bool Equals(byte[] asn1); // 0x00455A6C
 	public bool CompareValue(byte[] value); // 0x00455A98
@@ -5246,8 +5487,10 @@ internal static class ASN1Convert // TypeDefIndex: 221
 // Namespace: Mono.Security
 internal sealed class BitConverterLE // TypeDefIndex: 222
 {
+	// Constructors
+	private BitConverterLE(); // 0x0045BE60
+
 	// Methods
-	private void .ctor(); // 0x0045BE60
 	private static byte[] GetUShortBytes(void * bytes); // 0x0045BE68
 	private static byte[] GetUIntBytes(void * bytes); // 0x0045BFB8
 	private static byte[] GetULongBytes(void * bytes); // 0x0045C198
@@ -5279,8 +5522,10 @@ internal sealed class BitConverterLE // TypeDefIndex: 222
 // Namespace: Mono.Security
 internal sealed class PKCS7 // TypeDefIndex: 223
 {
+	// Constructors
+	private PKCS7(); // 0x00343154
+
 	// Methods
-	private void .ctor(); // 0x00343154
 	public static ASN1 Attribute(string oid, ASN1 value); // 0x0034315C
 	public static ASN1 AlgorithmIdentifier(string oid); // 0x0034326C
 	public static ASN1 AlgorithmIdentifier(string oid, ASN1 parameters); // 0x00343354
@@ -5303,8 +5548,9 @@ public class Oid // TypeDefIndex: 224
 	public const string signingTime = "1.2.840.113549.1.9.5"; // 0x00
 	public const string countersignature = "1.2.840.113549.1.9.6"; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x00344C78
+	// Constructors
+	public Oid(); // 0x00344C78
+
 }
 
 // Namespace: 
@@ -5319,11 +5565,13 @@ public class ContentInfo // TypeDefIndex: 225
 	public ASN1 Content { get; set; } // 0x00343A44 0x00343A4C
 	public string ContentType { get; set; } // 0x00343A54 0x00343A5C
 
+	// Constructors
+	public ContentInfo(); // 0x0034361C
+	public ContentInfo(string oid); // 0x0034369C
+	public ContentInfo(byte[] data); // 0x003436B8
+	public ContentInfo(ASN1 asn1); // 0x00343738
+
 	// Methods
-	public void .ctor(); // 0x0034361C
-	public void .ctor(string oid); // 0x0034369C
-	public void .ctor(byte[] data); // 0x003436B8
-	public void .ctor(ASN1 asn1); // 0x00343738
 	internal ASN1 GetASN1(); // 0x00343960
 	public byte[] GetBytes(); // 0x00343A64
 }
@@ -5344,10 +5592,12 @@ public class EncryptedData // TypeDefIndex: 226
 	public byte[] EncryptedContent { get; } // 0x00343FA0 
 	public byte Version { get; set; } // 0x0034404C 0x00344054
 
+	// Constructors
+	public EncryptedData(); // 0x00343A9C
+	public EncryptedData(byte[] data); // 0x00343ABC
+	public EncryptedData(ASN1 asn1); // 0x00343B3C
+
 	// Methods
-	public void .ctor(); // 0x00343A9C
-	public void .ctor(byte[] data); // 0x00343ABC
-	public void .ctor(ASN1 asn1); // 0x00343B3C
 	internal ASN1 GetASN1(); // 0x00343F88
 	public byte[] GetBytes(); // 0x0034405C
 }
@@ -5370,10 +5620,12 @@ public class EnvelopedData // TypeDefIndex: 227
 	public byte[] EncryptedContent { get; } // 0x00344B84 
 	public byte Version { get; set; } // 0x00344C30 0x00344C38
 
+	// Constructors
+	public EnvelopedData(); // 0x00344070
+	public EnvelopedData(byte[] data); // 0x00344128
+	public EnvelopedData(ASN1 asn1); // 0x003441A8
+
 	// Methods
-	public void .ctor(); // 0x00344070
-	public void .ctor(byte[] data); // 0x00344128
-	public void .ctor(ASN1 asn1); // 0x003441A8
 	internal ASN1 GetASN1(); // 0x00344B04
 	public byte[] GetBytes(); // 0x00344C40
 }
@@ -5397,9 +5649,10 @@ public class RecipientInfo // TypeDefIndex: 228
 	public byte[] Serial { get; } // 0x00344DF0 
 	public int Version { get; } // 0x00344E9C 
 
-	// Methods
-	public void .ctor(); // 0x00344C80
-	public void .ctor(ASN1 data); // 0x0034482C
+	// Constructors
+	public RecipientInfo(); // 0x00344C80
+	public RecipientInfo(ASN1 data); // 0x0034482C
+
 }
 
 // Namespace: 
@@ -5426,10 +5679,12 @@ public class SignedData // TypeDefIndex: 229
 	public byte Version { get; set; } // 0x00346F34 0x00346F3C
 	public bool UseAuthenticatedAttributes { get; set; } // 0x00346F44 0x00346F4C
 
+	// Constructors
+	public SignedData(); // 0x00344EA4
+	public SignedData(byte[] data); // 0x0034502C
+	public SignedData(ASN1 asn1); // 0x003450AC
+
 	// Methods
-	public void .ctor(); // 0x00344EA4
-	public void .ctor(byte[] data); // 0x0034502C
-	public void .ctor(ASN1 asn1); // 0x003450AC
 	public bool VerifySignature(AsymmetricAlgorithm aa); // 0x00346F54
 	internal string OidToName(string oid); // 0x00345F08
 	internal ASN1 GetASN1(); // 0x003462D0
@@ -5464,10 +5719,12 @@ public class SignerInfo // TypeDefIndex: 230
 	public ArrayList UnauthenticatedAttributes { get; } // 0x00348334 
 	public byte Version { get; set; } // 0x0034833C 0x00348344
 
+	// Constructors
+	public SignerInfo(); // 0x00344F90
+	public SignerInfo(byte[] data); // 0x003475CC
+	public SignerInfo(ASN1 asn1); // 0x003458E4
+
 	// Methods
-	public void .ctor(); // 0x00344F90
-	public void .ctor(byte[] data); // 0x003475CC
-	public void .ctor(ASN1 asn1); // 0x003458E4
 	internal ASN1 GetASN1(); // 0x003477AC
 	public byte[] GetBytes(); // 0x0034834C
 }
@@ -5490,12 +5747,14 @@ internal sealed class StrongName // TypeDefIndex: 231
 	public byte[] PublicKeyToken { get; } // 0x00348EB8 
 	public string TokenAlgorithm { get; set; } // 0x00349094 0x00349100
 
+	// Constructors
+	public StrongName(); // 0x00348384
+	public StrongName(int keySize); // 0x0034838C
+	public StrongName(byte[] data); // 0x0034840C
+	public StrongName(RSA rsa); // 0x003485F4
+	private static StrongName(); // 0x003486BC
+
 	// Methods
-	public void .ctor(); // 0x00348384
-	public void .ctor(int keySize); // 0x0034838C
-	public void .ctor(byte[] data); // 0x0034840C
-	public void .ctor(RSA rsa); // 0x003485F4
-	private static void .cctor(); // 0x003486BC
 	private void InvalidateCache(); // 0x0034874C
 	public byte[] GetBytes(); // 0x003492B4
 	private uint RVAtoPosition(uint r, int sections, byte[] headers); // 0x003492E4
@@ -5532,8 +5791,9 @@ internal class StrongNameSignature // TypeDefIndex: 232
 	public byte CliFlag { get; set; } // 0x0034AFBC 0x0034AFC4
 	public uint CliFlagPosition { get; set; } // 0x0034AFCC 0x0034AFD4
 
-	// Methods
-	public void .ctor(); // 0x00349D70
+	// Constructors
+	public StrongNameSignature(); // 0x00349D70
+
 }
 
 // Namespace: 
@@ -5550,9 +5810,11 @@ internal class StrongNameManager // TypeDefIndex: 234
 	private static Hashtable mappings; // 0x00
 	private static Hashtable tokens; // 0x04
 
+	// Constructors
+	public StrongNameManager(); // 0x0034AFDC
+	private static StrongNameManager(); // 0x0034AFE4
+
 	// Methods
-	public void .ctor(); // 0x0034AFDC
-	private static void .cctor(); // 0x0034AFE4
 	public static void LoadConfig(string filename); // 0x0034AFE8
 	private static void LoadMapping(SecurityElement mapping); // 0x0034B394
 	private static void LoadVerificationSettings(SecurityElement settings); // 0x0034BB10
@@ -5567,9 +5829,11 @@ private class Element // TypeDefIndex: 235
 	// Fields
 	internal Hashtable assemblies; // 0x08
 
+	// Constructors
+	public Element(); // 0x0034D074
+	public Element(string assembly, string users); // 0x0034C540
+
 	// Methods
-	public void .ctor(); // 0x0034D074
-	public void .ctor(string assembly, string users); // 0x0034C540
 	public string GetUsers(string assembly); // 0x0034C58C
 }
 
@@ -5635,13 +5899,15 @@ internal class Uri // TypeDefIndex: 237
 	public bool UserEscaped { get; } // 0x0034FCE4 
 	public string UserInfo { get; } // 0x0034FCEC 
 
+	// Constructors
+	public Uri(string uriString); // 0x0034D0F0
+	public Uri(string uriString, bool dontEscape); // 0x0034D0F8
+	public Uri(string uriString, bool dontEscape, bool reduce); // 0x0034D2C0
+	public Uri(Uri baseUri, string relativeUri); // 0x0034D3CC
+	public Uri(Uri baseUri, string relativeUri, bool dontEscape); // 0x0034D3E8
+	private static Uri(); // 0x0034DFC4
+
 	// Methods
-	public void .ctor(string uriString); // 0x0034D0F0
-	public void .ctor(string uriString, bool dontEscape); // 0x0034D0F8
-	public void .ctor(string uriString, bool dontEscape, bool reduce); // 0x0034D2C0
-	public void .ctor(Uri baseUri, string relativeUri); // 0x0034D3CC
-	public void .ctor(Uri baseUri, string relativeUri, bool dontEscape); // 0x0034D3E8
-	private static void .cctor(); // 0x0034DFC4
 	internal static bool IsIPv4Address(string name); // 0x0034FCF4
 	internal static bool IsDomainAddress(string name); // 0x0034FF08
 	public static bool CheckSchemeName(string schemeName); // 0x003500AC
@@ -5683,8 +5949,9 @@ private struct UriScheme // TypeDefIndex: 238
 	public string delimiter; // 0x0C
 	public int defaultPort; // 0x10
 
-	// Methods
-	public void .ctor(string s, string d, int p); // 0x000A6310
+	// Constructors
+	public UriScheme(string s, string d, int p); // 0x000A6310
+
 }
 
 // Namespace: Mono.Xml
@@ -5695,8 +5962,10 @@ internal class SecurityParser : SmallXmlParser, IContentHandler // TypeDefIndex:
 	private SecurityElement current; // 0x3C
 	private Stack stack; // 0x40
 
+	// Constructors
+	public SecurityParser(); // 0x00265FD4
+
 	// Methods
-	public void .ctor(); // 0x00265FD4
 	public void LoadXml(string xml); // 0x0026614C
 	public SecurityElement ToXml(); // 0x00266490
 	public void OnStartParsing(SmallXmlParser parser); // 0x00266498
@@ -5711,8 +5980,10 @@ internal class SecurityParser : SmallXmlParser, IContentHandler // TypeDefIndex:
 // Namespace: Mono.Xml
 internal class DefaultHandler : IContentHandler // TypeDefIndex: 240
 {
+	// Constructors
+	public DefaultHandler(); // 0x00265FB0
+
 	// Methods
-	public void .ctor(); // 0x00265FB0
 	public void OnStartParsing(SmallXmlParser parser); // 0x00265FB8
 	public void OnEndParsing(SmallXmlParser parser); // 0x00265FBC
 	public void OnStartElement(string name, IAttrList attrs); // 0x00265FC0
@@ -5740,8 +6011,10 @@ internal class SmallXmlParser // TypeDefIndex: 241
 	private bool resetColumn; // 0x34
 	private static Dictionary`2<string, int> <>f__switch$map18; // 0x00
 
+	// Constructors
+	public SmallXmlParser(); // 0x0026604C
+
 	// Methods
-	public void .ctor(); // 0x0026604C
 	private Exception Error(string msg); // 0x00266A28
 	private Exception UnexpectedEndError(); // 0x00266BB4
 	private bool IsNameChar(char c, bool start); // 0x00266CE4
@@ -5807,8 +6080,10 @@ private class AttrListImpl : IAttrList // TypeDefIndex: 244
 	public string[] Names { get; } // 0x00269020 
 	public string[] Values { get; } // 0x00269130 
 
+	// Constructors
+	public AttrListImpl(); // 0x00266994
+
 	// Methods
-	public void .ctor(); // 0x00266994
 	public string GetName(int i); // 0x00268D08
 	public string GetValue(int i); // 0x00268DBC
 	public string GetValue(string name); // 0x00268E70
@@ -5827,8 +6102,9 @@ internal class SmallXmlParserException : SystemException // TypeDefIndex: 245
 	public int Line { get; } // 0x00269240 
 	public int Column { get; } // 0x00269248 
 
-	// Methods
-	public void .ctor(string msg, int line, int column); // 0x00266AB4
+	// Constructors
+	public SmallXmlParserException(string msg, int line, int column); // 0x00266AB4
+
 }
 
 // Namespace: Mono
@@ -5844,9 +6120,11 @@ internal abstract class DataConverter // TypeDefIndex: 246
 	public static DataConverter BigEndian { get; } // 0x003F9BB8 
 	public static DataConverter Native { get; } // 0x003F9CCC 
 
+	// Constructors
+	protected DataConverter(); // 0x003F939C
+	private static DataConverter(); // 0x003F93A4
+
 	// Methods
-	protected void .ctor(); // 0x003F939C
-	private static void .cctor(); // 0x003F93A4
 	public abstract double GetDouble(byte[] data, int index);
 	public abstract float GetFloat(byte[] data, int index);
 	public abstract long GetInt64(byte[] data, int index);
@@ -5892,8 +6170,10 @@ private class PackContext // TypeDefIndex: 247
 	public int repeat; // 0x1C
 	public int align; // 0x20
 
+	// Constructors
+	public PackContext(); // 0x003F9F74
+
 	// Methods
-	public void .ctor(); // 0x003F9F74
 	public void Add(byte[] group); // 0x003FB240
 	public byte[] Get(); // 0x003FAD14
 }
@@ -5901,8 +6181,10 @@ private class PackContext // TypeDefIndex: 247
 // Namespace: 
 private class CopyConverter : DataConverter // TypeDefIndex: 248
 {
+	// Constructors
+	public CopyConverter(); // 0x003F9528
+
 	// Methods
-	public void .ctor(); // 0x003F9528
 	public override double GetDouble(byte[] data, int index); // 0x003FCA24
 	public override ulong GetUInt64(byte[] data, int index); // 0x003FCBD8
 	public override long GetInt64(byte[] data, int index); // 0x003FCD88
@@ -5924,8 +6206,10 @@ private class CopyConverter : DataConverter // TypeDefIndex: 248
 // Namespace: 
 private class SwapConverter : DataConverter // TypeDefIndex: 249
 {
+	// Constructors
+	public SwapConverter(); // 0x003F94A4
+
 	// Methods
-	public void .ctor(); // 0x003F94A4
 	public override double GetDouble(byte[] data, int index); // 0x003FDA90
 	public override ulong GetUInt64(byte[] data, int index); // 0x003FDC40
 	public override long GetInt64(byte[] data, int index); // 0x003FDDEC
@@ -5947,8 +6231,10 @@ private class SwapConverter : DataConverter // TypeDefIndex: 249
 // Namespace: Mono
 internal class Runtime // TypeDefIndex: 250
 {
+	// Constructors
+	public Runtime(); // 0x00455428
+
 	// Methods
-	public void .ctor(); // 0x00455428
 	private static void mono_runtime_install_handlers(); // 0x00455430
 	internal static void InstallSignalHandlers(); // 0x00455434
 	internal static string GetDisplayName(); // 0x00455438
@@ -5963,8 +6249,9 @@ internal sealed class CollectionDebuggerView`1 // TypeDefIndex: 251
 	// Properties
 	public T[] Items { get; }
 
-	// Methods
-	public void .ctor(ICollection`1<T> col);
+	// Constructors
+	public CollectionDebuggerView`1(ICollection`1<T> col);
+
 }
 
 // Namespace: System.Collections.Generic
@@ -5976,8 +6263,9 @@ internal sealed class CollectionDebuggerView`2 // TypeDefIndex: 252
 	// Properties
 	public KeyValuePair`2<T, T>[] Items { get; }
 
-	// Methods
-	public void .ctor(ICollection`1<KeyValuePair`2<T, T>> col);
+	// Constructors
+	public CollectionDebuggerView`2(ICollection`1<KeyValuePair`2<T, T>> col);
+
 }
 
 // Namespace: System.Collections.Generic
@@ -5990,9 +6278,11 @@ public abstract class Comparer`1 : IComparer`1<T>, IComparer // TypeDefIndex: 25
 	// Properties
 	public static Comparer`1<T> Default { get; }
 
+	// Constructors
+	protected Comparer`1();
+	private static Comparer`1();
+
 	// Methods
-	protected void .ctor();
-	private static void .cctor();
 	private int System.Collections.IComparer.Compare(object x, object y);
 	public abstract int Compare(T x, T y);
 }
@@ -6000,8 +6290,10 @@ public abstract class Comparer`1 : IComparer`1<T>, IComparer // TypeDefIndex: 25
 // Namespace: 
 private sealed class DefaultComparer : Comparer`1<T> // TypeDefIndex: 254
 {
+	// Constructors
+	public DefaultComparer();
+
 	// Methods
-	public void .ctor();
 	public override int Compare(T x, T y);
 }
 
@@ -6009,8 +6301,10 @@ private sealed class DefaultComparer : Comparer`1<T> // TypeDefIndex: 254
 [Serializable]
 internal sealed class GenericComparer`1 : Comparer`1<T> // TypeDefIndex: 255
 {
+	// Constructors
+	public GenericComparer`1();
+
 	// Methods
-	public void .ctor();
 	public override int Compare(T x, T y);
 }
 
@@ -6062,14 +6356,16 @@ public class Dictionary`2 : IEnumerable, ISerializable, ICollection, ICollection
 	public KeyCollection<T, T> Keys { get; }
 	public ValueCollection<T, T> Values { get; }
 
+	// Constructors
+	public Dictionary`2();
+	public Dictionary`2(IEqualityComparer`1<T> comparer);
+	public Dictionary`2(IDictionary`2<T, T> dictionary);
+	public Dictionary`2(int capacity);
+	public Dictionary`2(IDictionary`2<T, T> dictionary, IEqualityComparer`1<T> comparer);
+	public Dictionary`2(int capacity, IEqualityComparer`1<T> comparer);
+	protected Dictionary`2(SerializationInfo info, StreamingContext context);
+
 	// Methods
-	public void .ctor();
-	public void .ctor(IEqualityComparer`1<T> comparer);
-	public void .ctor(IDictionary`2<T, T> dictionary);
-	public void .ctor(int capacity);
-	public void .ctor(IDictionary`2<T, T> dictionary, IEqualityComparer`1<T> comparer);
-	public void .ctor(int capacity, IEqualityComparer`1<T> comparer);
-	protected void .ctor(SerializationInfo info, StreamingContext context);
 	private void System.Collections.IDictionary.Add(object key, object value);
 	private bool System.Collections.IDictionary.Contains(object key);
 	private void System.Collections.IDictionary.Remove(object key);
@@ -6119,8 +6415,10 @@ private class ShimEnumerator : IEnumerator, IDictionaryEnumerator // TypeDefInde
 	public object Value { get; }
 	public object Current { get; }
 
+	// Constructors
+	public ShimEnumerator(Dictionary`2<T, T> host);
+
 	// Methods
-	public void .ctor(Dictionary`2<T, T> host);
 	public void Dispose();
 	public bool MoveNext();
 	public void Reset();
@@ -6145,8 +6443,10 @@ public struct Enumerator : IEnumerator, IDisposable, IEnumerator`1<KeyValuePair`
 	internal T CurrentKey { get; }
 	internal T CurrentValue { get; }
 
+	// Constructors
+	internal Enumerator(Dictionary`2<T, T> dictionary);
+
 	// Methods
-	internal void .ctor(Dictionary`2<T, T> dictionary);
 	private void System.Collections.IEnumerator.Reset();
 	public bool MoveNext();
 	internal void Reset();
@@ -6168,8 +6468,10 @@ public sealed class KeyCollection : IEnumerable, ICollection, ICollection`1<T>, 
 	private object System.Collections.ICollection.SyncRoot { get; }
 	public int Count { get; }
 
+	// Constructors
+	public KeyCollection(Dictionary`2<T, T> dictionary);
+
 	// Methods
-	public void .ctor(Dictionary`2<T, T> dictionary);
 	private void System.Collections.Generic.ICollection<TKey>.Add(T item);
 	private void System.Collections.Generic.ICollection<TKey>.Clear();
 	private bool System.Collections.Generic.ICollection<TKey>.Contains(T item);
@@ -6192,8 +6494,10 @@ public struct Enumerator : IEnumerator, IDisposable, IEnumerator`1<T> // TypeDef
 	private object System.Collections.IEnumerator.Current { get; }
 	public T Current { get; }
 
+	// Constructors
+	internal Enumerator(Dictionary`2<T, T> host);
+
 	// Methods
-	internal void .ctor(Dictionary`2<T, T> host);
 	private void System.Collections.IEnumerator.Reset();
 	public void Dispose();
 	public bool MoveNext();
@@ -6212,8 +6516,10 @@ public sealed class ValueCollection : IEnumerable, ICollection, ICollection`1<T>
 	private object System.Collections.ICollection.SyncRoot { get; }
 	public int Count { get; }
 
+	// Constructors
+	public ValueCollection(Dictionary`2<T, T> dictionary);
+
 	// Methods
-	public void .ctor(Dictionary`2<T, T> dictionary);
 	private void System.Collections.Generic.ICollection<TValue>.Add(T item);
 	private void System.Collections.Generic.ICollection<TValue>.Clear();
 	private bool System.Collections.Generic.ICollection<TValue>.Contains(T item);
@@ -6236,8 +6542,10 @@ public struct Enumerator : IEnumerator, IDisposable, IEnumerator`1<T> // TypeDef
 	private object System.Collections.IEnumerator.Current { get; }
 	public T Current { get; }
 
+	// Constructors
+	internal Enumerator(Dictionary`2<T, T> host);
+
 	// Methods
-	internal void .ctor(Dictionary`2<T, T> host);
 	private void System.Collections.IEnumerator.Reset();
 	public void Dispose();
 	public bool MoveNext();
@@ -6256,9 +6564,11 @@ public abstract class EqualityComparer`1 : IEqualityComparer`1<T>, IEqualityComp
 	// Properties
 	public static EqualityComparer`1<T> Default { get; }
 
+	// Constructors
+	protected EqualityComparer`1();
+	private static EqualityComparer`1();
+
 	// Methods
-	protected void .ctor();
-	private static void .cctor();
 	private int System.Collections.IEqualityComparer.GetHashCode(object obj);
 	private bool System.Collections.IEqualityComparer.Equals(object x, object y);
 	public abstract int GetHashCode(T obj);
@@ -6269,8 +6579,10 @@ public abstract class EqualityComparer`1 : IEqualityComparer`1<T>, IEqualityComp
 [Serializable]
 private sealed class DefaultComparer : EqualityComparer`1<T> // TypeDefIndex: 266
 {
+	// Constructors
+	public DefaultComparer();
+
 	// Methods
-	public void .ctor();
 	public override int GetHashCode(T obj);
 	public override bool Equals(T x, T y);
 }
@@ -6279,8 +6591,10 @@ private sealed class DefaultComparer : EqualityComparer`1<T> // TypeDefIndex: 26
 [Serializable]
 internal sealed class GenericEqualityComparer`1 : EqualityComparer`1<T> // TypeDefIndex: 267
 {
+	// Constructors
+	public GenericEqualityComparer`1();
+
 	// Methods
-	public void .ctor();
 	public override int GetHashCode(T obj);
 	public override bool Equals(T x, T y);
 }
@@ -6319,11 +6633,12 @@ public interface IEqualityComparer`1 // TypeDefIndex: 270
 [Serializable]
 public class KeyNotFoundException : SystemException, ISerializable // TypeDefIndex: 271
 {
-	// Methods
-	public void .ctor(); // 0x00388F60
-	public void .ctor(string message); // 0x00388FC8
-	public void .ctor(string message, Exception innerException); // 0x00388FD0
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00388FD8
+	// Constructors
+	public KeyNotFoundException(); // 0x00388F60
+	public KeyNotFoundException(string message); // 0x00388FC8
+	public KeyNotFoundException(string message, Exception innerException); // 0x00388FD0
+	protected KeyNotFoundException(SerializationInfo info, StreamingContext context); // 0x00388FD8
+
 }
 
 // Namespace: System.Collections.Generic
@@ -6338,8 +6653,10 @@ public struct KeyValuePair`2 // TypeDefIndex: 272
 	public T Key { get; set; }
 	public T Value { get; set; }
 
+	// Constructors
+	public KeyValuePair`2(T key, T value);
+
 	// Methods
-	public void .ctor(T key, T value);
 	public override string ToString();
 }
 
@@ -6365,12 +6682,14 @@ public class List`1 : IEnumerable, ICollection, IList, ICollection`1<T>, IEnumer
 	public int Count { get; }
 	public T Item { get; set; }
 
+	// Constructors
+	public List`1();
+	public List`1(IEnumerable`1<T> collection);
+	public List`1(int capacity);
+	internal List`1(T[] data, int size);
+	private static List`1();
+
 	// Methods
-	public void .ctor();
-	public void .ctor(IEnumerable`1<T> collection);
-	public void .ctor(int capacity);
-	internal void .ctor(T[] data, int size);
-	private static void .cctor();
 	private IEnumerator`1<T> System.Collections.Generic.IEnumerable<T>.GetEnumerator();
 	private void System.Collections.ICollection.CopyTo(Array array, int arrayIndex);
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator();
@@ -6455,8 +6774,10 @@ public struct Enumerator : IEnumerator, IDisposable, IEnumerator`1<T> // TypeDef
 	private object System.Collections.IEnumerator.Current { get; }
 	public T Current { get; }
 
+	// Constructors
+	internal Enumerator(List`1<T> l);
+
 	// Methods
-	internal void .ctor(List`1<T> l);
 	private void System.Collections.IEnumerator.Reset();
 	public void Dispose();
 	private void VerifyState();
@@ -6482,9 +6803,11 @@ public class Collection`1 : IEnumerable, ICollection, IList, ICollection`1<T>, I
 	public int Count { get; }
 	public T Item { get; set; }
 
+	// Constructors
+	public Collection`1();
+	public Collection`1(IList`1<T> list);
+
 	// Methods
-	public void .ctor();
-	public void .ctor(IList`1<T> list);
 	private void System.Collections.ICollection.CopyTo(Array array, int index);
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator();
 	private int System.Collections.IList.Add(object value);
@@ -6526,10 +6849,12 @@ public abstract class KeyedCollection`2 : Collection`1<T> // TypeDefIndex: 276
 	public T Item { get; }
 	protected IDictionary`2<T, T> Dictionary { get; }
 
+	// Constructors
+	protected KeyedCollection`2();
+	protected KeyedCollection`2(IEqualityComparer`1<T> comparer);
+	protected KeyedCollection`2(IEqualityComparer`1<T> comparer, int dictionaryCreationThreshold);
+
 	// Methods
-	protected void .ctor();
-	protected void .ctor(IEqualityComparer`1<T> comparer);
-	protected void .ctor(IEqualityComparer`1<T> comparer, int dictionaryCreationThreshold);
 	public bool Contains(T key);
 	private int IndexOfKey(T key);
 	public bool Remove(T key);
@@ -6560,8 +6885,10 @@ public class ReadOnlyCollection`1 : IEnumerable, ICollection, IList, ICollection
 	protected IList`1<T> Items { get; }
 	public T Item { get; }
 
+	// Constructors
+	public ReadOnlyCollection`1(IList`1<T> list);
+
 	// Methods
-	public void .ctor(IList`1<T> list);
 	private void System.Collections.Generic.ICollection<T>.Add(T item);
 	private void System.Collections.Generic.ICollection<T>.Clear();
 	private void System.Collections.Generic.IList<T>.Insert(int index, T item);
@@ -6602,13 +6929,15 @@ public class ArrayList : IEnumerable, ICloneable, ICollection, IList // TypeDefI
 	public virtual bool IsSynchronized { get; } // 0x004FE140 
 	public virtual object SyncRoot { get; } // 0x004FE148 
 
+	// Constructors
+	public ArrayList(); // 0x004FD764
+	public ArrayList(ICollection c); // 0x004FD804
+	public ArrayList(int capacity); // 0x004FD9E4
+	private ArrayList(int initialCapacity, bool forceZeroSize); // 0x004FDB98
+	private ArrayList(object[] array, int index, int count); // 0x004FDC58
+	private static ArrayList(); // 0x004FDD04
+
 	// Methods
-	public void .ctor(); // 0x004FD764
-	public void .ctor(ICollection c); // 0x004FD804
-	public void .ctor(int capacity); // 0x004FD9E4
-	private void .ctor(int initialCapacity, bool forceZeroSize); // 0x004FDB98
-	private void .ctor(object[] array, int index, int count); // 0x004FDC58
-	private static void .cctor(); // 0x004FDD04
 	private void EnsureCapacity(int count); // 0x004FE14C
 	private void Shift(int index, int count); // 0x004FE248
 	public virtual int Add(object value); // 0x004FE3F0
@@ -6672,9 +7001,11 @@ private sealed class ArrayListEnumerator : IEnumerator, ICloneable // TypeDefInd
 	// Properties
 	public object Current { get; } // 0x00506128 
 
+	// Constructors
+	public ArrayListEnumerator(ArrayList list); // 0x005060CC
+	public ArrayListEnumerator(ArrayList list, int index, int count); // 0x004FF604
+
 	// Methods
-	public void .ctor(ArrayList list); // 0x005060CC
-	public void .ctor(ArrayList list, int index, int count); // 0x004FF604
 	public object Clone(); // 0x00506120
 	public bool MoveNext(); // 0x005061E0
 	public void Reset(); // 0x005062FC
@@ -6693,9 +7024,11 @@ private sealed class SimpleEnumerator : IEnumerator, ICloneable // TypeDefIndex:
 	// Properties
 	public object Current { get; } // 0x0050AAFC 
 
+	// Constructors
+	public SimpleEnumerator(ArrayList list); // 0x004FF474
+	private static SimpleEnumerator(); // 0x0050A8E8
+
 	// Methods
-	public void .ctor(ArrayList list); // 0x004FF474
-	private static void .cctor(); // 0x0050A8E8
 	public object Clone(); // 0x0050A968
 	public bool MoveNext(); // 0x0050A970
 	public void Reset(); // 0x0050AC28
@@ -6717,8 +7050,10 @@ private sealed class ArrayListAdapter : ArrayList // TypeDefIndex: 281
 	public override object SyncRoot { get; } // 0x00501354 
 	public override bool IsSynchronized { get; } // 0x00503D28 
 
+	// Constructors
+	public ArrayListAdapter(IList adaptee); // 0x00500450
+
 	// Methods
-	public void .ctor(IList adaptee); // 0x00500450
 	public override int Add(object value); // 0x0050142C
 	public override void Clear(); // 0x0050150C
 	public override bool Contains(object value); // 0x005015E4
@@ -6769,8 +7104,10 @@ private sealed class EnumeratorWithRange : IEnumerator, ICloneable // TypeDefInd
 	// Properties
 	public object Current { get; } // 0x00505EFC 
 
+	// Constructors
+	public EnumeratorWithRange(IEnumerator enumerator, int index, int count); // 0x005040D0
+
 	// Methods
-	public void .ctor(IEnumerator enumerator, int index, int count); // 0x005040D0
 	public object Clone(); // 0x00505EF4
 	public bool MoveNext(); // 0x00505FD4
 	public void Reset(); // 0x00505D68
@@ -6792,8 +7129,10 @@ private class ArrayListWrapper : ArrayList // TypeDefIndex: 283
 	public override bool IsSynchronized { get; } // 0x00506528 
 	public override object SyncRoot { get; } // 0x0050655C 
 
+	// Constructors
+	public ArrayListWrapper(ArrayList innerArrayList); // 0x00506314
+
 	// Methods
-	public void .ctor(ArrayList innerArrayList); // 0x00506314
 	public override int Add(object value); // 0x00506590
 	public override void Clear(); // 0x005065CC
 	public override bool Contains(object value); // 0x00506600
@@ -6846,8 +7185,10 @@ private sealed class SynchronizedArrayListWrapper : ArrayListWrapper // TypeDefI
 	public override bool IsSynchronized { get; } // 0x0050B1DC 
 	public override object SyncRoot { get; } // 0x0050B1E4 
 
+	// Constructors
+	internal SynchronizedArrayListWrapper(ArrayList innerArrayList); // 0x005004DC
+
 	// Methods
-	internal void .ctor(ArrayList innerArrayList); // 0x005004DC
 	public override int Add(object value); // 0x0050B1EC
 	public override void Clear(); // 0x0050B29C
 	public override bool Contains(object value); // 0x0050B334
@@ -6892,8 +7233,10 @@ private class FixedSizeArrayListWrapper : ArrayListWrapper // TypeDefIndex: 285
 	public override int Capacity { get; set; } // 0x00506EA0 0x00506ED4
 	public override bool IsFixedSize { get; } // 0x00506F7C 
 
+	// Constructors
+	public FixedSizeArrayListWrapper(ArrayList innerList); // 0x00500AC8
+
 	// Methods
-	public void .ctor(ArrayList innerList); // 0x00500AC8
 	public override int Add(object value); // 0x00506F84
 	public override void AddRange(ICollection c); // 0x0050702C
 	public override void Clear(); // 0x005070D4
@@ -6914,8 +7257,10 @@ private sealed class ReadOnlyArrayListWrapper : FixedSizeArrayListWrapper // Typ
 	public override bool IsReadOnly { get; } // 0x0050A2C0 
 	public override object Item { get; set; } // 0x0050A2C8 0x0050A304
 
+	// Constructors
+	public ReadOnlyArrayListWrapper(ArrayList innerArrayList); // 0x00500854
+
 	// Methods
-	public void .ctor(ArrayList innerArrayList); // 0x00500854
 	public override void Reverse(); // 0x0050A398
 	public override void Reverse(int index, int count); // 0x0050A42C
 	public override void SetRange(int index, ICollection c); // 0x0050A4C0
@@ -6939,8 +7284,10 @@ private sealed class RangedArrayList : ArrayListWrapper // TypeDefIndex: 287
 	public override int Count { get; } // 0x005088F8 
 	public override int Capacity { get; set; } // 0x005089D4 0x00508A08
 
+	// Constructors
+	public RangedArrayList(ArrayList innerList, int index, int count); // 0x004FFBD8
+
 	// Methods
-	public void .ctor(ArrayList innerList, int index, int count); // 0x004FFBD8
 	private void VerifyStateChanges(); // 0x00508910
 	public override int Add(object value); // 0x00508AA4
 	public override void Clear(); // 0x00508B1C
@@ -6993,8 +7340,10 @@ private sealed class SynchronizedListWrapper : ListWrapper // TypeDefIndex: 288
 	public override bool IsReadOnly { get; } // 0x0050CC58 
 	public override object Item { get; set; } // 0x0050CDA0 0x0050CEF0
 
+	// Constructors
+	public SynchronizedListWrapper(IList innerList); // 0x00500674
+
 	// Methods
-	public void .ctor(IList innerList); // 0x00500674
 	public override int Add(object value); // 0x0050D04C
 	public override void Clear(); // 0x0050D19C
 	public override bool Contains(object value); // 0x0050D2D8
@@ -7014,8 +7363,10 @@ private class FixedSizeListWrapper : ListWrapper // TypeDefIndex: 289
 	protected virtual string ErrorMessage { get; } // 0x0050758C 
 	public override bool IsFixedSize { get; } // 0x005075E8 
 
+	// Constructors
+	public FixedSizeListWrapper(IList innerList); // 0x00500C28
+
 	// Methods
-	public void .ctor(IList innerList); // 0x00500C28
 	public override int Add(object value); // 0x005075F0
 	public override void Clear(); // 0x00507698
 	public override void Insert(int index, object value); // 0x00507740
@@ -7032,8 +7383,9 @@ private sealed class ReadOnlyListWrapper : FixedSizeListWrapper // TypeDefIndex:
 	public override bool IsReadOnly { get; } // 0x0050A76C 
 	public override object Item { get; set; } // 0x0050A774 0x0050A854
 
-	// Methods
-	public void .ctor(IList innerList); // 0x005009B4
+	// Constructors
+	public ReadOnlyListWrapper(IList innerList); // 0x005009B4
+
 }
 
 // Namespace: 
@@ -7051,8 +7403,10 @@ private class ListWrapper : IEnumerable, ICollection, IList // TypeDefIndex: 291
 	public virtual bool IsFixedSize { get; } // 0x00507D88 
 	public virtual bool IsReadOnly { get; } // 0x00507E60 
 
+	// Constructors
+	public ListWrapper(IList innerList); // 0x0050756C
+
 	// Methods
-	public void .ctor(IList innerList); // 0x0050756C
 	public virtual int Add(object value); // 0x00507F38
 	public virtual void Clear(); // 0x00508018
 	public virtual bool Contains(object value); // 0x005080F0
@@ -7081,14 +7435,16 @@ public sealed class BitArray : IEnumerable, ICloneable, ICollection // TypeDefIn
 	public int Length { get; set; } // 0x0050E6C8 0x0050E6D0
 	public object SyncRoot { get; } // 0x0050E898 
 
+	// Constructors
+	public BitArray(BitArray bits); // 0x0050DC00
+	public BitArray(bool[] values); // 0x0050DDA0
+	public BitArray(byte[] bytes); // 0x0050DEDC
+	public BitArray(int[] values); // 0x0050E0DC
+	public BitArray(int length); // 0x0050E1D0
+	public BitArray(int length, bool defaultValue); // 0x0050E2B8
+	private BitArray(int[] array, int length); // 0x0050E340
+
 	// Methods
-	public void .ctor(BitArray bits); // 0x0050DC00
-	public void .ctor(bool[] values); // 0x0050DDA0
-	public void .ctor(byte[] bytes); // 0x0050DEDC
-	public void .ctor(int[] values); // 0x0050E0DC
-	public void .ctor(int length); // 0x0050E1D0
-	public void .ctor(int length, bool defaultValue); // 0x0050E2B8
-	private void .ctor(int[] array, int length); // 0x0050E340
 	private byte getByte(int byteIndex); // 0x0050E368
 	private void setByte(int byteIndex, byte value); // 0x0050E01C
 	private void checkOperand(BitArray operand); // 0x0050E3D8
@@ -7117,8 +7473,10 @@ private class BitArrayEnumerator : IEnumerator, ICloneable // TypeDefIndex: 293
 	// Properties
 	public object Current { get; } // 0x00385650 
 
+	// Constructors
+	public BitArrayEnumerator(BitArray ba); // 0x00385608
+
 	// Methods
-	public void .ctor(BitArray ba); // 0x00385608
 	public object Clone(); // 0x00385648
 	public bool MoveNext(); // 0x0038578C
 	public void Reset(); // 0x003858D4
@@ -7138,11 +7496,13 @@ public class CaseInsensitiveComparer : IComparer // TypeDefIndex: 294
 	public static CaseInsensitiveComparer Default { get; } // 0x00385B50 
 	public static CaseInsensitiveComparer DefaultInvariant { get; } // 0x00385BDC 
 
+	// Constructors
+	public CaseInsensitiveComparer(); // 0x003858F0
+	private CaseInsensitiveComparer(bool invariant); // 0x00385980
+	public CaseInsensitiveComparer(CultureInfo culture); // 0x00385988
+	private static CaseInsensitiveComparer(); // 0x00385AC0
+
 	// Methods
-	public void .ctor(); // 0x003858F0
-	private void .ctor(bool invariant); // 0x00385980
-	public void .ctor(CultureInfo culture); // 0x00385988
-	private static void .cctor(); // 0x00385AC0
 	public int Compare(object a, object b); // 0x00385C68
 }
 
@@ -7160,10 +7520,12 @@ public class CaseInsensitiveHashCodeProvider : IHashCodeProvider // TypeDefIndex
 	public static CaseInsensitiveHashCodeProvider Default { get; } // 0x00386560 
 	public static CaseInsensitiveHashCodeProvider DefaultInvariant { get; } // 0x00386A60 
 
+	// Constructors
+	public CaseInsensitiveHashCodeProvider(); // 0x00386124
+	public CaseInsensitiveHashCodeProvider(CultureInfo culture); // 0x0038633C
+	private static CaseInsensitiveHashCodeProvider(); // 0x00386488
+
 	// Methods
-	public void .ctor(); // 0x00386124
-	public void .ctor(CultureInfo culture); // 0x0038633C
-	private static void .cctor(); // 0x00386488
 	private static bool AreEqual(CultureInfo a, CultureInfo b); // 0x00386260
 	private static bool AreEqual(TextInfo info, CultureInfo culture); // 0x0038698C
 	public int GetHashCode(object obj); // 0x00386AEC
@@ -7187,9 +7549,11 @@ public abstract class CollectionBase : IEnumerable, ICollection, IList // TypeDe
 	protected ArrayList InnerList { get; } // 0x00386E6C 
 	protected IList List { get; } // 0x00387B1C 
 
+	// Constructors
+	protected CollectionBase(); // 0x00386D98
+	protected CollectionBase(int capacity); // 0x00386DA0
+
 	// Methods
-	protected void .ctor(); // 0x00386D98
-	protected void .ctor(int capacity); // 0x00386DA0
 	private void System.Collections.ICollection.CopyTo(Array array, int index); // 0x00386E24
 	private int System.Collections.IList.Add(object value); // 0x00386F5C
 	private bool System.Collections.IList.Contains(object value); // 0x0038713C
@@ -7219,8 +7583,9 @@ internal sealed class CollectionDebuggerView // TypeDefIndex: 297
 	// Properties
 	public object[] Items { get; } // 0x00387C08 
 
-	// Methods
-	public void .ctor(ICollection col); // 0x00387BE8
+	// Constructors
+	public CollectionDebuggerView(ICollection col); // 0x00387BE8
+
 }
 
 // Namespace: System.Collections
@@ -7232,10 +7597,12 @@ public sealed class Comparer : ISerializable, IComparer // TypeDefIndex: 298
 	public static readonly Comparer DefaultInvariant; // 0x04
 	private CompareInfo m_compareInfo; // 0x08
 
+	// Constructors
+	private Comparer(); // 0x00387DA0
+	public Comparer(CultureInfo culture); // 0x00387DA8
+	private static Comparer(); // 0x00387E7C
+
 	// Methods
-	private void .ctor(); // 0x00387DA0
-	public void .ctor(CultureInfo culture); // 0x00387DA8
-	private static void .cctor(); // 0x00387E7C
 	public int Compare(object a, object b); // 0x00385E44
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x00387F54
 }
@@ -7259,8 +7626,10 @@ public abstract class DictionaryBase : IEnumerable, ICollection, IDictionary // 
 	protected IDictionary Dictionary { get; } // 0x0038892C 
 	protected Hashtable InnerHashtable { get; } // 0x00388930 
 
+	// Constructors
+	protected DictionaryBase(); // 0x00388080
+
 	// Methods
-	protected void .ctor(); // 0x00388080
 	private void System.Collections.IDictionary.Add(object key, object value); // 0x00388410
 	private void System.Collections.IDictionary.Remove(object key); // 0x003885B8
 	private bool System.Collections.IDictionary.Contains(object key); // 0x003887C0
@@ -7293,8 +7662,9 @@ public struct DictionaryEntry // TypeDefIndex: 300
 	public object Key { get; set; } // 0x000A7028 0x000A7030
 	public object Value { get; set; } // 0x000A7038 0x000A7040
 
-	// Methods
-	public void .ctor(object key, object value); // 0x000A701C
+	// Constructors
+	public DictionaryEntry(object key, object value); // 0x000A701C
+
 }
 
 // Namespace: System.Collections
@@ -7330,25 +7700,27 @@ public class Hashtable : IEnumerable, ICloneable, ISerializable, ICollection, ID
 	public virtual ICollection Values { get; } // 0x0038A01C 
 	public virtual object Item { get; set; } // 0x0038A144 0x0038A360
 
+	// Constructors
+	public Hashtable(); // 0x00388114
+	public Hashtable(int capacity, float loadFactor, IHashCodeProvider hcp, IComparer comparer); // 0x00389020
+	public Hashtable(int capacity, float loadFactor); // 0x00388FF8
+	public Hashtable(int capacity); // 0x0038955C
+	internal Hashtable(Hashtable source); // 0x00389584
+	public Hashtable(int capacity, IHashCodeProvider hcp, IComparer comparer); // 0x00389724
+	public Hashtable(IDictionary d, float loadFactor, IHashCodeProvider hcp, IComparer comparer); // 0x0038974C
+	public Hashtable(IDictionary d, float loadFactor); // 0x00389B3C
+	public Hashtable(IDictionary d); // 0x00389B60
+	public Hashtable(IDictionary d, IHashCodeProvider hcp, IComparer comparer); // 0x00389B88
+	public Hashtable(IHashCodeProvider hcp, IComparer comparer); // 0x00389BB0
+	public Hashtable(SerializationInfo info, StreamingContext context); // 0x00389BD8
+	public Hashtable(IDictionary d, IEqualityComparer equalityComparer); // 0x00389BF8
+	public Hashtable(IDictionary d, float loadFactor, IEqualityComparer equalityComparer); // 0x00389C30
+	public Hashtable(IEqualityComparer equalityComparer); // 0x00389C64
+	public Hashtable(int capacity, IEqualityComparer equalityComparer); // 0x00389CD4
+	public Hashtable(int capacity, float loadFactor, IEqualityComparer equalityComparer); // 0x00389CA0
+	private static Hashtable(); // 0x00389D0C
+
 	// Methods
-	public void .ctor(); // 0x00388114
-	public void .ctor(int capacity, float loadFactor, IHashCodeProvider hcp, IComparer comparer); // 0x00389020
-	public void .ctor(int capacity, float loadFactor); // 0x00388FF8
-	public void .ctor(int capacity); // 0x0038955C
-	internal void .ctor(Hashtable source); // 0x00389584
-	public void .ctor(int capacity, IHashCodeProvider hcp, IComparer comparer); // 0x00389724
-	public void .ctor(IDictionary d, float loadFactor, IHashCodeProvider hcp, IComparer comparer); // 0x0038974C
-	public void .ctor(IDictionary d, float loadFactor); // 0x00389B3C
-	public void .ctor(IDictionary d); // 0x00389B60
-	public void .ctor(IDictionary d, IHashCodeProvider hcp, IComparer comparer); // 0x00389B88
-	public void .ctor(IHashCodeProvider hcp, IComparer comparer); // 0x00389BB0
-	public void .ctor(SerializationInfo info, StreamingContext context); // 0x00389BD8
-	public void .ctor(IDictionary d, IEqualityComparer equalityComparer); // 0x00389BF8
-	public void .ctor(IDictionary d, float loadFactor, IEqualityComparer equalityComparer); // 0x00389C30
-	public void .ctor(IEqualityComparer equalityComparer); // 0x00389C64
-	public void .ctor(int capacity, IEqualityComparer equalityComparer); // 0x00389CD4
-	public void .ctor(int capacity, float loadFactor, IEqualityComparer equalityComparer); // 0x00389CA0
-	private static void .cctor(); // 0x00389D0C
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x00389DA4
 	public virtual void CopyTo(Array array, int arrayIndex); // 0x0038A8A0
 	public virtual void Add(object key, object value); // 0x0038AC54
@@ -7392,9 +7764,10 @@ internal class KeyMarker // TypeDefIndex: 303
 	// Fields
 	public static readonly KeyMarker Removed; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x0038D7F4
-	private static void .cctor(); // 0x0038D7FC
+	// Constructors
+	public KeyMarker(); // 0x0038D7F4
+	private static KeyMarker(); // 0x0038D7FC
+
 }
 
 // Namespace: 
@@ -7425,10 +7798,12 @@ private sealed class Enumerator : IEnumerator, IDictionaryEnumerator // TypeDefI
 	public object Value { get; } // 0x0038CFF8 
 	public object Current { get; } // 0x0038D0A0 
 
+	// Constructors
+	public Enumerator(Hashtable host, EnumeratorMode mode); // 0x00389E18
+	public Enumerator(Hashtable host); // 0x0038CBC0
+	private static Enumerator(); // 0x0038CBC8
+
 	// Methods
-	public void .ctor(Hashtable host, EnumeratorMode mode); // 0x00389E18
-	public void .ctor(Hashtable host); // 0x0038CBC0
-	private static void .cctor(); // 0x0038CBC8
 	private void FailFast(); // 0x0038CC3C
 	public void Reset(); // 0x0038CB98
 	public bool MoveNext(); // 0x0038CD34
@@ -7446,8 +7821,10 @@ private class HashKeys : IEnumerable, ICollection // TypeDefIndex: 306
 	public virtual bool IsSynchronized { get; } // 0x0038D208 
 	public virtual object SyncRoot { get; } // 0x0038D23C 
 
+	// Constructors
+	public HashKeys(Hashtable host); // 0x00389F74
+
 	// Methods
-	public void .ctor(Hashtable host); // 0x00389F74
 	public virtual void CopyTo(Array array, int arrayIndex); // 0x0038D270
 	public virtual IEnumerator GetEnumerator(); // 0x0038D46C
 }
@@ -7464,8 +7841,10 @@ private class HashValues : IEnumerable, ICollection // TypeDefIndex: 307
 	public virtual bool IsSynchronized { get; } // 0x0038D518 
 	public virtual object SyncRoot { get; } // 0x0038D54C 
 
+	// Constructors
+	public HashValues(Hashtable host); // 0x0038A09C
+
 	// Methods
-	public void .ctor(Hashtable host); // 0x0038A09C
 	public virtual void CopyTo(Array array, int arrayIndex); // 0x0038D580
 	public virtual IEnumerator GetEnumerator(); // 0x0038D77C
 }
@@ -7487,9 +7866,11 @@ private class SyncHashtable : Hashtable, IEnumerable // TypeDefIndex: 308
 	public override ICollection Values { get; } // 0x0038DC80 
 	public override object Item { get; set; } // 0x0038DD4C 0x0038DD88
 
+	// Constructors
+	public SyncHashtable(Hashtable host); // 0x0038C284
+	internal SyncHashtable(SerializationInfo info, StreamingContext context); // 0x0038D870
+
 	// Methods
-	public void .ctor(Hashtable host); // 0x0038C284
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x0038D870
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x0038D9E0
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x0038DA58
 	public override void CopyTo(Array array, int arrayIndex); // 0x0038DE58
@@ -7570,11 +7951,13 @@ public class Queue : IEnumerable, ICloneable, ICollection // TypeDefIndex: 314
 	public virtual bool IsSynchronized { get; } // 0x0038E95C 
 	public virtual object SyncRoot { get; } // 0x0038E964 
 
+	// Constructors
+	public Queue(); // 0x0038E3A4
+	public Queue(int capacity); // 0x0038E530
+	public Queue(ICollection col); // 0x0038E538
+	public Queue(int capacity, float growFactor); // 0x0038E3B0
+
 	// Methods
-	public void .ctor(); // 0x0038E3A4
-	public void .ctor(int capacity); // 0x0038E530
-	public void .ctor(ICollection col); // 0x0038E538
-	public void .ctor(int capacity, float growFactor); // 0x0038E3B0
 	public virtual void CopyTo(Array array, int index); // 0x0038E968
 	public virtual IEnumerator GetEnumerator(); // 0x0038EB68
 	public virtual object Clone(); // 0x0038EC18
@@ -7600,8 +7983,10 @@ private class SyncQueue : Queue // TypeDefIndex: 315
 	public override bool IsSynchronized { get; } // 0x0038F9E8 
 	public override object SyncRoot { get; } // 0x0038F9F0 
 
+	// Constructors
+	internal SyncQueue(Queue queue); // 0x0038F408
+
 	// Methods
-	internal void .ctor(Queue queue); // 0x0038F408
 	public override void CopyTo(Array array, int index); // 0x0038FA24
 	public override IEnumerator GetEnumerator(); // 0x0038FAD0
 	public override object Clone(); // 0x0038FB78
@@ -7626,8 +8011,10 @@ private class QueueEnumerator : IEnumerator, ICloneable // TypeDefIndex: 316
 	// Properties
 	public virtual object Current { get; } // 0x0038F600 
 
+	// Constructors
+	internal QueueEnumerator(Queue q); // 0x0038EBD8
+
 	// Methods
-	internal void .ctor(Queue q); // 0x0038EBD8
 	public object Clone(); // 0x0038F554
 	public virtual bool MoveNext(); // 0x0038F790
 	public virtual void Reset(); // 0x0038F888
@@ -7646,8 +8033,10 @@ public abstract class ReadOnlyCollectionBase : IEnumerable, ICollection // TypeD
 	public virtual int Count { get; } // 0x003902FC 
 	protected ArrayList InnerList { get; } // 0x00390364 
 
+	// Constructors
+	protected ReadOnlyCollectionBase(); // 0x0039015C
+
 	// Methods
-	protected void .ctor(); // 0x0039015C
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x003901D8
 	private void System.Collections.ICollection.CopyTo(Array array, int index); // 0x003901E8
 	public virtual IEnumerator GetEnumerator(); // 0x00390330
@@ -7676,14 +8065,16 @@ public class SortedList : IEnumerable, ICloneable, ICollection, IDictionary // T
 	public virtual object Item { get; set; } // 0x00390DCC 0x00390ED4
 	public virtual int Capacity { get; set; } // 0x003918D8 0x003918FC
 
+	// Constructors
+	public SortedList(); // 0x0039036C
+	public SortedList(int initialCapacity); // 0x0039052C
+	public SortedList(IComparer comparer, int capacity); // 0x00390408
+	public SortedList(IComparer comparer); // 0x003905C8
+	public SortedList(IDictionary d); // 0x00390678
+	public SortedList(IDictionary d, IComparer comparer); // 0x00390680
+	private static SortedList(); // 0x00390A24
+
 	// Methods
-	public void .ctor(); // 0x0039036C
-	public void .ctor(int initialCapacity); // 0x0039052C
-	public void .ctor(IComparer comparer, int capacity); // 0x00390408
-	public void .ctor(IComparer comparer); // 0x003905C8
-	public void .ctor(IDictionary d); // 0x00390678
-	public void .ctor(IDictionary d, IComparer comparer); // 0x00390680
-	private static void .cctor(); // 0x00390A24
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x00390A8C
 	public virtual void Add(object key, object value); // 0x00391A54
 	public virtual void Clear(); // 0x00391A70
@@ -7751,10 +8142,12 @@ private sealed class Enumerator : IEnumerator, ICloneable, IDictionaryEnumerator
 	public object Value { get; } // 0x00393674 
 	public object Current { get; } // 0x00393770 
 
+	// Constructors
+	public Enumerator(SortedList host, EnumeratorMode mode); // 0x00390B00
+	public Enumerator(SortedList host); // 0x0039326C
+	private static Enumerator(); // 0x00393274
+
 	// Methods
-	public void .ctor(SortedList host, EnumeratorMode mode); // 0x00390B00
-	public void .ctor(SortedList host); // 0x0039326C
-	private static void .cctor(); // 0x00393274
 	public void Reset(); // 0x00393158
 	public bool MoveNext(); // 0x003932E8
 	public object Clone(); // 0x00393970
@@ -7775,8 +8168,10 @@ private class ListKeys : IEnumerable, ICollection, IList // TypeDefIndex: 322
 	public virtual bool IsReadOnly { get; } // 0x00393B7C 
 	public virtual object Item { get; set; } // 0x00393B84 0x00393BC0
 
+	// Constructors
+	public ListKeys(SortedList host); // 0x00390C0C
+
 	// Methods
-	public void .ctor(SortedList host); // 0x00390C0C
 	public virtual void CopyTo(Array array, int arrayIndex); // 0x00393B30
 	public virtual int Add(object value); // 0x00393C5C
 	public virtual void Clear(); // 0x00393CF8
@@ -7803,8 +8198,10 @@ private class ListValues : IEnumerable, ICollection, IList // TypeDefIndex: 323
 	public virtual bool IsReadOnly { get; } // 0x00394140 
 	public virtual object Item { get; set; } // 0x00394148 0x00394184
 
+	// Constructors
+	public ListValues(SortedList host); // 0x00390D24
+
 	// Methods
-	public void .ctor(SortedList host); // 0x00390D24
 	public virtual void CopyTo(Array array, int arrayIndex); // 0x003940F4
 	public virtual int Add(object value); // 0x00394220
 	public virtual void Clear(); // 0x003942BC
@@ -7833,8 +8230,10 @@ private class SynchedSortedList : SortedList // TypeDefIndex: 324
 	public override ICollection Values { get; } // 0x00394950 
 	public override object Item { get; set; } // 0x00394A1C 0x00394AE4
 
+	// Constructors
+	public SynchedSortedList(SortedList host); // 0x00392B34
+
 	// Methods
-	public void .ctor(SortedList host); // 0x00392B34
 	public override void CopyTo(Array array, int arrayIndex); // 0x00394BBC
 	public override void Add(object key, object value); // 0x00394C8C
 	public override void Clear(); // 0x00394D64
@@ -7872,10 +8271,12 @@ public class Stack : IEnumerable, ICloneable, ICollection // TypeDefIndex: 325
 	public virtual bool IsSynchronized { get; } // 0x00396238 
 	public virtual object SyncRoot { get; } // 0x00396240 
 
+	// Constructors
+	public Stack(); // 0x00395B28
+	public Stack(ICollection col); // 0x00395BAC
+	public Stack(int initialCapacity); // 0x00395FC4
+
 	// Methods
-	public void .ctor(); // 0x00395B28
-	public void .ctor(ICollection col); // 0x00395BAC
-	public void .ctor(int initialCapacity); // 0x00395FC4
 	private void Resize(int ncapacity); // 0x003960A8
 	public static Stack Synchronized(Stack stack); // 0x00396144
 	public virtual void Clear(); // 0x00396244
@@ -7901,8 +8302,10 @@ private class SyncStack : Stack // TypeDefIndex: 326
 	public override bool IsSynchronized { get; } // 0x00396E44 
 	public override object SyncRoot { get; } // 0x00396E4C 
 
+	// Constructors
+	internal SyncStack(Stack s); // 0x00396214
+
 	// Methods
-	internal void .ctor(Stack s); // 0x00396214
 	public override void Clear(); // 0x00396E80
 	public override object Clone(); // 0x00396F18
 	public override bool Contains(object obj); // 0x00397058
@@ -7927,8 +8330,10 @@ private class Enumerator : IEnumerator, ICloneable // TypeDefIndex: 327
 	// Properties
 	public virtual object Current { get; } // 0x00396AB4 
 
+	// Constructors
+	internal Enumerator(Stack s); // 0x003966E8
+
 	// Methods
-	internal void .ctor(Stack s); // 0x003966E8
 	public object Clone(); // 0x00396AAC
 	public virtual bool MoveNext(); // 0x00396BE4
 	public virtual void Reset(); // 0x00396CE4
@@ -7946,10 +8351,12 @@ public struct AssemblyHash : ICloneable // TypeDefIndex: 328
 	// Properties
 	public AssemblyHashAlgorithm Algorithm { get; set; } // 0x000A7548 0x000A7550
 
+	// Constructors
+	public AssemblyHash(AssemblyHashAlgorithm algorithm, byte[] value); // 0x000A7530
+	public AssemblyHash(byte[] value); // 0x000A7538
+	private static AssemblyHash(); // 0x003975F4
+
 	// Methods
-	public void .ctor(AssemblyHashAlgorithm algorithm, byte[] value); // 0x000A7530
-	public void .ctor(byte[] value); // 0x000A7538
-	private static void .cctor(); // 0x003975F4
 	public object Clone(); // 0x000A7558
 	public byte[] GetValue(); // 0x000A7560
 	public void SetValue(byte[] value); // 0x000A7568
@@ -8013,8 +8420,9 @@ public sealed class SuppressMessageAttribute : Attribute // TypeDefIndex: 333
 	public string Scope { get; set; } // 0x004CB1EC 0x004CB1F4
 	public string Target { get; set; } // 0x004CB1FC 0x004CB204
 
-	// Methods
-	public void .ctor(string category, string checkId); // 0x004CB194
+	// Constructors
+	public SuppressMessageAttribute(string category, string checkId); // 0x004CB194
+
 }
 
 // Namespace: System.Diagnostics.SymbolStore
@@ -8184,8 +8592,9 @@ public class SymDocumentType // TypeDefIndex: 345
 	// Fields
 	public static readonly Guid Text; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x002D5AB8
+	// Constructors
+	public SymDocumentType(); // 0x002D5AB8
+
 }
 
 // Namespace: System.Diagnostics.SymbolStore
@@ -8204,8 +8613,9 @@ public class SymLanguageType // TypeDefIndex: 346
 	public static readonly Guid Pascal; // 0x90
 	public static readonly Guid SMC; // 0xA0
 
-	// Methods
-	public void .ctor(); // 0x002D5AC0
+	// Constructors
+	public SymLanguageType(); // 0x002D5AC0
+
 }
 
 // Namespace: System.Diagnostics.SymbolStore
@@ -8214,8 +8624,9 @@ public class SymLanguageVendor // TypeDefIndex: 347
 	// Fields
 	public static readonly Guid Microsoft; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x002D5AC8
+	// Constructors
+	public SymLanguageVendor(); // 0x002D5AC8
+
 }
 
 // Namespace: System.Diagnostics.SymbolStore
@@ -8224,8 +8635,10 @@ public struct SymbolToken // TypeDefIndex: 348
 	// Fields
 	private int _val; // 0x08
 
+	// Constructors
+	public SymbolToken(int val); // 0x0008D160
+
 	// Methods
-	public void .ctor(int val); // 0x0008D160
 	public override bool Equals(object obj); // 0x0008D168
 	public bool Equals(SymbolToken obj); // 0x0008D170
 	public override int GetHashCode(); // 0x0008D184
@@ -8247,9 +8660,10 @@ public sealed class DebuggableAttribute : Attribute // TypeDefIndex: 349
 	public bool IsJITTrackingEnabled { get; } // 0x004CB2B4 
 	public bool IsJITOptimizerDisabled { get; } // 0x004CB2BC 
 
-	// Methods
-	public void .ctor(bool isJITTrackingEnabled, bool isJITOptimizerDisabled); // 0x004CB234
-	public void .ctor(DebuggingModes modes); // 0x004CB27C
+	// Constructors
+	public DebuggableAttribute(bool isJITTrackingEnabled, bool isJITOptimizerDisabled); // 0x004CB234
+	public DebuggableAttribute(DebuggingModes modes); // 0x004CB27C
+
 }
 
 // Namespace: 
@@ -8271,9 +8685,11 @@ public sealed class Debugger // TypeDefIndex: 351
 	// Properties
 	public static bool IsAttached { get; } // 0x004CB370 
 
+	// Constructors
+	public Debugger(); // 0x004CB2C4
+	private static Debugger(); // 0x004CB2CC
+
 	// Methods
-	public void .ctor(); // 0x004CB2C4
-	private static void .cctor(); // 0x004CB2CC
 	private static bool IsAttached_internal(); // 0x004CB3E8
 	public static void Break(); // 0x004CB3EC
 	public static bool IsLogging(); // 0x004CB3F0
@@ -8290,8 +8706,9 @@ public sealed class DebuggerBrowsableAttribute : Attribute // TypeDefIndex: 352
 	// Properties
 	public DebuggerBrowsableState State { get; } // 0x004CB4A4 
 
-	// Methods
-	public void .ctor(DebuggerBrowsableState state); // 0x004CB484
+	// Constructors
+	public DebuggerBrowsableAttribute(DebuggerBrowsableState state); // 0x004CB484
+
 }
 
 // Namespace: System.Diagnostics
@@ -8319,32 +8736,36 @@ public sealed class DebuggerDisplayAttribute : Attribute // TypeDefIndex: 354
 	public string Type { get; set; } // 0x004CB688 0x004CB690
 	public string Name { get; set; } // 0x004CB698 0x004CB6A0
 
-	// Methods
-	public void .ctor(string value); // 0x004CB4AC
+	// Constructors
+	public DebuggerDisplayAttribute(string value); // 0x004CB4AC
+
 }
 
 // Namespace: System.Diagnostics
 [Serializable]
 public sealed class DebuggerNonUserCodeAttribute : Attribute // TypeDefIndex: 355
 {
-	// Methods
-	public void .ctor(); // 0x002D3D20
+	// Constructors
+	public DebuggerNonUserCodeAttribute(); // 0x002D3D20
+
 }
 
 // Namespace: System.Diagnostics
 [Serializable]
 public sealed class DebuggerStepThroughAttribute : Attribute // TypeDefIndex: 356
 {
-	// Methods
-	public void .ctor(); // 0x002D3D28
+	// Constructors
+	public DebuggerStepThroughAttribute(); // 0x002D3D28
+
 }
 
 // Namespace: System.Diagnostics
 [Serializable]
 public sealed class DebuggerStepperBoundaryAttribute : Attribute // TypeDefIndex: 357
 {
-	// Methods
-	public void .ctor(); // 0x002D3D30
+	// Constructors
+	public DebuggerStepperBoundaryAttribute(); // 0x002D3D30
+
 }
 
 // Namespace: System.Diagnostics
@@ -8360,9 +8781,10 @@ public sealed class DebuggerTypeProxyAttribute : Attribute // TypeDefIndex: 358
 	public Type Target { get; set; } // 0x002D3DA4 0x002D3DAC
 	public string TargetTypeName { get; set; } // 0x002D3DEC 0x002D3DF4
 
-	// Methods
-	public void .ctor(string typeName); // 0x002D3D38
-	public void .ctor(Type type); // 0x002D3D58
+	// Constructors
+	public DebuggerTypeProxyAttribute(string typeName); // 0x002D3D38
+	public DebuggerTypeProxyAttribute(Type type); // 0x002D3D58
+
 }
 
 // Namespace: System.Diagnostics
@@ -8382,13 +8804,14 @@ public sealed class DebuggerVisualizerAttribute : Attribute // TypeDefIndex: 359
 	public string VisualizerObjectSourceTypeName { get; } // 0x002D4274 
 	public string VisualizerTypeName { get; } // 0x002D427C 
 
-	// Methods
-	public void .ctor(string visualizerTypeName); // 0x002D3DFC
-	public void .ctor(Type visualizer); // 0x002D3E1C
-	public void .ctor(string visualizerTypeName, string visualizerObjectSourceTypeName); // 0x002D3EF0
-	public void .ctor(string visualizerTypeName, Type visualizerObjectSource); // 0x002D3F18
-	public void .ctor(Type visualizer, string visualizerObjectSourceTypeName); // 0x002D3FF4
-	public void .ctor(Type visualizer, Type visualizerObjectSource); // 0x002D40D0
+	// Constructors
+	public DebuggerVisualizerAttribute(string visualizerTypeName); // 0x002D3DFC
+	public DebuggerVisualizerAttribute(Type visualizer); // 0x002D3E1C
+	public DebuggerVisualizerAttribute(string visualizerTypeName, string visualizerObjectSourceTypeName); // 0x002D3EF0
+	public DebuggerVisualizerAttribute(string visualizerTypeName, Type visualizerObjectSource); // 0x002D3F18
+	public DebuggerVisualizerAttribute(Type visualizer, string visualizerObjectSourceTypeName); // 0x002D3FF4
+	public DebuggerVisualizerAttribute(Type visualizer, Type visualizerObjectSource); // 0x002D40D0
+
 }
 
 // Namespace: System.Diagnostics
@@ -8405,13 +8828,15 @@ public class StackFrame // TypeDefIndex: 360
 	private int columnNumber; // 0x1C
 	private string internalMethodName; // 0x20
 
+	// Constructors
+	public StackFrame(); // 0x002D4284
+	public StackFrame(bool fNeedFileInfo); // 0x002D42F0
+	public StackFrame(int skipFrames); // 0x002D435C
+	public StackFrame(int skipFrames, bool fNeedFileInfo); // 0x002D43C8
+	public StackFrame(string fileName, int lineNumber); // 0x002D4438
+	public StackFrame(string fileName, int lineNumber, int colNumber); // 0x002D44BC
+
 	// Methods
-	public void .ctor(); // 0x002D4284
-	public void .ctor(bool fNeedFileInfo); // 0x002D42F0
-	public void .ctor(int skipFrames); // 0x002D435C
-	public void .ctor(int skipFrames, bool fNeedFileInfo); // 0x002D43C8
-	public void .ctor(string fileName, int lineNumber); // 0x002D4438
-	public void .ctor(string fileName, int lineNumber, int colNumber); // 0x002D44BC
 	private static bool get_frame_info(int skip, bool needFileInfo, out MethodBase method, out int iloffset, out int native_offset, out string file, out int line, out int column); // 0x002D42EC
 	public virtual int GetFileLineNumber(); // 0x002D4540
 	public virtual int GetFileColumnNumber(); // 0x002D4548
@@ -8436,18 +8861,20 @@ public class StackTrace // TypeDefIndex: 361
 	// Properties
 	public virtual int FrameCount { get; } // 0x002D521C 
 
+	// Constructors
+	public StackTrace(); // 0x002D4960
+	public StackTrace(bool fNeedFileInfo); // 0x002D4BD4
+	public StackTrace(int skipFrames); // 0x002D4C00
+	public StackTrace(int skipFrames, bool fNeedFileInfo); // 0x002D4C2C
+	public StackTrace(Exception e); // 0x002D4C5C
+	public StackTrace(Exception e, bool fNeedFileInfo); // 0x002D4CA4
+	public StackTrace(Exception e, int skipFrames); // 0x002D4CCC
+	public StackTrace(Exception e, int skipFrames, bool fNeedFileInfo); // 0x002D4C84
+	internal StackTrace(Exception e, int skipFrames, bool fNeedFileInfo, bool returnNativeFrames); // 0x002D4CF0
+	public StackTrace(StackFrame frame); // 0x002D50A8
+	public StackTrace(Thread targetThread, bool needFileInfo); // 0x002D5184
+
 	// Methods
-	public void .ctor(); // 0x002D4960
-	public void .ctor(bool fNeedFileInfo); // 0x002D4BD4
-	public void .ctor(int skipFrames); // 0x002D4C00
-	public void .ctor(int skipFrames, bool fNeedFileInfo); // 0x002D4C2C
-	public void .ctor(Exception e); // 0x002D4C5C
-	public void .ctor(Exception e, bool fNeedFileInfo); // 0x002D4CA4
-	public void .ctor(Exception e, int skipFrames); // 0x002D4CCC
-	public void .ctor(Exception e, int skipFrames, bool fNeedFileInfo); // 0x002D4C84
-	internal void .ctor(Exception e, int skipFrames, bool fNeedFileInfo, bool returnNativeFrames); // 0x002D4CF0
-	public void .ctor(StackFrame frame); // 0x002D50A8
-	public void .ctor(Thread targetThread, bool needFileInfo); // 0x002D5184
 	private void init_frames(int skipFrames, bool fNeedFileInfo); // 0x002D4988
 	private static StackFrame[] get_trace(Exception e, int skipFrames, bool fNeedFileInfo); // 0x002D50A4
 	public virtual StackFrame GetFrame(int index); // 0x002D5230
@@ -8480,8 +8907,10 @@ public abstract class Calendar : ICloneable // TypeDefIndex: 362
 	internal string[] AbbreviatedEraNames { get; set; } // 0x002E987C 0x002E99CC
 	internal string[] EraNames { get; set; } // 0x002E9BD0 0x002E9D20
 
+	// Constructors
+	protected Calendar(); // 0x002E82F8
+
 	// Methods
-	protected void .ctor(); // 0x002E82F8
 	internal string M_ValidValues(object a, object b); // 0x002E8320
 	internal void M_ArgumentInRange(string param, int arg, int a, int b); // 0x002E83FC
 	internal void M_CheckHMSM(int hour, int minute, int second, int milliseconds); // 0x002E84F4
@@ -8550,8 +8979,10 @@ public enum CalendarWeekRule // TypeDefIndex: 364
 // Namespace: System.Globalization
 internal class CCMath // TypeDefIndex: 365
 {
+	// Constructors
+	public CCMath(); // 0x002E81DC
+
 	// Methods
-	public void .ctor(); // 0x002E81DC
 	public static double round(double x); // 0x002E81E4
 	public static double mod(double x, double y); // 0x002E81F8
 	public static int div(int x, int y); // 0x002E5018
@@ -8566,8 +8997,10 @@ internal class CCMath // TypeDefIndex: 365
 // Namespace: System.Globalization
 internal class CCFixed // TypeDefIndex: 366
 {
+	// Constructors
+	public CCFixed(); // 0x002E4AF8
+
 	// Methods
-	public void .ctor(); // 0x002E4AF8
 	public static DateTime ToDateTime(int date); // 0x002E4B00
 	public static DateTime ToDateTime(int date, int hour, int minute, int second, double milliseconds); // 0x002E4B48
 	public static int FromDateTime(DateTime time); // 0x002E3BCC
@@ -8585,8 +9018,10 @@ internal class CCGregorianCalendar // TypeDefIndex: 367
 	// Fields
 	private const int epoch = 1; // 0x00
 
+	// Constructors
+	public CCGregorianCalendar(); // 0x002E4E10
+
 	// Methods
-	public void .ctor(); // 0x002E4E10
 	public static bool is_leap_year(int year); // 0x002E4E18
 	public static int fixed_from_dmy(int day, int month, int year); // 0x002E4EB0
 	public static int year_from_fixed(int date); // 0x002E49E0
@@ -8632,8 +9067,10 @@ internal class CCJulianCalendar // TypeDefIndex: 369
 	// Fields
 	private const int epoch = -1; // 0x00
 
+	// Constructors
+	public CCJulianCalendar(); // 0x002E7CC0
+
 	// Methods
-	public void .ctor(); // 0x002E7CC0
 	public static bool is_leap_year(int year); // 0x002E7CC8
 	public static int fixed_from_dmy(int day, int month, int year); // 0x002E7D18
 	public static int year_from_fixed(int date); // 0x002E7E00
@@ -8669,8 +9106,10 @@ internal class CCHebrewCalendar // TypeDefIndex: 371
 	// Fields
 	private const int epoch = -1373427; // 0x00
 
+	// Constructors
+	public CCHebrewCalendar(); // 0x002E6DF4
+
 	// Methods
-	public void .ctor(); // 0x002E6DF4
 	public static bool is_leap_year(int year); // 0x002E6DFC
 	public static int last_month_of_year(int year); // 0x002E6E48
 	public static int elapsed_days(int year); // 0x002E6E98
@@ -8715,8 +9154,10 @@ internal class CCHijriCalendar // TypeDefIndex: 373
 	// Fields
 	private const int epoch = 227014; // 0x00
 
+	// Constructors
+	public CCHijriCalendar(); // 0x002E7680
+
 	// Methods
-	public void .ctor(); // 0x002E7680
 	public static bool is_leap_year(int year); // 0x002E7688
 	public static int fixed_from_dmy(int day, int month, int year); // 0x002E76D8
 	public static int year_from_fixed(int date); // 0x002E7778
@@ -8752,8 +9193,10 @@ internal class CCEastAsianLunisolarCalendar // TypeDefIndex: 375
 	// Fields
 	private const int initial_epact = 29; // 0x00
 
+	// Constructors
+	public CCEastAsianLunisolarCalendar(); // 0x002E2EF4
+
 	// Methods
-	public void .ctor(); // 0x002E2EF4
 	public static int fixed_from_dmy(int day, int month, int year); // 0x002E2EFC
 	public static int year_from_fixed(int date); // 0x002E2F94
 	public static void my_from_fixed(out int month, out int year, int date); // 0x002E302C
@@ -8780,8 +9223,10 @@ internal class CCGregorianEraHandler // TypeDefIndex: 376
 	// Properties
 	public int[] Eras { get; } // 0x002E5B38 
 
+	// Constructors
+	public CCGregorianEraHandler(); // 0x002E5ABC
+
 	// Methods
-	public void .ctor(); // 0x002E5ABC
 	public void appendEra(int nr, int rd_start, int rd_end); // 0x002E5CC4
 	public void appendEra(int nr, int rd_start); // 0x002E5F04
 	public int GregorianYear(int year, int era); // 0x002E5FD8
@@ -8805,8 +9250,10 @@ private struct Era // TypeDefIndex: 377
 	// Properties
 	public int Nr { get; } // 0x0008D34C 
 
+	// Constructors
+	public Era(int nr, int start, int end); // 0x0008D330
+
 	// Methods
-	public void .ctor(int nr, int start, int end); // 0x0008D330
 	public int GregorianYear(int year); // 0x0008D354
 	public bool Covers(int date); // 0x0008D35C
 	public int EraYear(out int era, int date); // 0x0008D384
@@ -8822,8 +9269,10 @@ internal class CCEastAsianLunisolarEraHandler // TypeDefIndex: 378
 	// Properties
 	public int[] Eras { get; } // 0x002E372C 
 
+	// Constructors
+	public CCEastAsianLunisolarEraHandler(); // 0x002E36B0
+
 	// Methods
-	public void .ctor(); // 0x002E36B0
 	public void appendEra(int nr, int rd_start, int rd_end); // 0x002E38B8
 	public void appendEra(int nr, int rd_start); // 0x002E3AF8
 	public int GregorianYear(int year, int era); // 0x002E3C00
@@ -8847,8 +9296,10 @@ private struct Era // TypeDefIndex: 379
 	// Properties
 	public int Nr { get; } // 0x0008D2F0 
 
+	// Constructors
+	public Era(int nr, int start, int end); // 0x0008D2D4
+
 	// Methods
-	public void .ctor(int nr, int start, int end); // 0x0008D2D4
 	public int GregorianYear(int year); // 0x0008D2F8
 	public bool Covers(int date); // 0x0008D300
 	public int EraYear(out int era, int date); // 0x0008D328
@@ -8857,8 +9308,10 @@ private struct Era // TypeDefIndex: 379
 // Namespace: System.Globalization
 public sealed class CharUnicodeInfo // TypeDefIndex: 380
 {
+	// Constructors
+	private CharUnicodeInfo(); // 0x002E9F24
+
 	// Methods
-	private void .ctor(); // 0x002E9F24
 	public static int GetDecimalDigitValue(char ch); // 0x002E9F2C
 	public static int GetDecimalDigitValue(string s, int index); // 0x002EA1F4
 	public static int GetDigitValue(char ch); // 0x002EA2B8
@@ -8884,9 +9337,11 @@ public class ChineseLunisolarCalendar : EastAsianLunisolarCalendar // TypeDefInd
 	public override DateTime MinSupportedDateTime { get; } // 0x002EB0AC 
 	public override DateTime MaxSupportedDateTime { get; } // 0x002EB144 
 
+	// Constructors
+	public ChineseLunisolarCalendar(); // 0x002EAC7C
+	private static ChineseLunisolarCalendar(); // 0x002EAD18
+
 	// Methods
-	public void .ctor(); // 0x002EAC7C
-	private static void .cctor(); // 0x002EAD18
 	public override int GetEra(DateTime time); // 0x002EAFB4
 }
 
@@ -8904,8 +9359,9 @@ internal sealed class CodePageDataItem // TypeDefIndex: 382
 	private int m_uiFamilyCodePage; // 0x20
 	private string m_webName; // 0x24
 
-	// Methods
-	private void .ctor(); // 0x002EB1DC
+	// Constructors
+	private CodePageDataItem(); // 0x002EB1DC
+
 }
 
 // Namespace: System.Globalization
@@ -8929,10 +9385,12 @@ public class CompareInfo : IDeserializationCallback // TypeDefIndex: 383
 	public int LCID { get; } // 0x002EE72C 
 	public virtual string Name { get; } // 0x002EE734 
 
+	// Constructors
+	private CompareInfo(); // 0x002EB1E4
+	internal CompareInfo(CultureInfo ci); // 0x002EB1EC
+	private static CompareInfo(); // 0x002EB6C4
+
 	// Methods
-	private void .ctor(); // 0x002EB1E4
-	internal void .ctor(CultureInfo ci); // 0x002EB1EC
-	private static void .cctor(); // 0x002EB6C4
 	private void System.Runtime.Serialization.IDeserializationCallback.OnDeserialization(object sender); // 0x002EB864
 	private void construct_compareinfo(string locale); // 0x002EB6C0
 	private void free_internal_collator(); // 0x002EBB04
@@ -9081,15 +9539,17 @@ public class CultureInfo : ICloneable, IFormatProvider // TypeDefIndex: 385
 	public static CultureInfo InstalledUICulture { get; } // 0x002F14D4 
 	public bool IsReadOnly { get; } // 0x002F17D4 
 
+	// Constructors
+	public CultureInfo(int culture); // 0x002EBA58
+	public CultureInfo(int culture, bool useUserOverride); // 0x002EE73C
+	private CultureInfo(int culture, bool useUserOverride, bool read_only); // 0x002EE758
+	public CultureInfo(string name); // 0x002EC6F8
+	public CultureInfo(string name, bool useUserOverride); // 0x002EEB90
+	private CultureInfo(string name, bool useUserOverride, bool read_only); // 0x002EEBAC
+	private CultureInfo(); // 0x002EEFE0
+	private static CultureInfo(); // 0x002EF000
+
 	// Methods
-	public void .ctor(int culture); // 0x002EBA58
-	public void .ctor(int culture, bool useUserOverride); // 0x002EE73C
-	private void .ctor(int culture, bool useUserOverride, bool read_only); // 0x002EE758
-	public void .ctor(string name); // 0x002EC6F8
-	public void .ctor(string name, bool useUserOverride); // 0x002EEB90
-	private void .ctor(string name, bool useUserOverride, bool read_only); // 0x002EEBAC
-	private void .ctor(); // 0x002EEFE0
-	private static void .cctor(); // 0x002EF000
 	public static CultureInfo CreateSpecificCulture(string name); // 0x002EF0C8
 	internal static CultureInfo ConstructCurrentCulture(); // 0x002EF4C8
 	internal static CultureInfo ConstructCurrentUICulture(); // 0x002EF678
@@ -9250,10 +9710,12 @@ public sealed class DateTimeFormatInfo : ICloneable, IFormatProvider // TypeDefI
 	public string NativeCalendarName { get; } // 0x002F752C 
 	public string[] ShortestDayNames { get; set; } // 0x002F75B8 0x002F75C0
 
+	// Constructors
+	internal DateTimeFormatInfo(bool read_only); // 0x002F0FA4
+	public DateTimeFormatInfo(); // 0x002F23EC
+	private static DateTimeFormatInfo(); // 0x002F23F4
+
 	// Methods
-	internal void .ctor(bool read_only); // 0x002F0FA4
-	public void .ctor(); // 0x002F23EC
-	private static void .cctor(); // 0x002F23F4
 	public static DateTimeFormatInfo GetInstance(IFormatProvider provider); // 0x002F39E8
 	public static DateTimeFormatInfo ReadOnly(DateTimeFormatInfo dtfi); // 0x002F06B0
 	public object Clone(); // 0x002F0110
@@ -9306,8 +9768,9 @@ public class DaylightTime // TypeDefIndex: 390
 	public DateTime End { get; } // 0x00468D5C 
 	public TimeSpan Delta { get; } // 0x00468D6C 
 
-	// Methods
-	public void .ctor(DateTime start, DateTime end, TimeSpan delta); // 0x00468CEC
+	// Constructors
+	public DaylightTime(DateTime start, DateTime end, TimeSpan delta); // 0x00468CEC
+
 }
 
 // Namespace: System.Globalization
@@ -9331,8 +9794,10 @@ public abstract class EastAsianLunisolarCalendar : Calendar // TypeDefIndex: 392
 	internal virtual int ActualCurrentEra { get; } // 0x00468E98 
 	public override CalendarAlgorithmType AlgorithmType { get; } // 0x004696D8 
 
+	// Constructors
+	internal EastAsianLunisolarCalendar(CCEastAsianLunisolarEraHandler eraHandler); // 0x00468D78
+
 	// Methods
-	internal void .ctor(CCEastAsianLunisolarEraHandler eraHandler); // 0x00468D78
 	internal void M_CheckDateTime(DateTime time); // 0x00468E44
 	internal void M_CheckEra(int era); // 0x00468EA0
 	internal int M_CheckYEG(int year, int era); // 0x00468F98
@@ -9377,9 +9842,11 @@ public class GregorianCalendar : Calendar // TypeDefIndex: 393
 	public override DateTime MinSupportedDateTime { get; } // 0x0046A2A4 
 	public override DateTime MaxSupportedDateTime { get; } // 0x0046A3D8 
 
+	// Constructors
+	public GregorianCalendar(GregorianCalendarTypes type); // 0x004698CC
+	public GregorianCalendar(); // 0x00469A88
+
 	// Methods
-	public void .ctor(GregorianCalendarTypes type); // 0x004698CC
-	public void .ctor(); // 0x00469A88
 	internal void M_CheckEra(int era); // 0x00469C00
 	internal override void M_CheckYE(int year, int era); // 0x00469CC0
 	internal void M_CheckYME(int year, int month, int era); // 0x00469D54
@@ -9435,9 +9902,11 @@ public class HebrewCalendar : Calendar // TypeDefIndex: 395
 	public override DateTime MinSupportedDateTime { get; } // 0x0046B92C 
 	public override DateTime MaxSupportedDateTime { get; } // 0x0046B9C4 
 
+	// Constructors
+	public HebrewCalendar(); // 0x0046A518
+	private static HebrewCalendar(); // 0x0046A6B8
+
 	// Methods
-	public void .ctor(); // 0x0046A518
-	private static void .cctor(); // 0x0046A6B8
 	internal void M_CheckDateTime(DateTime time); // 0x0046A94C
 	internal void M_CheckEra(int era); // 0x0046AA64
 	internal override void M_CheckYE(int year, int era); // 0x0046ABA4
@@ -9484,9 +9953,11 @@ public class HijriCalendar : Calendar // TypeDefIndex: 396
 	public override DateTime MinSupportedDateTime { get; } // 0x0046D574 
 	public override DateTime MaxSupportedDateTime { get; } // 0x0046D60C 
 
+	// Constructors
+	public HijriCalendar(); // 0x0046BA5C
+	private static HijriCalendar(); // 0x0046BBFC
+
 	// Methods
-	public void .ctor(); // 0x0046BA5C
-	private static void .cctor(); // 0x0046BBFC
 	internal void M_CheckFixedHijri(string param, int rdHijri); // 0x0046C040
 	internal void M_CheckDateTime(DateTime time); // 0x0046C548
 	internal int M_FromDateTime(DateTime time); // 0x0046C5FC
@@ -9527,8 +9998,10 @@ public sealed class IdnMapping // TypeDefIndex: 397
 	public bool AllowUnassigned { get; set; } // 0x0046D7B0 0x0046D7B8
 	public bool UseStd3AsciiRules { get; set; } // 0x0046D7C0 0x0046D7C8
 
+	// Constructors
+	public IdnMapping(); // 0x0046D6A4
+
 	// Methods
-	public void .ctor(); // 0x0046D6A4
 	public override bool Equals(object obj); // 0x0046D7D0
 	public override int GetHashCode(); // 0x0046D88C
 	public string GetAscii(string unicode); // 0x0046D8A0
@@ -9559,8 +10032,10 @@ internal class Bootstring // TypeDefIndex: 398
 	private readonly int initial_bias; // 0x20
 	private readonly int initial_n; // 0x24
 
+	// Constructors
+	public Bootstring(char delimiter, int baseNum, int tmin, int tmax, int skew, int damp, int initialBias, int initialN); // 0x002E2610
+
 	// Methods
-	public void .ctor(char delimiter, int baseNum, int tmin, int tmax, int skew, int damp, int initialBias, int initialN); // 0x002E2610
 	public string Encode(string s, int offset); // 0x002E2660
 	private char EncodeDigit(int d); // 0x002E2A94
 	private int DecodeDigit(char c); // 0x002E2B44
@@ -9571,8 +10046,9 @@ internal class Bootstring // TypeDefIndex: 398
 // Namespace: System.Globalization
 internal class Punycode : Bootstring // TypeDefIndex: 399
 {
-	// Methods
-	public void .ctor(); // 0x0046D760
+	// Constructors
+	public Punycode(); // 0x0046D760
+
 }
 
 // Namespace: System.Globalization
@@ -9590,9 +10066,11 @@ public class JapaneseCalendar : Calendar // TypeDefIndex: 400
 	public override DateTime MinSupportedDateTime { get; } // 0x0047044C 
 	public override DateTime MaxSupportedDateTime { get; } // 0x004704E4 
 
+	// Constructors
+	public JapaneseCalendar(); // 0x0046F0E0
+	private static JapaneseCalendar(); // 0x0046F4F8
+
 	// Methods
-	public void .ctor(); // 0x0046F0E0
-	private static void .cctor(); // 0x0046F4F8
 	internal void M_CheckDateTime(DateTime time); // 0x0046F974
 	internal void M_CheckEra(int era); // 0x0046FA44
 	internal int M_CheckYEG(int year, int era); // 0x0046FB64
@@ -9635,9 +10113,11 @@ public class JapaneseLunisolarCalendar : EastAsianLunisolarCalendar // TypeDefIn
 	public override DateTime MinSupportedDateTime { get; } // 0x00470A00 
 	public override DateTime MaxSupportedDateTime { get; } // 0x00470A98 
 
+	// Constructors
+	public JapaneseLunisolarCalendar(); // 0x0047057C
+	private static JapaneseLunisolarCalendar(); // 0x0047061C
+
 	// Methods
-	public void .ctor(); // 0x0047057C
-	private static void .cctor(); // 0x0047061C
 	public override int GetEra(DateTime time); // 0x00470910
 }
 
@@ -9657,9 +10137,11 @@ public class JulianCalendar : Calendar // TypeDefIndex: 402
 	public override DateTime MinSupportedDateTime { get; } // 0x00471998 
 	public override DateTime MaxSupportedDateTime { get; } // 0x00471A30 
 
+	// Constructors
+	public JulianCalendar(); // 0x00470B30
+	private static JulianCalendar(); // 0x00470CD0
+
 	// Methods
-	public void .ctor(); // 0x00470B30
-	private static void .cctor(); // 0x00470CD0
 	internal void M_CheckEra(int era); // 0x00470F5C
 	internal override void M_CheckYE(int year, int era); // 0x0047109C
 	internal void M_CheckYME(int year, int month, int era); // 0x00471130
@@ -9699,9 +10181,11 @@ public class KoreanCalendar : Calendar // TypeDefIndex: 403
 	public override DateTime MinSupportedDateTime { get; } // 0x0047280C 
 	public override DateTime MaxSupportedDateTime { get; } // 0x004728A4 
 
+	// Constructors
+	public KoreanCalendar(); // 0x00471AC8
+	private static KoreanCalendar(); // 0x00471C68
+
 	// Methods
-	public void .ctor(); // 0x00471AC8
-	private static void .cctor(); // 0x00471C68
 	internal void M_CheckEra(int era); // 0x00471F94
 	internal int M_CheckYEG(int year, int era); // 0x004720B4
 	internal override void M_CheckYE(int year, int era); // 0x00472178
@@ -9742,9 +10226,11 @@ public class KoreanLunisolarCalendar : EastAsianLunisolarCalendar // TypeDefInde
 	public override DateTime MinSupportedDateTime { get; } // 0x00472D60 
 	public override DateTime MaxSupportedDateTime { get; } // 0x00472DF8 
 
+	// Constructors
+	public KoreanLunisolarCalendar(); // 0x0047293C
+	private static KoreanLunisolarCalendar(); // 0x004729DC
+
 	// Methods
-	public void .ctor(); // 0x0047293C
-	private static void .cctor(); // 0x004729DC
 	public override int GetEra(DateTime time); // 0x00472C70
 }
 
@@ -9826,11 +10312,13 @@ public sealed class NumberFormatInfo : ICloneable, IFormatProvider // TypeDefInd
 	public string PositiveInfinitySymbol { get; set; } // 0x00476F28 0x00476F30
 	public string PositiveSign { get; set; } // 0x00477030 0x00477038
 
+	// Constructors
+	internal NumberFormatInfo(int lcid, bool read_only); // 0x00472E90
+	internal NumberFormatInfo(bool read_only); // 0x004731B4
+	public NumberFormatInfo(); // 0x004731C0
+	private static NumberFormatInfo(); // 0x004731CC
+
 	// Methods
-	internal void .ctor(int lcid, bool read_only); // 0x00472E90
-	internal void .ctor(bool read_only); // 0x004731B4
-	public void .ctor(); // 0x004731C0
-	private static void .cctor(); // 0x004731CC
 	private void InitPatterns(); // 0x00473690
 	public object GetFormat(Type formatType); // 0x00477138
 	public object Clone(); // 0x004771E0
@@ -9880,9 +10368,11 @@ public class PersianCalendar : Calendar // TypeDefIndex: 407
 	public override DateTime MinSupportedDateTime { get; } // 0x00478A6C 
 	public override DateTime MaxSupportedDateTime { get; } // 0x00478B04 
 
+	// Constructors
+	public PersianCalendar(); // 0x00477484
+	private static PersianCalendar(); // 0x00477624
+
 	// Methods
-	public void .ctor(); // 0x00477484
-	private static void .cctor(); // 0x00477624
 	internal void M_CheckDateTime(DateTime time); // 0x004778B0
 	internal void M_CheckEra(int era); // 0x004779A0
 	internal override void M_CheckYE(int year, int era); // 0x00477AE0
@@ -9945,9 +10435,11 @@ public class RegionInfo // TypeDefIndex: 408
 	public virtual string ThreeLetterWindowsRegionName { get; } // 0x004793FC 
 	public virtual string TwoLetterISORegionName { get; } // 0x00479404 
 
+	// Constructors
+	public RegionInfo(int culture); // 0x00478B9C
+	public RegionInfo(string name); // 0x00478E34
+
 	// Methods
-	public void .ctor(int culture); // 0x00478B9C
-	public void .ctor(string name); // 0x00478E34
 	private bool GetByTerritory(CultureInfo ci); // 0x00478D10
 	private bool construct_internal_region_from_name(string name); // 0x00478FF4
 	public override bool Equals(object value); // 0x0047940C
@@ -9967,9 +10459,11 @@ public class StringInfo // TypeDefIndex: 409
 	public int LengthInTextElements { get; } // 0x00479E9C 
 	public string String { get; set; } // 0x0047A158 0x00479CDC
 
+	// Constructors
+	public StringInfo(); // 0x00479CAC
+	public StringInfo(string value); // 0x00479CB4
+
 	// Methods
-	public void .ctor(); // 0x00479CAC
-	public void .ctor(string value); // 0x00479CB4
 	public override bool Equals(object value); // 0x00479D94
 	public override int GetHashCode(); // 0x00479E70
 	public string SubstringByTextElements(int startingTextElement); // 0x0047A160
@@ -9997,9 +10491,11 @@ public class TaiwanCalendar : Calendar // TypeDefIndex: 410
 	public override DateTime MinSupportedDateTime { get; } // 0x0047BBC0 
 	public override DateTime MaxSupportedDateTime { get; } // 0x0047BC58 
 
+	// Constructors
+	public TaiwanCalendar(); // 0x0047AC3C
+	private static TaiwanCalendar(); // 0x0047ADCC
+
 	// Methods
-	public void .ctor(); // 0x0047AC3C
-	private static void .cctor(); // 0x0047ADCC
 	internal void M_CheckDateTime(DateTime time); // 0x0047B0F4
 	internal void M_CheckEra(int era); // 0x0047B1C4
 	internal int M_CheckYEG(int year, int era); // 0x0047B2E4
@@ -10041,9 +10537,11 @@ public class TaiwanLunisolarCalendar : EastAsianLunisolarCalendar // TypeDefInde
 	public override DateTime MinSupportedDateTime { get; } // 0x0047C114 
 	public override DateTime MaxSupportedDateTime { get; } // 0x0047C1AC 
 
+	// Constructors
+	public TaiwanLunisolarCalendar(); // 0x0047BCF0
+	private static TaiwanLunisolarCalendar(); // 0x0047BD90
+
 	// Methods
-	public void .ctor(); // 0x0047BCF0
-	private static void .cctor(); // 0x0047BD90
 	public override int GetEra(DateTime time); // 0x0047C024
 }
 
@@ -10062,8 +10560,10 @@ public class TextElementEnumerator : IEnumerator // TypeDefIndex: 412
 	public object Current { get; } // 0x0047C244 
 	public int ElementIndex { get; } // 0x0047AB18 
 
+	// Constructors
+	internal TextElementEnumerator(string str, int startpos); // 0x0047A72C
+
 	// Methods
-	internal void .ctor(string str, int startpos); // 0x0047A72C
 	public string GetTextElement(); // 0x0047C2DC
 	public bool MoveNext(); // 0x0047ABBC
 	public void Reset(); // 0x0047AB04
@@ -10095,9 +10595,11 @@ public class TextInfo : ICloneable, IDeserializationCallback // TypeDefIndex: 41
 	public bool IsReadOnly { get; } // 0x0047C6A0 
 	public bool IsRightToLeft { get; } // 0x0047C6A8 
 
+	// Constructors
+	internal TextInfo(CultureInfo ci, int lcid, void * data, bool read_only); // 0x0047C374
+	private TextInfo(TextInfo textInfo); // 0x0047C4C0
+
 	// Methods
-	internal void .ctor(CultureInfo ci, int lcid, void * data, bool read_only); // 0x0047C374
-	private void .ctor(TextInfo textInfo); // 0x0047C4C0
 	private void System.Runtime.Serialization.IDeserializationCallback.OnDeserialization(object sender); // 0x0047C628
 	public override bool Equals(object obj); // 0x0047C814
 	public override int GetHashCode(); // 0x0047C8E4
@@ -10140,9 +10642,11 @@ public class ThaiBuddhistCalendar : Calendar // TypeDefIndex: 415
 	public override DateTime MinSupportedDateTime { get; } // 0x0047E500 
 	public override DateTime MaxSupportedDateTime { get; } // 0x0047E598 
 
+	// Constructors
+	public ThaiBuddhistCalendar(); // 0x0047D7B0
+	private static ThaiBuddhistCalendar(); // 0x0047D950
+
 	// Methods
-	public void .ctor(); // 0x0047D7B0
-	private static void .cctor(); // 0x0047D950
 	internal void M_CheckEra(int era); // 0x0047DC7C
 	internal int M_CheckYEG(int year, int era); // 0x0047DD9C
 	internal override void M_CheckYE(int year, int era); // 0x0047DE60
@@ -10187,9 +10691,11 @@ public class UmAlQuraCalendar : Calendar // TypeDefIndex: 416
 	public override DateTime MinSupportedDateTime { get; } // 0x0047FE94 
 	public override DateTime MaxSupportedDateTime { get; } // 0x0047FF2C 
 
+	// Constructors
+	public UmAlQuraCalendar(); // 0x0047E630
+	private static UmAlQuraCalendar(); // 0x0047E7D0
+
 	// Methods
-	public void .ctor(); // 0x0047E630
-	private static void .cctor(); // 0x0047E7D0
 	internal void M_CheckFixedHijri(string param, int rdHijri); // 0x0047EAB4
 	internal void M_CheckDateTime(DateTime time); // 0x0047EFBC
 	internal int M_FromDateTime(DateTime time); // 0x0047F070
@@ -10280,8 +10786,10 @@ public abstract class IsolatedStorage : MarshalByRefObject // TypeDefIndex: 419
 	protected virtual char SeparatorExternal { get; } // 0x0049DC2C 
 	protected virtual char SeparatorInternal { get; } // 0x0049DCB8 
 
+	// Constructors
+	protected IsolatedStorage(); // 0x0049D740
+
 	// Methods
-	protected void .ctor(); // 0x0049D740
 	protected abstract IsolatedStoragePermission GetPermission(PermissionSet ps);
 	protected void InitStore(IsolatedStorageScope scope, Type domainEvidenceType, Type assemblyEvidenceType); // 0x0049DCC0
 	protected void InitStore(IsolatedStorageScope scope, Type appEvidenceType); // 0x0049DE14
@@ -10292,11 +10800,12 @@ public abstract class IsolatedStorage : MarshalByRefObject // TypeDefIndex: 419
 [Serializable]
 public class IsolatedStorageException : Exception // TypeDefIndex: 420
 {
-	// Methods
-	public void .ctor(); // 0x0049DEF0
-	public void .ctor(string message); // 0x00497DA4
-	public void .ctor(string message, Exception inner); // 0x0049DF64
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0049DF6C
+	// Constructors
+	public IsolatedStorageException(); // 0x0049DEF0
+	public IsolatedStorageException(string message); // 0x00497DA4
+	public IsolatedStorageException(string message, Exception inner); // 0x0049DF64
+	protected IsolatedStorageException(SerializationInfo info, StreamingContext context); // 0x0049DF6C
+
 }
 
 // Namespace: System.IO.IsolatedStorage
@@ -10314,10 +10823,12 @@ public sealed class IsolatedStorageFile : IsolatedStorage, IDisposable // TypeDe
 	public override ulong MaximumSize { get; } // 0x004A0A40 
 	internal string Root { get; } // 0x004A0DE8 
 
+	// Constructors
+	private IsolatedStorageFile(IsolatedStorageScope scope); // 0x0049DF8C
+	internal IsolatedStorageFile(IsolatedStorageScope scope, string location); // 0x0049DFAC
+	private static IsolatedStorageFile(); // 0x0049E0B8
+
 	// Methods
-	private void .ctor(IsolatedStorageScope scope); // 0x0049DF8C
-	internal void .ctor(IsolatedStorageScope scope, string location); // 0x0049DFAC
-	private static void .cctor(); // 0x0049E0B8
 	public static IEnumerator GetEnumerator(IsolatedStorageScope scope); // 0x0049E138
 	public static IsolatedStorageFile GetStore(IsolatedStorageScope scope, Evidence domainEvidence, Type domainEvidenceType, Evidence assemblyEvidence, Type assemblyEvidenceType); // 0x0049E6A4
 	public static IsolatedStorageFile GetStore(IsolatedStorageScope scope, object domainIdentity, object assemblyIdentity); // 0x0049F494
@@ -10363,8 +10874,9 @@ private struct Identities // TypeDefIndex: 422
 	public object Assembly; // 0x0C
 	public object Domain; // 0x10
 
-	// Methods
-	public void .ctor(object application, object assembly, object domain); // 0x000A8784
+	// Constructors
+	public Identities(object application, object assembly, object domain); // 0x000A8784
+
 }
 
 // Namespace: System.IO.IsolatedStorage
@@ -10378,8 +10890,10 @@ internal class IsolatedStorageFileEnumerator : IEnumerator // TypeDefIndex: 423
 	// Properties
 	public object Current { get; } // 0x004A1AF4 
 
+	// Constructors
+	public IsolatedStorageFileEnumerator(IsolatedStorageScope scope, string root); // 0x0049E604
+
 	// Methods
-	public void .ctor(IsolatedStorageScope scope, string root); // 0x0049E604
 	public bool MoveNext(); // 0x004A1BB4
 	public void Reset(); // 0x004A1BE4
 }
@@ -10397,15 +10911,17 @@ public class IsolatedStorageFileStream : FileStream // TypeDefIndex: 424
 	public override long Length { get; } // 0x004A296C 
 	public override long Position { get; set; } // 0x004A2970 0x004A2974
 
+	// Constructors
+	public IsolatedStorageFileStream(string path, FileMode mode); // 0x004A1BF0
+	public IsolatedStorageFileStream(string path, FileMode mode, FileAccess access); // 0x004A1CC0
+	public IsolatedStorageFileStream(string path, FileMode mode, FileAccess access, FileShare share); // 0x004A1D3C
+	public IsolatedStorageFileStream(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize); // 0x004A1D90
+	public IsolatedStorageFileStream(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, IsolatedStorageFile isf); // 0x004A1C64
+	public IsolatedStorageFileStream(string path, FileMode mode, FileAccess access, FileShare share, IsolatedStorageFile isf); // 0x004A242C
+	public IsolatedStorageFileStream(string path, FileMode mode, FileAccess access, IsolatedStorageFile isf); // 0x004A247C
+	public IsolatedStorageFileStream(string path, FileMode mode, IsolatedStorageFile isf); // 0x004A24FC
+
 	// Methods
-	public void .ctor(string path, FileMode mode); // 0x004A1BF0
-	public void .ctor(string path, FileMode mode, FileAccess access); // 0x004A1CC0
-	public void .ctor(string path, FileMode mode, FileAccess access, FileShare share); // 0x004A1D3C
-	public void .ctor(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize); // 0x004A1D90
-	public void .ctor(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, IsolatedStorageFile isf); // 0x004A1C64
-	public void .ctor(string path, FileMode mode, FileAccess access, FileShare share, IsolatedStorageFile isf); // 0x004A242C
-	public void .ctor(string path, FileMode mode, FileAccess access, IsolatedStorageFile isf); // 0x004A247C
-	public void .ctor(string path, FileMode mode, IsolatedStorageFile isf); // 0x004A24FC
 	private static string CreateIsolatedPath(IsolatedStorageFile isf, string path, FileMode mode); // 0x004A1DE4
 	public override IAsyncResult BeginRead(byte[] buffer, int offset, int numBytes, AsyncCallback userCallback, object stateObject); // 0x004A298C
 	public override IAsyncResult BeginWrite(byte[] buffer, int offset, int numBytes, AsyncCallback userCallback, object stateObject); // 0x004A29B0
@@ -10449,9 +10965,11 @@ public class BinaryReader : IDisposable // TypeDefIndex: 426
 	// Properties
 	public virtual Stream BaseStream { get; } // 0x00482DD0 
 
+	// Constructors
+	public BinaryReader(Stream input); // 0x00482BB0
+	public BinaryReader(Stream input, Encoding encoding); // 0x00482C44
+
 	// Methods
-	public void .ctor(Stream input); // 0x00482BB0
-	public void .ctor(Stream input, Encoding encoding); // 0x00482C44
 	private void System.IDisposable.Dispose(); // 0x00482DBC
 	public virtual void Close(); // 0x00482DD8
 	protected virtual void Dispose(bool disposing); // 0x00482E08
@@ -10497,11 +11015,13 @@ public class BinaryWriter : IDisposable // TypeDefIndex: 427
 	// Properties
 	public virtual Stream BaseStream { get; } // 0x004850E8 
 
+	// Constructors
+	protected BinaryWriter(); // 0x00484D58
+	public BinaryWriter(Stream output); // 0x00484FD0
+	public BinaryWriter(Stream output, Encoding encoding); // 0x00484E2C
+	private static BinaryWriter(); // 0x00485064
+
 	// Methods
-	protected void .ctor(); // 0x00484D58
-	public void .ctor(Stream output); // 0x00484FD0
-	public void .ctor(Stream output, Encoding encoding); // 0x00484E2C
-	private static void .cctor(); // 0x00485064
 	private void System.IDisposable.Dispose(); // 0x004850D4
 	public virtual void Close(); // 0x004850F0
 	protected virtual void Dispose(bool disposing); // 0x00485104
@@ -10546,9 +11066,11 @@ public sealed class BufferedStream : Stream // TypeDefIndex: 428
 	public override long Length { get; } // 0x00487138 
 	public override long Position { get; set; } // 0x00487268 0x00487388
 
+	// Constructors
+	public BufferedStream(Stream stream); // 0x00486E44
+	public BufferedStream(Stream stream, int bufferSize); // 0x00486E4C
+
 	// Methods
-	public void .ctor(Stream stream); // 0x00486E44
-	public void .ctor(Stream stream, int bufferSize); // 0x00486E4C
 	protected override void Dispose(bool disposing); // 0x00487498
 	public override void Flush(); // 0x00487174
 	public override long Seek(long offset, SeekOrigin origin); // 0x004874FC
@@ -10617,10 +11139,12 @@ public sealed class DirectoryInfo : FileSystemInfo // TypeDefIndex: 430
 	public DirectoryInfo Parent { get; } // 0x0048B830 
 	public DirectoryInfo Root { get; } // 0x0048B8BC 
 
+	// Constructors
+	public DirectoryInfo(string path); // 0x0048AD14
+	internal DirectoryInfo(string path, bool simpleOriginalPath); // 0x0048AD1C
+	private DirectoryInfo(SerializationInfo info, StreamingContext context); // 0x0048B574
+
 	// Methods
-	public void .ctor(string path); // 0x0048AD14
-	internal void .ctor(string path, bool simpleOriginalPath); // 0x0048AD1C
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x0048B574
 	private void Initialize(); // 0x0048B1D0
 	public void Create(); // 0x0048C0E4
 	public DirectoryInfo CreateSubdirectory(string path); // 0x0048C0F0
@@ -10643,11 +11167,12 @@ public sealed class DirectoryInfo : FileSystemInfo // TypeDefIndex: 430
 [Serializable]
 public class DirectoryNotFoundException : IOException // TypeDefIndex: 431
 {
-	// Methods
-	public void .ctor(); // 0x0048DA60
-	public void .ctor(string message); // 0x0048DAC8
-	public void .ctor(string message, Exception innerException); // 0x0048DAD0
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0048DAE0
+	// Constructors
+	public DirectoryNotFoundException(); // 0x0048DA60
+	public DirectoryNotFoundException(string message); // 0x0048DAC8
+	public DirectoryNotFoundException(string message, Exception innerException); // 0x0048DAD0
+	protected DirectoryNotFoundException(SerializationInfo info, StreamingContext context); // 0x0048DAE0
+
 }
 
 // Namespace: System.IO
@@ -10670,9 +11195,11 @@ public sealed class DriveInfo : ISerializable // TypeDefIndex: 432
 	public DirectoryInfo RootDirectory { get; } // 0x0048E980 
 	public bool IsReady { get; } // 0x0048E9F8 
 
+	// Constructors
+	private DriveInfo(_DriveType _drive_type, string path, string fstype); // 0x0048DB20
+	public DriveInfo(string driveName); // 0x0048DB50
+
 	// Methods
-	private void .ctor(_DriveType _drive_type, string path, string fstype); // 0x0048DB20
-	public void .ctor(string driveName); // 0x0048DB50
 	private void System.Runtime.Serialization.ISerializable.GetObjectData(SerializationInfo info, StreamingContext context); // 0x0048DD14
 	private static void GetDiskFreeSpace(string path, out ulong availableFreeSpace, out ulong totalSize, out ulong totalFreeSpace); // 0x0048DD9C
 	private static StreamReader TryOpen(string name); // 0x0048EA00
@@ -10700,11 +11227,12 @@ public class DriveNotFoundException : IOException // TypeDefIndex: 434
 	// Fields
 	private const int ErrorCode = -2147024893; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x0048F43C
-	public void .ctor(string message); // 0x0048F4B0
-	public void .ctor(string message, Exception innerException); // 0x0048F4D4
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0048F4F8
+	// Constructors
+	public DriveNotFoundException(); // 0x0048F43C
+	public DriveNotFoundException(string message); // 0x0048F4B0
+	public DriveNotFoundException(string message, Exception innerException); // 0x0048F4D4
+	protected DriveNotFoundException(SerializationInfo info, StreamingContext context); // 0x0048F4F8
+
 }
 
 // Namespace: System.IO
@@ -10724,11 +11252,12 @@ public enum DriveType // TypeDefIndex: 435
 [Serializable]
 public class EndOfStreamException : IOException // TypeDefIndex: 436
 {
-	// Methods
-	public void .ctor(); // 0x0048F518
-	public void .ctor(string message); // 0x0048F58C
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0048F594
-	public void .ctor(string message, Exception innerException); // 0x0048F5B4
+	// Constructors
+	public EndOfStreamException(); // 0x0048F518
+	public EndOfStreamException(string message); // 0x0048F58C
+	protected EndOfStreamException(SerializationInfo info, StreamingContext context); // 0x0048F594
+	public EndOfStreamException(string message, Exception innerException); // 0x0048F5B4
+
 }
 
 // Namespace: System.IO
@@ -10835,9 +11364,11 @@ public sealed class FileInfo : FileSystemInfo // TypeDefIndex: 440
 	public string DirectoryName { get; } // 0x00495168 
 	public DirectoryInfo Directory { get; } // 0x004951EC 
 
+	// Constructors
+	public FileInfo(string fileName); // 0x0048C80C
+	private FileInfo(SerializationInfo info, StreamingContext context); // 0x00494B58
+
 	// Methods
-	public void .ctor(string fileName); // 0x0048C80C
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x00494B58
 	internal override void InternalRefresh(); // 0x00494B70
 	public void Encrypt(); // 0x00494F10
 	public void Decrypt(); // 0x00494FB8
@@ -10874,13 +11405,15 @@ public class FileLoadException : IOException // TypeDefIndex: 441
 	public string FileName { get; } // 0x00496234 
 	public string FusionLog { get; } // 0x0049623C 
 
+	// Constructors
+	public FileLoadException(); // 0x00495F9C
+	public FileLoadException(string message); // 0x0049602C
+	public FileLoadException(string message, string fileName); // 0x00496058
+	public FileLoadException(string message, Exception inner); // 0x0049608C
+	public FileLoadException(string message, string fileName, Exception inner); // 0x004960B8
+	protected FileLoadException(SerializationInfo info, StreamingContext context); // 0x004960F0
+
 	// Methods
-	public void .ctor(); // 0x00495F9C
-	public void .ctor(string message); // 0x0049602C
-	public void .ctor(string message, string fileName); // 0x00496058
-	public void .ctor(string message, Exception inner); // 0x0049608C
-	public void .ctor(string message, string fileName, Exception inner); // 0x004960B8
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x004960F0
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x00496244
 	public override string ToString(); // 0x00496328
 }
@@ -10911,13 +11444,15 @@ public class FileNotFoundException : IOException // TypeDefIndex: 443
 	public string FusionLog { get; } // 0x00496690 
 	public override string Message { get; } // 0x00496698 
 
+	// Constructors
+	public FileNotFoundException(); // 0x00495A04
+	public FileNotFoundException(string message); // 0x00496518
+	public FileNotFoundException(string message, Exception innerException); // 0x0049653C
+	public FileNotFoundException(string message, string fileName); // 0x004902EC
+	public FileNotFoundException(string message, string fileName, Exception innerException); // 0x00496560
+	protected FileNotFoundException(SerializationInfo info, StreamingContext context); // 0x00496590
+
 	// Methods
-	public void .ctor(); // 0x00495A04
-	public void .ctor(string message); // 0x00496518
-	public void .ctor(string message, Exception innerException); // 0x0049653C
-	public void .ctor(string message, string fileName); // 0x004902EC
-	public void .ctor(string message, string fileName, Exception innerException); // 0x00496560
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00496590
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x00496808
 	public override string ToString(); // 0x004968EC
 }
@@ -10979,19 +11514,21 @@ public class FileStream : Stream // TypeDefIndex: 446
 	public virtual IntPtr Handle { get; } // 0x00498524 
 	public virtual SafeFileHandle SafeFileHandle { get; } // 0x0049852C 
 
+	// Constructors
+	public FileStream(IntPtr handle, FileAccess access); // 0x00496B3C
+	public FileStream(IntPtr handle, FileAccess access, bool ownsHandle); // 0x00496B94
+	public FileStream(IntPtr handle, FileAccess access, bool ownsHandle, int bufferSize); // 0x00496BC0
+	public FileStream(IntPtr handle, FileAccess access, bool ownsHandle, int bufferSize, bool isAsync); // 0x00496B68
+	internal FileStream(IntPtr handle, FileAccess access, bool ownsHandle, int bufferSize, bool isAsync, bool noBuffering); // 0x00496BE8
+	public FileStream(string path, FileMode mode); // 0x004970C4
+	public FileStream(string path, FileMode mode, FileAccess access); // 0x00497C98
+	public FileStream(string path, FileMode mode, FileAccess access, FileShare share); // 0x0049217C
+	public FileStream(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize); // 0x00490B18
+	public FileStream(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, bool useAsync); // 0x00497D70
+	internal FileStream(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, bool isAsync, bool anonymous); // 0x00497D00
+	internal FileStream(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, bool anonymous, FileOptions options); // 0x00497130
+
 	// Methods
-	public void .ctor(IntPtr handle, FileAccess access); // 0x00496B3C
-	public void .ctor(IntPtr handle, FileAccess access, bool ownsHandle); // 0x00496B94
-	public void .ctor(IntPtr handle, FileAccess access, bool ownsHandle, int bufferSize); // 0x00496BC0
-	public void .ctor(IntPtr handle, FileAccess access, bool ownsHandle, int bufferSize, bool isAsync); // 0x00496B68
-	internal void .ctor(IntPtr handle, FileAccess access, bool ownsHandle, int bufferSize, bool isAsync, bool noBuffering); // 0x00496BE8
-	public void .ctor(string path, FileMode mode); // 0x004970C4
-	public void .ctor(string path, FileMode mode, FileAccess access); // 0x00497C98
-	public void .ctor(string path, FileMode mode, FileAccess access, FileShare share); // 0x0049217C
-	public void .ctor(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize); // 0x00490B18
-	public void .ctor(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, bool useAsync); // 0x00497D70
-	internal void .ctor(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, bool isAsync, bool anonymous); // 0x00497D00
-	internal void .ctor(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, bool anonymous, FileOptions options); // 0x00497130
 	public override int ReadByte(); // 0x004985CC
 	public override void WriteByte(byte value); // 0x004989C4
 	public override int Read(out byte[] array, int offset, int count); // 0x00498BF8
@@ -11053,8 +11590,10 @@ internal class FileStreamAsyncResult : IAsyncResult // TypeDefIndex: 449
 	public Exception Exception { get; } // 0x0049C828 
 	public bool Done { get; set; } // 0x0049C830 0x0049C838
 
+	// Constructors
+	public FileStreamAsyncResult(AsyncCallback cb, object state); // 0x0049A6A0
+
 	// Methods
-	public void .ctor(AsyncCallback cb, object state); // 0x0049A6A0
 	private static void CBWrapper(IAsyncResult ares); // 0x0049C6C8
 	public void SetComplete(Exception e); // 0x0049C7A0
 	public void SetComplete(Exception e, int nbytes); // 0x0049C7F4
@@ -11084,9 +11623,11 @@ public abstract class FileSystemInfo : MarshalByRefObject, ISerializable // Type
 	public DateTime LastWriteTime { get; set; } // 0x0049D434 0x0049D4E4
 	public DateTime LastWriteTimeUtc { get; set; } // 0x0049D65C 0x0049D6B8
 
+	// Constructors
+	protected FileSystemInfo(); // 0x0048AE14
+	protected FileSystemInfo(SerializationInfo info, StreamingContext context); // 0x0048B598
+
 	// Methods
-	protected void .ctor(); // 0x0048AE14
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0048B598
 	public virtual void GetObjectData(SerializationInfo info, StreamingContext context); // 0x0049C840
 	public abstract void Delete();
 	public void Refresh(); // 0x0049D714
@@ -11099,12 +11640,13 @@ public abstract class FileSystemInfo : MarshalByRefObject, ISerializable // Type
 [Serializable]
 public class IOException : SystemException // TypeDefIndex: 451
 {
-	// Methods
-	public void .ctor(); // 0x004961C4
-	public void .ctor(string message); // 0x0048CF14
-	public void .ctor(string message, Exception innerException); // 0x0048DAD8
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0048DB00
-	public void .ctor(string message, int hresult); // 0x0049D720
+	// Constructors
+	public IOException(); // 0x004961C4
+	public IOException(string message); // 0x0048CF14
+	public IOException(string message, Exception innerException); // 0x0048DAD8
+	protected IOException(SerializationInfo info, StreamingContext context); // 0x0048DB00
+	public IOException(string message, int hresult); // 0x0049D720
+
 }
 
 // Namespace: System.IO
@@ -11131,14 +11673,16 @@ public class MemoryStream : Stream // TypeDefIndex: 452
 	public override long Length { get; } // 0x004A3620 
 	public override long Position { get; set; } // 0x004A3644 0x004A3668
 
+	// Constructors
+	public MemoryStream(); // 0x0049A774
+	public MemoryStream(int capacity); // 0x004A2A54
+	public MemoryStream(byte[] buffer); // 0x004A2B6C
+	public MemoryStream(byte[] buffer, bool writable); // 0x004A2E14
+	public MemoryStream(byte[] buffer, int index, int count); // 0x004A2F24
+	public MemoryStream(byte[] buffer, int index, int count, bool writable); // 0x004A2FDC
+	public MemoryStream(byte[] buffer, int index, int count, bool writable, bool publiclyVisible); // 0x004A3098
+
 	// Methods
-	public void .ctor(); // 0x0049A774
-	public void .ctor(int capacity); // 0x004A2A54
-	public void .ctor(byte[] buffer); // 0x004A2B6C
-	public void .ctor(byte[] buffer, bool writable); // 0x004A2E14
-	public void .ctor(byte[] buffer, int index, int count); // 0x004A2F24
-	public void .ctor(byte[] buffer, int index, int count, bool writable); // 0x004A2FDC
-	public void .ctor(byte[] buffer, int index, int count, bool writable, bool publiclyVisible); // 0x004A3098
 	private void InternalConstructor(byte[] buffer, int index, int count, bool writable, bool publicallyVisible); // 0x004A2C7C
 	private void CheckIfClosedThrowDisposed(); // 0x004A3154
 	protected override void Dispose(bool disposing); // 0x004A379C
@@ -11182,9 +11726,11 @@ internal sealed class MonoIO // TypeDefIndex: 454
 	public static char AltDirectorySeparatorChar { get; } // 0x004A4744 
 	public static char PathSeparator { get; } // 0x004A4748 
 
+	// Constructors
+	public MonoIO(); // 0x004A43E8
+	private static MonoIO(); // 0x004A43F0
+
 	// Methods
-	public void .ctor(); // 0x004A43E8
-	private static void .cctor(); // 0x004A43F0
 	public static Exception GetException(MonoIOError error); // 0x00491F80
 	public static Exception GetException(string path, MonoIOError error); // 0x0048DE84
 	public static bool CreateDirectory(string path, out MonoIOError error); // 0x004A4478
@@ -11281,8 +11827,10 @@ public static class Path // TypeDefIndex: 457
 	internal static readonly char[] PathSeparatorChars; // 0x14
 	private static readonly bool dirEqualsVolume; // 0x18
 
+	// Constructors
+	private static Path(); // 0x004A4838
+
 	// Methods
-	private static void .cctor(); // 0x004A4838
 	public static string ChangeExtension(string path, string extension); // 0x004A4AC8
 	public static string Combine(string path1, string path2); // 0x0048C1B8
 	internal static string CleanPath(string s); // 0x004A4EDC
@@ -11314,11 +11862,12 @@ public static class Path // TypeDefIndex: 457
 [Serializable]
 public class PathTooLongException : IOException // TypeDefIndex: 458
 {
-	// Methods
-	public void .ctor(); // 0x004A81B8
-	public void .ctor(string message); // 0x004A4470
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x004A822C
-	public void .ctor(string message, Exception innerException); // 0x004A824C
+	// Constructors
+	public PathTooLongException(); // 0x004A81B8
+	public PathTooLongException(string message); // 0x004A4470
+	protected PathTooLongException(SerializationInfo info, StreamingContext context); // 0x004A822C
+	public PathTooLongException(string message, Exception innerException); // 0x004A824C
+
 }
 
 // Namespace: System.IO
@@ -11338,10 +11887,12 @@ internal class SearchPattern // TypeDefIndex: 460
 	internal static readonly char[] WildcardChars; // 0x00
 	internal static readonly char[] InvalidChars; // 0x04
 
+	// Constructors
+	public SearchPattern(string pattern); // 0x004A8254
+	public SearchPattern(string pattern, bool ignore); // 0x004A8284
+	private static SearchPattern(); // 0x004A866C
+
 	// Methods
-	public void .ctor(string pattern); // 0x004A8254
-	public void .ctor(string pattern, bool ignore); // 0x004A8284
-	private static void .cctor(); // 0x004A866C
 	public bool IsMatch(string text); // 0x004A8820
 	private void Compile(string pattern); // 0x004A82B4
 	private bool Match(Op op, string text, int ptr); // 0x004A8844
@@ -11355,8 +11906,9 @@ private class Op // TypeDefIndex: 461
 	public string Argument; // 0x0C
 	public Op Next; // 0x10
 
-	// Methods
-	public void .ctor(OpCode code); // 0x004A8A64
+	// Constructors
+	public Op(OpCode code); // 0x004A8A64
+
 }
 
 // Namespace: 
@@ -11395,9 +11947,11 @@ public abstract class Stream : IDisposable // TypeDefIndex: 464
 	public virtual int ReadTimeout { get; set; } // 0x004A8B3C 0x004A8BD8
 	public virtual int WriteTimeout { get; set; } // 0x004A8C74 0x004A8D10
 
+	// Constructors
+	protected Stream(); // 0x00496FA0
+	private static Stream(); // 0x004A8A90
+
 	// Methods
-	protected void .ctor(); // 0x00496FA0
-	private static void .cctor(); // 0x004A8A90
 	public void Dispose(); // 0x004A8B14
 	protected virtual void Dispose(bool disposing); // 0x004A8B24
 	public virtual void Close(); // 0x004A8B28
@@ -11426,8 +11980,10 @@ internal class NullStream : Stream // TypeDefIndex: 465
 	public override long Length { get; } // 0x004A47F0 
 	public override long Position { get; set; } // 0x004A47FC 0x004A4808
 
+	// Constructors
+	public NullStream(); // 0x004A4754
+
 	// Methods
-	public void .ctor(); // 0x004A4754
 	public override void Flush(); // 0x004A480C
 	public override int Read(byte[] buffer, int offset, int count); // 0x004A4810
 	public override int ReadByte(); // 0x004A4818
@@ -11457,8 +12013,10 @@ internal class StreamAsyncResult : IAsyncResult // TypeDefIndex: 466
 	public int NBytes { get; } // 0x004A921C 
 	public bool Done { get; set; } // 0x004A9224 0x004A922C
 
+	// Constructors
+	public StreamAsyncResult(object state); // 0x004A9040
+
 	// Methods
-	public void .ctor(object state); // 0x004A9040
 	public void SetComplete(Exception e); // 0x004A9074
 	public void SetComplete(Exception e, int nbytes); // 0x004A906C
 }
@@ -11490,19 +12048,21 @@ public class StreamReader : TextReader // TypeDefIndex: 467
 	public virtual Encoding CurrentEncoding { get; } // 0x004A9B58 
 	public bool EndOfStream { get; } // 0x004940DC 
 
+	// Constructors
+	internal StreamReader(); // 0x004A9234
+	public StreamReader(Stream stream); // 0x00495318
+	public StreamReader(Stream stream, bool detectEncodingFromByteOrderMarks); // 0x004A936C
+	public StreamReader(Stream stream, Encoding encoding); // 0x004A9418
+	public StreamReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks); // 0x004A943C
+	public StreamReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize); // 0x004A92B8
+	public StreamReader(string path); // 0x00492404
+	public StreamReader(string path, bool detectEncodingFromByteOrderMarks); // 0x004A9A04
+	public StreamReader(string path, Encoding encoding); // 0x0048EC08
+	public StreamReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks); // 0x004A9AB0
+	public StreamReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize); // 0x004A9708
+	private static StreamReader(); // 0x004A9AD0
+
 	// Methods
-	internal void .ctor(); // 0x004A9234
-	public void .ctor(Stream stream); // 0x00495318
-	public void .ctor(Stream stream, bool detectEncodingFromByteOrderMarks); // 0x004A936C
-	public void .ctor(Stream stream, Encoding encoding); // 0x004A9418
-	public void .ctor(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks); // 0x004A943C
-	public void .ctor(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize); // 0x004A92B8
-	public void .ctor(string path); // 0x00492404
-	public void .ctor(string path, bool detectEncodingFromByteOrderMarks); // 0x004A9A04
-	public void .ctor(string path, Encoding encoding); // 0x0048EC08
-	public void .ctor(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks); // 0x004A9AB0
-	public void .ctor(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize); // 0x004A9708
-	private static void .cctor(); // 0x004A9AD0
 	internal void Initialize(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize); // 0x004A945C
 	public override void Close(); // 0x004A9BF0
 	protected override void Dispose(bool disposing); // 0x004A9C04
@@ -11525,8 +12085,10 @@ private class NullStreamReader : StreamReader // TypeDefIndex: 468
 	public override Stream BaseStream { get; } // 0x001CDFD8 
 	public override Encoding CurrentEncoding { get; } // 0x001CE064 
 
+	// Constructors
+	public NullStreamReader(); // 0x001CDEA8
+
 	// Methods
-	public void .ctor(); // 0x001CDEA8
 	public override int Peek(); // 0x001CDF2C
 	public override int Read(); // 0x001CDF34
 	public override int Read(out char[] buffer, int index, int count); // 0x001CDF3C
@@ -11558,15 +12120,17 @@ public class StreamWriter : TextWriter // TypeDefIndex: 469
 	public virtual Stream BaseStream { get; } // 0x001CE9D8 
 	public override Encoding Encoding { get; } // 0x001CE9E0 
 
+	// Constructors
+	public StreamWriter(Stream stream); // 0x001CE0E0
+	public StreamWriter(Stream stream, Encoding encoding); // 0x001CE378
+	public StreamWriter(Stream stream, Encoding encoding, int bufferSize); // 0x001CE180
+	public StreamWriter(string path); // 0x001CE50C
+	public StreamWriter(string path, bool append); // 0x001CE7DC
+	public StreamWriter(string path, bool append, Encoding encoding); // 0x001CE888
+	public StreamWriter(string path, bool append, Encoding encoding, int bufferSize); // 0x001CE5B4
+	private static StreamWriter(); // 0x001CE8A8
+
 	// Methods
-	public void .ctor(Stream stream); // 0x001CE0E0
-	public void .ctor(Stream stream, Encoding encoding); // 0x001CE378
-	public void .ctor(Stream stream, Encoding encoding, int bufferSize); // 0x001CE180
-	public void .ctor(string path); // 0x001CE50C
-	public void .ctor(string path, bool append); // 0x001CE7DC
-	public void .ctor(string path, bool append, Encoding encoding); // 0x001CE888
-	public void .ctor(string path, bool append, Encoding encoding, int bufferSize); // 0x001CE5B4
-	private static void .cctor(); // 0x001CE8A8
 	internal void Initialize(Encoding encoding, int bufferSize); // 0x001CE3D8
 	protected override void Dispose(bool disposing); // 0x001CE9E8
 	public override void Flush(); // 0x001CEBF8
@@ -11591,8 +12155,10 @@ public class StringReader : TextReader // TypeDefIndex: 470
 	private int nextChar; // 0x0C
 	private int sourceLength; // 0x10
 
+	// Constructors
+	public StringReader(string s); // 0x001CF684
+
 	// Methods
-	public void .ctor(string s); // 0x001CF684
 	public override void Close(); // 0x001CF784
 	protected override void Dispose(bool disposing); // 0x001CF798
 	public override int Peek(); // 0x001CF7C0
@@ -11614,11 +12180,13 @@ public class StringWriter : TextWriter // TypeDefIndex: 471
 	// Properties
 	public override Encoding Encoding { get; } // 0x001CFE30 
 
+	// Constructors
+	public StringWriter(); // 0x001CFC40
+	public StringWriter(IFormatProvider formatProvider); // 0x001CFCC4
+	public StringWriter(StringBuilder sb); // 0x001CFCBC
+	public StringWriter(StringBuilder sb, IFormatProvider formatProvider); // 0x001CFD44
+
 	// Methods
-	public void .ctor(); // 0x001CFC40
-	public void .ctor(IFormatProvider formatProvider); // 0x001CFCC4
-	public void .ctor(StringBuilder sb); // 0x001CFCBC
-	public void .ctor(StringBuilder sb, IFormatProvider formatProvider); // 0x001CFD44
 	public override void Close(); // 0x001CFEAC
 	protected override void Dispose(bool disposing); // 0x001CFEDC
 	public virtual StringBuilder GetStringBuilder(); // 0x001CFF18
@@ -11635,9 +12203,11 @@ public abstract class TextReader : IDisposable // TypeDefIndex: 472
 	// Fields
 	public static readonly TextReader Null; // 0x00
 
+	// Constructors
+	protected TextReader(); // 0x001CF77C
+	private static TextReader(); // 0x001D2370
+
 	// Methods
-	protected void .ctor(); // 0x001CF77C
-	private static void .cctor(); // 0x001D2370
 	public virtual void Close(); // 0x001D2470
 	public void Dispose(); // 0x001D2484
 	protected virtual void Dispose(bool disposing); // 0x001CF7B0
@@ -11653,8 +12223,10 @@ public abstract class TextReader : IDisposable // TypeDefIndex: 472
 // Namespace: 
 private class NullTextReader : TextReader // TypeDefIndex: 473
 {
+	// Constructors
+	public NullTextReader(); // 0x001D23EC
+
 	// Methods
-	public void .ctor(); // 0x001D23EC
 	public override string ReadLine(); // 0x001D27D0
 }
 
@@ -11665,8 +12237,10 @@ internal class SynchronizedReader : TextReader // TypeDefIndex: 474
 	// Fields
 	private TextReader reader; // 0x08
 
+	// Constructors
+	public SynchronizedReader(TextReader reader); // 0x001D03B0
+
 	// Methods
-	public void .ctor(TextReader reader); // 0x001D03B0
 	public override void Close(); // 0x001D043C
 	public override int Peek(); // 0x001D04CC
 	public override int ReadBlock(char[] buffer, int index, int count); // 0x001D056C
@@ -11690,10 +12264,12 @@ public abstract class TextWriter : IDisposable // TypeDefIndex: 475
 	public virtual IFormatProvider FormatProvider { get; } // 0x001D2920 
 	public virtual string NewLine { get; set; } // 0x001D2928 0x001D2938
 
+	// Constructors
+	protected TextWriter(); // 0x001CE394
+	protected TextWriter(IFormatProvider formatProvider); // 0x001D27D8
+	private static TextWriter(); // 0x001D2824
+
 	// Methods
-	protected void .ctor(); // 0x001CE394
-	protected void .ctor(IFormatProvider formatProvider); // 0x001D27D8
-	private static void .cctor(); // 0x001D2824
 	public virtual void Close(); // 0x001D2980
 	protected virtual void Dispose(bool disposing); // 0x001CFF08
 	public void Dispose(); // 0x001D2994
@@ -11743,8 +12319,10 @@ private sealed class NullTextWriter : TextWriter // TypeDefIndex: 476
 	// Properties
 	public override Encoding Encoding { get; } // 0x001D37FC 
 
+	// Constructors
+	public NullTextWriter(); // 0x001D28A0
+
 	// Methods
-	public void .ctor(); // 0x001D28A0
 	public override void Write(string s); // 0x001D3878
 	public override void Write(char value); // 0x001D387C
 	public override void Write(char[] value, int index, int count); // 0x001D3880
@@ -11763,9 +12341,11 @@ internal class SynchronizedWriter : TextWriter // TypeDefIndex: 477
 	public override IFormatProvider FormatProvider { get; } // 0x001D2198 
 	public override string NewLine { get; set; } // 0x001D2238 0x001D22D8
 
+	// Constructors
+	public SynchronizedWriter(TextWriter writer); // 0x001D08D4
+	public SynchronizedWriter(TextWriter writer, bool neverClose); // 0x001D08DC
+
 	// Methods
-	public void .ctor(TextWriter writer); // 0x001D08D4
-	public void .ctor(TextWriter writer, bool neverClose); // 0x001D08DC
 	public override void Close(); // 0x001D096C
 	public override void Flush(); // 0x001D0A10
 	public override void Write(bool value); // 0x001D0AA0
@@ -11811,18 +12391,20 @@ internal class UnexceptionalStreamReader : StreamReader // TypeDefIndex: 478
 	private static bool[] newline; // 0x00
 	private static char newlineChar; // 0x04
 
+	// Constructors
+	public UnexceptionalStreamReader(Stream stream); // 0x001D3884
+	public UnexceptionalStreamReader(Stream stream, bool detect_encoding_from_bytemarks); // 0x001D3910
+	public UnexceptionalStreamReader(Stream stream, Encoding encoding); // 0x001D39A4
+	public UnexceptionalStreamReader(Stream stream, Encoding encoding, bool detect_encoding_from_bytemarks); // 0x001D3A38
+	public UnexceptionalStreamReader(Stream stream, Encoding encoding, bool detect_encoding_from_bytemarks, int buffer_size); // 0x001D3AE0
+	public UnexceptionalStreamReader(string path); // 0x001D3B90
+	public UnexceptionalStreamReader(string path, bool detect_encoding_from_bytemarks); // 0x001D3C1C
+	public UnexceptionalStreamReader(string path, Encoding encoding); // 0x001D3CB0
+	public UnexceptionalStreamReader(string path, Encoding encoding, bool detect_encoding_from_bytemarks); // 0x001D3D44
+	public UnexceptionalStreamReader(string path, Encoding encoding, bool detect_encoding_from_bytemarks, int buffer_size); // 0x001D3DEC
+	private static UnexceptionalStreamReader(); // 0x001D3E9C
+
 	// Methods
-	public void .ctor(Stream stream); // 0x001D3884
-	public void .ctor(Stream stream, bool detect_encoding_from_bytemarks); // 0x001D3910
-	public void .ctor(Stream stream, Encoding encoding); // 0x001D39A4
-	public void .ctor(Stream stream, Encoding encoding, bool detect_encoding_from_bytemarks); // 0x001D3A38
-	public void .ctor(Stream stream, Encoding encoding, bool detect_encoding_from_bytemarks, int buffer_size); // 0x001D3AE0
-	public void .ctor(string path); // 0x001D3B90
-	public void .ctor(string path, bool detect_encoding_from_bytemarks); // 0x001D3C1C
-	public void .ctor(string path, Encoding encoding); // 0x001D3CB0
-	public void .ctor(string path, Encoding encoding, bool detect_encoding_from_bytemarks); // 0x001D3D44
-	public void .ctor(string path, Encoding encoding, bool detect_encoding_from_bytemarks, int buffer_size); // 0x001D3DEC
-	private static void .cctor(); // 0x001D3E9C
 	public override int Peek(); // 0x001D3F80
 	public override int Read(); // 0x001D4064
 	public override int Read(out char[] dest_buffer, int index, int count); // 0x001D4148
@@ -11834,14 +12416,16 @@ internal class UnexceptionalStreamReader : StreamReader // TypeDefIndex: 478
 // Namespace: System.IO
 internal class UnexceptionalStreamWriter : StreamWriter // TypeDefIndex: 479
 {
+	// Constructors
+	public UnexceptionalStreamWriter(Stream stream); // 0x001D4994
+	public UnexceptionalStreamWriter(Stream stream, Encoding encoding); // 0x001D4A1C
+	public UnexceptionalStreamWriter(Stream stream, Encoding encoding, int bufferSize); // 0x001D4AB8
+	public UnexceptionalStreamWriter(string path); // 0x001D4B58
+	public UnexceptionalStreamWriter(string path, bool append); // 0x001D4BE0
+	public UnexceptionalStreamWriter(string path, bool append, Encoding encoding); // 0x001D4C70
+	public UnexceptionalStreamWriter(string path, bool append, Encoding encoding, int bufferSize); // 0x001D4D18
+
 	// Methods
-	public void .ctor(Stream stream); // 0x001D4994
-	public void .ctor(Stream stream, Encoding encoding); // 0x001D4A1C
-	public void .ctor(Stream stream, Encoding encoding, int bufferSize); // 0x001D4AB8
-	public void .ctor(string path); // 0x001D4B58
-	public void .ctor(string path, bool append); // 0x001D4BE0
-	public void .ctor(string path, bool append, Encoding encoding); // 0x001D4C70
-	public void .ctor(string path, bool append, Encoding encoding, int bufferSize); // 0x001D4D18
 	public override void Flush(); // 0x001D4DC0
 	public override void Write(char[] buffer, int index, int count); // 0x001D4E9C
 	public override void Write(char value); // 0x001D4F9C
@@ -11877,10 +12461,12 @@ public class UnmanagedMemoryStream : Stream // TypeDefIndex: 480
 		remove; // 0x001D5744
 	}
 
+	// Constructors
+	protected UnmanagedMemoryStream(); // 0x001D5248
+	public UnmanagedMemoryStream(void * pointer, long length); // 0x001D52D4
+	public UnmanagedMemoryStream(void * pointer, long length, long capacity, FileAccess access); // 0x001D55F4
+
 	// Methods
-	protected void .ctor(); // 0x001D5248
-	public void .ctor(void * pointer, long length); // 0x001D52D4
-	public void .ctor(void * pointer, long length, long capacity, FileAccess access); // 0x001D55F4
 	public override int Read(out byte[] buffer, int offset, int count); // 0x001D5E04
 	public override int ReadByte(); // 0x001D6140
 	public override long Seek(long offset, SeekOrigin loc); // 0x001D62A8
@@ -11908,8 +12494,9 @@ internal struct RefEmitPermissionSet // TypeDefIndex: 482
 	public SecurityAction action; // 0x08
 	public string pset; // 0x0C
 
-	// Methods
-	public void .ctor(SecurityAction action, string pset); // 0x0008C874
+	// Constructors
+	public RefEmitPermissionSet(SecurityAction action, string pset); // 0x0008C874
+
 }
 
 // Namespace: System.Reflection.Emit
@@ -11934,8 +12521,9 @@ internal struct MonoWin32Resource // TypeDefIndex: 484
 	public int lang_id; // 0x10
 	public byte[] data; // 0x14
 
-	// Methods
-	public void .ctor(int res_type, int res_id, int lang_id, byte[] data); // 0x0008C2EC
+	// Constructors
+	public MonoWin32Resource(int res_type, int res_id, int lang_id, byte[] data); // 0x0008C2EC
+
 }
 
 // Namespace: System.Reflection.Emit
@@ -11994,8 +12582,10 @@ public sealed class AssemblyBuilder : Assembly, _AssemblyBuilder // TypeDefIndex
 	internal string AssemblyDir { get; } // 0x001C1CE4 
 	internal bool IsModuleOnly { get; set; } // 0x001C1CEC 0x001C1CF4
 
+	// Constructors
+	internal AssemblyBuilder(AssemblyName n, string directory, AssemblyBuilderAccess access, bool corlib_internal); // 0x001BD240
+
 	// Methods
-	internal void .ctor(AssemblyName n, string directory, AssemblyBuilderAccess access, bool corlib_internal); // 0x001BD240
 	private void System.Runtime.InteropServices._AssemblyBuilder.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x001BD8A4
 	private void System.Runtime.InteropServices._AssemblyBuilder.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x001BD92C
 	private void System.Runtime.InteropServices._AssemblyBuilder.GetTypeInfoCount(out uint pcTInfo); // 0x001BD9B4
@@ -12094,8 +12684,10 @@ public sealed class ConstructorBuilder : ConstructorInfo, _ConstructorBuilder //
 	public override Module Module { get; } // 0x001C59BC 
 	private bool IsCompilerContext { get; } // 0x001C479C 
 
+	// Constructors
+	internal ConstructorBuilder(TypeBuilder tb, MethodAttributes attributes, CallingConventions callingConvention, Type[] parameterTypes, Type[][] paramModReq, Type[][] paramModOpt); // 0x001C41B4
+
 	// Methods
-	internal void .ctor(TypeBuilder tb, MethodAttributes attributes, CallingConventions callingConvention, Type[] parameterTypes, Type[][] paramModReq, Type[][] paramModOpt); // 0x001C41B4
 	private void System.Runtime.InteropServices._ConstructorBuilder.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x001C44A4
 	private void System.Runtime.InteropServices._ConstructorBuilder.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x001C452C
 	private void System.Runtime.InteropServices._ConstructorBuilder.GetTypeInfoCount(out uint pcTInfo); // 0x001C45B4
@@ -12148,8 +12740,10 @@ internal class ConstructorOnTypeBuilderInst : ConstructorInfo // TypeDefIndex: 4
 	public override bool IsGenericMethodDefinition { get; } // 0x001C6718 
 	public override bool IsGenericMethod { get; } // 0x001C6720 
 
+	// Constructors
+	public ConstructorOnTypeBuilderInst(MonoGenericClass instantiation, ConstructorBuilder cb); // 0x001C5F90
+
 	// Methods
-	public void .ctor(MonoGenericClass instantiation, ConstructorBuilder cb); // 0x001C5F90
 	public override bool IsDefined(Type attributeType, bool inherit); // 0x001C605C
 	public override object[] GetCustomAttributes(bool inherit); // 0x001C607C
 	public override object[] GetCustomAttributes(Type attributeType, bool inherit); // 0x001C60AC
@@ -12173,12 +12767,14 @@ public class CustomAttributeBuilder : _CustomAttributeBuilder // TypeDefIndex: 4
 	internal ConstructorInfo Ctor { get; } // 0x001C836C 
 	internal byte[] Data { get; } // 0x001C8374 
 
+	// Constructors
+	internal CustomAttributeBuilder(ConstructorInfo con, byte[] cdata); // 0x001C3CA8
+	public CustomAttributeBuilder(ConstructorInfo con, object[] constructorArgs); // 0x001C67B0
+	public CustomAttributeBuilder(ConstructorInfo con, object[] constructorArgs, FieldInfo[] namedFields, object[] fieldValues); // 0x001C7FB8
+	public CustomAttributeBuilder(ConstructorInfo con, object[] constructorArgs, PropertyInfo[] namedProperties, object[] propertyValues); // 0x001C8068
+	public CustomAttributeBuilder(ConstructorInfo con, object[] constructorArgs, PropertyInfo[] namedProperties, object[] propertyValues, FieldInfo[] namedFields, object[] fieldValues); // 0x001C8120
+
 	// Methods
-	internal void .ctor(ConstructorInfo con, byte[] cdata); // 0x001C3CA8
-	public void .ctor(ConstructorInfo con, object[] constructorArgs); // 0x001C67B0
-	public void .ctor(ConstructorInfo con, object[] constructorArgs, FieldInfo[] namedFields, object[] fieldValues); // 0x001C7FB8
-	public void .ctor(ConstructorInfo con, object[] constructorArgs, PropertyInfo[] namedProperties, object[] propertyValues); // 0x001C8068
-	public void .ctor(ConstructorInfo con, object[] constructorArgs, PropertyInfo[] namedProperties, object[] propertyValues, FieldInfo[] namedFields, object[] fieldValues); // 0x001C8120
 	private void System.Runtime.InteropServices._CustomAttributeBuilder.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x001C814C
 	private void System.Runtime.InteropServices._CustomAttributeBuilder.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x001C81D4
 	private void System.Runtime.InteropServices._CustomAttributeBuilder.GetTypeInfoCount(out uint pcTInfo); // 0x001C825C
@@ -12234,8 +12830,10 @@ internal abstract class DerivedType : Type // TypeDefIndex: 492
 	public override RuntimeTypeHandle TypeHandle { get; } // 0x001CB86C 
 	public override Type UnderlyingSystemType { get; } // 0x001CB8F4 
 
+	// Constructors
+	internal DerivedType(Type elementType); // 0x001BCE20
+
 	// Methods
-	internal void .ctor(Type elementType); // 0x001BCE20
 	internal static void create_unmanaged_type(Type type); // 0x001CA7AC
 	internal abstract string FormatName(string elementName);
 	public override Type GetInterface(string name, bool ignoreCase); // 0x001CA7B0
@@ -12285,8 +12883,10 @@ internal class ArrayType : DerivedType // TypeDefIndex: 493
 	// Properties
 	public override Type BaseType { get; } // 0x001BCEC4 
 
+	// Constructors
+	internal ArrayType(Type elementType, int rank); // 0x001BCE04
+
 	// Methods
-	internal void .ctor(Type elementType, int rank); // 0x001BCE04
 	protected override bool IsArrayImpl(); // 0x001BCEAC
 	public override int GetArrayRank(); // 0x001BCEB4
 	protected override TypeAttributes GetAttributeFlagsImpl(); // 0x001BCF54
@@ -12299,8 +12899,10 @@ internal class ByRefType : DerivedType // TypeDefIndex: 494
 	// Properties
 	public override Type BaseType { get; } // 0x001C3E10 
 
+	// Constructors
+	internal ByRefType(Type elementType); // 0x001C3E04
+
 	// Methods
-	internal void .ctor(Type elementType); // 0x001C3E04
 	protected override bool IsByRefImpl(); // 0x001C3E08
 	internal override string FormatName(string elementName); // 0x001C3EA0
 	public override Type MakeArrayType(); // 0x001C3F44
@@ -12315,8 +12917,10 @@ internal class PointerType : DerivedType // TypeDefIndex: 495
 	// Properties
 	public override Type BaseType { get; } // 0x0022FFE8 
 
+	// Constructors
+	internal PointerType(Type elementType); // 0x00213278
+
 	// Methods
-	internal void .ctor(Type elementType); // 0x00213278
 	protected override bool IsPointerImpl(); // 0x0022FFE0
 	internal override string FormatName(string elementName); // 0x00230078
 }
@@ -12327,8 +12931,10 @@ public class DynamicILInfo // TypeDefIndex: 496
 	// Properties
 	public DynamicMethod DynamicMethod { get; } // 0x001CBAA8 
 
+	// Constructors
+	internal DynamicILInfo(); // 0x001CBAA4
+
 	// Methods
-	internal void .ctor(); // 0x001CBAA4
 	public int GetTokenFor(byte[] signature); // 0x001CBB30
 	public int GetTokenFor(DynamicMethod method); // 0x001CBBB8
 	public int GetTokenFor(RuntimeFieldHandle field); // 0x001CBC40
@@ -12380,16 +12986,18 @@ public sealed class DynamicMethod : MethodInfo // TypeDefIndex: 497
 	public override Type ReturnType { get; } // 0x001CDC5C 
 	public override ICustomAttributeProvider ReturnTypeCustomAttributes { get; } // 0x001CDC64 
 
+	// Constructors
+	public DynamicMethod(string name, Type returnType, Type[] parameterTypes, Module m); // 0x001CC218
+	public DynamicMethod(string name, Type returnType, Type[] parameterTypes, Type owner); // 0x001CC284
+	public DynamicMethod(string name, Type returnType, Type[] parameterTypes, Module m, bool skipVisibility); // 0x001CC250
+	public DynamicMethod(string name, Type returnType, Type[] parameterTypes, Type owner, bool skipVisibility); // 0x001CC2B0
+	public DynamicMethod(string name, MethodAttributes attributes, CallingConventions callingConvention, Type returnType, Type[] parameterTypes, Type owner, bool skipVisibility); // 0x001CC31C
+	public DynamicMethod(string name, MethodAttributes attributes, CallingConventions callingConvention, Type returnType, Type[] parameterTypes, Module m, bool skipVisibility); // 0x001CC2DC
+	public DynamicMethod(string name, Type returnType, Type[] parameterTypes); // 0x001CC74C
+	public DynamicMethod(string name, Type returnType, Type[] parameterTypes, bool restrictedSkipVisibility); // 0x001CC784
+	private DynamicMethod(string name, MethodAttributes attributes, CallingConventions callingConvention, Type returnType, Type[] parameterTypes, Type owner, Module m, bool skipVisibility, bool anonHosted); // 0x001CC3A0
+
 	// Methods
-	public void .ctor(string name, Type returnType, Type[] parameterTypes, Module m); // 0x001CC218
-	public void .ctor(string name, Type returnType, Type[] parameterTypes, Type owner); // 0x001CC284
-	public void .ctor(string name, Type returnType, Type[] parameterTypes, Module m, bool skipVisibility); // 0x001CC250
-	public void .ctor(string name, Type returnType, Type[] parameterTypes, Type owner, bool skipVisibility); // 0x001CC2B0
-	public void .ctor(string name, MethodAttributes attributes, CallingConventions callingConvention, Type returnType, Type[] parameterTypes, Type owner, bool skipVisibility); // 0x001CC31C
-	public void .ctor(string name, MethodAttributes attributes, CallingConventions callingConvention, Type returnType, Type[] parameterTypes, Module m, bool skipVisibility); // 0x001CC2DC
-	public void .ctor(string name, Type returnType, Type[] parameterTypes); // 0x001CC74C
-	public void .ctor(string name, Type returnType, Type[] parameterTypes, bool restrictedSkipVisibility); // 0x001CC784
-	private void .ctor(string name, MethodAttributes attributes, CallingConventions callingConvention, Type returnType, Type[] parameterTypes, Type owner, Module m, bool skipVisibility, bool anonHosted); // 0x001CC3A0
 	private void create_dynamic_method(DynamicMethod m); // 0x001CC7BC
 	private void destroy_dynamic_method(DynamicMethod m); // 0x001CC810
 	private void CreateDynMethod(); // 0x001CC864
@@ -12418,9 +13026,10 @@ private class AnonHostModuleHolder // TypeDefIndex: 498
 	// Fields
 	public static Module anon_host_module; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x00212118
-	private static void .cctor(); // 0x00212120
+	// Constructors
+	public AnonHostModuleHolder(); // 0x00212118
+	private static AnonHostModuleHolder(); // 0x00212120
+
 }
 
 // Namespace: System.Reflection.Emit
@@ -12429,8 +13038,10 @@ internal class DynamicMethodTokenGenerator : TokenGenerator // TypeDefIndex: 499
 	// Fields
 	private DynamicMethod m; // 0x08
 
+	// Constructors
+	public DynamicMethodTokenGenerator(DynamicMethod m); // 0x00212214
+
 	// Methods
-	public void .ctor(DynamicMethod m); // 0x00212214
 	public int GetToken(string str); // 0x00212234
 	public int GetToken(MethodInfo method, Type[] opt_param_types); // 0x00212268
 	public int GetToken(MemberInfo member); // 0x002122F0
@@ -12461,8 +13072,10 @@ public sealed class EnumBuilder : Type, _EnumBuilder // TypeDefIndex: 500
 	public FieldBuilder UnderlyingField { get; } // 0x002128A8 
 	public override Type UnderlyingSystemType { get; } // 0x002128B0 
 
+	// Constructors
+	internal EnumBuilder(ModuleBuilder mb, string name, TypeAttributes visibility, Type underlyingType); // 0x00212358
+
 	// Methods
-	internal void .ctor(ModuleBuilder mb, string name, TypeAttributes visibility, Type underlyingType); // 0x00212358
 	private void System.Runtime.InteropServices._EnumBuilder.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x002124A0
 	private void System.Runtime.InteropServices._EnumBuilder.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x00212528
 	private void System.Runtime.InteropServices._EnumBuilder.GetTypeInfoCount(out uint pcTInfo); // 0x002125B0
@@ -12526,8 +13139,10 @@ public sealed class EventBuilder : _EventBuilder // TypeDefIndex: 501
 	internal EventAttributes attrs; // 0x28
 	private int table_idx; // 0x2C
 
+	// Constructors
+	internal EventBuilder(TypeBuilder tb, string eventName, EventAttributes eventAttrs, Type eventType); // 0x0021333C
+
 	// Methods
-	internal void .ctor(TypeBuilder tb, string eventName, EventAttributes eventAttrs, Type eventType); // 0x0021333C
 	private void System.Runtime.InteropServices._EventBuilder.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x002133E4
 	private void System.Runtime.InteropServices._EventBuilder.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x0021346C
 	private void System.Runtime.InteropServices._EventBuilder.GetTypeInfoCount(out uint pcTInfo); // 0x002134F4
@@ -12556,8 +13171,10 @@ internal class EventOnTypeBuilderInst : EventInfo // TypeDefIndex: 502
 	public override string Name { get; } // 0x002142A8 
 	public override Type ReflectedType { get; } // 0x002142CC 
 
+	// Constructors
+	internal EventOnTypeBuilderInst(MonoGenericClass instantiation, EventBuilder evt); // 0x00213E6C
+
 	// Methods
-	internal void .ctor(MonoGenericClass instantiation, EventBuilder evt); // 0x00213E6C
 	public override MethodInfo GetAddMethod(bool nonPublic); // 0x00213EB8
 	public override MethodInfo GetRaiseMethod(bool nonPublic); // 0x00213F60
 	public override MethodInfo GetRemoveMethod(bool nonPublic); // 0x00214008
@@ -12578,9 +13195,11 @@ public struct EventToken // TypeDefIndex: 503
 	// Properties
 	public int Token { get; } // 0x0008BF84 
 
+	// Constructors
+	internal EventToken(int val); // 0x0008BF58
+	private static EventToken(); // 0x00214474
+
 	// Methods
-	internal void .ctor(int val); // 0x0008BF58
-	private static void .cctor(); // 0x00214474
 	public override bool Equals(object obj); // 0x0008BF60
 	public bool Equals(EventToken obj); // 0x0008BF68
 	public override int GetHashCode(); // 0x0008BF7C
@@ -12616,8 +13235,10 @@ public sealed class FieldBuilder : FieldInfo, _FieldBuilder // TypeDefIndex: 504
 	internal override UnmanagedMarshal UMarshal { get; } // 0x002154A8 
 	public override Module Module { get; } // 0x002154B0 
 
+	// Constructors
+	internal FieldBuilder(TypeBuilder tb, string fieldName, Type type, FieldAttributes attributes, Type[] modReq, Type[] modOpt); // 0x002146C8
+
 	// Methods
-	internal void .ctor(TypeBuilder tb, string fieldName, Type type, FieldAttributes attributes, Type[] modReq, Type[] modOpt); // 0x002146C8
 	private void System.Runtime.InteropServices._FieldBuilder.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x002147F0
 	private void System.Runtime.InteropServices._FieldBuilder.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x00214878
 	private void System.Runtime.InteropServices._FieldBuilder.GetTypeInfoCount(out uint pcTInfo); // 0x00214900
@@ -12655,8 +13276,10 @@ internal class FieldOnTypeBuilderInst : FieldInfo // TypeDefIndex: 505
 	public override int MetadataToken { get; } // 0x002159BC 
 	public override Type FieldType { get; } // 0x00215B54 
 
+	// Constructors
+	public FieldOnTypeBuilderInst(MonoGenericClass instantiation, FieldBuilder fb); // 0x002154B8
+
 	// Methods
-	public void .ctor(MonoGenericClass instantiation, FieldBuilder fb); // 0x002154B8
 	public override bool IsDefined(Type attributeType, bool inherit); // 0x00215514
 	public override object[] GetCustomAttributes(bool inherit); // 0x0021559C
 	public override object[] GetCustomAttributes(Type attributeType, bool inherit); // 0x00215624
@@ -12676,9 +13299,11 @@ public struct FieldToken // TypeDefIndex: 506
 	// Properties
 	public int Token { get; } // 0x0008BFB8 
 
+	// Constructors
+	internal FieldToken(int val); // 0x0008BF8C
+	private static FieldToken(); // 0x00215E18
+
 	// Methods
-	internal void .ctor(int val); // 0x0008BF8C
-	private static void .cctor(); // 0x00215E18
 	public override bool Equals(object obj); // 0x0008BF94
 	public bool Equals(FieldToken obj); // 0x0008BF9C
 	public override int GetHashCode(); // 0x0008BFB0
@@ -12735,8 +13360,10 @@ public sealed class GenericTypeParameterBuilder : Type // TypeDefIndex: 508
 	public override int GenericParameterPosition { get; } // 0x0021737C 
 	public override MethodBase DeclaringMethod { get; } // 0x0021766C 
 
+	// Constructors
+	internal GenericTypeParameterBuilder(TypeBuilder tbuilder, MethodBuilder mbuilder, string name, int index); // 0x0021606C
+
 	// Methods
-	internal void .ctor(TypeBuilder tbuilder, MethodBuilder mbuilder, string name, int index); // 0x0021606C
 	public void SetBaseTypeConstraint(Type baseTypeConstraint); // 0x0021611C
 	public void SetInterfaceConstraints(Type[] interfaceConstraints); // 0x002161D4
 	public void SetGenericParameterAttributes(GenericParameterAttributes genericParameterAttributes); // 0x002161DC
@@ -12881,9 +13508,11 @@ public class ILGenerator : _ILGenerator // TypeDefIndex: 513
 	// Properties
 	internal bool HasDebugInfo { get; } // 0x0021D9E0 
 
+	// Constructors
+	internal ILGenerator(Module m, TokenGenerator token_gen, int size); // 0x002181C8
+	private static ILGenerator(); // 0x00218274
+
 	// Methods
-	internal void .ctor(Module m, TokenGenerator token_gen, int size); // 0x002181C8
-	private static void .cctor(); // 0x00218274
 	private void System.Runtime.InteropServices._ILGenerator.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x0021831C
 	private void System.Runtime.InteropServices._ILGenerator.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x002183A4
 	private void System.Runtime.InteropServices._ILGenerator.GetTypeInfoCount(out uint pcTInfo); // 0x0021842C
@@ -12955,8 +13584,9 @@ private struct LabelData // TypeDefIndex: 515
 	public int addr; // 0x08
 	public int maxStack; // 0x0C
 
-	// Methods
-	public void .ctor(int addr, int maxStack); // 0x0008C0E4
+	// Constructors
+	public LabelData(int addr, int maxStack); // 0x0008C0E4
+
 }
 
 // Namespace: System.Reflection.Emit
@@ -12975,8 +13605,10 @@ internal class SequencePointList // TypeDefIndex: 516
 	public int StartColumn { get; } // 0x002742F4 
 	public int EndColumn { get; } // 0x00274334 
 
+	// Constructors
+	public SequencePointList(ISymbolDocumentWriter doc); // 0x00273D50
+
 	// Methods
-	public void .ctor(ISymbolDocumentWriter doc); // 0x00273D50
 	public int[] GetOffsets(); // 0x00273D78
 	public int[] GetLines(); // 0x00273E74
 	public int[] GetColumns(); // 0x00273F70
@@ -13004,8 +13636,10 @@ public struct Label // TypeDefIndex: 518
 	// Fields
 	internal int label; // 0x08
 
+	// Constructors
+	internal Label(int val); // 0x0008C14C
+
 	// Methods
-	internal void .ctor(int val); // 0x0008C14C
 	public override bool Equals(object obj); // 0x0008C154
 	public bool Equals(Label obj); // 0x0008C15C
 	public override int GetHashCode(); // 0x0008C170
@@ -13030,8 +13664,10 @@ public sealed class LocalBuilder : LocalVariableInfo, _LocalBuilder // TypeDefIn
 	internal int StartOffset { get; } // 0x0021E444 
 	internal int EndOffset { get; } // 0x0021E44C 
 
+	// Constructors
+	internal LocalBuilder(Type t, ILGenerator ilgen); // 0x002199E4
+
 	// Methods
-	internal void .ctor(Type t, ILGenerator ilgen); // 0x002199E4
 	private void System.Runtime.InteropServices._LocalBuilder.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x0021E1BC
 	private void System.Runtime.InteropServices._LocalBuilder.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x0021E244
 	private void System.Runtime.InteropServices._LocalBuilder.GetTypeInfoCount(out uint pcTInfo); // 0x0021E2CC
@@ -13095,9 +13731,11 @@ public sealed class MethodBuilder : MethodInfo, _MethodBuilder // TypeDefIndex: 
 	public override bool IsGenericMethod { get; } // 0x002210D0 
 	public override Module Module { get; } // 0x002216F4 
 
+	// Constructors
+	internal MethodBuilder(TypeBuilder tb, string name, MethodAttributes attributes, CallingConventions callingConvention, Type returnType, Type[] returnModReq, Type[] returnModOpt, Type[] parameterTypes, Type[][] paramModReq, Type[][] paramModOpt); // 0x0021E454
+	internal MethodBuilder(TypeBuilder tb, string name, MethodAttributes attributes, CallingConventions callingConvention, Type returnType, Type[] returnModReq, Type[] returnModOpt, Type[] parameterTypes, Type[][] paramModReq, Type[][] paramModOpt, string dllName, string entryName, CallingConvention nativeCConv, CharSet nativeCharset); // 0x0021E758
+
 	// Methods
-	internal void .ctor(TypeBuilder tb, string name, MethodAttributes attributes, CallingConventions callingConvention, Type returnType, Type[] returnModReq, Type[] returnModOpt, Type[] parameterTypes, Type[][] paramModReq, Type[][] paramModOpt); // 0x0021E454
-	internal void .ctor(TypeBuilder tb, string name, MethodAttributes attributes, CallingConventions callingConvention, Type returnType, Type[] returnModReq, Type[] returnModOpt, Type[] parameterTypes, Type[][] paramModReq, Type[][] paramModOpt, string dllName, string entryName, CallingConvention nativeCConv, CharSet nativeCharset); // 0x0021E758
 	private void System.Runtime.InteropServices._MethodBuilder.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x0021E7CC
 	private void System.Runtime.InteropServices._MethodBuilder.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x0021E854
 	private void System.Runtime.InteropServices._MethodBuilder.GetTypeInfoCount(out uint pcTInfo); // 0x0021E8DC
@@ -13164,9 +13802,11 @@ internal class MethodOnTypeBuilderInst : MethodInfo // TypeDefIndex: 521
 	public override bool IsGenericMethod { get; } // 0x00222A10 
 	public override ICustomAttributeProvider ReturnTypeCustomAttributes { get; } // 0x00222AC4 
 
+	// Constructors
+	public MethodOnTypeBuilderInst(MonoGenericClass instantiation, MethodBuilder mb); // 0x002216FC
+	internal MethodOnTypeBuilderInst(MethodOnTypeBuilderInst gmd, Type[] typeArguments); // 0x00221724
+
 	// Methods
-	public void .ctor(MonoGenericClass instantiation, MethodBuilder mb); // 0x002216FC
-	internal void .ctor(MethodOnTypeBuilderInst gmd, Type[] typeArguments); // 0x00221724
 	public override bool IsDefined(Type attributeType, bool inherit); // 0x002219CC
 	public override object[] GetCustomAttributes(bool inherit); // 0x00221A54
 	public override object[] GetCustomAttributes(Type attributeType, bool inherit); // 0x00221ADC
@@ -13188,8 +13828,10 @@ public sealed class MethodRental : _MethodRental // TypeDefIndex: 522
 	public const int JitImmediate = 1; // 0x00
 	public const int JitOnDemand = 0; // 0x00
 
+	// Constructors
+	private MethodRental(); // 0x00222B4C
+
 	// Methods
-	private void .ctor(); // 0x00222B4C
 	private void System.Runtime.InteropServices._MethodRental.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x00222B54
 	private void System.Runtime.InteropServices._MethodRental.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x00222BDC
 	private void System.Runtime.InteropServices._MethodRental.GetTypeInfoCount(out uint pcTInfo); // 0x00222C64
@@ -13208,9 +13850,11 @@ public struct MethodToken // TypeDefIndex: 523
 	// Properties
 	public int Token { get; } // 0x0008C1A8 
 
+	// Constructors
+	internal MethodToken(int val); // 0x0008C17C
+	private static MethodToken(); // 0x00222F88
+
 	// Methods
-	internal void .ctor(int val); // 0x0008C17C
-	private static void .cctor(); // 0x00222F88
 	public override bool Equals(object obj); // 0x0008C184
 	public bool Equals(MethodToken obj); // 0x0008C18C
 	public override int GetHashCode(); // 0x0008C1A0
@@ -13249,9 +13893,11 @@ public class ModuleBuilder : Module, _ModuleBuilder // TypeDefIndex: 524
 	internal string FileName { get; } // 0x00228024 
 	internal bool IsMain { set; } // 0x0022802C
 
+	// Constructors
+	internal ModuleBuilder(AssemblyBuilder assb, string name, string fullyqname, bool emitSymbolInfo, bool transient); // 0x002231DC
+	private static ModuleBuilder(); // 0x002238E8
+
 	// Methods
-	internal void .ctor(AssemblyBuilder assb, string name, string fullyqname, bool emitSymbolInfo, bool transient); // 0x002231DC
-	private static void .cctor(); // 0x002238E8
 	private void System.Runtime.InteropServices._ModuleBuilder.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x002239E0
 	private void System.Runtime.InteropServices._ModuleBuilder.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x00223A68
 	private void System.Runtime.InteropServices._ModuleBuilder.GetTypeInfoCount(out uint pcTInfo); // 0x00223AF0
@@ -13333,8 +13979,10 @@ internal class ModuleBuilderTokenGenerator : TokenGenerator // TypeDefIndex: 525
 	// Fields
 	private ModuleBuilder mb; // 0x08
 
+	// Constructors
+	public ModuleBuilderTokenGenerator(ModuleBuilder mb); // 0x00227508
+
 	// Methods
-	public void .ctor(ModuleBuilder mb); // 0x00227508
 	public int GetToken(string str); // 0x00228090
 	public int GetToken(MemberInfo member); // 0x002280C0
 	public int GetToken(MethodInfo method, Type[] opt_param_types); // 0x002280F0
@@ -13362,8 +14010,10 @@ internal class MonoArrayMethod : MethodInfo // TypeDefIndex: 526
 	public override Type DeclaringType { get; } // 0x00285C6C 
 	public override string Name { get; } // 0x00285C74 
 
+	// Constructors
+	internal MonoArrayMethod(Type arrayClass, string methodName, CallingConventions callingConvention, Type returnType, Type[] parameterTypes); // 0x00285A64
+
 	// Methods
-	internal void .ctor(Type arrayClass, string methodName, CallingConventions callingConvention, Type returnType, Type[] parameterTypes); // 0x00285A64
 	public override MethodInfo GetBaseDefinition(); // 0x00285B50
 	public override MethodImplAttributes GetMethodImplementationFlags(); // 0x00285B64
 	public override ParameterInfo[] GetParameters(); // 0x00285B6C
@@ -13397,8 +14047,10 @@ public struct OpCode // TypeDefIndex: 527
 	public StackBehaviour StackBehaviourPush { get; } // 0x0008C3B0 
 	public short Value { get; } // 0x0008C3B8 
 
+	// Constructors
+	internal OpCode(int p, int q); // 0x0008C2FC
+
 	// Methods
-	internal void .ctor(int p, int q); // 0x0008C2FC
 	public override int GetHashCode(); // 0x0008C338
 	public override bool Equals(object obj); // 0x0008C340
 	public bool Equals(OpCode obj); // 0x0008C348
@@ -13413,9 +14065,10 @@ internal class OpCodeNames // TypeDefIndex: 528
 	// Fields
 	internal static readonly string[] names; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x00228458
-	private static void .cctor(); // 0x00228460
+	// Constructors
+	public OpCodeNames(); // 0x00228458
+	private static OpCodeNames(); // 0x00228460
+
 }
 
 // Namespace: System.Reflection.Emit
@@ -13661,9 +14314,11 @@ public class OpCodes // TypeDefIndex: 530
 	public static readonly OpCode Refanytype; // 0x700
 	public static readonly OpCode Readonly; // 0x708
 
+	// Constructors
+	internal OpCodes(); // 0x0022E4AC
+	private static OpCodes(); // 0x0022E4B4
+
 	// Methods
-	internal void .ctor(); // 0x0022E4AC
-	private static void .cctor(); // 0x0022E4B4
 	public static bool TakesSingleByteArgument(OpCode inst); // 0x0022F620
 }
 
@@ -13736,8 +14391,10 @@ public class ParameterBuilder : _ParameterBuilder // TypeDefIndex: 534
 	public virtual string Name { get; } // 0x0022F884 
 	public virtual int Position { get; } // 0x0022F88C 
 
+	// Constructors
+	internal ParameterBuilder(MethodBase mb, int pos, ParameterAttributes attributes, string strParamName); // 0x0021F884
+
 	// Methods
-	internal void .ctor(MethodBase mb, int pos, ParameterAttributes attributes, string strParamName); // 0x0021F884
 	private void System.Runtime.InteropServices._ParameterBuilder.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x0022F638
 	private void System.Runtime.InteropServices._ParameterBuilder.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x0022F6C0
 	private void System.Runtime.InteropServices._ParameterBuilder.GetTypeInfoCount(out uint pcTInfo); // 0x0022F748
@@ -13760,9 +14417,11 @@ public struct ParameterToken // TypeDefIndex: 535
 	// Properties
 	public int Token { get; } // 0x0008C40C 
 
+	// Constructors
+	internal ParameterToken(int val); // 0x0008C3E0
+	private static ParameterToken(); // 0x0022FD8C
+
 	// Methods
-	internal void .ctor(int val); // 0x0008C3E0
-	private static void .cctor(); // 0x0022FD8C
 	public override bool Equals(object obj); // 0x0008C3E8
 	public bool Equals(ParameterToken obj); // 0x0008C3F0
 	public override int GetHashCode(); // 0x0008C404
@@ -13800,8 +14459,10 @@ public sealed class PropertyBuilder : PropertyInfo, _PropertyBuilder // TypeDefI
 	public override Type ReflectedType { get; } // 0x002304A0 
 	public override Module Module { get; } // 0x00230A48 
 
+	// Constructors
+	internal PropertyBuilder(TypeBuilder tb, string name, PropertyAttributes attributes, Type returnType, Type[] returnModReq, Type[] returnModOpt, Type[] parameterTypes, Type[][] paramModReq, Type[][] paramModOpt); // 0x0023011C
+
 	// Methods
-	internal void .ctor(TypeBuilder tb, string name, PropertyAttributes attributes, Type returnType, Type[] returnModReq, Type[] returnModOpt, Type[] parameterTypes, Type[][] paramModReq, Type[][] paramModOpt); // 0x0023011C
 	private void System.Runtime.InteropServices._PropertyBuilder.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x00230238
 	private void System.Runtime.InteropServices._PropertyBuilder.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x002302C0
 	private void System.Runtime.InteropServices._PropertyBuilder.GetTypeInfoCount(out uint pcTInfo); // 0x00230348
@@ -13842,8 +14503,10 @@ internal class PropertyOnTypeBuilderInst : PropertyInfo // TypeDefIndex: 537
 	public override Type ReflectedType { get; } // 0x0027302C 
 	public override string Name { get; } // 0x00273034 
 
+	// Constructors
+	internal PropertyOnTypeBuilderInst(MonoGenericClass instantiation, PropertyInfo prop); // 0x00272DAC
+
 	// Methods
-	internal void .ctor(MonoGenericClass instantiation, PropertyInfo prop); // 0x00272DAC
 	public override MethodInfo[] GetAccessors(bool nonPublic); // 0x00273068
 	public override MethodInfo GetGetMethod(bool nonPublic); // 0x002731F8
 	public override ParameterInfo[] GetIndexParameters(); // 0x00273634
@@ -13867,9 +14530,11 @@ public struct PropertyToken // TypeDefIndex: 538
 	// Properties
 	public int Token { get; } // 0x0008C804 
 
+	// Constructors
+	internal PropertyToken(int val); // 0x0008C7D8
+	private static PropertyToken(); // 0x00273AF4
+
 	// Methods
-	internal void .ctor(int val); // 0x0008C7D8
-	private static void .cctor(); // 0x00273AF4
 	public override bool Equals(object obj); // 0x0008C7E0
 	public bool Equals(PropertyToken obj); // 0x0008C7E8
 	public override int GetHashCode(); // 0x0008C7FC
@@ -13890,8 +14555,10 @@ public sealed class SignatureHelper : _SignatureHelper // TypeDefIndex: 539
 	private Type[][] modreqs; // 0x20
 	private Type[][] modopts; // 0x24
 
+	// Constructors
+	internal SignatureHelper(ModuleBuilder module, SignatureHelperType type); // 0x002744D8
+
 	// Methods
-	internal void .ctor(ModuleBuilder module, SignatureHelperType type); // 0x002744D8
 	private void System.Runtime.InteropServices._SignatureHelper.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x00274500
 	private void System.Runtime.InteropServices._SignatureHelper.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x00274588
 	private void System.Runtime.InteropServices._SignatureHelper.GetTypeInfoCount(out uint pcTInfo); // 0x00274610
@@ -13945,9 +14612,11 @@ public struct SignatureToken // TypeDefIndex: 541
 	// Properties
 	public int Token { get; } // 0x0008C8AC 
 
+	// Constructors
+	internal SignatureToken(int val); // 0x0008C880
+	private static SignatureToken(); // 0x00275F94
+
 	// Methods
-	internal void .ctor(int val); // 0x0008C880
-	private static void .cctor(); // 0x00275F94
 	public override bool Equals(object obj); // 0x0008C888
 	public bool Equals(SignatureToken obj); // 0x0008C890
 	public override int GetHashCode(); // 0x0008C8A4
@@ -14000,9 +14669,11 @@ public struct StringToken // TypeDefIndex: 543
 	// Properties
 	public int Token { get; } // 0x0008C8E0 
 
+	// Constructors
+	internal StringToken(int val); // 0x0008C8B4
+	private static StringToken(); // 0x002761F0
+
 	// Methods
-	internal void .ctor(int val); // 0x0008C8B4
-	private static void .cctor(); // 0x002761F0
 	public override bool Equals(object obj); // 0x0008C8BC
 	public bool Equals(StringToken obj); // 0x0008C8C4
 	public override int GetHashCode(); // 0x0008C8D8
@@ -14069,9 +14740,11 @@ public sealed class TypeBuilder : Type, _TypeBuilder // TypeDefIndex: 544
 	public override int GenericParameterPosition { get; } // 0x0027DA1C 
 	public override MethodBase DeclaringMethod { get; } // 0x0027DA24 
 
+	// Constructors
+	internal TypeBuilder(ModuleBuilder mb, TypeAttributes attr, int table_idx); // 0x002763E0
+	internal TypeBuilder(ModuleBuilder mb, string name, TypeAttributes attr, Type parent, Type[] interfaces, PackingSize packing_size, int type_size, Type nesting_type); // 0x00276574
+
 	// Methods
-	internal void .ctor(ModuleBuilder mb, TypeAttributes attr, int table_idx); // 0x002763E0
-	internal void .ctor(ModuleBuilder mb, string name, TypeAttributes attr, Type parent, Type[] interfaces, PackingSize packing_size, int type_size, Type nesting_type); // 0x00276574
 	private void System.Runtime.InteropServices._TypeBuilder.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x00276B24
 	private void System.Runtime.InteropServices._TypeBuilder.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x00276BAC
 	private void System.Runtime.InteropServices._TypeBuilder.GetTypeInfoCount(out uint pcTInfo); // 0x00276C34
@@ -14190,9 +14863,11 @@ public struct TypeToken // TypeDefIndex: 545
 	// Properties
 	public int Token { get; } // 0x0008C914 
 
+	// Constructors
+	internal TypeToken(int val); // 0x0008C8E8
+	private static TypeToken(); // 0x0027E034
+
 	// Methods
-	internal void .ctor(int val); // 0x0008C8E8
-	private static void .cctor(); // 0x0027E034
 	public override bool Equals(object obj); // 0x0008C8F0
 	public bool Equals(TypeToken obj); // 0x0008C8F8
 	public override int GetHashCode(); // 0x0008C90C
@@ -14221,9 +14896,11 @@ public sealed class UnmanagedMarshal // TypeDefIndex: 546
 	public UnmanagedType GetUnmanagedType { get; } // 0x0027E390 
 	public Guid IIDGuid { get; } // 0x0027E398 
 
+	// Constructors
+	private UnmanagedMarshal(UnmanagedType maint, int cnt); // 0x0027E288
+	private UnmanagedMarshal(UnmanagedType maint, UnmanagedType elemt); // 0x0027E2B4
+
 	// Methods
-	private void .ctor(UnmanagedType maint, int cnt); // 0x0027E288
-	private void .ctor(UnmanagedType maint, UnmanagedType elemt); // 0x0027E2B4
 	public static UnmanagedMarshal DefineByValArray(int elemCount); // 0x0027E3B8
 	public static UnmanagedMarshal DefineByValTStr(int elemCount); // 0x0027E438
 	public static UnmanagedMarshal DefineLPArray(UnmanagedType elemType); // 0x0027E4B8
@@ -14238,11 +14915,12 @@ public sealed class UnmanagedMarshal // TypeDefIndex: 546
 [Serializable]
 public sealed class AmbiguousMatchException : SystemException // TypeDefIndex: 547
 {
-	// Methods
-	public void .ctor(); // 0x001B2360
-	public void .ctor(string message); // 0x001B23C8
-	public void .ctor(string message, Exception inner); // 0x001B23D0
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x001B23D8
+	// Constructors
+	public AmbiguousMatchException(); // 0x001B2360
+	public AmbiguousMatchException(string message); // 0x001B23C8
+	public AmbiguousMatchException(string message, Exception inner); // 0x001B23D0
+	internal AmbiguousMatchException(SerializationInfo info, StreamingContext context); // 0x001B23D8
+
 }
 
 // Namespace: System.Reflection
@@ -14283,8 +14961,10 @@ public class Assembly : ICustomAttributeProvider, _Assembly // TypeDefIndex: 548
 		remove; // 0x001B2520
 	}
 
+	// Constructors
+	internal Assembly(); // 0x001B23F8
+
 	// Methods
-	internal void .ctor(); // 0x001B23F8
 	private string get_code_base(bool escaped); // 0x001B25E0
 	private string get_fullname(); // 0x001B25E4
 	private string get_location(); // 0x001B25E8
@@ -14382,8 +15062,9 @@ internal class ResolveEventHolder // TypeDefIndex: 549
 		remove; // 0x001B2550
 	}
 
-	// Methods
-	public void .ctor(); // 0x001B245C
+	// Constructors
+	public ResolveEventHolder(); // 0x001B245C
+
 }
 
 // Namespace: 
@@ -14392,8 +15073,10 @@ private class ResourceCloseHandler // TypeDefIndex: 550
 	// Fields
 	private Module module; // 0x08
 
+	// Constructors
+	public ResourceCloseHandler(Module module); // 0x001B3354
+
 	// Methods
-	public void .ctor(Module module); // 0x001B3354
 	public void OnClose(object sender, EventArgs e); // 0x001B574C
 }
 
@@ -14406,9 +15089,10 @@ public sealed class AssemblyAlgorithmIdAttribute : Attribute // TypeDefIndex: 55
 	// Properties
 	public uint AlgorithmId { get; } // 0x001B5798 
 
-	// Methods
-	public void .ctor(AssemblyHashAlgorithm algorithmId); // 0x001B5758
-	public void .ctor(uint algorithmId); // 0x001B5778
+	// Constructors
+	public AssemblyAlgorithmIdAttribute(AssemblyHashAlgorithm algorithmId); // 0x001B5758
+	public AssemblyAlgorithmIdAttribute(uint algorithmId); // 0x001B5778
+
 }
 
 // Namespace: System.Reflection
@@ -14420,8 +15104,9 @@ public sealed class AssemblyCompanyAttribute : Attribute // TypeDefIndex: 552
 	// Properties
 	public string Company { get; } // 0x001B57C0 
 
-	// Methods
-	public void .ctor(string company); // 0x001B57A0
+	// Constructors
+	public AssemblyCompanyAttribute(string company); // 0x001B57A0
+
 }
 
 // Namespace: System.Reflection
@@ -14433,8 +15118,9 @@ public sealed class AssemblyConfigurationAttribute : Attribute // TypeDefIndex: 
 	// Properties
 	public string Configuration { get; } // 0x001B57E8 
 
-	// Methods
-	public void .ctor(string configuration); // 0x001B57C8
+	// Constructors
+	public AssemblyConfigurationAttribute(string configuration); // 0x001B57C8
+
 }
 
 // Namespace: System.Reflection
@@ -14446,8 +15132,9 @@ public sealed class AssemblyCopyrightAttribute : Attribute // TypeDefIndex: 554
 	// Properties
 	public string Copyright { get; } // 0x001B5810 
 
-	// Methods
-	public void .ctor(string copyright); // 0x001B57F0
+	// Constructors
+	public AssemblyCopyrightAttribute(string copyright); // 0x001B57F0
+
 }
 
 // Namespace: System.Reflection
@@ -14459,8 +15146,9 @@ public sealed class AssemblyDefaultAliasAttribute : Attribute // TypeDefIndex: 5
 	// Properties
 	public string DefaultAlias { get; } // 0x001B5860 
 
-	// Methods
-	public void .ctor(string defaultAlias); // 0x001B5840
+	// Constructors
+	public AssemblyDefaultAliasAttribute(string defaultAlias); // 0x001B5840
+
 }
 
 // Namespace: System.Reflection
@@ -14472,8 +15160,9 @@ public sealed class AssemblyDelaySignAttribute : Attribute // TypeDefIndex: 556
 	// Properties
 	public bool DelaySign { get; } // 0x001B5888 
 
-	// Methods
-	public void .ctor(bool delaySign); // 0x001B5868
+	// Constructors
+	public AssemblyDelaySignAttribute(bool delaySign); // 0x001B5868
+
 }
 
 // Namespace: System.Reflection
@@ -14485,8 +15174,9 @@ public sealed class AssemblyDescriptionAttribute : Attribute // TypeDefIndex: 55
 	// Properties
 	public string Description { get; } // 0x001B58B0 
 
-	// Methods
-	public void .ctor(string description); // 0x001B5890
+	// Constructors
+	public AssemblyDescriptionAttribute(string description); // 0x001B5890
+
 }
 
 // Namespace: System.Reflection
@@ -14498,8 +15188,9 @@ public sealed class AssemblyFileVersionAttribute : Attribute // TypeDefIndex: 55
 	// Properties
 	public string Version { get; } // 0x001B5974 
 
-	// Methods
-	public void .ctor(string version); // 0x001B58B8
+	// Constructors
+	public AssemblyFileVersionAttribute(string version); // 0x001B58B8
+
 }
 
 // Namespace: System.Reflection
@@ -14512,10 +15203,11 @@ public sealed class AssemblyFlagsAttribute : Attribute // TypeDefIndex: 559
 	public uint Flags { get; } // 0x001B59DC 
 	public int AssemblyFlags { get; } // 0x001B59E4 
 
-	// Methods
-	public void .ctor(uint flags); // 0x001B597C
-	public void .ctor(int assemblyFlags); // 0x001B599C
-	public void .ctor(AssemblyNameFlags assemblyFlags); // 0x001B59BC
+	// Constructors
+	public AssemblyFlagsAttribute(uint flags); // 0x001B597C
+	public AssemblyFlagsAttribute(int assemblyFlags); // 0x001B599C
+	public AssemblyFlagsAttribute(AssemblyNameFlags assemblyFlags); // 0x001B59BC
+
 }
 
 // Namespace: System.Reflection
@@ -14527,8 +15219,9 @@ public sealed class AssemblyInformationalVersionAttribute : Attribute // TypeDef
 	// Properties
 	public string InformationalVersion { get; } // 0x001B5A0C 
 
-	// Methods
-	public void .ctor(string informationalVersion); // 0x001B59EC
+	// Constructors
+	public AssemblyInformationalVersionAttribute(string informationalVersion); // 0x001B59EC
+
 }
 
 // Namespace: System.Reflection
@@ -14540,8 +15233,9 @@ public sealed class AssemblyKeyFileAttribute : Attribute // TypeDefIndex: 561
 	// Properties
 	public string KeyFile { get; } // 0x001B5A34 
 
-	// Methods
-	public void .ctor(string keyFile); // 0x001B5A14
+	// Constructors
+	public AssemblyKeyFileAttribute(string keyFile); // 0x001B5A14
+
 }
 
 // Namespace: System.Reflection
@@ -14553,8 +15247,9 @@ public sealed class AssemblyKeyNameAttribute : Attribute // TypeDefIndex: 562
 	// Properties
 	public string KeyName { get; } // 0x001B5A5C 
 
-	// Methods
-	public void .ctor(string keyName); // 0x001B5A3C
+	// Constructors
+	public AssemblyKeyNameAttribute(string keyName); // 0x001B5A3C
+
 }
 
 // Namespace: System.Reflection
@@ -14592,10 +15287,12 @@ public sealed class AssemblyName : ICloneable, ISerializable, _AssemblyName, IDe
 	public AssemblyVersionCompatibility VersionCompatibility { get; set; } // 0x001B6978 0x001B6980
 	private bool IsPublicKeyValid { get; } // 0x001B6ABC 
 
+	// Constructors
+	public AssemblyName(); // 0x001B379C
+	public AssemblyName(string assemblyName); // 0x001B5A64
+	internal AssemblyName(SerializationInfo si, StreamingContext sc); // 0x001B5BBC
+
 	// Methods
-	public void .ctor(); // 0x001B379C
-	public void .ctor(string assemblyName); // 0x001B5A64
-	internal void .ctor(SerializationInfo si, StreamingContext sc); // 0x001B5BBC
 	private void System.Runtime.InteropServices._AssemblyName.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x001B6138
 	private void System.Runtime.InteropServices._AssemblyName.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x001B61C0
 	private void System.Runtime.InteropServices._AssemblyName.GetTypeInfoCount(out uint pcTInfo); // 0x001B6248
@@ -14629,8 +15326,10 @@ public enum AssemblyNameFlags // TypeDefIndex: 564
 // Namespace: System.Reflection
 public class AssemblyNameProxy : MarshalByRefObject // TypeDefIndex: 565
 {
+	// Constructors
+	public AssemblyNameProxy(); // 0x001B75E4
+
 	// Methods
-	public void .ctor(); // 0x001B75E4
 	public AssemblyName GetAssemblyName(string assemblyFile); // 0x001B75EC
 }
 
@@ -14643,8 +15342,9 @@ public sealed class AssemblyProductAttribute : Attribute // TypeDefIndex: 566
 	// Properties
 	public string Product { get; } // 0x001B7614 
 
-	// Methods
-	public void .ctor(string product); // 0x001B75F4
+	// Constructors
+	public AssemblyProductAttribute(string product); // 0x001B75F4
+
 }
 
 // Namespace: System.Reflection
@@ -14656,8 +15356,9 @@ public sealed class AssemblyTitleAttribute : Attribute // TypeDefIndex: 567
 	// Properties
 	public string Title { get; } // 0x001B763C 
 
-	// Methods
-	public void .ctor(string title); // 0x001B761C
+	// Constructors
+	public AssemblyTitleAttribute(string title); // 0x001B761C
+
 }
 
 // Namespace: System.Reflection
@@ -14669,8 +15370,9 @@ public sealed class AssemblyTrademarkAttribute : Attribute // TypeDefIndex: 568
 	// Properties
 	public string Trademark { get; } // 0x001B7664 
 
-	// Methods
-	public void .ctor(string trademark); // 0x001B7644
+	// Constructors
+	public AssemblyTrademarkAttribute(string trademark); // 0x001B7644
+
 }
 
 // Namespace: System.Reflection
@@ -14683,9 +15385,11 @@ public abstract class Binder // TypeDefIndex: 569
 	// Properties
 	internal static Binder DefaultBinder { get; } // 0x001B778C 
 
+	// Constructors
+	protected Binder(); // 0x001B7694
+	private static Binder(); // 0x001B7698
+
 	// Methods
-	protected void .ctor(); // 0x001B7694
-	private static void .cctor(); // 0x001B7698
 	public abstract FieldInfo BindToField(BindingFlags bindingAttr, FieldInfo[] match, object value, CultureInfo culture);
 	public abstract MethodBase BindToMethod(BindingFlags bindingAttr, MethodBase[] match, object[] args, ParameterModifier[] modifiers, CultureInfo culture, string[] names, out object state);
 	public abstract object ChangeType(object value, Type type, CultureInfo culture);
@@ -14700,8 +15404,10 @@ public abstract class Binder // TypeDefIndex: 569
 // Namespace: 
 internal sealed class Default : Binder // TypeDefIndex: 570
 {
+	// Constructors
+	public Default(); // 0x001B7714
+
 	// Methods
-	public void .ctor(); // 0x001B7714
 	public override FieldInfo BindToField(BindingFlags bindingAttr, FieldInfo[] match, object value, CultureInfo culture); // 0x001B7E2C
 	public override MethodBase BindToMethod(BindingFlags bindingAttr, MethodBase[] match, object[] args, ParameterModifier[] modifiers, CultureInfo culture, string[] names, out object state); // 0x001B87F8
 	private void ReorderParameters(string[] names, object[] args, MethodBase selected); // 0x001B8FCC
@@ -14767,9 +15473,11 @@ public abstract class ConstructorInfo : MethodBase, _ConstructorInfo // TypeDefI
 	// Properties
 	public override MemberTypes MemberType { get; } // 0x001BAC34 
 
+	// Constructors
+	protected ConstructorInfo(); // 0x001BA864
+	private static ConstructorInfo(); // 0x001BA86C
+
 	// Methods
-	protected void .ctor(); // 0x001BA864
-	private static void .cctor(); // 0x001BA86C
 	private void System.Runtime.InteropServices._ConstructorInfo.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x001BA8FC
 	private void System.Runtime.InteropServices._ConstructorInfo.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x001BA984
 	private void System.Runtime.InteropServices._ConstructorInfo.GetTypeInfoCount(out uint pcTInfo); // 0x001BAA0C
@@ -14797,8 +15505,10 @@ public sealed class CustomAttributeData // TypeDefIndex: 574
 	public IList`1<CustomAttributeTypedArgument> ConstructorArguments { get; } // 0x001BAD4C 
 	public IList`1<CustomAttributeNamedArgument> NamedArguments { get; } // 0x001BAD54 
 
+	// Constructors
+	internal CustomAttributeData(ConstructorInfo ctorInfo, object[] ctorArgs, object[] namedArgs); // 0x001BAC40
+
 	// Methods
-	internal void .ctor(ConstructorInfo ctorInfo, object[] ctorArgs, object[] namedArgs); // 0x001BAC40
 	public static IList`1<CustomAttributeData> GetCustomAttributes(Assembly target); // 0x001BAD5C
 	public static IList`1<CustomAttributeData> GetCustomAttributes(MemberInfo target); // 0x001BADE0
 	public static IList`1<CustomAttributeData> GetCustomAttributes(Module target); // 0x001BAE64
@@ -14813,11 +15523,12 @@ public sealed class CustomAttributeData // TypeDefIndex: 574
 [Serializable]
 public class CustomAttributeFormatException : FormatException // TypeDefIndex: 575
 {
-	// Methods
-	public void .ctor(); // 0x001BC84C
-	public void .ctor(string message); // 0x001BC8C0
-	public void .ctor(string message, Exception inner); // 0x001BC8C8
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001BC8D0
+	// Constructors
+	public CustomAttributeFormatException(); // 0x001BC84C
+	public CustomAttributeFormatException(string message); // 0x001BC8C0
+	public CustomAttributeFormatException(string message, Exception inner); // 0x001BC8C8
+	protected CustomAttributeFormatException(SerializationInfo info, StreamingContext context); // 0x001BC8D0
+
 }
 
 // Namespace: System.Reflection
@@ -14832,8 +15543,10 @@ public struct CustomAttributeNamedArgument // TypeDefIndex: 576
 	public MemberInfo MemberInfo { get; } // 0x0008B38C 
 	public CustomAttributeTypedArgument TypedValue { get; } // 0x0008B394 
 
+	// Constructors
+	internal CustomAttributeNamedArgument(MemberInfo memberInfo, object typedArgument); // 0x0008B384
+
 	// Methods
-	internal void .ctor(MemberInfo memberInfo, object typedArgument); // 0x0008B384
 	public override string ToString(); // 0x0008B3A8
 	public override bool Equals(object obj); // 0x0008B3B0
 	public override int GetHashCode(); // 0x0008B3B8
@@ -14853,8 +15566,10 @@ public struct CustomAttributeTypedArgument // TypeDefIndex: 577
 	public Type ArgumentType { get; } // 0x0008B424 
 	public object Value { get; } // 0x0008B42C 
 
+	// Constructors
+	internal CustomAttributeTypedArgument(Type argumentType, object value); // 0x0008B41C
+
 	// Methods
-	internal void .ctor(Type argumentType, object value); // 0x0008B41C
 	public override string ToString(); // 0x0008B434
 	public override bool Equals(object obj); // 0x0008B43C
 	public override int GetHashCode(); // 0x0008B444
@@ -14886,8 +15601,10 @@ public abstract class EventInfo : MemberInfo, _EventInfo // TypeDefIndex: 579
 	public bool IsSpecialName { get; } // 0x0027ECAC 
 	public override MemberTypes MemberType { get; } // 0x0027ECCC 
 
+	// Constructors
+	protected EventInfo(); // 0x0027E9DC
+
 	// Methods
-	protected void .ctor(); // 0x0027E9DC
 	private void System.Runtime.InteropServices._EventInfo.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x0027E9EC
 	private void System.Runtime.InteropServices._EventInfo.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x0027EA74
 	private void System.Runtime.InteropServices._EventInfo.GetTypeInfoCount(out uint pcTInfo); // 0x0027EAFC
@@ -14938,8 +15655,10 @@ public sealed class ExceptionHandlingClause // TypeDefIndex: 583
 	public int TryLength { get; } // 0x0027FB14 
 	public int TryOffset { get; } // 0x0027FB1C 
 
+	// Constructors
+	internal ExceptionHandlingClause(); // 0x0027FAE4
+
 	// Methods
-	internal void .ctor(); // 0x0027FAE4
 	public override string ToString(); // 0x0027FB24
 }
 
@@ -15000,8 +15719,10 @@ public abstract class FieldInfo : MemberInfo, _FieldInfo // TypeDefIndex: 586
 	public bool IsNotSerialized { get; } // 0x002803CC 
 	internal virtual UnmanagedMarshal UMarshal { get; } // 0x002807B4 
 
+	// Constructors
+	protected FieldInfo(); // 0x00280018
+
 	// Methods
-	protected void .ctor(); // 0x00280018
 	private void System.Runtime.InteropServices._FieldInfo.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x00280020
 	private void System.Runtime.InteropServices._FieldInfo.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x002800A8
 	private void System.Runtime.InteropServices._FieldInfo.GetTypeInfoCount(out uint pcTInfo); // 0x00280130
@@ -15061,11 +15782,12 @@ public struct InterfaceMapping // TypeDefIndex: 589
 [Serializable]
 public class InvalidFilterCriteriaException : ApplicationException // TypeDefIndex: 590
 {
-	// Methods
-	public void .ctor(); // 0x00281070
-	public void .ctor(string message); // 0x002810E4
-	public void .ctor(string message, Exception inner); // 0x002810EC
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002810F4
+	// Constructors
+	public InvalidFilterCriteriaException(); // 0x00281070
+	public InvalidFilterCriteriaException(string message); // 0x002810E4
+	public InvalidFilterCriteriaException(string message, Exception inner); // 0x002810EC
+	protected InvalidFilterCriteriaException(SerializationInfo info, StreamingContext context); // 0x002810F4
+
 }
 
 // Namespace: System.Reflection
@@ -15081,8 +15803,10 @@ public class LocalVariableInfo // TypeDefIndex: 591
 	public virtual int LocalIndex { get; } // 0x00281124 
 	public virtual Type LocalType { get; } // 0x0028112C 
 
+	// Constructors
+	internal LocalVariableInfo(); // 0x00281114
+
 	// Methods
-	internal void .ctor(); // 0x00281114
 	public override string ToString(); // 0x00281134
 }
 
@@ -15099,9 +15823,10 @@ public class ManifestResourceInfo // TypeDefIndex: 592
 	public virtual Assembly ReferencedAssembly { get; } // 0x002812A4 
 	public virtual ResourceLocation ResourceLocation { get; } // 0x002812AC 
 
-	// Methods
-	internal void .ctor(); // 0x00281264
-	internal void .ctor(Assembly assembly, string filename, ResourceLocation location); // 0x0028126C
+	// Constructors
+	internal ManifestResourceInfo(); // 0x00281264
+	internal ManifestResourceInfo(Assembly assembly, string filename, ResourceLocation location); // 0x0028126C
+
 }
 
 // Namespace: System.Reflection
@@ -15116,8 +15841,10 @@ internal class MemberInfoSerializationHolder : ISerializable, IObjectReference /
 	private readonly Type _reflectedType; // 0x14
 	private readonly Type[] _genericArguments; // 0x18
 
+	// Constructors
+	private MemberInfoSerializationHolder(SerializationInfo info, StreamingContext ctx); // 0x00281954
+
 	// Methods
-	private void .ctor(SerializationInfo info, StreamingContext ctx); // 0x00281954
 	public static void Serialize(SerializationInfo info, string name, Type klass, string signature, MemberTypes type); // 0x00281B3C
 	public static void Serialize(SerializationInfo info, string name, Type klass, string signature, MemberTypes type, Type[] genericArguments); // 0x00281B60
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x00281EA4
@@ -15194,8 +15921,10 @@ public abstract class MethodBase : MemberInfo, _MethodBase // TypeDefIndex: 596
 	public virtual bool IsGenericMethodDefinition { get; } // 0x002830E4 
 	public virtual bool IsGenericMethod { get; } // 0x002830EC 
 
+	// Constructors
+	protected MethodBase(); // 0x00282770
+
 	// Methods
-	protected void .ctor(); // 0x00282770
 	private void System.Runtime.InteropServices._MethodBase.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x00282778
 	private void System.Runtime.InteropServices._MethodBase.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x00282800
 	private void System.Runtime.InteropServices._MethodBase.GetTypeInfoCount(out uint pcTInfo); // 0x00282888
@@ -15237,8 +15966,10 @@ public sealed class MethodBody // TypeDefIndex: 597
 	public int LocalSignatureMetadataToken { get; } // 0x00283264 
 	public int MaxStackSize { get; } // 0x0028326C 
 
+	// Constructors
+	internal MethodBody(); // 0x0028318C
+
 	// Methods
-	internal void .ctor(); // 0x0028318C
 	public byte[] GetILAsByteArray(); // 0x00283274
 }
 
@@ -15275,8 +16006,10 @@ public abstract class MethodInfo : MethodBase, _MethodInfo // TypeDefIndex: 599
 	public override bool ContainsGenericParameters { get; } // 0x00283698 
 	public virtual ParameterInfo ReturnParameter { get; } // 0x002836A0 
 
+	// Constructors
+	protected MethodInfo(); // 0x0028327C
+
 	// Methods
-	protected void .ctor(); // 0x0028327C
 	private void System.Runtime.InteropServices._MethodInfo.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x00283284
 	private void System.Runtime.InteropServices._MethodInfo.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x0028330C
 	private void System.Runtime.InteropServices._MethodInfo.GetTypeInfoCount(out uint pcTInfo); // 0x00283394
@@ -15295,9 +16028,11 @@ public sealed class Missing : ISerializable // TypeDefIndex: 600
 	// Fields
 	public static readonly Missing Value; // 0x00
 
+	// Constructors
+	internal Missing(); // 0x00283730
+	private static Missing(); // 0x00283738
+
 	// Methods
-	internal void .ctor(); // 0x00283730
-	private static void .cctor(); // 0x00283738
 	private void System.Runtime.Serialization.ISerializable.GetObjectData(SerializationInfo info, StreamingContext context); // 0x002837AC
 }
 
@@ -15336,9 +16071,11 @@ public class Module : ISerializable, ICustomAttributeProvider, _Module // TypeDe
 	internal Guid MvId { get; } // 0x0028469C 
 	public Guid ModuleVersionId { get; } // 0x002846B8 
 
+	// Constructors
+	internal Module(); // 0x002837B0
+	private static Module(); // 0x002837B8
+
 	// Methods
-	internal void .ctor(); // 0x002837B0
-	private static void .cctor(); // 0x002837B8
 	private void System.Runtime.InteropServices._Module.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x00283888
 	private void System.Runtime.InteropServices._Module.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x00283910
 	private void System.Runtime.InteropServices._Module.GetTypeInfoCount(out uint pcTInfo); // 0x00283998
@@ -15428,8 +16165,10 @@ internal sealed class MonoEvent : EventInfo, ISerializable // TypeDefIndex: 604
 	public override Type ReflectedType { get; } // 0x002877B8 
 	public override string Name { get; } // 0x002877E8 
 
+	// Constructors
+	public MonoEvent(); // 0x002873A8
+
 	// Methods
-	public void .ctor(); // 0x002873A8
 	public override MethodInfo GetAddMethod(bool nonPublic); // 0x00287428
 	public override MethodInfo GetRaiseMethod(bool nonPublic); // 0x0028749C
 	public override MethodInfo GetRemoveMethod(bool nonPublic); // 0x00287510
@@ -15460,8 +16199,10 @@ internal class MonoField : FieldInfo, ISerializable // TypeDefIndex: 605
 	public override Type DeclaringType { get; } // 0x00287B58 
 	public override string Name { get; } // 0x00287B60 
 
+	// Constructors
+	public MonoField(); // 0x00287B2C
+
 	// Methods
-	public void .ctor(); // 0x00287B2C
 	private Type GetParentType(bool declaring); // 0x00287B4C
 	public override bool IsDefined(Type attributeType, bool inherit); // 0x00287B68
 	public override object[] GetCustomAttributes(bool inherit); // 0x00287BFC
@@ -15500,9 +16241,11 @@ internal class MonoGenericClass : MonoType // TypeDefIndex: 606
 	public override string AssemblyQualifiedName { get; } // 0x0028B898 
 	public override Guid GUID { get; } // 0x0028B8A4 
 
+	// Constructors
+	internal MonoGenericClass(); // 0x002888D8
+	internal MonoGenericClass(TypeBuilder tb, Type[] args); // 0x00288974
+
 	// Methods
-	internal void .ctor(); // 0x002888D8
-	internal void .ctor(TypeBuilder tb, Type[] args); // 0x00288974
 	private void initialize(MethodInfo[] methods, ConstructorInfo[] ctors, FieldInfo[] fields, PropertyInfo[] properties, EventInfo[] events); // 0x002889A0
 	private void initialize(); // 0x002889A4
 	private Type GetParentType(); // 0x00288B3C
@@ -15556,8 +16299,9 @@ internal class MonoGenericMethod : MonoMethod // TypeDefIndex: 607
 	// Properties
 	public override Type ReflectedType { get; } // 0x0028C3B0 
 
-	// Methods
-	internal void .ctor(); // 0x0028C310
+	// Constructors
+	internal MonoGenericMethod(); // 0x0028C310
+
 }
 
 // Namespace: System.Reflection
@@ -15567,8 +16311,9 @@ internal class MonoGenericCMethod : MonoCMethod // TypeDefIndex: 608
 	// Properties
 	public override Type ReflectedType { get; } // 0x002888D4 
 
-	// Methods
-	internal void .ctor(); // 0x00288840
+	// Constructors
+	internal MonoGenericCMethod(); // 0x00288840
+
 }
 
 // Namespace: System.Reflection
@@ -15618,9 +16363,11 @@ internal class MonoMethod : MethodInfo, ISerializable // TypeDefIndex: 610
 	public override bool IsGenericMethod { get; } // 0x0028DA54 
 	public override bool ContainsGenericParameters { get; } // 0x0028DA58 
 
+	// Constructors
+	internal MonoMethod(); // 0x0028C3A8
+	internal MonoMethod(RuntimeMethodHandle mhandle); // 0x0028C3B4
+
 	// Methods
-	internal void .ctor(); // 0x0028C3A8
-	internal void .ctor(RuntimeMethodHandle mhandle); // 0x0028C3B4
 	internal static string get_name(MethodBase method); // 0x00286EA4
 	internal static MonoMethod get_base_definition(MonoMethod method); // 0x0028C3D4
 	public override MethodInfo GetBaseDefinition(); // 0x0028C3D8
@@ -15660,8 +16407,10 @@ internal class MonoCMethod : ConstructorInfo, ISerializable // TypeDefIndex: 611
 	public override Type DeclaringType { get; } // 0x00286E10 
 	public override string Name { get; } // 0x00286E7C 
 
+	// Constructors
+	public MonoCMethod(); // 0x00286558
+
 	// Methods
-	public void .ctor(); // 0x00286558
 	public override MethodImplAttributes GetMethodImplementationFlags(); // 0x002865DC
 	public override ParameterInfo[] GetParameters(); // 0x00286648
 	internal object InternalInvoke(object obj, object[] parameters, out Exception exc); // 0x00286658
@@ -15721,8 +16470,10 @@ internal class MonoProperty : PropertyInfo, ISerializable // TypeDefIndex: 614
 	public override Type DeclaringType { get; } // 0x0028DDB0 
 	public override string Name { get; } // 0x0028DDF0 
 
+	// Constructors
+	public MonoProperty(); // 0x0028DB64
+
 	// Methods
-	public void .ctor(); // 0x0028DB64
 	private void CachePropertyInfo(PInfo flags); // 0x0028DB6C
 	public override MethodInfo[] GetAccessors(bool nonPublic); // 0x0028DE30
 	public override MethodInfo GetGetMethod(bool nonPublic); // 0x0028E038
@@ -15763,8 +16514,9 @@ public sealed class ObfuscateAssemblyAttribute : Attribute // TypeDefIndex: 618
 	public bool AssemblyIsPrivate { get; } // 0x00366F14 
 	public bool StripAfterObfuscation { get; set; } // 0x00366F1C 0x00366F24
 
-	// Methods
-	public void .ctor(bool assemblyIsPrivate); // 0x00366EEC
+	// Constructors
+	public ObfuscateAssemblyAttribute(bool assemblyIsPrivate); // 0x00366EEC
+
 }
 
 // Namespace: System.Reflection
@@ -15782,8 +16534,9 @@ public sealed class ObfuscationAttribute : Attribute // TypeDefIndex: 619
 	public bool ApplyToMembers { get; set; } // 0x00366FC8 0x00366FD0
 	public string Feature { get; set; } // 0x00366FD8 0x00366FE0
 
-	// Methods
-	public void .ctor(); // 0x00366F2C
+	// Constructors
+	public ObfuscationAttribute(); // 0x00366F2C
+
 }
 
 // Namespace: System.Reflection
@@ -15831,11 +16584,13 @@ public class ParameterInfo : ICustomAttributeProvider, _ParameterInfo // TypeDef
 	public int MetadataToken { get; } // 0x00367B28 
 	public virtual object RawDefaultValue { get; } // 0x003683B8 
 
+	// Constructors
+	protected ParameterInfo(); // 0x00366FE8
+	internal ParameterInfo(ParameterBuilder pb, Type type, MemberInfo member, int position); // 0x00366FF0
+	internal ParameterInfo(ParameterInfo pinfo, MemberInfo member); // 0x0036708C
+	internal ParameterInfo(Type type, MemberInfo member, UnmanagedMarshal marshalAs); // 0x00367164
+
 	// Methods
-	protected void .ctor(); // 0x00366FE8
-	internal void .ctor(ParameterBuilder pb, Type type, MemberInfo member, int position); // 0x00366FF0
-	internal void .ctor(ParameterInfo pinfo, MemberInfo member); // 0x0036708C
-	internal void .ctor(Type type, MemberInfo member, UnmanagedMarshal marshalAs); // 0x00367164
 	private void System.Runtime.InteropServices._ParameterInfo.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x00367224
 	private void System.Runtime.InteropServices._ParameterInfo.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x003672AC
 	private void System.Runtime.InteropServices._ParameterInfo.GetTypeInfoCount(out uint pcTInfo); // 0x00367334
@@ -15861,8 +16616,9 @@ public struct ParameterModifier // TypeDefIndex: 622
 	// Properties
 	public bool Item { get; set; } // 0x000A650C 0x000A6514
 
-	// Methods
-	public void .ctor(int parameterCount); // 0x000A6504
+	// Constructors
+	public ParameterModifier(int parameterCount); // 0x000A6504
+
 }
 
 // Namespace: System.Reflection
@@ -15873,8 +16629,10 @@ public sealed class Pointer : ISerializable // TypeDefIndex: 623
 	private void * data; // 0x08
 	private Type type; // 0x0C
 
+	// Constructors
+	private Pointer(); // 0x00368528
+
 	// Methods
-	private void .ctor(); // 0x00368528
 	private void System.Runtime.Serialization.ISerializable.GetObjectData(SerializationInfo info, StreamingContext context); // 0x00368530
 	public static object Box(void * ptr, Type type); // 0x003685CC
 	public static void * Unbox(object ptr); // 0x00368724
@@ -15928,8 +16686,10 @@ public abstract class PropertyInfo : MemberInfo, _PropertyInfo // TypeDefIndex: 
 	public override MemberTypes MemberType { get; } // 0x00368A34 
 	public abstract Type PropertyType { get; }
 
+	// Constructors
+	protected PropertyInfo(); // 0x003687EC
+
 	// Methods
-	protected void .ctor(); // 0x003687EC
 	private void System.Runtime.InteropServices._PropertyInfo.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x003687F4
 	private void System.Runtime.InteropServices._PropertyInfo.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x0036887C
 	private void System.Runtime.InteropServices._PropertyInfo.GetTypeInfoCount(out uint pcTInfo); // 0x00368904
@@ -15964,10 +16724,12 @@ public sealed class ReflectionTypeLoadException : SystemException // TypeDefInde
 	public Type[] Types { get; } // 0x00368FA0 
 	public Exception[] LoaderExceptions { get; } // 0x00368FA8 
 
+	// Constructors
+	public ReflectionTypeLoadException(Type[] classes, Exception[] exceptions); // 0x00368D14
+	public ReflectionTypeLoadException(Type[] classes, Exception[] exceptions, string message); // 0x00368D98
+	private ReflectionTypeLoadException(SerializationInfo info, StreamingContext sc); // 0x00368DC4
+
 	// Methods
-	public void .ctor(Type[] classes, Exception[] exceptions); // 0x00368D14
-	public void .ctor(Type[] classes, Exception[] exceptions, string message); // 0x00368D98
-	private void .ctor(SerializationInfo info, StreamingContext sc); // 0x00368DC4
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x00368FB0
 }
 
@@ -16002,11 +16764,13 @@ public class StrongNameKeyPair : ISerializable, IDeserializationCallback // Type
 	// Properties
 	public byte[] PublicKey { get; } // 0x00369A2C 
 
+	// Constructors
+	public StrongNameKeyPair(byte[] keyPairArray); // 0x00369094
+	public StrongNameKeyPair(FileStream keyPairFile); // 0x0036941C
+	public StrongNameKeyPair(string keyPairContainer); // 0x00369580
+	protected StrongNameKeyPair(SerializationInfo info, StreamingContext context); // 0x00369648
+
 	// Methods
-	public void .ctor(byte[] keyPairArray); // 0x00369094
-	public void .ctor(FileStream keyPairFile); // 0x0036941C
-	public void .ctor(string keyPairContainer); // 0x00369580
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00369648
 	private void System.Runtime.Serialization.ISerializable.GetObjectData(SerializationInfo info, StreamingContext context); // 0x00369880
 	private void System.Runtime.Serialization.IDeserializationCallback.OnDeserialization(object sender); // 0x00369A28
 	private RSA GetRSA(); // 0x00369310
@@ -16018,32 +16782,35 @@ public class StrongNameKeyPair : ISerializable, IDeserializationCallback // Type
 [Serializable]
 public class TargetException : Exception // TypeDefIndex: 632
 {
-	// Methods
-	public void .ctor(); // 0x00369EC4
-	public void .ctor(string message); // 0x00369F38
-	public void .ctor(string message, Exception inner); // 0x00369F40
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00369F48
+	// Constructors
+	public TargetException(); // 0x00369EC4
+	public TargetException(string message); // 0x00369F38
+	public TargetException(string message, Exception inner); // 0x00369F40
+	protected TargetException(SerializationInfo info, StreamingContext context); // 0x00369F48
+
 }
 
 // Namespace: System.Reflection
 [Serializable]
 public sealed class TargetInvocationException : Exception // TypeDefIndex: 633
 {
-	// Methods
-	public void .ctor(Exception inner); // 0x00369F68
-	public void .ctor(string message, Exception inner); // 0x00369FD8
-	internal void .ctor(SerializationInfo info, StreamingContext sc); // 0x00369FE0
+	// Constructors
+	public TargetInvocationException(Exception inner); // 0x00369F68
+	public TargetInvocationException(string message, Exception inner); // 0x00369FD8
+	internal TargetInvocationException(SerializationInfo info, StreamingContext sc); // 0x00369FE0
+
 }
 
 // Namespace: System.Reflection
 [Serializable]
 public sealed class TargetParameterCountException : Exception // TypeDefIndex: 634
 {
-	// Methods
-	public void .ctor(); // 0x0036A000
-	public void .ctor(string message); // 0x0036A074
-	public void .ctor(string message, Exception inner); // 0x0036A07C
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x0036A084
+	// Constructors
+	public TargetParameterCountException(); // 0x0036A000
+	public TargetParameterCountException(string message); // 0x0036A074
+	public TargetParameterCountException(string message, Exception inner); // 0x0036A07C
+	internal TargetParameterCountException(SerializationInfo info, StreamingContext context); // 0x0036A084
+
 }
 
 // Namespace: System.Reflection
@@ -16103,9 +16870,11 @@ public class TypeDelegator : Type // TypeDefIndex: 636
 	public override Type UnderlyingSystemType { get; } // 0x0036A3EC 
 	public override int MetadataToken { get; } // 0x0036ABD0 
 
+	// Constructors
+	protected TypeDelegator(); // 0x0036A0A4
+	public TypeDelegator(Type delegatingType); // 0x0036A128
+
 	// Methods
-	protected void .ctor(); // 0x0036A0A4
-	public void .ctor(Type delegatingType); // 0x0036A128
 	protected override TypeAttributes GetAttributeFlagsImpl(); // 0x0036A420
 	protected override ConstructorInfo GetConstructorImpl(BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers); // 0x0036A44C
 	public override ConstructorInfo[] GetConstructors(BindingFlags bindingAttr); // 0x0036A4AC
@@ -16162,11 +16931,12 @@ public interface IResourceWriter : IDisposable // TypeDefIndex: 638
 [Serializable]
 public class MissingManifestResourceException : SystemException // TypeDefIndex: 639
 {
-	// Methods
-	public void .ctor(); // 0x0036B898
-	public void .ctor(string message); // 0x0036B90C
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0036B914
-	public void .ctor(string message, Exception inner); // 0x0036B934
+	// Constructors
+	public MissingManifestResourceException(); // 0x0036B898
+	public MissingManifestResourceException(string message); // 0x0036B90C
+	protected MissingManifestResourceException(SerializationInfo info, StreamingContext context); // 0x0036B914
+	public MissingManifestResourceException(string message, Exception inner); // 0x0036B934
+
 }
 
 // Namespace: System.Resources
@@ -16179,12 +16949,13 @@ public class MissingSatelliteAssemblyException : SystemException // TypeDefIndex
 	// Properties
 	public string CultureName { get; } // 0x0036BA00 
 
-	// Methods
-	public void .ctor(); // 0x0036B93C
-	public void .ctor(string message); // 0x0036B9B0
-	public void .ctor(string message, string cultureName); // 0x0036B9B8
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0036B9D8
-	public void .ctor(string message, Exception inner); // 0x0036B9F8
+	// Constructors
+	public MissingSatelliteAssemblyException(); // 0x0036B93C
+	public MissingSatelliteAssemblyException(string message); // 0x0036B9B0
+	public MissingSatelliteAssemblyException(string message, string cultureName); // 0x0036B9B8
+	protected MissingSatelliteAssemblyException(SerializationInfo info, StreamingContext context); // 0x0036B9D8
+	public MissingSatelliteAssemblyException(string message, Exception inner); // 0x0036B9F8
+
 }
 
 // Namespace: System.Resources
@@ -16198,9 +16969,10 @@ public sealed class NeutralResourcesLanguageAttribute : Attribute // TypeDefInde
 	public string CultureName { get; } // 0x0036BD24 
 	public UltimateResourceFallbackLocation Location { get; } // 0x0036BD2C 
 
-	// Methods
-	public void .ctor(string cultureName); // 0x0036BBA4
-	public void .ctor(string cultureName, UltimateResourceFallbackLocation location); // 0x0036BC60
+	// Constructors
+	public NeutralResourcesLanguageAttribute(string cultureName); // 0x0036BBA4
+	public NeutralResourcesLanguageAttribute(string cultureName, UltimateResourceFallbackLocation location); // 0x0036BC60
+
 }
 
 // Namespace: System.Resources
@@ -16228,13 +17000,15 @@ public class ResourceManager // TypeDefIndex: 642
 	public virtual Type ResourceSetType { get; } // 0x0036CDF4 
 	protected UltimateResourceFallbackLocation FallbackLocation { get; set; } // 0x0036F16C 0x0036F174
 
+	// Constructors
+	protected ResourceManager(); // 0x0036BD34
+	public ResourceManager(Type resourceSource); // 0x0036BDD8
+	public ResourceManager(string baseName, Assembly assembly); // 0x0036C5B0
+	public ResourceManager(string baseName, Assembly assembly, Type usingResourceSet); // 0x0036C75C
+	private ResourceManager(string baseName, string resourceDir, Type usingResourceSet); // 0x0036CA70
+	private static ResourceManager(); // 0x0036CC60
+
 	// Methods
-	protected void .ctor(); // 0x0036BD34
-	public void .ctor(Type resourceSource); // 0x0036BDD8
-	public void .ctor(string baseName, Assembly assembly); // 0x0036C5B0
-	public void .ctor(string baseName, Assembly assembly, Type usingResourceSet); // 0x0036C75C
-	private void .ctor(string baseName, string resourceDir, Type usingResourceSet); // 0x0036CA70
-	private static void .cctor(); // 0x0036CC60
 	private static Hashtable GetResourceSets(Assembly assembly, string basename); // 0x0036BF68
 	private Type CheckResourceSetType(Type usingResourceSet, bool verifyType); // 0x0036C920
 	public static ResourceManager CreateFileBasedResourceManager(string baseName, string resourceDir, Type usingResourceSet); // 0x0036CD54
@@ -16299,9 +17073,11 @@ public sealed class ResourceReader : IEnumerable, IDisposable, IResourceReader /
 	private ResourceCacheItem[] cache; // 0x3C
 	private object cache_lock; // 0x40
 
+	// Constructors
+	public ResourceReader(Stream stream); // 0x0036F17C
+	public ResourceReader(string fileName); // 0x0037013C
+
 	// Methods
-	public void .ctor(Stream stream); // 0x0036F17C
-	public void .ctor(string fileName); // 0x0037013C
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x0037028C
 	private void System.IDisposable.Dispose(); // 0x00370350
 	private void ReadHeaders(); // 0x0036F394
@@ -16327,8 +17103,9 @@ private struct ResourceInfo // TypeDefIndex: 645
 	public readonly string ResourceName; // 0x10
 	public readonly int TypeIndex; // 0x14
 
-	// Methods
-	public void .ctor(string resourceName, long valuePosition, int type_index); // 0x000A6710
+	// Constructors
+	public ResourceInfo(string resourceName, long valuePosition, int type_index); // 0x000A6710
+
 }
 
 // Namespace: 
@@ -16338,8 +17115,9 @@ private struct ResourceCacheItem // TypeDefIndex: 646
 	public readonly string ResourceName; // 0x08
 	public readonly object ResourceValue; // 0x0C
 
-	// Methods
-	public void .ctor(string name, object value); // 0x000A6684
+	// Constructors
+	public ResourceCacheItem(string name, object value); // 0x000A6684
+
 }
 
 // Namespace: 
@@ -16358,8 +17136,10 @@ internal sealed class ResourceEnumerator : IEnumerator, IDictionaryEnumerator //
 	public UnmanagedMemoryStream ValueAsStream { get; } // 0x00373148 
 	public object Current { get; } // 0x003732C8 
 
+	// Constructors
+	internal ResourceEnumerator(ResourceReader readerToEnumerate); // 0x003721D8
+
 	// Methods
-	internal void .ctor(ResourceReader readerToEnumerate); // 0x003721D8
 	public bool MoveNext(); // 0x00372B80
 	public void Reset(); // 0x0037334C
 	private void FillCache(); // 0x00372D14
@@ -16371,8 +17151,10 @@ private sealed class <ResourceValueAsStream>c__AnonStorey2 // TypeDefIndex: 648
 	// Fields
 	internal IntPtr ptr; // 0x08
 
+	// Constructors
+	public <ResourceValueAsStream>c__AnonStorey2(); // 0x003720A0
+
 	// Methods
-	public void .ctor(); // 0x003720A0
 	internal void <>m__1(object o, EventArgs e); // 0x00372C8C
 }
 
@@ -16386,12 +17168,14 @@ public class ResourceSet : IEnumerable, IDisposable // TypeDefIndex: 649
 	private bool resources_read; // 0x10
 	[NonSerialized]	private bool disposed; // 0x11
 
+	// Constructors
+	protected ResourceSet(); // 0x0037341C
+	public ResourceSet(IResourceReader reader); // 0x003734A0
+	public ResourceSet(Stream stream); // 0x00373584
+	internal ResourceSet(UnmanagedMemoryStream stream); // 0x00373628
+	public ResourceSet(string fileName); // 0x003736CC
+
 	// Methods
-	protected void .ctor(); // 0x0037341C
-	public void .ctor(IResourceReader reader); // 0x003734A0
-	public void .ctor(Stream stream); // 0x00373584
-	internal void .ctor(UnmanagedMemoryStream stream); // 0x00373628
-	public void .ctor(string fileName); // 0x003736CC
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x00373770
 	public virtual void Close(); // 0x00373780
 	public void Dispose(); // 0x003737B4
@@ -16419,9 +17203,11 @@ public sealed class ResourceWriter : IDisposable, IResourceWriter // TypeDefInde
 	// Properties
 	internal Stream Stream { get; } // 0x003783C0 
 
+	// Constructors
+	public ResourceWriter(Stream stream); // 0x003745DC
+	public ResourceWriter(string fileName); // 0x003747C8
+
 	// Methods
-	public void .ctor(Stream stream); // 0x003745DC
-	public void .ctor(string fileName); // 0x003747C8
 	public void AddResource(string name, byte[] value); // 0x00374990
 	public void AddResource(string name, object value); // 0x00374B68
 	public void AddResource(string name, string value); // 0x00374D40
@@ -16441,18 +17227,21 @@ private class TypeByNameObject // TypeDefIndex: 651
 	public readonly string TypeName; // 0x08
 	public readonly byte[] Value; // 0x0C
 
-	// Methods
-	public void .ctor(string typeName, byte[] value); // 0x00378244
+	// Constructors
+	public TypeByNameObject(string typeName, byte[] value); // 0x00378244
+
 }
 
 // Namespace: System.Resources
 [Serializable]
 internal class RuntimeResourceSet : ResourceSet // TypeDefIndex: 652
 {
+	// Constructors
+	public RuntimeResourceSet(UnmanagedMemoryStream stream); // 0x003783C8
+	public RuntimeResourceSet(Stream stream); // 0x003783CC
+	public RuntimeResourceSet(string fileName); // 0x003783D0
+
 	// Methods
-	public void .ctor(UnmanagedMemoryStream stream); // 0x003783C8
-	public void .ctor(Stream stream); // 0x003783CC
-	public void .ctor(string fileName); // 0x003783D0
 	public override object GetObject(string name); // 0x003783D4
 	public override object GetObject(string name, bool ignoreCase); // 0x003785B0
 	private object CloneDisposableObjectIfPossible(object value); // 0x003784A0
@@ -16467,8 +17256,9 @@ public sealed class SatelliteContractVersionAttribute : Attribute // TypeDefInde
 	// Properties
 	public string Version { get; } // 0x0036F140 
 
-	// Methods
-	public void .ctor(string version); // 0x00378680
+	// Constructors
+	public SatelliteContractVersionAttribute(string version); // 0x00378680
+
 }
 
 // Namespace: System.Resources
@@ -16516,9 +17306,11 @@ internal class NameOrId // TypeDefIndex: 656
 	public string Name { get; } // 0x0036BA58 
 	public int Id { get; } // 0x0036BA60 
 
+	// Constructors
+	public NameOrId(string name); // 0x0036BA08
+	public NameOrId(int id); // 0x0036BA28
+
 	// Methods
-	public void .ctor(string name); // 0x0036BA08
-	public void .ctor(int id); // 0x0036BA28
 	public override string ToString(); // 0x0036BA68
 }
 
@@ -16536,9 +17328,11 @@ internal abstract class Win32Resource // TypeDefIndex: 657
 	public NameOrId Type { get; } // 0x00379990 
 	public int Language { get; } // 0x00379998 
 
+	// Constructors
+	internal Win32Resource(NameOrId type, NameOrId name, int language); // 0x0037873C
+	internal Win32Resource(Win32ResourceType type, int name, int language); // 0x00378804
+
 	// Methods
-	internal void .ctor(NameOrId type, NameOrId name, int language); // 0x0037873C
-	internal void .ctor(Win32ResourceType type, int name, int language); // 0x00378804
 	public abstract void WriteTo(Stream s);
 	public override string ToString(); // 0x003799A0
 }
@@ -16552,8 +17346,10 @@ internal class Win32EncodedResource : Win32Resource // TypeDefIndex: 658
 	// Properties
 	public byte[] Data { get; } // 0x0037876C 
 
+	// Constructors
+	internal Win32EncodedResource(NameOrId type, NameOrId name, int language, byte[] data); // 0x00378704
+
 	// Methods
-	internal void .ctor(NameOrId type, NameOrId name, int language, byte[] data); // 0x00378704
 	public override void WriteTo(Stream s); // 0x00378774
 }
 
@@ -16566,8 +17362,10 @@ internal class Win32IconResource : Win32Resource // TypeDefIndex: 659
 	// Properties
 	public ICONDIRENTRY Icon { get; } // 0x00379348 
 
+	// Constructors
+	public Win32IconResource(int id, int language, ICONDIRENTRY icon); // 0x00379318
+
 	// Methods
-	public void .ctor(int id, int language, ICONDIRENTRY icon); // 0x00379318
 	public override void WriteTo(Stream s); // 0x00379350
 }
 
@@ -16577,8 +17375,10 @@ internal class Win32GroupIconResource : Win32Resource // TypeDefIndex: 660
 	// Fields
 	private Win32IconResource[] icons; // 0x14
 
+	// Constructors
+	public Win32GroupIconResource(int id, int language, Win32IconResource[] icons); // 0x003787D4
+
 	// Methods
-	public void .ctor(int id, int language, Win32IconResource[] icons); // 0x003787D4
 	public override void WriteTo(Stream s); // 0x003788B0
 }
 
@@ -16616,8 +17416,10 @@ internal class Win32VersionResource : Win32Resource // TypeDefIndex: 661
 	public virtual int FileLanguage { get; set; } // 0x0037BB6C 0x0037BB74
 	public virtual string FileVersion { get; set; } // 0x0037BB7C 0x0037BC38
 
+	// Constructors
+	public Win32VersionResource(int id, int language, bool compilercontext); // 0x00379C70
+
 	// Methods
-	public void .ctor(int id, int language, bool compilercontext); // 0x00379C70
 	private void emit_padding(BinaryWriter w); // 0x0037BF6C
 	private void patch_length(BinaryWriter w, long len_pos); // 0x0037BFE8
 	public override void WriteTo(Stream ms); // 0x0037C0D8
@@ -16629,8 +17431,10 @@ internal class Win32ResFileReader // TypeDefIndex: 662
 	// Fields
 	private Stream res_file; // 0x08
 
+	// Constructors
+	public Win32ResFileReader(Stream s); // 0x003793E8
+
 	// Methods
-	public void .ctor(Stream s); // 0x003793E8
 	private int read_int16(); // 0x00379408
 	private int read_int32(); // 0x00379484
 	private void read_padding(); // 0x003794BC
@@ -16652,8 +17456,10 @@ internal class ICONDIRENTRY // TypeDefIndex: 663
 	public int dwImageOffset; // 0x14
 	public byte[] image; // 0x18
 
+	// Constructors
+	public ICONDIRENTRY(); // 0x0036B4CC
+
 	// Methods
-	public void .ctor(); // 0x0036B4CC
 	public override string ToString(); // 0x0036B4D4
 }
 
@@ -16663,8 +17469,10 @@ internal class Win32IconFileReader // TypeDefIndex: 664
 	// Fields
 	private Stream iconFile; // 0x08
 
+	// Constructors
+	public Win32IconFileReader(Stream s); // 0x00378C10
+
 	// Methods
-	public void .ctor(Stream s); // 0x00378C10
 	public ICONDIRENTRY[] ReadIcons(); // 0x00378C30
 }
 
@@ -16677,36 +17485,41 @@ public sealed class AccessedThroughPropertyAttribute : Attribute // TypeDefIndex
 	// Properties
 	public string PropertyName { get; } // 0x0037CFFC 
 
-	// Methods
-	public void .ctor(string propertyName); // 0x0037CFDC
+	// Constructors
+	public AccessedThroughPropertyAttribute(string propertyName); // 0x0037CFDC
+
 }
 
 // Namespace: System.Runtime.CompilerServices
 public class CallConvCdecl // TypeDefIndex: 666
 {
-	// Methods
-	public void .ctor(); // 0x0037D004
+	// Constructors
+	public CallConvCdecl(); // 0x0037D004
+
 }
 
 // Namespace: System.Runtime.CompilerServices
 public class CallConvFastcall // TypeDefIndex: 667
 {
-	// Methods
-	public void .ctor(); // 0x0037D00C
+	// Constructors
+	public CallConvFastcall(); // 0x0037D00C
+
 }
 
 // Namespace: System.Runtime.CompilerServices
 public class CallConvStdcall // TypeDefIndex: 668
 {
-	// Methods
-	public void .ctor(); // 0x0037D014
+	// Constructors
+	public CallConvStdcall(); // 0x0037D014
+
 }
 
 // Namespace: System.Runtime.CompilerServices
 public class CallConvThiscall // TypeDefIndex: 669
 {
-	// Methods
-	public void .ctor(); // 0x0037D01C
+	// Constructors
+	public CallConvThiscall(); // 0x0037D01C
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -16726,17 +17539,19 @@ public class CompilationRelaxationsAttribute : Attribute // TypeDefIndex: 671
 	// Properties
 	public int CompilationRelaxations { get; } // 0x0037D064 
 
-	// Methods
-	public void .ctor(int relaxations); // 0x0037D024
-	public void .ctor(CompilationRelaxations relaxations); // 0x0037D044
+	// Constructors
+	public CompilationRelaxationsAttribute(int relaxations); // 0x0037D024
+	public CompilationRelaxationsAttribute(CompilationRelaxations relaxations); // 0x0037D044
+
 }
 
 // Namespace: System.Runtime.CompilerServices
 [Serializable]
 public class CompilerGlobalScopeAttribute : Attribute // TypeDefIndex: 672
 {
-	// Methods
-	public void .ctor(); // 0x0037D074
+	// Constructors
+	public CompilerGlobalScopeAttribute(); // 0x0037D074
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -16751,8 +17566,9 @@ public abstract class CustomConstantAttribute : Attribute // TypeDefIndex: 674
 	// Properties
 	public abstract object Value { get; }
 
-	// Methods
-	protected void .ctor(); // 0x0037D07C
+	// Constructors
+	protected CustomConstantAttribute(); // 0x0037D07C
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -16766,8 +17582,9 @@ public sealed class DateTimeConstantAttribute : CustomConstantAttribute // TypeD
 	internal long Ticks { get; } // 0x0037D0AC 
 	public override object Value { get; } // 0x0037D0B4 
 
-	// Methods
-	public void .ctor(long ticks); // 0x0037D084
+	// Constructors
+	public DateTimeConstantAttribute(long ticks); // 0x0037D084
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -16780,8 +17597,9 @@ public sealed class DefaultDependencyAttribute : Attribute // TypeDefIndex: 676
 	// Properties
 	public LoadHint LoadHint { get; } // 0x0037D2B8 
 
-	// Methods
-	public void .ctor(LoadHint loadHintArgument); // 0x0037D298
+	// Constructors
+	public DefaultDependencyAttribute(LoadHint loadHintArgument); // 0x0037D298
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -16796,31 +17614,35 @@ public sealed class DependencyAttribute : Attribute // TypeDefIndex: 677
 	public string DependentAssembly { get; } // 0x0037D2E8 
 	public LoadHint LoadHint { get; } // 0x0037D2F0 
 
-	// Methods
-	public void .ctor(string dependentAssemblyArgument, LoadHint loadHintArgument); // 0x0037D2C0
+	// Constructors
+	public DependencyAttribute(string dependentAssemblyArgument, LoadHint loadHintArgument); // 0x0037D2C0
+
 }
 
 // Namespace: System.Runtime.CompilerServices
 public class DiscardableAttribute : Attribute // TypeDefIndex: 678
 {
-	// Methods
-	public void .ctor(); // 0x0037D2F8
+	// Constructors
+	public DiscardableAttribute(); // 0x0037D2F8
+
 }
 
 // Namespace: System.Runtime.CompilerServices
 [Serializable]
 public sealed class FixedAddressValueTypeAttribute : Attribute // TypeDefIndex: 679
 {
-	// Methods
-	public void .ctor(); // 0x0037D300
+	// Constructors
+	public FixedAddressValueTypeAttribute(); // 0x0037D300
+
 }
 
 // Namespace: System.Runtime.CompilerServices
 [Serializable]
 public sealed class HasCopySemanticsAttribute : Attribute // TypeDefIndex: 680
 {
-	// Methods
-	public void .ctor(); // 0x0037D340
+	// Constructors
+	public HasCopySemanticsAttribute(); // 0x0037D340
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -16830,8 +17652,9 @@ public sealed class IDispatchConstantAttribute : CustomConstantAttribute // Type
 	// Properties
 	public override object Value { get; } // 0x0037D350 
 
-	// Methods
-	public void .ctor(); // 0x0037D348
+	// Constructors
+	public IDispatchConstantAttribute(); // 0x0037D348
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -16841,8 +17664,9 @@ public sealed class IUnknownConstantAttribute : CustomConstantAttribute // TypeD
 	// Properties
 	public override object Value { get; } // 0x0037D360 
 
-	// Methods
-	public void .ctor(); // 0x0037D358
+	// Constructors
+	public IUnknownConstantAttribute(); // 0x0037D358
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -16941,8 +17765,9 @@ public enum MethodImplOptions // TypeDefIndex: 697
 [Serializable]
 public sealed class NativeCppClassAttribute : Attribute // TypeDefIndex: 698
 {
-	// Methods
-	public void .ctor(); // 0x0037D404
+	// Constructors
+	public NativeCppClassAttribute(); // 0x0037D404
+
 }
 
 // Namespace: System.Runtime.CompilerServices
@@ -16955,8 +17780,10 @@ public sealed class RuntimeWrappedException : Exception // TypeDefIndex: 699
 	// Properties
 	public object WrappedException { get; } // 0x0037E154 
 
+	// Constructors
+	private RuntimeWrappedException(); // 0x0037E14C
+
 	// Methods
-	private void .ctor(); // 0x0037E14C
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x0037E15C
 }
 
@@ -16964,30 +17791,34 @@ public sealed class RuntimeWrappedException : Exception // TypeDefIndex: 699
 [Serializable]
 public sealed class ScopelessEnumAttribute : Attribute // TypeDefIndex: 700
 {
-	// Methods
-	public void .ctor(); // 0x0037E20C
+	// Constructors
+	public ScopelessEnumAttribute(); // 0x0037E20C
+
 }
 
 // Namespace: System.Runtime.CompilerServices
 public sealed class SpecialNameAttribute : Attribute // TypeDefIndex: 701
 {
-	// Methods
-	public void .ctor(); // 0x0037E214
+	// Constructors
+	public SpecialNameAttribute(); // 0x0037E214
+
 }
 
 // Namespace: System.Runtime.CompilerServices
 [Serializable]
 public sealed class StringFreezingAttribute : Attribute // TypeDefIndex: 702
 {
-	// Methods
-	public void .ctor(); // 0x0037E21C
+	// Constructors
+	public StringFreezingAttribute(); // 0x0037E21C
+
 }
 
 // Namespace: System.Runtime.CompilerServices
 public sealed class SuppressIldasmAttribute : Attribute // TypeDefIndex: 703
 {
-	// Methods
-	public void .ctor(); // 0x0037E224
+	// Constructors
+	public SuppressIldasmAttribute(); // 0x0037E224
+
 }
 
 // Namespace: System.Runtime.ConstrainedExecution
@@ -17012,16 +17843,19 @@ public enum Consistency // TypeDefIndex: 705
 // Namespace: System.Runtime.ConstrainedExecution
 public abstract class CriticalFinalizerObject // TypeDefIndex: 706
 {
+	// Constructors
+	protected CriticalFinalizerObject(); // 0x0037E25C
+
 	// Methods
-	protected void .ctor(); // 0x0037E25C
 	protected override void Finalize(); // 0x0037E264
 }
 
 // Namespace: System.Runtime.ConstrainedExecution
 public sealed class PrePrepareMethodAttribute : Attribute // TypeDefIndex: 707
 {
-	// Methods
-	public void .ctor(); // 0x0037E26C
+	// Constructors
+	public PrePrepareMethodAttribute(); // 0x0037E26C
+
 }
 
 // Namespace: System.Runtime.ConstrainedExecution
@@ -17035,8 +17869,9 @@ public sealed class ReliabilityContractAttribute : Attribute // TypeDefIndex: 70
 	public Cer Cer { get; } // 0x0037E29C 
 	public Consistency ConsistencyGuarantee { get; } // 0x0037E2A4 
 
-	// Methods
-	public void .ctor(Consistency consistencyGuarantee, Cer cer); // 0x0037E274
+	// Constructors
+	public ReliabilityContractAttribute(Consistency consistencyGuarantee, Cer cer); // 0x0037E274
+
 }
 
 // Namespace: System.Runtime.Hosting
@@ -17053,18 +17888,21 @@ public sealed class ActivationArguments // TypeDefIndex: 709
 	public string[] ActivationData { get; } // 0x0037E5D8 
 	public ApplicationIdentity ApplicationIdentity { get; } // 0x0037E5E0 
 
-	// Methods
-	public void .ctor(ActivationContext activationData); // 0x0037E2C0
-	public void .ctor(ApplicationIdentity applicationIdentity); // 0x0037E384
-	public void .ctor(ActivationContext activationContext, string[] activationData); // 0x0037E440
-	public void .ctor(ApplicationIdentity applicationIdentity, string[] activationData); // 0x0037E50C
+	// Constructors
+	public ActivationArguments(ActivationContext activationData); // 0x0037E2C0
+	public ActivationArguments(ApplicationIdentity applicationIdentity); // 0x0037E384
+	public ActivationArguments(ActivationContext activationContext, string[] activationData); // 0x0037E440
+	public ActivationArguments(ApplicationIdentity applicationIdentity, string[] activationData); // 0x0037E50C
+
 }
 
 // Namespace: System.Runtime.Hosting
 public class ApplicationActivator // TypeDefIndex: 710
 {
+	// Constructors
+	public ApplicationActivator(); // 0x0037E5E8
+
 	// Methods
-	public void .ctor(); // 0x0037E5E8
 	public virtual ObjectHandle CreateInstance(ActivationContext activationContext); // 0x0037E5F0
 	public virtual ObjectHandle CreateInstance(ActivationContext activationContext, string[] activationCustomData); // 0x0037E604
 	protected static ObjectHandle CreateInstanceHelper(AppDomainSetup adSetup); // 0x0037E6DC
@@ -17743,8 +18581,9 @@ public interface IExpando : IReflect // TypeDefIndex: 759
 // Namespace: System.Runtime.InteropServices
 public sealed class AllowReversePInvokeCallsAttribute : Attribute // TypeDefIndex: 760
 {
-	// Methods
-	public void .ctor(); // 0x0037EA68
+	// Constructors
+	public AllowReversePInvokeCallsAttribute(); // 0x0037EA68
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -17755,8 +18594,10 @@ public struct ArrayWithOffset // TypeDefIndex: 761
 	private object array; // 0x08
 	private int offset; // 0x0C
 
+	// Constructors
+	public ArrayWithOffset(object array, int offset); // 0x000A687C
+
 	// Methods
-	public void .ctor(object array, int offset); // 0x000A687C
 	public override bool Equals(object obj); // 0x000A6888
 	public bool Equals(ArrayWithOffset obj); // 0x000A6890
 	public override int GetHashCode(); // 0x000A68B8
@@ -17782,8 +18623,9 @@ public sealed class AutomationProxyAttribute : Attribute // TypeDefIndex: 763
 	// Properties
 	public bool Value { get; } // 0x0037EBAC 
 
-	// Methods
-	public void .ctor(bool val); // 0x0037EB8C
+	// Constructors
+	public AutomationProxyAttribute(bool val); // 0x0037EB8C
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -17817,8 +18659,9 @@ public sealed class BStrWrapper // TypeDefIndex: 766
 	// Properties
 	public string WrappedObject { get; } // 0x0037EBD4 
 
-	// Methods
-	public void .ctor(string value); // 0x0037EBB4
+	// Constructors
+	public BStrWrapper(string value); // 0x0037EBB4
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -17831,8 +18674,9 @@ public sealed class BestFitMappingAttribute : Attribute // TypeDefIndex: 767
 	// Properties
 	public bool BestFitMapping { get; } // 0x0037EBFC 
 
-	// Methods
-	public void .ctor(bool BestFitMapping); // 0x0037EBDC
+	// Constructors
+	public BestFitMappingAttribute(bool BestFitMapping); // 0x0037EBDC
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -17855,12 +18699,14 @@ public enum CALLCONV // TypeDefIndex: 768
 [Serializable]
 public class COMException : ExternalException // TypeDefIndex: 769
 {
+	// Constructors
+	public COMException(); // 0x0037EC04
+	public COMException(string message); // 0x0037EC0C
+	public COMException(string message, Exception inner); // 0x0037EC14
+	public COMException(string message, int errorCode); // 0x0037EC1C
+	protected COMException(SerializationInfo info, StreamingContext context); // 0x0037EC24
+
 	// Methods
-	public void .ctor(); // 0x0037EC04
-	public void .ctor(string message); // 0x0037EC0C
-	public void .ctor(string message, Exception inner); // 0x0037EC14
-	public void .ctor(string message, int errorCode); // 0x0037EC1C
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0037EC24
 	public override string ToString(); // 0x0037EC44
 }
 
@@ -17903,9 +18749,10 @@ public sealed class ClassInterfaceAttribute : Attribute // TypeDefIndex: 773
 	// Properties
 	public ClassInterfaceType Value { get; } // 0x0037F06C 
 
-	// Methods
-	public void .ctor(short classInterfaceType); // 0x0037F02C
-	public void .ctor(ClassInterfaceType classInterfaceType); // 0x0037F04C
+	// Constructors
+	public ClassInterfaceAttribute(short classInterfaceType); // 0x0037F02C
+	public ClassInterfaceAttribute(ClassInterfaceType classInterfaceType); // 0x0037F04C
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -17926,8 +18773,9 @@ public sealed class ComAliasNameAttribute : Attribute // TypeDefIndex: 775
 	// Properties
 	public string Value { get; } // 0x0037F0BC 
 
-	// Methods
-	public void .ctor(string alias); // 0x0037F09C
+	// Constructors
+	public ComAliasNameAttribute(string alias); // 0x0037F09C
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -17945,15 +18793,17 @@ public sealed class ComCompatibleVersionAttribute : Attribute // TypeDefIndex: 7
 	public int BuildNumber { get; } // 0x0037F10C 
 	public int RevisionNumber { get; } // 0x0037F114 
 
-	// Methods
-	public void .ctor(int major, int minor, int build, int revision); // 0x0037F0C4
+	// Constructors
+	public ComCompatibleVersionAttribute(int major, int minor, int build, int revision); // 0x0037F0C4
+
 }
 
 // Namespace: System.Runtime.InteropServices
 public sealed class ComConversionLossAttribute : Attribute // TypeDefIndex: 777
 {
-	// Methods
-	public void .ctor(); // 0x0037F11C
+	// Constructors
+	public ComConversionLossAttribute(); // 0x0037F11C
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -17965,8 +18815,9 @@ public sealed class ComDefaultInterfaceAttribute : Attribute // TypeDefIndex: 77
 	// Properties
 	public Type Value { get; } // 0x0037F144 
 
-	// Methods
-	public void .ctor(Type defaultInterface); // 0x0037F124
+	// Constructors
+	public ComDefaultInterfaceAttribute(Type defaultInterface); // 0x0037F124
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -17980,8 +18831,9 @@ public sealed class ComEventInterfaceAttribute : Attribute // TypeDefIndex: 779
 	public Type EventProvider { get; } // 0x0037F174 
 	public Type SourceInterface { get; } // 0x0037F17C 
 
-	// Methods
-	public void .ctor(Type SourceInterface, Type EventProvider); // 0x0037F14C
+	// Constructors
+	public ComEventInterfaceAttribute(Type SourceInterface, Type EventProvider); // 0x0037F14C
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18005,8 +18857,9 @@ public enum ComMemberType // TypeDefIndex: 781
 // Namespace: System.Runtime.InteropServices
 public sealed class ComRegisterFunctionAttribute : Attribute // TypeDefIndex: 782
 {
-	// Methods
-	public void .ctor(); // 0x0037F18C
+	// Constructors
+	public ComRegisterFunctionAttribute(); // 0x0037F18C
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18018,19 +18871,21 @@ public sealed class ComSourceInterfacesAttribute : Attribute // TypeDefIndex: 78
 	// Properties
 	public string Value { get; } // 0x0037F564 
 
-	// Methods
-	public void .ctor(string sourceInterfaces); // 0x0037F194
-	public void .ctor(Type sourceInterface); // 0x0037F1B4
-	public void .ctor(Type sourceInterface1, Type sourceInterface2); // 0x0037F1F8
-	public void .ctor(Type sourceInterface1, Type sourceInterface2, Type sourceInterface3); // 0x0037F2E8
-	public void .ctor(Type sourceInterface1, Type sourceInterface2, Type sourceInterface3, Type sourceInterface4); // 0x0037F408
+	// Constructors
+	public ComSourceInterfacesAttribute(string sourceInterfaces); // 0x0037F194
+	public ComSourceInterfacesAttribute(Type sourceInterface); // 0x0037F1B4
+	public ComSourceInterfacesAttribute(Type sourceInterface1, Type sourceInterface2); // 0x0037F1F8
+	public ComSourceInterfacesAttribute(Type sourceInterface1, Type sourceInterface2, Type sourceInterface3); // 0x0037F2E8
+	public ComSourceInterfacesAttribute(Type sourceInterface1, Type sourceInterface2, Type sourceInterface3, Type sourceInterface4); // 0x0037F408
+
 }
 
 // Namespace: System.Runtime.InteropServices
 public sealed class ComUnregisterFunctionAttribute : Attribute // TypeDefIndex: 784
 {
-	// Methods
-	public void .ctor(); // 0x002B5EE8
+	// Constructors
+	public ComUnregisterFunctionAttribute(); // 0x002B5EE8
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18044,8 +18899,10 @@ public abstract class CriticalHandle : CriticalFinalizerObject, IDisposable // T
 	public bool IsClosed { get; } // 0x002B6080 
 	public abstract bool IsInvalid { get; }
 
+	// Constructors
+	protected CriticalHandle(IntPtr invalidHandleValue); // 0x002B5F18
+
 	// Methods
-	protected void .ctor(IntPtr invalidHandleValue); // 0x002B5F18
 	protected override void Finalize(); // 0x002B5F38
 	public void Close(); // 0x002B5FB0
 	public void Dispose(); // 0x002B5FC4
@@ -18065,9 +18922,10 @@ public sealed class CurrencyWrapper // TypeDefIndex: 786
 	// Properties
 	public Decimal WrappedObject { get; } // 0x002B623C 
 
-	// Methods
-	public void .ctor(Decimal obj); // 0x002B6088
-	public void .ctor(object obj); // 0x002B60C0
+	// Constructors
+	public CurrencyWrapper(Decimal obj); // 0x002B6088
+	public CurrencyWrapper(object obj); // 0x002B60C0
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18102,8 +18960,9 @@ public sealed class DispIdAttribute : Attribute // TypeDefIndex: 789
 	// Properties
 	public int Value { get; } // 0x002B6294 
 
-	// Methods
-	public void .ctor(int dispId); // 0x002B6274
+	// Constructors
+	public DispIdAttribute(int dispId); // 0x002B6274
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18116,8 +18975,9 @@ public sealed class DispatchWrapper // TypeDefIndex: 790
 	// Properties
 	public object WrappedObject { get; } // 0x002B63BC 
 
-	// Methods
-	public void .ctor(object obj); // 0x002B629C
+	// Constructors
+	public DispatchWrapper(object obj); // 0x002B629C
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18163,10 +19023,11 @@ public sealed class ErrorWrapper // TypeDefIndex: 794
 	// Properties
 	public int ErrorCode { get; } // 0x002B6624 
 
-	// Methods
-	public void .ctor(Exception e); // 0x002B63EC
-	public void .ctor(int errorCode); // 0x002B648C
-	public void .ctor(object errorCode); // 0x002B64AC
+	// Constructors
+	public ErrorWrapper(Exception e); // 0x002B63EC
+	public ErrorWrapper(int errorCode); // 0x002B648C
+	public ErrorWrapper(object errorCode); // 0x002B64AC
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18184,9 +19045,11 @@ public sealed class ExtensibleClassFactory // TypeDefIndex: 796
 	// Fields
 	private static Hashtable hashtable; // 0x00
 
+	// Constructors
+	private ExtensibleClassFactory(); // 0x002B662C
+	private static ExtensibleClassFactory(); // 0x002B6634
+
 	// Methods
-	private void .ctor(); // 0x002B662C
-	private static void .cctor(); // 0x002B6634
 	internal static ObjectCreationDelegate GetObjectCreationCallback(Type t); // 0x002B66B4
 	public static void RegisterObjectCreationCallback(ObjectCreationDelegate callback); // 0x002B6798
 }
@@ -18198,12 +19061,13 @@ public class ExternalException : SystemException // TypeDefIndex: 797
 	// Properties
 	public virtual int ErrorCode { get; } // 0x002B6AAC 
 
-	// Methods
-	public void .ctor(); // 0x002B69A4
-	public void .ctor(string message); // 0x002B6A24
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002B6A48
-	public void .ctor(string message, Exception inner); // 0x002B6A68
-	public void .ctor(string message, int errorCode); // 0x002B6A8C
+	// Constructors
+	public ExternalException(); // 0x002B69A4
+	public ExternalException(string message); // 0x002B6A24
+	protected ExternalException(SerializationInfo info, StreamingContext context); // 0x002B6A48
+	public ExternalException(string message, Exception inner); // 0x002B6A68
+	public ExternalException(string message, int errorCode); // 0x002B6A8C
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18274,10 +19138,12 @@ public struct GCHandle // TypeDefIndex: 802
 	public bool IsAllocated { get; } // 0x0008CE5C 
 	public object Target { get; set; } // 0x0008CE6C 0x0008CE74
 
+	// Constructors
+	private GCHandle(IntPtr h); // 0x0008CDF0
+	private GCHandle(object obj); // 0x0008CE10
+	private GCHandle(object value, GCHandleType type); // 0x0008CE34
+
 	// Methods
-	private void .ctor(IntPtr h); // 0x0008CDF0
-	private void .ctor(object obj); // 0x0008CE10
-	private void .ctor(object value, GCHandleType type); // 0x0008CE34
 	public IntPtr AddrOfPinnedObject(); // 0x0008CE9C
 	public static GCHandle Alloc(object value); // 0x002B6D88
 	public static GCHandle Alloc(object value, GCHandleType type); // 0x002B6D94
@@ -18318,8 +19184,10 @@ public struct HandleRef // TypeDefIndex: 804
 	public IntPtr Handle { get; } // 0x0008CEE4 
 	public object Wrapper { get; } // 0x0008CEEC 
 
+	// Constructors
+	public HandleRef(object wrapper, IntPtr handle); // 0x0008CED8
+
 	// Methods
-	public void .ctor(object wrapper, IntPtr handle); // 0x0008CED8
 	public static IntPtr ToIntPtr(HandleRef value); // 0x002B70E8
 	public static IntPtr op_Explicit(HandleRef value); // 0x002B70F0
 }
@@ -18378,9 +19246,10 @@ public sealed class IDispatchImplAttribute : Attribute // TypeDefIndex: 810
 	// Properties
 	public IDispatchImplType Value { get; } // 0x002B7138 
 
-	// Methods
-	public void .ctor(IDispatchImplType implType); // 0x002B70F8
-	public void .ctor(short implType); // 0x002B7118
+	// Constructors
+	public IDispatchImplAttribute(IDispatchImplType implType); // 0x002B70F8
+	public IDispatchImplAttribute(short implType); // 0x002B7118
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18468,8 +19337,9 @@ public sealed class ImportedFromTypeLibAttribute : Attribute // TypeDefIndex: 81
 	// Properties
 	public string Value { get; } // 0x002B7160 
 
-	// Methods
-	public void .ctor(string tlbFile); // 0x002B7140
+	// Constructors
+	public ImportedFromTypeLibAttribute(string tlbFile); // 0x002B7140
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18490,9 +19360,10 @@ public sealed class InterfaceTypeAttribute : Attribute // TypeDefIndex: 821
 	// Properties
 	public ComInterfaceType Value { get; } // 0x002B71B0 
 
-	// Methods
-	public void .ctor(ComInterfaceType interfaceType); // 0x002B7170
-	public void .ctor(short interfaceType); // 0x002B7190
+	// Constructors
+	public InterfaceTypeAttribute(ComInterfaceType interfaceType); // 0x002B7170
+	public InterfaceTypeAttribute(short interfaceType); // 0x002B7190
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18502,11 +19373,12 @@ public class InvalidComObjectException : SystemException // TypeDefIndex: 822
 	// Fields
 	private const int ErrorCode = -2146233049; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x002B71B8
-	public void .ctor(string message); // 0x002B7238
-	public void .ctor(string message, Exception inner); // 0x002B725C
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002B7280
+	// Constructors
+	public InvalidComObjectException(); // 0x002B71B8
+	public InvalidComObjectException(string message); // 0x002B7238
+	public InvalidComObjectException(string message, Exception inner); // 0x002B725C
+	protected InvalidComObjectException(SerializationInfo info, StreamingContext context); // 0x002B7280
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18516,11 +19388,12 @@ public class InvalidOleVariantTypeException : SystemException // TypeDefIndex: 8
 	// Fields
 	private const int ErrorCode = -2146233039; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x002B72A0
-	public void .ctor(string message); // 0x002B7320
-	public void .ctor(string message, Exception inner); // 0x002B7344
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002B7368
+	// Constructors
+	public InvalidOleVariantTypeException(); // 0x002B72A0
+	public InvalidOleVariantTypeException(string message); // 0x002B7320
+	public InvalidOleVariantTypeException(string message, Exception inner); // 0x002B7344
+	protected InvalidOleVariantTypeException(SerializationInfo info, StreamingContext context); // 0x002B7368
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18532,8 +19405,9 @@ public sealed class LCIDConversionAttribute : Attribute // TypeDefIndex: 824
 	// Properties
 	public int Value { get; } // 0x002B73A8 
 
-	// Methods
-	public void .ctor(int lcid); // 0x002B7388
+	// Constructors
+	public LCIDConversionAttribute(int lcid); // 0x002B7388
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18562,8 +19436,10 @@ public static class Marshal // TypeDefIndex: 827
 	public static readonly int SystemMaxDBCSCharSize; // 0x00
 	public static readonly int SystemDefaultCharSize; // 0x04
 
+	// Constructors
+	private static Marshal(); // 0x002B73B0
+
 	// Methods
-	private static void .cctor(); // 0x002B73B0
 	private static int AddRefInternal(IntPtr pUnk); // 0x002B7454
 	public static int AddRef(IntPtr pUnk); // 0x002B7458
 	public static IntPtr AllocCoTaskMem(int cb); // 0x002B7558
@@ -18742,11 +19618,12 @@ public class MarshalDirectiveException : SystemException // TypeDefIndex: 828
 	// Fields
 	private const int ErrorCode = -2146233035; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x002BD044
-	public void .ctor(string message); // 0x002BD0C4
-	public void .ctor(string message, Exception inner); // 0x002BD0E8
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002BD10C
+	// Constructors
+	public MarshalDirectiveException(); // 0x002BD044
+	public MarshalDirectiveException(string message); // 0x002BD0C4
+	public MarshalDirectiveException(string message, Exception inner); // 0x002BD0E8
+	protected MarshalDirectiveException(SerializationInfo info, StreamingContext context); // 0x002BD10C
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18775,8 +19652,9 @@ public enum PARAMFLAG // TypeDefIndex: 830
 // Namespace: System.Runtime.InteropServices
 public sealed class PreserveSigAttribute : Attribute // TypeDefIndex: 831
 {
-	// Methods
-	public void .ctor(); // 0x002BD434
+	// Constructors
+	public PreserveSigAttribute(); // 0x002BD434
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18790,8 +19668,9 @@ public sealed class PrimaryInteropAssemblyAttribute : Attribute // TypeDefIndex:
 	public int MajorVersion { get; } // 0x002BD464 
 	public int MinorVersion { get; } // 0x002BD46C 
 
-	// Methods
-	public void .ctor(int major, int minor); // 0x002BD43C
+	// Constructors
+	public PrimaryInteropAssemblyAttribute(int major, int minor); // 0x002BD43C
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18803,8 +19682,9 @@ public sealed class ProgIdAttribute : Attribute // TypeDefIndex: 833
 	// Properties
 	public string Value { get; } // 0x002BD494 
 
-	// Methods
-	public void .ctor(string progId); // 0x002BD474
+	// Constructors
+	public ProgIdAttribute(string progId); // 0x002BD474
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18843,8 +19723,10 @@ public enum RegistrationConnectionType // TypeDefIndex: 835
 // Namespace: System.Runtime.InteropServices
 public class RegistrationServices : IRegistrationServices // TypeDefIndex: 836
 {
+	// Constructors
+	public RegistrationServices(); // 0x002BD49C
+
 	// Methods
-	public void .ctor(); // 0x002BD49C
 	public virtual Guid GetManagedCategoryGuid(); // 0x002BD4A4
 	public virtual string GetProgIdForType(Type type); // 0x002BD52C
 	public virtual Type[] GetRegistrableTypesInAssembly(Assembly assembly); // 0x002BD5B4
@@ -18863,8 +19745,10 @@ public class RuntimeEnvironment // TypeDefIndex: 837
 	// Properties
 	public static string SystemConfigurationFile { get; } // 0x002BD9FC 
 
+	// Constructors
+	public RuntimeEnvironment(); // 0x002BD9F4
+
 	// Methods
-	public void .ctor(); // 0x002BD9F4
 	public static bool FromGlobalAccessCache(Assembly a); // 0x002BDAD4
 	public static string GetRuntimeDirectory(); // 0x002BDB00
 	public static string GetSystemVersion(); // 0x002BDC1C
@@ -18874,11 +19758,13 @@ public class RuntimeEnvironment // TypeDefIndex: 837
 [Serializable]
 public class SEHException : ExternalException // TypeDefIndex: 838
 {
+	// Constructors
+	public SEHException(); // 0x002BDFC4
+	public SEHException(string message); // 0x002BDFC8
+	public SEHException(string message, Exception inner); // 0x002BDFEC
+	protected SEHException(SerializationInfo info, StreamingContext context); // 0x002BE010
+
 	// Methods
-	public void .ctor(); // 0x002BDFC4
-	public void .ctor(string message); // 0x002BDFC8
-	public void .ctor(string message, Exception inner); // 0x002BDFEC
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002BE010
 	public virtual bool CanResume(); // 0x002BE030
 }
 
@@ -18916,11 +19802,12 @@ public class SafeArrayRankMismatchException : SystemException // TypeDefIndex: 8
 	// Fields
 	private const int ErrorCode = -2146233032; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x002BE038
-	public void .ctor(string message); // 0x002BE0B8
-	public void .ctor(string message, Exception inner); // 0x002BE0DC
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002BE100
+	// Constructors
+	public SafeArrayRankMismatchException(); // 0x002BE038
+	public SafeArrayRankMismatchException(string message); // 0x002BE0B8
+	public SafeArrayRankMismatchException(string message, Exception inner); // 0x002BE0DC
+	protected SafeArrayRankMismatchException(SerializationInfo info, StreamingContext context); // 0x002BE100
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18930,11 +19817,12 @@ public class SafeArrayTypeMismatchException : SystemException // TypeDefIndex: 8
 	// Fields
 	private const int ErrorCode = -2146233037; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x002BE120
-	public void .ctor(string message); // 0x002BE1A0
-	public void .ctor(string message, Exception inner); // 0x002BE1C4
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002BE1E8
+	// Constructors
+	public SafeArrayTypeMismatchException(); // 0x002BE120
+	public SafeArrayTypeMismatchException(string message); // 0x002BE1A0
+	public SafeArrayTypeMismatchException(string message, Exception inner); // 0x002BE1C4
+	protected SafeArrayTypeMismatchException(SerializationInfo info, StreamingContext context); // 0x002BE1E8
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -18950,9 +19838,11 @@ public abstract class SafeHandle : CriticalFinalizerObject, IDisposable // TypeD
 	public bool IsClosed { get; } // 0x002BE7F0 
 	public abstract bool IsInvalid { get; }
 
+	// Constructors
+	protected SafeHandle(); // 0x002BE208
+	protected SafeHandle(IntPtr invalidHandleValue, bool ownsHandle); // 0x002BE2A0
+
 	// Methods
-	protected void .ctor(); // 0x002BE208
-	protected void .ctor(IntPtr invalidHandleValue, bool ownsHandle); // 0x002BE2A0
 	public void Close(); // 0x002BE2D0
 	public void DangerousAddRef(bool success); // 0x002BE41C
 	public IntPtr DangerousGetHandle(); // 0x002BE588
@@ -18968,8 +19858,9 @@ public abstract class SafeHandle : CriticalFinalizerObject, IDisposable // TypeD
 // Namespace: System.Runtime.InteropServices
 public sealed class SetWin32ContextInIDispatchAttribute : Attribute // TypeDefIndex: 844
 {
-	// Methods
-	public void .ctor(); // 0x002BE8A8
+	// Constructors
+	public SetWin32ContextInIDispatchAttribute(); // 0x002BE8A8
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -19060,8 +19951,10 @@ public struct TYPELIBATTR // TypeDefIndex: 849
 // Namespace: System.Runtime.InteropServices
 public sealed class TypeLibConverter : ITypeLibConverter // TypeDefIndex: 850
 {
+	// Constructors
+	public TypeLibConverter(); // 0x002BE920
+
 	// Methods
-	public void .ctor(); // 0x002BE920
 	public object ConvertAssemblyToTypeLib(Assembly assembly, string strTypeLibName, TypeLibExporterFlags flags, ITypeLibExporterNotifySink notifySink); // 0x002BE928
 	public AssemblyBuilder ConvertTypeLibToAssembly(object typeLib, string asmFileName, int flags, ITypeLibImporterNotifySink notifySink, byte[] publicKey, StrongNameKeyPair keyPair, bool unsafeInterfaces); // 0x002BE9B0
 	public AssemblyBuilder ConvertTypeLibToAssembly(object typeLib, string asmFileName, TypeLibImporterFlags flags, ITypeLibImporterNotifySink notifySink, byte[] publicKey, StrongNameKeyPair keyPair, string asmNamespace, Version asmVersion); // 0x002BEA38
@@ -19089,9 +19982,10 @@ public sealed class TypeLibFuncAttribute : Attribute // TypeDefIndex: 852
 	// Properties
 	public TypeLibFuncFlags Value { get; } // 0x002BEB88 
 
-	// Methods
-	public void .ctor(short flags); // 0x002BEB48
-	public void .ctor(TypeLibFuncFlags flags); // 0x002BEB68
+	// Constructors
+	public TypeLibFuncAttribute(short flags); // 0x002BEB48
+	public TypeLibFuncAttribute(TypeLibFuncFlags flags); // 0x002BEB68
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -19122,8 +20016,9 @@ public sealed class TypeLibImportClassAttribute : Attribute // TypeDefIndex: 854
 	// Properties
 	public string Value { get; } // 0x002BEBD4 
 
-	// Methods
-	public void .ctor(Type importClass); // 0x002BEB90
+	// Constructors
+	public TypeLibImportClassAttribute(Type importClass); // 0x002BEB90
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -19153,9 +20048,10 @@ public sealed class TypeLibTypeAttribute : Attribute // TypeDefIndex: 856
 	// Properties
 	public TypeLibTypeFlags Value { get; } // 0x002BEC1C 
 
-	// Methods
-	public void .ctor(short flags); // 0x002BEBDC
-	public void .ctor(TypeLibTypeFlags flags); // 0x002BEBFC
+	// Constructors
+	public TypeLibTypeAttribute(short flags); // 0x002BEBDC
+	public TypeLibTypeAttribute(TypeLibTypeFlags flags); // 0x002BEBFC
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -19187,9 +20083,10 @@ public sealed class TypeLibVarAttribute : Attribute // TypeDefIndex: 858
 	// Properties
 	public TypeLibVarFlags Value { get; } // 0x002BEC64 
 
-	// Methods
-	public void .ctor(short flags); // 0x002BEC24
-	public void .ctor(TypeLibVarFlags flags); // 0x002BEC44
+	// Constructors
+	public TypeLibVarAttribute(short flags); // 0x002BEC24
+	public TypeLibVarAttribute(TypeLibVarFlags flags); // 0x002BEC44
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -19222,8 +20119,9 @@ public sealed class TypeLibVersionAttribute : Attribute // TypeDefIndex: 860
 	public int MajorVersion { get; } // 0x002BEC94 
 	public int MinorVersion { get; } // 0x002BEC9C 
 
-	// Methods
-	public void .ctor(int major, int minor); // 0x002BEC6C
+	// Constructors
+	public TypeLibVersionAttribute(int major, int minor); // 0x002BEC6C
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -19438,8 +20336,9 @@ public sealed class UnknownWrapper // TypeDefIndex: 876
 	// Properties
 	public object WrappedObject { get; } // 0x002C40D4 
 
-	// Methods
-	public void .ctor(object obj); // 0x002C40B4
+	// Constructors
+	public UnknownWrapper(object obj); // 0x002C40B4
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -19455,8 +20354,9 @@ public sealed class UnmanagedFunctionPointerAttribute : Attribute // TypeDefInde
 	// Properties
 	public CallingConvention CallingConvention { get; } // 0x002C40FC 
 
-	// Methods
-	public void .ctor(CallingConvention callingConvention); // 0x002C40DC
+	// Constructors
+	public UnmanagedFunctionPointerAttribute(CallingConvention callingConvention); // 0x002C40DC
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -19600,8 +20500,9 @@ public sealed class VariantWrapper // TypeDefIndex: 883
 	// Properties
 	public object WrappedObject { get; } // 0x002C4124 
 
-	// Methods
-	public void .ctor(object obj); // 0x002C4104
+	// Constructors
+	public VariantWrapper(object obj); // 0x002C4104
+
 }
 
 // Namespace: System.Runtime.InteropServices
@@ -20118,8 +21019,10 @@ internal class ActivationServices // TypeDefIndex: 911
 	// Properties
 	private static IActivator ConstructionActivator { get; } // 0x002C4788 
 
+	// Constructors
+	public ActivationServices(); // 0x002C4780
+
 	// Methods
-	public void .ctor(); // 0x002C4780
 	public static IMessage Activate(RemotingProxy proxy, ConstructionCall ctorCall); // 0x002C483C
 	public static IMessage RemoteActivate(IConstructionCallMessage ctorCall); // 0x002C4BA4
 	public static object CreateProxyFromAttributes(Type type, object[] activationAttributes); // 0x002C4DC4
@@ -20152,8 +21055,10 @@ internal class AppDomainLevelActivator : IActivator // TypeDefIndex: 913
 	public ActivatorLevel Level { get; } // 0x002C6468 
 	public IActivator NextActivator { get; set; } // 0x002C6470 0x002C6478
 
+	// Constructors
+	public AppDomainLevelActivator(string activationUrl, IActivator next); // 0x002C5D08
+
 	// Methods
-	public void .ctor(string activationUrl, IActivator next); // 0x002C5D08
 	public IConstructionReturnMessage Activate(IConstructionCallMessage ctorCall); // 0x002C6480
 }
 
@@ -20165,8 +21070,10 @@ internal class ConstructionLevelActivator : IActivator // TypeDefIndex: 914
 	public ActivatorLevel Level { get; } // 0x002C6A7C 
 	public IActivator NextActivator { get; set; } // 0x002C6A84 0x002C6A8C
 
+	// Constructors
+	public ConstructionLevelActivator(); // 0x002C4834
+
 	// Methods
-	public void .ctor(); // 0x002C4834
 	public IConstructionReturnMessage Activate(IConstructionCallMessage msg); // 0x002C6A90
 }
 
@@ -20181,8 +21088,10 @@ internal class ContextLevelActivator : IActivator // TypeDefIndex: 915
 	public ActivatorLevel Level { get; } // 0x002C6C04 
 	public IActivator NextActivator { get; set; } // 0x002C6C0C 0x002C6C14
 
+	// Constructors
+	public ContextLevelActivator(IActivator next); // 0x002C5D30
+
 	// Methods
-	public void .ctor(IActivator next); // 0x002C5D30
 	public IConstructionReturnMessage Activate(IConstructionCallMessage ctorCall); // 0x002C6C1C
 }
 
@@ -20220,9 +21129,11 @@ internal class RemoteActivationAttribute : Attribute, IContextAttribute // TypeD
 	// Fields
 	private IList _contextProperties; // 0x08
 
+	// Constructors
+	public RemoteActivationAttribute(); // 0x002C6FF8
+	public RemoteActivationAttribute(IList contextProperties); // 0x002C7000
+
 	// Methods
-	public void .ctor(); // 0x002C6FF8
-	public void .ctor(IList contextProperties); // 0x002C7000
 	public bool IsContextOK(Context ctx, IConstructionCallMessage ctor); // 0x002C7020
 	public void GetPropertiesForNewContext(IConstructionCallMessage ctor); // 0x002C7028
 }
@@ -20234,8 +21145,10 @@ internal class RemoteActivator : MarshalByRefObject, IActivator // TypeDefIndex:
 	public ActivatorLevel Level { get; } // 0x002C7D4C 
 	public IActivator NextActivator { get; set; } // 0x002C7DD4 0x002C7E5C
 
+	// Constructors
+	public RemoteActivator(); // 0x002C745C
+
 	// Methods
-	public void .ctor(); // 0x002C745C
 	public IConstructionReturnMessage Activate(IConstructionCallMessage msg); // 0x002C7464
 	public override object InitializeLifetimeService(); // 0x002C79C8
 }
@@ -20250,8 +21163,10 @@ public sealed class UrlAttribute : ContextAttribute // TypeDefIndex: 921
 	// Properties
 	public string UrlValue { get; } // 0x002C7F04 
 
+	// Constructors
+	public UrlAttribute(string callsiteURL); // 0x002C7EE4
+
 	// Methods
-	public void .ctor(string callsiteURL); // 0x002C7EE4
 	public override bool Equals(object o); // 0x002C7F0C
 	public override int GetHashCode(); // 0x002C7FCC
 	public override void GetPropertiesForNewContext(IConstructionCallMessage ctorMsg); // 0x002C7FF8
@@ -20276,8 +21191,10 @@ internal class AggregateDictionary : IEnumerable, ICollection, IDictionary // Ty
 	public bool IsSynchronized { get; } // 0x002CA204 
 	public object SyncRoot { get; } // 0x002CA20C 
 
+	// Constructors
+	public AggregateDictionary(IDictionary[] dics); // 0x002C944C
+
 	// Methods
-	public void .ctor(IDictionary[] dics); // 0x002C944C
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x002C946C
 	public void Add(object key, object value); // 0x002C9ABC
 	public void Clear(); // 0x002C9B44
@@ -20301,8 +21218,10 @@ internal class AggregateEnumerator : IEnumerator, IDictionaryEnumerator // TypeD
 	public object Value { get; } // 0x002CA4FC 
 	public object Current { get; } // 0x002CA5D4 
 
+	// Constructors
+	public AggregateEnumerator(IDictionary[] dics); // 0x002C94EC
+
 	// Methods
-	public void .ctor(IDictionary[] dics); // 0x002C94EC
 	public bool MoveNext(); // 0x002CA6AC
 	public void Reset(); // 0x002CA210
 }
@@ -20324,8 +21243,10 @@ public abstract class BaseChannelObjectWithProperties : IEnumerable, ICollection
 	public virtual object SyncRoot { get; } // 0x002CAB44 
 	public virtual ICollection Values { get; } // 0x002CAB48 
 
+	// Constructors
+	protected BaseChannelObjectWithProperties(); // 0x002CA900
+
 	// Methods
-	protected void .ctor(); // 0x002CA900
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x002CA97C
 	public virtual void Add(object key, object value); // 0x002CAB7C
 	public virtual void Clear(); // 0x002CAC04
@@ -20338,8 +21259,9 @@ public abstract class BaseChannelObjectWithProperties : IEnumerable, ICollection
 // Namespace: System.Runtime.Remoting.Channels
 public abstract class BaseChannelSinkWithProperties : BaseChannelObjectWithProperties // TypeDefIndex: 925
 {
-	// Methods
-	protected void .ctor(); // 0x002CAE0C
+	// Constructors
+	protected BaseChannelSinkWithProperties(); // 0x002CAE0C
+
 }
 
 // Namespace: System.Runtime.Remoting.Channels
@@ -20351,8 +21273,9 @@ public abstract class BaseChannelWithProperties : BaseChannelObjectWithPropertie
 	// Properties
 	public override IDictionary Properties { get; } // 0x002CAE14 
 
-	// Methods
-	protected void .ctor(); // 0x002CAE10
+	// Constructors
+	protected BaseChannelWithProperties(); // 0x002CAE10
+
 }
 
 // Namespace: System.Runtime.Remoting.Channels
@@ -20367,8 +21290,9 @@ public class ChannelDataStore : IChannelDataStore // TypeDefIndex: 927
 	public string[] ChannelUris { get; set; } // 0x002CB52C 0x002CB534
 	public object Item { get; set; } // 0x002CB53C 0x002CB5D8
 
-	// Methods
-	public void .ctor(string[] channelURIs); // 0x002CB50C
+	// Constructors
+	public ChannelDataStore(string[] channelURIs); // 0x002CB50C
+
 }
 
 // Namespace: System.Runtime.Remoting
@@ -20381,9 +21305,10 @@ internal class ChannelInfo : IChannelInfo // TypeDefIndex: 928
 	// Properties
 	public object[] ChannelData { get; set; } // 0x002C943C 0x002C9444
 
-	// Methods
-	public void .ctor(); // 0x002C8DA0
-	public void .ctor(object remoteChannelData); // 0x002C9360
+	// Constructors
+	public ChannelInfo(); // 0x002C8DA0
+	public ChannelInfo(object remoteChannelData); // 0x002C9360
+
 }
 
 // Namespace: System.Runtime.Remoting.Channels
@@ -20400,9 +21325,11 @@ public sealed class ChannelServices // TypeDefIndex: 929
 	internal static CrossContextChannel CrossContextChannel { get; } // 0x002CB9AC 
 	public static IChannel[] RegisteredChannels { get; } // 0x002CC700 
 
+	// Constructors
+	private ChannelServices(); // 0x002CB7A4
+	private static ChannelServices(); // 0x002CB7AC
+
 	// Methods
-	private void .ctor(); // 0x002CB7A4
-	private static void .cctor(); // 0x002CB7AC
 	internal static IMessageSink CreateClientChannelSinkChain(string url, object remoteChannelData, out string objectUri); // 0x002CBA38
 	internal static IMessageSink CreateClientChannelSinkChain(IChannelSender sender, string url, object[] channelDataArray, out string objectUri); // 0x002CC440
 	public static IServerChannelSink CreateServerChannelSinkChain(IServerChannelSinkProvider provider, IChannelReceiver channel); // 0x002CCAE0
@@ -20433,8 +21360,10 @@ internal class ExceptionFilterSink : IMessageSink // TypeDefIndex: 930
 	// Properties
 	public IMessageSink NextSink { get; } // 0x002D2AA0 
 
+	// Constructors
+	public ExceptionFilterSink(IMessage call, IMessageSink next); // 0x002D0C20
+
 	// Methods
-	public void .ctor(IMessage call, IMessageSink next); // 0x002D0C20
 	public IMessage SyncProcessMessage(IMessage msg); // 0x002D28F8
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x002D2A18
 }
@@ -20447,8 +21376,9 @@ internal class ChanelSinkStackEntry // TypeDefIndex: 931
 	public object State; // 0x0C
 	public ChanelSinkStackEntry Next; // 0x10
 
-	// Methods
-	public void .ctor(IChannelSinkBase sink, object state, ChanelSinkStackEntry next); // 0x002CB4DC
+	// Constructors
+	public ChanelSinkStackEntry(IChannelSinkBase sink, object state, ChanelSinkStackEntry next); // 0x002CB4DC
+
 }
 
 // Namespace: System.Runtime.Remoting.Channels
@@ -20458,9 +21388,11 @@ public class ClientChannelSinkStack : IClientChannelSinkStack, IClientResponseCh
 	private IMessageSink _replySink; // 0x08
 	private ChanelSinkStackEntry _sinkStack; // 0x0C
 
+	// Constructors
+	public ClientChannelSinkStack(); // 0x002D102C
+	public ClientChannelSinkStack(IMessageSink replySink); // 0x002D1034
+
 	// Methods
-	public void .ctor(); // 0x002D102C
-	public void .ctor(IMessageSink replySink); // 0x002D1034
 	public void AsyncProcessResponse(ITransportHeaders headers, Stream stream); // 0x002D1054
 	public void DispatchException(Exception e); // 0x002D1220
 	public void DispatchReplyMessage(IMessage msg); // 0x002D12A4
@@ -20481,8 +21413,9 @@ internal class CrossAppDomainData // TypeDefIndex: 933
 	internal int DomainID { get; } // 0x002D1E74 
 	internal string ProcessID { get; } // 0x002D1E7C 
 
-	// Methods
-	internal void .ctor(int domainId); // 0x002D17BC
+	// Constructors
+	internal CrossAppDomainData(int domainId); // 0x002D17BC
+
 }
 
 // Namespace: System.Runtime.Remoting.Channels
@@ -20499,9 +21432,11 @@ internal class CrossAppDomainChannel : IChannel, IChannelReceiver, IChannelSende
 	public virtual int ChannelPriority { get; } // 0x002D1704 
 	public virtual object ChannelData { get; } // 0x002D1718 
 
+	// Constructors
+	public CrossAppDomainChannel(); // 0x002D14D8
+	private static CrossAppDomainChannel(); // 0x002D14E0
+
 	// Methods
-	public void .ctor(); // 0x002D14D8
-	private static void .cctor(); // 0x002D14E0
 	internal static void RegisterCrossAppDomainChannel(); // 0x002D1560
 	public string Parse(string url, out string objectURI); // 0x002D170C
 	public virtual string[] GetUrlsForUri(string objectURI); // 0x002D1880
@@ -20522,9 +21457,11 @@ internal class CrossAppDomainSink : IMessageSink // TypeDefIndex: 935
 	internal int TargetDomainId { get; } // 0x002D1FB8 
 	public IMessageSink NextSink { get; } // 0x002D28F0 
 
+	// Constructors
+	internal CrossAppDomainSink(int domainID); // 0x002D1E84
+	private static CrossAppDomainSink(); // 0x002D1EA4
+
 	// Methods
-	internal void .ctor(int domainID); // 0x002D1E84
-	private static void .cctor(); // 0x002D1EA4
 	internal static CrossAppDomainSink GetSink(int domainID); // 0x002D1B0C
 	private static ProcessMessageRes ProcessMessageInDomain(byte[] arrRequest, CADMethodCallMessage cadMsg); // 0x002D1FC0
 	public virtual IMessage SyncProcessMessage(IMessage msgRequest); // 0x002D217C
@@ -20544,8 +21481,10 @@ private struct ProcessMessageRes // TypeDefIndex: 936
 // Namespace: System.Runtime.Remoting.Channels
 internal class CADSerializer // TypeDefIndex: 937
 {
+	// Constructors
+	public CADSerializer(); // 0x002CB080
+
 	// Methods
-	public void .ctor(); // 0x002CB080
 	internal static IMessage DeserializeMessage(MemoryStream mem, IMethodCallMessage msg); // 0x002CB088
 	internal static MemoryStream SerializeMessage(IMessage msg); // 0x002CB1C8
 	internal static MemoryStream SerializeObject(object obj); // 0x002CB2EC
@@ -20559,8 +21498,9 @@ internal class AsyncRequest // TypeDefIndex: 938
 	internal IMessageSink ReplySink; // 0x08
 	internal IMessage MsgRequest; // 0x0C
 
-	// Methods
-	public void .ctor(IMessage msgRequest, IMessageSink replySink); // 0x002CA8D8
+	// Constructors
+	public AsyncRequest(IMessage msgRequest, IMessageSink replySink); // 0x002CA8D8
+
 }
 
 // Namespace: System.Runtime.Remoting.Channels
@@ -20743,8 +21683,10 @@ public class ServerChannelSinkStack : IServerChannelSinkStack, IServerResponseCh
 	// Fields
 	private ChanelSinkStackEntry _sinkStack; // 0x08
 
+	// Constructors
+	public ServerChannelSinkStack(); // 0x002D2AA8
+
 	// Methods
-	public void .ctor(); // 0x002D2AA8
 	public Stream GetResponseStream(IMessage msg, ITransportHeaders headers); // 0x002D2AB0
 	public object Pop(IServerChannelSink sink); // 0x002D2C74
 	public void Push(IServerChannelSink sink, object state); // 0x002D2D44
@@ -20761,8 +21703,10 @@ internal class ServerDispatchSink : IChannelSinkBase, IServerChannelSink // Type
 	public IServerChannelSink NextChannelSink { get; } // 0x002D3140 
 	public IDictionary Properties { get; } // 0x002D3148 
 
+	// Constructors
+	public ServerDispatchSink(); // 0x002D3138
+
 	// Methods
-	public void .ctor(); // 0x002D3138
 	public void AsyncProcessResponse(IServerResponseChannelSinkStack sinkStack, object state, IMessage msg, ITransportHeaders headers, Stream stream); // 0x002D3150
 	public Stream GetResponseStream(IServerResponseChannelSinkStack sinkStack, object state, IMessage msg, ITransportHeaders headers); // 0x002D31D8
 	public ServerProcessing ProcessMessage(IServerChannelSinkStack sinkStack, IMessage requestMsg, ITransportHeaders requestHeaders, Stream requestStream, out IMessage responseMsg, out ITransportHeaders responseHeaders, out Stream responseStream); // 0x002D31E0
@@ -20774,9 +21718,11 @@ internal class ServerDispatchSinkProvider : IServerChannelSinkProvider, IServerF
 	// Properties
 	public IServerChannelSinkProvider Next { get; set; } // 0x002D3284 0x002D328C
 
+	// Constructors
+	public ServerDispatchSinkProvider(); // 0x002CCD98
+	public ServerDispatchSinkProvider(IDictionary properties, ICollection providerData); // 0x002D327C
+
 	// Methods
-	public void .ctor(); // 0x002CCD98
-	public void .ctor(IDictionary properties, ICollection providerData); // 0x002D327C
 	public IServerChannelSink CreateSink(IChannelReceiver channel); // 0x002D3314
 	public void GetChannelData(IChannelDataStore channelData); // 0x002D3380
 }
@@ -20803,8 +21749,9 @@ public class SinkProviderData // TypeDefIndex: 962
 	public string Name { get; } // 0x002D3434 
 	public IDictionary Properties { get; } // 0x002D343C 
 
-	// Methods
-	public void .ctor(string name); // 0x002D3384
+	// Constructors
+	public SinkProviderData(string name); // 0x002D3384
+
 }
 
 // Namespace: System.Runtime.Remoting.Channels
@@ -20817,8 +21764,10 @@ public class TransportHeaders : ITransportHeaders // TypeDefIndex: 963
 	// Properties
 	public object Item { get; set; } // 0x002D3618 0x002D3654
 
+	// Constructors
+	public TransportHeaders(); // 0x002D3444
+
 	// Methods
-	public void .ctor(); // 0x002D3444
 	public IEnumerator GetEnumerator(); // 0x002D3698
 }
 
@@ -20851,9 +21800,11 @@ public class Context // TypeDefIndex: 964
 	internal bool HasDynamicSinks { get; } // 0x002FE7F4 
 	internal bool HasExitSinks { get; } // 0x002FE848 
 
+	// Constructors
+	public Context(); // 0x002FCEF4
+	private static Context(); // 0x002FCFD4
+
 	// Methods
-	public void .ctor(); // 0x002FCEF4
-	private static void .cctor(); // 0x002FCFD4
 	protected override void Finalize(); // 0x002FD054
 	public static bool RegisterDynamicProperty(IDynamicProperty prop, ContextBoundObject obj, Context ctx); // 0x002FD358
 	public static bool UnregisterDynamicProperty(string name, ContextBoundObject obj, Context ctx); // 0x002FD9D8
@@ -20888,8 +21839,10 @@ internal class DynamicPropertyCollection // TypeDefIndex: 965
 	// Properties
 	public bool HasProperties { get; } // 0x002FD314 
 
+	// Constructors
+	public DynamicPropertyCollection(); // 0x002FDD34
+
 	// Methods
-	public void .ctor(); // 0x002FDD34
 	public bool RegisterDynamicProperty(IDynamicProperty prop); // 0x002FD6B8
 	public bool UnregisterDynamicProperty(string name); // 0x002FDA84
 	public void NotifyMessage(bool start, IMessage msg, bool client_site, bool async); // 0x002FDF40
@@ -20903,15 +21856,18 @@ private class DynamicPropertyReg // TypeDefIndex: 966
 	public IDynamicProperty Property; // 0x08
 	public IDynamicMessageSink Sink; // 0x0C
 
-	// Methods
-	public void .ctor(); // 0x00302EA0
+	// Constructors
+	public DynamicPropertyReg(); // 0x00302EA0
+
 }
 
 // Namespace: System.Runtime.Remoting.Contexts
 internal class ContextCallbackObject : ContextBoundObject // TypeDefIndex: 967
 {
+	// Constructors
+	public ContextCallbackObject(); // 0x00300B00
+
 	// Methods
-	public void .ctor(); // 0x00300B00
 	public void DoCallBack(CrossContextDelegate deleg); // 0x00300B08
 }
 
@@ -20925,8 +21881,10 @@ public class ContextAttribute : Attribute, IContextAttribute, IContextProperty /
 	// Properties
 	public virtual string Name { get; } // 0x00301484 
 
+	// Constructors
+	public ContextAttribute(string name); // 0x00301464
+
 	// Methods
-	public void .ctor(string name); // 0x00301464
 	public override bool Equals(object o); // 0x0030148C
 	public virtual void Freeze(Context newContext); // 0x0030156C
 	public override int GetHashCode(); // 0x00301570
@@ -20946,8 +21904,9 @@ public class ContextProperty // TypeDefIndex: 969
 	public virtual string Name { get; } // 0x0030194C 
 	public virtual object Property { get; } // 0x00301954 
 
-	// Methods
-	private void .ctor(string name, object prop); // 0x00301924
+	// Constructors
+	private ContextProperty(string name, object prop); // 0x00301924
+
 }
 
 // Namespace: System.Runtime.Remoting.Contexts
@@ -20956,8 +21915,10 @@ internal class CrossContextChannel : IMessageSink // TypeDefIndex: 970
 	// Properties
 	public IMessageSink NextSink { get; } // 0x00302604 
 
+	// Constructors
+	public CrossContextChannel(); // 0x0030195C
+
 	// Methods
-	public void .ctor(); // 0x0030195C
 	public IMessage SyncProcessMessage(IMessage msg); // 0x00301964
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x00302008
 }
@@ -20973,8 +21934,10 @@ private class ContextRestoreSink : IMessageSink // TypeDefIndex: 971
 	// Properties
 	public IMessageSink NextSink { get; } // 0x00302A0C 
 
+	// Constructors
+	public ContextRestoreSink(IMessageSink next, Context context, IMessage call); // 0x003025D4
+
 	// Methods
-	public void .ctor(IMessageSink next, Context context, IMessage call); // 0x003025D4
 	public IMessage SyncProcessMessage(IMessage msg); // 0x0030260C
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x00302984
 }
@@ -21080,11 +22043,13 @@ public class SynchronizationAttribute : ContextAttribute, IContributeClientConte
 	public virtual bool IsReEntrant { get; } // 0x00302FD8 
 	public virtual bool Locked { get; set; } // 0x00302FE0 0x00302FE8
 
+	// Constructors
+	public SynchronizationAttribute(); // 0x00302EA8
+	public SynchronizationAttribute(bool reEntrant); // 0x00302FC4
+	public SynchronizationAttribute(int flag); // 0x00302FD0
+	public SynchronizationAttribute(int flag, bool reEntrant); // 0x00302EB4
+
 	// Methods
-	public void .ctor(); // 0x00302EA8
-	public void .ctor(bool reEntrant); // 0x00302FC4
-	public void .ctor(int flag); // 0x00302FD0
-	public void .ctor(int flag, bool reEntrant); // 0x00302EB4
 	internal void AcquireLock(); // 0x003032E8
 	internal void ReleaseLock(); // 0x003031BC
 	public override void GetPropertiesForNewContext(IConstructionCallMessage ctorMsg); // 0x003033FC
@@ -21105,8 +22070,10 @@ internal class SynchronizedClientContextSink : IMessageSink // TypeDefIndex: 983
 	// Properties
 	public IMessageSink NextSink { get; } // 0x00303AC4 
 
+	// Constructors
+	public SynchronizedClientContextSink(IMessageSink next, SynchronizationAttribute att); // 0x003035EC
+
 	// Methods
-	public void .ctor(IMessageSink next, SynchronizationAttribute att); // 0x003035EC
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x00303ACC
 	public IMessage SyncProcessMessage(IMessage msg); // 0x00303C6C
 }
@@ -21121,8 +22088,10 @@ internal class SynchronizedServerContextSink : IMessageSink // TypeDefIndex: 984
 	// Properties
 	public IMessageSink NextSink { get; } // 0x003040BC 
 
+	// Constructors
+	public SynchronizedServerContextSink(IMessageSink next, SynchronizationAttribute att); // 0x00303690
+
 	// Methods
-	public void .ctor(IMessageSink next, SynchronizationAttribute att); // 0x00303690
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x003040C4
 	public IMessage SyncProcessMessage(IMessage msg); // 0x003041FC
 }
@@ -21138,8 +22107,10 @@ internal class SynchronizedContextReplySink : IMessageSink // TypeDefIndex: 985
 	// Properties
 	public IMessageSink NextSink { get; } // 0x00303E6C 
 
+	// Constructors
+	public SynchronizedContextReplySink(IMessageSink next, SynchronizationAttribute att, bool newLock); // 0x00303C3C
+
 	// Methods
-	public void .ctor(IMessageSink next, SynchronizationAttribute att, bool newLock); // 0x00303C3C
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x00303E74
 	public IMessage SyncProcessMessage(IMessage msg); // 0x00303EFC
 }
@@ -21154,9 +22125,11 @@ public class ClientSponsor : MarshalByRefObject, ISponsor // TypeDefIndex: 986
 	// Properties
 	public TimeSpan RenewalTime { get; set; } // 0x0030525C 0x00305268
 
+	// Constructors
+	public ClientSponsor(); // 0x00305120
+	public ClientSponsor(TimeSpan renewalTime); // 0x003051D4
+
 	// Methods
-	public void .ctor(); // 0x00305120
-	public void .ctor(TimeSpan renewalTime); // 0x003051D4
 	public void Close(); // 0x00305278
 	protected override void Finalize(); // 0x003056EC
 	public override object InitializeLifetimeService(); // 0x00305750
@@ -21209,8 +22182,10 @@ internal class Lease : MarshalByRefObject, ILease // TypeDefIndex: 989
 	public TimeSpan RenewOnCallTime { get; set; } // 0x00305FDC 0x00305FE8
 	public TimeSpan SponsorshipTimeout { get; set; } // 0x00306118 0x00306124
 
+	// Constructors
+	public Lease(); // 0x00305A50
+
 	// Methods
-	public void .ctor(); // 0x00305A50
 	public void Activate(); // 0x00305DB8
 	public void Register(ISponsor obj); // 0x00306254
 	public void Register(ISponsor obj, TimeSpan renewalTime); // 0x003062FC
@@ -21231,8 +22206,10 @@ internal class LeaseManager // TypeDefIndex: 991
 	private ArrayList _objects; // 0x08
 	private Timer _timer; // 0x0C
 
+	// Constructors
+	public LeaseManager(); // 0x003071E0
+
 	// Methods
-	public void .ctor(); // 0x003071E0
 	public void SetPollTime(TimeSpan timeSpan); // 0x0030725C
 	public void TrackLifetime(ServerIdentity identity); // 0x00307330
 	public void StopTrackingLifetime(ServerIdentity identity); // 0x00307648
@@ -21250,8 +22227,10 @@ internal class LeaseSink : IMessageSink // TypeDefIndex: 992
 	// Properties
 	public IMessageSink NextSink { get; } // 0x00307EC0 
 
+	// Constructors
+	public LeaseSink(IMessageSink nextSink); // 0x002FFBE0
+
 	// Methods
-	public void .ctor(IMessageSink nextSink); // 0x002FFBE0
 	public IMessage SyncProcessMessage(IMessage msg); // 0x003079AC
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x00307DD0
 	private void RenewLease(IMessage msg); // 0x00307A94
@@ -21284,9 +22263,11 @@ public sealed class LifetimeServices // TypeDefIndex: 994
 	public static TimeSpan RenewOnCallTime { get; set; } // 0x003081F4 0x00308288
 	public static TimeSpan SponsorshipTimeout { get; set; } // 0x0030831C 0x003083B0
 
+	// Constructors
+	public LifetimeServices(); // 0x00307EC8
+	private static LifetimeServices(); // 0x00307ED0
+
 	// Methods
-	public void .ctor(); // 0x00307EC8
-	private static void .cctor(); // 0x00307ED0
 	internal static void TrackLifetime(ServerIdentity identity); // 0x00308444
 	internal static void StopTrackingLifetime(ServerIdentity identity); // 0x003084F0
 }
@@ -21306,8 +22287,10 @@ internal class ArgInfo // TypeDefIndex: 996
 	private int _inoutArgCount; // 0x0C
 	private MethodBase _method; // 0x10
 
+	// Constructors
+	public ArgInfo(MethodBase method, ArgInfoType type); // 0x0030859C
+
 	// Methods
-	public void .ctor(MethodBase method, ArgInfoType type); // 0x0030859C
 	public int GetInOutArgIndex(int inoutArgNum); // 0x00308848
 	public virtual string GetInOutArgName(int index); // 0x00308890
 	public int GetInOutArgCount(); // 0x00308960
@@ -21344,8 +22327,10 @@ public class AsyncResult : IAsyncResult, IMessageSink // TypeDefIndex: 997
 	public IMessageSink NextSink { get; } // 0x00308C00 
 	internal MonoMethodMessage CallMessage { get; set; } // 0x00308EDC 0x00308EE4
 
+	// Constructors
+	internal AsyncResult(); // 0x00308ACC
+
 	// Methods
-	internal void .ctor(); // 0x00308ACC
 	public virtual IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x00308C08
 	public virtual IMessage GetReplyMessage(); // 0x00308C90
 	public virtual void SetMessageCtrl(IMessageCtrl mc); // 0x00308C98
@@ -21360,8 +22345,9 @@ internal class CADArgHolder // TypeDefIndex: 998
 	// Fields
 	public int index; // 0x08
 
-	// Methods
-	public void .ctor(int i); // 0x00308EEC
+	// Constructors
+	public CADArgHolder(int i); // 0x00308EEC
+
 }
 
 // Namespace: System.Runtime.Remoting.Messaging
@@ -21375,8 +22361,9 @@ internal class CADObjRef // TypeDefIndex: 999
 	public string TypeName { get; } // 0x0030A958 
 	public string URI { get; } // 0x0030AA58 
 
-	// Methods
-	public void .ctor(ObjRef o, int sourceDomain); // 0x00309F94
+	// Constructors
+	public CADObjRef(ObjRef o, int sourceDomain); // 0x00309F94
+
 }
 
 // Namespace: System.Runtime.Remoting.Messaging
@@ -21388,8 +22375,10 @@ internal class CADMessageBase // TypeDefIndex: 1000
 	protected int _propertyCount; // 0x10
 	protected CADArgHolder _callContext; // 0x14
 
+	// Constructors
+	public CADMessageBase(); // 0x00308F0C
+
 	// Methods
-	public void .ctor(); // 0x00308F0C
 	internal static int MarshalProperties(IDictionary dict, ArrayList args); // 0x00308F14
 	internal static void UnmarshalProperties(IDictionary dict, int count, ArrayList args); // 0x00309938
 	private static bool IsPossibleToIgnoreMarshal(object obj); // 0x00309AD8
@@ -21413,8 +22402,10 @@ internal class CADMethodCallMessage : CADMessageBase // TypeDefIndex: 1001
 	internal string Uri { get; } // 0x0030B52C 
 	internal int PropertiesCount { get; } // 0x0030B6E4 
 
+	// Constructors
+	internal CADMethodCallMessage(IMethodCallMessage callMsg); // 0x0030B10C
+
 	// Methods
-	internal void .ctor(IMethodCallMessage callMsg); // 0x0030B10C
 	internal static CADMethodCallMessage Create(IMessage callMsg); // 0x0030B534
 	internal ArrayList GetArguments(); // 0x0030B5D0
 	internal object[] GetArgs(ArrayList args); // 0x0030B6D8
@@ -21432,8 +22423,10 @@ internal class CADMethodReturnMessage : CADMessageBase // TypeDefIndex: 1002
 	// Properties
 	internal int PropertiesCount { get; } // 0x0030C758 
 
+	// Constructors
+	internal CADMethodReturnMessage(IMethodReturnMessage retMsg); // 0x0030C060
+
 	// Methods
-	internal void .ctor(IMethodReturnMessage retMsg); // 0x0030C060
 	internal static CADMethodReturnMessage Create(IMessage callMsg); // 0x0030C4B8
 	internal ArrayList GetArguments(); // 0x0030C554
 	internal object[] GetArgs(ArrayList args); // 0x0030C65C
@@ -21453,8 +22446,10 @@ public sealed class CallContext // TypeDefIndex: 1003
 	public static object HostContext { get; set; } // 0x0030C768 0x0030C7F0
 	private static Hashtable Datastore { get; } // 0x0030C8B8 
 
+	// Constructors
+	private CallContext(); // 0x0030C760
+
 	// Methods
-	private void .ctor(); // 0x0030C760
 	public static void FreeNamedDataSlot(string name); // 0x0030C878
 	public static object GetData(string name); // 0x0030C95C
 	public static void SetData(string name, object data); // 0x0030C99C
@@ -21482,8 +22477,10 @@ internal class ClientContextTerminatorSink : IMessageSink // TypeDefIndex: 1005
 	// Properties
 	public IMessageSink NextSink { get; } // 0x0030DF18 
 
+	// Constructors
+	public ClientContextTerminatorSink(Context ctx); // 0x002FF994
+
 	// Methods
-	public void .ctor(Context ctx); // 0x002FF994
 	public IMessage SyncProcessMessage(IMessage msg); // 0x0030D968
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x0030DBF0
 }
@@ -21498,8 +22495,10 @@ internal class ClientContextReplySink : IMessageSink // TypeDefIndex: 1006
 	// Properties
 	public IMessageSink NextSink { get; } // 0x0030D960 
 
+	// Constructors
+	public ClientContextReplySink(Context ctx, IMessageSink replySink); // 0x0030D758
+
 	// Methods
-	public void .ctor(Context ctx, IMessageSink replySink); // 0x0030D758
 	public IMessage SyncProcessMessage(IMessage msg); // 0x0030D780
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x0030D8D8
 }
@@ -21528,11 +22527,13 @@ public class ConstructionCall : MethodCall, IConstructionCallMessage, IMessage, 
 	public override IDictionary Properties { get; } // 0x0030FB24 
 	internal RemotingProxy SourceProxy { get; set; } // 0x0030FB8C 0x0030FB94
 
+	// Constructors
+	public ConstructionCall(IMessage m); // 0x0030DF20
+	internal ConstructionCall(Type type); // 0x0030E48C
+	public ConstructionCall(Header[] headers); // 0x0030E4E4
+	internal ConstructionCall(SerializationInfo info, StreamingContext context); // 0x0030E5C0
+
 	// Methods
-	public void .ctor(IMessage m); // 0x0030DF20
-	internal void .ctor(Type type); // 0x0030E48C
-	public void .ctor(Header[] headers); // 0x0030E4E4
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x0030E5C0
 	internal override void InitDictionary(); // 0x0030E698
 	internal void SetActivationAttributes(object[] attributes); // 0x0030E900
 	internal override void InitMethodProperty(string key, object value); // 0x0030E988
@@ -21547,9 +22548,11 @@ internal class ConstructionCallDictionary : MethodDictionary // TypeDefIndex: 10
 	private static Dictionary`2<string, int> <>f__switch$map23; // 0x04
 	private static Dictionary`2<string, int> <>f__switch$map24; // 0x08
 
+	// Constructors
+	public ConstructionCallDictionary(IConstructionCallMessage message); // 0x0030E740
+	private static ConstructionCallDictionary(); // 0x0030FBBC
+
 	// Methods
-	public void .ctor(IConstructionCallMessage message); // 0x0030E740
-	private static void .cctor(); // 0x0030FBBC
 	protected override object GetMethodProperty(string key); // 0x003100EC
 	protected override void SetMethodProperty(string key, object value); // 0x003111B0
 }
@@ -21561,11 +22564,12 @@ public class ConstructionResponse : MethodResponse, IConstructionReturnMessage, 
 	// Properties
 	public override IDictionary Properties { get; } // 0x00312344 
 
-	// Methods
-	public void .ctor(Header[] h, IMethodCallMessage mcm); // 0x00311BE4
-	internal void .ctor(object resultObject, LogicalCallContext callCtx, IMethodCallMessage msg); // 0x00312004
-	internal void .ctor(Exception e, IMethodCallMessage msg); // 0x00312130
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x0031228C
+	// Constructors
+	public ConstructionResponse(Header[] h, IMethodCallMessage mcm); // 0x00311BE4
+	internal ConstructionResponse(object resultObject, LogicalCallContext callCtx, IMethodCallMessage msg); // 0x00312004
+	internal ConstructionResponse(Exception e, IMethodCallMessage msg); // 0x00312130
+	internal ConstructionResponse(SerializationInfo info, StreamingContext context); // 0x0031228C
+
 }
 
 // Namespace: System.Runtime.Remoting.Messaging
@@ -21578,9 +22582,11 @@ internal class EnvoyTerminatorSink : IMessageSink // TypeDefIndex: 1010
 	// Properties
 	public IMessageSink NextSink { get; } // 0x003126E0 
 
+	// Constructors
+	public EnvoyTerminatorSink(); // 0x00312404
+	private static EnvoyTerminatorSink(); // 0x0031240C
+
 	// Methods
-	public void .ctor(); // 0x00312404
-	private static void .cctor(); // 0x0031240C
 	public IMessage SyncProcessMessage(IMessage msg); // 0x00312480
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x003125AC
 }
@@ -21606,8 +22612,10 @@ internal class ErrorMessage : IMessage, IMethodCallMessage, IMethodMessage // Ty
 	public object[] InArgs { get; } // 0x003128C8 
 	public LogicalCallContext LogicalCallContext { get; } // 0x003128D0 
 
+	// Constructors
+	public ErrorMessage(); // 0x003126E8
+
 	// Methods
-	public void .ctor(); // 0x003126E8
 	public object GetArg(int arg_num); // 0x0031284C
 	public string GetArgName(int arg_num); // 0x00312854
 	public string GetInArgName(int index); // 0x003128B8
@@ -21624,10 +22632,11 @@ public class Header // TypeDefIndex: 1012
 	public string Name; // 0x10
 	public object Value; // 0x14
 
-	// Methods
-	public void .ctor(string _Name, object _Value); // 0x003128D8
-	public void .ctor(string _Name, object _Value, bool _MustUnderstand); // 0x00312910
-	public void .ctor(string _Name, object _Value, bool _MustUnderstand, string _HeaderNamespace); // 0x00312948
+	// Constructors
+	public Header(string _Name, object _Value); // 0x003128D8
+	public Header(string _Name, object _Value, bool _MustUnderstand); // 0x00312910
+	public Header(string _Name, object _Value, bool _MustUnderstand, string _HeaderNamespace); // 0x00312948
+
 }
 
 // Namespace: System.Runtime.Remoting.Messaging
@@ -21731,8 +22740,9 @@ public class InternalMessageWrapper // TypeDefIndex: 1022
 	// Fields
 	protected IMessage WrappedMessage; // 0x08
 
-	// Methods
-	public void .ctor(IMessage msg); // 0x00312D5C
+	// Constructors
+	public InternalMessageWrapper(IMessage msg); // 0x00312D5C
+
 }
 
 // Namespace: System.Runtime.Remoting.Messaging
@@ -21747,9 +22757,11 @@ public sealed class LogicalCallContext : ICloneable, ISerializable // TypeDefInd
 	public bool HasInfo { get; } // 0x0030B008 
 	internal Hashtable Datastore { get; } // 0x00313728 
 
+	// Constructors
+	internal LogicalCallContext(); // 0x0030D034
+	internal LogicalCallContext(SerializationInfo info, StreamingContext context); // 0x00312D7C
+
 	// Methods
-	internal void .ctor(); // 0x0030D034
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x00312D7C
 	public void FreeNamedDataSlot(string name); // 0x00312F40
 	public object GetData(string name); // 0x00312F5C
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x00312F7C
@@ -21767,8 +22779,10 @@ internal class CallContextRemotingData : ICloneable // TypeDefIndex: 1024
 	// Properties
 	public string LogicalCallID { get; set; } // 0x0030D6C0 0x0030D6C8
 
+	// Constructors
+	public CallContextRemotingData(); // 0x0030D6B8
+
 	// Methods
-	public void .ctor(); // 0x0030D6B8
 	public object Clone(); // 0x0030D6D0
 }
 
@@ -21808,13 +22822,15 @@ public class MethodCall : ISerializable, IInternalMessage, IMessage, IMethodCall
 	public string Uri { get; set; } // 0x00315330 0x00315338
 	private Type[] GenericArguments { get; } // 0x00315890 
 
+	// Constructors
+	public MethodCall(Header[] h1); // 0x0030E4E8
+	internal MethodCall(SerializationInfo info, StreamingContext context); // 0x0030E5D8
+	internal MethodCall(CADMethodCallMessage msg); // 0x00314758
+	public MethodCall(IMessage msg); // 0x0030DF48
+	internal MethodCall(string uri, string typeName, string methodName, object[] args); // 0x00314D20
+	internal MethodCall(); // 0x0030E4DC
+
 	// Methods
-	public void .ctor(Header[] h1); // 0x0030E4E8
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x0030E5D8
-	internal void .ctor(CADMethodCallMessage msg); // 0x00314758
-	public void .ctor(IMessage msg); // 0x0030DF48
-	internal void .ctor(string uri, string typeName, string methodName, object[] args); // 0x00314D20
-	internal void .ctor(); // 0x0030E4DC
 	internal void CopyFrom(IMethodMessage call); // 0x003148A4
 	internal virtual void InitMethodProperty(string key, object value); // 0x0030EDD8
 	public virtual void GetObjectData(SerializationInfo info, StreamingContext context); // 0x0030F5F8
@@ -21837,9 +22853,10 @@ internal class MethodCallDictionary : MethodDictionary // TypeDefIndex: 1026
 	// Fields
 	public static string[] InternalKeys; // 0x00
 
-	// Methods
-	public void .ctor(IMethodMessage message); // 0x00315288
-	private static void .cctor(); // 0x00315A74
+	// Constructors
+	public MethodCallDictionary(IMethodMessage message); // 0x00315288
+	private static MethodCallDictionary(); // 0x00315A74
+
 }
 
 // Namespace: System.Runtime.Remoting.Messaging
@@ -21864,8 +22881,10 @@ public class MethodCallMessageWrapper : InternalMessageWrapper, IMessage, IMetho
 	public virtual string TypeName { get; } // 0x0031699C 
 	public virtual string Uri { get; set; } // 0x00316AE0 0x00316C24
 
+	// Constructors
+	public MethodCallMessageWrapper(IMethodCallMessage msg); // 0x00315D88
+
 	// Methods
-	public void .ctor(IMethodCallMessage msg); // 0x00315D88
 	public virtual object GetArg(int argNum); // 0x00316DD0
 	public virtual string GetArgName(int index); // 0x00316E18
 	public virtual object GetInArg(int argNum); // 0x00316F64
@@ -21879,9 +22898,11 @@ private class DictionaryWrapper : MethodCallDictionary // TypeDefIndex: 1028
 	private IDictionary _wrappedDictionary; // 0x18
 	private static string[] _keys; // 0x00
 
+	// Constructors
+	public DictionaryWrapper(IMethodMessage message, IDictionary wrappedDictionary); // 0x003168C4
+	private static DictionaryWrapper(); // 0x0031700C
+
 	// Methods
-	public void .ctor(IMethodMessage message, IDictionary wrappedDictionary); // 0x003168C4
-	private static void .cctor(); // 0x0031700C
 	protected override IDictionary AllocInternalProperties(); // 0x00317104
 	protected override void SetMethodProperty(string key, object value); // 0x0031710C
 	protected override object GetMethodProperty(string key); // 0x003172B0
@@ -21912,9 +22933,11 @@ internal class MethodDictionary : IEnumerable, ICollection, IDictionary // TypeD
 	public bool IsSynchronized { get; } // 0x00318A40 
 	public object SyncRoot { get; } // 0x00318A48 
 
+	// Constructors
+	public MethodDictionary(IMethodMessage message); // 0x0030FB9C
+	public MethodDictionary(string[] keys); // 0x003173F8
+
 	// Methods
-	public void .ctor(IMethodMessage message); // 0x0030FB9C
-	public void .ctor(string[] keys); // 0x003173F8
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x00317418
 	protected virtual IDictionary AllocInternalProperties(); // 0x003175D8
 	public IDictionary GetInternalProperties(); // 0x0030E7E8
@@ -21943,8 +22966,10 @@ private class DictionaryEnumerator : IEnumerator, IDictionaryEnumerator // TypeD
 	public object Key { get; } // 0x00319120 
 	public object Value { get; } // 0x00319144 
 
+	// Constructors
+	public DictionaryEnumerator(MethodDictionary methodDictionary); // 0x00317488
+
 	// Methods
-	public void .ctor(MethodDictionary methodDictionary); // 0x00317488
 	public bool MoveNext(); // 0x00318DE8
 	public void Reset(); // 0x00319040
 }
@@ -21989,12 +23014,14 @@ public class MethodResponse : ISerializable, IInternalMessage, IMessage, IMethod
 	public string TypeName { get; } // 0x00319F14 
 	public string Uri { get; set; } // 0x00319B10 0x0031A434
 
+	// Constructors
+	public MethodResponse(Header[] h1, IMethodCallMessage mcm); // 0x00311BE8
+	internal MethodResponse(Exception e, IMethodCallMessage msg); // 0x00312134
+	internal MethodResponse(object returnValue, object[] outArgs, LogicalCallContext callCtx, IMethodCallMessage msg); // 0x00312024
+	internal MethodResponse(IMethodCallMessage msg, CADMethodReturnMessage retmsg); // 0x003197E0
+	internal MethodResponse(SerializationInfo info, StreamingContext context); // 0x003122A4
+
 	// Methods
-	public void .ctor(Header[] h1, IMethodCallMessage mcm); // 0x00311BE8
-	internal void .ctor(Exception e, IMethodCallMessage msg); // 0x00312134
-	internal void .ctor(object returnValue, object[] outArgs, LogicalCallContext callCtx, IMethodCallMessage msg); // 0x00312024
-	internal void .ctor(IMethodCallMessage msg, CADMethodReturnMessage retmsg); // 0x003197E0
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x003122A4
 	internal void InitMethodProperty(string key, object value); // 0x00319168
 	public object GetArg(int argNum); // 0x0031A43C
 	public string GetArgName(int index); // 0x0031A484
@@ -22012,9 +23039,10 @@ internal class MethodReturnDictionary : MethodDictionary // TypeDefIndex: 1032
 	public static string[] InternalReturnKeys; // 0x00
 	public static string[] InternalExceptionKeys; // 0x04
 
-	// Methods
-	public void .ctor(IMethodReturnMessage message); // 0x0031A2B8
-	private static void .cctor(); // 0x0031ADD8
+	// Constructors
+	public MethodReturnDictionary(IMethodReturnMessage message); // 0x0031A2B8
+	private static MethodReturnDictionary(); // 0x0031ADD8
+
 }
 
 // Namespace: System.Runtime.Remoting.Messaging
@@ -22043,8 +23071,10 @@ public class MethodReturnMessageWrapper : InternalMessageWrapper, IMessage, IMet
 	public virtual string TypeName { get; } // 0x0031BEB4 
 	public string Uri { get; set; } // 0x0031BFF8 0x0031C13C
 
+	// Constructors
+	public MethodReturnMessageWrapper(IMethodReturnMessage msg); // 0x0031B208
+
 	// Methods
-	public void .ctor(IMethodReturnMessage msg); // 0x0031B208
 	public virtual object GetArg(int argNum); // 0x0031C244
 	public virtual string GetArgName(int index); // 0x0031C28C
 	public virtual object GetOutArg(int argNum); // 0x0031C3D8
@@ -22058,9 +23088,11 @@ private class DictionaryWrapper : MethodReturnDictionary // TypeDefIndex: 1034
 	private IDictionary _wrappedDictionary; // 0x18
 	private static string[] _keys; // 0x00
 
+	// Constructors
+	public DictionaryWrapper(IMethodReturnMessage message, IDictionary wrappedDictionary); // 0x0031BDCC
+	private static DictionaryWrapper(); // 0x0031C480
+
 	// Methods
-	public void .ctor(IMethodReturnMessage message, IDictionary wrappedDictionary); // 0x0031BDCC
-	private static void .cctor(); // 0x0031C480
 	protected override IDictionary AllocInternalProperties(); // 0x0031C5E4
 	protected override void SetMethodProperty(string key, object value); // 0x0031C5EC
 	protected override object GetMethodProperty(string key); // 0x0031C87C
@@ -22107,9 +23139,11 @@ internal class MonoMethodMessage : IInternalMessage, IMessage, IMethodCallMessag
 	public AsyncResult AsyncResult { get; } // 0x0031DA14 
 	internal CallType CallType { get; } // 0x0031CDEC 
 
+	// Constructors
+	public MonoMethodMessage(MethodBase method, object[] out_args); // 0x0031CAA8
+	public MonoMethodMessage(Type type, string method_name, object[] in_args); // 0x0031CB74
+
 	// Methods
-	public void .ctor(MethodBase method, object[] out_args); // 0x0031CAA8
-	public void .ctor(Type type, string method_name, object[] in_args); // 0x0031CB74
 	internal void InitMessage(MonoMethod method, object[] out_args); // 0x0031CB70
 	public object GetArg(int arg_num); // 0x0031D1E0
 	public string GetArgName(int arg_num); // 0x0031D228
@@ -22132,15 +23166,18 @@ internal enum CallType // TypeDefIndex: 1036
 // Namespace: System.Runtime.Remoting.Messaging
 public class OneWayAttribute : Attribute // TypeDefIndex: 1037
 {
-	// Methods
-	public void .ctor(); // 0x0031DCDC
+	// Constructors
+	public OneWayAttribute(); // 0x0031DCDC
+
 }
 
 // Namespace: System.Runtime.Remoting.Messaging
 internal class RemotingSurrogate : ISerializationSurrogate // TypeDefIndex: 1038
 {
+	// Constructors
+	public RemotingSurrogate(); // 0x0031DCE4
+
 	// Methods
-	public void .ctor(); // 0x0031DCE4
 	public virtual void GetObjectData(object obj, SerializationInfo si, StreamingContext sc); // 0x0031DCEC
 	public virtual object SetObjectData(object obj, SerializationInfo si, StreamingContext sc, ISurrogateSelector selector); // 0x0031DE90
 }
@@ -22148,8 +23185,10 @@ internal class RemotingSurrogate : ISerializationSurrogate // TypeDefIndex: 1038
 // Namespace: System.Runtime.Remoting.Messaging
 internal class ObjRefSurrogate : ISerializationSurrogate // TypeDefIndex: 1039
 {
+	// Constructors
+	public ObjRefSurrogate(); // 0x0031DAB8
+
 	// Methods
-	public void .ctor(); // 0x0031DAB8
 	public virtual void GetObjectData(object obj, SerializationInfo si, StreamingContext sc); // 0x0031DAC0
 	public virtual object SetObjectData(object obj, SerializationInfo si, StreamingContext sc, ISurrogateSelector selector); // 0x0031DC40
 }
@@ -22168,9 +23207,11 @@ public class RemotingSurrogateSelector : ISurrogateSelector // TypeDefIndex: 104
 	// Properties
 	public MessageSurrogateFilter Filter { get; set; } // 0x0031E020 0x0031E028
 
+	// Constructors
+	public RemotingSurrogateSelector(); // 0x0031DF18
+	private static RemotingSurrogateSelector(); // 0x0031DF20
+
 	// Methods
-	public void .ctor(); // 0x0031DF18
-	private static void .cctor(); // 0x0031DF20
 	public virtual void ChainSelector(ISurrogateSelector selector); // 0x0031E030
 	public virtual ISurrogateSelector GetNextSelector(); // 0x0031E11C
 	public object GetRootObject(); // 0x0031E124
@@ -22216,9 +23257,11 @@ public class ReturnMessage : IInternalMessage, IMessage, IMethodMessage, IMethod
 	public object[] OutArgs { get; } // 0x0031EB7C 
 	public virtual object ReturnValue { get; } // 0x0031EC48 
 
+	// Constructors
+	public ReturnMessage(object ret, object[] outArgs, int outArgsCount, LogicalCallContext callCtx, IMethodCallMessage mcm); // 0x0031E488
+	public ReturnMessage(Exception e, IMethodCallMessage mcm); // 0x00301E88
+
 	// Methods
-	public void .ctor(object ret, object[] outArgs, int outArgsCount, LogicalCallContext callCtx, IMethodCallMessage mcm); // 0x0031E488
-	public void .ctor(Exception e, IMethodCallMessage mcm); // 0x00301E88
 	public object GetArg(int argNum); // 0x0031E9E4
 	public string GetArgName(int index); // 0x0031EA2C
 	public object GetOutArg(int argNum); // 0x0031EC50
@@ -22231,8 +23274,10 @@ internal class ServerContextTerminatorSink : IMessageSink // TypeDefIndex: 1042
 	// Properties
 	public IMessageSink NextSink { get; } // 0x0031F034 
 
+	// Constructors
+	public ServerContextTerminatorSink(); // 0x002FF98C
+
 	// Methods
-	public void .ctor(); // 0x002FF98C
 	public IMessage SyncProcessMessage(IMessage msg); // 0x0031EDF0
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x0031EF44
 }
@@ -22246,8 +23291,10 @@ internal class ServerObjectTerminatorSink : IMessageSink // TypeDefIndex: 1043
 	// Properties
 	public IMessageSink NextSink { get; } // 0x0028F968 
 
+	// Constructors
+	public ServerObjectTerminatorSink(IMessageSink nextSink); // 0x0028F130
+
 	// Methods
-	public void .ctor(IMessageSink nextSink); // 0x0028F130
 	public IMessage SyncProcessMessage(IMessage msg); // 0x0028F150
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x0028F718
 }
@@ -22262,8 +23309,10 @@ internal class ServerObjectReplySink : IMessageSink // TypeDefIndex: 1044
 	// Properties
 	public IMessageSink NextSink { get; } // 0x0031F204 
 
+	// Constructors
+	public ServerObjectReplySink(ServerIdentity identity, IMessageSink replySink); // 0x0031F03C
+
 	// Methods
-	public void .ctor(ServerIdentity identity, IMessageSink replySink); // 0x0031F03C
 	public IMessage SyncProcessMessage(IMessage msg); // 0x0031F064
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x0031F17C
 }
@@ -22278,8 +23327,10 @@ internal class StackBuilderSink : IMessageSink // TypeDefIndex: 1045
 	// Properties
 	public IMessageSink NextSink { get; } // 0x00291530 
 
+	// Constructors
+	public StackBuilderSink(MarshalByRefObject obj, bool forceInternalExecute); // 0x0028F970
+
 	// Methods
-	public void .ctor(MarshalByRefObject obj, bool forceInternalExecute); // 0x0028F970
 	public IMessage SyncProcessMessage(IMessage msg); // 0x0028FBC8
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x0029116C
 	private void ExecuteAsyncMessage(object ob); // 0x002912D8
@@ -22304,9 +23355,11 @@ public sealed class SoapAnyUri : ISoapXsd // TypeDefIndex: 1047
 	public string Value { get; set; } // 0x00292218 0x00292220
 	public static string XsdType { get; } // 0x00292228 
 
+	// Constructors
+	public SoapAnyUri(); // 0x002921F0
+	public SoapAnyUri(string value); // 0x002921F8
+
 	// Methods
-	public void .ctor(); // 0x002921F0
-	public void .ctor(string value); // 0x002921F8
 	public string GetXsdType(); // 0x00292284
 	public static SoapAnyUri Parse(string value); // 0x002922E0
 	public override string ToString(); // 0x00292354
@@ -22323,9 +23376,11 @@ public sealed class SoapBase64Binary : ISoapXsd // TypeDefIndex: 1048
 	public byte[] Value { get; set; } // 0x00292384 0x0029238C
 	public static string XsdType { get; } // 0x00292394 
 
+	// Constructors
+	public SoapBase64Binary(); // 0x0029235C
+	public SoapBase64Binary(byte[] value); // 0x00292364
+
 	// Methods
-	public void .ctor(); // 0x0029235C
-	public void .ctor(byte[] value); // 0x00292364
 	public string GetXsdType(); // 0x002923F0
 	public static SoapBase64Binary Parse(string value); // 0x0029244C
 	public override string ToString(); // 0x002924FC
@@ -22345,11 +23400,13 @@ public sealed class SoapDate : ISoapXsd // TypeDefIndex: 1049
 	public DateTime Value { get; set; } // 0x00292928 0x00292938
 	public static string XsdType { get; } // 0x00292950 
 
+	// Constructors
+	public SoapDate(); // 0x00292584
+	public SoapDate(DateTime value); // 0x0029258C
+	public SoapDate(DateTime value, int sign); // 0x002925C4
+	private static SoapDate(); // 0x00292604
+
 	// Methods
-	public void .ctor(); // 0x00292584
-	public void .ctor(DateTime value); // 0x0029258C
-	public void .ctor(DateTime value, int sign); // 0x002925C4
-	private static void .cctor(); // 0x00292604
 	public string GetXsdType(); // 0x002929AC
 	public static SoapDate Parse(string value); // 0x00292A6C
 	public override string ToString(); // 0x00292BD4
@@ -22364,9 +23421,11 @@ public sealed class SoapDateTime // TypeDefIndex: 1050
 	// Properties
 	public static string XsdType { get; } // 0x002937A4 
 
+	// Constructors
+	public SoapDateTime(); // 0x00292CF0
+	private static SoapDateTime(); // 0x00292CF8
+
 	// Methods
-	public void .ctor(); // 0x00292CF0
-	private static void .cctor(); // 0x00292CF8
 	public static DateTime Parse(string value); // 0x00293800
 	public static string ToString(DateTime value); // 0x002938E8
 }
@@ -22383,10 +23442,12 @@ public sealed class SoapDay : ISoapXsd // TypeDefIndex: 1051
 	public DateTime Value { get; set; } // 0x00293B38 0x00293B48
 	public static string XsdType { get; } // 0x00293B60 
 
+	// Constructors
+	public SoapDay(); // 0x00293994
+	public SoapDay(DateTime value); // 0x0029399C
+	private static SoapDay(); // 0x002939D4
+
 	// Methods
-	public void .ctor(); // 0x00293994
-	public void .ctor(DateTime value); // 0x0029399C
-	private static void .cctor(); // 0x002939D4
 	public string GetXsdType(); // 0x00293BBC
 	public static SoapDay Parse(string value); // 0x00293C7C
 	public override string ToString(); // 0x00293D9C
@@ -22398,8 +23459,10 @@ public sealed class SoapDuration // TypeDefIndex: 1052
 	// Properties
 	public static string XsdType { get; } // 0x00293E48 
 
+	// Constructors
+	public SoapDuration(); // 0x00293E40
+
 	// Methods
-	public void .ctor(); // 0x00293E40
 	public static TimeSpan Parse(string value); // 0x00293EA4
 	public static string ToString(TimeSpan timeSpan); // 0x002944E8
 }
@@ -22415,9 +23478,11 @@ public sealed class SoapEntities : ISoapXsd // TypeDefIndex: 1053
 	public string Value { get; set; } // 0x002949B0 0x002949B8
 	public static string XsdType { get; } // 0x002949C0 
 
+	// Constructors
+	public SoapEntities(); // 0x00294984
+	public SoapEntities(string value); // 0x0029498C
+
 	// Methods
-	public void .ctor(); // 0x00294984
-	public void .ctor(string value); // 0x0029498C
 	public string GetXsdType(); // 0x00294A1C
 	public static SoapEntities Parse(string value); // 0x00294A78
 	public override string ToString(); // 0x00294AEC
@@ -22434,9 +23499,11 @@ public sealed class SoapEntity : ISoapXsd // TypeDefIndex: 1054
 	public string Value { get; set; } // 0x00294B1C 0x00294B24
 	public static string XsdType { get; } // 0x00294B2C 
 
+	// Constructors
+	public SoapEntity(); // 0x00294AF4
+	public SoapEntity(string value); // 0x00294AFC
+
 	// Methods
-	public void .ctor(); // 0x00294AF4
-	public void .ctor(string value); // 0x00294AFC
 	public string GetXsdType(); // 0x00294B88
 	public static SoapEntity Parse(string value); // 0x00294BE4
 	public override string ToString(); // 0x00294C58
@@ -22445,8 +23512,10 @@ public sealed class SoapEntity : ISoapXsd // TypeDefIndex: 1054
 // Namespace: System.Runtime.Remoting.Metadata.W3cXsd2001
 internal class SoapHelper // TypeDefIndex: 1055
 {
+	// Constructors
+	public SoapHelper(); // 0x00294C60
+
 	// Methods
-	public void .ctor(); // 0x00294C60
 	public static Exception GetException(ISoapXsd type, string msg); // 0x00294C68
 	public static string Normalize(string s); // 0x002949AC
 }
@@ -22463,9 +23532,11 @@ public sealed class SoapHexBinary : ISoapXsd // TypeDefIndex: 1056
 	public byte[] Value { get; set; } // 0x00294ED8 0x00294EE0
 	public static string XsdType { get; } // 0x00294EE8 
 
+	// Constructors
+	public SoapHexBinary(); // 0x00294DD8
+	public SoapHexBinary(byte[] value); // 0x00294E54
+
 	// Methods
-	public void .ctor(); // 0x00294DD8
-	public void .ctor(byte[] value); // 0x00294E54
 	public string GetXsdType(); // 0x00294F44
 	public static SoapHexBinary Parse(string value); // 0x00294FA0
 	internal static byte[] FromBinHexString(string value); // 0x0029501C
@@ -22485,9 +23556,11 @@ public sealed class SoapId : ISoapXsd // TypeDefIndex: 1057
 	public string Value { get; set; } // 0x0029571C 0x00295724
 	public static string XsdType { get; } // 0x0029572C 
 
+	// Constructors
+	public SoapId(); // 0x002956F4
+	public SoapId(string value); // 0x002956FC
+
 	// Methods
-	public void .ctor(); // 0x002956F4
-	public void .ctor(string value); // 0x002956FC
 	public string GetXsdType(); // 0x00295788
 	public static SoapId Parse(string value); // 0x002957E4
 	public override string ToString(); // 0x00295858
@@ -22504,9 +23577,11 @@ public sealed class SoapIdref : ISoapXsd // TypeDefIndex: 1058
 	public string Value { get; set; } // 0x00295888 0x00295890
 	public static string XsdType { get; } // 0x00295898 
 
+	// Constructors
+	public SoapIdref(); // 0x00295860
+	public SoapIdref(string value); // 0x00295868
+
 	// Methods
-	public void .ctor(); // 0x00295860
-	public void .ctor(string value); // 0x00295868
 	public string GetXsdType(); // 0x002958F4
 	public static SoapIdref Parse(string value); // 0x00295950
 	public override string ToString(); // 0x002959C4
@@ -22523,9 +23598,11 @@ public sealed class SoapIdrefs : ISoapXsd // TypeDefIndex: 1059
 	public string Value { get; set; } // 0x002959F4 0x002959FC
 	public static string XsdType { get; } // 0x00295A04 
 
+	// Constructors
+	public SoapIdrefs(); // 0x002959CC
+	public SoapIdrefs(string value); // 0x002959D4
+
 	// Methods
-	public void .ctor(); // 0x002959CC
-	public void .ctor(string value); // 0x002959D4
 	public string GetXsdType(); // 0x00295A60
 	public static SoapIdrefs Parse(string value); // 0x00295ABC
 	public override string ToString(); // 0x00295B30
@@ -22542,9 +23619,11 @@ public sealed class SoapInteger : ISoapXsd // TypeDefIndex: 1060
 	public Decimal Value { get; set; } // 0x00295B78 0x00295B88
 	public static string XsdType { get; } // 0x00295B98 
 
+	// Constructors
+	public SoapInteger(); // 0x00295B38
+	public SoapInteger(Decimal value); // 0x00295B40
+
 	// Methods
-	public void .ctor(); // 0x00295B38
-	public void .ctor(Decimal value); // 0x00295B40
 	public string GetXsdType(); // 0x00295BF4
 	public static SoapInteger Parse(string value); // 0x00295C50
 	public override string ToString(); // 0x00295D20
@@ -22561,9 +23640,11 @@ public sealed class SoapLanguage : ISoapXsd // TypeDefIndex: 1061
 	public string Value { get; set; } // 0x00295D54 0x00295D5C
 	public static string XsdType { get; } // 0x00295D64 
 
+	// Constructors
+	public SoapLanguage(); // 0x00295D2C
+	public SoapLanguage(string value); // 0x00295D34
+
 	// Methods
-	public void .ctor(); // 0x00295D2C
-	public void .ctor(string value); // 0x00295D34
 	public string GetXsdType(); // 0x00295DC0
 	public static SoapLanguage Parse(string value); // 0x00295E1C
 	public override string ToString(); // 0x00295E90
@@ -22581,10 +23662,12 @@ public sealed class SoapMonth : ISoapXsd // TypeDefIndex: 1062
 	public DateTime Value { get; set; } // 0x0029603C 0x0029604C
 	public static string XsdType { get; } // 0x00296064 
 
+	// Constructors
+	public SoapMonth(); // 0x00295E98
+	public SoapMonth(DateTime value); // 0x00295EA0
+	private static SoapMonth(); // 0x00295ED8
+
 	// Methods
-	public void .ctor(); // 0x00295E98
-	public void .ctor(DateTime value); // 0x00295EA0
-	private static void .cctor(); // 0x00295ED8
 	public string GetXsdType(); // 0x002960C0
 	public static SoapMonth Parse(string value); // 0x00296180
 	public override string ToString(); // 0x002962A0
@@ -22602,10 +23685,12 @@ public sealed class SoapMonthDay : ISoapXsd // TypeDefIndex: 1063
 	public DateTime Value { get; set; } // 0x002964E8 0x002964F8
 	public static string XsdType { get; } // 0x00296510 
 
+	// Constructors
+	public SoapMonthDay(); // 0x00296344
+	public SoapMonthDay(DateTime value); // 0x0029634C
+	private static SoapMonthDay(); // 0x00296384
+
 	// Methods
-	public void .ctor(); // 0x00296344
-	public void .ctor(DateTime value); // 0x0029634C
-	private static void .cctor(); // 0x00296384
 	public string GetXsdType(); // 0x0029656C
 	public static SoapMonthDay Parse(string value); // 0x0029662C
 	public override string ToString(); // 0x0029674C
@@ -22622,9 +23707,11 @@ public sealed class SoapName : ISoapXsd // TypeDefIndex: 1064
 	public string Value { get; set; } // 0x00296818 0x00296820
 	public static string XsdType { get; } // 0x00296828 
 
+	// Constructors
+	public SoapName(); // 0x002967F0
+	public SoapName(string value); // 0x002967F8
+
 	// Methods
-	public void .ctor(); // 0x002967F0
-	public void .ctor(string value); // 0x002967F8
 	public string GetXsdType(); // 0x00296884
 	public static SoapName Parse(string value); // 0x002968E0
 	public override string ToString(); // 0x00296954
@@ -22641,9 +23728,11 @@ public sealed class SoapNcName : ISoapXsd // TypeDefIndex: 1065
 	public string Value { get; set; } // 0x00296984 0x0029698C
 	public static string XsdType { get; } // 0x00296994 
 
+	// Constructors
+	public SoapNcName(); // 0x0029695C
+	public SoapNcName(string value); // 0x00296964
+
 	// Methods
-	public void .ctor(); // 0x0029695C
-	public void .ctor(string value); // 0x00296964
 	public string GetXsdType(); // 0x002969F0
 	public static SoapNcName Parse(string value); // 0x00296A4C
 	public override string ToString(); // 0x00296AC0
@@ -22660,9 +23749,11 @@ public sealed class SoapNegativeInteger : ISoapXsd // TypeDefIndex: 1066
 	public Decimal Value { get; set; } // 0x00296C5C 0x00296C6C
 	public static string XsdType { get; } // 0x00296C7C 
 
+	// Constructors
+	public SoapNegativeInteger(); // 0x00296AC8
+	public SoapNegativeInteger(Decimal value); // 0x00296AD0
+
 	// Methods
-	public void .ctor(); // 0x00296AC8
-	public void .ctor(Decimal value); // 0x00296AD0
 	public string GetXsdType(); // 0x00296CD8
 	public static SoapNegativeInteger Parse(string value); // 0x00296D34
 	public override string ToString(); // 0x00296DF8
@@ -22679,9 +23770,11 @@ public sealed class SoapNmtoken : ISoapXsd // TypeDefIndex: 1067
 	public string Value { get; set; } // 0x00296E2C 0x00296E34
 	public static string XsdType { get; } // 0x00296E3C 
 
+	// Constructors
+	public SoapNmtoken(); // 0x00296E04
+	public SoapNmtoken(string value); // 0x00296E0C
+
 	// Methods
-	public void .ctor(); // 0x00296E04
-	public void .ctor(string value); // 0x00296E0C
 	public string GetXsdType(); // 0x00296E98
 	public static SoapNmtoken Parse(string value); // 0x00296EF4
 	public override string ToString(); // 0x00296F68
@@ -22698,9 +23791,11 @@ public sealed class SoapNmtokens : ISoapXsd // TypeDefIndex: 1068
 	public string Value { get; set; } // 0x00296F98 0x00296FA0
 	public static string XsdType { get; } // 0x00296FA8 
 
+	// Constructors
+	public SoapNmtokens(); // 0x00296F70
+	public SoapNmtokens(string value); // 0x00296F78
+
 	// Methods
-	public void .ctor(); // 0x00296F70
-	public void .ctor(string value); // 0x00296F78
 	public string GetXsdType(); // 0x00297004
 	public static SoapNmtokens Parse(string value); // 0x00297060
 	public override string ToString(); // 0x002970D4
@@ -22717,9 +23812,11 @@ public sealed class SoapNonNegativeInteger : ISoapXsd // TypeDefIndex: 1069
 	public Decimal Value { get; set; } // 0x00297270 0x00297280
 	public static string XsdType { get; } // 0x00297290 
 
+	// Constructors
+	public SoapNonNegativeInteger(); // 0x002970DC
+	public SoapNonNegativeInteger(Decimal value); // 0x002970E4
+
 	// Methods
-	public void .ctor(); // 0x002970DC
-	public void .ctor(Decimal value); // 0x002970E4
 	public string GetXsdType(); // 0x002972EC
 	public static SoapNonNegativeInteger Parse(string value); // 0x00297348
 	public override string ToString(); // 0x0029740C
@@ -22736,9 +23833,11 @@ public sealed class SoapNonPositiveInteger : ISoapXsd // TypeDefIndex: 1070
 	public Decimal Value { get; set; } // 0x002975AC 0x002975BC
 	public static string XsdType { get; } // 0x002975CC 
 
+	// Constructors
+	public SoapNonPositiveInteger(); // 0x00297418
+	public SoapNonPositiveInteger(Decimal value); // 0x00297420
+
 	// Methods
-	public void .ctor(); // 0x00297418
-	public void .ctor(Decimal value); // 0x00297420
 	public string GetXsdType(); // 0x00297628
 	public static SoapNonPositiveInteger Parse(string value); // 0x00297684
 	public override string ToString(); // 0x00297748
@@ -22755,9 +23854,11 @@ public sealed class SoapNormalizedString : ISoapXsd // TypeDefIndex: 1071
 	public string Value { get; set; } // 0x0029777C 0x00297784
 	public static string XsdType { get; } // 0x0029778C 
 
+	// Constructors
+	public SoapNormalizedString(); // 0x00297754
+	public SoapNormalizedString(string value); // 0x0029775C
+
 	// Methods
-	public void .ctor(); // 0x00297754
-	public void .ctor(string value); // 0x0029775C
 	public string GetXsdType(); // 0x002977E8
 	public static SoapNormalizedString Parse(string value); // 0x00297844
 	public override string ToString(); // 0x002978B8
@@ -22774,9 +23875,11 @@ public sealed class SoapNotation : ISoapXsd // TypeDefIndex: 1072
 	public string Value { get; set; } // 0x002978E8 0x002978F0
 	public static string XsdType { get; } // 0x002978F8 
 
+	// Constructors
+	public SoapNotation(); // 0x002978C0
+	public SoapNotation(string value); // 0x002978C8
+
 	// Methods
-	public void .ctor(); // 0x002978C0
-	public void .ctor(string value); // 0x002978C8
 	public string GetXsdType(); // 0x00297954
 	public static SoapNotation Parse(string value); // 0x002979B0
 	public override string ToString(); // 0x00297A24
@@ -22793,9 +23896,11 @@ public sealed class SoapPositiveInteger : ISoapXsd // TypeDefIndex: 1073
 	public Decimal Value { get; set; } // 0x00297BC0 0x00297BD0
 	public static string XsdType { get; } // 0x00297BE0 
 
+	// Constructors
+	public SoapPositiveInteger(); // 0x00297A2C
+	public SoapPositiveInteger(Decimal value); // 0x00297A34
+
 	// Methods
-	public void .ctor(); // 0x00297A2C
-	public void .ctor(Decimal value); // 0x00297A34
 	public string GetXsdType(); // 0x00297C3C
 	public static SoapPositiveInteger Parse(string value); // 0x00297C98
 	public override string ToString(); // 0x00297D5C
@@ -22816,11 +23921,13 @@ public sealed class SoapQName : ISoapXsd // TypeDefIndex: 1074
 	public string Namespace { get; set; } // 0x00297E08 0x00297E10
 	public static string XsdType { get; } // 0x00297E18 
 
+	// Constructors
+	public SoapQName(); // 0x00297D68
+	public SoapQName(string value); // 0x00297D70
+	public SoapQName(string key, string name); // 0x00297D90
+	public SoapQName(string key, string name, string namespaceValue); // 0x00297DB8
+
 	// Methods
-	public void .ctor(); // 0x00297D68
-	public void .ctor(string value); // 0x00297D70
-	public void .ctor(string key, string name); // 0x00297D90
-	public void .ctor(string key, string name, string namespaceValue); // 0x00297DB8
 	public string GetXsdType(); // 0x00297E74
 	public static SoapQName Parse(string value); // 0x00297ED0
 	public override string ToString(); // 0x00297FE4
@@ -22838,10 +23945,12 @@ public sealed class SoapTime : ISoapXsd // TypeDefIndex: 1075
 	public DateTime Value { get; set; } // 0x00298BDC 0x00298BEC
 	public static string XsdType { get; } // 0x00298C04 
 
+	// Constructors
+	public SoapTime(); // 0x002980F0
+	public SoapTime(DateTime value); // 0x002980F8
+	private static SoapTime(); // 0x00298130
+
 	// Methods
-	public void .ctor(); // 0x002980F0
-	public void .ctor(DateTime value); // 0x002980F8
-	private static void .cctor(); // 0x00298130
 	public string GetXsdType(); // 0x00298C60
 	public static SoapTime Parse(string value); // 0x00298D20
 	public override string ToString(); // 0x00298E40
@@ -22858,9 +23967,11 @@ public sealed class SoapToken : ISoapXsd // TypeDefIndex: 1076
 	public string Value { get; set; } // 0x00298F0C 0x00298F14
 	public static string XsdType { get; } // 0x00298F1C 
 
+	// Constructors
+	public SoapToken(); // 0x00298EE4
+	public SoapToken(string value); // 0x00298EEC
+
 	// Methods
-	public void .ctor(); // 0x00298EE4
-	public void .ctor(string value); // 0x00298EEC
 	public string GetXsdType(); // 0x00298F78
 	public static SoapToken Parse(string value); // 0x00298FD4
 	public override string ToString(); // 0x00299048
@@ -22880,11 +23991,13 @@ public sealed class SoapYear : ISoapXsd // TypeDefIndex: 1077
 	public DateTime Value { get; set; } // 0x002993F4 0x00299404
 	public static string XsdType { get; } // 0x0029941C 
 
+	// Constructors
+	public SoapYear(); // 0x00299050
+	public SoapYear(DateTime value); // 0x00299058
+	public SoapYear(DateTime value, int sign); // 0x00299090
+	private static SoapYear(); // 0x002990D0
+
 	// Methods
-	public void .ctor(); // 0x00299050
-	public void .ctor(DateTime value); // 0x00299058
-	public void .ctor(DateTime value, int sign); // 0x00299090
-	private static void .cctor(); // 0x002990D0
 	public string GetXsdType(); // 0x00299478
 	public static SoapYear Parse(string value); // 0x00299538
 	public override string ToString(); // 0x002996A0
@@ -22904,11 +24017,13 @@ public sealed class SoapYearMonth : ISoapXsd // TypeDefIndex: 1078
 	public DateTime Value { get; set; } // 0x00299B60 0x00299B70
 	public static string XsdType { get; } // 0x00299B88 
 
+	// Constructors
+	public SoapYearMonth(); // 0x002997BC
+	public SoapYearMonth(DateTime value); // 0x002997C4
+	public SoapYearMonth(DateTime value, int sign); // 0x002997FC
+	private static SoapYearMonth(); // 0x0029983C
+
 	// Methods
-	public void .ctor(); // 0x002997BC
-	public void .ctor(DateTime value); // 0x002997C4
-	public void .ctor(DateTime value, int sign); // 0x002997FC
-	private static void .cctor(); // 0x0029983C
 	public string GetXsdType(); // 0x00299BE4
 	public static SoapYearMonth Parse(string value); // 0x00299CA4
 	public override string ToString(); // 0x00299E0C
@@ -22928,8 +24043,10 @@ public class SoapAttribute : Attribute // TypeDefIndex: 1079
 	public virtual bool UseAttribute { get; set; } // 0x00291558 0x00291560
 	public virtual string XmlNamespace { get; set; } // 0x00291568 0x00291570
 
+	// Constructors
+	public SoapAttribute(); // 0x00291540
+
 	// Methods
-	public void .ctor(); // 0x00291540
 	internal virtual void SetReflectionObject(object reflectionObject); // 0x00291578
 }
 
@@ -22945,8 +24062,10 @@ public sealed class SoapFieldAttribute : SoapAttribute // TypeDefIndex: 1080
 	public int Order { get; set; } // 0x00291588 0x00291590
 	public string XmlElementName { get; set; } // 0x00291598 0x002915A0
 
+	// Constructors
+	public SoapFieldAttribute(); // 0x00291580
+
 	// Methods
-	public void .ctor(); // 0x00291580
 	public bool IsInteropXmlElement(); // 0x002915B4
 	internal override void SetReflectionObject(object reflectionObject); // 0x002915BC
 }
@@ -22970,8 +24089,10 @@ public sealed class SoapMethodAttribute : SoapAttribute // TypeDefIndex: 1081
 	public override bool UseAttribute { get; set; } // 0x002916DC 0x002916E4
 	public override string XmlNamespace { get; set; } // 0x002916EC 0x002916F4
 
+	// Constructors
+	public SoapMethodAttribute(); // 0x00291694
+
 	// Methods
-	public void .ctor(); // 0x00291694
 	internal override void SetReflectionObject(object reflectionObject); // 0x002916FC
 }
 
@@ -22990,8 +24111,9 @@ public enum SoapOption // TypeDefIndex: 1082
 // Namespace: System.Runtime.Remoting.Metadata
 public sealed class SoapParameterAttribute : SoapAttribute // TypeDefIndex: 1083
 {
-	// Methods
-	public void .ctor(); // 0x00291B3C
+	// Constructors
+	public SoapParameterAttribute(); // 0x00291B3C
+
 }
 
 // Namespace: System.Runtime.Remoting.Metadata
@@ -23019,8 +24141,10 @@ public sealed class SoapTypeAttribute : SoapAttribute // TypeDefIndex: 1084
 	internal bool IsInteropXmlElement { get; } // 0x00291BEC 
 	internal bool IsInteropXmlType { get; } // 0x00291BF4 
 
+	// Constructors
+	public SoapTypeAttribute(); // 0x00291B44
+
 	// Methods
-	public void .ctor(); // 0x00291B44
 	internal override void SetReflectionObject(object reflectionObject); // 0x00291BFC
 }
 
@@ -23036,8 +24160,10 @@ public enum XmlFieldOrderOption // TypeDefIndex: 1085
 // Namespace: System.Runtime.Remoting.Proxies
 public class ProxyAttribute : Attribute, IContextAttribute // TypeDefIndex: 1086
 {
+	// Constructors
+	public ProxyAttribute(); // 0x0029CA30
+
 	// Methods
-	public void .ctor(); // 0x0029CA30
 	public virtual MarshalByRefObject CreateInstance(Type serverType); // 0x0029CA38
 	public virtual RealProxy CreateProxy(ObjRef objRef, Type serverType, object serverObject, Context serverContext); // 0x0029CBBC
 	public void GetPropertiesForNewContext(IConstructionCallMessage msg); // 0x0029CD74
@@ -23052,8 +24178,9 @@ internal class TransparentProxy // TypeDefIndex: 1087
 	private IntPtr _class; // 0x0C
 	private bool _custom_type_info; // 0x10
 
-	// Methods
-	public void .ctor(); // 0x002A0E74
+	// Constructors
+	public TransparentProxy(); // 0x002A0E74
+
 }
 
 // Namespace: System.Runtime.Remoting.Proxies
@@ -23072,11 +24199,13 @@ public abstract class RealProxy // TypeDefIndex: 1088
 	// Properties
 	internal Identity ObjectIdentity { get; set; } // 0x0029D984 0x0029D98C
 
+	// Constructors
+	protected RealProxy(); // 0x0029CD80
+	protected RealProxy(Type classToProxy); // 0x0029CD90
+	internal RealProxy(Type classToProxy, ClientIdentity identity); // 0x0029CF5C
+	protected RealProxy(Type classToProxy, IntPtr stub, object stubData); // 0x0029CDF8
+
 	// Methods
-	protected void .ctor(); // 0x0029CD80
-	protected void .ctor(Type classToProxy); // 0x0029CD90
-	internal void .ctor(Type classToProxy, ClientIdentity identity); // 0x0029CF5C
-	protected void .ctor(Type classToProxy, IntPtr stub, object stubData); // 0x0029CDF8
 	private static Type InternalGetProxyType(object transparentProxy); // 0x0029CFCC
 	public Type GetProxiedType(); // 0x0029CFD0
 	public virtual ObjRef CreateObjRef(Type requestedType); // 0x0029D0A4
@@ -23112,10 +24241,12 @@ internal class RemotingProxy : RealProxy, IRemotingTypeInfo // TypeDefIndex: 108
 	// Properties
 	public string TypeName { get; set; } // 0x002A0684 0x002A0828
 
+	// Constructors
+	internal RemotingProxy(Type type, ClientIdentity identity); // 0x0029F9E8
+	internal RemotingProxy(Type type, string activationUrl, object[] activationAttributes); // 0x0029CB7C
+	private static RemotingProxy(); // 0x0029FA50
+
 	// Methods
-	internal void .ctor(Type type, ClientIdentity identity); // 0x0029F9E8
-	internal void .ctor(Type type, string activationUrl, object[] activationAttributes); // 0x0029CB7C
-	private static void .cctor(); // 0x0029FA50
 	public override IMessage Invoke(IMessage request); // 0x0029FB88
 	internal void AttachIdentity(Identity identity); // 0x002A0318
 	internal IMessage ActivateRemoteObject(IMethodMessage request); // 0x0029E7E4
@@ -23126,8 +24257,10 @@ internal class RemotingProxy : RealProxy, IRemotingTypeInfo // TypeDefIndex: 108
 // Namespace: System.Runtime.Remoting.Services
 public sealed class EnterpriseServicesHelper // TypeDefIndex: 1090
 {
+	// Constructors
+	public EnterpriseServicesHelper(); // 0x002AB7F8
+
 	// Methods
-	public void .ctor(); // 0x002AB7F8
 	public static IConstructionReturnMessage CreateConstructionReturnMessage(IConstructionCallMessage ctorMsg, MarshalByRefObject retObj); // 0x002AB800
 	public static void SwitchWrappers(RealProxy oldcp, RealProxy newcp); // 0x002AB890
 	public static object WrapIUnknownWithComObject(IntPtr punk); // 0x002AB918
@@ -23151,9 +24284,11 @@ public class TrackingServices // TypeDefIndex: 1092
 	// Properties
 	public static ITrackingHandler[] RegisteredHandlers { get; } // 0x002ABF94 
 
+	// Constructors
+	public TrackingServices(); // 0x002AB9A0
+	private static TrackingServices(); // 0x002AB9A8
+
 	// Methods
-	public void .ctor(); // 0x002AB9A0
-	private static void .cctor(); // 0x002AB9A8
 	public static void RegisterTrackingHandler(ITrackingHandler handler); // 0x002ABA28
 	public static void UnregisterTrackingHandler(ITrackingHandler handler); // 0x002ABCDC
 	internal static void NotifyMarshaledObject(object obj, ObjRef or); // 0x002A79D4
@@ -23173,9 +24308,11 @@ public class ActivatedClientTypeEntry : TypeEntry // TypeDefIndex: 1093
 	public IContextAttribute[] ContextAttributes { get; set; } // 0x002C444C 0x002C4454
 	public Type ObjectType { get; } // 0x002C4458 
 
+	// Constructors
+	public ActivatedClientTypeEntry(Type type, string appUrl); // 0x002C4254
+	public ActivatedClientTypeEntry(string typeName, string assemblyName, string appUrl); // 0x002C42E4
+
 	// Methods
-	public void .ctor(Type type, string appUrl); // 0x002C4254
-	public void .ctor(string typeName, string assemblyName, string appUrl); // 0x002C42E4
 	public override string ToString(); // 0x002C4460
 }
 
@@ -23189,9 +24326,11 @@ public class ActivatedServiceTypeEntry : TypeEntry // TypeDefIndex: 1094
 	public IContextAttribute[] ContextAttributes { get; set; } // 0x002C46DC 0x002C46E4
 	public Type ObjectType { get; } // 0x002C46E8 
 
+	// Constructors
+	public ActivatedServiceTypeEntry(Type type); // 0x002C44F8
+	public ActivatedServiceTypeEntry(string typeName, string assemblyName); // 0x002C4580
+
 	// Methods
-	public void .ctor(Type type); // 0x002C44F8
-	public void .ctor(string typeName, string assemblyName); // 0x002C4580
 	public override string ToString(); // 0x002C46F0
 }
 
@@ -23213,8 +24352,9 @@ internal class EnvoyInfo : IEnvoyInfo // TypeDefIndex: 1096
 	// Properties
 	public IMessageSink EnvoySinks { get; set; } // 0x003045E0 0x003045E8
 
-	// Methods
-	public void .ctor(IMessageSink sinks); // 0x003045C0
+	// Constructors
+	public EnvoyInfo(IMessageSink sinks); // 0x003045C0
+
 }
 
 // Namespace: System.Runtime.Remoting
@@ -23274,8 +24414,10 @@ internal abstract class Identity // TypeDefIndex: 1101
 	public bool HasClientDynamicSinks { get; } // 0x0030466C 
 	public bool HasServerDynamicSinks { get; } // 0x003046C0 
 
+	// Constructors
+	public Identity(string objectUri); // 0x003045F0
+
 	// Methods
-	public void .ctor(string objectUri); // 0x003045F0
 	public abstract ObjRef CreateObjRef(Type requestedType);
 	public void NotifyClientDynamicSinks(bool start, IMessage req_msg, bool client_site, bool async); // 0x00304714
 	public void NotifyServerDynamicSinks(bool start, IMessage req_msg, bool client_site, bool async); // 0x003047A4
@@ -23291,8 +24433,10 @@ internal class ClientIdentity : Identity // TypeDefIndex: 1102
 	public MarshalByRefObject ClientProxy { get; set; } // 0x002D3B98 0x002D3C60
 	public string TargetUri { get; } // 0x002D3CE0 
 
+	// Constructors
+	public ClientIdentity(string objectUri, ObjRef objRef); // 0x002D3A34
+
 	// Methods
-	public void .ctor(string objectUri, ObjRef objRef); // 0x002D3A34
 	public override ObjRef CreateObjRef(Type requestedType); // 0x002D3CD8
 }
 
@@ -23302,9 +24446,11 @@ public class InternalRemotingServices // TypeDefIndex: 1103
 	// Fields
 	private static Hashtable _soapAttributes; // 0x00
 
+	// Constructors
+	public InternalRemotingServices(); // 0x00304834
+	private static InternalRemotingServices(); // 0x0030483C
+
 	// Methods
-	public void .ctor(); // 0x00304834
-	private static void .cctor(); // 0x0030483C
 	public static void DebugOutChnl(string s); // 0x003048BC
 	public static SoapAttribute GetCachedSoapAttribute(object reflectionObject); // 0x00304944
 	public static void RemotingAssert(bool condition, string message); // 0x00304EEC
@@ -23335,14 +24481,16 @@ public class ObjRef : ISerializable, IObjectReference // TypeDefIndex: 1104
 	public virtual string URI { get; set; } // 0x0029B5BC 0x0029B5C4
 	internal Type ServerType { get; } // 0x0029BFBC 
 
+	// Constructors
+	public ObjRef(); // 0x00299F28
+	internal ObjRef(string typeName, string uri, IChannelInfo cinfo); // 0x00299FB8
+	internal ObjRef(ObjRef o, bool unmarshalAsProxy); // 0x0029A5C8
+	public ObjRef(MarshalByRefObject o, Type requestedType); // 0x0029A708
+	internal ObjRef(Type type, string url, object remoteChannelData); // 0x0029AA10
+	protected ObjRef(SerializationInfo info, StreamingContext context); // 0x0029AB1C
+	private static ObjRef(); // 0x0029B468
+
 	// Methods
-	public void .ctor(); // 0x00299F28
-	internal void .ctor(string typeName, string uri, IChannelInfo cinfo); // 0x00299FB8
-	internal void .ctor(ObjRef o, bool unmarshalAsProxy); // 0x0029A5C8
-	public void .ctor(MarshalByRefObject o, Type requestedType); // 0x0029A708
-	internal void .ctor(Type type, string url, object remoteChannelData); // 0x0029AA10
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0029AB1C
-	private static void .cctor(); // 0x0029B468
 	internal bool IsPossibleToCAD(); // 0x0029B4E0
 	public virtual void GetObjectData(SerializationInfo info, StreamingContext context); // 0x0029B5CC
 	public virtual object GetRealObject(StreamingContext context); // 0x0029B800
@@ -23357,8 +24505,10 @@ public class ObjectHandle : MarshalByRefObject, IObjectHandle // TypeDefIndex: 1
 	// Fields
 	private object _wrapped; // 0x0C
 
+	// Constructors
+	public ObjectHandle(object o); // 0x0029C0FC
+
 	// Methods
-	public void .ctor(object o); // 0x0029C0FC
 	public override object InitializeLifetimeService(); // 0x0029C11C
 	public object Unwrap(); // 0x0029C124
 }
@@ -23387,8 +24537,10 @@ public static class RemotingConfiguration // TypeDefIndex: 1106
 	public static CustomErrorsModes CustomErrorsMode { get; set; } // 0x002A1218 0x002A12A0
 	public static string ProcessId { get; } // 0x0029BEA4 
 
+	// Constructors
+	private static RemotingConfiguration(); // 0x002A0E7C
+
 	// Methods
-	private static void .cctor(); // 0x002A0E7C
 	public static void Configure(string filename, bool ensureSecurity); // 0x002A1328
 	public static void Configure(string filename); // 0x002A186C
 	private static void ReadConfigFile(string filename); // 0x002A14F0
@@ -23434,8 +24586,10 @@ internal class ConfigHandler : IContentHandler // TypeDefIndex: 1107
 	private static Dictionary`2<string, int> <>f__switch$map27; // 0x00
 	private static Dictionary`2<string, int> <>f__switch$map28; // 0x04
 
+	// Constructors
+	public ConfigHandler(bool onlyDelayedChannels); // 0x002F7A6C
+
 	// Methods
-	public void .ctor(bool onlyDelayedChannels); // 0x002F7A6C
 	private void ValidatePath(string element, string[] paths); // 0x002F7B50
 	private bool CheckPath(string path); // 0x002F7C9C
 	public void OnStartParsing(SmallXmlParser parser); // 0x002F7E08
@@ -23478,8 +24632,10 @@ internal class ChannelData // TypeDefIndex: 1108
 	public ArrayList ClientProviders { get; } // 0x002C813C 
 	public Hashtable CustomProperties { get; } // 0x002C81BC 
 
+	// Constructors
+	public ChannelData(); // 0x002C8004
+
 	// Methods
-	public void .ctor(); // 0x002C8004
 	public void CopyFrom(ChannelData other); // 0x002C823C
 }
 
@@ -23493,27 +24649,31 @@ internal class ProviderData // TypeDefIndex: 1109
 	internal Hashtable CustomProperties; // 0x14
 	internal IList CustomData; // 0x18
 
+	// Constructors
+	public ProviderData(); // 0x0029C12C
+
 	// Methods
-	public void .ctor(); // 0x0029C12C
 	public void CopyFrom(ProviderData other); // 0x0029C1A8
 }
 
 // Namespace: System.Runtime.Remoting
 internal class FormatterData : ProviderData // TypeDefIndex: 1110
 {
-	// Methods
-	public void .ctor(); // 0x002FCA24
+	// Constructors
+	public FormatterData(); // 0x002FCA24
+
 }
 
 // Namespace: System.Runtime.Remoting
 [Serializable]
 public class RemotingException : SystemException // TypeDefIndex: 1111
 {
-	// Methods
-	public void .ctor(); // 0x002A5A68
-	public void .ctor(string message); // 0x00291538
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002A5A70
-	public void .ctor(string message, Exception InnerException); // 0x002A18F0
+	// Constructors
+	public RemotingException(); // 0x002A5A68
+	public RemotingException(string message); // 0x00291538
+	protected RemotingException(SerializationInfo info, StreamingContext context); // 0x002A5A70
+	public RemotingException(string message, Exception InnerException); // 0x002A18F0
+
 }
 
 // Namespace: System.Runtime.Remoting
@@ -23529,9 +24689,11 @@ public sealed class RemotingServices // TypeDefIndex: 1112
 	private static readonly MethodInfo FieldSetterMethod; // 0x18
 	private static readonly MethodInfo FieldGetterMethod; // 0x1C
 
+	// Constructors
+	private RemotingServices(); // 0x002A5A90
+	private static RemotingServices(); // 0x002A5A98
+
 	// Methods
-	private void .ctor(); // 0x002A5A90
-	private static void .cctor(); // 0x002A5A98
 	internal static object InternalExecute(MethodBase method, object obj, object[] parameters, out object[] out_args); // 0x002A5ED0
 	internal static MethodBase GetVirtualMethod(Type type, MethodBase method); // 0x002A5ED4
 	public static bool IsTransparentProxy(object proxy); // 0x0028FA50
@@ -23600,30 +24762,33 @@ private class CACD // TypeDefIndex: 1113
 	public object d; // 0x08
 	public object c; // 0x0C
 
-	// Methods
-	public void .ctor(); // 0x002AAB30
+	// Constructors
+	public CACD(); // 0x002AAB30
+
 }
 
 // Namespace: System.Runtime.Remoting
 [Serializable]
 public class RemotingTimeoutException : RemotingException // TypeDefIndex: 1114
 {
-	// Methods
-	public void .ctor(); // 0x002AB4F8
-	public void .ctor(string message); // 0x002AB500
-	public void .ctor(string message, Exception InnerException); // 0x002AB508
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x002AB510
+	// Constructors
+	public RemotingTimeoutException(); // 0x002AB4F8
+	public RemotingTimeoutException(string message); // 0x002AB500
+	public RemotingTimeoutException(string message, Exception InnerException); // 0x002AB508
+	internal RemotingTimeoutException(SerializationInfo info, StreamingContext context); // 0x002AB510
+
 }
 
 // Namespace: System.Runtime.Remoting
 [Serializable]
 public class ServerException : SystemException // TypeDefIndex: 1115
 {
-	// Methods
-	public void .ctor(); // 0x002AB530
-	public void .ctor(string message); // 0x002AB538
-	public void .ctor(string message, Exception InnerException); // 0x002AB540
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x002AB548
+	// Constructors
+	public ServerException(); // 0x002AB530
+	public ServerException(string message); // 0x002AB538
+	public ServerException(string message, Exception InnerException); // 0x002AB540
+	internal ServerException(SerializationInfo info, StreamingContext context); // 0x002AB548
+
 }
 
 // Namespace: System.Runtime.Remoting
@@ -23641,8 +24806,10 @@ internal abstract class ServerIdentity : Identity // TypeDefIndex: 1116
 	public Lease Lease { get; } // 0x002AB7E0 
 	public Context Context { get; set; } // 0x002AB7E8 0x002AB7F0
 
+	// Constructors
+	public ServerIdentity(string objectUri, Context context, Type objectType); // 0x002AB568
+
 	// Methods
-	public void .ctor(string objectUri, Context context, Type objectType); // 0x002AB568
 	public void StartTrackingLifetime(ILease lease); // 0x002A7818
 	public virtual void OnLifetimeExpired(); // 0x002AB598
 	public override ObjRef CreateObjRef(Type requestedType); // 0x002AB638
@@ -23658,8 +24825,10 @@ internal class ClientActivatedIdentity : ServerIdentity // TypeDefIndex: 1117
 	// Fields
 	private MarshalByRefObject _targetThis; // 0x38
 
+	// Constructors
+	public ClientActivatedIdentity(string objectUri, Type objectType); // 0x002D36CC
+
 	// Methods
-	public void .ctor(string objectUri, Type objectType); // 0x002D36CC
 	public MarshalByRefObject GetServerObject(); // 0x002D36F4
 	public MarshalByRefObject GetClientProxy(); // 0x002D36FC
 	public void SetClientProxy(MarshalByRefObject obj); // 0x002D3704
@@ -23671,8 +24840,10 @@ internal class ClientActivatedIdentity : ServerIdentity // TypeDefIndex: 1117
 // Namespace: System.Runtime.Remoting
 internal class SingletonIdentity : ServerIdentity // TypeDefIndex: 1118
 {
+	// Constructors
+	public SingletonIdentity(string objectUri, Context context, Type objectType); // 0x002AA834
+
 	// Methods
-	public void .ctor(string objectUri, Context context, Type objectType); // 0x002AA834
 	public MarshalByRefObject GetServerObject(); // 0x002AC6DC
 	public override IMessage SyncObjectProcessMessage(IMessage msg); // 0x002AC8CC
 	public override IMessageCtrl AsyncObjectProcessMessage(IMessage msg, IMessageSink replySink); // 0x002AC9FC
@@ -23681,8 +24852,10 @@ internal class SingletonIdentity : ServerIdentity // TypeDefIndex: 1118
 // Namespace: System.Runtime.Remoting
 internal class SingleCallIdentity : ServerIdentity // TypeDefIndex: 1119
 {
+	// Constructors
+	public SingleCallIdentity(string objectUri, Context context, Type objectType); // 0x002AA80C
+
 	// Methods
-	public void .ctor(string objectUri, Context context, Type objectType); // 0x002AA80C
 	public override IMessage SyncObjectProcessMessage(IMessage msg); // 0x002AC24C
 	public override IMessageCtrl AsyncObjectProcessMessage(IMessage msg, IMessageSink replySink); // 0x002AC4CC
 }
@@ -23697,8 +24870,10 @@ internal class DisposerReplySink : IMessageSink // TypeDefIndex: 1120
 	// Properties
 	public IMessageSink NextSink { get; } // 0x003045B8 
 
+	// Constructors
+	public DisposerReplySink(IMessageSink next, IDisposable disposable); // 0x0030439C
+
 	// Methods
-	public void .ctor(IMessageSink next, IDisposable disposable); // 0x0030439C
 	public IMessage SyncProcessMessage(IMessage msg); // 0x003043C4
 	public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink); // 0x00304530
 }
@@ -23719,9 +24894,11 @@ public class SoapServices // TypeDefIndex: 1121
 	public static string XmlNsForClrTypeWithNs { get; } // 0x002ACCFC 
 	public static string XmlNsForClrTypeWithNsAndAssembly { get; } // 0x002ACD58 
 
+	// Constructors
+	private SoapServices(); // 0x002ACB3C
+	private static SoapServices(); // 0x002ACB44
+
 	// Methods
-	private void .ctor(); // 0x002ACB3C
-	private static void .cctor(); // 0x002ACB44
 	public static string CodeXmlNamespaceForClrTypeNamespace(string typeNamespace, string assemblyName); // 0x00291EB0
 	public static bool DecodeXmlNamespaceForClrTypeNamespace(string inNamespace, out string typeNamespace, out string assemblyName); // 0x002ACEBC
 	public static void GetInteropFieldTypeAndNameFromXmlAttribute(Type containingType, string xmlAttribute, string xmlNamespace, out Type type, out string name); // 0x002AD4BC
@@ -23757,8 +24934,9 @@ private class TypeInfo // TypeDefIndex: 1122
 	public Hashtable Attributes; // 0x08
 	public Hashtable Elements; // 0x0C
 
-	// Methods
-	public void .ctor(); // 0x002AF750
+	// Constructors
+	public TypeInfo(); // 0x002AF750
+
 }
 
 // Namespace: System.Runtime.Remoting
@@ -23772,8 +24950,9 @@ public class TypeEntry // TypeDefIndex: 1123
 	public string AssemblyName { get; set; } // 0x002AF9B4 0x002AF9BC
 	public string TypeName { get; set; } // 0x002AF9C4 0x002AF9CC
 
-	// Methods
-	protected void .ctor(); // 0x002AF9AC
+	// Constructors
+	protected TypeEntry(); // 0x002AF9AC
+
 }
 
 // Namespace: System.Runtime.Remoting
@@ -23788,8 +24967,10 @@ internal class TypeInfo : IRemotingTypeInfo // TypeDefIndex: 1124
 	// Properties
 	public string TypeName { get; set; } // 0x002AF9D4 0x002AF9DC
 
+	// Constructors
+	public TypeInfo(Type type); // 0x0029A0AC
+
 	// Methods
-	public void .ctor(Type type); // 0x0029A0AC
 	public bool CanCastTo(Type fromType, object o); // 0x002AF9E4
 }
 
@@ -23806,9 +24987,11 @@ public class WellKnownClientTypeEntry : TypeEntry // TypeDefIndex: 1125
 	public Type ObjectType { get; } // 0x002AFF58 
 	public string ObjectUrl { get; } // 0x002AFF60 
 
+	// Constructors
+	public WellKnownClientTypeEntry(Type type, string objectUrl); // 0x002A34B4
+	public WellKnownClientTypeEntry(string typeName, string assemblyName, string objectUrl); // 0x002AFDE4
+
 	// Methods
-	public void .ctor(Type type, string objectUrl); // 0x002A34B4
-	public void .ctor(string typeName, string assemblyName, string objectUrl); // 0x002AFDE4
 	public override string ToString(); // 0x002AFF68
 }
 
@@ -23834,9 +25017,11 @@ public class WellKnownServiceTypeEntry : TypeEntry // TypeDefIndex: 1127
 	public Type ObjectType { get; } // 0x002B01D0 
 	public string ObjectUri { get; } // 0x002B01D8 
 
+	// Constructors
+	public WellKnownServiceTypeEntry(Type type, string objectUri, WellKnownObjectMode mode); // 0x002A3968
+	public WellKnownServiceTypeEntry(string typeName, string assemblyName, string objectUri, WellKnownObjectMode mode); // 0x002B0054
+
 	// Methods
-	public void .ctor(Type type, string objectUri, WellKnownObjectMode mode); // 0x002A3968
-	public void .ctor(string typeName, string assemblyName, string objectUri, WellKnownObjectMode mode); // 0x002B0054
 	public override string ToString(); // 0x002B01E0
 }
 
@@ -23849,9 +25034,11 @@ internal class BinaryCommon // TypeDefIndex: 1128
 	private static byte[] _typeCodeMap; // 0x08
 	public static bool UseReflectionSerialization; // 0x0C
 
+	// Constructors
+	public BinaryCommon(); // 0x002B378C
+	private static BinaryCommon(); // 0x002B3794
+
 	// Methods
-	public void .ctor(); // 0x002B378C
-	private static void .cctor(); // 0x002B3794
 	public static bool IsPrimitive(Type type); // 0x002B4734
 	public static byte GetTypeCode(Type type); // 0x002B48F4
 	public static Type GetTypeFromCode(int code); // 0x002B4A4C
@@ -23975,9 +25162,11 @@ public sealed class BinaryFormatter : IRemotingFormatter, IFormatter // TypeDefI
 	public FormatterTypeStyle TypeFormat { get; set; } // 0x001F0840 0x001F0848
 	public TypeFilterLevel FilterLevel { get; set; } // 0x001F0850 0x001F0858
 
+	// Constructors
+	public BinaryFormatter(); // 0x001F064C
+	public BinaryFormatter(ISurrogateSelector selector, StreamingContext context); // 0x001F06E4
+
 	// Methods
-	public void .ctor(); // 0x001F064C
-	public void .ctor(ISurrogateSelector selector, StreamingContext context); // 0x001F06E4
 	public object Deserialize(Stream serializationStream); // 0x001F0860
 	public object Deserialize(Stream serializationStream, HeaderHandler handler); // 0x001F0AD0
 	private object NoCheckDeserialize(Stream serializationStream, HeaderHandler handler); // 0x001F0868
@@ -23998,9 +25187,11 @@ internal class CodeGenerator // TypeDefIndex: 1136
 	private static object monitor; // 0x00
 	private static ModuleBuilder _module; // 0x04
 
+	// Constructors
+	public CodeGenerator(); // 0x001F54F0
+	private static CodeGenerator(); // 0x001F54F8
+
 	// Methods
-	public void .ctor(); // 0x001F54F0
-	private static void .cctor(); // 0x001F54F8
 	public static Type GenerateMetadataType(Type type, StreamingContext context); // 0x001F5664
 	public static Type GenerateMetadataTypeInternal(Type type, StreamingContext context); // 0x001F57A4
 	public static void LoadFromPtr(ILGenerator ig, Type t); // 0x001F8A8C
@@ -24014,8 +25205,10 @@ internal class CodeGenerator // TypeDefIndex: 1136
 // Namespace: System.Runtime.Serialization.Formatters.Binary
 internal class MessageFormatter // TypeDefIndex: 1137
 {
+	// Constructors
+	public MessageFormatter(); // 0x001FAFB4
+
 	// Methods
-	public void .ctor(); // 0x001FAFB4
 	public static void WriteMethodCall(BinaryWriter writer, object obj, Header[] headers, ISurrogateSelector surrogateSelector, StreamingContext context, FormatterAssemblyStyle assemblyFormat, FormatterTypeStyle typeFormat); // 0x001F2BD4
 	public static void WriteMethodResponse(BinaryWriter writer, object obj, Header[] headers, ISurrogateSelector surrogateSelector, StreamingContext context, FormatterAssemblyStyle assemblyFormat, FormatterTypeStyle typeFormat); // 0x001F3DF8
 	public static object ReadMethodCall(BinaryReader reader, bool hasHeaders, HeaderHandler headerHandler, BinaryFormatter formatter); // 0x001FBF18
@@ -24048,8 +25241,10 @@ internal class ObjectReader // TypeDefIndex: 1138
 	// Properties
 	public object CurrentObject { get; } // 0x001FCF1C 
 
+	// Constructors
+	public ObjectReader(BinaryFormatter formatter); // 0x001F23D0
+
 	// Methods
-	public void .ctor(BinaryFormatter formatter); // 0x001F23D0
 	public void ReadObjectGraph(BinaryReader reader, bool readHeaders, out object result, out Header[] headers); // 0x001FC5A8
 	public void ReadObjectGraph(BinaryElement elem, BinaryReader reader, bool readHeaders, out object result, out Header[] headers); // 0x001F2520
 	private bool ReadNextObject(BinaryElement element, BinaryReader reader); // 0x001FC7C0
@@ -24088,8 +25283,9 @@ private class TypeMetadata // TypeDefIndex: 1139
 	public int FieldCount; // 0x18
 	public bool NeedsSerializationInfo; // 0x1C
 
-	// Methods
-	public void .ctor(); // 0x0020042C
+	// Constructors
+	public TypeMetadata(); // 0x0020042C
+
 }
 
 // Namespace: 
@@ -24098,8 +25294,9 @@ private class ArrayNullFiller // TypeDefIndex: 1140
 	// Fields
 	public int NullCount; // 0x08
 
-	// Methods
-	public void .ctor(int count); // 0x001FD718
+	// Constructors
+	public ArrayNullFiller(int count); // 0x001FD718
+
 }
 
 // Namespace: System.Runtime.Serialization.Formatters.Binary
@@ -24112,8 +25309,10 @@ internal abstract class TypeMetadata // TypeDefIndex: 1141
 	// Properties
 	public abstract bool RequiresTypes { get; }
 
+	// Constructors
+	protected TypeMetadata(); // 0x001F54E0
+
 	// Methods
-	protected void .ctor(); // 0x001F54E0
 	public abstract void WriteAssemblies(ObjectWriter ow, BinaryWriter writer);
 	public abstract void WriteTypeData(ObjectWriter ow, BinaryWriter writer, bool writeTypes);
 	public abstract void WriteObjectData(ObjectWriter ow, BinaryWriter writer, object data);
@@ -24129,8 +25328,9 @@ internal abstract class ClrTypeMetadata : TypeMetadata // TypeDefIndex: 1142
 	// Properties
 	public override bool RequiresTypes { get; } // 0x001F54E8 
 
-	// Methods
-	public void .ctor(Type instanceType); // 0x001F5448
+	// Constructors
+	public ClrTypeMetadata(Type instanceType); // 0x001F5448
+
 }
 
 // Namespace: System.Runtime.Serialization.Formatters.Binary
@@ -24143,8 +25343,10 @@ internal class SerializableTypeMetadata : TypeMetadata // TypeDefIndex: 1143
 	// Properties
 	public override bool RequiresTypes { get; } // 0x00205498 
 
+	// Constructors
+	public SerializableTypeMetadata(Type itype, SerializationInfo info); // 0x0020250C
+
 	// Methods
-	public void .ctor(Type itype, SerializationInfo info); // 0x0020250C
 	public override bool IsCompatible(TypeMetadata other); // 0x00204D90
 	public override void WriteAssemblies(ObjectWriter ow, BinaryWriter writer); // 0x00205064
 	public override void WriteTypeData(ObjectWriter ow, BinaryWriter writer, bool writeTypes); // 0x00205158
@@ -24157,8 +25359,10 @@ internal class MemberTypeMetadata : ClrTypeMetadata // TypeDefIndex: 1144
 	// Fields
 	private MemberInfo[] members; // 0x14
 
+	// Constructors
+	public MemberTypeMetadata(Type type, StreamingContext context); // 0x001FA1C0
+
 	// Methods
-	public void .ctor(Type type, StreamingContext context); // 0x001FA1C0
 	public override void WriteAssemblies(ObjectWriter ow, BinaryWriter writer); // 0x001FA1F8
 	public override void WriteTypeData(ObjectWriter ow, BinaryWriter writer, bool writeTypes); // 0x001FA3DC
 	public override void WriteObjectData(ObjectWriter ow, BinaryWriter writer, object data); // 0x001FAAB4
@@ -24183,9 +25387,11 @@ internal class ObjectWriter // TypeDefIndex: 1145
 	private int ArrayBufferLength; // 0x30
 	private SerializationObjectManager _manager; // 0x34
 
+	// Constructors
+	public ObjectWriter(ISurrogateSelector surrogateSelector, StreamingContext context, FormatterAssemblyStyle assemblyFormat, FormatterTypeStyle typeFormat); // 0x001F5198
+	private static ObjectWriter(); // 0x00200F64
+
 	// Methods
-	public void .ctor(ISurrogateSelector surrogateSelector, StreamingContext context, FormatterAssemblyStyle assemblyFormat, FormatterTypeStyle typeFormat); // 0x001F5198
-	private static void .cctor(); // 0x00200F64
 	public void WriteObjectGraph(BinaryWriter writer, object obj, Header[] headers); // 0x001F52D0
 	public void QueueObject(object obj); // 0x002010EC
 	public void WriteQueuedObjects(BinaryWriter writer); // 0x00201128
@@ -24223,8 +25429,9 @@ private class MetadataReference // TypeDefIndex: 1146
 	public TypeMetadata Metadata; // 0x08
 	public long ObjectID; // 0x10
 
-	// Methods
-	public void .ctor(TypeMetadata metadata, long id); // 0x002022F8
+	// Constructors
+	public MetadataReference(TypeMetadata metadata, long id); // 0x002022F8
+
 }
 
 // Namespace: System.Runtime.Serialization.Formatters
@@ -24269,8 +25476,10 @@ public interface ISoapMessage // TypeDefIndex: 1150
 // Namespace: System.Runtime.Serialization.Formatters
 public sealed class InternalRM // TypeDefIndex: 1151
 {
+	// Constructors
+	public InternalRM(); // 0x002054A8
+
 	// Methods
-	public void .ctor(); // 0x002054A8
 	public static void InfoSoap(object[] messages); // 0x002054B0
 	public static bool SoapCheckEnabled(); // 0x00205538
 }
@@ -24278,8 +25487,10 @@ public sealed class InternalRM // TypeDefIndex: 1151
 // Namespace: System.Runtime.Serialization.Formatters
 public sealed class InternalST // TypeDefIndex: 1152
 {
+	// Constructors
+	private InternalST(); // 0x002055C0
+
 	// Methods
-	private void .ctor(); // 0x002055C0
 	public static void InfoSoap(object[] messages); // 0x002055C8
 	public static Assembly LoadAssemblyFromString(string assemblyString); // 0x00205650
 	public static void SerializationSetValue(FieldInfo fi, object target, object value); // 0x002056D8
@@ -24303,8 +25514,9 @@ public sealed class ServerFault // TypeDefIndex: 1153
 	public string ExceptionMessage { get; set; } // 0x00205938 0x00205940
 	public string StackTrace { get; set; } // 0x00205948 0x00205950
 
-	// Methods
-	public void .ctor(string exceptionType, string message, string stackTrace); // 0x002058F8
+	// Constructors
+	public ServerFault(string exceptionType, string message, string stackTrace); // 0x002058F8
+
 }
 
 // Namespace: System.Runtime.Serialization.Formatters
@@ -24323,10 +25535,12 @@ public sealed class SoapFault : ISerializable // TypeDefIndex: 1154
 	public string FaultCode { get; set; } // 0x00205F60 0x00205F68
 	public string FaultString { get; set; } // 0x00205F70 0x00205F78
 
+	// Constructors
+	public SoapFault(); // 0x00205958
+	private SoapFault(SerializationInfo info, StreamingContext context); // 0x00205960
+	public SoapFault(string faultCode, string faultString, string faultActor, ServerFault serverFault); // 0x00205F08
+
 	// Methods
-	public void .ctor(); // 0x00205958
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x00205960
-	public void .ctor(string faultCode, string faultString, string faultActor, ServerFault serverFault); // 0x00205F08
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x00205F80
 }
 
@@ -24350,8 +25564,9 @@ public class SoapMessage : ISoapMessage // TypeDefIndex: 1155
 	public object[] ParamValues { get; set; } // 0x00206140 0x00206148
 	public string XmlNameSpace { get; set; } // 0x00206150 0x00206158
 
-	// Methods
-	public void .ctor(); // 0x002060F8
+	// Constructors
+	public SoapMessage(); // 0x002060F8
+
 }
 
 // Namespace: System.Runtime.Serialization.Formatters
@@ -24374,8 +25589,10 @@ public abstract class Formatter : IFormatter // TypeDefIndex: 1157
 	public abstract StreamingContext Context { get; set; }
 	public abstract ISurrogateSelector SurrogateSelector { get; set; }
 
+	// Constructors
+	protected Formatter(); // 0x002B09AC
+
 	// Methods
-	protected void .ctor(); // 0x002B09AC
 	public abstract object Deserialize(Stream serializationStream);
 	protected virtual object GetNext(out long objID); // 0x002B0A4C
 	protected virtual long Schedule(object obj); // 0x002B0B18
@@ -24404,8 +25621,10 @@ public abstract class Formatter : IFormatter // TypeDefIndex: 1157
 // Namespace: System.Runtime.Serialization
 public class FormatterConverter : IFormatterConverter // TypeDefIndex: 1158
 {
+	// Constructors
+	public FormatterConverter(); // 0x002B1718
+
 	// Methods
-	public void .ctor(); // 0x002B1718
 	public object Convert(object value, Type type); // 0x002B1720
 	public object Convert(object value, TypeCode typeCode); // 0x002B17AC
 	public bool ToBoolean(object value); // 0x002B1838
@@ -24431,8 +25650,10 @@ public sealed class FormatterServices // TypeDefIndex: 1159
 	// Fields
 	private const BindingFlags fieldFlags = 54; // 0x00
 
+	// Constructors
+	private FormatterServices(); // 0x002B25A4
+
 	// Methods
-	private void .ctor(); // 0x002B25A4
 	public static object[] GetObjectData(object obj, MemberInfo[] members); // 0x002B25AC
 	public static MemberInfo[] GetSerializableMembers(Type type); // 0x002B2954
 	public static MemberInfo[] GetSerializableMembers(Type type, StreamingContext context); // 0x002B2990
@@ -24524,9 +25745,11 @@ public class ObjectIDGenerator // TypeDefIndex: 1166
 	// Properties
 	internal long NextId { get; } // 0x00201354 
 
+	// Constructors
+	public ObjectIDGenerator(); // 0x00200E00
+	private static ObjectIDGenerator(); // 0x002062EC
+
 	// Methods
-	public void .ctor(); // 0x00200E00
-	private static void .cctor(); // 0x002062EC
 	public virtual long GetId(object obj, out bool firstTime); // 0x00206374
 	public virtual long HasId(object obj, out bool firstTime); // 0x00206514
 }
@@ -24534,8 +25757,10 @@ public class ObjectIDGenerator // TypeDefIndex: 1166
 // Namespace: 
 private class InstanceComparer : IComparer, IHashCodeProvider // TypeDefIndex: 1167
 {
+	// Constructors
+	public InstanceComparer(); // 0x0020636C
+
 	// Methods
-	public void .ctor(); // 0x0020636C
 	private int System.Collections.IComparer.Compare(object o1, object o2); // 0x0020664C
 	private int System.Collections.IHashCodeProvider.GetHashCode(object o); // 0x002066E8
 }
@@ -24554,8 +25779,10 @@ public class ObjectManager // TypeDefIndex: 1168
 	private StreamingContext _context; // 0x24
 	private int _registeredObjectsCount; // 0x2C
 
+	// Constructors
+	public ObjectManager(ISurrogateSelector selector, StreamingContext context); // 0x001FC6F0
+
 	// Methods
-	public void .ctor(ISurrogateSelector selector, StreamingContext context); // 0x001FC6F0
 	public virtual void DoFixups(); // 0x002066F4
 	internal ObjectRecord GetObjectRecord(long objectID); // 0x00207A68
 	public virtual object GetObject(long objectID); // 0x00207D9C
@@ -24583,8 +25810,10 @@ internal abstract class BaseFixupRecord // TypeDefIndex: 1169
 	public BaseFixupRecord NextSameContainer; // 0x10
 	public BaseFixupRecord NextSameRequired; // 0x14
 
+	// Constructors
+	public BaseFixupRecord(ObjectRecord objectToBeFixed, ObjectRecord objectRequired); // 0x002B0494
+
 	// Methods
-	public void .ctor(ObjectRecord objectToBeFixed, ObjectRecord objectRequired); // 0x002B0494
 	public bool DoFixup(ObjectManager manager, bool strict); // 0x002B05B0
 	protected abstract void FixupImpl(ObjectManager manager);
 }
@@ -24595,8 +25824,10 @@ internal class ArrayFixupRecord : BaseFixupRecord // TypeDefIndex: 1170
 	// Fields
 	private int _index; // 0x18
 
+	// Constructors
+	public ArrayFixupRecord(ObjectRecord objectToBeFixed, int index, ObjectRecord objectRequired); // 0x002B0464
+
 	// Methods
-	public void .ctor(ObjectRecord objectToBeFixed, int index, ObjectRecord objectRequired); // 0x002B0464
 	protected override void FixupImpl(ObjectManager manager); // 0x002B04BC
 }
 
@@ -24606,8 +25837,10 @@ internal class MultiArrayFixupRecord : BaseFixupRecord // TypeDefIndex: 1171
 	// Fields
 	private int[] _indices; // 0x18
 
+	// Constructors
+	public MultiArrayFixupRecord(ObjectRecord objectToBeFixed, int[] indices, ObjectRecord objectRequired); // 0x00206160
+
 	// Methods
-	public void .ctor(ObjectRecord objectToBeFixed, int[] indices, ObjectRecord objectRequired); // 0x00206160
 	protected override void FixupImpl(ObjectManager manager); // 0x00206184
 }
 
@@ -24617,8 +25850,10 @@ internal class FixupRecord : BaseFixupRecord // TypeDefIndex: 1172
 	// Fields
 	public MemberInfo _member; // 0x18
 
+	// Constructors
+	public FixupRecord(ObjectRecord objectToBeFixed, MemberInfo member, ObjectRecord objectRequired); // 0x002B0918
+
 	// Methods
-	public void .ctor(ObjectRecord objectToBeFixed, MemberInfo member, ObjectRecord objectRequired); // 0x002B0918
 	protected override void FixupImpl(ObjectManager manager); // 0x002B0948
 }
 
@@ -24628,8 +25863,10 @@ internal class DelayedFixupRecord : BaseFixupRecord // TypeDefIndex: 1173
 	// Fields
 	public string _memberName; // 0x18
 
+	// Constructors
+	public DelayedFixupRecord(ObjectRecord objectToBeFixed, string memberName, ObjectRecord objectRequired); // 0x002B0884
+
 	// Methods
-	public void .ctor(ObjectRecord objectToBeFixed, string memberName, ObjectRecord objectRequired); // 0x002B0884
 	protected override void FixupImpl(ObjectManager manager); // 0x002B08B4
 }
 
@@ -24666,8 +25903,10 @@ internal class ObjectRecord // TypeDefIndex: 1175
 	public bool IsRegistered { get; } // 0x00207D8C 
 	public bool HasPendingFixups { get; } // 0x00209634 
 
+	// Constructors
+	public ObjectRecord(); // 0x00207D84
+
 	// Methods
-	public void .ctor(); // 0x00207D84
 	public void SetMemberValue(ObjectManager manager, MemberInfo member, object value); // 0x00209280
 	public void SetArrayValue(ObjectManager manager, object value, int[] indices); // 0x002061DC
 	public void SetMemberValue(ObjectManager manager, string memberName, object value); // 0x002094BC
@@ -24681,29 +25920,33 @@ internal class ObjectRecord // TypeDefIndex: 1175
 // Namespace: System.Runtime.Serialization
 public sealed class OnDeserializedAttribute : Attribute // TypeDefIndex: 1176
 {
-	// Methods
-	public void .ctor(); // 0x00209714
+	// Constructors
+	public OnDeserializedAttribute(); // 0x00209714
+
 }
 
 // Namespace: System.Runtime.Serialization
 public sealed class OnDeserializingAttribute : Attribute // TypeDefIndex: 1177
 {
-	// Methods
-	public void .ctor(); // 0x0020971C
+	// Constructors
+	public OnDeserializingAttribute(); // 0x0020971C
+
 }
 
 // Namespace: System.Runtime.Serialization
 public sealed class OnSerializedAttribute : Attribute // TypeDefIndex: 1178
 {
-	// Methods
-	public void .ctor(); // 0x00209724
+	// Constructors
+	public OnSerializedAttribute(); // 0x00209724
+
 }
 
 // Namespace: System.Runtime.Serialization
 public sealed class OnSerializingAttribute : Attribute // TypeDefIndex: 1179
 {
-	// Methods
-	public void .ctor(); // 0x0020972C
+	// Constructors
+	public OnSerializingAttribute(); // 0x0020972C
+
 }
 
 // Namespace: System.Runtime.Serialization
@@ -24715,16 +25958,19 @@ public sealed class OptionalFieldAttribute : Attribute // TypeDefIndex: 1180
 	// Properties
 	public int VersionAdded { get; set; } // 0x0020973C 0x00209744
 
-	// Methods
-	public void .ctor(); // 0x00209734
+	// Constructors
+	public OptionalFieldAttribute(); // 0x00209734
+
 }
 
 // Namespace: System.Runtime.Serialization
 [Serializable]
 public abstract class SerializationBinder // TypeDefIndex: 1181
 {
+	// Constructors
+	protected SerializationBinder(); // 0x0020974C
+
 	// Methods
-	protected void .ctor(); // 0x0020974C
 	public abstract Type BindToType(string assemblyName, string typeName);
 }
 
@@ -24746,9 +25992,11 @@ internal sealed class SerializationCallbacks // TypeDefIndex: 1182
 	public bool HasDeserializingCallbacks { get; } // 0x00209C88 
 	public bool HasDeserializedCallbacks { get; } // 0x00207A58 
 
+	// Constructors
+	public SerializationCallbacks(Type type); // 0x00209754
+	private static SerializationCallbacks(); // 0x00209BBC
+
 	// Methods
-	public void .ctor(Type type); // 0x00209754
-	private static void .cctor(); // 0x00209BBC
 	private static ArrayList GetMethodsByAttribute(Type type, Type attr); // 0x002098B0
 	private static void Invoke(ArrayList list, object target, StreamingContext context); // 0x00209C98
 	public void RaiseOnSerializing(object target, StreamingContext contex); // 0x0020A2B0
@@ -24774,19 +26022,21 @@ public struct SerializationEntry // TypeDefIndex: 1184
 	public Type ObjectType { get; } // 0x0008BC08 
 	public object Value { get; } // 0x0008BC10 
 
-	// Methods
-	internal void .ctor(string name, Type type, object value); // 0x0008BBF4
+	// Constructors
+	internal SerializationEntry(string name, Type type, object value); // 0x0008BBF4
+
 }
 
 // Namespace: System.Runtime.Serialization
 [Serializable]
 public class SerializationException : SystemException // TypeDefIndex: 1185
 {
-	// Methods
-	public void .ctor(); // 0x0020A4D8
-	public void .ctor(string message); // 0x001F0AD4
-	public void .ctor(string message, Exception innerException); // 0x0020A540
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0020A548
+	// Constructors
+	public SerializationException(); // 0x0020A4D8
+	public SerializationException(string message); // 0x001F0AD4
+	public SerializationException(string message, Exception innerException); // 0x0020A540
+	protected SerializationException(SerializationInfo info, StreamingContext context); // 0x0020A548
+
 }
 
 // Namespace: System.Runtime.Serialization
@@ -24804,10 +26054,12 @@ public sealed class SerializationInfo // TypeDefIndex: 1186
 	public string FullTypeName { get; set; } // 0x0020A9F0 0x0020A9F8
 	public int MemberCount { get; } // 0x00204BC8 
 
+	// Constructors
+	private SerializationInfo(Type type); // 0x0020A568
+	private SerializationInfo(Type type, SerializationEntry[] data); // 0x0020A698
+	public SerializationInfo(Type type, IFormatterConverter converter); // 0x001FF434
+
 	// Methods
-	private void .ctor(Type type); // 0x0020A568
-	private void .ctor(Type type, SerializationEntry[] data); // 0x0020A698
-	public void .ctor(Type type, IFormatterConverter converter); // 0x001FF434
 	public void AddValue(string name, object value, Type type); // 0x00200BD4
 	public object GetValue(string name, Type type); // 0x00205BF4
 	public void SetType(Type type); // 0x0020AAA8
@@ -24858,8 +26110,10 @@ public sealed class SerializationInfoEnumerator : IEnumerator // TypeDefIndex: 1
 	public Type ObjectType { get; } // 0x00204C70 
 	public object Value { get; } // 0x00205474 
 
+	// Constructors
+	internal SerializationInfoEnumerator(ArrayList list); // 0x0020ABB0
+
 	// Methods
-	internal void .ctor(ArrayList list); // 0x0020ABB0
 	public bool MoveNext(); // 0x00204CB8
 	public void Reset(); // 0x0020CDD4
 }
@@ -24878,8 +26132,10 @@ public sealed class SerializationObjectManager // TypeDefIndex: 1188
 		remove; // 0x0020CF3C
 	}
 
+	// Constructors
+	public SerializationObjectManager(StreamingContext context); // 0x00200ED8
+
 	// Methods
-	public void .ctor(StreamingContext context); // 0x00200ED8
 	public void RegisterObject(object obj); // 0x0020278C
 	public void RaiseOnSerializedEvent(); // 0x002011EC
 }
@@ -24891,8 +26147,10 @@ private sealed class <RegisterObject>c__AnonStorey3 // TypeDefIndex: 1189
 	internal SerializationCallbacks sc; // 0x08
 	internal object obj; // 0x0C
 
+	// Constructors
+	public <RegisterObject>c__AnonStorey3(); // 0x0020CFCC
+
 	// Methods
-	public void .ctor(); // 0x0020CFCC
 	internal void <>m__2(StreamingContext ctx); // 0x0020CFD4
 }
 
@@ -24908,9 +26166,11 @@ public struct StreamingContext // TypeDefIndex: 1190
 	public object Context { get; } // 0x0008BCE0 
 	public StreamingContextStates State { get; } // 0x0008BCE8 
 
+	// Constructors
+	public StreamingContext(StreamingContextStates state); // 0x0008BCC4
+	public StreamingContext(StreamingContextStates state, object additional); // 0x0008BCD4
+
 	// Methods
-	public void .ctor(StreamingContextStates state); // 0x0008BCC4
-	public void .ctor(StreamingContextStates state, object additional); // 0x0008BCD4
 	public override bool Equals(object obj); // 0x0008BCF0
 	public override int GetHashCode(); // 0x0008BCF8
 }
@@ -24937,8 +26197,10 @@ public class SurrogateSelector : ISurrogateSelector // TypeDefIndex: 1192
 	private Hashtable Surrogates; // 0x08
 	private ISurrogateSelector nextSelector; // 0x0C
 
+	// Constructors
+	public SurrogateSelector(); // 0x0020D0E4
+
 	// Methods
-	public void .ctor(); // 0x0020D0E4
 	public virtual void AddSurrogate(Type type, StreamingContext context, ISerializationSurrogate surrogate); // 0x0020D160
 	public virtual void ChainSelector(ISurrogateSelector selector); // 0x0020D3F0
 	public virtual ISurrogateSelector GetNextSelector(); // 0x0020D52C
@@ -24957,9 +26219,10 @@ public sealed class ResourceConsumptionAttribute : Attribute // TypeDefIndex: 11
 	public ResourceScope ConsumptionScope { get; } // 0x0020D9B0 
 	public ResourceScope ResourceScope { get; } // 0x0020D9B8 
 
-	// Methods
-	public void .ctor(ResourceScope resourceScope); // 0x0020D964
-	public void .ctor(ResourceScope resourceScope, ResourceScope consumptionScope); // 0x0020D988
+	// Constructors
+	public ResourceConsumptionAttribute(ResourceScope resourceScope); // 0x0020D964
+	public ResourceConsumptionAttribute(ResourceScope resourceScope, ResourceScope consumptionScope); // 0x0020D988
+
 }
 
 // Namespace: System.Runtime.Versioning
@@ -24971,8 +26234,9 @@ public sealed class ResourceExposureAttribute : Attribute // TypeDefIndex: 1194
 	// Properties
 	public ResourceScope ResourceExposureLevel { get; } // 0x0020D9E0 
 
-	// Methods
-	public void .ctor(ResourceScope exposureLevel); // 0x0020D9C0
+	// Constructors
+	public ResourceExposureAttribute(ResourceScope exposureLevel); // 0x0020D9C0
+
 }
 
 // Namespace: System.Runtime.Versioning
@@ -25022,8 +26286,10 @@ public static class GCSettings // TypeDefIndex: 1198
 // Namespace: System.Runtime
 public sealed class MemoryFailPoint : CriticalFinalizerObject, IDisposable // TypeDefIndex: 1199
 {
+	// Constructors
+	public MemoryFailPoint(int sizeInMegabytes); // 0x002C412C
+
 	// Methods
-	public void .ctor(int sizeInMegabytes); // 0x002C412C
 	protected override void Finalize(); // 0x002C41C4
 	public void Dispose(); // 0x002C41CC
 }
@@ -25074,8 +26340,9 @@ public abstract class AccessRule : AuthorizationRule // TypeDefIndex: 1204
 	// Properties
 	public AccessControlType AccessControlType { get; } // 0x00210984 
 
-	// Methods
-	protected void .ctor(IdentityReference identity, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x002106CC
+	// Constructors
+	protected AccessRule(IdentityReference identity, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x002106CC
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25089,8 +26356,10 @@ public sealed class AceEnumerator : IEnumerator // TypeDefIndex: 1205
 	private object System.Collections.IEnumerator.Current { get; } // 0x002109B8 
 	public GenericAce Current { get; } // 0x002109BC 
 
+	// Constructors
+	internal AceEnumerator(GenericAcl owner); // 0x0021098C
+
 	// Methods
-	internal void .ctor(GenericAcl owner); // 0x0021098C
 	public bool MoveNext(); // 0x00210A08
 	public void Reset(); // 0x00210A64
 }
@@ -25159,8 +26428,9 @@ public abstract class AuditRule : AuthorizationRule // TypeDefIndex: 1210
 	// Properties
 	public AuditFlags AuditFlags { get; } // 0x00210BAC 
 
-	// Methods
-	protected void .ctor(IdentityReference identity, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AuditFlags auditFlags); // 0x00210A70
+	// Constructors
+	protected AuditRule(IdentityReference identity, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AuditFlags auditFlags); // 0x00210A70
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25180,9 +26450,10 @@ public abstract class AuthorizationRule // TypeDefIndex: 1211
 	public PropagationFlags PropagationFlags { get; } // 0x00210BD4 
 	protected internal int AccessMask { get; } // 0x00210BDC 
 
-	// Methods
-	internal void .ctor(); // 0x00210BB4
-	protected internal void .ctor(IdentityReference identity, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags); // 0x00210854
+	// Constructors
+	internal AuthorizationRule(); // 0x00210BB4
+	protected internal AuthorizationRule(IdentityReference identity, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags); // 0x00210854
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25191,8 +26462,10 @@ public sealed class AuthorizationRuleCollection : ReadOnlyCollectionBase // Type
 	// Properties
 	public AuthorizationRule Item { get; } // 0x00210C2C 
 
+	// Constructors
+	private AuthorizationRuleCollection(AuthorizationRule[] rules); // 0x00210BE4
+
 	// Methods
-	private void .ctor(AuthorizationRule[] rules); // 0x00210BE4
 	public void CopyTo(AuthorizationRule[] rules, int index); // 0x00210CFC
 }
 
@@ -25202,8 +26475,10 @@ public sealed class CommonAce : QualifiedAce // TypeDefIndex: 1213
 	// Properties
 	public override int BinaryLength { get; } // 0x00210D8C 
 
+	// Constructors
+	public CommonAce(AceFlags flags, AceQualifier qualifier, int accessMask, SecurityIdentifier sid, bool isCallback, byte[] opaque); // 0x00210D40
+
 	// Methods
-	public void .ctor(AceFlags flags, AceQualifier qualifier, int accessMask, SecurityIdentifier sid, bool isCallback, byte[] opaque); // 0x00210D40
 	public override void GetBinaryForm(byte[] binaryForm, int offset); // 0x00210E14
 	public static int MaxOpaqueLength(bool isCallback); // 0x00210E9C
 }
@@ -25227,9 +26502,11 @@ public abstract class CommonAcl : GenericAcl // TypeDefIndex: 1214
 	public sealed override GenericAce Item { get; set; } // 0x002111A0 0x00211220
 	public sealed override byte Revision { get; } // 0x002112A8 
 
+	// Constructors
+	internal CommonAcl(bool isContainer, bool isDS, byte revision); // 0x00210F24
+	internal CommonAcl(bool isContainer, bool isDS, byte revision, int capacity); // 0x00210F44
+
 	// Methods
-	internal void .ctor(bool isContainer, bool isDS, byte revision); // 0x00210F24
-	internal void .ctor(bool isContainer, bool isDS, byte revision, int capacity); // 0x00210F44
 	public sealed override void GetBinaryForm(byte[] binaryForm, int offset); // 0x002112B0
 	public void Purge(SecurityIdentifier sid); // 0x00211338
 	public void RemoveInheritedAces(); // 0x002113C0
@@ -25242,8 +26519,10 @@ public abstract class CommonObjectSecurity : ObjectSecurity // TypeDefIndex: 121
 	private List`1<AccessRule> access_rules; // 0x10
 	private List`1<AuditRule> audit_rules; // 0x14
 
+	// Constructors
+	protected CommonObjectSecurity(bool isContainer); // 0x00211448
+
 	// Methods
-	protected void .ctor(bool isContainer); // 0x00211448
 	public AuthorizationRuleCollection GetAccessRules(bool includeExplicit, bool includeInherited, Type targetType); // 0x00211514
 	public AuthorizationRuleCollection GetAuditRules(bool includeExplicit, bool includeInherited, Type targetType); // 0x0021159C
 	protected void AddAccessRule(AccessRule rule); // 0x00211624
@@ -25284,11 +26563,13 @@ public sealed class CommonSecurityDescriptor : GenericSecurityDescriptor // Type
 	public override SecurityIdentifier Owner { get; set; } // 0x0042BECC 0x0042BED4
 	public SystemAcl SystemAcl { get; set; } // 0x0042BEDC 0x0042BEE4
 
+	// Constructors
+	public CommonSecurityDescriptor(bool isContainer, bool isDS, RawSecurityDescriptor rawSecurityDescriptor); // 0x0042BAE4
+	public CommonSecurityDescriptor(bool isContainer, bool isDS, string sddlForm); // 0x0042BB84
+	public CommonSecurityDescriptor(bool isContainer, bool isDS, byte[] binaryForm, int offset); // 0x0042BC1C
+	public CommonSecurityDescriptor(bool isContainer, bool isDS, ControlFlags flags, SecurityIdentifier owner, SecurityIdentifier group, SystemAcl systemAcl, DiscretionaryAcl discretionaryAcl); // 0x0042BCB4
+
 	// Methods
-	public void .ctor(bool isContainer, bool isDS, RawSecurityDescriptor rawSecurityDescriptor); // 0x0042BAE4
-	public void .ctor(bool isContainer, bool isDS, string sddlForm); // 0x0042BB84
-	public void .ctor(bool isContainer, bool isDS, byte[] binaryForm, int offset); // 0x0042BC1C
-	public void .ctor(bool isContainer, bool isDS, ControlFlags flags, SecurityIdentifier owner, SecurityIdentifier group, SystemAcl systemAcl, DiscretionaryAcl discretionaryAcl); // 0x0042BCB4
 	public void PurgeAccessControl(SecurityIdentifier sid); // 0x0042BEEC
 	public void PurgeAudit(SecurityIdentifier sid); // 0x0042BF74
 	public void SetDiscretionaryAclProtection(bool isProtected, bool preserveInheritance); // 0x0042BFFC
@@ -25305,8 +26586,10 @@ public sealed class CompoundAce : KnownAce // TypeDefIndex: 1217
 	public override int BinaryLength { get; } // 0x0042C178 
 	public CompoundAceType CompoundAceType { get; set; } // 0x0042C200 0x0042C208
 
+	// Constructors
+	public CompoundAce(AceFlags flags, int accessMask, CompoundAceType compoundAceType, SecurityIdentifier sid); // 0x0042C10C
+
 	// Methods
-	public void .ctor(AceFlags flags, int accessMask, CompoundAceType compoundAceType, SecurityIdentifier sid); // 0x0042C10C
 	public override void GetBinaryForm(byte[] binaryForm, int offset); // 0x0042C210
 }
 
@@ -25347,9 +26630,10 @@ public sealed class CryptoKeyAccessRule : AccessRule // TypeDefIndex: 1220
 	// Properties
 	public CryptoKeyRights CryptoKeyRights { get; } // 0x0042C388 
 
-	// Methods
-	public void .ctor(IdentityReference identity, CryptoKeyRights cryptoKeyRights, AccessControlType type); // 0x0042C298
-	public void .ctor(string identity, CryptoKeyRights cryptoKeyRights, AccessControlType type); // 0x0042C2DC
+	// Constructors
+	public CryptoKeyAccessRule(IdentityReference identity, CryptoKeyRights cryptoKeyRights, AccessControlType type); // 0x0042C298
+	public CryptoKeyAccessRule(string identity, CryptoKeyRights cryptoKeyRights, AccessControlType type); // 0x0042C2DC
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25361,9 +26645,10 @@ public sealed class CryptoKeyAuditRule : AuditRule // TypeDefIndex: 1221
 	// Properties
 	public CryptoKeyRights CryptoKeyRights { get; } // 0x0042C47C 
 
-	// Methods
-	public void .ctor(IdentityReference identity, CryptoKeyRights cryptoKeyRights, AuditFlags flags); // 0x0042C390
-	public void .ctor(string identity, CryptoKeyRights cryptoKeyRights, AuditFlags flags); // 0x0042C3D0
+	// Constructors
+	public CryptoKeyAuditRule(IdentityReference identity, CryptoKeyRights cryptoKeyRights, AuditFlags flags); // 0x0042C390
+	public CryptoKeyAuditRule(string identity, CryptoKeyRights cryptoKeyRights, AuditFlags flags); // 0x0042C3D0
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25395,9 +26680,11 @@ public sealed class CryptoKeySecurity : NativeObjectSecurity // TypeDefIndex: 12
 	public override Type AccessRuleType { get; } // 0x0042C538 
 	public override Type AuditRuleType { get; } // 0x0042C5C8 
 
+	// Constructors
+	public CryptoKeySecurity(); // 0x0042C484
+	public CryptoKeySecurity(CommonSecurityDescriptor securityDescriptor); // 0x0042C49C
+
 	// Methods
-	public void .ctor(); // 0x0042C484
-	public void .ctor(CommonSecurityDescriptor securityDescriptor); // 0x0042C49C
 	public sealed override AccessRule AccessRuleFactory(IdentityReference identityReference, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x0042C658
 	public void AddAccessRule(CryptoKeyAccessRule rule); // 0x0042C6F8
 	public bool RemoveAccessRule(CryptoKeyAccessRule rule); // 0x0042C780
@@ -25424,8 +26711,10 @@ public sealed class CustomAce : GenericAce // TypeDefIndex: 1224
 	public override int BinaryLength { get; } // 0x0042CF60 
 	public int OpaqueLength { get; } // 0x0042CFE8 
 
+	// Constructors
+	public CustomAce(AceType type, AceFlags flags, byte[] opaque); // 0x0042CD70
+
 	// Methods
-	public void .ctor(AceType type, AceFlags flags, byte[] opaque); // 0x0042CD70
 	public override void GetBinaryForm(byte[] binaryForm, int offset); // 0x0042D00C
 	public byte[] GetOpaque(); // 0x0042D094
 	public void SetOpaque(byte[] opaque); // 0x0042CE58
@@ -25434,9 +26723,11 @@ public sealed class CustomAce : GenericAce // TypeDefIndex: 1224
 // Namespace: System.Security.AccessControl
 public abstract class DirectoryObjectSecurity : ObjectSecurity // TypeDefIndex: 1225
 {
+	// Constructors
+	protected DirectoryObjectSecurity(); // 0x0042D14C
+	protected DirectoryObjectSecurity(CommonSecurityDescriptor securityDescriptor); // 0x0042D194
+
 	// Methods
-	protected void .ctor(); // 0x0042D14C
-	protected void .ctor(CommonSecurityDescriptor securityDescriptor); // 0x0042D194
 	public virtual AccessRule AccessRuleFactory(IdentityReference identityReference, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type, Guid objectType, Guid inheritedObjectType); // 0x0042D274
 	public virtual AuditRule AuditRuleFactory(IdentityReference identityReference, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AuditFlags flags, Guid objectType, Guid inheritedObjectType); // 0x0042D2FC
 	public AuthorizationRuleCollection GetAccessRules(bool includeExplicit, bool includeInherited, Type targetType); // 0x0042D384
@@ -25459,18 +26750,21 @@ public abstract class DirectoryObjectSecurity : ObjectSecurity // TypeDefIndex: 
 // Namespace: System.Security.AccessControl
 public sealed class DirectorySecurity : FileSystemSecurity // TypeDefIndex: 1226
 {
-	// Methods
-	public void .ctor(); // 0x0042DB7C
-	public void .ctor(string name, AccessControlSections includeSections); // 0x0042DC20
+	// Constructors
+	public DirectorySecurity(); // 0x0042DB7C
+	public DirectorySecurity(string name, AccessControlSections includeSections); // 0x0042DC20
+
 }
 
 // Namespace: System.Security.AccessControl
 public sealed class DiscretionaryAcl : CommonAcl // TypeDefIndex: 1227
 {
+	// Constructors
+	public DiscretionaryAcl(bool isContainer, bool isDS, int capacity); // 0x0042DCC4
+	public DiscretionaryAcl(bool isContainer, bool isDS, RawAcl rawAcl); // 0x0042DDA4
+	public DiscretionaryAcl(bool isContainer, bool isDS, byte revision, int capacity); // 0x0042DD80
+
 	// Methods
-	public void .ctor(bool isContainer, bool isDS, int capacity); // 0x0042DCC4
-	public void .ctor(bool isContainer, bool isDS, RawAcl rawAcl); // 0x0042DDA4
-	public void .ctor(bool isContainer, bool isDS, byte revision, int capacity); // 0x0042DD80
 	public void AddAccess(AccessControlType accessType, SecurityIdentifier sid, int accessMask, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags); // 0x0042DDC8
 	public void AddAccess(AccessControlType accessType, SecurityIdentifier sid, int accessMask, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, ObjectAceFlags objectFlags, Guid objectType, Guid inheritedObjectType); // 0x0042DE50
 	public bool RemoveAccess(AccessControlType accessType, SecurityIdentifier sid, int accessMask, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags); // 0x0042DED8
@@ -25490,9 +26784,10 @@ public sealed class EventWaitHandleAccessRule : AccessRule // TypeDefIndex: 1228
 	// Properties
 	public EventWaitHandleRights EventWaitHandleRights { get; } // 0x0042E2F8 
 
-	// Methods
-	public void .ctor(IdentityReference identity, EventWaitHandleRights eventRights, AccessControlType type); // 0x0042E208
-	public void .ctor(string identity, EventWaitHandleRights eventRights, AccessControlType type); // 0x0042E24C
+	// Constructors
+	public EventWaitHandleAccessRule(IdentityReference identity, EventWaitHandleRights eventRights, AccessControlType type); // 0x0042E208
+	public EventWaitHandleAccessRule(string identity, EventWaitHandleRights eventRights, AccessControlType type); // 0x0042E24C
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25504,8 +26799,9 @@ public sealed class EventWaitHandleAuditRule : AuditRule // TypeDefIndex: 1229
 	// Properties
 	public EventWaitHandleRights EventWaitHandleRights { get; } // 0x0042E54C 
 
-	// Methods
-	public void .ctor(IdentityReference identity, EventWaitHandleRights eventRights, AuditFlags flags); // 0x0042E300
+	// Constructors
+	public EventWaitHandleAuditRule(IdentityReference identity, EventWaitHandleRights eventRights, AuditFlags flags); // 0x0042E300
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25528,8 +26824,10 @@ public sealed class EventWaitHandleSecurity : NativeObjectSecurity // TypeDefInd
 	public override Type AccessRuleType { get; } // 0x0042E678 
 	public override Type AuditRuleType { get; } // 0x0042E708 
 
+	// Constructors
+	public EventWaitHandleSecurity(); // 0x0042E554
+
 	// Methods
-	public void .ctor(); // 0x0042E554
 	public override AccessRule AccessRuleFactory(IdentityReference identityReference, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x0042E798
 	public void AddAccessRule(EventWaitHandleAccessRule rule); // 0x0042E838
 	public bool RemoveAccessRule(EventWaitHandleAccessRule rule); // 0x0042E8C0
@@ -25548,9 +26846,10 @@ public sealed class EventWaitHandleSecurity : NativeObjectSecurity // TypeDefInd
 // Namespace: System.Security.AccessControl
 public sealed class FileSecurity : FileSystemSecurity // TypeDefIndex: 1232
 {
-	// Methods
-	public void .ctor(); // 0x0042EE98
-	public void .ctor(string fileName, AccessControlSections includeSections); // 0x0042EF34
+	// Constructors
+	public FileSecurity(); // 0x0042EE98
+	public FileSecurity(string fileName, AccessControlSections includeSections); // 0x0042EF34
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25562,11 +26861,12 @@ public sealed class FileSystemAccessRule : AccessRule // TypeDefIndex: 1233
 	// Properties
 	public FileSystemRights FileSystemRights { get; } // 0x0042F1B4 
 
-	// Methods
-	public void .ctor(IdentityReference identity, FileSystemRights fileSystemRights, AccessControlType type); // 0x0042EFD0
-	public void .ctor(string identity, FileSystemRights fileSystemRights, AccessControlType type); // 0x0042F054
-	public void .ctor(IdentityReference identity, FileSystemRights fileSystemRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x0042F00C
-	public void .ctor(string identity, FileSystemRights fileSystemRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x0042F100
+	// Constructors
+	public FileSystemAccessRule(IdentityReference identity, FileSystemRights fileSystemRights, AccessControlType type); // 0x0042EFD0
+	public FileSystemAccessRule(string identity, FileSystemRights fileSystemRights, AccessControlType type); // 0x0042F054
+	public FileSystemAccessRule(IdentityReference identity, FileSystemRights fileSystemRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x0042F00C
+	public FileSystemAccessRule(string identity, FileSystemRights fileSystemRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x0042F100
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25578,11 +26878,12 @@ public sealed class FileSystemAuditRule : AuditRule // TypeDefIndex: 1234
 	// Properties
 	public FileSystemRights FileSystemRights { get; } // 0x0042F3A4 
 
-	// Methods
-	public void .ctor(IdentityReference identity, FileSystemRights fileSystemRights, AuditFlags flags); // 0x0042F1BC
-	public void .ctor(string identity, FileSystemRights fileSystemRights, AuditFlags flags); // 0x0042F244
-	public void .ctor(IdentityReference identity, FileSystemRights fileSystemRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AuditFlags flags); // 0x0042F1FC
-	public void .ctor(string identity, FileSystemRights fileSystemRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AuditFlags flags); // 0x0042F2F0
+	// Constructors
+	public FileSystemAuditRule(IdentityReference identity, FileSystemRights fileSystemRights, AuditFlags flags); // 0x0042F1BC
+	public FileSystemAuditRule(string identity, FileSystemRights fileSystemRights, AuditFlags flags); // 0x0042F244
+	public FileSystemAuditRule(IdentityReference identity, FileSystemRights fileSystemRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AuditFlags flags); // 0x0042F1FC
+	public FileSystemAuditRule(string identity, FileSystemRights fileSystemRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AuditFlags flags); // 0x0042F2F0
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25621,9 +26922,11 @@ public abstract class FileSystemSecurity : NativeObjectSecurity // TypeDefIndex:
 	public override Type AccessRuleType { get; } // 0x0042F44C 
 	public override Type AuditRuleType { get; } // 0x0042F4DC 
 
+	// Constructors
+	internal FileSystemSecurity(bool isContainer); // 0x0042DC18
+	internal FileSystemSecurity(bool isContainer, string name, AccessControlSections includeSections); // 0x0042DCBC
+
 	// Methods
-	internal void .ctor(bool isContainer); // 0x0042DC18
-	internal void .ctor(bool isContainer, string name, AccessControlSections includeSections); // 0x0042DCBC
 	public sealed override AccessRule AccessRuleFactory(IdentityReference identityReference, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x0042F56C
 	public void AddAccessRule(FileSystemAccessRule rule); // 0x0042F614
 	public bool RemoveAccessRule(FileSystemAccessRule rule); // 0x0042F69C
@@ -25657,9 +26960,11 @@ public abstract class GenericAce // TypeDefIndex: 1237
 	public bool IsInherited { get; } // 0x0042FCF0 
 	public PropagationFlags PropagationFlags { get; } // 0x0042FCF8 
 
+	// Constructors
+	internal GenericAce(InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags); // 0x0042FC94
+	internal GenericAce(AceType type); // 0x0042CD9C
+
 	// Methods
-	internal void .ctor(InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags); // 0x0042FC94
-	internal void .ctor(AceType type); // 0x0042CD9C
 	public GenericAce Copy(); // 0x0042FD00
 	public static GenericAce CreateFromBinaryForm(byte[] binaryForm, int offset); // 0x0042FD88
 	public sealed override bool Equals(object o); // 0x0042FE10
@@ -25685,9 +26990,11 @@ public abstract class GenericAcl : IEnumerable, ICollection // TypeDefIndex: 123
 	public abstract byte Revision { get; }
 	public object SyncRoot { get; } // 0x004303D0 
 
+	// Constructors
+	protected GenericAcl(); // 0x00430030
+	private static GenericAcl(); // 0x00430038
+
 	// Methods
-	protected void .ctor(); // 0x00430030
-	private static void .cctor(); // 0x00430038
 	private void System.Collections.ICollection.CopyTo(Array array, int index); // 0x004300C0
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x00430350
 	public void CopyTo(GenericAce[] array, int index); // 0x00430164
@@ -25705,8 +27012,10 @@ public abstract class GenericSecurityDescriptor // TypeDefIndex: 1239
 	public abstract SecurityIdentifier Owner { get; set; }
 	public static byte Revision { get; } // 0x0043045C 
 
+	// Constructors
+	protected GenericSecurityDescriptor(); // 0x0042BB7C
+
 	// Methods
-	protected void .ctor(); // 0x0042BB7C
 	public void GetBinaryForm(byte[] binaryForm, int offset); // 0x004304E4
 	public string GetSddlForm(AccessControlSections includeSections); // 0x0043056C
 	public static bool IsSddlConversionSupported(); // 0x004305F4
@@ -25731,8 +27040,9 @@ public abstract class KnownAce : GenericAce // TypeDefIndex: 1241
 	public int AccessMask { get; set; } // 0x0043067C 0x00430684
 	public SecurityIdentifier SecurityIdentifier { get; set; } // 0x0043068C 0x00430694
 
-	// Methods
-	internal void .ctor(InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags); // 0x0042C150
+	// Constructors
+	internal KnownAce(InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags); // 0x0042C150
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25744,9 +27054,10 @@ public sealed class MutexAccessRule : AccessRule // TypeDefIndex: 1242
 	// Properties
 	public MutexRights MutexRights { get; } // 0x00430788 
 
-	// Methods
-	public void .ctor(IdentityReference identity, MutexRights eventRights, AccessControlType type); // 0x0043069C
-	public void .ctor(string identity, MutexRights eventRights, AccessControlType type); // 0x004306DC
+	// Constructors
+	public MutexAccessRule(IdentityReference identity, MutexRights eventRights, AccessControlType type); // 0x0043069C
+	public MutexAccessRule(string identity, MutexRights eventRights, AccessControlType type); // 0x004306DC
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25758,8 +27069,9 @@ public sealed class MutexAuditRule : AuditRule // TypeDefIndex: 1243
 	// Properties
 	public MutexRights MutexRights { get; } // 0x004307D0 
 
-	// Methods
-	public void .ctor(IdentityReference identity, MutexRights eventRights, AuditFlags flags); // 0x00430790
+	// Constructors
+	public MutexAuditRule(IdentityReference identity, MutexRights eventRights, AuditFlags flags); // 0x00430790
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25782,9 +27094,11 @@ public sealed class MutexSecurity : NativeObjectSecurity // TypeDefIndex: 1245
 	public override Type AccessRuleType { get; } // 0x00430880 
 	public override Type AuditRuleType { get; } // 0x00430910 
 
+	// Constructors
+	public MutexSecurity(); // 0x004307D8
+	public MutexSecurity(string name, AccessControlSections includeSections); // 0x004307E4
+
 	// Methods
-	public void .ctor(); // 0x004307D8
-	public void .ctor(string name, AccessControlSections includeSections); // 0x004307E4
 	public override AccessRule AccessRuleFactory(IdentityReference identityReference, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x004309A0
 	public void AddAccessRule(MutexAccessRule rule); // 0x00430A40
 	public bool RemoveAccessRule(MutexAccessRule rule); // 0x00430AC8
@@ -25803,14 +27117,16 @@ public sealed class MutexSecurity : NativeObjectSecurity // TypeDefIndex: 1245
 // Namespace: System.Security.AccessControl
 public abstract class NativeObjectSecurity : CommonObjectSecurity // TypeDefIndex: 1246
 {
+	// Constructors
+	internal NativeObjectSecurity(); // 0x0042C490
+	protected NativeObjectSecurity(bool isContainer, ResourceType resourceType); // 0x0042F3AC
+	protected NativeObjectSecurity(bool isContainer, ResourceType resourceType, ExceptionFromErrorCode exceptionFromErrorCode, object exceptionContext); // 0x004310B8
+	protected NativeObjectSecurity(bool isContainer, ResourceType resourceType, SafeHandle handle, AccessControlSections includeSections); // 0x004310C0
+	protected NativeObjectSecurity(bool isContainer, ResourceType resourceType, string name, AccessControlSections includeSections); // 0x0042F3B4
+	protected NativeObjectSecurity(bool isContainer, ResourceType resourceType, SafeHandle handle, AccessControlSections includeSections, ExceptionFromErrorCode exceptionFromErrorCode, object exceptionContext); // 0x004310C8
+	protected NativeObjectSecurity(bool isContainer, ResourceType resourceType, string name, AccessControlSections includeSections, ExceptionFromErrorCode exceptionFromErrorCode, object exceptionContext); // 0x004310D0
+
 	// Methods
-	internal void .ctor(); // 0x0042C490
-	protected void .ctor(bool isContainer, ResourceType resourceType); // 0x0042F3AC
-	protected void .ctor(bool isContainer, ResourceType resourceType, ExceptionFromErrorCode exceptionFromErrorCode, object exceptionContext); // 0x004310B8
-	protected void .ctor(bool isContainer, ResourceType resourceType, SafeHandle handle, AccessControlSections includeSections); // 0x004310C0
-	protected void .ctor(bool isContainer, ResourceType resourceType, string name, AccessControlSections includeSections); // 0x0042F3B4
-	protected void .ctor(bool isContainer, ResourceType resourceType, SafeHandle handle, AccessControlSections includeSections, ExceptionFromErrorCode exceptionFromErrorCode, object exceptionContext); // 0x004310C8
-	protected void .ctor(bool isContainer, ResourceType resourceType, string name, AccessControlSections includeSections, ExceptionFromErrorCode exceptionFromErrorCode, object exceptionContext); // 0x004310D0
 	protected sealed override void Persist(SafeHandle handle, AccessControlSections includeSections); // 0x004310D8
 	protected sealed override void Persist(string name, AccessControlSections includeSections); // 0x00431160
 	protected void Persist(SafeHandle handle, AccessControlSections includeSections, object exceptionContext); // 0x004311E8
@@ -25832,8 +27148,9 @@ public abstract class ObjectAccessRule : AccessRule // TypeDefIndex: 1248
 	public ObjectAceFlags ObjectFlags { get; } // 0x00431698 
 	public Guid ObjectType { get; } // 0x004317E0 
 
-	// Methods
-	protected void .ctor(IdentityReference identity, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, Guid objectType, Guid inheritedObjectType, AccessControlType type); // 0x0043161C
+	// Constructors
+	protected ObjectAccessRule(IdentityReference identity, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, Guid objectType, Guid inheritedObjectType, AccessControlType type); // 0x0043161C
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25850,8 +27167,10 @@ public sealed class ObjectAce : QualifiedAce // TypeDefIndex: 1249
 	public ObjectAceFlags ObjectAceFlags { get; set; } // 0x00431964 0x0043196C
 	public Guid ObjectAceType { get; set; } // 0x00431974 0x00431984
 
+	// Constructors
+	public ObjectAce(AceFlags aceFlags, AceQualifier qualifier, int accessMask, SecurityIdentifier sid, ObjectAceFlags flags, Guid type, Guid inheritedType, bool isCallback, byte[] opaque); // 0x004317F0
+
 	// Methods
-	public void .ctor(AceFlags aceFlags, AceQualifier qualifier, int accessMask, SecurityIdentifier sid, ObjectAceFlags flags, Guid type, Guid inheritedType, bool isCallback, byte[] opaque); // 0x004317F0
 	public override void GetBinaryForm(byte[] binaryForm, int offset); // 0x00431994
 	public static int MaxOpaqueLength(bool isCallback); // 0x00431A1C
 }
@@ -25876,8 +27195,9 @@ public abstract class ObjectAuditRule : AuditRule // TypeDefIndex: 1251
 	public ObjectAceFlags ObjectFlags { get; } // 0x00431B24 
 	public Guid ObjectType { get; } // 0x00431C6C 
 
-	// Methods
-	protected void .ctor(IdentityReference identity, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, Guid objectType, Guid inheritedObjectType, AuditFlags auditFlags); // 0x00431AA4
+	// Constructors
+	protected ObjectAuditRule(IdentityReference identity, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, Guid objectType, Guid inheritedObjectType, AuditFlags auditFlags); // 0x00431AA4
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -25906,9 +27226,11 @@ public abstract class ObjectSecurity // TypeDefIndex: 1252
 	protected bool IsDS { get; } // 0x00431EDC 
 	protected bool OwnerModified { get; set; } // 0x00431EE4 0x00431EEC
 
+	// Constructors
+	internal ObjectSecurity(); // 0x00431C7C
+	protected ObjectSecurity(bool isContainer, bool isDS); // 0x0042D16C
+
 	// Methods
-	internal void .ctor(); // 0x00431C7C
-	protected void .ctor(bool isContainer, bool isDS); // 0x0042D16C
 	public abstract AccessRule AccessRuleFactory(IdentityReference identityReference, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type);
 	public abstract AuditRule AuditRuleFactory(IdentityReference identityReference, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AuditFlags flags);
 	public IdentityReference GetGroup(Type targetType); // 0x00431EF4
@@ -25946,10 +27268,12 @@ public sealed class PrivilegeNotHeldException : UnauthorizedAccessException, ISe
 	// Properties
 	public string PrivilegeName { get; } // 0x00432BCC 
 
+	// Constructors
+	public PrivilegeNotHeldException(); // 0x00432BB4
+	public PrivilegeNotHeldException(string privilege); // 0x00432BBC
+	public PrivilegeNotHeldException(string privilege, Exception inner); // 0x00432BC4
+
 	// Methods
-	public void .ctor(); // 0x00432BB4
-	public void .ctor(string privilege); // 0x00432BBC
-	public void .ctor(string privilege, Exception inner); // 0x00432BC4
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x00432C54
 }
 
@@ -25974,8 +27298,10 @@ public abstract class QualifiedAce : KnownAce // TypeDefIndex: 1255
 	public bool IsCallback { get; } // 0x00432DEC 
 	public int OpaqueLength { get; } // 0x00432DF4 
 
+	// Constructors
+	internal QualifiedAce(InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AceQualifier aceQualifier, bool isCallback, byte[] opaque); // 0x00431878
+
 	// Methods
-	internal void .ctor(InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AceQualifier aceQualifier, bool isCallback, byte[] opaque); // 0x00431878
 	public byte[] GetOpaque(); // 0x00432E18
 	public void SetOpaque(byte[] opaque); // 0x00432CDC
 }
@@ -25993,9 +27319,11 @@ public sealed class RawAcl : GenericAcl // TypeDefIndex: 1256
 	public override GenericAce Item { get; set; } // 0x00433090 0x00433110
 	public override byte Revision { get; } // 0x00433198 
 
+	// Constructors
+	public RawAcl(byte revision, int capacity); // 0x00432ED0
+	public RawAcl(byte[] binaryForm, int offset); // 0x00432F98
+
 	// Methods
-	public void .ctor(byte revision, int capacity); // 0x00432ED0
-	public void .ctor(byte[] binaryForm, int offset); // 0x00432F98
 	public override void GetBinaryForm(byte[] binaryForm, int offset); // 0x004331A0
 	public void InsertAce(int index, GenericAce ace); // 0x00433228
 	public void RemoveAce(int index); // 0x00433274
@@ -26012,10 +27340,12 @@ public sealed class RawSecurityDescriptor : GenericSecurityDescriptor // TypeDef
 	public byte ResourceManagerControl { get; set; } // 0x004336C4 0x0043374C
 	public RawAcl SystemAcl { get; set; } // 0x004337D4 0x0043385C
 
+	// Constructors
+	public RawSecurityDescriptor(string sddlForm); // 0x004332F4
+	public RawSecurityDescriptor(byte[] binaryForm, int offset); // 0x004332FC
+	public RawSecurityDescriptor(ControlFlags flags, SecurityIdentifier owner, SecurityIdentifier group, RawAcl systemAcl, RawAcl discretionaryAcl); // 0x00433304
+
 	// Methods
-	public void .ctor(string sddlForm); // 0x004332F4
-	public void .ctor(byte[] binaryForm, int offset); // 0x004332FC
-	public void .ctor(ControlFlags flags, SecurityIdentifier owner, SecurityIdentifier group, RawAcl systemAcl, RawAcl discretionaryAcl); // 0x00433304
 	public void SetFlags(ControlFlags flags); // 0x004338E4
 }
 
@@ -26028,11 +27358,12 @@ public sealed class RegistryAccessRule : AccessRule // TypeDefIndex: 1258
 	// Properties
 	public RegistryRights RegistryRights { get; } // 0x00433B54 
 
-	// Methods
-	public void .ctor(IdentityReference identity, RegistryRights registryRights, AccessControlType type); // 0x0043396C
-	public void .ctor(string identity, RegistryRights registryRights, AccessControlType type); // 0x004339F4
-	public void .ctor(IdentityReference identity, RegistryRights registryRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x004339AC
-	public void .ctor(string identity, RegistryRights registryRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x00433AA0
+	// Constructors
+	public RegistryAccessRule(IdentityReference identity, RegistryRights registryRights, AccessControlType type); // 0x0043396C
+	public RegistryAccessRule(string identity, RegistryRights registryRights, AccessControlType type); // 0x004339F4
+	public RegistryAccessRule(IdentityReference identity, RegistryRights registryRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x004339AC
+	public RegistryAccessRule(string identity, RegistryRights registryRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x00433AA0
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -26044,9 +27375,10 @@ public sealed class RegistryAuditRule : AuditRule // TypeDefIndex: 1259
 	// Properties
 	public RegistryRights RegistryRights { get; } // 0x00433C58 
 
-	// Methods
-	public void .ctor(IdentityReference identity, RegistryRights registryRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AuditFlags flags); // 0x00433B5C
-	public void .ctor(string identity, RegistryRights registryRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AuditFlags flags); // 0x00433BA4
+	// Constructors
+	public RegistryAuditRule(IdentityReference identity, RegistryRights registryRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AuditFlags flags); // 0x00433B5C
+	public RegistryAuditRule(string identity, RegistryRights registryRights, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AuditFlags flags); // 0x00433BA4
+
 }
 
 // Namespace: System.Security.AccessControl
@@ -26076,8 +27408,10 @@ public sealed class RegistrySecurity : NativeObjectSecurity // TypeDefIndex: 126
 	public override Type AccessRuleType { get; } // 0x00433CFC 
 	public override Type AuditRuleType { get; } // 0x00433D8C 
 
+	// Constructors
+	public RegistrySecurity(); // 0x00433C60
+
 	// Methods
-	public void .ctor(); // 0x00433C60
 	public override AccessRule AccessRuleFactory(IdentityReference identityReference, int accessMask, bool isInherited, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, AccessControlType type); // 0x00433E1C
 	public void AddAccessRule(RegistryAccessRule rule); // 0x00433EC4
 	public void AddAuditRule(RegistryAuditRule rule); // 0x00433F4C
@@ -26123,10 +27457,12 @@ public enum SecurityInfos // TypeDefIndex: 1263
 // Namespace: System.Security.AccessControl
 public sealed class SystemAcl : CommonAcl // TypeDefIndex: 1264
 {
+	// Constructors
+	public SystemAcl(bool isContainer, bool isDS, int capacity); // 0x00434544
+	public SystemAcl(bool isContainer, bool isDS, RawAcl rawAcl); // 0x0043458C
+	public SystemAcl(bool isContainer, bool isDS, byte revision, int capacity); // 0x00434568
+
 	// Methods
-	public void .ctor(bool isContainer, bool isDS, int capacity); // 0x00434544
-	public void .ctor(bool isContainer, bool isDS, RawAcl rawAcl); // 0x0043458C
-	public void .ctor(bool isContainer, bool isDS, byte revision, int capacity); // 0x00434568
 	public void AddAudit(AuditFlags auditFlags, SecurityIdentifier sid, int accessMask, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags); // 0x004345B4
 	public void AddAudit(AuditFlags auditFlags, SecurityIdentifier sid, int accessMask, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, ObjectAceFlags objectFlags, Guid objectType, Guid inheritedObjectType); // 0x0043463C
 	public bool RemoveAudit(AuditFlags auditFlags, SecurityIdentifier sid, int accessMask, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags); // 0x004346C4
@@ -26153,22 +27489,24 @@ public class X509Certificate : ISerializable, IDeserializationCallback // TypeDe
 	public string Subject { get; } // 0x003D7C30 
 	public IntPtr Handle { get; } // 0x003D7E88 
 
+	// Constructors
+	internal X509Certificate(byte[] data, bool dates); // 0x003D5BD8
+	public X509Certificate(byte[] data); // 0x003D5C34
+	public X509Certificate(IntPtr handle); // 0x003D5C3C
+	public X509Certificate(X509Certificate cert); // 0x003D5D34
+	public X509Certificate(); // 0x003D5E40
+	public X509Certificate(byte[] rawData, string password); // 0x003D5E48
+	public X509Certificate(byte[] rawData, SecureString password); // 0x003D5E94
+	public X509Certificate(byte[] rawData, string password, X509KeyStorageFlags keyStorageFlags); // 0x003D5EE0
+	public X509Certificate(byte[] rawData, SecureString password, X509KeyStorageFlags keyStorageFlags); // 0x003D5F30
+	public X509Certificate(string fileName); // 0x003D5F80
+	public X509Certificate(string fileName, string password); // 0x003D5FC8
+	public X509Certificate(string fileName, SecureString password); // 0x003D6014
+	public X509Certificate(string fileName, string password, X509KeyStorageFlags keyStorageFlags); // 0x003D6060
+	public X509Certificate(string fileName, SecureString password, X509KeyStorageFlags keyStorageFlags); // 0x003D60B0
+	public X509Certificate(SerializationInfo info, StreamingContext context); // 0x003D6100
+
 	// Methods
-	internal void .ctor(byte[] data, bool dates); // 0x003D5BD8
-	public void .ctor(byte[] data); // 0x003D5C34
-	public void .ctor(IntPtr handle); // 0x003D5C3C
-	public void .ctor(X509Certificate cert); // 0x003D5D34
-	public void .ctor(); // 0x003D5E40
-	public void .ctor(byte[] rawData, string password); // 0x003D5E48
-	public void .ctor(byte[] rawData, SecureString password); // 0x003D5E94
-	public void .ctor(byte[] rawData, string password, X509KeyStorageFlags keyStorageFlags); // 0x003D5EE0
-	public void .ctor(byte[] rawData, SecureString password, X509KeyStorageFlags keyStorageFlags); // 0x003D5F30
-	public void .ctor(string fileName); // 0x003D5F80
-	public void .ctor(string fileName, string password); // 0x003D5FC8
-	public void .ctor(string fileName, SecureString password); // 0x003D6014
-	public void .ctor(string fileName, string password, X509KeyStorageFlags keyStorageFlags); // 0x003D6060
-	public void .ctor(string fileName, SecureString password, X509KeyStorageFlags keyStorageFlags); // 0x003D60B0
-	public void .ctor(SerializationInfo info, StreamingContext context); // 0x003D6100
 	private void System.Runtime.Serialization.IDeserializationCallback.OnDeserialization(object sender); // 0x003D624C
 	private void System.Runtime.Serialization.ISerializable.GetObjectData(SerializationInfo info, StreamingContext context); // 0x003D6250
 	private string tostr(byte[] data); // 0x003D62FC
@@ -26260,8 +27598,10 @@ public abstract class AsymmetricAlgorithm : IDisposable // TypeDefIndex: 1269
 	public virtual KeySizes[] LegalKeySizes { get; } // 0x004365F8 
 	public abstract string SignatureAlgorithm { get; }
 
+	// Constructors
+	protected AsymmetricAlgorithm(); // 0x00436414
+
 	// Methods
-	protected void .ctor(); // 0x00436414
 	private void System.IDisposable.Dispose(); // 0x0043641C
 	public void Clear(); // 0x00436600
 	protected abstract void Dispose(bool disposing);
@@ -26278,8 +27618,10 @@ public abstract class AsymmetricKeyExchangeDeformatter // TypeDefIndex: 1270
 	// Properties
 	public abstract string Parameters { get; set; }
 
+	// Constructors
+	protected AsymmetricKeyExchangeDeformatter(); // 0x004369B0
+
 	// Methods
-	protected void .ctor(); // 0x004369B0
 	public abstract byte[] DecryptKeyExchange(byte[] rgb);
 	public abstract void SetKey(AsymmetricAlgorithm key);
 }
@@ -26290,8 +27632,10 @@ public abstract class AsymmetricKeyExchangeFormatter // TypeDefIndex: 1271
 	// Properties
 	public abstract string Parameters { get; }
 
+	// Constructors
+	protected AsymmetricKeyExchangeFormatter(); // 0x004369B8
+
 	// Methods
-	protected void .ctor(); // 0x004369B8
 	public abstract byte[] CreateKeyExchange(byte[] data);
 	public abstract byte[] CreateKeyExchange(byte[] data, Type symAlgType);
 	public abstract void SetKey(AsymmetricAlgorithm key);
@@ -26300,8 +27644,10 @@ public abstract class AsymmetricKeyExchangeFormatter // TypeDefIndex: 1271
 // Namespace: System.Security.Cryptography
 public abstract class AsymmetricSignatureDeformatter // TypeDefIndex: 1272
 {
+	// Constructors
+	protected AsymmetricSignatureDeformatter(); // 0x004369C0
+
 	// Methods
-	protected void .ctor(); // 0x004369C0
 	public abstract void SetHashAlgorithm(string strName);
 	public abstract void SetKey(AsymmetricAlgorithm key);
 	public abstract bool VerifySignature(byte[] rgbHash, byte[] rgbSignature);
@@ -26311,8 +27657,10 @@ public abstract class AsymmetricSignatureDeformatter // TypeDefIndex: 1272
 // Namespace: System.Security.Cryptography
 public abstract class AsymmetricSignatureFormatter // TypeDefIndex: 1273
 {
+	// Constructors
+	protected AsymmetricSignatureFormatter(); // 0x00436AD8
+
 	// Methods
-	protected void .ctor(); // 0x00436AD8
 	public abstract void SetHashAlgorithm(string strName);
 	public abstract void SetKey(AsymmetricAlgorithm key);
 	public abstract byte[] CreateSignature(byte[] rgbHash);
@@ -26326,8 +27674,9 @@ internal static class Base64Constants // TypeDefIndex: 1274
 	public static readonly byte[] EncodeTable; // 0x00
 	public static readonly byte[] DecodeTable; // 0x04
 
-	// Methods
-	private static void .cctor(); // 0x00436BE8
+	// Constructors
+	private static Base64Constants(); // 0x00436BE8
+
 }
 
 // Namespace: System.Security.Cryptography
@@ -26354,8 +27703,10 @@ public sealed class CryptoAPITransform : IDisposable, ICryptoTransform // TypeDe
 	public IntPtr KeyHandle { get; } // 0x00436D1C 
 	public int OutputBlockSize { get; } // 0x00436D6C 
 
+	// Constructors
+	internal CryptoAPITransform(); // 0x00436CB8
+
 	// Methods
-	internal void .ctor(); // 0x00436CB8
 	private void System.IDisposable.Dispose(); // 0x00436CD8
 	public void Clear(); // 0x00436D74
 	private void Dispose(bool disposing); // 0x00436CF0
@@ -26508,9 +27859,11 @@ public class CryptoConfig // TypeDefIndex: 1277
 	private static Hashtable algorithms; // 0x04
 	private static Hashtable oid; // 0x08
 
+	// Constructors
+	public CryptoConfig(); // 0x00436D9C
+	private static CryptoConfig(); // 0x00436DA4
+
 	// Methods
-	public void .ctor(); // 0x00436D9C
-	private static void .cctor(); // 0x00436DA4
 	private static void Initialize(); // 0x00436E24
 	private static void LoadConfig(string filename, Hashtable algorithms, Hashtable oid); // 0x00439270
 	public static object CreateFromName(string name); // 0x00436744
@@ -26530,8 +27883,10 @@ private class CryptoHandler : IContentHandler // TypeDefIndex: 1278
 	private Hashtable classnames; // 0x14
 	private int level; // 0x18
 
+	// Constructors
+	public CryptoHandler(Hashtable algorithms, Hashtable oid); // 0x0043951C
+
 	// Methods
-	public void .ctor(Hashtable algorithms, Hashtable oid); // 0x0043951C
 	public void OnStartParsing(SmallXmlParser parser); // 0x0043A3EC
 	public void OnEndParsing(SmallXmlParser parser); // 0x0043A3F0
 	private string Get(IAttrList attrs, string name); // 0x0043A880
@@ -26569,8 +27924,10 @@ public class CryptoStream : Stream // TypeDefIndex: 1279
 	public override long Length { get; } // 0x0043B844 
 	public override long Position { get; set; } // 0x0043B8E0 0x0043B97C
 
+	// Constructors
+	public CryptoStream(Stream stream, ICryptoTransform transform, CryptoStreamMode mode); // 0x0043B320
+
 	// Methods
-	public void .ctor(Stream stream, ICryptoTransform transform, CryptoStreamMode mode); // 0x0043B320
 	protected override void Finalize(); // 0x0043B7A0
 	public void Clear(); // 0x0043BA18
 	public override void Close(); // 0x0043BA4C
@@ -26595,25 +27952,27 @@ public enum CryptoStreamMode // TypeDefIndex: 1280
 [Serializable]
 public class CryptographicException : SystemException, _Exception // TypeDefIndex: 1281
 {
-	// Methods
-	public void .ctor(); // 0x0043D6D0
-	public void .ctor(int hr); // 0x0043D750
-	public void .ctor(string message); // 0x004365D4
-	public void .ctor(string message, Exception inner); // 0x0043D770
-	public void .ctor(string format, string insert); // 0x0043D794
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0043D840
+	// Constructors
+	public CryptographicException(); // 0x0043D6D0
+	public CryptographicException(int hr); // 0x0043D750
+	public CryptographicException(string message); // 0x004365D4
+	public CryptographicException(string message, Exception inner); // 0x0043D770
+	public CryptographicException(string format, string insert); // 0x0043D794
+	protected CryptographicException(SerializationInfo info, StreamingContext context); // 0x0043D840
+
 }
 
 // Namespace: System.Security.Cryptography
 [Serializable]
 public class CryptographicUnexpectedOperationException : CryptographicException // TypeDefIndex: 1282
 {
-	// Methods
-	public void .ctor(); // 0x0043D860
-	public void .ctor(string message); // 0x0043A1A0
-	public void .ctor(string message, Exception inner); // 0x0043D8E0
-	public void .ctor(string format, string insert); // 0x0043D904
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0043D9B0
+	// Constructors
+	public CryptographicUnexpectedOperationException(); // 0x0043D860
+	public CryptographicUnexpectedOperationException(string message); // 0x0043A1A0
+	public CryptographicUnexpectedOperationException(string message, Exception inner); // 0x0043D8E0
+	public CryptographicUnexpectedOperationException(string format, string insert); // 0x0043D904
+	protected CryptographicUnexpectedOperationException(SerializationInfo info, StreamingContext context); // 0x0043D9B0
+
 }
 
 // Namespace: System.Security.Cryptography
@@ -26638,8 +27997,9 @@ public sealed class CspKeyContainerInfo // TypeDefIndex: 1283
 	public bool Removable { get; } // 0x0043DAC0 
 	public string UniqueKeyContainerName { get; } // 0x0043DAC8 
 
-	// Methods
-	public void .ctor(CspParameters parameters); // 0x0043D9D0
+	// Constructors
+	public CspKeyContainerInfo(CspParameters parameters); // 0x0043D9D0
+
 }
 
 // Namespace: System.Security.Cryptography
@@ -26660,13 +28020,14 @@ public sealed class CspParameters // TypeDefIndex: 1284
 	public SecureString KeyPassword { get; set; } // 0x0043DE20 0x0043DE28
 	public IntPtr ParentWindowHandle { get; set; } // 0x0043DE30 0x0043DE38
 
-	// Methods
-	public void .ctor(); // 0x0043DB98
-	public void .ctor(int dwTypeIn); // 0x0043DBCC
-	public void .ctor(int dwTypeIn, string strProviderNameIn); // 0x0043DC00
-	public void .ctor(int dwTypeIn, string strProviderNameIn, string strContainerNameIn); // 0x0043DC34
-	public void .ctor(int providerType, string providerName, string keyContainerName, CryptoKeySecurity cryptoKeySecurity, IntPtr parentWindowHandle); // 0x0043DC68
-	public void .ctor(int providerType, string providerName, string keyContainerName, CryptoKeySecurity cryptoKeySecurity, SecureString keyPassword); // 0x0043DD3C
+	// Constructors
+	public CspParameters(); // 0x0043DB98
+	public CspParameters(int dwTypeIn); // 0x0043DBCC
+	public CspParameters(int dwTypeIn, string strProviderNameIn); // 0x0043DC00
+	public CspParameters(int dwTypeIn, string strProviderNameIn, string strContainerNameIn); // 0x0043DC34
+	public CspParameters(int providerType, string providerName, string keyContainerName, CryptoKeySecurity cryptoKeySecurity, IntPtr parentWindowHandle); // 0x0043DC68
+	public CspParameters(int providerType, string providerName, string keyContainerName, CryptoKeySecurity cryptoKeySecurity, SecureString keyPassword); // 0x0043DD3C
+
 }
 
 // Namespace: System.Security.Cryptography
@@ -26694,9 +28055,11 @@ public abstract class DES : SymmetricAlgorithm // TypeDefIndex: 1286
 	// Properties
 	public override byte[] Key { get; set; } // 0x0043E8D0 0x0043E9A8
 
+	// Constructors
+	protected DES(); // 0x0043DE40
+	private static DES(); // 0x0043E040
+
 	// Methods
-	protected void .ctor(); // 0x0043DE40
-	private static void .cctor(); // 0x0043E040
 	public static DES Create(); // 0x0043E134
 	public static DES Create(string algName); // 0x0043E1BC
 	public static bool IsWeakKey(byte[] rgbKey); // 0x0043E290
@@ -26721,9 +28084,11 @@ internal class DESTransform : SymmetricTransform // TypeDefIndex: 1287
 	internal static readonly uint[] ipTab; // 0x20
 	internal static readonly uint[] fpTab; // 0x24
 
+	// Constructors
+	internal DESTransform(SymmetricAlgorithm symmAlgo, bool encryption, byte[] key, byte[] iv); // 0x0043ED30
+	private static DESTransform(); // 0x0043F924
+
 	// Methods
-	internal void .ctor(SymmetricAlgorithm symmAlgo, bool encryption, byte[] key, byte[] iv); // 0x0043ED30
-	private static void .cctor(); // 0x0043F924
 	private uint CipherFunct(uint r, int n); // 0x0043FB2C
 	internal static void Permutation(byte[] input, byte[] output, uint[] permTab, bool preSwap); // 0x00440028
 	private static void BSwap(byte[] byteBuff); // 0x00440670
@@ -26736,8 +28101,10 @@ internal class DESTransform : SymmetricTransform // TypeDefIndex: 1287
 // Namespace: System.Security.Cryptography
 public sealed class DESCryptoServiceProvider : DES // TypeDefIndex: 1288
 {
+	// Constructors
+	public DESCryptoServiceProvider(); // 0x0043EC24
+
 	// Methods
-	public void .ctor(); // 0x0043EC24
 	public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV); // 0x0043ECA4
 	public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV); // 0x0043EFF8
 	public override void GenerateIV(); // 0x0043F084
@@ -26747,8 +28114,10 @@ public sealed class DESCryptoServiceProvider : DES // TypeDefIndex: 1288
 // Namespace: System.Security.Cryptography
 public abstract class DSA : AsymmetricAlgorithm // TypeDefIndex: 1289
 {
+	// Constructors
+	protected DSA(); // 0x00440E3C
+
 	// Methods
-	protected void .ctor(); // 0x00440E3C
 	public static DSA Create(); // 0x00440E44
 	public static DSA Create(string algName); // 0x00440EA0
 	public abstract byte[] CreateSignature(byte[] rgbHash);
@@ -26782,12 +28151,14 @@ public sealed class DSACryptoServiceProvider : DSA, ICspAsymmetricAlgorithm // T
 	public static bool UseMachineKeyStore { get; set; } // 0x004421E4 0x00442270
 	public CspKeyContainerInfo CspKeyContainerInfo { get; } // 0x00442F98 
 
+	// Constructors
+	public DSACryptoServiceProvider(); // 0x00441CBC
+	public DSACryptoServiceProvider(CspParameters parameters); // 0x00442014
+	public DSACryptoServiceProvider(int dwKeySize); // 0x00442020
+	public DSACryptoServiceProvider(int dwKeySize, CspParameters parameters); // 0x00441CC8
+	private static DSACryptoServiceProvider(); // 0x00442028
+
 	// Methods
-	public void .ctor(); // 0x00441CBC
-	public void .ctor(CspParameters parameters); // 0x00442014
-	public void .ctor(int dwKeySize); // 0x00442020
-	public void .ctor(int dwKeySize, CspParameters parameters); // 0x00441CC8
-	private static void .cctor(); // 0x00442028
 	protected override void Finalize(); // 0x0044202C
 	public override DSAParameters ExportParameters(bool includePrivateParameters); // 0x00442300
 	public override void ImportParameters(DSAParameters parameters); // 0x004423F4
@@ -26827,9 +28198,11 @@ public class DSASignatureDeformatter : AsymmetricSignatureDeformatter // TypeDef
 	// Fields
 	private DSA dsa; // 0x08
 
+	// Constructors
+	public DSASignatureDeformatter(); // 0x0044330C
+	public DSASignatureDeformatter(AsymmetricAlgorithm key); // 0x00443314
+
 	// Methods
-	public void .ctor(); // 0x0044330C
-	public void .ctor(AsymmetricAlgorithm key); // 0x00443314
 	public override void SetHashAlgorithm(string strName); // 0x00443348
 	public override void SetKey(AsymmetricAlgorithm key); // 0x004434D8
 	public override bool VerifySignature(byte[] rgbHash, byte[] rgbSignature); // 0x004435D0
@@ -26841,9 +28214,11 @@ public class DSASignatureFormatter : AsymmetricSignatureFormatter // TypeDefInde
 	// Fields
 	private DSA dsa; // 0x08
 
+	// Constructors
+	public DSASignatureFormatter(); // 0x00443750
+	public DSASignatureFormatter(AsymmetricAlgorithm key); // 0x00443758
+
 	// Methods
-	public void .ctor(); // 0x00443750
-	public void .ctor(AsymmetricAlgorithm key); // 0x00443758
 	public override byte[] CreateSignature(byte[] rgbHash); // 0x0044378C
 	public override void SetHashAlgorithm(string strName); // 0x0044385C
 	public override void SetKey(AsymmetricAlgorithm key); // 0x004439EC
@@ -26852,8 +28227,10 @@ public class DSASignatureFormatter : AsymmetricSignatureFormatter // TypeDefInde
 // Namespace: System.Security.Cryptography
 public abstract class DeriveBytes // TypeDefIndex: 1294
 {
+	// Constructors
+	protected DeriveBytes(); // 0x00443AE4
+
 	// Methods
-	protected void .ctor(); // 0x00443AE4
 	public abstract byte[] GetBytes(int cb);
 	public abstract void Reset();
 }
@@ -26883,9 +28260,11 @@ public class FromBase64Transform : IDisposable, ICryptoTransform // TypeDefIndex
 	public int InputBlockSize { get; } // 0x00443C38 
 	public int OutputBlockSize { get; } // 0x00443C40 
 
+	// Constructors
+	public FromBase64Transform(); // 0x00443AEC
+	public FromBase64Transform(FromBase64TransformMode whitespaces); // 0x00443AF4
+
 	// Methods
-	public void .ctor(); // 0x00443AEC
-	public void .ctor(FromBase64TransformMode whitespaces); // 0x00443AF4
 	private void System.IDisposable.Dispose(); // 0x00443B7C
 	protected override void Finalize(); // 0x00443BB0
 	public void Clear(); // 0x00443C48
@@ -26913,8 +28292,10 @@ public abstract class HMAC : KeyedHashAlgorithm // TypeDefIndex: 1297
 	public override byte[] Key { get; set; } // 0x00444D74 0x00444EEC
 	internal BlockProcessor Block { get; } // 0x00445128 
 
+	// Constructors
+	protected HMAC(); // 0x00444C1C
+
 	// Methods
-	protected void .ctor(); // 0x00444C1C
 	private byte[] KeySetup(byte[] key, byte padding); // 0x004451B8
 	protected override void Dispose(bool disposing); // 0x00445328
 	protected override void HashCore(byte[] rgb, int ib, int cb); // 0x0044539C
@@ -26927,34 +28308,38 @@ public abstract class HMAC : KeyedHashAlgorithm // TypeDefIndex: 1297
 // Namespace: System.Security.Cryptography
 public class HMACMD5 : HMAC // TypeDefIndex: 1298
 {
-	// Methods
-	public void .ctor(); // 0x00445EFC
-	public void .ctor(byte[] key); // 0x00445F24
+	// Constructors
+	public HMACMD5(); // 0x00445EFC
+	public HMACMD5(byte[] key); // 0x00445F24
+
 }
 
 // Namespace: System.Security.Cryptography
 public class HMACRIPEMD160 : HMAC // TypeDefIndex: 1299
 {
-	// Methods
-	public void .ctor(); // 0x00445FD0
-	public void .ctor(byte[] key); // 0x00445FF8
+	// Constructors
+	public HMACRIPEMD160(); // 0x00445FD0
+	public HMACRIPEMD160(byte[] key); // 0x00445FF8
+
 }
 
 // Namespace: System.Security.Cryptography
 public class HMACSHA1 : HMAC // TypeDefIndex: 1300
 {
-	// Methods
-	public void .ctor(); // 0x004460A4
-	public void .ctor(byte[] key); // 0x004460CC
-	public void .ctor(byte[] key, bool useManagedSha1); // 0x00446178
+	// Constructors
+	public HMACSHA1(); // 0x004460A4
+	public HMACSHA1(byte[] key); // 0x004460CC
+	public HMACSHA1(byte[] key, bool useManagedSha1); // 0x00446178
+
 }
 
 // Namespace: System.Security.Cryptography
 public class HMACSHA256 : HMAC // TypeDefIndex: 1301
 {
-	// Methods
-	public void .ctor(); // 0x00446284
-	public void .ctor(byte[] key); // 0x004462AC
+	// Constructors
+	public HMACSHA256(); // 0x00446284
+	public HMACSHA256(byte[] key); // 0x004462AC
+
 }
 
 // Namespace: System.Security.Cryptography
@@ -26967,10 +28352,11 @@ public class HMACSHA384 : HMAC // TypeDefIndex: 1302
 	// Properties
 	public bool ProduceLegacyHmacValues { get; set; } // 0x00446620 0x00446528
 
-	// Methods
-	public void .ctor(); // 0x00446358
-	public void .ctor(byte[] key); // 0x00446424
-	private static void .cctor(); // 0x0044655C
+	// Constructors
+	public HMACSHA384(); // 0x00446358
+	public HMACSHA384(byte[] key); // 0x00446424
+	private static HMACSHA384(); // 0x0044655C
+
 }
 
 // Namespace: System.Security.Cryptography
@@ -26983,10 +28369,11 @@ public class HMACSHA512 : HMAC // TypeDefIndex: 1303
 	// Properties
 	public bool ProduceLegacyHmacValues { get; set; } // 0x004468F0 0x004467F8
 
-	// Methods
-	public void .ctor(); // 0x00446628
-	public void .ctor(byte[] key); // 0x004466F4
-	private static void .cctor(); // 0x0044682C
+	// Constructors
+	public HMACSHA512(); // 0x00446628
+	public HMACSHA512(byte[] key); // 0x004466F4
+	private static HMACSHA512(); // 0x0044682C
+
 }
 
 // Namespace: System.Security.Cryptography
@@ -27006,8 +28393,10 @@ public abstract class HashAlgorithm : IDisposable, ICryptoTransform // TypeDefIn
 	public virtual int InputBlockSize { get; } // 0x00446A94 
 	public virtual int OutputBlockSize { get; } // 0x00446A9C 
 
+	// Constructors
+	protected HashAlgorithm(); // 0x004468F8
+
 	// Methods
-	protected void .ctor(); // 0x004468F8
 	private void System.IDisposable.Dispose(); // 0x00446918
 	public void Clear(); // 0x0044695C
 	public byte[] ComputeHash(byte[] buffer); // 0x0044252C
@@ -27069,8 +28458,10 @@ public sealed class KeySizes // TypeDefIndex: 1308
 	public int MinSize { get; } // 0x00446AAC 
 	public int SkipSize { get; } // 0x00446AB4 
 
+	// Constructors
+	public KeySizes(int minSize, int maxSize, int skipSize); // 0x0043E010
+
 	// Methods
-	public void .ctor(int minSize, int maxSize, int skipSize); // 0x0043E010
 	internal bool IsLegal(int keySize); // 0x00446ABC
 	internal static bool IsLegalKeySize(KeySizes[] legalKeys, int size); // 0x0043651C
 }
@@ -27084,8 +28475,10 @@ public abstract class KeyedHashAlgorithm : HashAlgorithm // TypeDefIndex: 1309
 	// Properties
 	public virtual byte[] Key { get; set; } // 0x00444E34 0x00444FE8
 
+	// Constructors
+	protected KeyedHashAlgorithm(); // 0x00444C48
+
 	// Methods
-	protected void .ctor(); // 0x00444C48
 	protected override void Finalize(); // 0x00446B2C
 	protected override void Dispose(bool disposing); // 0x00445368
 	private void ZeroizeKey(); // 0x00446BA4
@@ -27104,10 +28497,12 @@ public class MACTripleDES : KeyedHashAlgorithm // TypeDefIndex: 1310
 	// Properties
 	public PaddingMode Padding { get; set; } // 0x00447118 0x0044714C
 
+	// Constructors
+	public MACTripleDES(); // 0x00446CF0
+	public MACTripleDES(byte[] rgbKey); // 0x00446ED0
+	public MACTripleDES(string strTripleDES, byte[] rgbKey); // 0x00446FB0
+
 	// Methods
-	public void .ctor(); // 0x00446CF0
-	public void .ctor(byte[] rgbKey); // 0x00446ED0
-	public void .ctor(string strTripleDES, byte[] rgbKey); // 0x00446FB0
 	private void Setup(string strTripleDES, byte[] rgbKey); // 0x00446D6C
 	protected override void Finalize(); // 0x004470A8
 	protected override void Dispose(bool disposing); // 0x00447188
@@ -27119,8 +28514,10 @@ public class MACTripleDES : KeyedHashAlgorithm // TypeDefIndex: 1310
 // Namespace: System.Security.Cryptography
 public abstract class MD5 : HashAlgorithm // TypeDefIndex: 1311
 {
+	// Constructors
+	protected MD5(); // 0x004474EC
+
 	// Methods
-	protected void .ctor(); // 0x004474EC
 	public static MD5 Create(); // 0x00447514
 	public static MD5 Create(string algName); // 0x00447570
 }
@@ -27138,9 +28535,11 @@ public sealed class MD5CryptoServiceProvider : MD5 // TypeDefIndex: 1312
 	private int _ProcessingBufferCount; // 0x2C
 	private static readonly uint[] K; // 0x00
 
+	// Constructors
+	public MD5CryptoServiceProvider(); // 0x00447644
+	private static MD5CryptoServiceProvider(); // 0x0044780C
+
 	// Methods
-	public void .ctor(); // 0x00447644
-	private static void .cctor(); // 0x0044780C
 	protected override void Finalize(); // 0x004478A4
 	protected override void Dispose(bool disposing); // 0x004478B4
 	protected override void HashCore(byte[] rgb, int ibStart, int cbSize); // 0x00447940
@@ -27154,8 +28553,10 @@ public sealed class MD5CryptoServiceProvider : MD5 // TypeDefIndex: 1312
 // Namespace: System.Security.Cryptography
 public abstract class MaskGenerationMethod // TypeDefIndex: 1313
 {
+	// Constructors
+	protected MaskGenerationMethod(); // 0x001681B8
+
 	// Methods
-	protected void .ctor(); // 0x001681B8
 	public abstract byte[] GenerateMask(byte[] rgbSeed, int cbReturn);
 }
 
@@ -27168,8 +28569,10 @@ public class PKCS1MaskGenerationMethod : MaskGenerationMethod // TypeDefIndex: 1
 	// Properties
 	public string HashName { get; set; } // 0x0016822C 0x00168234
 
+	// Constructors
+	public PKCS1MaskGenerationMethod(); // 0x001681C0
+
 	// Methods
-	public void .ctor(); // 0x001681C0
 	public override byte[] GenerateMask(byte[] rgbSeed, int cbReturn); // 0x001682B0
 }
 
@@ -27204,15 +28607,17 @@ public class PasswordDeriveBytes : DeriveBytes // TypeDefIndex: 1316
 	public int IterationCount { get; set; } // 0x00168F9C 0x00168E70
 	public byte[] Salt { get; set; } // 0x00168FA4 0x00168C3C
 
+	// Constructors
+	public PasswordDeriveBytes(string strPassword, byte[] rgbSalt); // 0x00168354
+	public PasswordDeriveBytes(string strPassword, byte[] rgbSalt, CspParameters cspParams); // 0x00168548
+	public PasswordDeriveBytes(string strPassword, byte[] rgbSalt, string strHashName, int iterations); // 0x00168644
+	public PasswordDeriveBytes(string strPassword, byte[] rgbSalt, string strHashName, int iterations, CspParameters cspParams); // 0x0016868C
+	public PasswordDeriveBytes(byte[] password, byte[] salt); // 0x00168780
+	public PasswordDeriveBytes(byte[] password, byte[] salt, CspParameters cspParams); // 0x00168954
+	public PasswordDeriveBytes(byte[] password, byte[] salt, string hashName, int iterations); // 0x00168A50
+	public PasswordDeriveBytes(byte[] password, byte[] salt, string hashName, int iterations, CspParameters cspParams); // 0x00168A98
+
 	// Methods
-	public void .ctor(string strPassword, byte[] rgbSalt); // 0x00168354
-	public void .ctor(string strPassword, byte[] rgbSalt, CspParameters cspParams); // 0x00168548
-	public void .ctor(string strPassword, byte[] rgbSalt, string strHashName, int iterations); // 0x00168644
-	public void .ctor(string strPassword, byte[] rgbSalt, string strHashName, int iterations, CspParameters cspParams); // 0x0016868C
-	public void .ctor(byte[] password, byte[] salt); // 0x00168780
-	public void .ctor(byte[] password, byte[] salt, CspParameters cspParams); // 0x00168954
-	public void .ctor(byte[] password, byte[] salt, string hashName, int iterations); // 0x00168A50
-	public void .ctor(byte[] password, byte[] salt, string hashName, int iterations, CspParameters cspParams); // 0x00168A98
 	protected override void Finalize(); // 0x00168B8C
 	private void Prepare(string strPassword, byte[] rgbSalt, string strHashName, int iterations); // 0x001683E4
 	private void Prepare(byte[] password, byte[] rgbSalt, string strHashName, int iterations); // 0x00168810
@@ -27231,8 +28636,10 @@ public abstract class RC2 : SymmetricAlgorithm // TypeDefIndex: 1317
 	public virtual int EffectiveKeySize { get; set; } // 0x00169990 0x001699A4
 	public override int KeySize { get; set; } // 0x001699AC 0x001699B4
 
+	// Constructors
+	protected RC2(); // 0x00169680
+
 	// Methods
-	protected void .ctor(); // 0x00169680
 	public static RC2 Create(); // 0x0016985C
 	public static RC2 Create(string AlgName); // 0x001698B8
 }
@@ -27247,8 +28654,10 @@ public sealed class RC2CryptoServiceProvider : RC2 // TypeDefIndex: 1318
 	public override int EffectiveKeySize { get; set; } // 0x001699D8 0x001699EC
 	public bool UseSalt { get; set; } // 0x0016A400 0x0016A408
 
+	// Constructors
+	public RC2CryptoServiceProvider(); // 0x001699D4
+
 	// Methods
-	public void .ctor(); // 0x001699D4
 	public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV); // 0x00169AAC
 	public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV); // 0x0016A32C
 	public override void GenerateIV(); // 0x0016A3B8
@@ -27267,17 +28676,21 @@ internal class RC2Transform : SymmetricTransform // TypeDefIndex: 1319
 	private int j; // 0x40
 	private static readonly byte[] pitable; // 0x00
 
+	// Constructors
+	public RC2Transform(RC2 rc2Algo, bool encryption, byte[] key, byte[] iv); // 0x00169B38
+	private static RC2Transform(); // 0x0016A410
+
 	// Methods
-	public void .ctor(RC2 rc2Algo, bool encryption, byte[] key, byte[] iv); // 0x00169B38
-	private static void .cctor(); // 0x0016A410
 	protected override void ECB(byte[] input, byte[] output); // 0x0016A4A8
 }
 
 // Namespace: System.Security.Cryptography
 public abstract class RIPEMD160 : HashAlgorithm // TypeDefIndex: 1320
 {
+	// Constructors
+	protected RIPEMD160(); // 0x0016B7FC
+
 	// Methods
-	protected void .ctor(); // 0x0016B7FC
 	public static RIPEMD160 Create(); // 0x0016B81C
 	public static RIPEMD160 Create(string hashName); // 0x0016B878
 }
@@ -27293,8 +28706,10 @@ public class RIPEMD160Managed : RIPEMD160 // TypeDefIndex: 1321
 	private ulong _Length; // 0x28
 	private int _ProcessingBufferCount; // 0x30
 
+	// Constructors
+	public RIPEMD160Managed(); // 0x0016B950
+
 	// Methods
-	public void .ctor(); // 0x0016B950
 	public override void Initialize(); // 0x0016BA0C
 	protected override void HashCore(byte[] rgb, int ibStart, int cbSize); // 0x0016BBA8
 	protected override byte[] HashFinal(); // 0x0016BEEC
@@ -27327,9 +28742,11 @@ public sealed class RNGCryptoServiceProvider : RandomNumberGenerator // TypeDefI
 	private static object _lock; // 0x00
 	private IntPtr _handle; // 0x08
 
+	// Constructors
+	public RNGCryptoServiceProvider(); // 0x001714A4
+	private static RNGCryptoServiceProvider(); // 0x0017160C
+
 	// Methods
-	public void .ctor(); // 0x001714A4
-	private static void .cctor(); // 0x0017160C
 	private void Check(); // 0x00171548
 	private static bool RngOpen(); // 0x00171698
 	private static IntPtr RngInitialize(byte[] seed); // 0x00171544
@@ -27343,8 +28760,10 @@ public sealed class RNGCryptoServiceProvider : RandomNumberGenerator // TypeDefI
 // Namespace: System.Security.Cryptography
 public abstract class RSA : AsymmetricAlgorithm // TypeDefIndex: 1323
 {
+	// Constructors
+	protected RSA(); // 0x00171B98
+
 	// Methods
-	protected void .ctor(); // 0x00171B98
 	public static RSA Create(); // 0x00171BA0
 	public static RSA Create(string algName); // 0x00171BFC
 	public abstract byte[] EncryptValue(byte[] rgb);
@@ -27379,12 +28798,14 @@ public sealed class RSACryptoServiceProvider : RSA, ICspAsymmetricAlgorithm // T
 	public override string SignatureAlgorithm { get; } // 0x001732B0 
 	public CspKeyContainerInfo CspKeyContainerInfo { get; } // 0x00174430 
 
+	// Constructors
+	public RSACryptoServiceProvider(); // 0x00172B1C
+	public RSACryptoServiceProvider(CspParameters parameters); // 0x00172E98
+	public RSACryptoServiceProvider(int dwKeySize); // 0x00172ED0
+	public RSACryptoServiceProvider(int dwKeySize, CspParameters parameters); // 0x00172F08
+	private static RSACryptoServiceProvider(); // 0x00172F44
+
 	// Methods
-	public void .ctor(); // 0x00172B1C
-	public void .ctor(CspParameters parameters); // 0x00172E98
-	public void .ctor(int dwKeySize); // 0x00172ED0
-	public void .ctor(int dwKeySize, CspParameters parameters); // 0x00172F08
-	private static void .cctor(); // 0x00172F44
 	private void Common(int dwKeySize, CspParameters p); // 0x00172B50
 	protected override void Finalize(); // 0x00173088
 	public byte[] Decrypt(byte[] rgb, bool fOAEP); // 0x0017330C
@@ -27416,9 +28837,11 @@ public class RSAOAEPKeyExchangeDeformatter : AsymmetricKeyExchangeDeformatter //
 	// Properties
 	public override string Parameters { get; set; } // 0x001747F8 0x00174800
 
+	// Constructors
+	public RSAOAEPKeyExchangeDeformatter(); // 0x001747F0
+	public RSAOAEPKeyExchangeDeformatter(AsymmetricAlgorithm key); // 0x00173440
+
 	// Methods
-	public void .ctor(); // 0x001747F0
-	public void .ctor(AsymmetricAlgorithm key); // 0x00173440
 	public override byte[] DecryptKeyExchange(byte[] rgbData); // 0x00174804
 	public override void SetKey(AsymmetricAlgorithm key); // 0x00174968
 }
@@ -27436,9 +28859,11 @@ public class RSAOAEPKeyExchangeFormatter : AsymmetricKeyExchangeFormatter // Typ
 	public override string Parameters { get; } // 0x00174A40 
 	public RandomNumberGenerator Rng { get; set; } // 0x00174A48 0x00174A50
 
+	// Constructors
+	public RSAOAEPKeyExchangeFormatter(); // 0x00174A10
+	public RSAOAEPKeyExchangeFormatter(AsymmetricAlgorithm key); // 0x00173694
+
 	// Methods
-	public void .ctor(); // 0x00174A10
-	public void .ctor(AsymmetricAlgorithm key); // 0x00173694
 	public override byte[] CreateKeyExchange(byte[] rgbData); // 0x00174A58
 	public override byte[] CreateKeyExchange(byte[] rgbData, Type symAlgType); // 0x00174BEC
 	public override void SetKey(AsymmetricAlgorithm key); // 0x00174BFC
@@ -27455,9 +28880,11 @@ public class RSAPKCS1KeyExchangeDeformatter : AsymmetricKeyExchangeDeformatter /
 	public override string Parameters { get; set; } // 0x00174CAC 0x00174CB4
 	public RandomNumberGenerator RNG { get; set; } // 0x00174CB8 0x00174CC0
 
+	// Constructors
+	public RSAPKCS1KeyExchangeDeformatter(); // 0x00174CA4
+	public RSAPKCS1KeyExchangeDeformatter(AsymmetricAlgorithm key); // 0x00173474
+
 	// Methods
-	public void .ctor(); // 0x00174CA4
-	public void .ctor(AsymmetricAlgorithm key); // 0x00173474
 	public override byte[] DecryptKeyExchange(byte[] rgbIn); // 0x00174CC8
 	public override void SetKey(AsymmetricAlgorithm key); // 0x00174E18
 }
@@ -27473,9 +28900,11 @@ public class RSAPKCS1KeyExchangeFormatter : AsymmetricKeyExchangeFormatter // Ty
 	public RandomNumberGenerator Rng { get; set; } // 0x00174FC0 0x00174FC8
 	public override string Parameters { get; } // 0x00174FD0 
 
+	// Constructors
+	public RSAPKCS1KeyExchangeFormatter(); // 0x00174EC0
+	public RSAPKCS1KeyExchangeFormatter(AsymmetricAlgorithm key); // 0x001736C8
+
 	// Methods
-	public void .ctor(); // 0x00174EC0
-	public void .ctor(AsymmetricAlgorithm key); // 0x001736C8
 	public override byte[] CreateKeyExchange(byte[] rgbData); // 0x0017502C
 	public override byte[] CreateKeyExchange(byte[] rgbData, Type symAlgType); // 0x0017519C
 	private void SetRSAKey(AsymmetricAlgorithm key); // 0x00174EC8
@@ -27489,9 +28918,11 @@ public class RSAPKCS1SignatureDeformatter : AsymmetricSignatureDeformatter // Ty
 	private RSA rsa; // 0x08
 	private string hashName; // 0x0C
 
+	// Constructors
+	public RSAPKCS1SignatureDeformatter(); // 0x00175260
+	public RSAPKCS1SignatureDeformatter(AsymmetricAlgorithm key); // 0x00175268
+
 	// Methods
-	public void .ctor(); // 0x00175260
-	public void .ctor(AsymmetricAlgorithm key); // 0x00175268
 	public override void SetHashAlgorithm(string strName); // 0x0017529C
 	public override void SetKey(AsymmetricAlgorithm key); // 0x0017534C
 	public override bool VerifySignature(byte[] rgbHash, byte[] rgbSignature); // 0x00175444
@@ -27504,9 +28935,11 @@ public class RSAPKCS1SignatureFormatter : AsymmetricSignatureFormatter // TypeDe
 	private RSA rsa; // 0x08
 	private HashAlgorithm hash; // 0x0C
 
+	// Constructors
+	public RSAPKCS1SignatureFormatter(); // 0x00175660
+	public RSAPKCS1SignatureFormatter(AsymmetricAlgorithm key); // 0x00175668
+
 	// Methods
-	public void .ctor(); // 0x00175660
-	public void .ctor(AsymmetricAlgorithm key); // 0x00175668
 	public override byte[] CreateSignature(byte[] rgbHash); // 0x0017569C
 	public override void SetHashAlgorithm(string strName); // 0x0017584C
 	public override void SetKey(AsymmetricAlgorithm key); // 0x0017586C
@@ -27531,8 +28964,10 @@ public struct RSAParameters // TypeDefIndex: 1331
 // Namespace: System.Security.Cryptography
 public abstract class RandomNumberGenerator // TypeDefIndex: 1332
 {
+	// Constructors
+	protected RandomNumberGenerator(); // 0x0017153C
+
 	// Methods
-	protected void .ctor(); // 0x0017153C
 	public static RandomNumberGenerator Create(); // 0x00174B90
 	public static RandomNumberGenerator Create(string rngName); // 0x00175964
 	public abstract void GetBytes(byte[] data);
@@ -27555,12 +28990,14 @@ public class Rfc2898DeriveBytes : DeriveBytes // TypeDefIndex: 1333
 	public int IterationCount { get; set; } // 0x001760A8 0x00175D18
 	public byte[] Salt { get; set; } // 0x001760B0 0x00175BC0
 
+	// Constructors
+	public Rfc2898DeriveBytes(string password, byte[] salt); // 0x00175A3C
+	public Rfc2898DeriveBytes(string password, byte[] salt, int iterations); // 0x00175A58
+	public Rfc2898DeriveBytes(byte[] password, byte[] salt, int iterations); // 0x00175DC8
+	public Rfc2898DeriveBytes(string password, int saltSize); // 0x00175ECC
+	public Rfc2898DeriveBytes(string password, int saltSize, int iterations); // 0x00175EE8
+
 	// Methods
-	public void .ctor(string password, byte[] salt); // 0x00175A3C
-	public void .ctor(string password, byte[] salt, int iterations); // 0x00175A58
-	public void .ctor(byte[] password, byte[] salt, int iterations); // 0x00175DC8
-	public void .ctor(string password, int saltSize); // 0x00175ECC
-	public void .ctor(string password, int saltSize, int iterations); // 0x00175EE8
 	private byte[] F(byte[] s, int c, int i); // 0x00176168
 	public override byte[] GetBytes(int cb); // 0x00176364
 	public override void Reset(); // 0x001765E4
@@ -27569,8 +29006,10 @@ public class Rfc2898DeriveBytes : DeriveBytes // TypeDefIndex: 1333
 // Namespace: System.Security.Cryptography
 public abstract class Rijndael : SymmetricAlgorithm // TypeDefIndex: 1334
 {
+	// Constructors
+	protected Rijndael(); // 0x001765F8
+
 	// Methods
-	protected void .ctor(); // 0x001765F8
 	public static Rijndael Create(); // 0x001767D0
 	public static Rijndael Create(string algName); // 0x0017682C
 }
@@ -27578,8 +29017,10 @@ public abstract class Rijndael : SymmetricAlgorithm // TypeDefIndex: 1334
 // Namespace: System.Security.Cryptography
 public sealed class RijndaelManaged : Rijndael // TypeDefIndex: 1335
 {
+	// Constructors
+	public RijndaelManaged(); // 0x00176904
+
 	// Methods
-	public void .ctor(); // 0x00176904
 	public override void GenerateIV(); // 0x00176908
 	public override void GenerateKey(); // 0x0017692C
 	public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV); // 0x00176950
@@ -27606,9 +29047,11 @@ internal class RijndaelTransform : SymmetricTransform // TypeDefIndex: 1336
 	private static readonly uint[] iT2; // 0x24
 	private static readonly uint[] iT3; // 0x28
 
+	// Constructors
+	public RijndaelTransform(Rijndael algo, bool encryption, byte[] key, byte[] iv); // 0x00176B30
+	private static RijndaelTransform(); // 0x00177B54
+
 	// Methods
-	public void .ctor(Rijndael algo, bool encryption, byte[] key, byte[] iv); // 0x00176B30
-	private static void .cctor(); // 0x00177B54
 	public void Clear(); // 0x001777A8
 	protected override void ECB(byte[] input, byte[] output); // 0x00177E28
 	private uint SubByte(uint a); // 0x00177990
@@ -27634,8 +29077,10 @@ public sealed class RijndaelManagedTransform : IDisposable, ICryptoTransform // 
 	public int InputBlockSize { get; } // 0x0017782C 
 	public int OutputBlockSize { get; } // 0x00177860 
 
+	// Constructors
+	internal RijndaelManagedTransform(Rijndael algo, bool encryption, byte[] key, byte[] iv); // 0x001769DC
+
 	// Methods
-	internal void .ctor(Rijndael algo, bool encryption, byte[] key, byte[] iv); // 0x001769DC
 	private void System.IDisposable.Dispose(); // 0x00177770
 	public void Clear(); // 0x00177894
 	public void Reset(); // 0x001778CC
@@ -27646,8 +29091,10 @@ public sealed class RijndaelManagedTransform : IDisposable, ICryptoTransform // 
 // Namespace: System.Security.Cryptography
 public abstract class SHA1 : HashAlgorithm // TypeDefIndex: 1338
 {
+	// Constructors
+	protected SHA1(); // 0x003CC328
+
 	// Methods
-	protected void .ctor(); // 0x003CC328
 	public static SHA1 Create(); // 0x003CC348
 	public static SHA1 Create(string hashName); // 0x003CC3A4
 }
@@ -27664,8 +29111,10 @@ internal class SHA1Internal // TypeDefIndex: 1339
 	private int _ProcessingBufferCount; // 0x1C
 	private uint[] buff; // 0x20
 
+	// Constructors
+	public SHA1Internal(); // 0x003CC4FC
+
 	// Methods
-	public void .ctor(); // 0x003CC4FC
 	public void HashCore(byte[] rgb, int ibStart, int cbSize); // 0x003CC668
 	public byte[] HashFinal(); // 0x003CC794
 	public void Initialize(); // 0x003CC8E8
@@ -27682,8 +29131,10 @@ public sealed class SHA1CryptoServiceProvider : SHA1 // TypeDefIndex: 1340
 	// Fields
 	private SHA1Internal sha; // 0x18
 
+	// Constructors
+	public SHA1CryptoServiceProvider(); // 0x003CC47C
+
 	// Methods
-	public void .ctor(); // 0x003CC47C
 	protected override void Finalize(); // 0x003CC5A4
 	protected override void Dispose(bool disposing); // 0x003CC610
 	protected override void HashCore(byte[] rgb, int ibStart, int cbSize); // 0x003CC618
@@ -27697,8 +29148,10 @@ public class SHA1Managed : SHA1 // TypeDefIndex: 1341
 	// Fields
 	private SHA1Internal sha; // 0x18
 
+	// Constructors
+	public SHA1Managed(); // 0x003CEC6C
+
 	// Methods
-	public void .ctor(); // 0x003CEC6C
 	protected override void HashCore(byte[] rgb, int ibStart, int cbSize); // 0x003CECEC
 	protected override byte[] HashFinal(); // 0x003CED3C
 	public override void Initialize(); // 0x003CED6C
@@ -27707,8 +29160,10 @@ public class SHA1Managed : SHA1 // TypeDefIndex: 1341
 // Namespace: System.Security.Cryptography
 public abstract class SHA256 : HashAlgorithm // TypeDefIndex: 1342
 {
+	// Constructors
+	protected SHA256(); // 0x003CED94
+
 	// Methods
-	protected void .ctor(); // 0x003CED94
 	public static SHA256 Create(); // 0x003CEDB4
 	public static SHA256 Create(string hashName); // 0x003CEE10
 }
@@ -27725,8 +29180,10 @@ public class SHA256Managed : SHA256 // TypeDefIndex: 1343
 	private int _ProcessingBufferCount; // 0x2C
 	private uint[] buff; // 0x30
 
+	// Constructors
+	public SHA256Managed(); // 0x003CEEE8
+
 	// Methods
-	public void .ctor(); // 0x003CEEE8
 	protected override void HashCore(byte[] rgb, int ibStart, int cbSize); // 0x003CEFA4
 	protected override byte[] HashFinal(); // 0x003CF95C
 	public override void Initialize(); // 0x003CFCB4
@@ -27738,8 +29195,10 @@ public class SHA256Managed : SHA256 // TypeDefIndex: 1343
 // Namespace: System.Security.Cryptography
 public abstract class SHA384 : HashAlgorithm // TypeDefIndex: 1344
 {
+	// Constructors
+	protected SHA384(); // 0x003D0048
+
 	// Methods
-	protected void .ctor(); // 0x003D0048
 	public static SHA384 Create(); // 0x003D0068
 	public static SHA384 Create(string hashName); // 0x003D00C4
 }
@@ -27763,8 +29222,10 @@ public class SHA384Managed : SHA384 // TypeDefIndex: 1345
 	private ulong[] W; // 0x70
 	private int wOff; // 0x74
 
+	// Constructors
+	public SHA384Managed(); // 0x003D01A0
+
 	// Methods
-	public void .ctor(); // 0x003D01A0
 	private void Initialize(bool reuse); // 0x003D02C0
 	public override void Initialize(); // 0x003D0448
 	protected override void HashCore(byte[] rgb, int ibStart, int cbSize); // 0x003D0450
@@ -27780,8 +29241,10 @@ public class SHA384Managed : SHA384 // TypeDefIndex: 1345
 // Namespace: System.Security.Cryptography
 public abstract class SHA512 : HashAlgorithm // TypeDefIndex: 1346
 {
+	// Constructors
+	protected SHA512(); // 0x003D13B4
+
 	// Methods
-	protected void .ctor(); // 0x003D13B4
 	public static SHA512 Create(); // 0x003D13D4
 	public static SHA512 Create(string hashName); // 0x003D1430
 }
@@ -27805,8 +29268,10 @@ public class SHA512Managed : SHA512 // TypeDefIndex: 1347
 	private ulong[] W; // 0x70
 	private int wOff; // 0x74
 
+	// Constructors
+	public SHA512Managed(); // 0x003D1508
+
 	// Methods
-	public void .ctor(); // 0x003D1508
 	private void Initialize(bool reuse); // 0x003D1628
 	public override void Initialize(); // 0x003D17B0
 	protected override void HashCore(byte[] rgb, int ibStart, int cbSize); // 0x003D17B8
@@ -27833,8 +29298,9 @@ internal static class SHAConstants // TypeDefIndex: 1348
 	public static readonly uint[] K1; // 0x00
 	public static readonly ulong[] K2; // 0x04
 
-	// Methods
-	private static void .cctor(); // 0x003D29D4
+	// Constructors
+	private static SHAConstants(); // 0x003D29D4
+
 }
 
 // Namespace: System.Security.Cryptography
@@ -27852,9 +29318,11 @@ public class SignatureDescription // TypeDefIndex: 1349
 	public string FormatterAlgorithm { get; set; } // 0x003D2C54 0x003D2C5C
 	public string KeyAlgorithm { get; set; } // 0x003D2C64 0x003D2C6C
 
+	// Constructors
+	public SignatureDescription(); // 0x003D2AB0
+	public SignatureDescription(SecurityElement el); // 0x003D2AB8
+
 	// Methods
-	public void .ctor(); // 0x003D2AB0
-	public void .ctor(SecurityElement el); // 0x003D2AB8
 	public virtual AsymmetricSignatureDeformatter CreateDeformatter(AsymmetricAlgorithm key); // 0x003D2C74
 	public virtual HashAlgorithm CreateDigest(); // 0x003D2E2C
 	public virtual AsymmetricSignatureFormatter CreateFormatter(AsymmetricAlgorithm key); // 0x003D2F68
@@ -27863,15 +29331,18 @@ public class SignatureDescription // TypeDefIndex: 1349
 // Namespace: System.Security.Cryptography
 internal class DSASignatureDescription : SignatureDescription // TypeDefIndex: 1350
 {
-	// Methods
-	public void .ctor(); // 0x004436A8
+	// Constructors
+	public DSASignatureDescription(); // 0x004436A8
+
 }
 
 // Namespace: System.Security.Cryptography
 internal class RSAPKCS1SHA1SignatureDescription : SignatureDescription // TypeDefIndex: 1351
 {
+	// Constructors
+	public RSAPKCS1SHA1SignatureDescription(); // 0x001751B0
+
 	// Methods
-	public void .ctor(); // 0x001751B0
 	public override AsymmetricSignatureDeformatter CreateDeformatter(AsymmetricAlgorithm key); // 0x00175258
 }
 
@@ -27901,8 +29372,10 @@ public abstract class SymmetricAlgorithm : IDisposable // TypeDefIndex: 1352
 	public virtual CipherMode Mode { get; set; } // 0x003D39A0 0x003D39A8
 	public virtual PaddingMode Padding { get; set; } // 0x003D3B0C 0x003D3B14
 
+	// Constructors
+	protected SymmetricAlgorithm(); // 0x003D3120
+
 	// Methods
-	protected void .ctor(); // 0x003D3120
 	private void System.IDisposable.Dispose(); // 0x003D3150
 	protected override void Finalize(); // 0x003D3184
 	public void Clear(); // 0x003D31FC
@@ -27932,8 +29405,10 @@ public class ToBase64Transform : IDisposable, ICryptoTransform // TypeDefIndex: 
 	public int InputBlockSize { get; } // 0x003D3F2C 
 	public int OutputBlockSize { get; } // 0x003D3F34 
 
+	// Constructors
+	public ToBase64Transform(); // 0x003D3E68
+
 	// Methods
-	public void .ctor(); // 0x003D3E68
 	private void System.IDisposable.Dispose(); // 0x003D3E70
 	protected override void Finalize(); // 0x003D3EA4
 	public void Clear(); // 0x003D3F3C
@@ -27950,8 +29425,10 @@ public abstract class TripleDES : SymmetricAlgorithm // TypeDefIndex: 1354
 	// Properties
 	public override byte[] Key { get; set; } // 0x003D4E60 0x003D51D8
 
+	// Constructors
+	protected TripleDES(); // 0x003D4C70
+
 	// Methods
-	protected void .ctor(); // 0x003D4C70
 	public static bool IsWeakKey(byte[] rgbKey); // 0x003D4F6C
 	public static TripleDES Create(); // 0x003D5348
 	public static TripleDES Create(string str); // 0x003D53A4
@@ -27960,8 +29437,10 @@ public abstract class TripleDES : SymmetricAlgorithm // TypeDefIndex: 1354
 // Namespace: System.Security.Cryptography
 public sealed class TripleDESCryptoServiceProvider : TripleDES // TypeDefIndex: 1355
 {
+	// Constructors
+	public TripleDESCryptoServiceProvider(); // 0x003D547C
+
 	// Methods
-	public void .ctor(); // 0x003D547C
 	public override void GenerateIV(); // 0x003D5480
 	public override void GenerateKey(); // 0x003D54A4
 	public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV); // 0x003D556C
@@ -27979,8 +29458,10 @@ internal class TripleDESTransform : SymmetricTransform // TypeDefIndex: 1356
 	private DESTransform E2; // 0x44
 	private DESTransform D3; // 0x48
 
+	// Constructors
+	public TripleDESTransform(TripleDES algo, bool encryption, byte[] key, byte[] iv); // 0x003D55F8
+
 	// Methods
-	public void .ctor(TripleDES algo, bool encryption, byte[] key, byte[] iv); // 0x003D55F8
 	protected override void ECB(byte[] input, byte[] output); // 0x003D59E8
 	internal static byte[] GetStrongKey(); // 0x003D54BC
 }
@@ -27989,8 +29470,9 @@ internal class TripleDESTransform : SymmetricTransform // TypeDefIndex: 1356
 [Serializable]
 public abstract class CodeAccessSecurityAttribute : SecurityAttribute // TypeDefIndex: 1357
 {
-	// Methods
-	protected void .ctor(SecurityAction action); // 0x003DA250
+	// Constructors
+	protected CodeAccessSecurityAttribute(SecurityAction action); // 0x003DA250
+
 }
 
 // Namespace: System.Security.Permissions
@@ -28003,9 +29485,11 @@ public sealed class EnvironmentPermission : CodeAccessPermission, IBuiltInPermis
 	private ArrayList readList; // 0x0C
 	private ArrayList writeList; // 0x10
 
+	// Constructors
+	public EnvironmentPermission(PermissionState state); // 0x003DA258
+	public EnvironmentPermission(EnvironmentPermissionAccess flag, string pathList); // 0x003DA304
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003DA258
-	public void .ctor(EnvironmentPermissionAccess flag, string pathList); // 0x003DA304
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003DA7F8
 	public void AddPathList(EnvironmentPermissionAccess flag, string pathList); // 0x003DA800
 	public override IPermission Copy(); // 0x003DADB0
@@ -28046,8 +29530,10 @@ public sealed class EnvironmentPermissionAttribute : CodeAccessSecurityAttribute
 	public string Read { get; set; } // 0x003DC34C 0x003DC354
 	public string Write { get; set; } // 0x003DC35C 0x003DC364
 
+	// Constructors
+	public EnvironmentPermissionAttribute(SecurityAction action); // 0x003DC29C
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003DC29C
 	public override IPermission CreatePermission(); // 0x003DC36C
 }
 
@@ -28062,9 +29548,11 @@ public sealed class FileDialogPermission : CodeAccessPermission, IBuiltInPermiss
 	// Properties
 	public FileDialogPermissionAccess Access { get; set; } // 0x003DC5C0 0x003DC3D8
 
+	// Constructors
+	public FileDialogPermission(PermissionState state); // 0x003DC374
+	public FileDialogPermission(FileDialogPermissionAccess access); // 0x003DC3B0
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003DC374
-	public void .ctor(FileDialogPermissionAccess access); // 0x003DC3B0
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003DC5B8
 	public override IPermission Copy(); // 0x003DC5C8
 	public override void FromXml(SecurityElement esd); // 0x003DC648
@@ -28098,8 +29586,10 @@ public sealed class FileDialogPermissionAttribute : CodeAccessSecurityAttribute 
 	public bool Open { get; set; } // 0x003DCBE0 0x003DCBE8
 	public bool Save { get; set; } // 0x003DCBF0 0x003DCBF8
 
+	// Constructors
+	public FileDialogPermissionAttribute(SecurityAction action); // 0x003DCBD8
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003DCBD8
 	public override IPermission CreatePermission(); // 0x003DCC00
 }
 
@@ -28123,13 +29613,15 @@ public sealed class FileIOPermission : CodeAccessPermission, IBuiltInPermission,
 	public FileIOPermissionAccess AllFiles { get; set; } // 0x003DD354 0x003DD35C
 	public FileIOPermissionAccess AllLocalFiles { get; set; } // 0x003DD36C 0x003DD374
 
+	// Constructors
+	public FileIOPermission(PermissionState state); // 0x003DCCDC
+	public FileIOPermission(FileIOPermissionAccess access, string path); // 0x003DCDE0
+	public FileIOPermission(FileIOPermissionAccess access, string[] pathList); // 0x003DCF88
+	public FileIOPermission(FileIOPermissionAccess access, AccessControlActions control, string path); // 0x003DD174
+	public FileIOPermission(FileIOPermissionAccess access, AccessControlActions control, string[] pathList); // 0x003DD20C
+	private static FileIOPermission(); // 0x003DD2A4
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003DCCDC
-	public void .ctor(FileIOPermissionAccess access, string path); // 0x003DCDE0
-	public void .ctor(FileIOPermissionAccess access, string[] pathList); // 0x003DCF88
-	public void .ctor(FileIOPermissionAccess access, AccessControlActions control, string path); // 0x003DD174
-	public void .ctor(FileIOPermissionAccess access, AccessControlActions control, string[] pathList); // 0x003DD20C
-	private static void .cctor(); // 0x003DD2A4
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003DD34C
 	internal void CreateLists(); // 0x003DCD28
 	public void AddPathList(FileIOPermissionAccess access, string path); // 0x003DCEB8
@@ -28196,8 +29688,10 @@ public sealed class FileIOPermissionAttribute : CodeAccessSecurityAttribute // T
 	public string ViewAccessControl { get; set; } // 0x003E0728 0x003E0730
 	public string ViewAndModify { get; set; } // 0x003E0738 0x003E07C0
 
+	// Constructors
+	public FileIOPermissionAttribute(SecurityAction action); // 0x003E0604
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003E0604
 	public override IPermission CreatePermission(); // 0x003E07D0
 }
 
@@ -28208,9 +29702,11 @@ public sealed class GacIdentityPermission : CodeAccessPermission, IBuiltInPermis
 	// Fields
 	private const int version = 1; // 0x00
 
+	// Constructors
+	public GacIdentityPermission(); // 0x003E07D8
+	public GacIdentityPermission(PermissionState state); // 0x003E07E0
+
 	// Methods
-	public void .ctor(); // 0x003E07D8
-	public void .ctor(PermissionState state); // 0x003E07E0
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003E0808
 	public override IPermission Copy(); // 0x003E0810
 	public override IPermission Intersect(IPermission target); // 0x003E087C
@@ -28225,8 +29721,10 @@ public sealed class GacIdentityPermission : CodeAccessPermission, IBuiltInPermis
 [Serializable]
 public sealed class GacIdentityPermissionAttribute : CodeAccessSecurityAttribute // TypeDefIndex: 1368
 {
+	// Constructors
+	public GacIdentityPermissionAttribute(SecurityAction action); // 0x003E0A30
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003E0A30
 	public override IPermission CreatePermission(); // 0x003E0A38
 }
 
@@ -28249,9 +29747,11 @@ public sealed class HostProtectionAttribute : CodeAccessSecurityAttribute // Typ
 	public bool UI { get; set; } // 0x003E0D18 0x003E0D24
 	public HostProtectionResource Resources { get; set; } // 0x003E0D3C 0x003E0D44
 
+	// Constructors
+	public HostProtectionAttribute(); // 0x003E0AA4
+	public HostProtectionAttribute(SecurityAction action); // 0x003E0AB0
+
 	// Methods
-	public void .ctor(); // 0x003E0AA4
-	public void .ctor(SecurityAction action); // 0x003E0AB0
 	public override IPermission CreatePermission(); // 0x003E0D4C
 }
 
@@ -28266,9 +29766,11 @@ internal sealed class HostProtectionPermission : CodeAccessPermission, IBuiltInP
 	// Properties
 	public HostProtectionResource Resources { get; set; } // 0x003E0F9C 0x003E0DB4
 
+	// Constructors
+	public HostProtectionPermission(PermissionState state); // 0x003E0D54
+	public HostProtectionPermission(HostProtectionResource resources); // 0x003E0D90
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003E0D54
-	public void .ctor(HostProtectionResource resources); // 0x003E0D90
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003E0F94
 	public override IPermission Copy(); // 0x003E0FA4
 	public override IPermission Intersect(IPermission target); // 0x003E101C
@@ -28358,8 +29860,10 @@ public sealed class IsolatedStorageFilePermission : IsolatedStoragePermission, I
 	// Fields
 	private const int version = 1; // 0x00
 
+	// Constructors
+	public IsolatedStorageFilePermission(PermissionState state); // 0x003E15F0
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003E15F0
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003E1634
 	public override IPermission Copy(); // 0x003E163C
 	public override IPermission Intersect(IPermission target); // 0x003E1764
@@ -28373,8 +29877,10 @@ public sealed class IsolatedStorageFilePermission : IsolatedStoragePermission, I
 [Serializable]
 public sealed class IsolatedStorageFilePermissionAttribute : IsolatedStoragePermissionAttribute // TypeDefIndex: 1377
 {
+	// Constructors
+	public IsolatedStorageFilePermissionAttribute(SecurityAction action); // 0x003E1FC8
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003E1FC8
 	public override IPermission CreatePermission(); // 0x003E1FD8
 }
 
@@ -28394,8 +29900,10 @@ public abstract class IsolatedStoragePermission : CodeAccessPermission, IUnrestr
 	public long UserQuota { get; set; } // 0x003E20A0 0x003E20A8
 	public IsolatedStorageContainment UsageAllowed { get; set; } // 0x003E20B8 0x003E19F8
 
+	// Constructors
+	protected IsolatedStoragePermission(PermissionState state); // 0x003E15F4
+
 	// Methods
-	protected void .ctor(PermissionState state); // 0x003E15F4
 	public bool IsUnrestricted(); // 0x003E1CE0
 	public override SecurityElement ToXml(); // 0x003E1E4C
 	public override void FromXml(SecurityElement esd); // 0x003E20C0
@@ -28414,8 +29922,9 @@ public abstract class IsolatedStoragePermissionAttribute : CodeAccessSecurityAtt
 	public IsolatedStorageContainment UsageAllowed { get; set; } // 0x003E22E8 0x003E22F0
 	public long UserQuota { get; set; } // 0x003E22F8 0x003E2300
 
-	// Methods
-	protected void .ctor(SecurityAction action); // 0x003E1FD0
+	// Constructors
+	protected IsolatedStoragePermissionAttribute(SecurityAction action); // 0x003E1FD0
+
 }
 
 // Namespace: System.Security.Permissions
@@ -28431,10 +29940,12 @@ public sealed class KeyContainerPermission : CodeAccessPermission, IBuiltInPermi
 	public KeyContainerPermissionAccessEntryCollection AccessEntries { get; } // 0x003E25A4 
 	public KeyContainerPermissionFlags Flags { get; } // 0x003E25AC 
 
+	// Constructors
+	public KeyContainerPermission(PermissionState state); // 0x003E2310
+	public KeyContainerPermission(KeyContainerPermissionFlags flags); // 0x003E2348
+	public KeyContainerPermission(KeyContainerPermissionFlags flags, KeyContainerPermissionAccessEntry[] accessList); // 0x003E24AC
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003E2310
-	public void .ctor(KeyContainerPermissionFlags flags); // 0x003E2348
-	public void .ctor(KeyContainerPermissionFlags flags, KeyContainerPermissionAccessEntry[] accessList); // 0x003E24AC
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003E259C
 	public override IPermission Copy(); // 0x003E25B4
 	public override void FromXml(SecurityElement securityElement); // 0x003E27B8
@@ -28467,10 +29978,12 @@ public sealed class KeyContainerPermissionAccessEntry // TypeDefIndex: 1381
 	public string ProviderName { get; set; } // 0x003E3508 0x003E3510
 	public int ProviderType { get; set; } // 0x003E3518 0x003E3520
 
+	// Constructors
+	public KeyContainerPermissionAccessEntry(CspParameters parameters, KeyContainerPermissionFlags flags); // 0x003E322C
+	public KeyContainerPermissionAccessEntry(string keyContainerName, KeyContainerPermissionFlags flags); // 0x003E3454
+	public KeyContainerPermissionAccessEntry(string keyStore, string providerName, int providerType, string keyContainerName, int keySpec, KeyContainerPermissionFlags flags); // 0x003E3484
+
 	// Methods
-	public void .ctor(CspParameters parameters, KeyContainerPermissionFlags flags); // 0x003E322C
-	public void .ctor(string keyContainerName, KeyContainerPermissionFlags flags); // 0x003E3454
-	public void .ctor(string keyStore, string providerName, int providerType, string keyContainerName, int keySpec, KeyContainerPermissionFlags flags); // 0x003E3484
 	public override bool Equals(object o); // 0x003E3528
 	public override int GetHashCode(); // 0x003E36C4
 }
@@ -28488,9 +30001,11 @@ public sealed class KeyContainerPermissionAccessEntryCollection : IEnumerable, I
 	public KeyContainerPermissionAccessEntry Item { get; } // 0x003E38C8 
 	public object SyncRoot { get; } // 0x003E397C 
 
+	// Constructors
+	internal KeyContainerPermissionAccessEntryCollection(); // 0x003E2E20
+	internal KeyContainerPermissionAccessEntryCollection(KeyContainerPermissionAccessEntry[] entries); // 0x003E3734
+
 	// Methods
-	internal void .ctor(); // 0x003E2E20
-	internal void .ctor(KeyContainerPermissionAccessEntry[] entries); // 0x003E3734
 	private void System.Collections.ICollection.CopyTo(Array array, int index); // 0x003E37C4
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x003E3808
 	public int Add(KeyContainerPermissionAccessEntry accessEntry); // 0x003E2560
@@ -28512,8 +30027,10 @@ public sealed class KeyContainerPermissionAccessEntryEnumerator : IEnumerator //
 	private object System.Collections.IEnumerator.Current { get; } // 0x003E3B0C 
 	public KeyContainerPermissionAccessEntry Current { get; } // 0x003E2F10 
 
+	// Constructors
+	internal KeyContainerPermissionAccessEntryEnumerator(ArrayList list); // 0x003E387C
+
 	// Methods
-	internal void .ctor(ArrayList list); // 0x003E387C
 	public bool MoveNext(); // 0x003E3020
 	public void Reset(); // 0x003E3BE4
 }
@@ -28538,8 +30055,10 @@ public sealed class KeyContainerPermissionAttribute : CodeAccessSecurityAttribut
 	public string ProviderName { get; set; } // 0x003E3D20 0x003E3D28
 	public int ProviderType { get; set; } // 0x003E3D30 0x003E3D38
 
+	// Constructors
+	public KeyContainerPermissionAttribute(SecurityAction action); // 0x003E3CBC
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003E3CBC
 	public override IPermission CreatePermission(); // 0x003E3D40
 	private bool EmptyEntry(); // 0x003E3F1C
 }
@@ -28579,8 +30098,10 @@ public sealed class PermissionSetAttribute : CodeAccessSecurityAttribute // Type
 	public bool UnicodeEncoded { get; set; } // 0x003E3F98 0x003E3FA0
 	public string XML { get; set; } // 0x003E3FA8 0x003E3FB0
 
+	// Constructors
+	public PermissionSetAttribute(SecurityAction action); // 0x003E3F60
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003E3F60
 	public override IPermission CreatePermission(); // 0x003E3FB8
 	private PermissionSet CreateFromXml(string xml); // 0x003E3FC0
 	public PermissionSet CreatePermissionSet(); // 0x003E3FC8
@@ -28602,11 +30123,13 @@ public sealed class PrincipalPermission : IBuiltInPermission, IUnrestrictedPermi
 	private const int version = 1; // 0x00
 	private ArrayList principals; // 0x08
 
+	// Constructors
+	public PrincipalPermission(PermissionState state); // 0x003E3FD0
+	public PrincipalPermission(string name, string role); // 0x003E40F8
+	public PrincipalPermission(string name, string role, bool isAuthenticated); // 0x003E4114
+	internal PrincipalPermission(ArrayList principals); // 0x003E41F4
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003E3FD0
-	public void .ctor(string name, string role); // 0x003E40F8
-	public void .ctor(string name, string role, bool isAuthenticated); // 0x003E4114
-	internal void .ctor(ArrayList principals); // 0x003E41F4
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003E42C8
 	public IPermission Copy(); // 0x003E42D0
 	public void Demand(); // 0x003E4344
@@ -28637,8 +30160,9 @@ internal class PrincipalInfo // TypeDefIndex: 1389
 	public string Role { get; } // 0x003E7DA8 
 	public bool IsAuthenticated { get; } // 0x003E7DB0 
 
-	// Methods
-	public void .ctor(string name, string role, bool isAuthenticated); // 0x003E40C8
+	// Constructors
+	public PrincipalInfo(string name, string role, bool isAuthenticated); // 0x003E40C8
+
 }
 
 // Namespace: System.Security.Permissions
@@ -28655,8 +30179,10 @@ public sealed class PrincipalPermissionAttribute : CodeAccessSecurityAttribute /
 	public string Name { get; set; } // 0x003E7DE8 0x003E7DF0
 	public string Role { get; set; } // 0x003E7DF8 0x003E7E00
 
+	// Constructors
+	public PrincipalPermissionAttribute(SecurityAction action); // 0x003E7DB8
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003E7DB8
 	public override IPermission CreatePermission(); // 0x003E7E08
 }
 
@@ -28671,9 +30197,11 @@ public sealed class PublisherIdentityPermission : CodeAccessPermission, IBuiltIn
 	// Properties
 	public X509Certificate Certificate { get; set; } // 0x003E7FCC 0x003E7F14
 
+	// Constructors
+	public PublisherIdentityPermission(PermissionState state); // 0x003E7EC4
+	public PublisherIdentityPermission(X509Certificate certificate); // 0x003E7EEC
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003E7EC4
-	public void .ctor(X509Certificate certificate); // 0x003E7EEC
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003E7FC4
 	public override IPermission Copy(); // 0x003E7FD4
 	public override void FromXml(SecurityElement esd); // 0x003E807C
@@ -28698,8 +30226,10 @@ public sealed class PublisherIdentityPermissionAttribute : CodeAccessSecurityAtt
 	public string SignedFile { get; set; } // 0x003E8744 0x003E874C
 	public string X509Certificate { get; set; } // 0x003E8754 0x003E875C
 
+	// Constructors
+	public PublisherIdentityPermissionAttribute(SecurityAction action); // 0x003E872C
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003E872C
 	public override IPermission CreatePermission(); // 0x003E8764
 }
 
@@ -28714,9 +30244,11 @@ public sealed class ReflectionPermission : CodeAccessPermission, IBuiltInPermiss
 	// Properties
 	public ReflectionPermissionFlag Flags { get; set; } // 0x003E8A74 0x003E8930
 
+	// Constructors
+	public ReflectionPermission(PermissionState state); // 0x003E88CC
+	public ReflectionPermission(ReflectionPermissionFlag flag); // 0x003E8908
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003E88CC
-	public void .ctor(ReflectionPermissionFlag flag); // 0x003E8908
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003E8A6C
 	public override IPermission Copy(); // 0x003E8A7C
 	public override void FromXml(SecurityElement esd); // 0x003E8AFC
@@ -28745,8 +30277,10 @@ public sealed class ReflectionPermissionAttribute : CodeAccessSecurityAttribute 
 	public bool RestrictedMemberAccess { get; set; } // 0x003E9444 0x003E9450
 	public bool TypeInformation { get; set; } // 0x003E9468 0x003E9470
 
+	// Constructors
+	public ReflectionPermissionAttribute(SecurityAction action); // 0x003E93CC
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003E93CC
 	public override IPermission CreatePermission(); // 0x003E948C
 }
 
@@ -28773,10 +30307,12 @@ public sealed class RegistryPermission : CodeAccessPermission, IBuiltInPermissio
 	private ArrayList readList; // 0x10
 	private ArrayList writeList; // 0x14
 
+	// Constructors
+	public RegistryPermission(PermissionState state); // 0x003E9494
+	public RegistryPermission(RegistryPermissionAccess access, string pathList); // 0x003E9558
+	public RegistryPermission(RegistryPermissionAccess access, AccessControlActions control, string pathList); // 0x003E9758
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003E9494
-	public void .ctor(RegistryPermissionAccess access, string pathList); // 0x003E9558
-	public void .ctor(RegistryPermissionAccess access, AccessControlActions control, string pathList); // 0x003E9758
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003E99D4
 	public void AddPathList(RegistryPermissionAccess access, string pathList); // 0x003E9624
 	public void AddPathList(RegistryPermissionAccess access, AccessControlActions control, string pathList); // 0x003E994C
@@ -28829,8 +30365,10 @@ public sealed class RegistryPermissionAttribute : CodeAccessSecurityAttribute //
 	public string ViewAccessControl { get; set; } // 0x003AA3EC 0x003AA3F4
 	public string ViewAndModify { get; set; } // 0x003AA3FC 0x003AA484
 
+	// Constructors
+	public RegistryPermissionAttribute(SecurityAction action); // 0x003AA2F8
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003AA2F8
 	public override IPermission CreatePermission(); // 0x003AA494
 }
 
@@ -28860,9 +30398,11 @@ public sealed class SecurityPermission : CodeAccessPermission, IBuiltInPermissio
 	// Properties
 	public SecurityPermissionFlag Flags { get; set; } // 0x003AA7A0 0x003AA658
 
+	// Constructors
+	public SecurityPermission(PermissionState state); // 0x003AA5F4
+	public SecurityPermission(SecurityPermissionFlag flag); // 0x003AA630
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003AA5F4
-	public void .ctor(SecurityPermissionFlag flag); // 0x003AA630
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003AA798
 	public bool IsUnrestricted(); // 0x003AA7A8
 	public override IPermission Copy(); // 0x003AA7C0
@@ -28899,8 +30439,10 @@ public sealed class SecurityPermissionAttribute : CodeAccessSecurityAttribute //
 	public bool UnmanagedCode { get; set; } // 0x003AB07C 0x003AB088
 	public SecurityPermissionFlag Flags { get; set; } // 0x003AB0A8 0x003AB0B0
 
+	// Constructors
+	public SecurityPermissionAttribute(SecurityAction action); // 0x003AAE88
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003AAE88
 	public override IPermission CreatePermission(); // 0x003AB0A0
 }
 
@@ -28938,10 +30480,12 @@ public sealed class SiteIdentityPermission : CodeAccessPermission, IBuiltInPermi
 	// Properties
 	public string Site { get; set; } // 0x003AB260 0x003AB108
 
+	// Constructors
+	public SiteIdentityPermission(PermissionState state); // 0x003AB0B8
+	public SiteIdentityPermission(string site); // 0x003AB0E0
+	private static SiteIdentityPermission(); // 0x003AB1C0
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003AB0B8
-	public void .ctor(string site); // 0x003AB0E0
-	private static void .cctor(); // 0x003AB1C0
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003AB258
 	public override IPermission Copy(); // 0x003AB4AC
 	public override void FromXml(SecurityElement esd); // 0x003AB548
@@ -28965,8 +30509,10 @@ public sealed class SiteIdentityPermissionAttribute : CodeAccessSecurityAttribut
 	// Properties
 	public string Site { get; set; } // 0x003ABCE4 0x003ABCEC
 
+	// Constructors
+	public SiteIdentityPermissionAttribute(SecurityAction action); // 0x003ABCDC
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003ABCDC
 	public override IPermission CreatePermission(); // 0x003ABCF4
 }
 
@@ -28985,11 +30531,13 @@ public sealed class StrongNameIdentityPermission : CodeAccessPermission, IBuiltI
 	public StrongNamePublicKeyBlob PublicKey { get; set; } // 0x003ACA0C 0x003ACB4C
 	public Version Version { get; set; } // 0x003ACD14 0x003ACE54
 
+	// Constructors
+	public StrongNameIdentityPermission(PermissionState state); // 0x003ABDC4
+	public StrongNameIdentityPermission(StrongNamePublicKeyBlob blob, string name, Version version); // 0x003AC000
+	internal StrongNameIdentityPermission(StrongNameIdentityPermission snip); // 0x003AC1A4
+	private static StrongNameIdentityPermission(); // 0x003AC590
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003ABDC4
-	public void .ctor(StrongNamePublicKeyBlob blob, string name, Version version); // 0x003AC000
-	internal void .ctor(StrongNameIdentityPermission snip); // 0x003AC1A4
-	private static void .cctor(); // 0x003AC590
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003AC618
 	internal void ResetToDefault(); // 0x003AC930
 	public override IPermission Copy(); // 0x003ACFBC
@@ -29016,8 +30564,10 @@ private struct SNIP // TypeDefIndex: 1406
 	public string Name; // 0x0C
 	public Version AssemblyVersion; // 0x10
 
+	// Constructors
+	internal SNIP(StrongNamePublicKeyBlob pk, string name, Version version); // 0x000A76C8
+
 	// Methods
-	internal void .ctor(StrongNamePublicKeyBlob pk, string name, Version version); // 0x000A76C8
 	internal static SNIP CreateDefault(); // 0x003ABEBC
 	internal bool IsNameSubsetOf(string target); // 0x000A76D4
 	internal bool IsSubsetOf(SNIP target); // 0x000A76DC
@@ -29037,8 +30587,10 @@ public sealed class StrongNameIdentityPermissionAttribute : CodeAccessSecurityAt
 	public string PublicKey { get; set; } // 0x003AF92C 0x003AF934
 	public string Version { get; set; } // 0x003AF93C 0x003AF944
 
+	// Constructors
+	public StrongNameIdentityPermissionAttribute(SecurityAction action); // 0x003AF914
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003AF914
 	public override IPermission CreatePermission(); // 0x003AF94C
 }
 
@@ -29049,8 +30601,10 @@ public sealed class StrongNamePublicKeyBlob // TypeDefIndex: 1408
 	// Fields
 	internal byte[] pubkey; // 0x08
 
+	// Constructors
+	public StrongNamePublicKeyBlob(byte[] publicKey); // 0x003AF954
+
 	// Methods
-	public void .ctor(byte[] publicKey); // 0x003AF954
 	internal static StrongNamePublicKeyBlob FromString(string s); // 0x003AD728
 	private static byte CharToByte(char c); // 0x003AFA10
 	public override bool Equals(object obj); // 0x003ADC94
@@ -29071,11 +30625,13 @@ public sealed class UIPermission : CodeAccessPermission, IBuiltInPermission, IUn
 	public UIPermissionClipboard Clipboard { get; set; } // 0x003AFFE0 0x003AFBB8
 	public UIPermissionWindow Window { get; set; } // 0x003AFFE8 0x003AFDC0
 
+	// Constructors
+	public UIPermission(PermissionState state); // 0x003AFB50
+	public UIPermission(UIPermissionClipboard clipboardFlag); // 0x003AFB90
+	public UIPermission(UIPermissionWindow windowFlag); // 0x003AFD98
+	public UIPermission(UIPermissionWindow windowFlag, UIPermissionClipboard clipboardFlag); // 0x003AFFA0
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003AFB50
-	public void .ctor(UIPermissionClipboard clipboardFlag); // 0x003AFB90
-	public void .ctor(UIPermissionWindow windowFlag); // 0x003AFD98
-	public void .ctor(UIPermissionWindow windowFlag, UIPermissionClipboard clipboardFlag); // 0x003AFFA0
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003AFFD8
 	public override IPermission Copy(); // 0x003AFFF0
 	public override void FromXml(SecurityElement esd); // 0x003B006C
@@ -29100,8 +30656,10 @@ public sealed class UIPermissionAttribute : CodeAccessSecurityAttribute // TypeD
 	public UIPermissionClipboard Clipboard { get; set; } // 0x003B082C 0x003B0834
 	public UIPermissionWindow Window { get; set; } // 0x003B083C 0x003B0844
 
+	// Constructors
+	public UIPermissionAttribute(SecurityAction action); // 0x003B0824
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003B0824
 	public override IPermission CreatePermission(); // 0x003B084C
 }
 
@@ -29135,9 +30693,11 @@ public sealed class UrlIdentityPermission : CodeAccessPermission, IBuiltInPermis
 	// Properties
 	public string Url { get; set; } // 0x003B0A70 0x003B0A78
 
+	// Constructors
+	public UrlIdentityPermission(PermissionState state); // 0x003B08F8
+	public UrlIdentityPermission(string site); // 0x003B09AC
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003B08F8
-	public void .ctor(string site); // 0x003B09AC
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003B0A68
 	public override IPermission Copy(); // 0x003B0B28
 	public override void FromXml(SecurityElement esd); // 0x003B0BB0
@@ -29160,8 +30720,10 @@ public sealed class UrlIdentityPermissionAttribute : CodeAccessSecurityAttribute
 	// Properties
 	public string Url { get; set; } // 0x003B13A8 0x003B13B0
 
+	// Constructors
+	public UrlIdentityPermissionAttribute(SecurityAction action); // 0x003B13A0
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003B13A0
 	public override IPermission CreatePermission(); // 0x003B13B8
 }
 
@@ -29176,9 +30738,11 @@ public sealed class ZoneIdentityPermission : CodeAccessPermission, IBuiltInPermi
 	// Properties
 	public SecurityZone SecurityZone { get; set; } // 0x003B1C2C 0x003B14C8
 
+	// Constructors
+	public ZoneIdentityPermission(PermissionState state); // 0x003B146C
+	public ZoneIdentityPermission(SecurityZone zone); // 0x003B14A0
+
 	// Methods
-	public void .ctor(PermissionState state); // 0x003B146C
-	public void .ctor(SecurityZone zone); // 0x003B14A0
 	private int System.Security.Permissions.IBuiltInPermission.GetTokenIndex(); // 0x003B16A8
 	public override IPermission Copy(); // 0x003B16B0
 	public override bool IsSubsetOf(IPermission target); // 0x003B1730
@@ -29199,8 +30763,10 @@ public sealed class ZoneIdentityPermissionAttribute : CodeAccessSecurityAttribut
 	// Properties
 	public SecurityZone Zone { get; set; } // 0x003B1C54 0x003B1C5C
 
+	// Constructors
+	public ZoneIdentityPermissionAttribute(SecurityAction action); // 0x003B1C34
+
 	// Methods
-	public void .ctor(SecurityAction action); // 0x003B1C34
 	public override IPermission CreatePermission(); // 0x003B1C64
 }
 
@@ -29211,8 +30777,10 @@ public sealed class AllMembershipCondition : IConstantMembershipCondition, IMemb
 	// Fields
 	private readonly int version; // 0x08
 
+	// Constructors
+	public AllMembershipCondition(); // 0x003B1D2C
+
 	// Methods
-	public void .ctor(); // 0x003B1D2C
 	public bool Check(Evidence evidence); // 0x003B1D3C
 	public IMembershipCondition Copy(); // 0x003B1D44
 	public override bool Equals(object o); // 0x003B1DBC
@@ -29234,8 +30802,10 @@ public sealed class ApplicationDirectory : IBuiltInEvidence // TypeDefIndex: 141
 	// Properties
 	public string Directory { get; } // 0x003B27D8 
 
+	// Constructors
+	public ApplicationDirectory(string name); // 0x003B2674
+
 	// Methods
-	public void .ctor(string name); // 0x003B2674
 	private int System.Security.Policy.IBuiltInEvidence.GetRequiredSize(bool verbose); // 0x003B2794
 	private int System.Security.Policy.IBuiltInEvidence.InitFromBuffer(char[] buffer, int position); // 0x003B27C8
 	private int System.Security.Policy.IBuiltInEvidence.OutputToBuffer(char[] buffer, int position, bool verbose); // 0x003B27D0
@@ -29253,8 +30823,10 @@ public sealed class ApplicationDirectoryMembershipCondition : IConstantMembershi
 	// Fields
 	private readonly int version; // 0x08
 
+	// Constructors
+	public ApplicationDirectoryMembershipCondition(); // 0x003B2C20
+
 	// Methods
-	public void .ctor(); // 0x003B2C20
 	public bool Check(Evidence evidence); // 0x003B2C30
 	public IMembershipCondition Copy(); // 0x003B3024
 	public override bool Equals(object o); // 0x003B309C
@@ -29282,8 +30854,9 @@ public sealed class ApplicationSecurityInfo // TypeDefIndex: 1420
 	public PermissionSet DefaultRequestSet { get; set; } // 0x003B35D8 0x003B3658
 	public ApplicationId DeploymentId { get; set; } // 0x003B3708 0x003B3710
 
-	// Methods
-	public void .ctor(ActivationContext activationContext); // 0x003B33AC
+	// Constructors
+	public ApplicationSecurityInfo(ActivationContext activationContext); // 0x003B33AC
+
 }
 
 // Namespace: System.Security.Policy
@@ -29321,10 +30894,12 @@ public sealed class ApplicationTrust : ISecurityEncodable // TypeDefIndex: 1422
 	public bool IsApplicationTrustedToRun { get; set; } // 0x003B4314 0x003B431C
 	public bool Persist { get; set; } // 0x003B4324 0x003B432C
 
+	// Constructors
+	public ApplicationTrust(); // 0x003B3AF4
+	public ApplicationTrust(ApplicationIdentity applicationIdentity); // 0x003B3B84
+	internal ApplicationTrust(PermissionSet defaultGrantSet, IEnumerable`1<StrongName> fullTrustAssemblies); // 0x003B3C3C
+
 	// Methods
-	public void .ctor(); // 0x003B3AF4
-	public void .ctor(ApplicationIdentity applicationIdentity); // 0x003B3B84
-	internal void .ctor(PermissionSet defaultGrantSet, IEnumerable`1<StrongName> fullTrustAssemblies); // 0x003B3C3C
 	public void FromXml(SecurityElement element); // 0x003B4334
 	public SecurityElement ToXml(); // 0x003B4B68
 	private PolicyStatement GetDefaultGrantSet(); // 0x003B4268
@@ -29343,8 +30918,10 @@ public sealed class ApplicationTrustCollection : IEnumerable, ICollection // Typ
 	public ApplicationTrust Item { get; } // 0x003B50FC 
 	public ApplicationTrust Item { get; } // 0x003B51B0 
 
+	// Constructors
+	internal ApplicationTrustCollection(); // 0x003B3918
+
 	// Methods
-	internal void .ctor(); // 0x003B3918
 	private void System.Collections.ICollection.CopyTo(Array array, int index); // 0x003B4FD0
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x003B5014
 	public int Add(ApplicationTrust trust); // 0x003B5308
@@ -29371,8 +30948,10 @@ public sealed class ApplicationTrustEnumerator : IEnumerator // TypeDefIndex: 14
 	private object System.Collections.IEnumerator.Current { get; } // 0x003B6380 
 	public ApplicationTrust Current { get; } // 0x003B5820 
 
+	// Constructors
+	internal ApplicationTrustEnumerator(ApplicationTrustCollection collection); // 0x003B5084
+
 	// Methods
-	internal void .ctor(ApplicationTrustCollection collection); // 0x003B5084
 	public bool MoveNext(); // 0x003B5930
 	public void Reset(); // 0x003B6458
 }
@@ -29400,9 +30979,11 @@ public class CodeConnectAccess // TypeDefIndex: 1426
 	public int Port { get; } // 0x003B66F0 
 	public string Scheme { get; } // 0x003B66F8 
 
+	// Constructors
+	public CodeConnectAccess(string allowScheme, int allowPort); // 0x003B6530
+	private static CodeConnectAccess(); // 0x003B6648
+
 	// Methods
-	public void .ctor(string allowScheme, int allowPort); // 0x003B6530
-	private static void .cctor(); // 0x003B6648
 	public override bool Equals(object o); // 0x003B6700
 	public override int GetHashCode(); // 0x003B6814
 	public static CodeConnectAccess CreateAnySchemeAccess(int allowPort); // 0x003B684C
@@ -29431,9 +31012,11 @@ public abstract class CodeGroup // TypeDefIndex: 1427
 	public virtual string AttributeString { get; } // 0x003B7654 
 	public virtual string PermissionSetName { get; } // 0x003B771C 
 
+	// Constructors
+	protected CodeGroup(IMembershipCondition membershipCondition, PolicyStatement policy); // 0x003B699C
+	internal CodeGroup(SecurityElement e, PolicyLevel level); // 0x003B6B8C
+
 	// Methods
-	protected void .ctor(IMembershipCondition membershipCondition, PolicyStatement policy); // 0x003B699C
-	internal void .ctor(SecurityElement e, PolicyLevel level); // 0x003B6B8C
 	public abstract CodeGroup Copy();
 	public abstract PolicyStatement Resolve(Evidence evidence);
 	public abstract CodeGroup ResolveMatchingCodeGroups(Evidence evidence);
@@ -29491,8 +31074,10 @@ internal static class DefaultPolicies // TypeDefIndex: 1428
 	public static PermissionSet Nothing { get; } // 0x003B9CA4 
 	public static PermissionSet Everything { get; } // 0x003B9DA8 
 
+	// Constructors
+	private static DefaultPolicies(); // 0x003B90EC
+
 	// Methods
-	private static void .cctor(); // 0x003B90EC
 	public static PermissionSet GetSpecialPermissionSet(string name); // 0x003B91E0
 	public static StrongNameMembershipCondition FullTrustMembership(string name, Key key); // 0x003BAE1C
 	private static NamedPermissionSet BuildFullTrust(); // 0x003B9EAC
@@ -29548,10 +31133,12 @@ public sealed class Evidence : IEnumerable, ICollection // TypeDefIndex: 1431
 	internal ArrayList HostEvidenceList { get; } // 0x003BBCAC 
 	internal ArrayList AssemblyEvidenceList { get; } // 0x003BBD54 
 
+	// Constructors
+	public Evidence(); // 0x003BB670
+	public Evidence(Evidence evidence); // 0x003BB678
+	public Evidence(object[] hostEvidence, object[] assemblyEvidence); // 0x003BBC14
+
 	// Methods
-	public void .ctor(); // 0x003BB670
-	public void .ctor(Evidence evidence); // 0x003BB678
-	public void .ctor(object[] hostEvidence, object[] assemblyEvidence); // 0x003BBC14
 	public void AddAssembly(object id); // 0x003BBE7C
 	public void AddHost(object id); // 0x003BBEC8
 	public void Clear(); // 0x003BC01C
@@ -29578,8 +31165,10 @@ private class EvidenceEnumerator : IEnumerator // TypeDefIndex: 1432
 	// Properties
 	public object Current { get; } // 0x003BCC24 
 
+	// Constructors
+	public EvidenceEnumerator(IEnumerator hostenum, IEnumerator assemblyenum); // 0x003BC59C
+
 	// Methods
-	public void .ctor(IEnumerator hostenum, IEnumerator assemblyenum); // 0x003BC59C
 	public bool MoveNext(); // 0x003BC934
 	public void Reset(); // 0x003BCAB8
 }
@@ -29596,9 +31185,11 @@ public sealed class FileCodeGroup : CodeGroup // TypeDefIndex: 1433
 	public override string AttributeString { get; } // 0x003BDCD4 
 	public override string PermissionSetName { get; } // 0x003BDCDC 
 
+	// Constructors
+	public FileCodeGroup(IMembershipCondition membershipCondition, FileIOPermissionAccess access); // 0x003BCCFC
+	internal FileCodeGroup(SecurityElement e, PolicyLevel level); // 0x003B905C
+
 	// Methods
-	public void .ctor(IMembershipCondition membershipCondition, FileIOPermissionAccess access); // 0x003BCCFC
-	internal void .ctor(SecurityElement e, PolicyLevel level); // 0x003B905C
 	public override CodeGroup Copy(); // 0x003BCD1C
 	public override PolicyStatement Resolve(Evidence evidence); // 0x003BD170
 	public override CodeGroup ResolveMatchingCodeGroups(Evidence evidence); // 0x003BD800
@@ -29615,9 +31206,11 @@ public sealed class FirstMatchCodeGroup : CodeGroup // TypeDefIndex: 1434
 	// Properties
 	public override string MergeLogic { get; } // 0x003BE1AC 
 
+	// Constructors
+	public FirstMatchCodeGroup(IMembershipCondition membershipCondition, PolicyStatement policy); // 0x003BE1A8
+	internal FirstMatchCodeGroup(SecurityElement e, PolicyLevel level); // 0x003B9060
+
 	// Methods
-	public void .ctor(IMembershipCondition membershipCondition, PolicyStatement policy); // 0x003BE1A8
-	internal void .ctor(SecurityElement e, PolicyLevel level); // 0x003B9060
 	public override CodeGroup Copy(); // 0x003BE208
 	public override PolicyStatement Resolve(Evidence evidence); // 0x003BE658
 	public override CodeGroup ResolveMatchingCodeGroups(Evidence evidence); // 0x003BEB3C
@@ -29628,8 +31221,10 @@ public sealed class FirstMatchCodeGroup : CodeGroup // TypeDefIndex: 1434
 [Serializable]
 public sealed class GacInstalled : IBuiltInEvidence, IIdentityPermissionFactory // TypeDefIndex: 1435
 {
+	// Constructors
+	public GacInstalled(); // 0x003BF040
+
 	// Methods
-	public void .ctor(); // 0x003BF040
 	private int System.Security.Policy.IBuiltInEvidence.GetRequiredSize(bool verbose); // 0x003BF048
 	private int System.Security.Policy.IBuiltInEvidence.InitFromBuffer(char[] buffer, int position); // 0x003BF050
 	private int System.Security.Policy.IBuiltInEvidence.OutputToBuffer(char[] buffer, int position, bool verbose); // 0x003BF058
@@ -29647,8 +31242,10 @@ public sealed class GacMembershipCondition : IConstantMembershipCondition, IMemb
 	// Fields
 	private readonly int version; // 0x08
 
+	// Constructors
+	public GacMembershipCondition(); // 0x003BF32C
+
 	// Methods
-	public void .ctor(); // 0x003BF32C
 	public bool Check(Evidence evidence); // 0x003BF33C
 	public IMembershipCondition Copy(); // 0x003BF4EC
 	public override bool Equals(object o); // 0x003BF564
@@ -29674,10 +31271,12 @@ public sealed class Hash : ISerializable, IBuiltInEvidence // TypeDefIndex: 1437
 	public byte[] MD5 { get; } // 0x003BF9CC 
 	public byte[] SHA1 { get; } // 0x003BFB80 
 
+	// Constructors
+	public Hash(Assembly assembly); // 0x003BF7C4
+	internal Hash(); // 0x003BF880
+	internal Hash(SerializationInfo info, StreamingContext context); // 0x003BF888
+
 	// Methods
-	public void .ctor(Assembly assembly); // 0x003BF7C4
-	internal void .ctor(); // 0x003BF880
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x003BF888
 	private int System.Security.Policy.IBuiltInEvidence.GetRequiredSize(bool verbose); // 0x003BF9AC
 	private int System.Security.Policy.IBuiltInEvidence.InitFromBuffer(char[] buffer, int position); // 0x003BF9BC
 	private int System.Security.Policy.IBuiltInEvidence.OutputToBuffer(char[] buffer, int position, bool verbose); // 0x003BF9C4
@@ -29702,9 +31301,11 @@ public sealed class HashMembershipCondition : ISerializable, IDeserializationCal
 	public HashAlgorithm HashAlgorithm { get; set; } // 0x003C04A0 0x003C0520
 	public byte[] HashValue { get; set; } // 0x003C05D0 0x003C06E0
 
+	// Constructors
+	internal HashMembershipCondition(); // 0x003C0318
+	public HashMembershipCondition(HashAlgorithm hashAlg, byte[] value); // 0x003C0328
+
 	// Methods
-	internal void .ctor(); // 0x003C0318
-	public void .ctor(HashAlgorithm hashAlg, byte[] value); // 0x003C0328
 	private void System.Runtime.Serialization.IDeserializationCallback.OnDeserialization(object sender); // 0x003C0498
 	private void System.Runtime.Serialization.ISerializable.GetObjectData(SerializationInfo info, StreamingContext context); // 0x003C049C
 	public bool Check(Evidence evidence); // 0x003C07E8
@@ -29763,9 +31364,11 @@ internal sealed class MembershipConditionHelper // TypeDefIndex: 1444
 	// Fields
 	private static readonly string XmlTag; // 0x00
 
+	// Constructors
+	public MembershipConditionHelper(); // 0x003C10AC
+	private static MembershipConditionHelper(); // 0x003C10B4
+
 	// Methods
-	public void .ctor(); // 0x003C10AC
-	private static void .cctor(); // 0x003C10B4
 	internal static int CheckSecurityElement(SecurityElement se, string parameterName, int minimumVersion, int maximumVersion); // 0x003B1EE0
 	internal static SecurityElement Element(Type type, int version); // 0x003B2450
 }
@@ -29776,8 +31379,10 @@ internal class MonoTrustManager : IApplicationTrustManager, ISecurityEncodable /
 	// Fields
 	private const string tag = "IApplicationTrustManager"; // 0x00
 
+	// Constructors
+	public MonoTrustManager(); // 0x003B386C
+
 	// Methods
-	public void .ctor(); // 0x003B386C
 	public ApplicationTrust DetermineApplicationTrust(ActivationContext activationContext, TrustManagerContext context); // 0x003C1128
 	public void FromXml(SecurityElement e); // 0x003C11D4
 	public SecurityElement ToXml(); // 0x003C133C
@@ -29798,10 +31403,12 @@ public sealed class NetCodeGroup : CodeGroup // TypeDefIndex: 1446
 	public override string MergeLogic { get; } // 0x003C1604 
 	public override string PermissionSetName { get; } // 0x003C1660 
 
+	// Constructors
+	public NetCodeGroup(IMembershipCondition membershipCondition); // 0x003C14B8
+	internal NetCodeGroup(SecurityElement e, PolicyLevel level); // 0x003B9064
+	private static NetCodeGroup(); // 0x003C153C
+
 	// Methods
-	public void .ctor(IMembershipCondition membershipCondition); // 0x003C14B8
-	internal void .ctor(SecurityElement e, PolicyLevel level); // 0x003B9064
-	private static void .cctor(); // 0x003C153C
 	public void AddConnectAccess(string originScheme, CodeConnectAccess connectAccess); // 0x003C16BC
 	public override CodeGroup Copy(); // 0x003C1B88
 	private bool Equals(CodeConnectAccess[] rules1, CodeConnectAccess[] rules2); // 0x003C1F90
@@ -29829,8 +31436,10 @@ public sealed class PermissionRequestEvidence : IBuiltInEvidence // TypeDefIndex
 	public PermissionSet OptionalPermissions { get; } // 0x003C36F8 
 	public PermissionSet RequestedPermissions { get; } // 0x003C3700 
 
+	// Constructors
+	public PermissionRequestEvidence(PermissionSet request, PermissionSet optional, PermissionSet denied); // 0x003C34A4
+
 	// Methods
-	public void .ctor(PermissionSet request, PermissionSet optional, PermissionSet denied); // 0x003C34A4
 	private int System.Security.Policy.IBuiltInEvidence.GetRequiredSize(bool verbose); // 0x003C3598
 	private int System.Security.Policy.IBuiltInEvidence.InitFromBuffer(char[] buffer, int position); // 0x003C36E0
 	private int System.Security.Policy.IBuiltInEvidence.OutputToBuffer(char[] buffer, int position, bool verbose); // 0x003C36E8
@@ -29842,11 +31451,12 @@ public sealed class PermissionRequestEvidence : IBuiltInEvidence // TypeDefIndex
 [Serializable]
 public class PolicyException : SystemException, _Exception // TypeDefIndex: 1448
 {
-	// Methods
-	public void .ctor(); // 0x003C3A70
-	public void .ctor(string message); // 0x003C3AE4
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x003C3AEC
-	public void .ctor(string message, Exception exception); // 0x003C3B0C
+	// Constructors
+	public PolicyException(); // 0x003C3A70
+	public PolicyException(string message); // 0x003C3AE4
+	protected PolicyException(SerializationInfo info, StreamingContext context); // 0x003C3AEC
+	public PolicyException(string message, Exception exception); // 0x003C3B0C
+
 }
 
 // Namespace: System.Security.Policy
@@ -29871,8 +31481,10 @@ public sealed class PolicyLevel // TypeDefIndex: 1449
 	public string StoreLocation { get; } // 0x003C6670 
 	public PolicyLevelType Type { get; } // 0x003C6678 
 
+	// Constructors
+	internal PolicyLevel(string label, PolicyLevelType type); // 0x003C3B14
+
 	// Methods
-	internal void .ctor(string label, PolicyLevelType type); // 0x003C3B14
 	internal void LoadFromFile(string filename); // 0x003C3BB8
 	internal void LoadFromString(string xml); // 0x003C6580
 	private SecurityElement FromString(string xml); // 0x003C41E0
@@ -29913,9 +31525,11 @@ public sealed class PolicyStatement : ISecurityEncodable, ISecurityPolicyEncodab
 	public PolicyStatementAttribute Attributes { get; set; } // 0x003C99F0 0x003C99F8
 	public string AttributeString { get; } // 0x003B7668 
 
+	// Constructors
+	public PolicyStatement(PermissionSet permSet); // 0x003B4184
+	public PolicyStatement(PermissionSet permSet, PolicyStatementAttribute attributes); // 0x003C9980
+
 	// Methods
-	public void .ctor(PermissionSet permSet); // 0x003B4184
-	public void .ctor(PermissionSet permSet, PolicyStatementAttribute attributes); // 0x003C9980
 	public PolicyStatement Copy(); // 0x003B6B10
 	public void FromXml(SecurityElement et); // 0x003C9B00
 	public void FromXml(SecurityElement et, PolicyLevel level); // 0x003B48B0
@@ -29946,8 +31560,10 @@ public sealed class Publisher : IBuiltInEvidence, IIdentityPermissionFactory // 
 	// Properties
 	public X509Certificate Certificate { get; } // 0x003C9F18 
 
+	// Constructors
+	public Publisher(X509Certificate cert); // 0x003C9D90
+
 	// Methods
-	public void .ctor(X509Certificate cert); // 0x003C9D90
 	private int System.Security.Policy.IBuiltInEvidence.GetRequiredSize(bool verbose); // 0x003C9EAC
 	private int System.Security.Policy.IBuiltInEvidence.InitFromBuffer(char[] buffer, int position); // 0x003C9F08
 	private int System.Security.Policy.IBuiltInEvidence.OutputToBuffer(char[] buffer, int position, bool verbose); // 0x003C9F10
@@ -29969,9 +31585,11 @@ public sealed class PublisherMembershipCondition : IConstantMembershipCondition,
 	// Properties
 	public X509Certificate Certificate { get; set; } // 0x003CA4F0 0x003CA4F8
 
+	// Constructors
+	internal PublisherMembershipCondition(); // 0x003CA3BC
+	public PublisherMembershipCondition(X509Certificate certificate); // 0x003CA3CC
+
 	// Methods
-	internal void .ctor(); // 0x003CA3BC
-	public void .ctor(X509Certificate certificate); // 0x003CA3CC
 	public bool Check(Evidence evidence); // 0x003CA5A8
 	public IMembershipCondition Copy(); // 0x003CA8A8
 	public override bool Equals(object o); // 0x003CA91C
@@ -29993,8 +31611,10 @@ public sealed class Site : IBuiltInEvidence, IIdentityPermissionFactory // TypeD
 	// Properties
 	public string Name { get; } // 0x003CB82C 
 
+	// Constructors
+	public Site(string name); // 0x003CAD1C
+
 	// Methods
-	public void .ctor(string name); // 0x003CAD1C
 	private int System.Security.Policy.IBuiltInEvidence.GetRequiredSize(bool verbose); // 0x003CB13C
 	private int System.Security.Policy.IBuiltInEvidence.InitFromBuffer(char[] buffer, int position); // 0x003CB170
 	private int System.Security.Policy.IBuiltInEvidence.OutputToBuffer(char[] buffer, int position, bool verbose); // 0x003CB178
@@ -30019,9 +31639,11 @@ public sealed class SiteMembershipCondition : IConstantMembershipCondition, IMem
 	// Properties
 	public string Site { get; set; } // 0x003CB97C 0x003CB878
 
+	// Constructors
+	internal SiteMembershipCondition(); // 0x003CB834
+	public SiteMembershipCondition(string site); // 0x003CB844
+
 	// Methods
-	internal void .ctor(); // 0x003CB834
-	public void .ctor(string site); // 0x003CB844
 	public bool Check(Evidence evidence); // 0x003CB984
 	public IMembershipCondition Copy(); // 0x003CBF14
 	public override bool Equals(object o); // 0x003CBFA0
@@ -30047,8 +31669,10 @@ public sealed class StrongName : IBuiltInEvidence, IIdentityPermissionFactory //
 	public StrongNamePublicKeyBlob PublicKey { get; } // 0x00230C88 
 	public Version Version { get; } // 0x00230C90 
 
+	// Constructors
+	public StrongName(StrongNamePublicKeyBlob blob, string name, Version version); // 0x00230A50
+
 	// Methods
-	public void .ctor(StrongNamePublicKeyBlob blob, string name, Version version); // 0x00230A50
 	private int System.Security.Policy.IBuiltInEvidence.GetRequiredSize(bool verbose); // 0x00230C3C
 	private int System.Security.Policy.IBuiltInEvidence.InitFromBuffer(char[] buffer, int position); // 0x00230C70
 	private int System.Security.Policy.IBuiltInEvidence.OutputToBuffer(char[] buffer, int position, bool verbose); // 0x00230C78
@@ -30074,10 +31698,12 @@ public sealed class StrongNameMembershipCondition : IConstantMembershipCondition
 	public Version Version { get; set; } // 0x00231620 0x00231628
 	public StrongNamePublicKeyBlob PublicKey { get; set; } // 0x00231630 0x00231638
 
+	// Constructors
+	public StrongNameMembershipCondition(StrongNamePublicKeyBlob blob, string name, Version version); // 0x00231488
+	internal StrongNameMembershipCondition(SecurityElement e); // 0x002315C8
+	internal StrongNameMembershipCondition(); // 0x00231600
+
 	// Methods
-	public void .ctor(StrongNamePublicKeyBlob blob, string name, Version version); // 0x00231488
-	internal void .ctor(SecurityElement e); // 0x002315C8
-	internal void .ctor(); // 0x00231600
 	public bool Check(Evidence evidence); // 0x002316E8
 	public IMembershipCondition Copy(); // 0x00231984
 	public override bool Equals(object o); // 0x00231A10
@@ -30108,9 +31734,10 @@ public class TrustManagerContext // TypeDefIndex: 1458
 	public virtual ApplicationIdentity PreviousApplicationIdentity { get; set; } // 0x002321E0 0x002321E8
 	public virtual TrustManagerUIContext UIContext { get; set; } // 0x002321F0 0x002321F8
 
-	// Methods
-	public void .ctor(); // 0x00232150
-	public void .ctor(TrustManagerUIContext uiContext); // 0x00232178
+	// Constructors
+	public TrustManagerContext(); // 0x00232150
+	public TrustManagerContext(TrustManagerUIContext uiContext); // 0x00232178
+
 }
 
 // Namespace: System.Security.Policy
@@ -30128,9 +31755,11 @@ public sealed class UnionCodeGroup : CodeGroup // TypeDefIndex: 1460
 	// Properties
 	public override string MergeLogic { get; } // 0x0023315C 
 
+	// Constructors
+	public UnionCodeGroup(IMembershipCondition membershipCondition, PolicyStatement policy); // 0x00232200
+	internal UnionCodeGroup(SecurityElement e, PolicyLevel level); // 0x00232208
+
 	// Methods
-	public void .ctor(IMembershipCondition membershipCondition, PolicyStatement policy); // 0x00232200
-	internal void .ctor(SecurityElement e, PolicyLevel level); // 0x00232208
 	public override CodeGroup Copy(); // 0x00232210
 	internal CodeGroup Copy(bool childs); // 0x00232218
 	public override PolicyStatement Resolve(Evidence evidence); // 0x00232620
@@ -30147,9 +31776,11 @@ public sealed class Url : IBuiltInEvidence, IIdentityPermissionFactory // TypeDe
 	// Properties
 	public string Value { get; } // 0x00234250 
 
+	// Constructors
+	public Url(string name); // 0x002331B8
+	internal Url(string name, bool validated); // 0x002331C0
+
 	// Methods
-	public void .ctor(string name); // 0x002331B8
-	internal void .ctor(string name, bool validated); // 0x002331C0
 	private int System.Security.Policy.IBuiltInEvidence.GetRequiredSize(bool verbose); // 0x00233508
 	private int System.Security.Policy.IBuiltInEvidence.InitFromBuffer(char[] buffer, int position); // 0x0023353C
 	private int System.Security.Policy.IBuiltInEvidence.OutputToBuffer(char[] buffer, int position, bool verbose); // 0x00233544
@@ -30173,9 +31804,11 @@ public sealed class UrlMembershipCondition : IConstantMembershipCondition, IMemb
 	// Properties
 	public string Url { get; set; } // 0x00234B5C 0x00234B94
 
+	// Constructors
+	public UrlMembershipCondition(string url); // 0x002347B0
+	internal UrlMembershipCondition(Url url, string userUrl); // 0x00234AA0
+
 	// Methods
-	public void .ctor(string url); // 0x002347B0
-	internal void .ctor(Url url, string userUrl); // 0x00234AA0
 	public bool Check(Evidence evidence); // 0x00234C0C
 	public IMembershipCondition Copy(); // 0x002351B0
 	public override bool Equals(object o); // 0x0023522C
@@ -30198,8 +31831,10 @@ public sealed class Zone : IBuiltInEvidence, IIdentityPermissionFactory // TypeD
 	// Properties
 	public SecurityZone SecurityZone { get; } // 0x00235B50 
 
+	// Constructors
+	public Zone(SecurityZone zone); // 0x00235740
+
 	// Methods
-	public void .ctor(SecurityZone zone); // 0x00235740
 	private int System.Security.Policy.IBuiltInEvidence.GetRequiredSize(bool verbose); // 0x00235A30
 	private int System.Security.Policy.IBuiltInEvidence.InitFromBuffer(char[] buffer, int position); // 0x00235A38
 	private int System.Security.Policy.IBuiltInEvidence.OutputToBuffer(char[] buffer, int position, bool verbose); // 0x00235AA0
@@ -30222,9 +31857,11 @@ public sealed class ZoneMembershipCondition : IConstantMembershipCondition, IMem
 	// Properties
 	public SecurityZone SecurityZone { get; set; } // 0x002362C0 0x002360FC
 
+	// Constructors
+	internal ZoneMembershipCondition(); // 0x002360B8
+	public ZoneMembershipCondition(SecurityZone zone); // 0x002360C8
+
 	// Methods
-	internal void .ctor(); // 0x002360B8
-	public void .ctor(SecurityZone zone); // 0x002360C8
 	public bool Check(Evidence evidence); // 0x002362C8
 	public IMembershipCondition Copy(); // 0x00236494
 	public override bool Equals(object o); // 0x00236520
@@ -30249,9 +31886,10 @@ public class GenericIdentity : IIdentity // TypeDefIndex: 1465
 	public virtual string Name { get; } // 0x00236CFC 
 	public virtual bool IsAuthenticated { get; } // 0x00236D04 
 
-	// Methods
-	public void .ctor(string name, string type); // 0x00236B44
-	public void .ctor(string name); // 0x00236C54
+	// Constructors
+	public GenericIdentity(string name, string type); // 0x00236B44
+	public GenericIdentity(string name); // 0x00236C54
+
 }
 
 // Namespace: System.Security.Principal
@@ -30265,8 +31903,10 @@ public class GenericPrincipal : IPrincipal // TypeDefIndex: 1466
 	// Properties
 	public virtual IIdentity Identity { get; } // 0x00236ECC 
 
+	// Constructors
+	public GenericPrincipal(IIdentity identity, string[] roles); // 0x00236D34
+
 	// Methods
-	public void .ctor(IIdentity identity, string[] roles); // 0x00236D34
 	public virtual bool IsInRole(string role); // 0x00236ED4
 }
 
@@ -30300,10 +31940,12 @@ public sealed class IdentityNotMappedException : SystemException // TypeDefIndex
 	// Properties
 	public IdentityReferenceCollection UnmappedIdentities { get; } // 0x0023717C 
 
+	// Constructors
+	public IdentityNotMappedException(); // 0x002370F8
+	public IdentityNotMappedException(string message); // 0x0023716C
+	public IdentityNotMappedException(string message, Exception inner); // 0x00237174
+
 	// Methods
-	public void .ctor(); // 0x002370F8
-	public void .ctor(string message); // 0x0023716C
-	public void .ctor(string message, Exception inner); // 0x00237174
 	public override void GetObjectData(SerializationInfo serializationInfo, StreamingContext streamingContext); // 0x00237274
 }
 
@@ -30313,8 +31955,10 @@ public abstract class IdentityReference // TypeDefIndex: 1470
 	// Properties
 	public abstract string Value { get; }
 
+	// Constructors
+	internal IdentityReference(); // 0x00237278
+
 	// Methods
-	internal void .ctor(); // 0x00237278
 	public abstract bool Equals(object o);
 	public abstract int GetHashCode();
 	public abstract bool IsValidTargetType(Type targetType);
@@ -30335,9 +31979,11 @@ public class IdentityReferenceCollection : IEnumerable, ICollection`1<IdentityRe
 	public bool IsReadOnly { get; } // 0x00237574 
 	public IdentityReference Item { get; set; } // 0x0023757C 0x00237680
 
+	// Constructors
+	public IdentityReferenceCollection(); // 0x002371F8
+	public IdentityReferenceCollection(int capacity); // 0x00237434
+
 	// Methods
-	public void .ctor(); // 0x002371F8
-	public void .ctor(int capacity); // 0x00237434
 	private IEnumerator System.Collections.IEnumerable.GetEnumerator(); // 0x002374B8
 	public void Add(IdentityReference identity); // 0x002376C4
 	public void Clear(); // 0x00237700
@@ -30358,9 +32004,11 @@ public sealed class NTAccount : IdentityReference // TypeDefIndex: 1472
 	// Properties
 	public override string Value { get; } // 0x0023884C 
 
+	// Constructors
+	public NTAccount(string name); // 0x0023808C
+	public NTAccount(string domainName, string accountName); // 0x00238258
+
 	// Methods
-	public void .ctor(string name); // 0x0023808C
-	public void .ctor(string domainName, string accountName); // 0x00238258
 	public override bool Equals(object o); // 0x00238854
 	public override int GetHashCode(); // 0x002389E4
 	public override bool IsValidTargetType(Type targetType); // 0x00238A0C
@@ -30392,12 +32040,14 @@ public sealed class SecurityIdentifier : IdentityReference, IComparable`1<Securi
 	public int BinaryLength { get; } // 0x002392FC 
 	public override string Value { get; } // 0x00239304 
 
+	// Constructors
+	public SecurityIdentifier(string sddlForm); // 0x00238C70
+	public SecurityIdentifier(byte[] binaryForm, int offset); // 0x00238E80
+	public SecurityIdentifier(IntPtr binaryForm); // 0x00238FC8
+	public SecurityIdentifier(WellKnownSidType sidType, SecurityIdentifier domainSid); // 0x00239060
+	private static SecurityIdentifier(); // 0x0023925C
+
 	// Methods
-	public void .ctor(string sddlForm); // 0x00238C70
-	public void .ctor(byte[] binaryForm, int offset); // 0x00238E80
-	public void .ctor(IntPtr binaryForm); // 0x00238FC8
-	public void .ctor(WellKnownSidType sidType, SecurityIdentifier domainSid); // 0x00239060
-	private static void .cctor(); // 0x0023925C
 	public int CompareTo(SecurityIdentifier sid); // 0x0023930C
 	public override bool Equals(object o); // 0x002393E8
 	public bool Equals(SecurityIdentifier sid); // 0x00239470
@@ -30562,15 +32212,17 @@ public class WindowsIdentity : IDisposable, ISerializable, IDeserializationCallb
 	public SecurityIdentifier User { get; } // 0x0023AE28 
 	private static bool IsPosix { get; } // 0x00239EDC 
 
+	// Constructors
+	public WindowsIdentity(IntPtr userToken); // 0x00239A78
+	public WindowsIdentity(IntPtr userToken, string type); // 0x00239AFC
+	public WindowsIdentity(IntPtr userToken, string type, WindowsAccountType acctType); // 0x00239B3C
+	public WindowsIdentity(IntPtr userToken, string type, WindowsAccountType acctType, bool isAuthenticated); // 0x00239AB4
+	public WindowsIdentity(string sUserPrincipalName); // 0x00239D40
+	public WindowsIdentity(string sUserPrincipalName, string type); // 0x00239D48
+	public WindowsIdentity(SerializationInfo info, StreamingContext context); // 0x00239F0C
+	private static WindowsIdentity(); // 0x00239F2C
+
 	// Methods
-	public void .ctor(IntPtr userToken); // 0x00239A78
-	public void .ctor(IntPtr userToken, string type); // 0x00239AFC
-	public void .ctor(IntPtr userToken, string type, WindowsAccountType acctType); // 0x00239B3C
-	public void .ctor(IntPtr userToken, string type, WindowsAccountType acctType, bool isAuthenticated); // 0x00239AB4
-	public void .ctor(string sUserPrincipalName); // 0x00239D40
-	public void .ctor(string sUserPrincipalName, string type); // 0x00239D48
-	public void .ctor(SerializationInfo info, StreamingContext context); // 0x00239F0C
-	private static void .cctor(); // 0x00239F2C
 	private void System.Runtime.Serialization.IDeserializationCallback.OnDeserialization(object sender); // 0x00239F94
 	private void System.Runtime.Serialization.ISerializable.GetObjectData(SerializationInfo info, StreamingContext context); // 0x0023A3D4
 	public void Dispose(); // 0x0023A578
@@ -30595,8 +32247,10 @@ public class WindowsImpersonationContext : IDisposable // TypeDefIndex: 1481
 	private IntPtr _token; // 0x08
 	private bool undo; // 0x0C
 
+	// Constructors
+	internal WindowsImpersonationContext(IntPtr token); // 0x0023AA6C
+
 	// Methods
-	internal void .ctor(IntPtr token); // 0x0023AA6C
 	public void Dispose(); // 0x0023AEE0
 	protected virtual void Dispose(bool disposing); // 0x0023AFBC
 	public void Undo(); // 0x0023AEF0
@@ -30619,8 +32273,10 @@ public class WindowsPrincipal : IPrincipal // TypeDefIndex: 1482
 	private static bool IsPosix { get; } // 0x0023B1AC 
 	private IntPtr Token { get; } // 0x0023B1DC 
 
+	// Constructors
+	public WindowsPrincipal(WindowsIdentity ntIdentity); // 0x0023AFFC
+
 	// Methods
-	public void .ctor(WindowsIdentity ntIdentity); // 0x0023AFFC
 	public virtual bool IsInRole(int rid); // 0x0023B0C0
 	public virtual bool IsInRole(string role); // 0x0023B214
 	public virtual bool IsInRole(WindowsBuiltInRole role); // 0x0023B3E4
@@ -30632,16 +32288,19 @@ public class WindowsPrincipal : IPrincipal // TypeDefIndex: 1482
 // Namespace: System.Security
 public sealed class AllowPartiallyTrustedCallersAttribute : Attribute // TypeDefIndex: 1483
 {
-	// Methods
-	public void .ctor(); // 0x004349F4
+	// Constructors
+	public AllowPartiallyTrustedCallersAttribute(); // 0x004349F4
+
 }
 
 // Namespace: System.Security
 [Serializable]
 public abstract class CodeAccessPermission : IPermission, ISecurityEncodable, IStackWalk // TypeDefIndex: 1484
 {
+	// Constructors
+	protected CodeAccessPermission(); // 0x004349FC
+
 	// Methods
-	protected void .ctor(); // 0x004349FC
 	public void Assert(); // 0x00434A04
 	internal bool CheckAssert(CodeAccessPermission asserted); // 0x00434A08
 	internal bool CheckDemand(CodeAccessPermission target); // 0x00434A68
@@ -30685,12 +32344,14 @@ public class HostProtectionException : SystemException // TypeDefIndex: 1485
 	public HostProtectionResource DemandedResources { get; } // 0x003D8A0C 
 	public HostProtectionResource ProtectedResources { get; } // 0x003D8A14 
 
+	// Constructors
+	public HostProtectionException(); // 0x003D897C
+	public HostProtectionException(string message); // 0x003D8984
+	public HostProtectionException(string message, Exception e); // 0x003D898C
+	public HostProtectionException(string message, HostProtectionResource protectedResources, HostProtectionResource demandedResources); // 0x003D8994
+	protected HostProtectionException(SerializationInfo info, StreamingContext context); // 0x003D89BC
+
 	// Methods
-	public void .ctor(); // 0x003D897C
-	public void .ctor(string message); // 0x003D8984
-	public void .ctor(string message, Exception e); // 0x003D898C
-	public void .ctor(string message, HostProtectionResource protectedResources, HostProtectionResource demandedResources); // 0x003D8994
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x003D89BC
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x003D8A1C
 	public override string ToString(); // 0x003D8AC4
 }
@@ -30703,8 +32364,10 @@ public class HostSecurityManager // TypeDefIndex: 1486
 	public virtual PolicyLevel DomainPolicy { get; } // 0x003D8AD4 
 	public virtual HostSecurityManagerOptions Flags { get; } // 0x003D8ADC 
 
+	// Constructors
+	public HostSecurityManager(); // 0x003D8ACC
+
 	// Methods
-	public void .ctor(); // 0x003D8ACC
 	public virtual ApplicationTrust DetermineApplicationTrust(Evidence applicationEvidence, Evidence activatorEvidence, TrustManagerContext context); // 0x003D8AE4
 	public virtual Evidence ProvideAppDomainEvidence(Evidence inputEvidence); // 0x003D8FDC
 	public virtual Evidence ProvideAssemblyEvidence(Assembly loadedAssembly, Evidence inputEvidence); // 0x003D8FE4
@@ -30781,12 +32444,14 @@ public sealed class NamedPermissionSet : PermissionSet // TypeDefIndex: 1493
 	public string Description { get; set; } // 0x003D92D0 0x003D92D8
 	public string Name { get; set; } // 0x003D92E0 0x003D9110
 
+	// Constructors
+	internal NamedPermissionSet(); // 0x003D90D0
+	public NamedPermissionSet(string name, PermissionSet permSet); // 0x003D90E0
+	public NamedPermissionSet(string name, PermissionState state); // 0x003D9224
+	public NamedPermissionSet(NamedPermissionSet permSet); // 0x003D9254
+	public NamedPermissionSet(string name); // 0x003D92A8
+
 	// Methods
-	internal void .ctor(); // 0x003D90D0
-	public void .ctor(string name, PermissionSet permSet); // 0x003D90E0
-	public void .ctor(string name, PermissionState state); // 0x003D9224
-	public void .ctor(NamedPermissionSet permSet); // 0x003D9254
-	public void .ctor(string name); // 0x003D92A8
 	public override PermissionSet Copy(); // 0x003D92E8
 	public NamedPermissionSet Copy(string name); // 0x003D9358
 	public override void FromXml(SecurityElement et); // 0x003D93E8
@@ -30801,8 +32466,10 @@ internal static class PermissionBuilder // TypeDefIndex: 1494
 	// Fields
 	private static object[] psNone; // 0x00
 
+	// Constructors
+	private static PermissionBuilder(); // 0x003D96F0
+
 	// Methods
-	private static void .cctor(); // 0x003D96F0
 	public static IPermission Create(string fullname, PermissionState state); // 0x003D97F8
 	public static IPermission Create(SecurityElement se); // 0x003D9C00
 	public static IPermission Create(string fullname, SecurityElement se); // 0x003D9D58
@@ -30822,11 +32489,13 @@ public class PermissionSet // TypeDefIndex: 1495
 	internal PolicyLevel Resolver { get; set; } // 0x003DA108 0x003DA110
 	internal bool DeclarativeSecurity { get; set; } // 0x003DA118 0x003DA120
 
+	// Constructors
+	public PermissionSet(); // 0x003D90D8
+	internal PermissionSet(string xml); // 0x003D9F74
+	public PermissionSet(PermissionState state); // 0x003D924C
+	public PermissionSet(PermissionSet permSet); // 0x003D9108
+
 	// Methods
-	public void .ctor(); // 0x003D90D8
-	internal void .ctor(string xml); // 0x003D9F74
-	public void .ctor(PermissionState state); // 0x003D924C
-	public void .ctor(PermissionSet permSet); // 0x003D9108
 	public IPermission AddPermission(IPermission perm); // 0x003D9F7C
 	public virtual void Assert(); // 0x003D9F84
 	public virtual PermissionSet Copy(); // 0x003D9F88
@@ -30858,8 +32527,10 @@ private sealed class <GetEnumerator>c__Iterator1 : IEnumerator, IDisposable, IEn
 	private object System.Collections.Generic.IEnumerator<object>.Current { get; } // 0x003DA19C 
 	private object System.Collections.IEnumerator.Current { get; } // 0x003DA1A4 
 
+	// Constructors
+	public <GetEnumerator>c__Iterator1(); // 0x003DA100
+
 	// Methods
-	public void .ctor(); // 0x003DA100
 	public bool MoveNext(); // 0x003DA1AC
 	public void Dispose(); // 0x003DA1BC
 	public void Reset(); // 0x003DA1C8
@@ -30889,10 +32560,12 @@ public sealed class SecureString : CriticalFinalizerObject, IDisposable // TypeD
 	// Properties
 	public int Length { get; } // 0x0023B8EC 
 
+	// Constructors
+	public SecureString(); // 0x0023B52C
+	public SecureString(void * value, int length); // 0x0023B708
+	private static SecureString(); // 0x0023B8E8
+
 	// Methods
-	public void .ctor(); // 0x0023B52C
-	public void .ctor(void * value, int length); // 0x0023B708
-	private static void .cctor(); // 0x0023B8E8
 	public void AppendChar(char c); // 0x0023B99C
 	public void Clear(); // 0x0023BBE8
 	public SecureString Copy(); // 0x0023BD2C
@@ -30924,9 +32597,11 @@ public sealed class SecurityContext // TypeDefIndex: 1499
 	internal CompressedStack CompressedStack { get; set; } // 0x0023CAAC 0x0023CAB4
 	internal IntPtr IdentityToken { get; set; } // 0x0023CABC 0x0023CAC4
 
+	// Constructors
+	internal SecurityContext(); // 0x0023C7FC
+	internal SecurityContext(SecurityContext sc); // 0x0023C804
+
 	// Methods
-	internal void .ctor(); // 0x0023C7FC
-	internal void .ctor(SecurityContext sc); // 0x0023C804
 	public SecurityContext CreateCopy(); // 0x0023C870
 	public static SecurityContext Capture(); // 0x0023C930
 	public static bool IsFlowSuppressed(); // 0x0023CACC
@@ -30946,9 +32621,10 @@ public sealed class SecurityCriticalAttribute : Attribute // TypeDefIndex: 1500
 	// Properties
 	public SecurityCriticalScope Scope { get; } // 0x0023D390 
 
-	// Methods
-	public void .ctor(); // 0x0023D348
-	public void .ctor(SecurityCriticalScope scope); // 0x0023D368
+	// Constructors
+	public SecurityCriticalAttribute(); // 0x0023D348
+	public SecurityCriticalAttribute(SecurityCriticalScope scope); // 0x0023D368
+
 }
 
 // Namespace: System.Security
@@ -30979,11 +32655,13 @@ public sealed class SecurityElement // TypeDefIndex: 1502
 	public string Tag { get; set; } // 0x0023ED98 0x0023DC5C
 	public string Text { get; set; } // 0x0023EDA0 0x0023D450
 
+	// Constructors
+	public SecurityElement(string tag); // 0x002311C0
+	public SecurityElement(string tag, string text); // 0x00233F94
+	internal SecurityElement(SecurityElement se); // 0x0023D5CC
+	private static SecurityElement(); // 0x0023DDEC
+
 	// Methods
-	public void .ctor(string tag); // 0x002311C0
-	public void .ctor(string tag, string text); // 0x00233F94
-	internal void .ctor(SecurityElement se); // 0x0023D5CC
-	private static void .cctor(); // 0x0023DDEC
 	public void AddAttribute(string name, string value); // 0x002311C8
 	public void AddChild(SecurityElement child); // 0x00234144
 	public string Attribute(string name); // 0x00231D2C
@@ -31014,8 +32692,9 @@ internal class SecurityAttribute // TypeDefIndex: 1503
 	public string Name { get; } // 0x00240EF4 
 	public string Value { get; } // 0x00240EFC 
 
-	// Methods
-	public void .ctor(string name, string value); // 0x0023E850
+	// Constructors
+	public SecurityAttribute(string name, string value); // 0x0023E850
+
 }
 
 // Namespace: System.Security
@@ -31053,16 +32732,18 @@ public class SecurityException : SystemException // TypeDefIndex: 1504
 	public string GrantedSet { get; set; } // 0x0024149C 0x002414A4
 	public string RefusedSet { get; set; } // 0x002414AC 0x002414B4
 
+	// Constructors
+	public SecurityException(); // 0x00240F04
+	public SecurityException(string message); // 0x0023AEBC
+	protected SecurityException(SerializationInfo info, StreamingContext context); // 0x00240F84
+	public SecurityException(string message, Exception inner); // 0x00241110
+	public SecurityException(string message, Type type); // 0x00241134
+	public SecurityException(string message, Type type, string state); // 0x00241160
+	internal SecurityException(string message, PermissionSet granted, PermissionSet refused); // 0x00241194
+	public SecurityException(string message, object deny, object permitOnly, MethodInfo method, object demanded, IPermission permThatFailed); // 0x00241210
+	public SecurityException(string message, AssemblyName assemblyName, PermissionSet grant, PermissionSet refused, MethodInfo method, SecurityAction action, object demanded, IPermission permThatFailed, Evidence evidence); // 0x00241258
+
 	// Methods
-	public void .ctor(); // 0x00240F04
-	public void .ctor(string message); // 0x0023AEBC
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00240F84
-	public void .ctor(string message, Exception inner); // 0x00241110
-	public void .ctor(string message, Type type); // 0x00241134
-	public void .ctor(string message, Type type, string state); // 0x00241160
-	internal void .ctor(string message, PermissionSet granted, PermissionSet refused); // 0x00241194
-	public void .ctor(string message, object deny, object permitOnly, MethodInfo method, object demanded, IPermission permThatFailed); // 0x00241210
-	public void .ctor(string message, AssemblyName assemblyName, PermissionSet grant, PermissionSet refused, MethodInfo method, SecurityAction action, object demanded, IPermission permThatFailed, Evidence evidence); // 0x00241258
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x002414BC
 	public override string ToString(); // 0x002415F8
 }
@@ -31087,8 +32768,9 @@ internal class RuntimeSecurityFrame // TypeDefIndex: 1506
 	public RuntimeDeclSecurityEntry deny; // 0x1C
 	public RuntimeDeclSecurityEntry permitonly; // 0x28
 
-	// Methods
-	public void .ctor(); // 0x0023B524
+	// Constructors
+	public RuntimeSecurityFrame(); // 0x0023B524
+
 }
 
 // Namespace: System.Security
@@ -31110,9 +32792,11 @@ internal struct SecurityFrame // TypeDefIndex: 1507
 	public PermissionSet PermitOnly { get; } // 0x0008C4EC 
 	public bool HasStackModifiers { get; } // 0x0008C4F4 
 
+	// Constructors
+	internal SecurityFrame(RuntimeSecurityFrame frame); // 0x0008C470
+	internal SecurityFrame(int skip); // 0x0008C488
+
 	// Methods
-	internal void .ctor(RuntimeSecurityFrame frame); // 0x0008C470
-	internal void .ctor(int skip); // 0x0008C488
 	private static RuntimeSecurityFrame _GetSecurityFrame(int skip); // 0x0024218C
 	private static Array _GetSecurityStack(int skip); // 0x00242190
 	internal void InitFromRuntimeFrame(RuntimeSecurityFrame frame); // 0x0008C4BC
@@ -31149,8 +32833,10 @@ public static class SecurityManager // TypeDefIndex: 1509
 	internal static PolicyLevel ResolvingPolicyLevel { get; set; } // 0x00245B04 0x00245B90
 	private static IPermission UnmanagedCode { get; } // 0x00245DD8 
 
+	// Constructors
+	private static SecurityManager(); // 0x00242C9C
+
 	// Methods
-	private static void .cctor(); // 0x00242C9C
 	public static void GetZoneAndOrigin(out ArrayList zone, out ArrayList origin); // 0x00242D5C
 	public static bool IsGranted(IPermission perm); // 0x00242DE8
 	internal static bool IsGranted(Assembly a, IPermission perm); // 0x00242EC0
@@ -31189,15 +32875,18 @@ public static class SecurityManager // TypeDefIndex: 1509
 // Namespace: System.Security
 public sealed class SecuritySafeCriticalAttribute : Attribute // TypeDefIndex: 1510
 {
-	// Methods
-	public void .ctor(); // 0x00247120
+	// Constructors
+	public SecuritySafeCriticalAttribute(); // 0x00247120
+
 }
 
 // Namespace: System.Security
 public abstract class SecurityState // TypeDefIndex: 1511
 {
+	// Constructors
+	protected SecurityState(); // 0x00247128
+
 	// Methods
-	protected void .ctor(); // 0x00247128
 	public abstract void EnsureState();
 	public bool IsStateAvailable(); // 0x00247130
 }
@@ -31205,15 +32894,17 @@ public abstract class SecurityState // TypeDefIndex: 1511
 // Namespace: System.Security
 public sealed class SecurityTransparentAttribute : Attribute // TypeDefIndex: 1512
 {
-	// Methods
-	public void .ctor(); // 0x00247184
+	// Constructors
+	public SecurityTransparentAttribute(); // 0x00247184
+
 }
 
 // Namespace: System.Security
 public sealed class SecurityTreatAsSafeAttribute : Attribute // TypeDefIndex: 1513
 {
-	// Methods
-	public void .ctor(); // 0x0024718C
+	// Constructors
+	public SecurityTreatAsSafeAttribute(); // 0x0024718C
+
 }
 
 // Namespace: System.Security
@@ -31231,39 +32922,43 @@ public enum SecurityZone // TypeDefIndex: 1514
 // Namespace: System.Security
 public sealed class SuppressUnmanagedCodeSecurityAttribute : Attribute // TypeDefIndex: 1515
 {
-	// Methods
-	public void .ctor(); // 0x00247194
+	// Constructors
+	public SuppressUnmanagedCodeSecurityAttribute(); // 0x00247194
+
 }
 
 // Namespace: System.Security
 public sealed class UnverifiableCodeAttribute : Attribute // TypeDefIndex: 1516
 {
-	// Methods
-	public void .ctor(); // 0x0024719C
+	// Constructors
+	public UnverifiableCodeAttribute(); // 0x0024719C
+
 }
 
 // Namespace: System.Security
 [Serializable]
 public class VerificationException : SystemException // TypeDefIndex: 1517
 {
-	// Methods
-	public void .ctor(); // 0x002471A4
-	public void .ctor(string message); // 0x002471AC
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002471B4
-	public void .ctor(string message, Exception innerException); // 0x002471D4
+	// Constructors
+	public VerificationException(); // 0x002471A4
+	public VerificationException(string message); // 0x002471AC
+	protected VerificationException(SerializationInfo info, StreamingContext context); // 0x002471B4
+	public VerificationException(string message, Exception innerException); // 0x002471D4
+
 }
 
 // Namespace: System.Security
 [Serializable]
 public sealed class XmlSyntaxException : SystemException // TypeDefIndex: 1518
 {
-	// Methods
-	public void .ctor(); // 0x002471DC
-	public void .ctor(int lineNumber); // 0x002471E4
-	public void .ctor(int lineNumber, string message); // 0x002472C0
-	public void .ctor(string message); // 0x002401BC
-	public void .ctor(string message, Exception inner); // 0x002401C4
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x00247500
+	// Constructors
+	public XmlSyntaxException(); // 0x002471DC
+	public XmlSyntaxException(int lineNumber); // 0x002471E4
+	public XmlSyntaxException(int lineNumber, string message); // 0x002472C0
+	public XmlSyntaxException(string message); // 0x002401BC
+	public XmlSyntaxException(string message, Exception inner); // 0x002401C4
+	internal XmlSyntaxException(SerializationInfo info, StreamingContext context); // 0x00247500
+
 }
 
 // Namespace: System.Text
@@ -31276,8 +32971,10 @@ public class ASCIIEncoding : Encoding // TypeDefIndex: 1519
 	// Properties
 	public override bool IsSingleByte { get; } // 0x005101B8 
 
+	// Constructors
+	public ASCIIEncoding(); // 0x0050FC40
+
 	// Methods
-	public void .ctor(); // 0x0050FC40
 	public override int GetByteCount(char[] chars, int index, int count); // 0x005101C0
 	public override int GetByteCount(string chars); // 0x005103A8
 	public override int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteIndex); // 0x00510454
@@ -31309,8 +33006,10 @@ internal sealed class CodePageEncoding : ISerializable, IObjectReference // Type
 	private DecoderFallback decoderFallback; // 0x14
 	private Encoding realObject; // 0x18
 
+	// Constructors
+	private CodePageEncoding(SerializationInfo info, StreamingContext context); // 0x005123A4
+
 	// Methods
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x005123A4
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x005127B0
 	public object GetRealObject(StreamingContext context); // 0x0051284C
 }
@@ -31323,8 +33022,10 @@ private sealed class Decoder : ISerializable, IObjectReference // TypeDefIndex: 
 	private Encoding encoding; // 0x08
 	private Decoder realObject; // 0x0C
 
+	// Constructors
+	private Decoder(SerializationInfo info, StreamingContext context); // 0x00513204
+
 	// Methods
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x00513204
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x0051337C
 	public object GetRealObject(StreamingContext context); // 0x00513418
 }
@@ -31341,8 +33042,10 @@ public abstract class Decoder // TypeDefIndex: 1522
 	public DecoderFallback Fallback { get; set; } // 0x0051353C 0x00513544
 	public DecoderFallbackBuffer FallbackBuffer { get; } // 0x005135E8 
 
+	// Constructors
+	protected Decoder(); // 0x00513460
+
 	// Methods
-	protected void .ctor(); // 0x00513460
 	public abstract int GetCharCount(byte[] bytes, int index, int count);
 	public abstract int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex);
 	public virtual int GetCharCount(byte[] bytes, int index, int count, bool flush); // 0x00513630
@@ -31364,8 +33067,10 @@ public sealed class DecoderExceptionFallback : DecoderFallback // TypeDefIndex: 
 	// Properties
 	public override int MaxCharCount { get; } // 0x00514140 
 
+	// Constructors
+	public DecoderExceptionFallback(); // 0x005140B4
+
 	// Methods
-	public void .ctor(); // 0x005140B4
 	public override DecoderFallbackBuffer CreateFallbackBuffer(); // 0x00514148
 	public override bool Equals(object value); // 0x005141BC
 	public override int GetHashCode(); // 0x00514238
@@ -31377,8 +33082,10 @@ public sealed class DecoderExceptionFallbackBuffer : DecoderFallbackBuffer // Ty
 	// Properties
 	public override int Remaining { get; } // 0x00514248 
 
+	// Constructors
+	public DecoderExceptionFallbackBuffer(); // 0x005141B4
+
 	// Methods
-	public void .ctor(); // 0x005141B4
 	public override bool Fallback(byte[] bytesUnknown, int index); // 0x00514250
 	public override char GetNextChar(); // 0x00514320
 	public override bool MovePrevious(); // 0x00514328
@@ -31399,9 +33106,11 @@ public abstract class DecoderFallback // TypeDefIndex: 1525
 	public static DecoderFallback ReplacementFallback { get; } // 0x00514564 
 	internal static DecoderFallback StandardSafeFallback { get; } // 0x005145F0 
 
+	// Constructors
+	protected DecoderFallback(); // 0x00514138
+	private static DecoderFallback(); // 0x00514330
+
 	// Methods
-	protected void .ctor(); // 0x00514138
-	private static void .cctor(); // 0x00514330
 	public abstract DecoderFallbackBuffer CreateFallbackBuffer();
 }
 
@@ -31411,8 +33120,10 @@ public abstract class DecoderFallbackBuffer // TypeDefIndex: 1526
 	// Properties
 	public abstract int Remaining { get; }
 
+	// Constructors
+	protected DecoderFallbackBuffer(); // 0x00514240
+
 	// Methods
-	protected void .ctor(); // 0x00514240
 	public abstract bool Fallback(byte[] bytesUnknown, int index);
 	public abstract char GetNextChar();
 	public abstract bool MovePrevious();
@@ -31432,11 +33143,12 @@ public sealed class DecoderFallbackException : ArgumentException // TypeDefIndex
 	public byte[] BytesUnknown { get; } // 0x005146B4 
 	public int Index { get; } // 0x005146BC 
 
-	// Methods
-	public void .ctor(); // 0x00514680
-	public void .ctor(string message); // 0x00514694
-	public void .ctor(string message, Exception innerException); // 0x005146A4
-	public void .ctor(string message, byte[] bytesUnknown, int index); // 0x005142EC
+	// Constructors
+	public DecoderFallbackException(); // 0x00514680
+	public DecoderFallbackException(string message); // 0x00514694
+	public DecoderFallbackException(string message, Exception innerException); // 0x005146A4
+	public DecoderFallbackException(string message, byte[] bytesUnknown, int index); // 0x005142EC
+
 }
 
 // Namespace: System.Text
@@ -31450,9 +33162,11 @@ public sealed class DecoderReplacementFallback : DecoderFallback // TypeDefIndex
 	public string DefaultString { get; } // 0x005146C4 
 	public override int MaxCharCount { get; } // 0x005146CC 
 
+	// Constructors
+	public DecoderReplacementFallback(); // 0x005134D8
+	public DecoderReplacementFallback(string replacement); // 0x00514404
+
 	// Methods
-	public void .ctor(); // 0x005134D8
-	public void .ctor(string replacement); // 0x00514404
 	public override DecoderFallbackBuffer CreateFallbackBuffer(); // 0x005146F0
 	public override bool Equals(object value); // 0x00514828
 	public override int GetHashCode(); // 0x005148E8
@@ -31469,8 +33183,10 @@ public sealed class DecoderReplacementFallbackBuffer : DecoderFallbackBuffer // 
 	// Properties
 	public override int Remaining { get; } // 0x00514914 
 
+	// Constructors
+	public DecoderReplacementFallbackBuffer(DecoderReplacementFallback fallback); // 0x00514760
+
 	// Methods
-	public void .ctor(DecoderReplacementFallback fallback); // 0x00514760
 	public override bool Fallback(byte[] bytesUnknown, int index); // 0x00514958
 	public override char GetNextChar(); // 0x00514B08
 	public override bool MovePrevious(); // 0x00514B80
@@ -31489,8 +33205,10 @@ public abstract class Encoder // TypeDefIndex: 1530
 	public EncoderFallback Fallback { get; set; } // 0x00514C88 0x00514C90
 	public EncoderFallbackBuffer FallbackBuffer { get; } // 0x00514D34 
 
+	// Constructors
+	protected Encoder(); // 0x00514BAC
+
 	// Methods
-	protected void .ctor(); // 0x00514BAC
 	public abstract int GetByteCount(char[] chars, int index, int count, bool flush);
 	public abstract int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteIndex, bool flush);
 	public virtual int GetByteCount(void * chars, int count, bool flush); // 0x00514D7C
@@ -31508,8 +33226,10 @@ public sealed class EncoderExceptionFallback : EncoderFallback // TypeDefIndex: 
 	// Properties
 	public override int MaxCharCount { get; } // 0x00515698 
 
+	// Constructors
+	public EncoderExceptionFallback(); // 0x0051560C
+
 	// Methods
-	public void .ctor(); // 0x0051560C
 	public override EncoderFallbackBuffer CreateFallbackBuffer(); // 0x005156A0
 	public override bool Equals(object value); // 0x00515714
 	public override int GetHashCode(); // 0x00515790
@@ -31521,8 +33241,10 @@ public sealed class EncoderExceptionFallbackBuffer : EncoderFallbackBuffer // Ty
 	// Properties
 	public override int Remaining { get; } // 0x005157A0 
 
+	// Constructors
+	public EncoderExceptionFallbackBuffer(); // 0x0051570C
+
 	// Methods
-	public void .ctor(); // 0x0051570C
 	public override bool Fallback(char charUnknown, int index); // 0x005157A8
 	public override bool Fallback(char charUnknownHigh, char charUnknownLow, int index); // 0x00515874
 	public override char GetNextChar(); // 0x00515954
@@ -31544,9 +33266,11 @@ public abstract class EncoderFallback // TypeDefIndex: 1533
 	public static EncoderFallback ReplacementFallback { get; } // 0x00515B98 
 	internal static EncoderFallback StandardSafeFallback { get; } // 0x00515C24 
 
+	// Constructors
+	protected EncoderFallback(); // 0x00515690
+	private static EncoderFallback(); // 0x00515964
+
 	// Methods
-	protected void .ctor(); // 0x00515690
-	private static void .cctor(); // 0x00515964
 	public abstract EncoderFallbackBuffer CreateFallbackBuffer();
 }
 
@@ -31556,8 +33280,10 @@ public abstract class EncoderFallbackBuffer // TypeDefIndex: 1534
 	// Properties
 	public abstract int Remaining { get; }
 
+	// Constructors
+	protected EncoderFallbackBuffer(); // 0x00515798
+
 	// Methods
-	protected void .ctor(); // 0x00515798
 	public abstract bool Fallback(char charUnknown, int index);
 	public abstract bool Fallback(char charUnknownHigh, char charUnknownLow, int index);
 	public abstract char GetNextChar();
@@ -31582,12 +33308,14 @@ public sealed class EncoderFallbackException : ArgumentException // TypeDefIndex
 	public char CharUnknownLow { get; } // 0x00515D20 
 	public int Index { get; } // 0x00515D28 
 
+	// Constructors
+	public EncoderFallbackException(); // 0x00515CDC
+	public EncoderFallbackException(string message); // 0x00515CF0
+	public EncoderFallbackException(string message, Exception innerException); // 0x00515D00
+	internal EncoderFallbackException(char charUnknown, int index); // 0x0051583C
+	internal EncoderFallbackException(char charUnknownHigh, char charUnknownLow, int index); // 0x00515914
+
 	// Methods
-	public void .ctor(); // 0x00515CDC
-	public void .ctor(string message); // 0x00515CF0
-	public void .ctor(string message, Exception innerException); // 0x00515D00
-	internal void .ctor(char charUnknown, int index); // 0x0051583C
-	internal void .ctor(char charUnknownHigh, char charUnknownLow, int index); // 0x00515914
 	public bool IsUnknownSurrogate(); // 0x00515D30
 }
 
@@ -31602,9 +33330,11 @@ public sealed class EncoderReplacementFallback : EncoderFallback // TypeDefIndex
 	public string DefaultString { get; } // 0x00515DB8 
 	public override int MaxCharCount { get; } // 0x00515DC0 
 
+	// Constructors
+	public EncoderReplacementFallback(); // 0x00514C24
+	public EncoderReplacementFallback(string replacement); // 0x00515A38
+
 	// Methods
-	public void .ctor(); // 0x00514C24
-	public void .ctor(string replacement); // 0x00515A38
 	public override EncoderFallbackBuffer CreateFallbackBuffer(); // 0x00515DE4
 	public override bool Equals(object value); // 0x00515F1C
 	public override int GetHashCode(); // 0x00515FDC
@@ -31621,8 +33351,10 @@ public sealed class EncoderReplacementFallbackBuffer : EncoderFallbackBuffer // 
 	// Properties
 	public override int Remaining { get; } // 0x00516008 
 
+	// Constructors
+	public EncoderReplacementFallbackBuffer(EncoderReplacementFallback fallback); // 0x00515E54
+
 	// Methods
-	public void .ctor(EncoderReplacementFallback fallback); // 0x00515E54
 	public override bool Fallback(char charUnknown, int index); // 0x00516038
 	public override bool Fallback(char charUnknownHigh, char charUnknownLow, int index); // 0x00516198
 	private bool Fallback(int index); // 0x00516040
@@ -31693,10 +33425,12 @@ public abstract class Encoding : ICloneable // TypeDefIndex: 1538
 	public static Encoding UTF32 { get; } // 0x00519988 
 	internal static Encoding BigEndianUTF32 { get; } // 0x00519BE0 
 
+	// Constructors
+	protected Encoding(); // 0x00516234
+	protected Encoding(int codePage); // 0x0050FCFC
+	private static Encoding(); // 0x00516244
+
 	// Methods
-	protected void .ctor(); // 0x00516234
-	protected void .ctor(int codePage); // 0x0050FCFC
-	private static void .cctor(); // 0x00516244
 	internal static string _(string arg); // 0x005103A4
 	internal void SetFallbackInternal(EncoderFallback e, DecoderFallback d); // 0x0051758C
 	public static byte[] Convert(Encoding srcEncoding, Encoding dstEncoding, byte[] bytes); // 0x005175A0
@@ -31745,8 +33479,10 @@ private sealed class ForwardingDecoder : Decoder // TypeDefIndex: 1539
 	// Fields
 	private Encoding encoding; // 0x10
 
+	// Constructors
+	public ForwardingDecoder(Encoding enc); // 0x005185FC
+
 	// Methods
-	public void .ctor(Encoding enc); // 0x005185FC
 	public override int GetCharCount(byte[] bytes, int index, int count); // 0x0051C7C4
 	public override int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex); // 0x0051C81C
 }
@@ -31757,8 +33493,10 @@ private sealed class ForwardingEncoder : Encoder // TypeDefIndex: 1540
 	// Fields
 	private Encoding encoding; // 0x10
 
+	// Constructors
+	public ForwardingEncoder(Encoding enc); // 0x0051863C
+
 	// Methods
-	public void .ctor(Encoding enc); // 0x0051863C
 	public override int GetByteCount(char[] chars, int index, int count, bool flush); // 0x0051C884
 	public override int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteCount, bool flush); // 0x0051C8DC
 }
@@ -31776,8 +33514,10 @@ public sealed class EncodingInfo // TypeDefIndex: 1541
 	public string DisplayName { get; } // 0x0051C94C 
 	public string Name { get; } // 0x0051C950 
 
+	// Constructors
+	internal EncodingInfo(int cp); // 0x0051B2A0
+
 	// Methods
-	internal void .ctor(int cp); // 0x0051B2A0
 	public override bool Equals(object value); // 0x0051CA20
 	public override int GetHashCode(); // 0x0051CAAC
 	public Encoding GetEncoding(); // 0x0051C99C
@@ -31801,8 +33541,10 @@ internal class Latin1Encoding : Encoding // TypeDefIndex: 1542
 	public override bool IsMailNewsSave { get; } // 0x0051E848 
 	public override string WebName { get; } // 0x0051E850 
 
+	// Constructors
+	public Latin1Encoding(); // 0x0051B824
+
 	// Methods
-	public void .ctor(); // 0x0051B824
 	public override bool IsAlwaysNormalized(NormalizationForm form); // 0x0051CABC
 	public override int GetByteCount(char[] chars, int index, int count); // 0x0051CACC
 	public override int GetByteCount(string s); // 0x0051CCB0
@@ -31829,8 +33571,10 @@ internal sealed class MLangCodePageEncoding : ISerializable, IObjectReference //
 	private DecoderFallback decoderFallback; // 0x14
 	private Encoding realObject; // 0x18
 
+	// Constructors
+	private MLangCodePageEncoding(SerializationInfo info, StreamingContext context); // 0x0051E8AC
+
 	// Methods
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x0051E8AC
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x0051ECB8
 	public object GetRealObject(StreamingContext context); // 0x0051ED54
 }
@@ -31843,8 +33587,10 @@ private sealed class MLangEncoder : ISerializable, IObjectReference // TypeDefIn
 	private Encoding encoding; // 0x08
 	private Encoder realObject; // 0x0C
 
+	// Constructors
+	private MLangEncoder(SerializationInfo info, StreamingContext context); // 0x0051F110
+
 	// Methods
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x0051F110
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x0051F288
 	public object GetRealObject(StreamingContext context); // 0x0051F324
 }
@@ -31857,8 +33603,10 @@ private sealed class MLangDecoder : ISerializable, IObjectReference // TypeDefIn
 	private Encoding encoding; // 0x08
 	private Decoder realObject; // 0x0C
 
+	// Constructors
+	private MLangDecoder(SerializationInfo info, StreamingContext context); // 0x0051EEB4
+
 	// Methods
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x0051EEB4
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x0051F02C
 	public object GetRealObject(StreamingContext context); // 0x0051F0C8
 }
@@ -31889,15 +33637,17 @@ public sealed class StringBuilder : ISerializable // TypeDefIndex: 1547
 	public int Length { get; set; } // 0x00520330 0x00520338
 	public char Chars { get; set; } // 0x00520510 0x005205D8
 
+	// Constructors
+	public StringBuilder(string value, int startIndex, int length, int capacity); // 0x0051F36C
+	private StringBuilder(string value, int startIndex, int length, int capacity, int maxCapacity); // 0x0051F390
+	public StringBuilder(); // 0x0051F860
+	public StringBuilder(int capacity); // 0x0051F93C
+	public StringBuilder(int capacity, int maxCapacity); // 0x0051F9F4
+	public StringBuilder(string value); // 0x0051F868
+	public StringBuilder(string value, int capacity); // 0x0051FAAC
+	private StringBuilder(SerializationInfo info, StreamingContext context); // 0x0051FB90
+
 	// Methods
-	public void .ctor(string value, int startIndex, int length, int capacity); // 0x0051F36C
-	private void .ctor(string value, int startIndex, int length, int capacity, int maxCapacity); // 0x0051F390
-	public void .ctor(); // 0x0051F860
-	public void .ctor(int capacity); // 0x0051F93C
-	public void .ctor(int capacity, int maxCapacity); // 0x0051F9F4
-	public void .ctor(string value); // 0x0051F868
-	public void .ctor(string value, int capacity); // 0x0051FAAC
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x0051FB90
 	private void System.Runtime.Serialization.ISerializable.GetObjectData(SerializationInfo info, StreamingContext context); // 0x0051FE40
 	public override string ToString(); // 0x0051FFE4
 	public string ToString(int startIndex, int length); // 0x005206B8
@@ -31964,8 +33714,10 @@ internal sealed class SurrogateEncoder : ISerializable, IObjectReference // Type
 	private Encoding encoding; // 0x08
 	private Encoder realObject; // 0x0C
 
+	// Constructors
+	private SurrogateEncoder(SerializationInfo info, StreamingContext context); // 0x00522730
+
 	// Methods
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x00522730
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x005228A8
 	public object GetRealObject(StreamingContext context); // 0x00522944
 }
@@ -31980,10 +33732,12 @@ public sealed class UTF32Encoding : Encoding // TypeDefIndex: 1549
 	private bool bigEndian; // 0x30
 	private bool byteOrderMark; // 0x31
 
+	// Constructors
+	public UTF32Encoding(); // 0x0052298C
+	public UTF32Encoding(bool bigEndian, bool byteOrderMark); // 0x0051BE70
+	public UTF32Encoding(bool bigEndian, bool byteOrderMark, bool throwOnInvalidCharacters); // 0x005229B0
+
 	// Methods
-	public void .ctor(); // 0x0052298C
-	public void .ctor(bool bigEndian, bool byteOrderMark); // 0x0051BE70
-	public void .ctor(bool bigEndian, bool byteOrderMark, bool throwOnInvalidCharacters); // 0x005229B0
 	public override int GetByteCount(char[] chars, int index, int count); // 0x00522CDC
 	public override int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteIndex); // 0x00522FC8
 	public override int GetCharCount(byte[] bytes, int index, int count); // 0x005237F4
@@ -32012,8 +33766,10 @@ private sealed class UTF32Decoder : Decoder // TypeDefIndex: 1550
 	private int leftOverByte; // 0x14
 	private int leftOverLength; // 0x18
 
+	// Constructors
+	public UTF32Decoder(bool bigEndian); // 0x005241A4
+
 	// Methods
-	public void .ctor(bool bigEndian); // 0x005241A4
 	public override int GetCharCount(byte[] bytes, int index, int count); // 0x00524570
 	public override int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex); // 0x00524770
 }
@@ -32029,10 +33785,12 @@ public class UTF7Encoding : Encoding // TypeDefIndex: 1551
 	private static readonly byte[] encodingRules; // 0x00
 	private static readonly sbyte[] base64Values; // 0x04
 
+	// Constructors
+	public UTF7Encoding(); // 0x0051B8A8
+	public UTF7Encoding(bool allowOptionals); // 0x00524FA4
+	private static UTF7Encoding(); // 0x00525070
+
 	// Methods
-	public void .ctor(); // 0x0051B8A8
-	public void .ctor(bool allowOptionals); // 0x00524FA4
-	private static void .cctor(); // 0x00525070
 	public override int GetHashCode(); // 0x0052514C
 	public override bool Equals(object value); // 0x0052516C
 	private static int InternalGetByteCount(char[] chars, int index, int count, bool flush, int leftOver, bool isInShifted, bool allowOptionals); // 0x005252A0
@@ -32062,8 +33820,10 @@ private sealed class UTF7Decoder : Decoder // TypeDefIndex: 1552
 	// Fields
 	private int leftOver; // 0x10
 
+	// Constructors
+	public UTF7Decoder(); // 0x0052786C
+
 	// Methods
-	public void .ctor(); // 0x0052786C
 	public override int GetCharCount(byte[] bytes, int index, int count); // 0x005279C0
 	public override int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex); // 0x00527A64
 }
@@ -32076,8 +33836,10 @@ private sealed class UTF7Encoder : Encoder // TypeDefIndex: 1553
 	private int leftOver; // 0x14
 	private bool isInShifted; // 0x18
 
+	// Constructors
+	public UTF7Encoder(bool allowOptionals); // 0x005278FC
+
 	// Methods
-	public void .ctor(bool allowOptionals); // 0x005278FC
 	public override int GetByteCount(char[] chars, int index, int count, bool flush); // 0x00527B18
 	public override int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteIndex, bool flush); // 0x00527BE4
 }
@@ -32090,10 +33852,12 @@ public class UTF8Encoding : Encoding // TypeDefIndex: 1554
 	internal const int UTF8_CODE_PAGE = 65001; // 0x00
 	private bool emitIdentifier; // 0x30
 
+	// Constructors
+	public UTF8Encoding(); // 0x00527CB4
+	public UTF8Encoding(bool encoderShouldEmitUTF8Identifier); // 0x0051B8B0
+	public UTF8Encoding(bool encoderShouldEmitUTF8Identifier, bool throwOnInvalidBytes); // 0x0051B8B8
+
 	// Methods
-	public void .ctor(); // 0x00527CB4
-	public void .ctor(bool encoderShouldEmitUTF8Identifier); // 0x0051B8B0
-	public void .ctor(bool encoderShouldEmitUTF8Identifier, bool throwOnInvalidBytes); // 0x0051B8B8
 	private static int InternalGetByteCount(char[] chars, int index, int count, char leftOver, bool flush); // 0x00527CC0
 	private static int InternalGetByteCount(void * chars, int count, char leftOver, bool flush); // 0x00527EFC
 	public override int GetByteCount(char[] chars, int index, int count); // 0x00528004
@@ -32132,8 +33896,10 @@ private class UTF8Decoder : Decoder // TypeDefIndex: 1555
 	private uint leftOverBits; // 0x10
 	private uint leftOverCount; // 0x14
 
+	// Constructors
+	public UTF8Decoder(DecoderFallback fallback); // 0x0052A434
+
 	// Methods
-	public void .ctor(DecoderFallback fallback); // 0x0052A434
 	public override int GetCharCount(byte[] bytes, int index, int count); // 0x0052A778
 	public override int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex); // 0x0052A7CC
 }
@@ -32146,8 +33912,10 @@ private class UTF8Encoder : Encoder // TypeDefIndex: 1556
 	private char leftOverForCount; // 0x10
 	private char leftOverForConv; // 0x12
 
+	// Constructors
+	public UTF8Encoder(bool emitIdentifier); // 0x0052A4D4
+
 	// Methods
-	public void .ctor(bool emitIdentifier); // 0x0052A4D4
 	public override int GetByteCount(char[] chars, int index, int count, bool flush); // 0x0052A82C
 	public override int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteIndex, bool flush); // 0x0052A860
 	public override int GetByteCount(void * chars, int count, bool flush); // 0x0052A8A0
@@ -32165,10 +33933,12 @@ public class UnicodeEncoding : Encoding // TypeDefIndex: 1557
 	private bool bigEndian; // 0x30
 	private bool byteOrderMark; // 0x31
 
+	// Constructors
+	public UnicodeEncoding(); // 0x0052A900
+	public UnicodeEncoding(bool bigEndian, bool byteOrderMark); // 0x0051B5B8
+	public UnicodeEncoding(bool bigEndian, bool byteOrderMark, bool throwOnInvalidBytes); // 0x0052A930
+
 	// Methods
-	public void .ctor(); // 0x0052A900
-	public void .ctor(bool bigEndian, bool byteOrderMark); // 0x0051B5B8
-	public void .ctor(bool bigEndian, bool byteOrderMark, bool throwOnInvalidBytes); // 0x0052A930
 	public override int GetByteCount(char[] chars, int index, int count); // 0x0052AAD8
 	public override int GetByteCount(string s); // 0x0052ACBC
 	public override int GetByteCount(void * chars, int count); // 0x0052AD6C
@@ -32199,8 +33969,10 @@ private sealed class UnicodeDecoder : Decoder // TypeDefIndex: 1558
 	private bool bigEndian; // 0x10
 	private int leftOverByte; // 0x14
 
+	// Constructors
+	public UnicodeDecoder(bool bigEndian); // 0x0052C8C8
+
 	// Methods
-	public void .ctor(bool bigEndian); // 0x0052C8C8
 	public override int GetCharCount(byte[] bytes, int index, int count); // 0x0052CB20
 	public override int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex); // 0x0052CD1C
 }
@@ -32217,14 +33989,15 @@ public class AbandonedMutexException : SystemException // TypeDefIndex: 1559
 	public Mutex Mutex { get; } // 0x0052D4C4 
 	public int MutexIndex { get; } // 0x0052D4CC 
 
-	// Methods
-	public void .ctor(); // 0x0052D1A0
-	public void .ctor(string message); // 0x0052D21C
-	public void .ctor(int location, WaitHandle handle); // 0x0052D24C
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0052D304
-	public void .ctor(string message, Exception inner); // 0x0052D32C
-	public void .ctor(string message, int location, WaitHandle handle); // 0x0052D35C
-	public void .ctor(string message, Exception inner, int location, WaitHandle handle); // 0x0052D40C
+	// Constructors
+	public AbandonedMutexException(); // 0x0052D1A0
+	public AbandonedMutexException(string message); // 0x0052D21C
+	public AbandonedMutexException(int location, WaitHandle handle); // 0x0052D24C
+	protected AbandonedMutexException(SerializationInfo info, StreamingContext context); // 0x0052D304
+	public AbandonedMutexException(string message, Exception inner); // 0x0052D32C
+	public AbandonedMutexException(string message, int location, WaitHandle handle); // 0x0052D35C
+	public AbandonedMutexException(string message, Exception inner, int location, WaitHandle handle); // 0x0052D40C
+
 }
 
 // Namespace: System.Threading
@@ -32251,8 +34024,10 @@ public struct AsyncFlowControl : IDisposable // TypeDefIndex: 1562
 	private Thread _t; // 0x08
 	private AsyncFlowControlType _type; // 0x0C
 
+	// Constructors
+	internal AsyncFlowControl(Thread t, AsyncFlowControlType type); // 0x000A777C
+
 	// Methods
-	internal void .ctor(Thread t, AsyncFlowControlType type); // 0x000A777C
 	private void System.IDisposable.Dispose(); // 0x000A7788
 	public void Undo(); // 0x000A77B4
 	public override int GetHashCode(); // 0x000A77BC
@@ -32265,8 +34040,9 @@ public struct AsyncFlowControl : IDisposable // TypeDefIndex: 1562
 // Namespace: System.Threading
 public sealed class AutoResetEvent : EventWaitHandle // TypeDefIndex: 1563
 {
-	// Methods
-	public void .ctor(bool initialState); // 0x0040F958
+	// Constructors
+	public AutoResetEvent(bool initialState); // 0x0040F958
+
 }
 
 // Namespace: System.Threading
@@ -32279,9 +34055,11 @@ public sealed class CompressedStack : ISerializable // TypeDefIndex: 1564
 	// Properties
 	internal IList List { get; } // 0x004108F8 
 
+	// Constructors
+	internal CompressedStack(int length); // 0x0040FA2C
+	internal CompressedStack(CompressedStack cs); // 0x0040FAB8
+
 	// Methods
-	internal void .ctor(int length); // 0x0040FA2C
-	internal void .ctor(CompressedStack cs); // 0x0040FAB8
 	public CompressedStack CreateCopy(); // 0x0040FB88
 	public static CompressedStack Capture(); // 0x0040FBF8
 	public static CompressedStack GetCompressedStack(); // 0x0040FE6C
@@ -32301,11 +34079,13 @@ public enum EventResetMode // TypeDefIndex: 1565
 // Namespace: System.Threading
 public class EventWaitHandle : WaitHandle // TypeDefIndex: 1566
 {
+	// Constructors
+	private EventWaitHandle(IntPtr handle); // 0x0041094C
+	public EventWaitHandle(bool initialState, EventResetMode mode); // 0x0040F960
+	public EventWaitHandle(bool initialState, EventResetMode mode, string name); // 0x00410AB0
+	public EventWaitHandle(bool initialState, EventResetMode mode, string name, out bool createdNew); // 0x00410B80
+
 	// Methods
-	private void .ctor(IntPtr handle); // 0x0041094C
-	public void .ctor(bool initialState, EventResetMode mode); // 0x0040F960
-	public void .ctor(bool initialState, EventResetMode mode, string name); // 0x00410AB0
-	public void .ctor(bool initialState, EventResetMode mode, string name, out bool createdNew); // 0x00410B80
 	private bool IsManualReset(EventResetMode mode); // 0x004109F4
 	public bool Reset(); // 0x00410C44
 	public bool Set(); // 0x00410D4C
@@ -32324,10 +34104,12 @@ public sealed class ExecutionContext : ISerializable // TypeDefIndex: 1567
 	internal SecurityContext SecurityContext { get; set; } // 0x004112D0 0x00411350
 	internal bool FlowSuppressed { get; set; } // 0x00411358 0x00411360
 
+	// Constructors
+	internal ExecutionContext(); // 0x00410D7C
+	internal ExecutionContext(ExecutionContext ec); // 0x00410D84
+	internal ExecutionContext(SerializationInfo info, StreamingContext context); // 0x00410E34
+
 	// Methods
-	internal void .ctor(); // 0x00410D7C
-	internal void .ctor(ExecutionContext ec); // 0x00410D84
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x00410E34
 	public static ExecutionContext Capture(); // 0x00410ECC
 	public ExecutionContext CreateCopy(); // 0x00411138
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x004111F8
@@ -32346,17 +34128,21 @@ public class HostExecutionContext // TypeDefIndex: 1568
 	// Properties
 	protected internal object State { get; set; } // 0x00411654 0x0041165C
 
+	// Constructors
+	public HostExecutionContext(); // 0x0041159C
+	public HostExecutionContext(object state); // 0x004115BC
+
 	// Methods
-	public void .ctor(); // 0x0041159C
-	public void .ctor(object state); // 0x004115BC
 	public virtual HostExecutionContext CreateCopy(); // 0x004115DC
 }
 
 // Namespace: System.Threading
 public class HostExecutionContextManager // TypeDefIndex: 1569
 {
+	// Constructors
+	public HostExecutionContextManager(); // 0x00411664
+
 	// Methods
-	public void .ctor(); // 0x00411664
 	public virtual HostExecutionContext Capture(); // 0x0041166C
 	public virtual void Revert(object previousState); // 0x004116F4
 	public virtual object SetHostExecutionContext(HostExecutionContext hostExecutionContext); // 0x0041177C
@@ -32397,9 +34183,11 @@ public struct LockCookie // TypeDefIndex: 1571
 	internal int ReaderLocks; // 0x0C
 	internal int WriterLocks; // 0x10
 
+	// Constructors
+	internal LockCookie(int thread_id); // 0x000A780C
+	internal LockCookie(int thread_id, int reader_locks, int writer_locks); // 0x000A7820
+
 	// Methods
-	internal void .ctor(int thread_id); // 0x000A780C
-	internal void .ctor(int thread_id, int reader_locks, int writer_locks); // 0x000A7820
 	public override int GetHashCode(); // 0x000A782C
 	public bool Equals(LockCookie obj); // 0x000A7834
 	public override bool Equals(object obj); // 0x000A7864
@@ -32417,8 +34205,10 @@ internal class LockQueue // TypeDefIndex: 1572
 	// Properties
 	public bool IsEmpty { get; } // 0x004120CC 
 
+	// Constructors
+	public LockQueue(ReaderWriterLock rwlock); // 0x00411D6C
+
 	// Methods
-	public void .ctor(ReaderWriterLock rwlock); // 0x00411D6C
 	public bool Wait(int timeout); // 0x00411D8C
 	public void Pulse(); // 0x004120F8
 	public void PulseAll(); // 0x00412264
@@ -32427,8 +34217,9 @@ internal class LockQueue // TypeDefIndex: 1572
 // Namespace: System.Threading
 public sealed class ManualResetEvent : EventWaitHandle // TypeDefIndex: 1573
 {
-	// Methods
-	public void .ctor(bool initialState); // 0x004123D0
+	// Constructors
+	public ManualResetEvent(bool initialState); // 0x004123D0
+
 }
 
 // Namespace: System.Threading
@@ -32457,11 +34248,13 @@ public static class Monitor // TypeDefIndex: 1574
 // Namespace: System.Threading
 public sealed class Mutex : WaitHandle // TypeDefIndex: 1575
 {
+	// Constructors
+	public Mutex(); // 0x00412924
+	public Mutex(bool initiallyOwned); // 0x004129E4
+	public Mutex(bool initiallyOwned, string name); // 0x00412AA4
+	public Mutex(bool initiallyOwned, string name, out bool createdNew); // 0x00412B68
+
 	// Methods
-	public void .ctor(); // 0x00412924
-	public void .ctor(bool initiallyOwned); // 0x004129E4
-	public void .ctor(bool initiallyOwned, string name); // 0x00412AA4
-	public void .ctor(bool initiallyOwned, string name, out bool createdNew); // 0x00412B68
 	private static IntPtr CreateMutex_internal(bool initiallyOwned, string name, out bool created); // 0x004129E0
 	private static bool ReleaseMutex_internal(IntPtr handle); // 0x00412C20
 	public void ReleaseMutex(); // 0x00412C24
@@ -32470,8 +34263,10 @@ public sealed class Mutex : WaitHandle // TypeDefIndex: 1575
 // Namespace: System.Threading
 internal sealed class NativeEventCalls // TypeDefIndex: 1576
 {
+	// Constructors
+	public NativeEventCalls(); // 0x00412CE4
+
 	// Methods
-	public void .ctor(); // 0x00412CE4
 	public static IntPtr CreateEvent_internal(bool manual, bool initial, string name, out bool created); // 0x00410AAC
 	public static bool SetEvent_internal(IntPtr handle); // 0x00410D78
 	public static bool ResetEvent_internal(IntPtr handle); // 0x00410D48
@@ -32509,10 +34304,12 @@ public class Overlapped // TypeDefIndex: 1578
 	public int OffsetHigh { get; set; } // 0x0041331C 0x00413324
 	public int OffsetLow { get; set; } // 0x0041332C 0x00413334
 
+	// Constructors
+	public Overlapped(); // 0x00412CF0
+	public Overlapped(int offsetLo, int offsetHi, int hEvent, IAsyncResult ar); // 0x00412CF8
+	public Overlapped(int offsetLo, int offsetHi, IntPtr hEvent, IAsyncResult ar); // 0x00412D30
+
 	// Methods
-	public void .ctor(); // 0x00412CF0
-	public void .ctor(int offsetLo, int offsetHi, int hEvent, IAsyncResult ar); // 0x00412CF8
-	public void .ctor(int offsetLo, int offsetHi, IntPtr hEvent, IAsyncResult ar); // 0x00412D30
 	public static void Free(void * nativeOverlappedPtr); // 0x00412D68
 	public static Overlapped Unpack(void * nativeOverlappedPtr); // 0x00412E74
 	public void * Pack(IOCompletionCallback iocb); // 0x00412FC8
@@ -32537,8 +34334,10 @@ public sealed class ReaderWriterLock : CriticalFinalizerObject // TypeDefIndex: 
 	public bool IsWriterLockHeld { get; } // 0x004139A0 
 	public int WriterSeqNum { get; } // 0x00413A94 
 
+	// Constructors
+	public ReaderWriterLock(); // 0x00413718
+
 	// Methods
-	public void .ctor(); // 0x00413718
 	protected override void Finalize(); // 0x004137D0
 	public void AcquireReaderLock(int millisecondsTimeout); // 0x00413AB8
 	private void AcquireReaderLock(int millisecondsTimeout, int initialLockCount); // 0x00413AC0
@@ -32575,8 +34374,10 @@ public sealed class RegisteredWaitHandle : MarshalByRefObject // TypeDefIndex: 1
 	private int _callsInProcess; // 0x30
 	private bool _unregistered; // 0x34
 
+	// Constructors
+	internal RegisteredWaitHandle(WaitHandle waitObject, WaitOrTimerCallback callback, object state, TimeSpan timeout, bool executeOnlyOnce); // 0x00414E70
+
 	// Methods
-	internal void .ctor(WaitHandle waitObject, WaitOrTimerCallback callback, object state, TimeSpan timeout, bool executeOnlyOnce); // 0x00414E70
 	internal void Wait(object state); // 0x00414F38
 	private void DoCallBack(object timedOut); // 0x00415640
 	public bool Unregister(WaitHandle waitObject); // 0x00415B3C
@@ -32592,9 +34393,11 @@ public class SynchronizationContext // TypeDefIndex: 1581
 	// Properties
 	public static SynchronizationContext Current { get; } // 0x00416050 
 
+	// Constructors
+	public SynchronizationContext(); // 0x00415FD4
+	internal SynchronizationContext(SynchronizationContext context); // 0x00415FDC
+
 	// Methods
-	public void .ctor(); // 0x00415FD4
-	internal void .ctor(SynchronizationContext context); // 0x00415FDC
 	public virtual SynchronizationContext CreateCopy(); // 0x004160B0
 	public bool IsWaitNotificationRequired(); // 0x00416120
 	public virtual void OperationCompleted(); // 0x00416128
@@ -32612,11 +34415,12 @@ public class SynchronizationContext // TypeDefIndex: 1581
 [Serializable]
 public class SynchronizationLockException : SystemException // TypeDefIndex: 1582
 {
-	// Methods
-	public void .ctor(); // 0x004163E8
-	public void .ctor(string message); // 0x004123E4
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00416450
-	public void .ctor(string message, Exception innerException); // 0x00416470
+	// Constructors
+	public SynchronizationLockException(); // 0x004163E8
+	public SynchronizationLockException(string message); // 0x004123E4
+	protected SynchronizationLockException(SerializationInfo info, StreamingContext context); // 0x00416450
+	public SynchronizationLockException(string message, Exception innerException); // 0x00416470
+
 }
 
 // Namespace: System.Threading
@@ -32694,12 +34498,14 @@ public sealed class Thread : CriticalFinalizerObject, _Thread // TypeDefIndex: 1
 	public ExecutionContext ExecutionContext { get; } // 0x00410FFC 
 	public int ManagedThreadId { get; } // 0x00418F64 
 
+	// Constructors
+	public Thread(ThreadStart start); // 0x00416478
+	public Thread(ThreadStart start, int maxStackSize); // 0x0041654C
+	public Thread(ParameterizedThreadStart start); // 0x00416680
+	public Thread(ParameterizedThreadStart start, int maxStackSize); // 0x00416750
+	private static Thread(); // 0x00416884
+
 	// Methods
-	public void .ctor(ThreadStart start); // 0x00416478
-	public void .ctor(ThreadStart start, int maxStackSize); // 0x0041654C
-	public void .ctor(ParameterizedThreadStart start); // 0x00416680
-	public void .ctor(ParameterizedThreadStart start, int maxStackSize); // 0x00416750
-	private static void .cctor(); // 0x00416884
 	private void System.Runtime.InteropServices._Thread.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x00416924
 	private void System.Runtime.InteropServices._Thread.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x004169AC
 	private void System.Runtime.InteropServices._Thread.GetTypeInfoCount(out uint pcTInfo); // 0x00416A34
@@ -32800,20 +34606,22 @@ public sealed class Thread : CriticalFinalizerObject, _Thread // TypeDefIndex: 1
 [Serializable]
 public sealed class ThreadAbortException : SystemException // TypeDefIndex: 1584
 {
-	// Methods
-	private void .ctor(); // 0x00419244
-	private void .ctor(SerializationInfo info, StreamingContext sc); // 0x004192B8
+	// Constructors
+	private ThreadAbortException(); // 0x00419244
+	private ThreadAbortException(SerializationInfo info, StreamingContext sc); // 0x004192B8
+
 }
 
 // Namespace: System.Threading
 [Serializable]
 public class ThreadInterruptedException : SystemException // TypeDefIndex: 1585
 {
-	// Methods
-	public void .ctor(); // 0x004192D8
-	public void .ctor(string message); // 0x00419340
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00419348
-	public void .ctor(string message, Exception innerException); // 0x00419368
+	// Constructors
+	public ThreadInterruptedException(); // 0x004192D8
+	public ThreadInterruptedException(string message); // 0x00419340
+	protected ThreadInterruptedException(SerializationInfo info, StreamingContext context); // 0x00419348
+	public ThreadInterruptedException(string message, Exception innerException); // 0x00419368
+
 }
 
 // Namespace: System.Threading
@@ -32849,11 +34657,12 @@ public enum ThreadPriority // TypeDefIndex: 1587
 [Serializable]
 public sealed class ThreadStartException : SystemException // TypeDefIndex: 1588
 {
-	// Methods
-	internal void .ctor(); // 0x004199D8
-	internal void .ctor(string message); // 0x00419A40
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x00419A48
-	internal void .ctor(string message, Exception innerException); // 0x00419A68
+	// Constructors
+	internal ThreadStartException(); // 0x004199D8
+	internal ThreadStartException(string message); // 0x00419A40
+	internal ThreadStartException(SerializationInfo info, StreamingContext context); // 0x00419A48
+	internal ThreadStartException(string message, Exception innerException); // 0x00419A68
+
 }
 
 // Namespace: System.Threading
@@ -32876,11 +34685,12 @@ public enum ThreadState // TypeDefIndex: 1589
 [Serializable]
 public class ThreadStateException : SystemException // TypeDefIndex: 1590
 {
-	// Methods
-	public void .ctor(); // 0x00419A70
-	public void .ctor(string message); // 0x00417D04
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00419AD8
-	public void .ctor(string message, Exception innerException); // 0x00419AF8
+	// Constructors
+	public ThreadStateException(); // 0x00419A70
+	public ThreadStateException(string message); // 0x00417D04
+	protected ThreadStateException(SerializationInfo info, StreamingContext context); // 0x00419AD8
+	public ThreadStateException(string message, Exception innerException); // 0x00419AF8
+
 }
 
 // Namespace: System.Threading
@@ -32904,13 +34714,15 @@ public sealed class Timer : MarshalByRefObject, IDisposable // TypeDefIndex: 159
 	private long next_run; // 0x28
 	private bool disposed; // 0x30
 
+	// Constructors
+	public Timer(TimerCallback callback, object state, int dueTime, int period); // 0x00419B00
+	public Timer(TimerCallback callback, object state, long dueTime, long period); // 0x00419C40
+	public Timer(TimerCallback callback, object state, TimeSpan dueTime, TimeSpan period); // 0x00419C90
+	public Timer(TimerCallback callback, object state, uint dueTime, uint period); // 0x00419D38
+	public Timer(TimerCallback callback); // 0x00419DA4
+	private static Timer(); // 0x00419DEC
+
 	// Methods
-	public void .ctor(TimerCallback callback, object state, int dueTime, int period); // 0x00419B00
-	public void .ctor(TimerCallback callback, object state, long dueTime, long period); // 0x00419C40
-	public void .ctor(TimerCallback callback, object state, TimeSpan dueTime, TimeSpan period); // 0x00419C90
-	public void .ctor(TimerCallback callback, object state, uint dueTime, uint period); // 0x00419D38
-	public void .ctor(TimerCallback callback); // 0x00419DA4
-	private static void .cctor(); // 0x00419DEC
 	private void Init(TimerCallback callback, object state, long dueTime, long period); // 0x00419B58
 	public bool Change(int dueTime, int period); // 0x0041A1DC
 	public bool Change(TimeSpan dueTime, TimeSpan period); // 0x0041A208
@@ -32924,8 +34736,10 @@ public sealed class Timer : MarshalByRefObject, IDisposable // TypeDefIndex: 159
 // Namespace: 
 private sealed class TimerComparer : IComparer // TypeDefIndex: 1593
 {
+	// Constructors
+	public TimerComparer(); // 0x0041A79C
+
 	// Methods
-	public void .ctor(); // 0x0041A79C
 	public int Compare(object x, object y); // 0x0041B2A0
 }
 
@@ -32939,9 +34753,11 @@ private sealed class Scheduler // TypeDefIndex: 1594
 	// Properties
 	public static Scheduler Instance { get; } // 0x0041A814 
 
+	// Constructors
+	private Scheduler(); // 0x0041A664
+	private static Scheduler(); // 0x0041A7A4
+
 	// Methods
-	private void .ctor(); // 0x0041A664
-	private static void .cctor(); // 0x0041A7A4
 	public void Remove(Timer timer); // 0x0041A39C
 	public void Change(Timer timer, long new_next_run); // 0x0041A46C
 	private void Add(Timer timer); // 0x0041A91C
@@ -32963,9 +34779,11 @@ public abstract class WaitHandle : MarshalByRefObject, IDisposable // TypeDefInd
 	public virtual IntPtr Handle { get; set; } // 0x0041C5E0 0x0041C60C
 	public SafeWaitHandle SafeWaitHandle { get; set; } // 0x0041C7E4 0x0041C7EC
 
+	// Constructors
+	protected WaitHandle(); // 0x004109EC
+	private static WaitHandle(); // 0x0041BB0C
+
 	// Methods
-	protected void .ctor(); // 0x004109EC
-	private static void .cctor(); // 0x0041BB0C
 	private void System.IDisposable.Dispose(); // 0x0041BB78
 	private static bool WaitAll_internal(WaitHandle[] handles, int ms, bool exitContext); // 0x0041BBAC
 	private static void CheckArray(WaitHandle[] handles, bool waitAll); // 0x0041BBB0
@@ -33000,11 +34818,12 @@ public abstract class WaitHandle : MarshalByRefObject, IDisposable // TypeDefInd
 [Serializable]
 public class WaitHandleCannotBeOpenedException : ApplicationException // TypeDefIndex: 1596
 {
-	// Methods
-	public void .ctor(); // 0x0041D3DC
-	public void .ctor(string message); // 0x0041D450
-	public void .ctor(string message, Exception innerException); // 0x0041D458
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0041D460
+	// Constructors
+	public WaitHandleCannotBeOpenedException(); // 0x0041D3DC
+	public WaitHandleCannotBeOpenedException(string message); // 0x0041D450
+	public WaitHandleCannotBeOpenedException(string message, Exception innerException); // 0x0041D458
+	protected WaitHandleCannotBeOpenedException(SerializationInfo info, StreamingContext context); // 0x0041D460
+
 }
 
 // Namespace: System
@@ -33014,11 +34833,12 @@ public class AccessViolationException : SystemException // TypeDefIndex: 1597
 	// Fields
 	private const int Result = -2147467261; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x00269250
-	public void .ctor(string message); // 0x002692D0
-	public void .ctor(string message, Exception innerException); // 0x002692F4
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00269318
+	// Constructors
+	public AccessViolationException(); // 0x00269250
+	public AccessViolationException(string message); // 0x002692D0
+	public AccessViolationException(string message, Exception innerException); // 0x002692F4
+	protected AccessViolationException(SerializationInfo info, StreamingContext context); // 0x00269318
+
 }
 
 // Namespace: System
@@ -33034,8 +34854,10 @@ public sealed class ActivationContext : IDisposable, ISerializable // TypeDefInd
 	public ContextForm Form { get; } // 0x00269428 
 	public ApplicationIdentity Identity { get; } // 0x00269430 
 
+	// Constructors
+	private ActivationContext(ApplicationIdentity identity); // 0x00269338
+
 	// Methods
-	private void .ctor(ApplicationIdentity identity); // 0x00269338
 	private void System.Runtime.Serialization.ISerializable.GetObjectData(SerializationInfo info, StreamingContext context); // 0x00269358
 	protected override void Finalize(); // 0x002693FC
 	public static ActivationContext CreatePartialActivationContext(ApplicationIdentity identity); // 0x00269438
@@ -33058,8 +34880,10 @@ public sealed class Activator : _Activator // TypeDefIndex: 1600
 	private const BindingFlags _flags = 532; // 0x00
 	private const BindingFlags _accessFlags = 127; // 0x00
 
+	// Constructors
+	private Activator(); // 0x0026963C
+
 	// Methods
-	private void .ctor(); // 0x0026963C
 	private void System.Runtime.InteropServices._Activator.GetIDsOfNames(Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId); // 0x00269644
 	private void System.Runtime.InteropServices._Activator.GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo); // 0x002696CC
 	private void System.Runtime.InteropServices._Activator.GetTypeInfoCount(out uint pcTInfo); // 0x00269754
@@ -33170,8 +34994,10 @@ public sealed class AppDomain : MarshalByRefObject // TypeDefIndex: 1601
 		remove; // 0x0026C24C
 	}
 
+	// Constructors
+	private AppDomain(); // 0x0026B9D4
+
 	// Methods
-	private void .ctor(); // 0x0026B9D4
 	private AppDomainSetup getSetup(); // 0x0026C2DC
 	private string getFriendlyName(); // 0x0026CB70
 	private static AppDomain getCurDomain(); // 0x0026CFCC
@@ -33290,8 +35116,10 @@ public class AppDomainManager : MarshalByRefObject // TypeDefIndex: 1602
 	public virtual HostSecurityManager HostSecurityManager { get; } // 0x00270DCC 
 	public AppDomainManagerInitializationOptions InitializationFlags { get; set; } // 0x00270DD4 0x00270DDC
 
+	// Constructors
+	public AppDomainManager(); // 0x00270C9C
+
 	// Methods
-	public void .ctor(); // 0x00270C9C
 	public virtual AppDomain CreateDomain(string friendlyName, Evidence securityInfo, AppDomainSetup appDomainInfo); // 0x00270DE4
 	public virtual void InitializeNewDomain(AppDomainSetup appDomainInfo); // 0x00270EDC
 	public virtual bool CheckSecuritySettings(SecurityState state); // 0x00270EE0
@@ -33347,11 +35175,13 @@ public sealed class AppDomainSetup // TypeDefIndex: 1603
 	public ApplicationTrust ApplicationTrust { get; set; } // 0x002713AC 0x00271440
 	public bool DisallowApplicationBaseProbing { get; set; } // 0x002714A0 0x002714A8
 
+	// Constructors
+	public AppDomainSetup(); // 0x0026F8C4
+	internal AppDomainSetup(AppDomainSetup setup); // 0x0026C360
+	public AppDomainSetup(ActivationArguments activationArguments); // 0x00270EE8
+	public AppDomainSetup(ActivationContext activationContext); // 0x00270F08
+
 	// Methods
-	public void .ctor(); // 0x0026F8C4
-	internal void .ctor(AppDomainSetup setup); // 0x0026C360
-	public void .ctor(ActivationArguments activationArguments); // 0x00270EE8
-	public void .ctor(ActivationContext activationContext); // 0x00270F08
 	private static string GetAppBase(string appBase); // 0x00270F8C
 	public byte[] GetConfigurationBytes(); // 0x002714B0
 	public void SetConfigurationBytes(byte[] value); // 0x0027152C
@@ -33364,11 +35194,12 @@ public class AppDomainUnloadedException : SystemException // TypeDefIndex: 1604
 	// Fields
 	private const int Result = -2146234348; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x0026ECF0
-	public void .ctor(string message); // 0x00271534
-	public void .ctor(string message, Exception innerException); // 0x00271558
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0027157C
+	// Constructors
+	public AppDomainUnloadedException(); // 0x0026ECF0
+	public AppDomainUnloadedException(string message); // 0x00271534
+	public AppDomainUnloadedException(string message, Exception innerException); // 0x00271558
+	protected AppDomainUnloadedException(SerializationInfo info, StreamingContext context); // 0x0027157C
+
 }
 
 // Namespace: System
@@ -33378,11 +35209,12 @@ public class ApplicationException : Exception // TypeDefIndex: 1605
 	// Fields
 	private const int Result = -2146232832; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x0027159C
-	public void .ctor(string message); // 0x0027161C
-	public void .ctor(string message, Exception innerException); // 0x00271640
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00271664
+	// Constructors
+	public ApplicationException(); // 0x0027159C
+	public ApplicationException(string message); // 0x0027161C
+	public ApplicationException(string message, Exception innerException); // 0x00271640
+	protected ApplicationException(SerializationInfo info, StreamingContext context); // 0x00271664
+
 }
 
 // Namespace: System
@@ -33403,8 +35235,10 @@ public sealed class ApplicationId // TypeDefIndex: 1606
 	public byte[] PublicKeyToken { get; } // 0x00271874 
 	public Version Version { get; } // 0x0027192C 
 
+	// Constructors
+	public ApplicationId(byte[] publicKeyToken, string name, Version version, string processorArchitecture, string culture); // 0x00271684
+
 	// Methods
-	public void .ctor(byte[] publicKeyToken, string name, Version version, string processorArchitecture, string culture); // 0x00271684
 	public ApplicationId Copy(); // 0x00271934
 	public override bool Equals(object o); // 0x002719CC
 	public override int GetHashCode(); // 0x00271C68
@@ -33423,8 +35257,10 @@ public sealed class ApplicationIdentity : ISerializable // TypeDefIndex: 1607
 	public string CodeBase { get; } // 0x00272124 
 	public string FullName { get; } // 0x0027212C 
 
+	// Constructors
+	public ApplicationIdentity(string applicationIdentityFullName); // 0x00271F54
+
 	// Methods
-	public void .ctor(string applicationIdentityFullName); // 0x00271F54
 	private void System.Runtime.Serialization.ISerializable.GetObjectData(SerializationInfo info, StreamingContext context); // 0x00272080
 	public override string ToString(); // 0x00272134
 }
@@ -33441,13 +35277,15 @@ public class ArgumentException : SystemException // TypeDefIndex: 1608
 	public virtual string ParamName { get; } // 0x00272700 
 	public override string Message { get; } // 0x00272708 
 
+	// Constructors
+	public ArgumentException(); // 0x00272580
+	public ArgumentException(string message); // 0x00262260
+	public ArgumentException(string message, Exception innerException); // 0x00272600
+	public ArgumentException(string message, string paramName); // 0x0026B690
+	public ArgumentException(string message, string paramName, Exception innerException); // 0x00272624
+	protected ArgumentException(SerializationInfo info, StreamingContext context); // 0x00272654
+
 	// Methods
-	public void .ctor(); // 0x00272580
-	public void .ctor(string message); // 0x00262260
-	public void .ctor(string message, Exception innerException); // 0x00272600
-	public void .ctor(string message, string paramName); // 0x0026B690
-	public void .ctor(string message, string paramName, Exception innerException); // 0x00272624
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00272654
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x00272858
 }
 
@@ -33458,12 +35296,13 @@ public class ArgumentNullException : ArgumentException // TypeDefIndex: 1609
 	// Fields
 	private const int Result = -2147467261; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x0027291C
-	public void .ctor(string paramName); // 0x00259C90
-	public void .ctor(string paramName, string message); // 0x0027299C
-	public void .ctor(string message, Exception innerException); // 0x002729CC
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002729F0
+	// Constructors
+	public ArgumentNullException(); // 0x0027291C
+	public ArgumentNullException(string paramName); // 0x00259C90
+	public ArgumentNullException(string paramName, string message); // 0x0027299C
+	public ArgumentNullException(string message, Exception innerException); // 0x002729CC
+	protected ArgumentNullException(SerializationInfo info, StreamingContext context); // 0x002729F0
+
 }
 
 // Namespace: System
@@ -33478,13 +35317,15 @@ public class ArgumentOutOfRangeException : ArgumentException // TypeDefIndex: 16
 	public virtual object ActualValue { get; } // 0x00272C40 
 	public override string Message { get; } // 0x00272C48 
 
+	// Constructors
+	public ArgumentOutOfRangeException(); // 0x00272A08
+	public ArgumentOutOfRangeException(string paramName); // 0x00272A88
+	public ArgumentOutOfRangeException(string paramName, string message); // 0x00272B10
+	public ArgumentOutOfRangeException(string paramName, object actualValue, string message); // 0x00272B40
+	protected ArgumentOutOfRangeException(SerializationInfo info, StreamingContext context); // 0x00272B78
+	public ArgumentOutOfRangeException(string message, Exception innerException); // 0x00272C1C
+
 	// Methods
-	public void .ctor(); // 0x00272A08
-	public void .ctor(string paramName); // 0x00272A88
-	public void .ctor(string paramName, string message); // 0x00272B10
-	public void .ctor(string paramName, object actualValue, string message); // 0x00272B40
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00272B78
-	public void .ctor(string message, Exception innerException); // 0x00272C1C
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x00272D04
 }
 
@@ -33495,11 +35336,12 @@ public class ArithmeticException : SystemException // TypeDefIndex: 1611
 	// Fields
 	private const int Result = -2147024362; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x004EC764
-	public void .ctor(string message); // 0x004EC7E4
-	public void .ctor(string message, Exception innerException); // 0x004EC808
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x004EC82C
+	// Constructors
+	public ArithmeticException(); // 0x004EC764
+	public ArithmeticException(string message); // 0x004EC7E4
+	public ArithmeticException(string message, Exception innerException); // 0x004EC808
+	protected ArithmeticException(SerializationInfo info, StreamingContext context); // 0x004EC82C
+
 }
 
 // Namespace: System
@@ -33516,9 +35358,11 @@ public struct ArraySegment`1 // TypeDefIndex: 1612
 	public int Offset { get; }
 	public int Count { get; }
 
+	// Constructors
+	public ArraySegment`1(T[] array, int offset, int count);
+	public ArraySegment`1(T[] array);
+
 	// Methods
-	public void .ctor(T[] array, int offset, int count);
-	public void .ctor(T[] array);
 	public override bool Equals(object obj);
 	public bool Equals(ArraySegment`1<T> obj);
 	public override int GetHashCode();
@@ -33533,11 +35377,12 @@ public class ArrayTypeMismatchException : SystemException // TypeDefIndex: 1613
 	// Fields
 	private const int Result = -2146233085; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x004F3C40
-	public void .ctor(string message); // 0x004F09B0
-	public void .ctor(string message, Exception innerException); // 0x004F3CC0
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x004F3CE4
+	// Constructors
+	public ArrayTypeMismatchException(); // 0x004F3C40
+	public ArrayTypeMismatchException(string message); // 0x004F09B0
+	public ArrayTypeMismatchException(string message, Exception innerException); // 0x004F3CC0
+	protected ArrayTypeMismatchException(SerializationInfo info, StreamingContext context); // 0x004F3CE4
+
 }
 
 // Namespace: System
@@ -33549,8 +35394,9 @@ public class AssemblyLoadEventArgs : EventArgs // TypeDefIndex: 1614
 	// Properties
 	public Assembly LoadedAssembly { get; } // 0x004F3D90 
 
-	// Methods
-	public void .ctor(Assembly loadedAssembly); // 0x004F3D04
+	// Constructors
+	public AssemblyLoadEventArgs(Assembly loadedAssembly); // 0x004F3D04
+
 }
 
 // Namespace: System
@@ -33589,13 +35435,15 @@ public class BadImageFormatException : SystemException // TypeDefIndex: 1616
 	public string FileName { get; } // 0x004F5C80 
 	public string FusionLog { get; } // 0x004F5C88 
 
+	// Constructors
+	public BadImageFormatException(); // 0x004F58F8
+	public BadImageFormatException(string message); // 0x004F5978
+	protected BadImageFormatException(SerializationInfo info, StreamingContext context); // 0x004F599C
+	public BadImageFormatException(string message, Exception inner); // 0x004F5A94
+	public BadImageFormatException(string message, string fileName); // 0x004F5AB8
+	public BadImageFormatException(string message, string fileName, Exception inner); // 0x004F5AE4
+
 	// Methods
-	public void .ctor(); // 0x004F58F8
-	public void .ctor(string message); // 0x004F5978
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x004F599C
-	public void .ctor(string message, Exception inner); // 0x004F5A94
-	public void .ctor(string message, string fileName); // 0x004F5AB8
-	public void .ctor(string message, string fileName, Exception inner); // 0x004F5AE4
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x004F5C90
 	public override string ToString(); // 0x004F5D74
 }
@@ -33614,8 +35462,10 @@ public static class BitConverter // TypeDefIndex: 1618
 	private static readonly bool SwappedWordsInDouble; // 0x00
 	public static readonly bool IsLittleEndian; // 0x01
 
+	// Constructors
+	private static BitConverter(); // 0x004F5FC4
+
 	// Methods
-	private static void .cctor(); // 0x004F5FC4
 	private static bool AmILittleEndian(); // 0x004F6088
 	private static bool DoubleWordsAreSwapped(); // 0x004F605C
 	public static long DoubleToInt64Bits(double value); // 0x004F6090
@@ -33670,11 +35520,12 @@ public class CannotUnloadAppDomainException : SystemException // TypeDefIndex: 1
 	// Fields
 	private const int Result = -2146234347; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x004FA564
-	public void .ctor(string message); // 0x004FA5E4
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x004FA608
-	public void .ctor(string message, Exception innerException); // 0x004FA628
+	// Constructors
+	public CannotUnloadAppDomainException(); // 0x004FA564
+	public CannotUnloadAppDomainException(string message); // 0x004FA5E4
+	protected CannotUnloadAppDomainException(SerializationInfo info, StreamingContext context); // 0x004FA608
+	public CannotUnloadAppDomainException(string message, Exception innerException); // 0x004FA628
+
 }
 
 // Namespace: System
@@ -33690,8 +35541,10 @@ public sealed class CharEnumerator : IEnumerator, IDisposable, ICloneable, IEnum
 	private object System.Collections.IEnumerator.Current { get; } // 0x004FD53C 
 	public char Current { get; } // 0x004FD5B8 
 
+	// Constructors
+	internal CharEnumerator(string s); // 0x004FD4FC
+
 	// Methods
-	internal void .ctor(string s); // 0x004FD4FC
 	private void System.IDisposable.Dispose(); // 0x004FD6A4
 	public object Clone(); // 0x004FD6A8
 	public bool MoveNext(); // 0x004FD734
@@ -33715,8 +35568,10 @@ public static class Console // TypeDefIndex: 1622
 	public static Encoding InputEncoding { get; set; } // 0x0039A8C0 0x0039A94C
 	public static Encoding OutputEncoding { get; set; } // 0x0039A9EC 0x0039AA78
 
+	// Constructors
+	private static Console(); // 0x00397748
+
 	// Methods
-	private static void .cctor(); // 0x00397748
 	private static void SetEncodings(Encoding inputEncoding, Encoding outputEncoding); // 0x003978B8
 	public static Stream OpenStandardError(); // 0x00398090
 	private static Stream Open(IntPtr handle, FileAccess access, int bufferSize); // 0x0039810C
@@ -33781,8 +35636,9 @@ public sealed class ConsoleCancelEventArgs : EventArgs // TypeDefIndex: 1623
 	public bool Cancel { get; set; } // 0x0039ABA4 0x0039ABAC
 	public ConsoleSpecialKey SpecialKey { get; } // 0x0039ABB4 
 
-	// Methods
-	internal void .ctor(ConsoleSpecialKey key); // 0x0039AB18
+	// Constructors
+	internal ConsoleCancelEventArgs(ConsoleSpecialKey key); // 0x0039AB18
+
 }
 
 // Namespace: System
@@ -33972,10 +35828,12 @@ public struct ConsoleKeyInfo // TypeDefIndex: 1626
 	public char KeyChar { get; } // 0x000A760C 
 	public ConsoleModifiers Modifiers { get; } // 0x000A7614 
 
+	// Constructors
+	public ConsoleKeyInfo(char keyChar, ConsoleKey key, bool shift, bool alt, bool control); // 0x000A75AC
+	internal ConsoleKeyInfo(ConsoleKeyInfo other); // 0x000A75D4
+	private static ConsoleKeyInfo(); // 0x0039B008
+
 	// Methods
-	public void .ctor(char keyChar, ConsoleKey key, bool shift, bool alt, bool control); // 0x000A75AC
-	internal void .ctor(ConsoleKeyInfo other); // 0x000A75D4
-	private static void .cctor(); // 0x0039B008
 	internal void SetKey(ConsoleKey key); // 0x000A75E4
 	internal void SetKeyChar(char keyChar); // 0x000A75EC
 	internal void SetModifiers(bool shift, bool alt, bool control); // 0x000A75F4
@@ -34007,8 +35865,9 @@ public enum ConsoleSpecialKey // TypeDefIndex: 1628
 [Serializable]
 public abstract class ContextBoundObject : MarshalByRefObject // TypeDefIndex: 1629
 {
-	// Methods
-	protected void .ctor(); // 0x0039B348
+	// Constructors
+	protected ContextBoundObject(); // 0x0039B348
+
 }
 
 // Namespace: System
@@ -34018,19 +35877,21 @@ public class ContextMarshalException : SystemException // TypeDefIndex: 1630
 	// Fields
 	private const int Result = -2146233084; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x0039B350
-	public void .ctor(string message); // 0x0039B3D0
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0039B3F4
-	public void .ctor(string message, Exception inner); // 0x0039B414
+	// Constructors
+	public ContextMarshalException(); // 0x0039B350
+	public ContextMarshalException(string message); // 0x0039B3D0
+	protected ContextMarshalException(SerializationInfo info, StreamingContext context); // 0x0039B3F4
+	public ContextMarshalException(string message, Exception inner); // 0x0039B414
+
 }
 
 // Namespace: System
 [Serializable]
 public class ContextStaticAttribute : Attribute // TypeDefIndex: 1631
 {
-	// Methods
-	public void .ctor(); // 0x0039B438
+	// Constructors
+	public ContextStaticAttribute(); // 0x0039B438
+
 }
 
 // Namespace: System
@@ -34055,8 +35916,9 @@ internal class ControlCharacters // TypeDefIndex: 1632
 	public const int LNext = 15; // 0x00
 	public const int EOL2 = 16; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x0039B440
+	// Constructors
+	public ControlCharacters(); // 0x0039B440
+
 }
 
 // Namespace: System
@@ -34067,8 +35929,10 @@ public static class Convert // TypeDefIndex: 1633
 	public static readonly object DBNull; // 0x00
 	private static readonly Type[] conversionTable; // 0x04
 
+	// Constructors
+	private static Convert(); // 0x0039B448
+
 	// Methods
-	private static void .cctor(); // 0x0039B448
 	private static byte[] InternalFromBase64String(string str, bool allowWhitespaceOnly); // 0x0039BC8C
 	private static byte[] InternalFromBase64CharArray(char[] arr, int offset, int length); // 0x0039BC90
 	public static byte[] FromBase64CharArray(char[] inArray, int offset, int length); // 0x0039BC94
@@ -34399,10 +36263,12 @@ public sealed class DBNull : IConvertible, ISerializable // TypeDefIndex: 1634
 	// Fields
 	public static readonly DBNull Value; // 0x00
 
+	// Constructors
+	private DBNull(); // 0x004AC538
+	private DBNull(SerializationInfo info, StreamingContext context); // 0x004AC540
+	private static DBNull(); // 0x004AC5D8
+
 	// Methods
-	private void .ctor(); // 0x004AC538
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x004AC540
-	private static void .cctor(); // 0x004AC5D8
 	private bool System.IConvertible.ToBoolean(IFormatProvider provider); // 0x004AC64C
 	private byte System.IConvertible.ToByte(IFormatProvider provider); // 0x004AC6D4
 	private char System.IConvertible.ToChar(IFormatProvider provider); // 0x004AC75C
@@ -34431,10 +36297,11 @@ public sealed class DataMisalignedException : SystemException // TypeDefIndex: 1
 	// Fields
 	private const int Result = -2146233023; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x004AD078
-	public void .ctor(string message); // 0x004AD0F8
-	public void .ctor(string message, Exception innerException); // 0x004AD11C
+	// Constructors
+	public DataMisalignedException(); // 0x004AD078
+	public DataMisalignedException(string message); // 0x004AD0F8
+	public DataMisalignedException(string message, Exception innerException); // 0x004AD11C
+
 }
 
 // Namespace: System
@@ -34486,20 +36353,22 @@ public struct DateTime : IFormattable, IConvertible, IComparable, IComparable`1<
 	public int Year { get; } // 0x000A8CF0 
 	public DateTimeKind Kind { get; } // 0x000A8CFC 
 
+	// Constructors
+	public DateTime(long ticks); // 0x000A8884
+	public DateTime(int year, int month, int day); // 0x000A88A0
+	public DateTime(int year, int month, int day, int hour, int minute, int second); // 0x000A88D0
+	public DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond); // 0x000A8908
+	public DateTime(int year, int month, int day, Calendar calendar); // 0x000A8944
+	public DateTime(int year, int month, int day, int hour, int minute, int second, Calendar calendar); // 0x000A897C
+	public DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, Calendar calendar); // 0x000A89C0
+	internal DateTime(bool check, TimeSpan value); // 0x000A8A00
+	public DateTime(long ticks, DateTimeKind kind); // 0x000A8A1C
+	public DateTime(int year, int month, int day, int hour, int minute, int second, DateTimeKind kind); // 0x000A8A4C
+	public DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, DateTimeKind kind); // 0x000A8A98
+	public DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, Calendar calendar, DateTimeKind kind); // 0x000A8AE4
+	private static DateTime(); // 0x004ADBA8
+
 	// Methods
-	public void .ctor(long ticks); // 0x000A8884
-	public void .ctor(int year, int month, int day); // 0x000A88A0
-	public void .ctor(int year, int month, int day, int hour, int minute, int second); // 0x000A88D0
-	public void .ctor(int year, int month, int day, int hour, int minute, int second, int millisecond); // 0x000A8908
-	public void .ctor(int year, int month, int day, Calendar calendar); // 0x000A8944
-	public void .ctor(int year, int month, int day, int hour, int minute, int second, Calendar calendar); // 0x000A897C
-	public void .ctor(int year, int month, int day, int hour, int minute, int second, int millisecond, Calendar calendar); // 0x000A89C0
-	internal void .ctor(bool check, TimeSpan value); // 0x000A8A00
-	public void .ctor(long ticks, DateTimeKind kind); // 0x000A8A1C
-	public void .ctor(int year, int month, int day, int hour, int minute, int second, DateTimeKind kind); // 0x000A8A4C
-	public void .ctor(int year, int month, int day, int hour, int minute, int second, int millisecond, DateTimeKind kind); // 0x000A8A98
-	public void .ctor(int year, int month, int day, int hour, int minute, int second, int millisecond, Calendar calendar, DateTimeKind kind); // 0x000A8AE4
-	private static void .cctor(); // 0x004ADBA8
 	private bool System.IConvertible.ToBoolean(IFormatProvider provider); // 0x000A8B28
 	private byte System.IConvertible.ToByte(IFormatProvider provider); // 0x000A8B38
 	private char System.IConvertible.ToChar(IFormatProvider provider); // 0x000A8B48
@@ -34649,15 +36518,17 @@ public struct DateTimeOffset : IFormattable, IComparable, ISerializable, ICompar
 	public long UtcTicks { get; } // 0x000A95A8 
 	public int Year { get; } // 0x000A95CC 
 
+	// Constructors
+	public DateTimeOffset(DateTime dateTime); // 0x000A9024
+	public DateTimeOffset(DateTime dateTime, TimeSpan offset); // 0x000A904C
+	public DateTimeOffset(long ticks, TimeSpan offset); // 0x000A907C
+	public DateTimeOffset(int year, int month, int day, int hour, int minute, int second, TimeSpan offset); // 0x000A90A4
+	public DateTimeOffset(int year, int month, int day, int hour, int minute, int second, int millisecond, TimeSpan offset); // 0x000A90E4
+	public DateTimeOffset(int year, int month, int day, int hour, int minute, int second, int millisecond, Calendar calendar, TimeSpan offset); // 0x000A912C
+	private DateTimeOffset(SerializationInfo info, StreamingContext context); // 0x000A9174
+	private static DateTimeOffset(); // 0x004BA538
+
 	// Methods
-	public void .ctor(DateTime dateTime); // 0x000A9024
-	public void .ctor(DateTime dateTime, TimeSpan offset); // 0x000A904C
-	public void .ctor(long ticks, TimeSpan offset); // 0x000A907C
-	public void .ctor(int year, int month, int day, int hour, int minute, int second, TimeSpan offset); // 0x000A90A4
-	public void .ctor(int year, int month, int day, int hour, int minute, int second, int millisecond, TimeSpan offset); // 0x000A90E4
-	public void .ctor(int year, int month, int day, int hour, int minute, int second, int millisecond, Calendar calendar, TimeSpan offset); // 0x000A912C
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x000A9174
-	private static void .cctor(); // 0x004BA538
 	private int System.IComparable.CompareTo(object obj); // 0x000A9190
 	private void System.Runtime.Serialization.ISerializable.GetObjectData(SerializationInfo info, StreamingContext context); // 0x000A9198
 	private void System.Runtime.Serialization.IDeserializationCallback.OnDeserialization(object sender); // 0x000A91B4
@@ -34749,8 +36620,9 @@ internal class DelegateData // TypeDefIndex: 1642
 	public Type target_type; // 0x08
 	public string method_name; // 0x0C
 
-	// Methods
-	public void .ctor(); // 0x004C8470
+	// Constructors
+	public DelegateData(); // 0x004C8470
+
 }
 
 // Namespace: System
@@ -34760,8 +36632,10 @@ internal class DelegateSerializationHolder : ISerializable, IObjectReference // 
 	// Fields
 	private Delegate _delegate; // 0x08
 
+	// Constructors
+	private DelegateSerializationHolder(SerializationInfo info, StreamingContext ctx); // 0x004CA4F8
+
 	// Methods
-	private void .ctor(SerializationInfo info, StreamingContext ctx); // 0x004CA4F8
 	public static void GetDelegateData(Delegate instance, SerializationInfo info, StreamingContext ctx); // 0x004C9E0C
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x004CAC3C
 	public object GetRealObject(StreamingContext context); // 0x004CACC4
@@ -34780,8 +36654,10 @@ private class DelegateEntry // TypeDefIndex: 1644
 	private string methodName; // 0x1C
 	public DelegateEntry delegateEntry; // 0x20
 
+	// Constructors
+	public DelegateEntry(Delegate del, string targetLabel); // 0x004CAA1C
+
 	// Methods
-	public void .ctor(Delegate del, string targetLabel); // 0x004CAA1C
 	public Delegate DeserializeDelegate(SerializationInfo info); // 0x004CA75C
 }
 
@@ -34792,11 +36668,12 @@ public class DivideByZeroException : ArithmeticException // TypeDefIndex: 1645
 	// Fields
 	private const int Result = -2147352558; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x002D5BB8
-	public void .ctor(string message); // 0x002D5C38
-	public void .ctor(string message, Exception innerException); // 0x002D5C5C
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002D5C80
+	// Constructors
+	public DivideByZeroException(); // 0x002D5BB8
+	public DivideByZeroException(string message); // 0x002D5C38
+	public DivideByZeroException(string message, Exception innerException); // 0x002D5C5C
+	protected DivideByZeroException(SerializationInfo info, StreamingContext context); // 0x002D5C80
+
 }
 
 // Namespace: System
@@ -34806,11 +36683,12 @@ public class DllNotFoundException : TypeLoadException // TypeDefIndex: 1646
 	// Fields
 	private const int Result = -2146233052; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x002D5CA0
-	public void .ctor(string message); // 0x002D5D20
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002D5D44
-	public void .ctor(string message, Exception inner); // 0x002D5D64
+	// Constructors
+	public DllNotFoundException(); // 0x002D5CA0
+	public DllNotFoundException(string message); // 0x002D5D20
+	protected DllNotFoundException(SerializationInfo info, StreamingContext context); // 0x002D5D44
+	public DllNotFoundException(string message, Exception inner); // 0x002D5D64
+
 }
 
 // Namespace: System
@@ -34827,12 +36705,13 @@ public class DuplicateWaitObjectException : ArgumentException // TypeDefIndex: 1
 	// Fields
 	private const int Result = -2146233047; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x002D84A8
-	public void .ctor(string parameterName); // 0x002D8528
-	public void .ctor(string parameterName, string message); // 0x002D85B0
-	public void .ctor(string message, Exception innerException); // 0x002D85E0
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002D8604
+	// Constructors
+	public DuplicateWaitObjectException(); // 0x002D84A8
+	public DuplicateWaitObjectException(string parameterName); // 0x002D8528
+	public DuplicateWaitObjectException(string parameterName, string message); // 0x002D85B0
+	public DuplicateWaitObjectException(string message, Exception innerException); // 0x002D85E0
+	protected DuplicateWaitObjectException(SerializationInfo info, StreamingContext context); // 0x002D8604
+
 }
 
 // Namespace: System
@@ -34842,11 +36721,12 @@ public class EntryPointNotFoundException : TypeLoadException // TypeDefIndex: 16
 	// Fields
 	private const int Result = -2146233053; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x002D8624
-	public void .ctor(string message); // 0x002D86A4
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002D86C8
-	public void .ctor(string message, Exception inner); // 0x002D86E8
+	// Constructors
+	public EntryPointNotFoundException(); // 0x002D8624
+	public EntryPointNotFoundException(string message); // 0x002D86A4
+	protected EntryPointNotFoundException(SerializationInfo info, StreamingContext context); // 0x002D86C8
+	public EntryPointNotFoundException(string message, Exception inner); // 0x002D86E8
+
 }
 
 // Namespace: System
@@ -34868,9 +36748,11 @@ internal struct MonoEnumInfo // TypeDefIndex: 1650
 	// Properties
 	private static Hashtable Cache { get; } // 0x001E4824 
 
+	// Constructors
+	private MonoEnumInfo(MonoEnumInfo other); // 0x0008BA80
+	private static MonoEnumInfo(); // 0x001E46A4
+
 	// Methods
-	private void .ctor(MonoEnumInfo other); // 0x0008BA80
-	private static void .cctor(); // 0x001E46A4
 	private static void get_enum_info(Type enumType, out MonoEnumInfo info); // 0x001E4820
 	internal static void GetInfo(Type enumType, out MonoEnumInfo info); // 0x001E4960
 }
@@ -34878,8 +36760,10 @@ internal struct MonoEnumInfo // TypeDefIndex: 1650
 // Namespace: 
 internal class SByteComparer : IComparer`1<sbyte>, IComparer // TypeDefIndex: 1651
 {
+	// Constructors
+	public SByteComparer(); // 0x001E4800
+
 	// Methods
-	public void .ctor(); // 0x001E4800
 	public int Compare(object x, object y); // 0x001E54CC
 	public int Compare(sbyte ix, sbyte iy); // 0x001E55C0
 }
@@ -34887,8 +36771,10 @@ internal class SByteComparer : IComparer`1<sbyte>, IComparer // TypeDefIndex: 16
 // Namespace: 
 internal class ShortComparer : IComparer`1<short>, IComparer // TypeDefIndex: 1652
 {
+	// Constructors
+	public ShortComparer(); // 0x001E4808
+
 	// Methods
-	public void .ctor(); // 0x001E4808
 	public int Compare(object x, object y); // 0x001E55D0
 	public int Compare(short ix, short iy); // 0x001E56C4
 }
@@ -34896,8 +36782,10 @@ internal class ShortComparer : IComparer`1<short>, IComparer // TypeDefIndex: 16
 // Namespace: 
 internal class IntComparer : IComparer`1<int>, IComparer // TypeDefIndex: 1653
 {
+	// Constructors
+	public IntComparer(); // 0x001E4810
+
 	// Methods
-	public void .ctor(); // 0x001E4810
 	public int Compare(object x, object y); // 0x001E5258
 	public int Compare(int ix, int iy); // 0x001E5360
 }
@@ -34905,8 +36793,10 @@ internal class IntComparer : IComparer`1<int>, IComparer // TypeDefIndex: 1653
 // Namespace: 
 internal class LongComparer : IComparer`1<long>, IComparer // TypeDefIndex: 1654
 {
+	// Constructors
+	public LongComparer(); // 0x001E4818
+
 	// Methods
-	public void .ctor(); // 0x001E4818
 	public int Compare(object x, object y); // 0x001E5378
 	public int Compare(long ix, long iy); // 0x001E5494
 }
@@ -35010,20 +36900,22 @@ public class EventArgs // TypeDefIndex: 1658
 	// Fields
 	public static readonly EventArgs Empty; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x002E03D4
-	private static void .cctor(); // 0x002E03DC
+	// Constructors
+	public EventArgs(); // 0x002E03D4
+	private static EventArgs(); // 0x002E03DC
+
 }
 
 // Namespace: System
 [Serializable]
 public sealed class ExecutionEngineException : SystemException // TypeDefIndex: 1659
 {
-	// Methods
-	public void .ctor(); // 0x002E2274
-	public void .ctor(string message); // 0x002E22E8
-	public void .ctor(string message, Exception innerException); // 0x002E22F0
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x002E22F8
+	// Constructors
+	public ExecutionEngineException(); // 0x002E2274
+	public ExecutionEngineException(string message); // 0x002E22E8
+	public ExecutionEngineException(string message, Exception innerException); // 0x002E22F0
+	internal ExecutionEngineException(SerializationInfo info, StreamingContext context); // 0x002E22F8
+
 }
 
 // Namespace: System
@@ -35033,19 +36925,21 @@ public class FieldAccessException : MemberAccessException // TypeDefIndex: 1660
 	// Fields
 	private const int Result = -2146233081; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x002E2318
-	public void .ctor(string message); // 0x002E2398
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002E23BC
-	public void .ctor(string message, Exception inner); // 0x002E23DC
+	// Constructors
+	public FieldAccessException(); // 0x002E2318
+	public FieldAccessException(string message); // 0x002E2398
+	protected FieldAccessException(SerializationInfo info, StreamingContext context); // 0x002E23BC
+	public FieldAccessException(string message, Exception inner); // 0x002E23DC
+
 }
 
 // Namespace: System
 [Serializable]
 public class FlagsAttribute : Attribute // TypeDefIndex: 1661
 {
-	// Methods
-	public void .ctor(); // 0x002E2400
+	// Constructors
+	public FlagsAttribute(); // 0x002E2400
+
 }
 
 // Namespace: System
@@ -35055,11 +36949,12 @@ public class FormatException : SystemException // TypeDefIndex: 1662
 	// Fields
 	private const int Result = -2146233033; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x002D806C
-	public void .ctor(string message); // 0x002D81F8
-	public void .ctor(string message, Exception innerException); // 0x002E2408
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x002E242C
+	// Constructors
+	public FormatException(); // 0x002D806C
+	public FormatException(string message); // 0x002D81F8
+	public FormatException(string message, Exception innerException); // 0x002E2408
+	protected FormatException(SerializationInfo info, StreamingContext context); // 0x002E242C
+
 }
 
 // Namespace: System
@@ -35126,13 +37021,15 @@ public struct Guid : IFormattable, IComparable, IComparable`1<Guid>, IEquatable`
 	private static RandomNumberGenerator _rng; // 0x14
 	private static RandomNumberGenerator _fastRng; // 0x18
 
+	// Constructors
+	public Guid(byte[] b); // 0x000A82B0
+	public Guid(string g); // 0x000A82B8
+	public Guid(int a, short b, short c, byte[] d); // 0x000A82C0
+	public Guid(int a, short b, short c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k); // 0x000A82E4
+	public Guid(uint a, ushort b, ushort c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k); // 0x000A833C
+	private static Guid(); // 0x0048080C
+
 	// Methods
-	public void .ctor(byte[] b); // 0x000A82B0
-	public void .ctor(string g); // 0x000A82B8
-	public void .ctor(int a, short b, short c, byte[] d); // 0x000A82C0
-	public void .ctor(int a, short b, short c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k); // 0x000A82E4
-	public void .ctor(uint a, ushort b, ushort c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k); // 0x000A833C
-	private static void .cctor(); // 0x0048080C
 	private static void CheckNull(object o); // 0x00480344
 	private static void CheckLength(byte[] o, int l); // 0x00480938
 	private static void CheckArray(byte[] o, int l); // 0x004801B8
@@ -35165,8 +37062,10 @@ internal class GuidParser // TypeDefIndex: 1667
 	private int _length; // 0x0C
 	private int _cur; // 0x10
 
+	// Constructors
+	public GuidParser(string src); // 0x004803F8
+
 	// Methods
-	public void .ctor(string src); // 0x004803F8
 	private void Reset(); // 0x004823F0
 	private bool AtEnd(); // 0x00482424
 	private void ThrowFormatException(); // 0x0048243C
@@ -35260,21 +37159,23 @@ public interface IServiceProvider // TypeDefIndex: 1672
 [Serializable]
 public sealed class IndexOutOfRangeException : SystemException // TypeDefIndex: 1673
 {
-	// Methods
-	public void .ctor(); // 0x001D6C94
-	public void .ctor(string message); // 0x001D5CCC
-	public void .ctor(string message, Exception innerException); // 0x001D6D08
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x001D6D10
+	// Constructors
+	public IndexOutOfRangeException(); // 0x001D6C94
+	public IndexOutOfRangeException(string message); // 0x001D5CCC
+	public IndexOutOfRangeException(string message, Exception innerException); // 0x001D6D08
+	internal IndexOutOfRangeException(SerializationInfo info, StreamingContext context); // 0x001D6D10
+
 }
 
 // Namespace: System
 [Serializable]
 public sealed class InsufficientMemoryException : OutOfMemoryException // TypeDefIndex: 1674
 {
-	// Methods
-	public void .ctor(); // 0x001D6D30
-	public void .ctor(string message); // 0x001D6D98
-	public void .ctor(string message, Exception innerException); // 0x001D6DA0
+	// Constructors
+	public InsufficientMemoryException(); // 0x001D6D30
+	public InsufficientMemoryException(string message); // 0x001D6D98
+	public InsufficientMemoryException(string message, Exception innerException); // 0x001D6DA0
+
 }
 
 // Namespace: System
@@ -35284,12 +37185,13 @@ public class InvalidCastException : SystemException // TypeDefIndex: 1675
 	// Fields
 	private const int Result = -2147467262; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x001DDAA4
-	public void .ctor(string message); // 0x001DDB24
-	public void .ctor(string message, Exception innerException); // 0x001DDB48
-	public void .ctor(string message, int errorCode); // 0x001DDB6C
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001DDB8C
+	// Constructors
+	public InvalidCastException(); // 0x001DDAA4
+	public InvalidCastException(string message); // 0x001DDB24
+	public InvalidCastException(string message, Exception innerException); // 0x001DDB48
+	public InvalidCastException(string message, int errorCode); // 0x001DDB6C
+	protected InvalidCastException(SerializationInfo info, StreamingContext context); // 0x001DDB8C
+
 }
 
 // Namespace: System
@@ -35299,22 +37201,24 @@ public class InvalidOperationException : SystemException // TypeDefIndex: 1676
 	// Fields
 	private const int Result = -2146233079; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x001DDBAC
-	public void .ctor(string message); // 0x001DDC2C
-	public void .ctor(string message, Exception innerException); // 0x001DDC50
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001DDC74
+	// Constructors
+	public InvalidOperationException(); // 0x001DDBAC
+	public InvalidOperationException(string message); // 0x001DDC2C
+	public InvalidOperationException(string message, Exception innerException); // 0x001DDC50
+	protected InvalidOperationException(SerializationInfo info, StreamingContext context); // 0x001DDC74
+
 }
 
 // Namespace: System
 [Serializable]
 public sealed class InvalidProgramException : SystemException // TypeDefIndex: 1677
 {
-	// Methods
-	public void .ctor(); // 0x001DDC94
-	public void .ctor(string message); // 0x001DDD08
-	public void .ctor(string message, Exception inner); // 0x001DDD10
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x001DDD18
+	// Constructors
+	public InvalidProgramException(); // 0x001DDC94
+	public InvalidProgramException(string message); // 0x001DDD08
+	public InvalidProgramException(string message, Exception inner); // 0x001DDD10
+	internal InvalidProgramException(SerializationInfo info, StreamingContext context); // 0x001DDD18
+
 }
 
 // Namespace: System
@@ -35348,9 +37252,10 @@ public sealed class LoaderOptimizationAttribute : Attribute // TypeDefIndex: 168
 	// Properties
 	public LoaderOptimization Value { get; } // 0x001DDF04 
 
-	// Methods
-	public void .ctor(byte value); // 0x001DDEC4
-	public void .ctor(LoaderOptimization value); // 0x001DDEE4
+	// Constructors
+	public LoaderOptimizationAttribute(byte value); // 0x001DDEC4
+	public LoaderOptimizationAttribute(LoaderOptimization value); // 0x001DDEE4
+
 }
 
 // Namespace: System
@@ -35363,17 +37268,20 @@ public sealed class LocalDataStoreSlot // TypeDefIndex: 1681
 	private static bool[] slot_bitmap_thread; // 0x04
 	private static bool[] slot_bitmap_context; // 0x08
 
+	// Constructors
+	internal LocalDataStoreSlot(bool in_thread); // 0x001DDF0C
+	private static LocalDataStoreSlot(); // 0x001DE250
+
 	// Methods
-	internal void .ctor(bool in_thread); // 0x001DDF0C
-	private static void .cctor(); // 0x001DE250
 	protected override void Finalize(); // 0x001DE2D0
 }
 
 // Namespace: System
 public sealed class MTAThreadAttribute : Attribute // TypeDefIndex: 1682
 {
-	// Methods
-	public void .ctor(); // 0x001DE5C4
+	// Constructors
+	public MTAThreadAttribute(); // 0x001DE5C4
+
 }
 
 // Namespace: System
@@ -35465,11 +37373,12 @@ public class MemberAccessException : SystemException // TypeDefIndex: 1684
 	// Fields
 	private const int Result = -2146233062; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x001E0CF4
-	public void .ctor(string message); // 0x001E0D74
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001E0D98
-	public void .ctor(string message, Exception inner); // 0x001E0DB8
+	// Constructors
+	public MemberAccessException(); // 0x001E0CF4
+	public MemberAccessException(string message); // 0x001E0D74
+	protected MemberAccessException(SerializationInfo info, StreamingContext context); // 0x001E0D98
+	public MemberAccessException(string message, Exception inner); // 0x001E0DB8
+
 }
 
 // Namespace: System
@@ -35479,11 +37388,12 @@ public class MethodAccessException : MemberAccessException // TypeDefIndex: 1685
 	// Fields
 	private const int Result = -2146233072; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x001E0DDC
-	public void .ctor(string message); // 0x001E0E5C
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001E0E80
-	public void .ctor(string message, Exception inner); // 0x001E0EA0
+	// Constructors
+	public MethodAccessException(); // 0x001E0DDC
+	public MethodAccessException(string message); // 0x001E0E5C
+	protected MethodAccessException(SerializationInfo info, StreamingContext context); // 0x001E0E80
+	public MethodAccessException(string message, Exception inner); // 0x001E0EA0
+
 }
 
 // Namespace: System
@@ -35503,12 +37413,13 @@ public class MissingFieldException : MissingMemberException // TypeDefIndex: 168
 	// Properties
 	public override string Message { get; } // 0x001E120C 
 
-	// Methods
-	public void .ctor(); // 0x001E0EC4
-	public void .ctor(string message); // 0x001E0F68
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001E0F8C
-	public void .ctor(string message, Exception inner); // 0x001E1164
-	public void .ctor(string className, string fieldName); // 0x001E11AC
+	// Constructors
+	public MissingFieldException(); // 0x001E0EC4
+	public MissingFieldException(string message); // 0x001E0F68
+	protected MissingFieldException(SerializationInfo info, StreamingContext context); // 0x001E0F8C
+	public MissingFieldException(string message, Exception inner); // 0x001E1164
+	public MissingFieldException(string className, string fieldName); // 0x001E11AC
+
 }
 
 // Namespace: System
@@ -35524,12 +37435,14 @@ public class MissingMemberException : MemberAccessException // TypeDefIndex: 168
 	// Properties
 	public override string Message { get; } // 0x001E12D4 
 
+	// Constructors
+	public MissingMemberException(); // 0x001E13A0
+	public MissingMemberException(string message); // 0x001E0F44
+	public MissingMemberException(string message, Exception inner); // 0x001E1188
+	protected MissingMemberException(SerializationInfo info, StreamingContext context); // 0x001E0FA4
+	public MissingMemberException(string className, string memberName); // 0x001E11DC
+
 	// Methods
-	public void .ctor(); // 0x001E13A0
-	public void .ctor(string message); // 0x001E0F44
-	public void .ctor(string message, Exception inner); // 0x001E1188
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001E0FA4
-	public void .ctor(string className, string memberName); // 0x001E11DC
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x001E1420
 }
 
@@ -35543,12 +37456,13 @@ public class MissingMethodException : MissingMemberException // TypeDefIndex: 16
 	// Properties
 	public override string Message { get; } // 0x001E1648 
 
-	// Methods
-	public void .ctor(); // 0x001E1538
-	public void .ctor(string message); // 0x001E15B8
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001E15DC
-	public void .ctor(string message, Exception inner); // 0x001E15F4
-	public void .ctor(string className, string methodName); // 0x001E1618
+	// Constructors
+	public MissingMethodException(); // 0x001E1538
+	public MissingMethodException(string message); // 0x001E15B8
+	protected MissingMethodException(SerializationInfo info, StreamingContext context); // 0x001E15DC
+	public MissingMethodException(string message, Exception inner); // 0x001E15F4
+	public MissingMethodException(string className, string methodName); // 0x001E1618
+
 }
 
 // Namespace: System
@@ -35562,9 +37476,11 @@ public struct ModuleHandle // TypeDefIndex: 1690
 	internal IntPtr Value { get; } // 0x0008B8B8 
 	public int MDStreamVersion { get; } // 0x0008B8C0 
 
+	// Constructors
+	internal ModuleHandle(IntPtr v); // 0x0008B8B0
+	private static ModuleHandle(); // 0x001E1718
+
 	// Methods
-	internal void .ctor(IntPtr v); // 0x0008B8B0
-	private static void .cctor(); // 0x001E1718
 	internal void GetPEKind(out PortableExecutableKinds peKind, out ImageFileMachine machine); // 0x0008B8C8
 	public RuntimeFieldHandle ResolveFieldHandle(int fieldToken); // 0x0008B8D0
 	public RuntimeMethodHandle ResolveMethodHandle(int methodToken); // 0x0008B8F4
@@ -35595,8 +37511,9 @@ internal class MonoAsyncCall // TypeDefIndex: 1691
 	private object out_args; // 0x1C
 	private long wait_event; // 0x20
 
-	// Methods
-	public void .ctor(); // 0x001E2500
+	// Constructors
+	public MonoAsyncCall(); // 0x001E2500
+
 }
 
 // Namespace: System
@@ -35607,9 +37524,11 @@ internal class MonoCustomAttrs // TypeDefIndex: 1692
 	private static readonly Type AttributeUsageType; // 0x04
 	private static readonly AttributeUsageAttribute DefaultAttributeUsage; // 0x08
 
+	// Constructors
+	public MonoCustomAttrs(); // 0x001E2508
+	private static MonoCustomAttrs(); // 0x001E2510
+
 	// Methods
-	public void .ctor(); // 0x001E2508
-	private static void .cctor(); // 0x001E2510
 	private static bool IsUserCattrProvider(object obj); // 0x001E25E8
 	internal static object[] GetCustomAttributesInternal(ICustomAttributeProvider obj, Type attributeType, bool pseudoAttrs); // 0x001E2894
 	internal static object[] GetPseudoCustomAttributes(ICustomAttributeProvider obj, Type attributeType); // 0x001E2898
@@ -35637,8 +37556,9 @@ private class AttributeInfo // TypeDefIndex: 1693
 	public AttributeUsageAttribute Usage { get; } // 0x001E4648 
 	public int InheritanceLevel { get; } // 0x001E4650 
 
-	// Methods
-	public void .ctor(AttributeUsageAttribute usage, int inheritanceLevel); // 0x001E3ADC
+	// Constructors
+	public AttributeInfo(AttributeUsageAttribute usage, int inheritanceLevel); // 0x001E3ADC
+
 }
 
 // Namespace: System
@@ -35648,8 +37568,9 @@ internal sealed class MonoListItem // TypeDefIndex: 1694
 	private MonoListItem next; // 0x08
 	private object data; // 0x0C
 
-	// Methods
-	public void .ctor(); // 0x001E5734
+	// Constructors
+	public MonoListItem(); // 0x001E5734
+
 }
 
 // Namespace: System
@@ -35658,9 +37579,10 @@ internal class MonoTouchAOTHelper // TypeDefIndex: 1695
 	// Fields
 	internal static bool FalseFlag; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x001E576C
-	private static void .cctor(); // 0x001E5774
+	// Constructors
+	public MonoTouchAOTHelper(); // 0x001E576C
+	private static MonoTouchAOTHelper(); // 0x001E5774
+
 }
 
 // Namespace: System
@@ -35670,8 +37592,9 @@ internal class MonoTypeInfo // TypeDefIndex: 1696
 	public string full_name; // 0x08
 	public ConstructorInfo default_ctor; // 0x0C
 
-	// Methods
-	public void .ctor(); // 0x001E59F8
+	// Constructors
+	public MonoTypeInfo(); // 0x001E59F8
+
 }
 
 // Namespace: System
@@ -35699,8 +37622,10 @@ internal class MonoType : Type, ISerializable // TypeDefIndex: 1697
 	public override bool IsGenericParameter { get; } // 0x001E8B60 
 	public override MethodBase DeclaringMethod { get; } // 0x001E8B64 
 
+	// Constructors
+	internal MonoType(object obj); // 0x001E5778
+
 	// Methods
-	internal void .ctor(object obj); // 0x001E5778
 	private static void type_from_obj(MonoType type, object obj); // 0x001E5848
 	private static TypeAttributes get_attributes(Type type); // 0x001E58CC
 	internal ConstructorInfo GetDefaultConstructor(); // 0x001E58D0
@@ -35757,18 +37682,20 @@ internal class MonoType : Type, ISerializable // TypeDefIndex: 1697
 [Serializable]
 public sealed class MulticastNotSupportedException : SystemException // TypeDefIndex: 1698
 {
-	// Methods
-	public void .ctor(); // 0x001E996C
-	public void .ctor(string message); // 0x001E99E0
-	public void .ctor(string message, Exception inner); // 0x001E99E8
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x001E99F0
+	// Constructors
+	public MulticastNotSupportedException(); // 0x001E996C
+	public MulticastNotSupportedException(string message); // 0x001E99E0
+	public MulticastNotSupportedException(string message, Exception inner); // 0x001E99E8
+	internal MulticastNotSupportedException(SerializationInfo info, StreamingContext context); // 0x001E99F0
+
 }
 
 // Namespace: System
 public sealed class NonSerializedAttribute : Attribute // TypeDefIndex: 1699
 {
-	// Methods
-	public void .ctor(); // 0x001E9A10
+	// Constructors
+	public NonSerializedAttribute(); // 0x001E9A10
+
 }
 
 // Namespace: System
@@ -35782,14 +37709,16 @@ public class NotFiniteNumberException : ArithmeticException // TypeDefIndex: 170
 	// Properties
 	public double OffendingNumber { get; } // 0x001E9C2C 
 
+	// Constructors
+	public NotFiniteNumberException(); // 0x001E9A18
+	public NotFiniteNumberException(double offendingNumber); // 0x001E9A98
+	public NotFiniteNumberException(string message); // 0x001E9ACC
+	public NotFiniteNumberException(string message, double offendingNumber); // 0x001E9AF0
+	public NotFiniteNumberException(string message, double offendingNumber, Exception innerException); // 0x001E9B24
+	protected NotFiniteNumberException(SerializationInfo info, StreamingContext context); // 0x001E9B5C
+	public NotFiniteNumberException(string message, Exception innerException); // 0x001E9C08
+
 	// Methods
-	public void .ctor(); // 0x001E9A18
-	public void .ctor(double offendingNumber); // 0x001E9A98
-	public void .ctor(string message); // 0x001E9ACC
-	public void .ctor(string message, double offendingNumber); // 0x001E9AF0
-	public void .ctor(string message, double offendingNumber, Exception innerException); // 0x001E9B24
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001E9B5C
-	public void .ctor(string message, Exception innerException); // 0x001E9C08
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x001E9C38
 }
 
@@ -35800,11 +37729,12 @@ public class NotImplementedException : SystemException // TypeDefIndex: 1701
 	// Fields
 	private const int Result = -2147467263; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x001E584C
-	public void .ctor(string message); // 0x001E9CF0
-	public void .ctor(string message, Exception inner); // 0x001E9D14
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001E9D38
+	// Constructors
+	public NotImplementedException(); // 0x001E584C
+	public NotImplementedException(string message); // 0x001E9CF0
+	public NotImplementedException(string message, Exception inner); // 0x001E9D14
+	protected NotImplementedException(SerializationInfo info, StreamingContext context); // 0x001E9D38
+
 }
 
 // Namespace: System
@@ -35814,11 +37744,12 @@ public class NotSupportedException : SystemException // TypeDefIndex: 1702
 	// Fields
 	private const int Result = -2146233067; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x001E9D58
-	public void .ctor(string message); // 0x001D6108
-	public void .ctor(string message, Exception innerException); // 0x001E9DD8
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001E9DFC
+	// Constructors
+	public NotSupportedException(); // 0x001E9D58
+	public NotSupportedException(string message); // 0x001D6108
+	public NotSupportedException(string message, Exception innerException); // 0x001E9DD8
+	protected NotSupportedException(SerializationInfo info, StreamingContext context); // 0x001E9DFC
+
 }
 
 // Namespace: System
@@ -35828,11 +37759,12 @@ public class NullReferenceException : SystemException // TypeDefIndex: 1703
 	// Fields
 	private const int Result = -2147467261; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x001E9E1C
-	public void .ctor(string message); // 0x001E9E9C
-	public void .ctor(string message, Exception innerException); // 0x001E9EC0
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001E9EE4
+	// Constructors
+	public NullReferenceException(); // 0x001E9E1C
+	public NullReferenceException(string message); // 0x001E9E9C
+	public NullReferenceException(string message, Exception innerException); // 0x001E9EC0
+	protected NullReferenceException(SerializationInfo info, StreamingContext context); // 0x001E9EE4
+
 }
 
 // Namespace: System
@@ -35906,9 +37838,11 @@ internal sealed class NumberFormatter // TypeDefIndex: 1705
 	private bool IsZero { get; } // 0x001EBDDC 
 	private bool IsZeroInteger { get; } // 0x001EBDF0 
 
+	// Constructors
+	public NumberFormatter(Thread current); // 0x001EA088
+	private static NumberFormatter(); // 0x001EA184
+
 	// Methods
-	public void .ctor(Thread current); // 0x001EA088
-	private static void .cctor(); // 0x001EA184
 	private static void GetFormatterTables(out void * MantissaBitsTable, out void * TensExponentTable, out void * DigitLowerTable, out void * DigitUpperTable, out void * TenPowersList, out void * DecHexDigits); // 0x001EA208
 	private static long GetTenPowerOf(int i); // 0x001EA20C
 	private void InitDecHexDigits(uint value); // 0x001EA2A4
@@ -36016,8 +37950,10 @@ private class CustomInfo // TypeDefIndex: 1706
 	public int Percents; // 0x38
 	public int Permilles; // 0x3C
 
+	// Constructors
+	public CustomInfo(); // 0x001AF618
+
 	// Methods
-	public void .ctor(); // 0x001AF618
 	public static void GetActiveSection(string format, bool positive, bool zero, int offset, int length); // 0x001AF630
 	public static CustomInfo Parse(string format, int offset, int length, NumberFormatInfo nfi); // 0x001AFB78
 	public string Format(string format, int offset, int length, NumberFormatInfo nfi, bool positive, StringBuilder sb_int, StringBuilder sb_dec, StringBuilder sb_exp); // 0x001B0238
@@ -36035,11 +37971,13 @@ public class ObjectDisposedException : InvalidOperationException // TypeDefIndex
 	public override string Message { get; } // 0x001B0ED0 
 	public string ObjectName { get; } // 0x001B0ED8 
 
+	// Constructors
+	public ObjectDisposedException(string objectName); // 0x001B0D64
+	public ObjectDisposedException(string objectName, string message); // 0x001B0DF0
+	public ObjectDisposedException(string message, Exception innerException); // 0x001B0E1C
+	protected ObjectDisposedException(SerializationInfo info, StreamingContext context); // 0x001B0E24
+
 	// Methods
-	public void .ctor(string objectName); // 0x001B0D64
-	public void .ctor(string objectName, string message); // 0x001B0DF0
-	public void .ctor(string message, Exception innerException); // 0x001B0E1C
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001B0E24
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x001B0EE0
 }
 
@@ -36058,8 +37996,10 @@ public sealed class OperatingSystem : ICloneable, ISerializable // TypeDefIndex:
 	public string ServicePack { get; } // 0x001B1110 
 	public string VersionString { get; } // 0x001B1118 
 
+	// Constructors
+	public OperatingSystem(PlatformID platform, Version version); // 0x001B0FF0
+
 	// Methods
-	public void .ctor(PlatformID platform, Version version); // 0x001B0FF0
 	public object Clone(); // 0x001B12C0
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x001B133C
 	public override string ToString(); // 0x001B111C
@@ -36072,11 +38012,12 @@ public class OperationCanceledException : SystemException // TypeDefIndex: 1709
 	// Fields
 	private const int Result = -2146233029; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x001B1450
-	public void .ctor(string message); // 0x001B14D0
-	public void .ctor(string message, Exception innerException); // 0x001B14F4
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001B1518
+	// Constructors
+	public OperationCanceledException(); // 0x001B1450
+	public OperationCanceledException(string message); // 0x001B14D0
+	public OperationCanceledException(string message, Exception innerException); // 0x001B14F4
+	protected OperationCanceledException(SerializationInfo info, StreamingContext context); // 0x001B1518
+
 }
 
 // Namespace: System
@@ -36086,11 +38027,12 @@ public class OutOfMemoryException : SystemException // TypeDefIndex: 1710
 	// Fields
 	private const int Result = -2147024882; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x001B185C
-	public void .ctor(string message); // 0x001B18DC
-	public void .ctor(string message, Exception innerException); // 0x001B1900
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001B1924
+	// Constructors
+	public OutOfMemoryException(); // 0x001B185C
+	public OutOfMemoryException(string message); // 0x001B18DC
+	public OutOfMemoryException(string message, Exception innerException); // 0x001B1900
+	protected OutOfMemoryException(SerializationInfo info, StreamingContext context); // 0x001B1924
+
 }
 
 // Namespace: System
@@ -36100,11 +38042,12 @@ public class OverflowException : ArithmeticException // TypeDefIndex: 1711
 	// Fields
 	private const int Result = -2146233066; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x001B1944
-	public void .ctor(string message); // 0x001B19C4
-	public void .ctor(string message, Exception innerException); // 0x001B19E8
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001B1A0C
+	// Constructors
+	public OverflowException(); // 0x001B1944
+	public OverflowException(string message); // 0x001B19C4
+	public OverflowException(string message, Exception innerException); // 0x001B19E8
+	protected OverflowException(SerializationInfo info, StreamingContext context); // 0x001B1A0C
+
 }
 
 // Namespace: System
@@ -36127,11 +38070,12 @@ public class PlatformNotSupportedException : NotSupportedException // TypeDefInd
 	// Fields
 	private const int Result = -2146233031; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x001B1A34
-	public void .ctor(string message); // 0x001B1AB4
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001B1AD8
-	public void .ctor(string message, Exception inner); // 0x001B1AF8
+	// Constructors
+	public PlatformNotSupportedException(); // 0x001B1A34
+	public PlatformNotSupportedException(string message); // 0x001B1AB4
+	protected PlatformNotSupportedException(SerializationInfo info, StreamingContext context); // 0x001B1AD8
+	public PlatformNotSupportedException(string message, Exception inner); // 0x001B1AF8
+
 }
 
 // Namespace: System
@@ -36146,9 +38090,11 @@ public class Random // TypeDefIndex: 1714
 	private int inextp; // 0x0C
 	private int[] SeedArray; // 0x10
 
+	// Constructors
+	public Random(); // 0x001B1B1C
+	public Random(int Seed); // 0x001B1B40
+
 	// Methods
-	public void .ctor(); // 0x001B1B1C
-	public void .ctor(int Seed); // 0x001B1B40
 	protected virtual double Sample(); // 0x001B1E08
 	public virtual int Next(); // 0x001B1F18
 	public virtual int Next(int maxValue); // 0x001B1F50
@@ -36164,11 +38110,12 @@ public class RankException : SystemException // TypeDefIndex: 1715
 	// Fields
 	private const int Result = -2146233065; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x001B2278
-	public void .ctor(string message); // 0x001B22F8
-	public void .ctor(string message, Exception innerException); // 0x001B231C
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x001B2340
+	// Constructors
+	public RankException(); // 0x001B2278
+	public RankException(string message); // 0x001B22F8
+	public RankException(string message, Exception innerException); // 0x001B231C
+	protected RankException(SerializationInfo info, StreamingContext context); // 0x001B2340
+
 }
 
 // Namespace: System
@@ -36180,8 +38127,9 @@ public class ResolveEventArgs : EventArgs // TypeDefIndex: 1716
 	// Properties
 	public string Name { get; } // 0x0036B0C0 
 
-	// Methods
-	public void .ctor(string name); // 0x0036B034
+	// Constructors
+	public ResolveEventArgs(string name); // 0x0036B034
+
 }
 
 // Namespace: System
@@ -36194,9 +38142,11 @@ public struct RuntimeMethodHandle : ISerializable // TypeDefIndex: 1717
 	// Properties
 	public IntPtr Value { get; } // 0x0008BD8C 
 
+	// Constructors
+	internal RuntimeMethodHandle(IntPtr v); // 0x0008BD68
+	private RuntimeMethodHandle(SerializationInfo info, StreamingContext context); // 0x0008BD70
+
 	// Methods
-	internal void .ctor(IntPtr v); // 0x0008BD68
-	private void .ctor(SerializationInfo info, StreamingContext context); // 0x0008BD70
 	public void GetObjectData(SerializationInfo info, StreamingContext context); // 0x0008BD94
 	private static IntPtr GetFunctionPointer(IntPtr m); // 0x0020EB38
 	public IntPtr GetFunctionPointer(); // 0x0008BDB0
@@ -36210,19 +38160,21 @@ public struct RuntimeMethodHandle : ISerializable // TypeDefIndex: 1717
 // Namespace: System
 public sealed class STAThreadAttribute : Attribute // TypeDefIndex: 1718
 {
-	// Methods
-	public void .ctor(); // 0x002106C4
+	// Constructors
+	public STAThreadAttribute(); // 0x002106C4
+
 }
 
 // Namespace: System
 [Serializable]
 public sealed class StackOverflowException : SystemException // TypeDefIndex: 1719
 {
-	// Methods
-	public void .ctor(); // 0x002489FC
-	public void .ctor(string message); // 0x00248A70
-	public void .ctor(string message, Exception innerException); // 0x00248A78
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x00248A80
+	// Constructors
+	public StackOverflowException(); // 0x002489FC
+	public StackOverflowException(string message); // 0x00248A70
+	public StackOverflowException(string message, Exception innerException); // 0x00248A78
+	internal StackOverflowException(SerializationInfo info, StreamingContext context); // 0x00248A80
+
 }
 
 // Namespace: System
@@ -36243,9 +38195,11 @@ public abstract class StringComparer : IComparer`1<string>, IEqualityComparer`1<
 	public static StringComparer Ordinal { get; } // 0x0050F5EC 
 	public static StringComparer OrdinalIgnoreCase { get; } // 0x0050F678 
 
+	// Constructors
+	protected StringComparer(); // 0x0050F22C
+	private static StringComparer(); // 0x0050F234
+
 	// Methods
-	protected void .ctor(); // 0x0050F22C
-	private static void .cctor(); // 0x0050F234
 	public static StringComparer Create(CultureInfo culture, bool ignoreCase); // 0x0050F704
 	public int Compare(object x, object y); // 0x0050F7E0
 	public bool Equals(object x, object y); // 0x0050F98C
@@ -36263,8 +38217,10 @@ internal sealed class CultureAwareComparer : StringComparer // TypeDefIndex: 172
 	private readonly bool _ignoreCase; // 0x08
 	private readonly CompareInfo _compareInfo; // 0x0C
 
+	// Constructors
+	public CultureAwareComparer(CultureInfo ci, bool ignore_case); // 0x004AB208
+
 	// Methods
-	public void .ctor(CultureInfo ci, bool ignore_case); // 0x004AB208
 	public override int Compare(string x, string y); // 0x004AB2C0
 	public override bool Equals(string x, string y); // 0x004AB318
 	public override int GetHashCode(string s); // 0x004AB338
@@ -36277,8 +38233,10 @@ internal sealed class OrdinalComparer : StringComparer // TypeDefIndex: 1722
 	// Fields
 	private readonly bool _ignoreCase; // 0x08
 
+	// Constructors
+	public OrdinalComparer(bool ignoreCase); // 0x001B1538
+
 	// Methods
-	public void .ctor(bool ignoreCase); // 0x001B1538
 	public override int Compare(string x, string y); // 0x001B15C4
 	public override bool Equals(string x, string y); // 0x001B16C4
 	public override int GetHashCode(string s); // 0x001B1784
@@ -36310,11 +38268,12 @@ public class SystemException : Exception // TypeDefIndex: 1725
 	// Fields
 	private const int Result = -2146233087; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x0050FB58
-	public void .ctor(string message); // 0x0050FBD8
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0050FBFC
-	public void .ctor(string message, Exception innerException); // 0x0050FC1C
+	// Constructors
+	public SystemException(); // 0x0050FB58
+	public SystemException(string message); // 0x0050FBD8
+	protected SystemException(SerializationInfo info, StreamingContext context); // 0x0050FBFC
+	public SystemException(string message, Exception innerException); // 0x0050FC1C
+
 }
 
 // Namespace: System
@@ -36364,8 +38323,9 @@ internal enum TermInfoBooleans // TypeDefIndex: 1726
 [Serializable]
 public class ThreadStaticAttribute : Attribute // TypeDefIndex: 1727
 {
-	// Methods
-	public void .ctor(); // 0x0052D198
+	// Constructors
+	public ThreadStaticAttribute(); // 0x0052D198
+
 }
 
 // Namespace: System
@@ -36396,12 +38356,14 @@ public struct TimeSpan : IComparable, IComparable`1<TimeSpan>, IEquatable`1<Time
 	public double TotalMinutes { get; } // 0x000A7A90 
 	public double TotalSeconds { get; } // 0x000A7AC0 
 
+	// Constructors
+	public TimeSpan(long ticks); // 0x000A7878
+	public TimeSpan(int hours, int minutes, int seconds); // 0x000A7888
+	public TimeSpan(int days, int hours, int minutes, int seconds); // 0x000A78A4
+	public TimeSpan(int days, int hours, int minutes, int seconds, int milliseconds); // 0x000A78C8
+	private static TimeSpan(); // 0x0041D870
+
 	// Methods
-	public void .ctor(long ticks); // 0x000A7878
-	public void .ctor(int hours, int minutes, int seconds); // 0x000A7888
-	public void .ctor(int days, int hours, int minutes, int seconds); // 0x000A78A4
-	public void .ctor(int days, int hours, int minutes, int seconds, int milliseconds); // 0x000A78C8
-	private static void .cctor(); // 0x0041D870
 	internal static long CalculateTicks(int days, int hours, int minutes, int seconds, int milliseconds); // 0x0041D634
 	public TimeSpan Add(TimeSpan ts); // 0x000A7AF0
 	public static int Compare(TimeSpan t1, TimeSpan t2); // 0x0041DD18
@@ -36448,8 +38410,10 @@ private class Parser // TypeDefIndex: 1729
 	// Properties
 	public bool AtEnd { get; } // 0x0041F620 
 
+	// Constructors
+	public Parser(string src); // 0x0041EA78
+
 	// Methods
-	public void .ctor(string src); // 0x0041EA78
 	private void ParseWhiteSpace(); // 0x0041F638
 	private bool ParseSign(); // 0x0041F6F4
 	private int ParseInt(bool optional); // 0x0041F758
@@ -36473,9 +38437,11 @@ public abstract class TimeZone // TypeDefIndex: 1730
 	public abstract string DaylightName { get; }
 	public abstract string StandardName { get; }
 
+	// Constructors
+	protected TimeZone(); // 0x0041FB4C
+	private static TimeZone(); // 0x0041FB54
+
 	// Methods
-	protected void .ctor(); // 0x0041FB4C
-	private static void .cctor(); // 0x0041FB54
 	public abstract DaylightTime GetDaylightChanges(int year);
 	public abstract TimeSpan GetUtcOffset(DateTime time);
 	public virtual bool IsDaylightSavingTime(DateTime time); // 0x0041FE64
@@ -36504,9 +38470,11 @@ internal class CurrentSystemTimeZone : TimeZone, IDeserializationCallback // Typ
 	public override string DaylightName { get; } // 0x004ABE30 
 	public override string StandardName { get; } // 0x004ABE38 
 
+	// Constructors
+	internal CurrentSystemTimeZone(); // 0x004AB444
+	internal CurrentSystemTimeZone(long lnow); // 0x004AB4F0
+
 	// Methods
-	internal void .ctor(); // 0x004AB444
-	internal void .ctor(long lnow); // 0x004AB4F0
 	private void System.Runtime.Serialization.IDeserializationCallback.OnDeserialization(object sender); // 0x004ABE28
 	private static bool GetTimeZoneData(int year, out long[] data, out string[] names); // 0x004ABA88
 	public override DaylightTime GetDaylightChanges(int year); // 0x004ABE40
@@ -36538,11 +38506,12 @@ public class TimeoutException : SystemException // TypeDefIndex: 1734
 	// Fields
 	private const int Result = -2146233083; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x00420EF0
-	public void .ctor(string message); // 0x00420F70
-	public void .ctor(string message, Exception innerException); // 0x00420F94
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00420FB8
+	// Constructors
+	public TimeoutException(); // 0x00420EF0
+	public TimeoutException(string message); // 0x00420F70
+	public TimeoutException(string message, Exception innerException); // 0x00420F94
+	protected TimeoutException(SerializationInfo info, StreamingContext context); // 0x00420FB8
+
 }
 
 // Namespace: System
@@ -36579,9 +38548,11 @@ public sealed class TypeInitializationException : SystemException // TypeDefInde
 	// Properties
 	public string TypeName { get; } // 0x00426730 
 
+	// Constructors
+	public TypeInitializationException(string fullTypeName, Exception innerException); // 0x004265C0
+	internal TypeInitializationException(SerializationInfo info, StreamingContext context); // 0x00426684
+
 	// Methods
-	public void .ctor(string fullTypeName, Exception innerException); // 0x004265C0
-	internal void .ctor(SerializationInfo info, StreamingContext context); // 0x00426684
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x00426738
 }
 
@@ -36598,12 +38569,14 @@ public class TypeLoadException : SystemException // TypeDefIndex: 1737
 	public override string Message { get; } // 0x0042694C 
 	public string TypeName { get; } // 0x00426AB8 
 
+	// Constructors
+	public TypeLoadException(); // 0x00425AB8
+	public TypeLoadException(string message); // 0x00422618
+	public TypeLoadException(string message, Exception inner); // 0x004267E8
+	internal TypeLoadException(string className, string assemblyName); // 0x0042680C
+	protected TypeLoadException(SerializationInfo info, StreamingContext context); // 0x00426830
+
 	// Methods
-	public void .ctor(); // 0x00425AB8
-	public void .ctor(string message); // 0x00422618
-	public void .ctor(string message, Exception inner); // 0x004267E8
-	internal void .ctor(string className, string assemblyName); // 0x0042680C
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00426830
 	public override void GetObjectData(SerializationInfo info, StreamingContext context); // 0x00426B54
 }
 
@@ -36611,11 +38584,12 @@ public class TypeLoadException : SystemException // TypeDefIndex: 1737
 [Serializable]
 public class TypeUnloadedException : SystemException // TypeDefIndex: 1738
 {
-	// Methods
-	public void .ctor(); // 0x00426DB0
-	public void .ctor(string message); // 0x00426E24
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x00426E2C
-	public void .ctor(string message, Exception innerException); // 0x00426E4C
+	// Constructors
+	public TypeUnloadedException(); // 0x00426DB0
+	public TypeUnloadedException(string message); // 0x00426E24
+	protected TypeUnloadedException(SerializationInfo info, StreamingContext context); // 0x00426E2C
+	public TypeUnloadedException(string message, Exception innerException); // 0x00426E4C
+
 }
 
 // Namespace: System
@@ -36625,11 +38599,12 @@ public class UnauthorizedAccessException : SystemException // TypeDefIndex: 1739
 	// Fields
 	private const int Result = -2146233088; // 0x00
 
-	// Methods
-	public void .ctor(); // 0x0055AA70
-	public void .ctor(string message); // 0x0055AAF0
-	public void .ctor(string message, Exception inner); // 0x0055AB14
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0055AB38
+	// Constructors
+	public UnauthorizedAccessException(); // 0x0055AA70
+	public UnauthorizedAccessException(string message); // 0x0055AAF0
+	public UnauthorizedAccessException(string message, Exception inner); // 0x0055AB14
+	protected UnauthorizedAccessException(SerializationInfo info, StreamingContext context); // 0x0055AB38
+
 }
 
 // Namespace: System
@@ -36644,8 +38619,9 @@ public class UnhandledExceptionEventArgs : EventArgs // TypeDefIndex: 1740
 	public object ExceptionObject { get; } // 0x0055ABEC 
 	public bool IsTerminating { get; } // 0x0055ABF4 
 
-	// Methods
-	public void .ctor(object exception, bool isTerminating); // 0x0055AB58
+	// Constructors
+	public UnhandledExceptionEventArgs(object exception, bool isTerminating); // 0x0055AB58
+
 }
 
 // Namespace: System
@@ -36657,8 +38633,10 @@ internal class UnitySerializationHolder : ISerializable, IObjectReference // Typ
 	private UnityType _unityType; // 0x0C
 	private string _assemblyName; // 0x10
 
+	// Constructors
+	private UnitySerializationHolder(SerializationInfo info, StreamingContext ctx); // 0x0055B000
+
 	// Methods
-	private void .ctor(SerializationInfo info, StreamingContext ctx); // 0x0055B000
 	public static void GetTypeData(Type instance, SerializationInfo info, StreamingContext ctx); // 0x0055B108
 	public static void GetDBNullData(DBNull instance, SerializationInfo info, StreamingContext ctx); // 0x0055B2D8
 	public static void GetAssemblyData(Assembly instance, SerializationInfo info, StreamingContext ctx); // 0x0055B4B0
@@ -36735,12 +38713,14 @@ public sealed class Version : IComparable, ICloneable, IComparable`1<Version>, I
 	public short MajorRevision { get; } // 0x0055D17C 
 	public short MinorRevision { get; } // 0x0055D184 
 
+	// Constructors
+	public Version(); // 0x0055CBD0
+	public Version(string version); // 0x0055CE18
+	public Version(int major, int minor); // 0x0055D080
+	public Version(int major, int minor, int build); // 0x0055D0C8
+	public Version(int major, int minor, int build, int revision); // 0x0055D110
+
 	// Methods
-	public void .ctor(); // 0x0055CBD0
-	public void .ctor(string version); // 0x0055CE18
-	public void .ctor(int major, int minor); // 0x0055D080
-	public void .ctor(int major, int minor, int build); // 0x0055D0C8
-	public void .ctor(int major, int minor, int build, int revision); // 0x0055D110
 	private void CheckedSet(int defined, int major, int minor, int build, int revision); // 0x0055CC44
 	public object Clone(); // 0x0055D18C
 	public int CompareTo(object version); // 0x0055D29C
@@ -36772,11 +38752,13 @@ public class WeakReference : ISerializable // TypeDefIndex: 1746
 	public virtual object Target { get; set; } // 0x0055E508 0x0055E514
 	public virtual bool TrackResurrection { get; } // 0x0055E520 
 
+	// Constructors
+	protected WeakReference(); // 0x0055E2F0
+	public WeakReference(object target); // 0x0055E2F8
+	public WeakReference(object target, bool trackResurrection); // 0x0055E330
+	protected WeakReference(SerializationInfo info, StreamingContext context); // 0x0055E390
+
 	// Methods
-	protected void .ctor(); // 0x0055E2F0
-	public void .ctor(object target); // 0x0055E2F8
-	public void .ctor(object target, bool trackResurrection); // 0x0055E330
-	protected void .ctor(SerializationInfo info, StreamingContext context); // 0x0055E390
 	private void AllocateHandle(object target); // 0x0055E368
 	protected override void Finalize(); // 0x0055E528
 	public virtual void GetObjectData(SerializationInfo info, StreamingContext context); // 0x0055E594
@@ -36886,10 +38868,12 @@ internal class __ComObject : MarshalByRefObject // TypeDefIndex: 1748
 	internal static Guid IID_IUnknown { get; } // 0x0055EA64 
 	internal static Guid IID_IDispatch { get; } // 0x0055F19C 
 
+	// Constructors
+	public __ComObject(); // 0x0055E758
+	internal __ComObject(Type t); // 0x0055E96C
+	internal __ComObject(IntPtr pItf); // 0x0055E994
+
 	// Methods
-	public void .ctor(); // 0x0055E758
-	internal void .ctor(Type t); // 0x0055E96C
-	internal void .ctor(IntPtr pItf); // 0x0055E994
 	internal static __ComObject CreateRCW(Type t); // 0x0055EAD4
 	private void ReleaseInterfaces(); // 0x0055EAD8
 	protected override void Finalize(); // 0x0055EADC
@@ -37077,8 +39061,9 @@ internal class <PrivateImplementationDetails> // TypeDefIndex: 1779
 	internal static $ArrayType$2100 $$field-67 = null; // 0x5E44
 	internal static $ArrayType$1452 $$field-68 = null; // 0x6678
 
-	// Methods
-	public void .ctor(); // 0x003EC3F0
+	// Constructors
+	public <PrivateImplementationDetails>(); // 0x003EC3F0
+
 }
 
 // Namespace: 
@@ -37233,17 +39218,14 @@ internal class __Il2CppComObject // TypeDefIndex: 1809
 	protected override void Finalize(); // 0x0055F2FC
 }
 
-// Namespace: 
-internal class <Module> // TypeDefIndex: 1810
-{
-}
-
 // Namespace: Il2CppTests.TestSources
 internal class Test // TypeDefIndex: 1811
 {
+	// Constructors
+	public Test(); // 0x00560FF8
+
 	// Methods
 	public void ParameterlessMethod(); // 0x00560F80
 	public int ValueTypeReturnMethod(); // 0x00560F84
 	public StringBuilder ReferenceTypeReturnMethod(); // 0x00560F8C
-	public void .ctor(); // 0x00560FF8
 }
