@@ -32,8 +32,13 @@ namespace Il2CppInspector
             uint i, index;
 
             for (i = 0, index = 0; i < buff.Length && index < opcode.Length; i++)
-                if (buff[i] != opcode[index++])
+                if (buff[i] != opcode[index++]) {
                     index = 0;
+
+                    // Maybe we're starting a new match
+                    if (buff[i] != opcode[index++])
+                        index = 0;
+                }
 
             if (index < opcode.Length)
                 return null;
