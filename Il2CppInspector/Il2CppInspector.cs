@@ -122,10 +122,18 @@ namespace Il2CppInspector
                     var def = TypeDefinitions[i];
                     var pFieldOffsets = Binary.FieldOffsetPointers[i];
                     if (pFieldOffsets != 0) {
-                        BinaryImage.Position = BinaryImage.MapVATR((ulong) pFieldOffsets);
+                        bool available = true;
+
+                        // If the target address range is not mapped in the file, assume zeroes
+                        try {
+                            BinaryImage.Position = BinaryImage.MapVATR((ulong) pFieldOffsets);
+                        }
+                        catch (InvalidOperationException) {
+                            available = false;
+                        }
 
                         for (var f = 0; f < def.field_count; f++)
-                            offsets.Add(def.fieldStart + f, BinaryImage.ReadWord());
+                            offsets.Add(def.fieldStart + f, available? BinaryImage.ReadWord() : 0);
                     }
                 }
 
