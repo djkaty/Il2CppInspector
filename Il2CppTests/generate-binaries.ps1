@@ -73,10 +73,20 @@ gci $src | % { & $csc "/t:library" "/nologo" "/out:$asm/$($_.BaseName).dll" "$sr
 # Earlier builds of Unity included mscorlib.dll automatically; in current versions we must specify its location
 gci $asm | % {
 	# x86
-	$name = "GameAssembly-$($_.BaseName)"
+	$name = "GameAssembly-$($_.BaseName)-x86"
 	echo "Running il2cpp for test assembly $name (Windows/x86)..."
 	md $bin/$name 2>&1 >$null
 	& $il2cpp $arg '--platform=WindowsDesktop', '--architecture=x86', `
+				"--assembly=$asm/$_,$mscorlib", `
+				"--outputpath=$bin/$name/$name.dll"
+	mv -Force $bin/$name/Data/metadata/global-metadata.dat $bin/$name
+	rm -Force -Recurse $bin/$name/Data
+
+	# x64
+	$name = "GameAssembly-$($_.BaseName)-x64"
+	echo "Running il2cpp for test assembly $name (Windows/x64)..."
+	md $bin/$name 2>&1 >$null
+	& $il2cpp $arg '--platform=WindowsDesktop', '--architecture=x64', `
 				"--assembly=$asm/$_,$mscorlib", `
 				"--outputpath=$bin/$name/$name.dll"
 	mv -Force $bin/$name/Data/metadata/global-metadata.dat $bin/$name
