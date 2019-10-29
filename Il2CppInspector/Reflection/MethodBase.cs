@@ -46,6 +46,10 @@ namespace Il2CppInspector.Reflection
 
         // TODO: GetMethodBody()
 
+        public string CSharpName =>
+            // Operator overload or user-defined conversion operator
+            OperatorMethodNames.ContainsKey(Name)? "operator " + OperatorMethodNames[Name] : Name;
+
         protected MethodBase(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) : base(declaringType) {
             Definition = pkg.Methods[methodIndex];
             Index = methodIndex;
@@ -124,8 +128,56 @@ namespace Il2CppInspector.Reflection
             if ((Attributes & MethodAttributes.PinvokeImpl) != 0)
                 modifiers.Append("extern ");
 
+            if (Name == "op_Implicit")
+                modifiers.Append("implicit ");
+            if (Name == "op_Explicit")
+                modifiers.Append("explicit ");
+
             // Will include a trailing space
             return modifiers.ToString();
         }
+
+        // List of operator overload metadata names
+        // https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/operator-overloads
+        public static Dictionary<string, string> OperatorMethodNames = new Dictionary<string, string> {
+            ["op_Implicit"] = "",
+            ["op_Explicit"] = "",
+            ["op_Addition"] = "+",
+            ["op_Subtraction"] = "-",
+            ["op_Multiply"] = "*",
+            ["op_Division"] = "/",
+            ["op_Modulus"] = "%",
+            ["op_ExclusiveOr"] = "^",
+            ["op_BitwiseAnd"] = "&",
+            ["op_BitwiseOr"] = "|",
+            ["op_LogicalAnd"] = "&&",
+            ["op_LogicalOr"] = "||",
+            ["op_Assign"] = "=",
+            ["op_LeftShift"] = "<<",
+            ["op_RightShift"] = ">>",
+            ["op_SignedLeftShift"] = "", // Listed as N/A in the documentation
+            ["op_SignedRightShift"] = "", // Listed as N/A in the documentation
+            ["op_Equality"] = "==",
+            ["op_Inequality"] = "!=",
+            ["op_GreaterThan"] = ">",
+            ["op_LessThan"] = "<",
+            ["op_GreaterThanOrEqual"] = ">=",
+            ["op_LessThanOrEqual"] = "<=",
+            ["op_MultiplicationAssignment"] = "*=",
+            ["op_SubtractionAssignment"] = "-=",
+            ["op_ExclusiveOrAssignment"] = "^=",
+            ["op_LeftShiftAssignment"] = "<<=", // Doesn't seem to be any right shift assignment`in documentation
+            ["op_ModulusAssignment"] = "%=",
+            ["op_AdditionAssignment"] = "+=",
+            ["op_BitwiseAndAssignment"] = "&=",
+            ["op_BitwiseOrAssignment"] = "|=",
+            ["op_Comma"] = ",",
+            ["op_DivisionAssignment"] = "*/=",
+            ["op_Decrement"] = "--",
+            ["op_Increment"] = "++",
+            ["op_UnaryNegation"] = "-",
+            ["op_UnaryPlus"] = "+",
+            ["op_OnesComplement"] = "~"
+        };
     }
 }

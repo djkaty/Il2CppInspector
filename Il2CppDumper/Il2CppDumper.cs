@@ -201,8 +201,12 @@ namespace Il2CppInspector
 
                     // Don't re-output methods for constructors, properties, events etc.
                     foreach (var method in type.DeclaredMethods.Except(usedMethods)) {
-                        writer.Write($"\t{method.GetModifierString()}{method.ReturnType.CSharpName} {method.Name}(");
-                        writer.Write(getParametersString(method.DeclaredParameters));
+                        writer.Write($"\t{method.GetModifierString()}");
+                        if (method.Name != "op_Implicit" && method.Name != "op_Explicit")
+                            writer.Write($"{method.ReturnType.CSharpName} {method.CSharpName}");
+                        else
+                            writer.Write($"{method.CSharpName}{method.ReturnType.CSharpName}");
+                        writer.Write("(" + getParametersString(method.DeclaredParameters));
                         writer.Write(");" + (method.VirtualAddress != 0? $" // {formatAddress(method.VirtualAddress)}" : "") + "\n");
                     }
                     writer.Write("}\n");
