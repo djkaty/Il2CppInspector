@@ -7,11 +7,17 @@
 
 # Get all test results
 $bin = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-result.cs)
+$bin2 = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-result-1.cs)
 
 # Get path to expected test results
 $results = "$PSScriptRoot/TestExpectedResults"
 
 $bin | % {
 	$target = $results + "/" + (Split-Path -Path (Split-Path -Path $_) -Leaf) + ".cs"
+	cp $_ -Destination $target -Force
+}
+
+$bin2 | % {
+	$target = $results + "/" + (Split-Path -Path (Split-Path -Path $_) -Leaf) + "-1.cs"
 	cp $_ -Destination $target -Force
 }
