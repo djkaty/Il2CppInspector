@@ -35,7 +35,6 @@ namespace Il2CppInspector
         public List<long> FieldOffsets { get; }
         public List<Il2CppType> TypeUsages => Binary.Types;
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
-        public ulong[] GlobalMethodPointers => Binary.GlobalMethodPointers; // <=v24.1 only
 
         // TODO: Finish all file access in the constructor and eliminate the need for this
         public IFileFormatReader BinaryImage => Binary.Image;
@@ -139,6 +138,35 @@ namespace Il2CppInspector
 
                 FieldOffsets = offsets.OrderBy(x => x.Key).Select(x => x.Value).ToList();
             }
+        }
+
+        public ulong GetMethodPointer(Il2CppCodeGenModule module, Il2CppMethodDefinition methodDef) {
+            // Find method pointer
+            if (methodDef.methodIndex < 0)
+                return 0;
+
+            // Global method pointer array
+            if (Version <= 24.1) {
+                return Binary.GlobalMethodPointers[methodDef.methodIndex] & 0xffff_ffff_ffff_fffe;
+            }
+
+            // Per-module method pointer array uses the bottom 24 bits of the method's metadata token
+            // Derived from il2cpp::vm::MetadataCache::GetMethodPointer
+            var method = (methodDef.token & 0xffffff);
+            if (method == 0)
+                return 0;
+
+            // In the event of an exception, the method pointer is not set in the file
+            // This probably means it has been optimized away by the compiler, or is an unused generic method
+            try {
+                BinaryImage.Position = BinaryImage.MapVATR(module.methodPointers + (ulong)((method - 1) * (BinaryImage.Bits / 8)));
+
+                // Remove ARM Thumb marker LSB if necessary
+                return (ulong) BinaryImage.ReadWord() & 0xffff_ffff_ffff_fffe;
+            }
+            catch (Exception) { }
+
+            return 0;
         }
 
         public static List<Il2CppInspector> LoadFromFile(string codeFile, string metadataFile) {

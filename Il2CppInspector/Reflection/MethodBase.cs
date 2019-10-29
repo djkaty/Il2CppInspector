@@ -52,32 +52,9 @@ namespace Il2CppInspector.Reflection
             Name = pkg.Strings[Definition.nameIndex];
 
             // Find method pointer
-            if (Definition.methodIndex >= 0) {
+            VirtualAddress = pkg.GetMethodPointer(Assembly.Module, Definition);
 
-                // Global method pointer array
-                if (pkg.Version <= 24.1) {
-                    VirtualAddress = pkg.GlobalMethodPointers[Definition.methodIndex];
-                }
-
-                // Per-module method pointer array uses the bottom 24 bits of the method's metadata token
-                // Derived from il2cpp::vm::MetadataCache::GetMethodPointer
-                else {
-                    var method = (Definition.token & 0xffffff);
-                    if (method != 0) {
-                        // In the event of an exception, the method pointer is not set in the file
-                        // This probably means it has been optimized away by the compiler, or is an unused generic method
-                        try {
-                            pkg.BinaryImage.Position = pkg.BinaryImage.MapVATR(Assembly.Module.methodPointers + (ulong)((method - 1) * (pkg.BinaryImage.Bits / 8)));
-                            VirtualAddress = (ulong)pkg.BinaryImage.ReadWord();
-                        }
-                        catch (Exception) { }
-                    }
-                }
-
-                // Remove ARM Thumb marker LSB if necessary
-                VirtualAddress &= 0xffff_ffff_ffff_fffe;
-            }
-
+            // Set method attributes
             if ((Definition.flags & Il2CppConstants.METHOD_ATTRIBUTE_MEMBER_ACCESS_MASK) == Il2CppConstants.METHOD_ATTRIBUTE_PRIVATE)
                 Attributes |= MethodAttributes.Private;
             if ((Definition.flags & Il2CppConstants.METHOD_ATTRIBUTE_MEMBER_ACCESS_MASK) == Il2CppConstants.METHOD_ATTRIBUTE_PUBLIC)
