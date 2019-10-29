@@ -100,7 +100,8 @@ namespace Il2CppInspector.Reflection {
         public bool IsNestedPublic => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedPublic;
         public bool IsNotPublic => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NotPublic;
         public bool IsPointer { get; }
-        public bool IsPrimitive => Namespace == "System" && new[] { "Boolean", "Byte", "SByte", "Int16", "UInt16", "Int32", "UInt32", "Int64", "UInt64", "IntPtr", "UIntPtr", "Char", "Double", "Single" }.Contains(Name);
+        // Prinitive types table: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/built-in-types-table (we exclude Object and String)
+        public bool IsPrimitive => Namespace == "System" && new[] { "Boolean", "Byte", "SByte", "Int16", "UInt16", "Int32", "UInt32", "Int64", "UInt64", "IntPtr", "UIntPtr", "Char", "Decimal", "Double", "Single" }.Contains(Name);
         public bool IsPublic => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.Public;
         public bool IsSealed => (Attributes & TypeAttributes.Sealed) == TypeAttributes.Sealed;
         public bool IsSerializable => (Attributes & TypeAttributes.Serializable) == TypeAttributes.Serializable;

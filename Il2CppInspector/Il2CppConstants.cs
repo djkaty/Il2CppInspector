@@ -195,6 +195,9 @@ namespace Il2CppInspector
             "CMOD_REQD",
             "CMOD_OPT",
             "INTERNAL",
+
+            // Added in for convenience
+            "decimal"
         };
 
         public static List<string> FullNameTypeString = new List<string>
@@ -233,6 +236,9 @@ namespace Il2CppInspector
             "CMOD_REQD",
             "CMOD_OPT",
             "INTERNAL",
+
+            // Added in for convenience
+            "System.Decimal"
         };
     }
 }
