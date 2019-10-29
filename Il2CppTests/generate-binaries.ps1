@@ -6,11 +6,11 @@
 # Requires Android NDK r13b or newer for Android test builds (https://developer.android.com/ndk/downloads)
 
 # Path to C¤ compiler (14.0 = Visual Studio 2017, 15.0 = Visual Studio 2019 etc.)
-$CSC = (gci 'C:\Program Files (x86)\MSBuild\*\Bin\csc.exe' | sort name)[-1].FullName
+$CSC = (gci 'C:\Program Files (x86)\MSBuild\*\Bin\csc.exe' | sort FullName)[-1].FullName
 
 # Path to latest installed version of Unity
 # The introduction of Unity Hub changed the base path of the Unity editor
-$UnityPath = (gci 'C:\Program Files\Unity\Hub\Editor\*\Editor\Data' | sort name)[-1].FullName
+$UnityPath = (gci 'C:\Program Files\Unity\Hub\Editor\*\Editor\Data' | sort FullName)[-1].FullName
 
 # Calculate Unity paths
 $il2cpp = $UnityPath + '\il2cpp\build\il2cpp.exe'
