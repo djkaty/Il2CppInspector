@@ -218,6 +218,11 @@ namespace Il2CppInspector
             }
         }
 
+        public void WriteScript(string scriptFile)
+        {
+
+        }
+
         private string getParametersString(List<ParameterInfo> @params) {
             StringBuilder sb = new StringBuilder();
 
