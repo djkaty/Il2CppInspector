@@ -220,7 +220,32 @@ namespace Il2CppInspector
 
         public void WriteScript(string scriptFile)
         {
-
+            using (var writer = new StreamWriter(new FileStream(scriptFile, FileMode.Create), Encoding.UTF8))
+            {
+                // TODO: Copy this template from the resources
+                // TODO: 95% of this template is from Il2CppDumper because i'm not familiar with Python
+                writer.WriteLine("#encoding: utf-8");
+                writer.WriteLine("import idaapi");
+                writer.WriteLine("import random");
+                writer.WriteLine("def SetName(address, name):");
+                writer.WriteLine("	i = 0");
+                writer.WriteLine("	returned = idc.MakeNameEx(address, name, SN_NOWARN)");
+                writer.WriteLine("	if returned == 0:");
+                writer.WriteLine("		new_name = name + '_' + str(addr)");
+                writer.WriteLine("		idc.MakeNameEx(address, str(new_name), SN_NOWARN)");
+                writer.WriteLine("def SetString(address, comm):");
+                writer.WriteLine("	global index");
+                writer.WriteLine("	name = \"StringLiteral_\" + str(index);");
+                writer.WriteLine("	returned = idc.MakeNameEx(address, name, SN_NOWARN)");
+                writer.WriteLine("	idc.MakeComm(address, comm)");
+                writer.WriteLine("	index += 1");
+                writer.WriteLine("def MakeFunction(start, end):");
+                writer.WriteLine("	if GetFunctionAttr(start, FUNCATTR_START) == 0xFFFFFFFF:");
+                writer.WriteLine("		idc.MakeFunction(start, end)");
+                writer.WriteLine("	else:");
+                writer.WriteLine("		idc.SetFunctionEnd(start, end)");
+                writer.WriteLine("	index = 1");
+            }
         }
 
         private string getParametersString(List<ParameterInfo> @params) {
