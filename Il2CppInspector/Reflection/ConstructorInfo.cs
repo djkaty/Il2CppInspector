@@ -16,7 +16,6 @@ namespace Il2CppInspector.Reflection
 
         public static readonly string TypeConstructorName = ".cctor";
 
-        // TODO
         public override MemberTypes MemberType => MemberTypes.Constructor;
 
         public ConstructorInfo(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) : base(pkg, methodIndex, declaringType) { }

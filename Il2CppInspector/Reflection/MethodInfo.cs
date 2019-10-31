@@ -17,14 +17,14 @@ namespace Il2CppInspector.Reflection
         public ParameterInfo ReturnParameter { get; }
 
         // Return type of the method
-        private readonly Il2CppType returnType;
-        public TypeInfo ReturnType => Assembly.Model.GetType(returnType, MemberTypes.TypeInfo);
+        private readonly int returnTypeUsage;
+        public TypeInfo ReturnType => Assembly.Model.GetTypeFromUsage(returnTypeUsage, MemberTypes.TypeInfo);
 
         // TODO: ReturnTypeCustomAttributes
 
         public MethodInfo(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) : base(pkg, methodIndex, declaringType) {
             // Add return parameter
-            returnType = pkg.TypeUsages[Definition.returnType];
+            returnTypeUsage = Definition.returnType;
             ReturnParameter = new ParameterInfo(pkg, -1, this);
         }
 

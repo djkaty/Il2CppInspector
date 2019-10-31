@@ -21,8 +21,8 @@ namespace Il2CppInspector.Reflection {
         public TypeAttributes Attributes { get; }
 
         // Type that this type inherits from
-        private Il2CppType baseType;
-        public TypeInfo BaseType => baseType != null? Assembly.Model.GetType(baseType, MemberTypes.TypeInfo) : null;
+        private int baseTypeUsage;
+        public TypeInfo BaseType => Assembly.Model.GetTypeFromUsage(baseTypeUsage, MemberTypes.TypeInfo);
 
         // True if the type contains unresolved generic type parameters
         public bool ContainsGenericParameters { get; }
@@ -49,7 +49,7 @@ namespace Il2CppInspector.Reflection {
         public List<MethodInfo> DeclaredMethods { get; } = new List<MethodInfo>();
 
         private int[] declaredNestedTypes;
-        public IEnumerable<TypeInfo> DeclaredNestedTypes => declaredNestedTypes.Select(x => Assembly.Model.TypesByIndex[x]);
+        public IEnumerable<TypeInfo> DeclaredNestedTypes => declaredNestedTypes.Select(x => Assembly.Model.TypesByDefinitionIndex[x]);
 
         public List<PropertyInfo> DeclaredProperties { get; } = new List<PropertyInfo>();
 
@@ -57,12 +57,12 @@ namespace Il2CppInspector.Reflection {
         public MethodBase DeclaringMethod => throw new NotImplementedException();
 
         // Gets the type of the object encompassed or referred to by the current array, pointer or reference type
-        private Il2CppType enumElementType;
+        private int enumElementTypeUsage;
         private TypeInfo elementType;
         public TypeInfo ElementType {
             get {
                 if (IsEnum && elementType == null)
-                    elementType = Assembly.Model.GetType(enumElementType, MemberTypes.TypeInfo);
+                    elementType = Assembly.Model.GetTypeFromUsage(enumElementTypeUsage, MemberTypes.TypeInfo);
                 return elementType;
             }
         }
@@ -82,8 +82,8 @@ namespace Il2CppInspector.Reflection {
 
         public bool HasElementType => ElementType != null;
 
-        private Il2CppType[] implementedInterfaces;
-        public IEnumerable<TypeInfo> ImplementedInterfaces => implementedInterfaces.Select(x => Assembly.Model.GetType(x, MemberTypes.TypeInfo));
+        private int[] implementedInterfaceUsages;
+        public IEnumerable<TypeInfo> ImplementedInterfaces => implementedInterfaceUsages.Select(x => Assembly.Model.GetTypeFromUsage(x, MemberTypes.TypeInfo));
 
         public bool IsAbstract => (Attributes & TypeAttributes.Abstract) == TypeAttributes.Abstract;
         public bool IsArray { get; }
@@ -155,15 +155,16 @@ namespace Il2CppInspector.Reflection {
             Name = pkg.Strings[Definition.nameIndex];
 
             if (Definition.parentIndex >= 0)
-                baseType = pkg.TypeUsages[Definition.parentIndex];
+                baseTypeUsage = Definition.parentIndex;
 
             // Nested type?
             if (Definition.declaringTypeIndex >= 0) {
                 declaringTypeDefinitionIndex = (int) pkg.TypeUsages[Definition.declaringTypeIndex].datapoint;
+                MemberType |= MemberTypes.NestedType;
             }
 
             // Add to global type definition list
-            Assembly.Model.TypesByIndex[Index] = this;
+            Assembly.Model.TypesByDefinitionIndex[Index] = this;
 
             if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_SERIALIZABLE) != 0)
                 Attributes |= TypeAttributes.Serializable;
@@ -196,16 +197,16 @@ namespace Il2CppInspector.Reflection {
             if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_INTERFACE) != 0)
                 Attributes |= TypeAttributes.Interface;
 
-            // Enumerations - bit 1 of bitfield indicates this (also the baseType will be System.Enum)
+            // Enumerations - bit 1 of bitfield indicates this (also the baseTypeUsage will be System.Enum)
             if (((Definition.bitfield >> 1) & 1) == 1) {
                 IsEnum = true;
-                enumElementType = pkg.TypeUsages[Definition.elementTypeIndex];
+                enumElementTypeUsage = Definition.elementTypeIndex;
             }
 
             // Add all implemented interfaces
-            implementedInterfaces = new Il2CppType[Definition.interfaces_count];
+            implementedInterfaceUsages = new int[Definition.interfaces_count];
             for (var i = 0; i < Definition.interfaces_count; i++)
-                implementedInterfaces[i] = pkg.TypeUsages[pkg.InterfaceUsageIndices[Definition.interfacesStart + i]];
+                implementedInterfaceUsages[i] = pkg.InterfaceUsageIndices[Definition.interfacesStart + i];
 
             // Add all nested types
             declaredNestedTypes = new int[Definition.nested_type_count];
@@ -246,7 +247,7 @@ namespace Il2CppInspector.Reflection {
             // Generic type unresolved and concrete instance types
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST) {
                 var generic = image.ReadMappedObject<Il2CppGenericClass>(pType.datapoint);
-                var genericTypeDef = model.TypesByIndex[generic.typeDefinitionIndex];
+                var genericTypeDef = model.TypesByDefinitionIndex[generic.typeDefinitionIndex];
 
                 Namespace = genericTypeDef.Namespace;
                 Name = genericTypeDef.Name;
@@ -261,10 +262,10 @@ namespace Il2CppInspector.Reflection {
 
                 GenericTypeParameters = new List<TypeInfo>();
                 foreach (var pArg in genericTypeParameters) {
-                    var argType = image.ReadMappedObject<Il2CppType>((ulong) pArg);
+                    var argType = model.GetTypeFromVirtualAddress((ulong) pArg);
                     // TODO: Detect whether unresolved or concrete (add concrete to GenericTypeArguments instead)
                     // TODO: GenericParameterPosition etc. in types we generate here
-                    GenericTypeParameters.Add(model.GetType(argType)); // TODO: Fix MemberType here
+                    GenericTypeParameters.Add(argType); // TODO: Fix MemberType here
                 }
                 Attributes |= TypeAttributes.Class;
             }
@@ -272,8 +273,7 @@ namespace Il2CppInspector.Reflection {
             // Array with known dimensions and bounds
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_ARRAY) {
                 var descriptor = image.ReadMappedObject<Il2CppArrayType>(pType.datapoint);
-                var elementType = image.ReadMappedObject<Il2CppType>(descriptor.etype);
-                this.elementType = model.GetType(elementType);
+                elementType = model.GetTypeFromVirtualAddress(descriptor.etype);
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
 
@@ -283,8 +283,7 @@ namespace Il2CppInspector.Reflection {
 
             // Dynamically allocated array
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY) {
-                var elementType = image.ReadMappedObject<Il2CppType>(pType.datapoint);
-                this.elementType = model.GetType(elementType);
+                elementType = model.GetTypeFromVirtualAddress(pType.datapoint);
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
 

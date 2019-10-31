@@ -37,8 +37,8 @@ namespace Il2CppInspector.Reflection {
         public FieldAttributes Attributes { get; }
 
         // Type of field
-        private readonly Il2CppType fieldType;
-        public TypeInfo FieldType => Assembly.Model.GetType(fieldType, MemberTypes.Field);
+        private readonly int fieldTypeUsage;
+        public TypeInfo FieldType => Assembly.Model.GetTypeFromUsage(fieldTypeUsage, MemberTypes.Field);
 
         // For the Is* definitions below, see:
         // https://docs.microsoft.com/en-us/dotnet/api/system.reflection.fieldinfo.isfamilyandassembly?view=netframework-4.7.1#System_Reflection_FieldInfo_IsFamilyAndAssembly
@@ -88,7 +88,9 @@ namespace Il2CppInspector.Reflection {
             Offset = pkg.FieldOffsets[fieldIndex];
             Name = pkg.Strings[Definition.nameIndex];
 
-            fieldType = pkg.TypeUsages[Definition.typeIndex];
+            fieldTypeUsage = Definition.typeIndex;
+            var fieldType = pkg.TypeUsages[fieldTypeUsage];
+
             if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_FIELD_ACCESS_MASK) == Il2CppConstants.FIELD_ATTRIBUTE_PRIVATE)
                 Attributes |= FieldAttributes.Private;
             if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_FIELD_ACCESS_MASK) == Il2CppConstants.FIELD_ATTRIBUTE_PUBLIC)

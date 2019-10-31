@@ -34,8 +34,8 @@ namespace Il2CppInspector.Reflection
         public string Name { get; }
 
         // Type of this parameter
-        private readonly Il2CppType paramType;
-        public TypeInfo ParameterType => Member.Assembly.Model.GetType(paramType, MemberTypes.TypeInfo);
+        private readonly int paramTypeUsage;
+        public TypeInfo ParameterType => Member.Assembly.Model.GetTypeFromUsage(paramTypeUsage, MemberTypes.TypeInfo);
 
         // Zero-indexed position of the parameter in parameter list
         public int Position { get; }
@@ -46,7 +46,7 @@ namespace Il2CppInspector.Reflection
 
             if (paramIndex == -1) {
                 Position = -1;
-                paramType = pkg.TypeUsages[declaringMethod.Definition.returnType];
+                paramTypeUsage = declaringMethod.Definition.returnType;
                 Attributes |= ParameterAttributes.Retval;
                 return;
             }
@@ -54,7 +54,8 @@ namespace Il2CppInspector.Reflection
             var param = pkg.Params[paramIndex];
             Name = pkg.Strings[param.nameIndex];
             Position = paramIndex - declaringMethod.Definition.parameterStart;
-            paramType = pkg.TypeUsages[param.typeIndex];
+            paramTypeUsage = param.typeIndex;
+            var paramType = pkg.TypeUsages[paramTypeUsage];
 
             if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_OPTIONAL) != 0)
                 Attributes |= ParameterAttributes.Optional;
