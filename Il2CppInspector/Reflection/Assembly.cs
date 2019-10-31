@@ -12,7 +12,7 @@ namespace Il2CppInspector.Reflection {
     public class Assembly
     {
         // IL2CPP-specific data
-        public Il2CppReflector Model { get; }
+        public Il2CppModel Model { get; }
         public Il2CppImageDefinition Definition { get; }
         public Il2CppCodeGenModule Module { get; }
         public int Index { get; }
@@ -32,7 +32,7 @@ namespace Il2CppInspector.Reflection {
         public TypeInfo GetType(string typeName) => DefinedTypes.FirstOrDefault(x => x.FullName == typeName);
 
         // Initialize from specified assembly index in package
-        public Assembly(Il2CppReflector model, int imageIndex) {
+        public Assembly(Il2CppModel model, int imageIndex) {
             Model = model;
             Definition = Model.Package.Images[imageIndex];
             Index = Definition.assemblyIndex;

@@ -211,7 +211,7 @@ namespace Il2CppInspector.Reflection {
         }
 
         // Initialize type from binary usage
-        public TypeInfo(Il2CppReflector model, Il2CppType pType, MemberTypes memberType) : base(null) {
+        public TypeInfo(Il2CppModel model, Il2CppType pType, MemberTypes memberType) : base(null) {
             var image = model.Package.BinaryImage;
 
             IsNested = true;

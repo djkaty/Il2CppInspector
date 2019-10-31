@@ -10,12 +10,12 @@ using System.Reflection;
 
 namespace Il2CppInspector.Reflection
 {
-    public class Il2CppReflector
+    public class Il2CppModel
     {
         public Il2CppInspector Package { get; }
         public List<Assembly> Assemblies { get; } = new List<Assembly>();
 
-        public Il2CppReflector(Il2CppInspector package) {
+        public Il2CppModel(Il2CppInspector package) {
             Package = package;
 
             // Create Assembly objects from Il2Cpp package

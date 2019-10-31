@@ -12,13 +12,13 @@ namespace Il2CppInspector
 {
     public class Il2CppCSharpDumper
     {
-        private readonly Il2CppReflector model;
+        private readonly Il2CppModel model;
 
         // Namespace prefixes whose contents should be skipped
         public List<string> ExcludedNamespaces { get; set; }
 
         public Il2CppCSharpDumper(Il2CppInspector proc) {
-            model = new Il2CppReflector(proc);
+            model = new Il2CppModel(proc);
         }
 
         private string formatAddress(ulong address) => model.Package.BinaryImage.Bits == 32
