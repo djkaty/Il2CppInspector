@@ -4,21 +4,20 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 using System.Text;
 using Il2CppInspector.Reflection;
 using ParameterInfo = Il2CppInspector.Reflection.ParameterInfo;
 
 namespace Il2CppInspector
 {
-    public class Il2CppDumper
+    public class Il2CppCSharpDumper
     {
         private readonly Il2CppReflector model;
 
         // Namespace prefixes whose contents should be skipped
         public List<string> ExcludedNamespaces { get; set; }
 
-        public Il2CppDumper(Il2CppInspector proc) {
+        public Il2CppCSharpDumper(Il2CppInspector proc) {
             model = new Il2CppReflector(proc);
         }
 

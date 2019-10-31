@@ -61,7 +61,7 @@ namespace Il2CppInspector
             // Write output file
             int i = 0;
             foreach (var il2cpp in il2cppInspectors)
-                new Il2CppDumper(il2cpp) {ExcludedNamespaces = excludedNamespaces}.WriteFile(outFile + (i++ > 0 ? "-" + (i-1) : ""));
+                new Il2CppCSharpDumper(il2cpp) {ExcludedNamespaces = excludedNamespaces}.WriteFile(outFile + (i++ > 0 ? "-" + (i-1) : ""));
         }
     }
 }
