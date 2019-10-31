@@ -4,7 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Il2CppInspector.Reflection;
+using Microsoft.Extensions.Configuration;
 
 namespace Il2CppInspector
 {
@@ -17,24 +19,26 @@ namespace Il2CppInspector
             Console.WriteLine("(c) 2017-2019 Katy Coe - www.djkaty.com");
             Console.WriteLine("");
 
-            // Command-line usage: dotnet run [<binary-file> [<metadata-file> [<output-file>]]]
+            // Command-line usage: dotnet run [--bin=<binary-file>] [--metadata=<metadata-file>] [--cs-out=<output-file>] [--py-out=<output-file>] [--exclude-namespaces=<ns1,n2,...>|none]
             // Defaults to libil2cpp.so or GameAssembly.dll if binary file not specified
-            string imageFile = "libil2cpp.so";
-            string metaFile = "global-metadata.dat";
-            string outFile = "types.cs";
+            IConfiguration config = new ConfigurationBuilder().AddCommandLine(args).Build();
 
-            if (args.Length == 0)
-                if (!File.Exists(imageFile))
-                    imageFile = "GameAssembly.dll";
+            string imageFile = config["bin"] ?? "libil2cpp.so";
+            string metaFile = config["metadata"] ?? "global-metadata.dat";
+            string outCsFile = config["cs-out"] ?? "types.cs";
+            string outPythonFile = config["py-out"] ?? "ida.py";
 
-            if (args.Length >= 1)
-                imageFile = args[0];
+            // Exclusions
+            var excludedNamespaces = config["exclude-namespaces"]?.Split(',').ToList() ?? 
+            new List<string> {
+                "System",
+                "UnityEngine",
+                "Mono",
+                "Microsoft.Win32"
+            };
 
-            if (args.Length >= 2)
-                metaFile = args[1];
-
-            if (args.Length >= 3)
-                outFile = args[2];
+            if (excludedNamespaces.Count == 1 && excludedNamespaces[0].ToLower() == "none")
+                excludedNamespaces = null;
 
             // Check files
             if (!File.Exists(imageFile)) {
@@ -51,14 +55,6 @@ namespace Il2CppInspector
             if (il2cppInspectors == null)
                 Environment.Exit(1);
 
-            // Exclusions
-            var excludedNamespaces = new List<string> {
-                "System",
-                "UnityEngine",
-                "Mono",
-                "Microsoft.Win32"
-            };
-
             // Write output file
             int i = 0;
             foreach (var il2cpp in il2cppInspectors) {
@@ -66,7 +62,7 @@ namespace Il2CppInspector
                 var model = new Il2CppModel(il2cpp);
 
                 // C# signatures output
-                new Il2CppCSharpDumper(model) {ExcludedNamespaces = excludedNamespaces}.WriteFile(outFile + (i++ > 0 ? "-" + (i-1) : ""));
+                new Il2CppCSharpDumper(model) {ExcludedNamespaces = excludedNamespaces}.WriteFile(outCsFile + (i++ > 0 ? "-" + (i-1) : ""));
 
                 // IDA Python script output
                 // TODO: IDA Python script output

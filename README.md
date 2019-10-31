@@ -31,18 +31,30 @@ The output binary is placed in `Il2CppInspector/Il2CppDumper/bin/Release/netcore
 ### Usage
 
 ```
-Il2CppDumper [<binary-file> [<metadata-file> [<output-file>]]]
+Il2CppDumper [--bin=<binary-file>] [--metadata=<metadata-file>] [--cs-out=<output-file>] [--exclude-namespaces=<ns1,ns2,...>|none]
 ```
 
 Defaults if not specified:
 
-- _binary-file_ - searches for `libil2cpp.so` and `GameAssembly.dll`
+- _binary-file_ - searches for `libil2cpp.so`
 - _metadata-file_ - `global-metadata.dat`
 - _output-file_ - `types.cs`
 
+To exclude types from certain namespaces from being generated in the C¤ source file output, provide a comma-separated list of case-sensitive namespaces in `--exclude-namespaces`. The following namespaces will be excluded if no argument is specified:
+
+```
+System
+Mono
+UnityEngine
+Microsoft.Win32
+```
+
+Providing an argument to `--exclude-namespaces` will override the default list. To output all namespaces, use `--exclude-namespaces=none`.
+
+
 File format and architecture are automatically detected.
 
-For Apple Universal Binaries, multiple output files will be generated, with each filename suffixed by the index of the image in the Universal Binary. Unsupported images will be skipped.
+For Apple Universal Binaries, multiple output files will be generated, with each filename besides the first suffixed by the index of the image in the Universal Binary. Unsupported images will be skipped.
 
 ### Running tests
 
