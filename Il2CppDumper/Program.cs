@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Il2CppInspector.Reflection;
 
 namespace Il2CppInspector
 {
@@ -60,8 +61,16 @@ namespace Il2CppInspector
 
             // Write output file
             int i = 0;
-            foreach (var il2cpp in il2cppInspectors)
-                new Il2CppCSharpDumper(il2cpp) {ExcludedNamespaces = excludedNamespaces}.WriteFile(outFile + (i++ > 0 ? "-" + (i-1) : ""));
+            foreach (var il2cpp in il2cppInspectors) {
+                // Create model
+                var model = new Il2CppModel(il2cpp);
+
+                // C# signatures output
+                new Il2CppCSharpDumper(model) {ExcludedNamespaces = excludedNamespaces}.WriteFile(outFile + (i++ > 0 ? "-" + (i-1) : ""));
+
+                // IDA Python script output
+                // TODO: IDA Python script output
+            }
         }
     }
 }

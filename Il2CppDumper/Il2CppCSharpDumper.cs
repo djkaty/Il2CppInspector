@@ -17,9 +17,7 @@ namespace Il2CppInspector
         // Namespace prefixes whose contents should be skipped
         public List<string> ExcludedNamespaces { get; set; }
 
-        public Il2CppCSharpDumper(Il2CppInspector proc) {
-            model = new Il2CppModel(proc);
-        }
+        public Il2CppCSharpDumper(Il2CppModel model) => this.model = model;
 
         private string formatAddress(ulong address) => model.Package.BinaryImage.Bits == 32
             ? string.Format($"0x{(uint) address:X8}")
