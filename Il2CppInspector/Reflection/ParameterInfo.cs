@@ -69,5 +69,9 @@ namespace Il2CppInspector.Reflection
 
             // TODO: DefaultValue/HasDefaultValue
         }
+
+        public string GetModifierString() =>
+            (IsOptional? "optional " : "") +
+            (IsOut? "out " : "");
     }
 }

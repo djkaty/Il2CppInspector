@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -136,6 +137,10 @@ namespace Il2CppInspector.Reflection
             // Will include a trailing space
             return modifiers.ToString();
         }
+
+        // Get C# syntax-friendly list of parameters
+        public string GetParametersString() =>
+            string.Join(", ", DeclaredParameters.Select(p => $"{p.GetModifierString()}{p.ParameterType.CSharpName} {p.Name}"));
 
         // List of operator overload metadata names
         // https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/operator-overloads

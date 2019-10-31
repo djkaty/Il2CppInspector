@@ -224,7 +224,7 @@ namespace Il2CppInspector
 
             foreach (var method in type.DeclaredConstructors) {
                 writer.Write($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.Name}(");
-                writer.Write(getParametersString(method.DeclaredParameters));
+                writer.Write(method.GetParametersString());
                 writer.Write(");" + (method.VirtualAddress != 0 ? $" // {formatAddress(method.VirtualAddress)}" : "") + "\n");
             }
             if (type.DeclaredConstructors.Any())
@@ -241,28 +241,10 @@ namespace Il2CppInspector
                     writer.Write($"{method.ReturnType.CSharpName} {method.CSharpName}");
                 else
                     writer.Write($"{method.CSharpName}{method.ReturnType.CSharpName}");
-                writer.Write("(" + getParametersString(method.DeclaredParameters));
+                writer.Write("(" + method.GetParametersString());
                 writer.Write(");" + (method.VirtualAddress != 0 ? $" // {formatAddress(method.VirtualAddress)}" : "") + "\n");
             }
             writer.Write(prefix + "}\n");
-        }
-
-        // TODO: Move this info ParameterInfo
-        private string getParametersString(List<ParameterInfo> @params) {
-            StringBuilder sb = new StringBuilder();
-
-            bool first = true;
-            foreach (var param in @params) {
-                if (!first)
-                    sb.Append(", ");
-                first = false;
-                if (param.IsOptional)
-                    sb.Append("optional ");
-                if (param.IsOut)
-                    sb.Append("out ");
-                sb.Append($"{param.ParameterType.CSharpName} {param.Name}");
-            }
-            return sb.ToString();
         }
     }
 }
