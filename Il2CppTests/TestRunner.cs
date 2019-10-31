@@ -5,6 +5,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
@@ -38,10 +39,18 @@ namespace Il2CppInspector
             if (inspectors.Count == 0)
                 throw new Exception("Could not find any images in the IL2CPP binary");
 
+            // Exclusions
+            var excludedNamespaces = new List<string> {
+                "System",
+                "UnityEngine",
+                "Mono",
+                "Microsoft.Win32",
+            };
+
             // Dump each image in the binary separately
             int i = 0;
             foreach (var il2cpp in inspectors)
-                new Il2CppDumper(il2cpp).WriteFile(testPath + @"\test-result" + (i++ > 0 ? "-" + (i - 1) : "") + ".cs");
+                new Il2CppDumper(il2cpp) {ExcludedNamespaces = excludedNamespaces}.WriteFile(testPath + @"\test-result" + (i++ > 0 ? "-" + (i - 1) : "") + ".cs");
 
             // Compare test result with expected result
             for (i = 0; i < inspectors.Count; i++) {

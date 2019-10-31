@@ -15,6 +15,9 @@ namespace Il2CppInspector
     {
         private readonly Il2CppReflector model;
 
+        // Namespace prefixes whose contents should be skipped
+        public List<string> ExcludedNamespaces { get; set; }
+
         public Il2CppDumper(Il2CppInspector proc) {
             model = new Il2CppReflector(proc);
         }
@@ -30,6 +33,10 @@ namespace Il2CppInspector
                 }
 
                 foreach (var type in model.Assemblies.SelectMany(x => x.DefinedTypes)) {
+
+                    // Skip namespace and any children if requested
+                    if (ExcludedNamespaces?.Any(x => x == type.Namespace || type.Namespace.StartsWith(x + ".")) ?? false)
+                        continue;
 
                     // Type declaration
                     writer.Write($"\n// Namespace: {type.Namespace}\n");

@@ -2,6 +2,7 @@
 // All rights reserved
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Il2CppInspector
@@ -49,10 +50,18 @@ namespace Il2CppInspector
             if (il2cppInspectors == null)
                 Environment.Exit(1);
 
+            // Exclusions
+            var excludedNamespaces = new List<string> {
+                "System",
+                "UnityEngine",
+                "Mono",
+                "Microsoft.Win32"
+            };
+
             // Write output file
             int i = 0;
             foreach (var il2cpp in il2cppInspectors)
-                new Il2CppDumper(il2cpp).WriteFile(outFile + (i++ > 0 ? "-" + (i-1) : ""));
+                new Il2CppDumper(il2cpp) {ExcludedNamespaces = excludedNamespaces}.WriteFile(outFile + (i++ > 0 ? "-" + (i-1) : ""));
         }
     }
 }
