@@ -51,7 +51,7 @@ namespace Il2CppInspector
 
             // Only print namespace if we're not nested
             if (!type.IsNested)
-                writer.Write($"{prefix}// Namespace: {type.Namespace}\n");
+                writer.Write($"{prefix}// Namespace: {(!string.IsNullOrEmpty(type.Namespace)? type.Namespace : "<default namespace>")}\n");
 
             // Type declaration
             if (type.IsImport)

@@ -34,7 +34,8 @@ namespace Il2CppInspector
                 "System",
                 "UnityEngine",
                 "Mono",
-                "Microsoft.Win32"
+                "Microsoft.Win32",
+                ""
             };
 
             if (excludedNamespaces.Count == 1 && excludedNamespaces[0].ToLower() == "none")

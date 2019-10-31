@@ -125,7 +125,7 @@ namespace Il2CppInspector.Reflection {
 
         private string @namespace;
         public string Namespace {
-            get => !string.IsNullOrEmpty(@namespace) ? @namespace : DeclaringType?.Namespace ?? "<default namespace>";
+            get => !string.IsNullOrEmpty(@namespace) ? @namespace : DeclaringType?.Namespace ?? "";
             set => @namespace = value;
         }
 

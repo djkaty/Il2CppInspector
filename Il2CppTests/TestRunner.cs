@@ -41,13 +41,15 @@ namespace Il2CppInspector
                 throw new Exception("Could not find any images in the IL2CPP binary");
 
             // Exclusions
+            
             var excludedNamespaces = new List<string> {
                 "System",
                 "UnityEngine",
                 "Mono",
                 "Microsoft.Win32",
+                ""
             };
-
+            
             // Dump each image in the binary separately
             int i = 0;
             foreach (var il2cpp in inspectors)
