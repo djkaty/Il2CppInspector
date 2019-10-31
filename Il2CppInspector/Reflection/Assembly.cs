@@ -47,7 +47,7 @@ namespace Il2CppInspector.Reflection {
 
             // Generate types in DefinedTypes from typeStart to typeStart+typeCount-1
             for (var t = Definition.typeStart; t < Definition.typeStart + Definition.typeCount; t++) {
-                var type = new TypeInfo(Model.Package, t, this);
+                var type = new TypeInfo(t, this);
 
                 // Don't add empty module definitions
                 if (type.Name != "<Module>")

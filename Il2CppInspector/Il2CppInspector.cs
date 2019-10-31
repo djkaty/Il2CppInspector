@@ -31,6 +31,7 @@ namespace Il2CppInspector
         public Il2CppPropertyDefinition[] Properties => Metadata.Properties;
         public Il2CppEventDefinition[] Events => Metadata.Events;
         public int[] InterfaceUsageIndices => Metadata.InterfaceUsageIndices;
+        public int[] NestedTypeIndices => Metadata.NestedTypeIndices;
         public Dictionary<int, object> FieldDefaultValue { get; } = new Dictionary<int, object>();
         public List<long> FieldOffsets { get; }
         public List<Il2CppType> TypeUsages => Binary.Types;

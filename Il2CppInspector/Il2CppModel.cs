@@ -15,19 +15,17 @@ namespace Il2CppInspector.Reflection
         public Il2CppInspector Package { get; }
         public List<Assembly> Assemblies { get; } = new List<Assembly>();
 
+        // List of all types ordered by their TypeDefinitionIndex
+        public TypeInfo[] TypesByIndex { get; }
+
         public Il2CppModel(Il2CppInspector package) {
             Package = package;
+            TypesByIndex = new TypeInfo[package.TypeDefinitions.Length];
 
             // Create Assembly objects from Il2Cpp package
             for (var image = 0; image < package.Images.Length; image++)
                 Assemblies.Add(new Assembly(this, image));
         }
-
-        // Get the assembly in which a type is defined
-        public Assembly GetAssembly(TypeInfo type) => Assemblies.FirstOrDefault(x => x.DefinedTypes.Contains(type));
-
-        // Get a type from its IL2CPP type index
-        public TypeInfo GetTypeFromIndex(long typeIndex) => Assemblies.SelectMany(x => x.DefinedTypes).FirstOrDefault(x => x.Index == typeIndex);
 
         // Get or generate a type from its IL2CPP binary type usage reference
         // (field, return type, generic type parameter etc.)
@@ -36,7 +34,7 @@ namespace Il2CppInspector.Reflection
                 case Il2CppTypeEnum.IL2CPP_TYPE_CLASS:
                 case Il2CppTypeEnum.IL2CPP_TYPE_VALUETYPE:
                     // Classes defined in the metadata
-                    return GetTypeFromIndex((int) pType.datapoint);
+                    return TypesByIndex[(int) pType.datapoint];
 
                 case Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST:
                 case Il2CppTypeEnum.IL2CPP_TYPE_ARRAY:
@@ -57,7 +55,8 @@ namespace Il2CppInspector.Reflection
             if ((int)t >= Il2CppConstants.FullNameTypeString.Count)
                 return null;
 
-            return Assemblies.SelectMany(x => x.DefinedTypes).First(x => x.FullName == Il2CppConstants.FullNameTypeString[(int)t]);
+            var fqn = Il2CppConstants.FullNameTypeString[(int) t];
+            return TypesByIndex.First(x => x.FullName == fqn);
         }
     }
 }

@@ -47,7 +47,10 @@ namespace Il2CppInspector.Reflection {
         public List<FieldInfo> DeclaredFields { get; } = new List<FieldInfo>();
         public List<MemberInfo> DeclaredMembers => throw new NotImplementedException();
         public List<MethodInfo> DeclaredMethods { get; } = new List<MethodInfo>();
-        public List<TypeInfo> DeclaredNestedTypes => throw new NotImplementedException();
+
+        private int[] declaredNestedTypes;
+        public IEnumerable<TypeInfo> DeclaredNestedTypes => declaredNestedTypes.Select(x => Assembly.Model.TypesByIndex[x]);
+
         public List<PropertyInfo> DeclaredProperties { get; } = new List<PropertyInfo>();
 
         // Method that the type is declared in if this is a type parameter of a generic method
@@ -68,6 +71,7 @@ namespace Il2CppInspector.Reflection {
         public string FullName => (IsPointer? "void *" : "")
             + Namespace
             + (Namespace.Length > 0? "." : "")
+            + (DeclaringType != null? DeclaringType.Name + "." : "")
             + base.Name
             + (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.Name)) + ">" : "")
             + (IsArray? "[]" : "");
@@ -91,7 +95,7 @@ namespace Il2CppInspector.Reflection {
         public bool IsGenericTypeDefinition => throw new NotImplementedException();
         public bool IsImport => (Attributes & TypeAttributes.Import) == TypeAttributes.Import;
         public bool IsInterface => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Interface;
-        public bool IsNested { get; } // TODO: Partially implemented
+        public bool IsNested => DeclaringType != null;
         public bool IsNestedAssembly => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedAssembly;
         public bool IsNestedFamANDAssem => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedFamANDAssem;
         public bool IsNestedFamily => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedFamily;
@@ -108,7 +112,8 @@ namespace Il2CppInspector.Reflection {
         public bool IsSpecialName => (Attributes & TypeAttributes.SpecialName) == TypeAttributes.SpecialName;
         public bool IsValueType => BaseType?.FullName == "System.ValueType";
 
-        public override MemberTypes MemberType { get; }
+        // May get overridden by Il2CppType-based constructor below
+        public override MemberTypes MemberType { get; } = MemberTypes.TypeInfo;
 
         public override string Name {
             get => (IsPointer ? "void *" : "")
@@ -118,7 +123,11 @@ namespace Il2CppInspector.Reflection {
             protected set => base.Name = value;
         }
 
-        public string Namespace { get; }
+        private string @namespace;
+        public string Namespace {
+            get => !string.IsNullOrEmpty(@namespace) ? @namespace : DeclaringType?.Namespace ?? "<default namespace>";
+            set => @namespace = value;
+        }
 
         // Number of dimensions of an array
         private readonly int arrayRank;
@@ -135,8 +144,11 @@ namespace Il2CppInspector.Reflection {
         // TODO: Generic stuff
 
         // Initialize from specified type index in metadata
-        public TypeInfo(Il2CppInspector pkg, int typeIndex, Assembly owner) :
-            base(owner) {
+
+        // Top-level types
+        public TypeInfo(int typeIndex, Assembly owner) : base(owner) {
+            var pkg = Assembly.Model.Package;
+
             Definition = pkg.TypeDefinitions[typeIndex];
             Index = typeIndex;
             Namespace = pkg.Strings[Definition.namespaceIndex];
@@ -144,6 +156,14 @@ namespace Il2CppInspector.Reflection {
 
             if (Definition.parentIndex >= 0)
                 baseType = pkg.TypeUsages[Definition.parentIndex];
+
+            // Nested type?
+            if (Definition.declaringTypeIndex >= 0) {
+                declaringTypeDefinitionIndex = (int) pkg.TypeUsages[Definition.declaringTypeIndex].datapoint;
+            }
+
+            // Add to global type definition list
+            Assembly.Model.TypesByIndex[Index] = this;
 
             if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_SERIALIZABLE) != 0)
                 Attributes |= TypeAttributes.Serializable;
@@ -187,6 +207,11 @@ namespace Il2CppInspector.Reflection {
             for (var i = 0; i < Definition.interfaces_count; i++)
                 implementedInterfaces[i] = pkg.TypeUsages[pkg.InterfaceUsageIndices[Definition.interfacesStart + i]];
 
+            // Add all nested types
+            declaredNestedTypes = new int[Definition.nested_type_count];
+            for (var n = 0; n < Definition.nested_type_count; n++)
+                declaredNestedTypes[n] = pkg.NestedTypeIndices[Definition.nestedTypesStart + n];
+
             // Add all fields
             for (var f = Definition.fieldStart; f < Definition.fieldStart + Definition.field_count; f++)
                 DeclaredFields.Add(new FieldInfo(pkg, f, this));
@@ -207,20 +232,21 @@ namespace Il2CppInspector.Reflection {
             // Add all events
             for (var e = Definition.eventStart; e < Definition.eventStart + Definition.event_count; e++)
                 DeclaredEvents.Add(new EventInfo(pkg, e, this));
-            MemberType = MemberTypes.TypeInfo;
         }
 
         // Initialize type from binary usage
-        public TypeInfo(Il2CppModel model, Il2CppType pType, MemberTypes memberType) : base(null) {
+        public TypeInfo(Il2CppModel model, Il2CppType pType, MemberTypes memberType) {
             var image = model.Package.BinaryImage;
 
-            IsNested = true;
+            // TODO: IsNested = true;
             MemberType = memberType;
+
+            // TODO: Set Assembly and DeclaringType
 
             // Generic type unresolved and concrete instance types
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST) {
                 var generic = image.ReadMappedObject<Il2CppGenericClass>(pType.datapoint);
-                var genericTypeDef = model.GetTypeFromIndex(generic.typeDefinitionIndex);
+                var genericTypeDef = model.TypesByIndex[generic.typeDefinitionIndex];
 
                 Namespace = genericTypeDef.Namespace;
                 Name = genericTypeDef.Name;

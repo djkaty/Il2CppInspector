@@ -28,6 +28,7 @@ namespace Il2CppInspector
         public Il2CppEventDefinition[] Events { get; }
 
         public int[] InterfaceUsageIndices { get; }
+        public int[] NestedTypeIndices { get; }
 
         public Dictionary<int, string> Strings { get; } = new Dictionary<int, string>();
 
@@ -96,6 +97,7 @@ namespace Il2CppInspector
             Properties = ReadArray<Il2CppPropertyDefinition>(Header.propertiesOffset, Header.propertiesCount / Sizeof(typeof(Il2CppPropertyDefinition)));
             Events = ReadArray<Il2CppEventDefinition>(Header.eventsOffset, Header.eventsCount / Sizeof(typeof(Il2CppEventDefinition)));
             InterfaceUsageIndices = ReadArray<int>(Header.interfacesOffset, Header.interfacesCount / sizeof(int));
+            NestedTypeIndices = ReadArray<int>(Header.nestedTypesOffset, Header.nestedTypesCount / sizeof(int));
             // TODO: ParameterDefaultValue, GenericParameters, ParameterConstraints, GenericContainers, MetadataUsage, CustomAttributes
 
             // Get all string literals

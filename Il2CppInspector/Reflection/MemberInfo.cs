@@ -18,7 +18,8 @@ namespace Il2CppInspector.Reflection {
         public IEnumerable<CustomAttributeData> CustomAttributes => throw new NotImplementedException();
 
         // Type that this type is declared in for nested types
-        public TypeInfo DeclaringType { get; }
+        protected int declaringTypeDefinitionIndex { private get; set; } = -1;
+        public TypeInfo DeclaringType => declaringTypeDefinitionIndex != -1? Assembly.Model.TypesByIndex[declaringTypeDefinitionIndex] : null;
 
         // What sort of member this is, eg. method, field etc.
         public abstract MemberTypes MemberType { get; }
@@ -29,16 +30,13 @@ namespace Il2CppInspector.Reflection {
         // TODO: GetCustomAttributes etc.
 
         // For top-level members in an assembly (ie. non-nested types)
-        protected MemberInfo(Assembly asm, TypeInfo declaringType = null) {
-            Assembly = asm;
-            DeclaringType = declaringType;
-        }
+        protected MemberInfo(Assembly asm) => Assembly = asm;
 
         // For lower level members, eg. fields, properties etc. and nested types
-        protected MemberInfo(TypeInfo declaringType) {
+        protected MemberInfo(TypeInfo declaringType = null) {
             if (declaringType != null) {
                 Assembly = declaringType.Assembly;
-                DeclaringType = declaringType;
+                declaringTypeDefinitionIndex = declaringType.Index;
             }
         }
 

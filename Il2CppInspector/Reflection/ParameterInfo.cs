@@ -38,7 +38,7 @@ namespace Il2CppInspector.Reflection
         public TypeInfo ParameterType => Member.Assembly.Model.GetType(paramType, MemberTypes.TypeInfo);
 
         // Zero-indexed position of the parameter in parameter list
-        public int Position { get; private set; }
+        public int Position { get; }
 
         // Create a parameter. Specify paramIndex == -1 for a return type parameter
         public ParameterInfo(Il2CppInspector pkg, int paramIndex, MethodBase declaringMethod) {
