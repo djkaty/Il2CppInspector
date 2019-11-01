@@ -14,7 +14,7 @@ namespace Il2CppInspector.Reflection {
     {
         // IL2CPP-specific data
         public Il2CppTypeDefinition Definition { get; }
-        public int Index { get; }
+        public int Index { get; } = -1;
 
         // Information/flags about the type
         // Undefined if the Type represents a generic type parameter
@@ -41,6 +41,7 @@ namespace Il2CppInspector.Reflection {
                 if (IsArray)
                     n = ElementType.CSharpName;
                 var g = (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.CSharpName)) + ">" : "");
+                g = (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.CSharpName)) + ">" : g);
                 return (IsPointer ? "void *" : "") + n + g + (IsArray ? "[]" : "");
             }
         }
@@ -82,6 +83,7 @@ namespace Il2CppInspector.Reflection {
             + (DeclaringType != null? DeclaringType.Name + "." : "")
             + base.Name
             + (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.Name)) + ">" : "")
+            + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.Name)) + ">" : "")
             + (IsArray? "[]" : "");
 
         // TODO: Alot of other generics stuff
@@ -105,7 +107,7 @@ namespace Il2CppInspector.Reflection {
         public bool IsGenericTypeDefinition { get; }
         public bool IsImport => (Attributes & TypeAttributes.Import) == TypeAttributes.Import;
         public bool IsInterface => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Interface;
-        public bool IsNested => DeclaringType != null;
+        public bool IsNested => (MemberType & MemberTypes.NestedType) == MemberTypes.NestedType;
         public bool IsNestedAssembly => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedAssembly;
         public bool IsNestedFamANDAssem => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedFamANDAssem;
         public bool IsNestedFamily => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedFamily;
@@ -125,10 +127,13 @@ namespace Il2CppInspector.Reflection {
         // May get overridden by Il2CppType-based constructor below
         public override MemberTypes MemberType { get; } = MemberTypes.TypeInfo;
 
+        public string BaseName => base.Name;
+
         public override string Name {
             get => (IsPointer ? "void *" : "")
                 + (base.Name.IndexOf("`", StringComparison.Ordinal) == -1? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
                 + (GenericTypeParameters != null? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.Name)) + ">" : "")
+                + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.Name)) + ">" : "")
                 + (IsArray ? "[]" : "");
             protected set => base.Name = value;
         }
@@ -266,19 +271,26 @@ namespace Il2CppInspector.Reflection {
         public TypeInfo(Il2CppModel model, Il2CppType pType, MemberTypes memberType) {
             var image = model.Package.BinaryImage;
 
-            // TODO: IsNested = true;
-            MemberType = memberType;
-
-            // TODO: Set Assembly and DeclaringType
+            // Finding TypeDefinitions adapted from il2cpp::vm::Class::FromIl2CppType
 
             // Generic type unresolved and concrete instance types
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST) {
-                var generic = image.ReadMappedObject<Il2CppGenericClass>(pType.datapoint);
+                var generic = image.ReadMappedObject<Il2CppGenericClass>(pType.datapoint); // Il2CppGenericClass *
                 var genericTypeDef = model.TypesByDefinitionIndex[generic.typeDefinitionIndex];
 
+                Assembly = genericTypeDef.Assembly;
                 Namespace = genericTypeDef.Namespace;
-                Name = genericTypeDef.Name;
+                Name = genericTypeDef.BaseName;
                 Attributes |= TypeAttributes.Class;
+
+                // Derived type?
+                if (genericTypeDef.Definition.parentIndex >= 0)
+                    baseTypeUsage = genericTypeDef.Definition.parentIndex;
+
+                if (genericTypeDef.Definition.declaringTypeIndex >= 0) {
+                    declaringTypeDefinitionIndex = (int)model.Package.TypeUsages[genericTypeDef.Definition.declaringTypeIndex].datapoint;
+                    MemberType = memberType | MemberTypes.NestedType;
+                }
 
                 // TODO: Generic* properties and ContainsGenericParameters
 
@@ -294,10 +306,12 @@ namespace Il2CppInspector.Reflection {
                     var argType = model.GetTypeFromVirtualAddress((ulong) pArg);
                     // TODO: Detect whether unresolved or concrete (add concrete to GenericTypeArguments instead)
                     // TODO: GenericParameterPosition etc. in types we generate here
-                    // TODO: Assembly
+                    // TODO: Assembly etc.
                     GenericTypeArguments.Add(argType); // TODO: Fix MemberType here
                 }
             }
+
+            // TODO: Set Assembly, BaseType and DeclaringType for all of the below
 
             // Array with known dimensions and bounds
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_ARRAY) {

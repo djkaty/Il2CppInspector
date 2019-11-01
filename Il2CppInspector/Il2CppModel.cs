@@ -41,7 +41,7 @@ namespace Il2CppInspector.Reflection
                 case Il2CppTypeEnum.IL2CPP_TYPE_CLASS:
                 case Il2CppTypeEnum.IL2CPP_TYPE_VALUETYPE:
                     // Classes defined in the metadata
-                    return TypesByDefinitionIndex[usage.datapoint];
+                    return TypesByDefinitionIndex[usage.datapoint]; // klassIndex
 
                 case Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST:
                 case Il2CppTypeEnum.IL2CPP_TYPE_ARRAY:
