@@ -187,9 +187,9 @@ namespace Il2CppInspector.Reflection {
                 ContainsGenericParameters = true;
 
                 // Store the generic type parameters for later instantiation
-                var gc = pkg.GenericContainers[Definition.genericContainerIndex];
+                var container = pkg.GenericContainers[Definition.genericContainerIndex];
 
-                GenericTypeParameters = pkg.GenericParameters.Skip((int) gc.genericParameterStart).Take(gc.type_argc).Select(p => new TypeInfo(this, p)).ToList();
+                GenericTypeParameters = pkg.GenericParameters.Skip((int) container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToList();
 
                 // TODO: Constraints
                 // TODO: Attributes
@@ -268,10 +268,9 @@ namespace Il2CppInspector.Reflection {
         }
 
         // Initialize type from binary usage
+        // Much of the following is adapted from il2cpp::vm::Class::FromIl2CppType
         public TypeInfo(Il2CppModel model, Il2CppType pType, MemberTypes memberType) {
             var image = model.Package.BinaryImage;
-
-            // Finding TypeDefinitions adapted from il2cpp::vm::Class::FromIl2CppType
 
             // Generic type unresolved and concrete instance types
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST) {
@@ -287,6 +286,7 @@ namespace Il2CppInspector.Reflection {
                 if (genericTypeDef.Definition.parentIndex >= 0)
                     baseTypeUsage = genericTypeDef.Definition.parentIndex;
 
+                // Nested type?
                 if (genericTypeDef.Definition.declaringTypeIndex >= 0) {
                     declaringTypeDefinitionIndex = (int)model.Package.TypeUsages[genericTypeDef.Definition.declaringTypeIndex].datapoint;
                     MemberType = memberType | MemberTypes.NestedType;
@@ -311,12 +311,13 @@ namespace Il2CppInspector.Reflection {
                 }
             }
 
-            // TODO: Set Assembly, BaseType and DeclaringType for all of the below
+            // TODO: Set Assembly, BaseType and DeclaringType for the two below
 
             // Array with known dimensions and bounds
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_ARRAY) {
                 var descriptor = image.ReadMappedObject<Il2CppArrayType>(pType.datapoint);
                 elementType = model.GetTypeFromVirtualAddress(descriptor.etype);
+
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
 
@@ -327,18 +328,40 @@ namespace Il2CppInspector.Reflection {
             // Dynamically allocated array
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY) {
                 elementType = model.GetTypeFromVirtualAddress(pType.datapoint);
+
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
 
                 IsArray = true;
             }
 
-            // Unresolved generic type variable
+            // Generic type parameter
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_VAR || pType.type == Il2CppTypeEnum.IL2CPP_TYPE_MVAR) {
+                var paramType = model.Package.GenericParameters[pType.datapoint]; // genericParameterIndex
+                var container = model.Package.GenericContainers[paramType.ownerIndex];
+
+                var ownerType = model.TypesByDefinitionIndex[
+                        container.is_method == 1
+                        ? model.Package.Methods[container.ownerIndex].declaringType
+                        : container.ownerIndex];
+
+                Assembly = ownerType.Assembly;
+                Namespace = "";
+                Name = model.Package.Strings[paramType.nameIndex];
                 Attributes |= TypeAttributes.Class;
+
+                // Derived type?
+                if (ownerType.Definition.parentIndex >= 0)
+                    baseTypeUsage = ownerType.Definition.parentIndex;
+
+                // Nested type always - sets DeclaringType used below
+                declaringTypeDefinitionIndex = ownerType.Index;
+                MemberType = memberType | MemberTypes.NestedType;
+
                 IsGenericParameter = true;
-                Name = "T"; // TODO: Don't hardcode parameter name
-                // TODO: Add to GenericTypeParameters? ContainsGenericParameters?
+                ContainsGenericParameters = true;
+                IsGenericType = false;
+                IsGenericTypeDefinition = false;
             }
 
             // Pointer type
