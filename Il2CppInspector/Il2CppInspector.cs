@@ -30,6 +30,8 @@ namespace Il2CppInspector
         public Il2CppFieldDefinition[] Fields => Metadata.Fields;
         public Il2CppPropertyDefinition[] Properties => Metadata.Properties;
         public Il2CppEventDefinition[] Events => Metadata.Events;
+        public Il2CppGenericContainer[] GenericContainers => Metadata.GenericContainers;
+        public Il2CppGenericParameter[] GenericParameters => Metadata.GenericParameters;
         public int[] InterfaceUsageIndices => Metadata.InterfaceUsageIndices;
         public int[] NestedTypeIndices => Metadata.NestedTypeIndices;
         public Dictionary<int, object> FieldDefaultValue { get; } = new Dictionary<int, object>();

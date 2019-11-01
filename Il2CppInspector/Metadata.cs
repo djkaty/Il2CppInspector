@@ -26,6 +26,8 @@ namespace Il2CppInspector
         public Il2CppFieldDefaultValue[] FieldDefaultValues { get; }
         public Il2CppPropertyDefinition[] Properties { get; }
         public Il2CppEventDefinition[] Events { get; }
+        public Il2CppGenericContainer[] GenericContainers { get; }
+        public Il2CppGenericParameter[] GenericParameters { get; }
 
         public int[] InterfaceUsageIndices { get; }
         public int[] NestedTypeIndices { get; }
@@ -98,7 +100,9 @@ namespace Il2CppInspector
             Events = ReadArray<Il2CppEventDefinition>(Header.eventsOffset, Header.eventsCount / Sizeof(typeof(Il2CppEventDefinition)));
             InterfaceUsageIndices = ReadArray<int>(Header.interfacesOffset, Header.interfacesCount / sizeof(int));
             NestedTypeIndices = ReadArray<int>(Header.nestedTypesOffset, Header.nestedTypesCount / sizeof(int));
-            // TODO: ParameterDefaultValue, GenericParameters, ParameterConstraints, GenericContainers, MetadataUsage, CustomAttributes
+            GenericContainers = ReadArray<Il2CppGenericContainer>(Header.genericContainersOffset, Header.genericContainersCount / Sizeof(typeof(Il2CppGenericContainer)));
+            GenericParameters = ReadArray<Il2CppGenericParameter>(Header.genericParametersOffset, Header.genericParametersCount / Sizeof(typeof(Il2CppGenericParameter)));
+            // TODO: ParameterDefaultValue, ParameterConstraints, MetadataUsage, CustomAttributes
 
             // Get all string literals
             Position = Header.stringOffset;

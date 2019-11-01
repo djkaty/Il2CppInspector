@@ -21,8 +21,11 @@ namespace Il2CppInspector.Reflection {
         public TypeAttributes Attributes { get; }
 
         // Type that this type inherits from
-        private int baseTypeUsage;
-        public TypeInfo BaseType => Assembly.Model.GetTypeFromUsage(baseTypeUsage, MemberTypes.TypeInfo);
+        private readonly int baseTypeUsage = -1;
+
+        public TypeInfo BaseType => baseTypeUsage != -1
+            ? Assembly.Model.GetTypeFromUsage(baseTypeUsage, MemberTypes.TypeInfo)
+            : Assembly.Model.TypesByDefinitionIndex.First(t => t.FullName == "System.Object");
 
         // True if the type contains unresolved generic type parameters
         public bool ContainsGenericParameters { get; }
@@ -54,10 +57,13 @@ namespace Il2CppInspector.Reflection {
         public List<PropertyInfo> DeclaredProperties { get; } = new List<PropertyInfo>();
 
         // Method that the type is declared in if this is a type parameter of a generic method
-        public MethodBase DeclaringMethod => throw new NotImplementedException();
+        public MethodBase DeclaringMethod => null; // TODO: Implement for methods
+        public bool IsGenericTypeParameter => IsGenericParameter && DeclaringMethod == null;
+        public bool IsGenericMethodParameter => IsGenericParameter && DeclaringMethod != null;
 
         // Gets the type of the object encompassed or referred to by the current array, pointer or reference type
-        private int enumElementTypeUsage;
+        private readonly int enumElementTypeUsage;
+
         private TypeInfo elementType;
         public TypeInfo ElementType {
             get {
@@ -68,7 +74,9 @@ namespace Il2CppInspector.Reflection {
         }
 
         // Type name including namespace
-        public string FullName => (IsPointer? "void *" : "")
+        public string FullName =>
+            IsGenericParameter? null :
+            (IsPointer? "void *" : "")
             + Namespace
             + (Namespace.Length > 0? "." : "")
             + (DeclaringType != null? DeclaringType.Name + "." : "")
@@ -77,12 +85,14 @@ namespace Il2CppInspector.Reflection {
             + (IsArray? "[]" : "");
 
         // TODO: Alot of other generics stuff
-        
+
         public List<TypeInfo> GenericTypeParameters { get; }
+
+        public List<TypeInfo> GenericTypeArguments { get; }
 
         public bool HasElementType => ElementType != null;
 
-        private int[] implementedInterfaceUsages;
+        private readonly int[] implementedInterfaceUsages;
         public IEnumerable<TypeInfo> ImplementedInterfaces => implementedInterfaceUsages.Select(x => Assembly.Model.GetTypeFromUsage(x, MemberTypes.TypeInfo));
 
         public bool IsAbstract => (Attributes & TypeAttributes.Abstract) == TypeAttributes.Abstract;
@@ -91,8 +101,8 @@ namespace Il2CppInspector.Reflection {
         public bool IsClass => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Class;
         public bool IsEnum { get; }
         public bool IsGenericParameter { get; }
-        public bool IsGenericType => throw new NotImplementedException();
-        public bool IsGenericTypeDefinition => throw new NotImplementedException();
+        public bool IsGenericType { get; }
+        public bool IsGenericTypeDefinition { get; }
         public bool IsImport => (Attributes & TypeAttributes.Import) == TypeAttributes.Import;
         public bool IsInterface => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Interface;
         public bool IsNested => DeclaringType != null;
@@ -104,7 +114,7 @@ namespace Il2CppInspector.Reflection {
         public bool IsNestedPublic => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedPublic;
         public bool IsNotPublic => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NotPublic;
         public bool IsPointer { get; }
-        // Prinitive types table: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/built-in-types-table (we exclude Object and String)
+        // Primitive types table: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/built-in-types-table (we exclude Object and String)
         public bool IsPrimitive => Namespace == "System" && new[] { "Boolean", "Byte", "SByte", "Int16", "UInt16", "Int32", "UInt32", "Int64", "UInt64", "IntPtr", "UIntPtr", "Char", "Decimal", "Double", "Single" }.Contains(Name);
         public bool IsPublic => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.Public;
         public bool IsSealed => (Attributes & TypeAttributes.Sealed) == TypeAttributes.Sealed;
@@ -154,6 +164,7 @@ namespace Il2CppInspector.Reflection {
             Namespace = pkg.Strings[Definition.namespaceIndex];
             Name = pkg.Strings[Definition.nameIndex];
 
+            // Derived type?
             if (Definition.parentIndex >= 0)
                 baseTypeUsage = Definition.parentIndex;
 
@@ -161,6 +172,22 @@ namespace Il2CppInspector.Reflection {
             if (Definition.declaringTypeIndex >= 0) {
                 declaringTypeDefinitionIndex = (int) pkg.TypeUsages[Definition.declaringTypeIndex].datapoint;
                 MemberType |= MemberTypes.NestedType;
+            }
+
+            // Generic type?
+            if (Definition.genericContainerIndex >= 0) {
+                IsGenericType = true;
+                IsGenericParameter = false;
+                IsGenericTypeDefinition = true; // TODO: Only if all of the parameters are unresolved generic type parameters
+                ContainsGenericParameters = true;
+
+                // Store the generic type parameters for later instantiation
+                var gc = pkg.GenericContainers[Definition.genericContainerIndex];
+
+                GenericTypeParameters = pkg.GenericParameters.Skip((int) gc.genericParameterStart).Take(gc.type_argc).Select(p => new TypeInfo(this, p)).ToList();
+
+                // TODO: Constraints
+                // TODO: Attributes
             }
 
             // Add to global type definition list
@@ -251,6 +278,7 @@ namespace Il2CppInspector.Reflection {
 
                 Namespace = genericTypeDef.Namespace;
                 Name = genericTypeDef.Name;
+                Attributes |= TypeAttributes.Class;
 
                 // TODO: Generic* properties and ContainsGenericParameters
 
@@ -258,16 +286,17 @@ namespace Il2CppInspector.Reflection {
                 var genericInstance = image.ReadMappedObject<Il2CppGenericInst>(generic.context.class_inst);
 
                 // Get list of pointers to type parameters (both unresolved and concrete)
-                var genericTypeParameters = image.ReadMappedWordArray(genericInstance.type_argv, (int)genericInstance.type_argc);
+                var genericTypeArguments = image.ReadMappedWordArray(genericInstance.type_argv, (int)genericInstance.type_argc);
 
-                GenericTypeParameters = new List<TypeInfo>();
-                foreach (var pArg in genericTypeParameters) {
+                GenericTypeArguments = new List<TypeInfo>();
+
+                foreach (var pArg in genericTypeArguments) {
                     var argType = model.GetTypeFromVirtualAddress((ulong) pArg);
                     // TODO: Detect whether unresolved or concrete (add concrete to GenericTypeArguments instead)
                     // TODO: GenericParameterPosition etc. in types we generate here
-                    GenericTypeParameters.Add(argType); // TODO: Fix MemberType here
+                    // TODO: Assembly
+                    GenericTypeArguments.Add(argType); // TODO: Fix MemberType here
                 }
-                Attributes |= TypeAttributes.Class;
             }
 
             // Array with known dimensions and bounds
@@ -292,17 +321,36 @@ namespace Il2CppInspector.Reflection {
 
             // Unresolved generic type variable
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_VAR || pType.type == Il2CppTypeEnum.IL2CPP_TYPE_MVAR) {
-                ContainsGenericParameters = true;
                 Attributes |= TypeAttributes.Class;
                 IsGenericParameter = true;
                 Name = "T"; // TODO: Don't hardcode parameter name
-
-                // TODO: GenericTypeParameters?
+                // TODO: Add to GenericTypeParameters? ContainsGenericParameters?
             }
 
             // Pointer type
             // TODO: Should set ElementType etc.
             IsPointer = (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_PTR);
+        }
+
+        // Initialize a type that is a generic parameter
+        // See: https://docs.microsoft.com/en-us/dotnet/api/system.type.isgenerictype?view=netframework-4.8
+        public TypeInfo(TypeInfo declaringType, Il2CppGenericParameter param) : base(declaringType) {
+            // Same visibility attributes as declaring type
+            Attributes = declaringType.Attributes;
+
+            // Same namespace as delcaring type
+            Namespace = declaringType.Namespace;
+
+            // Base type of object
+            // TODO: This may change under constraints
+
+            // Name of parameter
+            Name = declaringType.Assembly.Model.Package.Strings[param.nameIndex];
+
+            IsGenericParameter = true;
+            IsGenericType = false;
+            IsGenericTypeDefinition = false;
+            ContainsGenericParameters = true;
         }
     }
 }

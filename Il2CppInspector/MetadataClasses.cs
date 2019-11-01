@@ -301,4 +301,25 @@ namespace Il2CppInspector
         [Version(Min = 19)]
         public uint token;
     }
+
+    public class Il2CppGenericContainer
+    {
+        /* index of the generic type definition or the generic method definition corresponding to this container */
+        public int ownerIndex; // either index into Il2CppClass metadata array or Il2CppMethodDefinition array
+        public int type_argc;
+        /* If true, we're a generic method, otherwise a generic type definition. */
+        public int is_method;
+        /* Our type parameters. */
+        public uint genericParameterStart; // GenericParameterIndex
+    }
+
+    public class Il2CppGenericParameter
+    {
+        public int ownerIndex;  /* Type or method this parameter was defined in. */ // GenericContainerIndex
+        public int nameIndex; // StringIndex
+        public short constraintsStart; // GenericParameterConstraintIndex
+        public short constraintsCount;
+        public ushort num;
+        public ushort flags;
+    }
 }

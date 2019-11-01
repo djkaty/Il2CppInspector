@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Il2CppInspector.Reflection;
-using ParameterInfo = Il2CppInspector.Reflection.ParameterInfo;
 
 namespace Il2CppInspector
 {
