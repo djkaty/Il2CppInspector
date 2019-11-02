@@ -411,5 +411,8 @@ namespace Il2CppInspector.Reflection {
         public TypeInfo(MethodBase declaringMethod, Il2CppGenericParameter param) : this(declaringMethod.DeclaringType, param) {
             DeclaringMethod = declaringMethod;
         }
+
+        // Display name of object
+        public override string ToString() => FullName?.Substring(FullName.LastIndexOf(".") + 1) ?? Name;
     }
 }
