@@ -44,6 +44,12 @@ namespace Il2CppInspector.Reflection
                 Assemblies.Add(new Assembly(this, image));
         }
 
+        // Get an assembly by its name
+        public Assembly GetAssembly(string name) => Assemblies.First(a => a.FullName == name);
+
+        // Get a type by its full name
+        public TypeInfo GetType(string name) => Types.First(t => t.FullName == name);
+
         private TypeInfo getNewTypeUsage(Il2CppType usage, MemberTypes memberType) {
             switch (usage.type) {
                 case Il2CppTypeEnum.IL2CPP_TYPE_CLASS:
