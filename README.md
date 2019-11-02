@@ -6,7 +6,7 @@ Extract types, methods, properties and fields from Unity IL2CPP binaries.
 * 32-bit and 64-bit support for all file formats
 * Supports ARMv7, Thumb-2, ARMv8 (A64), x86 and x64 architectures regardless of file format
 * Supports metadata versions 16, 21, 22, 23, 24, 24.1 (Unity 2018.3+) and 24.2 (Unity 2019+) (other versions may or may not work)
-* Support for classes, methods, constructors, fields, properties, enumerations, events, delegates, interfaces, structs, nested types and default field values
+* Support for classes, methods, constructors, fields, properties, enumerations, events, delegates, interfaces, structs, nested types, generic types, generic methods and default field values
 * Static symbol table scanning for ELF and Mach-O binaries if present
 * Dynamic symbol table scanning for ELF binaries if present
 * Symbol relocation handling for ELF binaries
