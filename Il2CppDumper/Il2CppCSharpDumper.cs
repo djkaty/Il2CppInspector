@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2017-2019 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
 // All rights reserved
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -75,7 +76,7 @@ namespace Il2CppInspector
             // Roll-up multicast delegates to use the 'delegate' syntactic sugar
             if (type.IsClass && type.IsSealed && type.BaseType?.FullName == "System.MulticastDelegate") {
                 var del = type.DeclaredMethods.First(x => x.Name == "Invoke");
-                writer.Write($"delegate {del.ReturnType.CSharpName} {type.Name}(");
+                writer.Write($"delegate {del.ReturnType.CSharpName} {type.CSharpTypeDeclarationName}(");
 
                 bool first = true;
                 foreach (var param in del.DeclaredParameters) {
@@ -117,7 +118,7 @@ namespace Il2CppInspector
                 @base.Insert(0, type.ElementType.CSharpName);
             var baseText = @base.Count > 0 ? " : " + string.Join(", ", @base) : string.Empty;
 
-            writer.Write($"{type.Name}{baseText} // TypeDefIndex: {type.Index}\n" + prefix + "{\n");
+            writer.Write($"{type.CSharpTypeDeclarationName}{baseText} // TypeDefIndex: {type.Index}\n" + prefix + "{\n");
 
             // Fields
             if (!type.IsEnum) {
@@ -222,7 +223,7 @@ namespace Il2CppInspector
                 writer.Write(prefix + "\t// Constructors\n");
 
             foreach (var method in type.DeclaredConstructors) {
-                writer.Write($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.Name}(");
+                writer.Write($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString()}(");
                 writer.Write(method.GetParametersString());
                 writer.Write(");" + (method.VirtualAddress != 0 ? $" // {formatAddress(method.VirtualAddress)}" : "") + "\n");
             }
@@ -237,7 +238,7 @@ namespace Il2CppInspector
             foreach (var method in type.DeclaredMethods.Except(usedMethods)) {
                 writer.Write($"{prefix}\t{method.GetModifierString()}");
                 if (method.Name != "op_Implicit" && method.Name != "op_Explicit")
-                    writer.Write($"{method.ReturnType.CSharpName} {method.CSharpName}");
+                    writer.Write($"{method.ReturnType.CSharpName} {method.CSharpName}{method.GetTypeParametersString()}");
                 else
                     writer.Write($"{method.CSharpName}{method.ReturnType.CSharpName}");
                 writer.Write("(" + method.GetParametersString());
