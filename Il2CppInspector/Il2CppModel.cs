@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -23,6 +24,9 @@ namespace Il2CppInspector.Reflection
 
         // List of type usages that are initialized via pointers in the image
         public Dictionary<ulong, TypeInfo> TypesByVirtualAddress { get; } = new Dictionary<ulong, TypeInfo>();
+
+        // Every type
+        public IEnumerable<TypeInfo> Types => new IEnumerable<TypeInfo>[] { TypesByDefinitionIndex, TypesByUsageIndex, TypesByVirtualAddress.Values }.SelectMany(t => t);
 
         // List of all methods ordered by their MethodDefinitionIndex
         public MethodBase[] MethodsByDefinitionIndex { get; }
