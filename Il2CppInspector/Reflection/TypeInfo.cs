@@ -304,7 +304,10 @@ namespace Il2CppInspector.Reflection {
                     MemberType = memberType | MemberTypes.NestedType;
                 }
 
-                // TODO: Generic* properties and ContainsGenericParameters
+                IsGenericType = true;
+                IsGenericParameter = false;
+                IsGenericTypeDefinition = false; // This is a use of a generic type definition
+                ContainsGenericParameters = true;
 
                 // Get the instantiation
                 var genericInstance = image.ReadMappedObject<Il2CppGenericInst>(generic.context.class_inst);
