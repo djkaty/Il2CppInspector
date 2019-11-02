@@ -97,8 +97,8 @@ namespace Il2CppInspector.Reflection {
             + (Namespace.Length > 0? "." : "")
             + (DeclaringType != null? DeclaringType.Name + "." : "")
             + base.Name
-            + (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.Name)) + ">" : "")
-            + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.Name)) + ">" : "")
+            + (GenericTypeParameters != null ? "[" + string.Join(", ", GenericTypeParameters.Select(x => x.Name)) + "]" : "")
+            + (GenericTypeArguments != null ? "[" + string.Join(", ", GenericTypeArguments.Select(x => x.Name)) + "]" : "")
             + (IsArray? "[]" : "");
 
         // TODO: Alot of other generics stuff
