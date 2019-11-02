@@ -22,11 +22,12 @@ namespace Il2CppInspector.Reflection
         // Information/flags about the method
         public MethodAttributes Attributes { get; protected set; }
 
-        // True if the type contains unresolved generic type parameters
-        public bool ContainsGenericParameters => throw new NotImplementedException();
+        // True if the method contains unresolved generic type parameters
+        public bool ContainsGenericParameters { get; }
 
         // TODO: Custom attribute stuff
 
+        public List<TypeInfo> GenericTypeParameters { get; } // System.Reflection.MethodInfo.GetGenericArguments()
         public List<ParameterInfo> DeclaredParameters { get; } = new List<ParameterInfo>();
 
         public bool IsAbstract => (Attributes & MethodAttributes.Abstract) == MethodAttributes.Abstract;
@@ -36,8 +37,8 @@ namespace Il2CppInspector.Reflection
         public bool IsFamilyAndAssembly => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.FamANDAssem;
         public bool IsFamilyOrAssembly => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.FamORAssem;
         public bool IsFinal => (Attributes & MethodAttributes.Final) == MethodAttributes.Final;
-        public bool IsGenericMethod => throw new NotImplementedException();
-        public bool IsGenericMethodDefinition => throw new NotImplementedException();
+        public bool IsGenericMethod { get; }
+        public bool IsGenericMethodDefinition { get; }
         public bool IsHideBySig => (Attributes & MethodAttributes.HideBySig) == MethodAttributes.HideBySig;
         public bool IsPrivate => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Private;
         public bool IsPublic => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Public;
@@ -58,6 +59,24 @@ namespace Il2CppInspector.Reflection
 
             // Find method pointer
             VirtualAddress = pkg.GetMethodPointer(Assembly.Module, Definition);
+
+            // Add to global method definition list
+            Assembly.Model.MethodsByDefinitionIndex[Index] = this;
+
+            // Generic method definition?
+            if (Definition.genericContainerIndex >= 0) {
+                IsGenericMethod = true;
+                IsGenericMethodDefinition = true; // TODO: Only if all of the parameters are unresolved generic type parameters
+                ContainsGenericParameters = true;
+
+                // Store the generic type parameters for later instantiation
+                var container = pkg.GenericContainers[Definition.genericContainerIndex];
+
+                GenericTypeParameters = pkg.GenericParameters.Skip((int)container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToList();
+
+                // TODO: Constraints
+                // TODO: Attributes
+            }
 
             // Set method attributes
             if ((Definition.flags & Il2CppConstants.METHOD_ATTRIBUTE_MEMBER_ACCESS_MASK) == Il2CppConstants.METHOD_ATTRIBUTE_PRIVATE)
@@ -90,7 +109,7 @@ namespace Il2CppInspector.Reflection
                 Attributes |= MethodAttributes.SpecialName;
             if ((Definition.flags & Il2CppConstants.METHOD_ATTRIBUTE_UNMANAGED_EXPORT) != 0)
                 Attributes |= MethodAttributes.UnmanagedExport;
-
+            
             // Add arguments
             for (var p = Definition.parameterStart; p < Definition.parameterStart + Definition.parameterCount; p++)
                 DeclaredParameters.Add(new ParameterInfo(pkg, p, this));
@@ -141,6 +160,9 @@ namespace Il2CppInspector.Reflection
         // Get C# syntax-friendly list of parameters
         public string GetParametersString() =>
             string.Join(", ", DeclaredParameters.Select(p => $"{p.GetModifierString()}{p.ParameterType.CSharpName} {p.Name}"));
+
+        public string GetTypeParametersString() => GenericTypeParameters == null? "" :
+            "<" + string.Join(", ", GenericTypeParameters.Select(p => p.CSharpName)) + ">";
 
         // List of operator overload metadata names
         // https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/operator-overloads

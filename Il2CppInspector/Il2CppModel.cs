@@ -24,12 +24,16 @@ namespace Il2CppInspector.Reflection
         // List of type usages that are initialized via pointers in the image
         public Dictionary<ulong, TypeInfo> TypesByVirtualAddress { get; } = new Dictionary<ulong, TypeInfo>();
 
+        // List of all methods ordered by their MethodDefinitionIndex
+        public MethodBase[] MethodsByDefinitionIndex { get; }
+
         // List of all types 
 
         public Il2CppModel(Il2CppInspector package) {
             Package = package;
             TypesByDefinitionIndex = new TypeInfo[package.TypeDefinitions.Length];
             TypesByUsageIndex = new TypeInfo[package.TypeUsages.Count];
+            MethodsByDefinitionIndex = new MethodBase[package.Methods.Length];
 
             // Create Assembly objects from Il2Cpp package
             for (var image = 0; image < package.Images.Length; image++)

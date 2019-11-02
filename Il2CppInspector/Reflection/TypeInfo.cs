@@ -30,6 +30,11 @@ namespace Il2CppInspector.Reflection {
         // True if the type contains unresolved generic type parameters
         public bool ContainsGenericParameters { get; }
 
+        public string BaseName => base.Name;
+
+        // Get rid of generic backticks
+        public string UnmangledBaseName => base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal));
+
         // C# colloquial name of the type (if available)
         public string CSharpName {
             get {
@@ -46,6 +51,14 @@ namespace Il2CppInspector.Reflection {
             }
         }
 
+        // C# name as it would be written in a type declaration
+        public string CSharpTypeDeclarationName => 
+            (IsPointer ? "void *" : "")
+                   + (base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
+                   + (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.Name)) + ">" : "")
+                   + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.Name)) + ">" : "")
+                   + (IsArray ? "[]" : "");
+
         public List<ConstructorInfo> DeclaredConstructors { get; } = new List<ConstructorInfo>();
         public List<EventInfo> DeclaredEvents { get; } = new List<EventInfo>();
         public List<FieldInfo> DeclaredFields { get; } = new List<FieldInfo>();
@@ -58,7 +71,9 @@ namespace Il2CppInspector.Reflection {
         public List<PropertyInfo> DeclaredProperties { get; } = new List<PropertyInfo>();
 
         // Method that the type is declared in if this is a type parameter of a generic method
-        public MethodBase DeclaringMethod => null; // TODO: Implement for methods
+        public MethodBase DeclaringMethod;
+        
+        // IsGenericTypeParameter and IsGenericMethodParameter from https://github.com/dotnet/corefx/issues/23883
         public bool IsGenericTypeParameter => IsGenericParameter && DeclaringMethod == null;
         public bool IsGenericMethodParameter => IsGenericParameter && DeclaringMethod != null;
 
@@ -127,17 +142,6 @@ namespace Il2CppInspector.Reflection {
         // May get overridden by Il2CppType-based constructor below
         public override MemberTypes MemberType { get; } = MemberTypes.TypeInfo;
 
-        public string BaseName => base.Name;
-
-        public override string Name {
-            get => (IsPointer ? "void *" : "")
-                + (base.Name.IndexOf("`", StringComparison.Ordinal) == -1? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
-                + (GenericTypeParameters != null? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.Name)) + ">" : "")
-                + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.Name)) + ">" : "")
-                + (IsArray ? "[]" : "");
-            protected set => base.Name = value;
-        }
-
         private string @namespace;
         public string Namespace {
             get => !string.IsNullOrEmpty(@namespace) ? @namespace : DeclaringType?.Namespace ?? "";
@@ -179,7 +183,7 @@ namespace Il2CppInspector.Reflection {
                 MemberType |= MemberTypes.NestedType;
             }
 
-            // Generic type?
+            // Generic type definition?
             if (Definition.genericContainerIndex >= 0) {
                 IsGenericType = true;
                 IsGenericParameter = false;
@@ -358,6 +362,10 @@ namespace Il2CppInspector.Reflection {
                 declaringTypeDefinitionIndex = ownerType.Index;
                 MemberType = memberType | MemberTypes.NestedType;
 
+                // All generic method type parameters have a declared method
+                if (container.is_method == 1)
+                    DeclaringMethod = model.MethodsByDefinitionIndex[container.ownerIndex];
+
                 IsGenericParameter = true;
                 ContainsGenericParameters = true;
                 IsGenericType = false;
@@ -369,7 +377,7 @@ namespace Il2CppInspector.Reflection {
             IsPointer = (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_PTR);
         }
 
-        // Initialize a type that is a generic parameter
+        // Initialize a type that is a generic parameter of a generic type
         // See: https://docs.microsoft.com/en-us/dotnet/api/system.type.isgenerictype?view=netframework-4.8
         public TypeInfo(TypeInfo declaringType, Il2CppGenericParameter param) : base(declaringType) {
             // Same visibility attributes as declaring type
@@ -388,6 +396,11 @@ namespace Il2CppInspector.Reflection {
             IsGenericType = false;
             IsGenericTypeDefinition = false;
             ContainsGenericParameters = true;
+        }
+
+        // Initialize a type that is a generic parameter of a generic method
+        public TypeInfo(MethodBase declaringMethod, Il2CppGenericParameter param) : this(declaringMethod.DeclaringType, param) {
+            DeclaringMethod = declaringMethod;
         }
     }
 }
