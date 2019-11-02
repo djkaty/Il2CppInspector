@@ -102,12 +102,11 @@ namespace Il2CppInspector.Reflection {
         public string FullName =>
             IsGenericParameter? null :
             (IsPointer? "void *" : "")
-            + Namespace
-            + (Namespace.Length > 0? "." : "")
-            + (DeclaringType != null? DeclaringType.Name + "+" : "")
+            + (DeclaringType != null? DeclaringType.FullName + "+" :
+                Namespace + (Namespace.Length > 0? "." : ""))
             + base.Name
-            + (GenericTypeParameters != null ? "[" + string.Join(",", GenericTypeParameters.Select(x => x.Name)) + "]" : "")
-            + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.Name)) + "]" : "")
+            + (GenericTypeParameters != null ? "[" + string.Join(",", GenericTypeParameters.Select(x => x.FullName ?? x.Name)) + "]" : "")
+            + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.FullName ?? x.Name)) + "]" : "")
             + (IsArray? "[]" : "");
 
         // TODO: Alot of other generics stuff
@@ -413,6 +412,12 @@ namespace Il2CppInspector.Reflection {
         }
 
         // Display name of object
-        public override string ToString() => FullName?.Substring(FullName.LastIndexOf(".") + 1) ?? Name;
+        public override string ToString() => IsGenericParameter ? Name :
+            (IsPointer ? "void *" : "")
+            + (DeclaringType != null ? DeclaringType.Name + "+" : "")
+            + base.Name
+            + (GenericTypeParameters != null ? "[" + string.Join(",", GenericTypeParameters.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.ToString())) + "]" : "")
+            + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.ToString())) + "]" : "")
+            + (IsArray ? "[]" : "");
     }
 }
