@@ -109,8 +109,6 @@ namespace Il2CppInspector.Reflection {
             + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.FullName ?? x.Name)) + "]" : "")
             + (IsArray? "[]" : "");
 
-        // TODO: Alot of other generics stuff
-
         public List<TypeInfo> GenericTypeParameters { get; }
 
         public List<TypeInfo> GenericTypeArguments { get; }
@@ -168,8 +166,6 @@ namespace Il2CppInspector.Reflection {
 
         public Array GetEnumValues() => IsEnum? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.DefaultValue).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
 
-        // TODO: Generic stuff
-
         // Initialize from specified type index in metadata
 
         // Top-level types
@@ -195,7 +191,7 @@ namespace Il2CppInspector.Reflection {
             if (Definition.genericContainerIndex >= 0) {
                 IsGenericType = true;
                 IsGenericParameter = false;
-                IsGenericTypeDefinition = true; // TODO: Only if all of the parameters are unresolved generic type parameters
+                IsGenericTypeDefinition = true; // All of our generic type parameters are unresolved
                 ContainsGenericParameters = true;
 
                 // Store the generic type parameters for later instantiation

@@ -140,7 +140,7 @@ namespace Il2CppInspector
             foreach (var section in sections) {
                 var rels = ReadArray<MachO_relocation_info>(section.ImageRelocOffset, section.NumRelocEntries);
 
-                // TODO: Implement
+                // TODO: Implement Mach-O relocations
                 if (rels.Any()) {
                     Console.WriteLine("Mach-O file contains relocations (feature not yet implemented)");
                     break;

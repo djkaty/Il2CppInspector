@@ -66,7 +66,7 @@ namespace Il2CppInspector.Reflection
             // Generic method definition?
             if (Definition.genericContainerIndex >= 0) {
                 IsGenericMethod = true;
-                IsGenericMethodDefinition = true; // TODO: Only if all of the parameters are unresolved generic type parameters
+                IsGenericMethodDefinition = true;
                 ContainsGenericParameters = true;
 
                 // Store the generic type parameters for later instantiation
