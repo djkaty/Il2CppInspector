@@ -27,13 +27,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="TestExpectedResults\GameAssembly-Generics-x64.cs" />
-    <Content Include="TestExpectedResults\GameAssembly-Generics-x86.cs" />
+    <Compile Remove="TestSources\GenericTypes.cs" />
+    <Compile Remove="TestSources\Methods.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="TestExpectedResults\GameAssembly-Methods-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-Methods-x86.cs" />
-    <Content Include="TestExpectedResults\Generics.cs" />
     <Content Include="TestExpectedResults\Methods.cs" />
-    <Content Include="TestSources\Generics.cs" />
+    <Content Include="TestSources\GenericTypes.cs" />
     <Content Include="TestSources\Methods.cs" />
   </ItemGroup>
 
