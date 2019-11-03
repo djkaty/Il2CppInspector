@@ -10,6 +10,10 @@ using System.Reflection;
 namespace Il2CppInspector.Reflection {
     public class PropertyInfo : MemberInfo
     {
+        // IL2CPP-specific data
+        public Il2CppPropertyDefinition Definition { get; }
+        public int Index { get; }
+
         public bool CanRead => GetMethod != null;
         public bool CanWrite => SetMethod != null;
 
@@ -26,15 +30,15 @@ namespace Il2CppInspector.Reflection {
 
         public PropertyInfo(Il2CppInspector pkg, int propIndex, TypeInfo declaringType) :
             base(declaringType) {
-            var prop = pkg.Properties[propIndex];
-
-            Name = pkg.Strings[prop.nameIndex];
+            Index = propIndex;
+            Definition = pkg.Properties[propIndex];
+            Name = pkg.Strings[Definition.nameIndex];
 
             // prop.get and prop.set are method indices from the first method of the declaring type
-            if (prop.get >= 0)
-                GetMethod = declaringType.DeclaredMethods.First(x => x.Index == declaringType.Definition.methodStart + prop.get);
-            if (prop.set >= 0)
-                SetMethod = declaringType.DeclaredMethods.First(x => x.Index == declaringType.Definition.methodStart + prop.set);
+            if (Definition.get >= 0)
+                GetMethod = declaringType.DeclaredMethods.First(x => x.Index == declaringType.Definition.methodStart + Definition.get);
+            if (Definition.set >= 0)
+                SetMethod = declaringType.DeclaredMethods.First(x => x.Index == declaringType.Definition.methodStart + Definition.set);
         }
     }
 }
