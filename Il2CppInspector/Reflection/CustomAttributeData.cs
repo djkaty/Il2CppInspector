@@ -5,6 +5,7 @@
 */
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Il2CppInspector.Reflection
 {
@@ -20,6 +21,9 @@ namespace Il2CppInspector.Reflection
 
         // Get all the custom attributes for a given assembly, type, member or parameter
         private static IEnumerable<CustomAttributeData> getCustomAttributes(Assembly asm, int customAttributeIndex) {
+            if (customAttributeIndex < 0)
+                yield break;
+
             var pkg = asm.Model.Package;
 
             // Attribute type ranges weren't included before v21 (customASttributeGenerators was though)
@@ -34,8 +38,9 @@ namespace Il2CppInspector.Reflection
         }
 
         private static IList<CustomAttributeData> getCustomAttributes(Assembly asm, uint token, int customAttributeIndex)
-            => (IList<CustomAttributeData>) getCustomAttributes(asm, asm.Model.GetCustomAttributeIndex(asm, token, customAttributeIndex));
+            => getCustomAttributes(asm, asm.Model.GetCustomAttributeIndex(asm, token, customAttributeIndex)).ToList();
 
+        // TODO: Get token or customAttributeIndex from Il2CppAssembly(Definition)
         public static IList<CustomAttributeData> GetCustomAttributes(Assembly asm) => getCustomAttributes(asm, asm.Definition.token, -1);
         public static IList<CustomAttributeData> GetCustomAttributes(EventInfo evt) => getCustomAttributes(evt.Assembly, evt.Definition.token, evt.Definition.customAttributeIndex);
         public static IList<CustomAttributeData> GetCustomAttributes(FieldInfo field) => getCustomAttributes(field.Assembly, field.Definition.token, field.Definition.customAttributeIndex);
