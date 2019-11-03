@@ -107,18 +107,17 @@ namespace Il2CppInspector.Reflection
             return newUsage;
         }
 
-        // Attribute management
-        private int getCustomAttributeIndex(Assembly asm, uint token, int customAttributeIndex) {
+        // The attribute index is an index into AttributeTypeRanges, each of which is a start-end range index into AttributeTypeIndices, each of which is a TypeIndex
+        public int GetCustomAttributeIndex(Assembly asm, uint token, int customAttributeIndex) {
+            // Prior to v24.1, Type, Field, Parameter, Method, Event, Property, Assembly definitions had their own customAttributeIndex field
+            if (Package.Version <= 24.0)
+                return customAttributeIndex;
+
             var image = asm.Definition;
+            var imageRange = image.customAttributeStart..(int)(image.customAttributeStart + image.customAttributeCount);
 
-            throw new NotImplementedException();
+            // From v24.1 onwards, token was added to Il2CppCustomAttributeTypeRange and each Il2CppImageDefinition noted the CustomAttributeTypeRanges for the image
+            return Array.FindIndex(Package.AttributeTypeRanges[imageRange], x => x.token == token) + image.customAttributeStart;
         }
-
-        public int GetCustomAttributeIndex(Assembly asm) => getCustomAttributeIndex(asm, asm.Definition.token, -1);
-        public int GetCustomAttributeIndex(EventInfo evt) => getCustomAttributeIndex(evt.Assembly, evt.Definition.token, evt.Definition.customAttributeIndex);
-        public int GetCustomAttributeIndex(FieldInfo field) => getCustomAttributeIndex(field.Assembly, field.Definition.token, field.Definition.customAttributeIndex);
-        public int GetCustomAttributeIndex(MethodBase method) => getCustomAttributeIndex(method.Assembly, method.Definition.token, method.Definition.customAttributeIndex);
-        public int GetCustomAttributeIndex(ParameterInfo param) => getCustomAttributeIndex(param.Member.Assembly, param.Definition.token, param.Definition.customAttributeIndex);
-        public int GetCustomAttributeIndex(PropertyInfo prop) => getCustomAttributeIndex(prop.Assembly, prop.Definition.token, prop.Definition.customAttributeIndex);
     }
 }

@@ -1,10 +1,9 @@
 ﻿/*
-    Copyright 2017 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -15,7 +14,7 @@ namespace Il2CppInspector.Reflection {
         public Assembly Assembly { get; protected set; }
 
         // Custom attributes for this member
-        public IEnumerable<CustomAttributeData> CustomAttributes => throw new NotImplementedException();
+        public abstract IEnumerable<CustomAttributeData> CustomAttributes { get; }
 
         // Type that this type is declared in for nested types
         protected int declaringTypeDefinitionIndex { private get; set; } = -1;
@@ -26,8 +25,6 @@ namespace Il2CppInspector.Reflection {
 
         // Name of the member
         public virtual string Name { get; protected set; }
-
-        // TODO: GetCustomAttributes etc.
 
         // For top-level members in an assembly (ie. non-nested types)
         protected MemberInfo(Assembly asm) => Assembly = asm;

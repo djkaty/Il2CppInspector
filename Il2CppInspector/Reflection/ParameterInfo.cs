@@ -5,6 +5,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Il2CppInspector.Reflection
@@ -18,7 +19,8 @@ namespace Il2CppInspector.Reflection
         // Information/flags about the parameter
         public ParameterAttributes Attributes { get; }
 
-        // TODO: CustomAttributes
+        // Custom attributes for this parameter
+        public IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
 
         // True if the parameter has a default value
         public bool HasDefaultValue => (Attributes & ParameterAttributes.HasDefault) != 0;

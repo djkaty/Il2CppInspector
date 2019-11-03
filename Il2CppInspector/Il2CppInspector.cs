@@ -32,8 +32,10 @@ namespace Il2CppInspector
         public Il2CppEventDefinition[] Events => Metadata.Events;
         public Il2CppGenericContainer[] GenericContainers => Metadata.GenericContainers;
         public Il2CppGenericParameter[] GenericParameters => Metadata.GenericParameters;
+        public Il2CppCustomAttributeTypeRange[] AttributeTypeRanges => Metadata.AttributeTypeRanges;
         public int[] InterfaceUsageIndices => Metadata.InterfaceUsageIndices;
         public int[] NestedTypeIndices => Metadata.NestedTypeIndices;
+        public int[] AttributeTypeIndices => Metadata.AttributeTypeIndices;
         public Dictionary<int, object> FieldDefaultValue { get; } = new Dictionary<int, object>();
         public List<long> FieldOffsets { get; }
         public List<Il2CppType> TypeUsages => Binary.Types;

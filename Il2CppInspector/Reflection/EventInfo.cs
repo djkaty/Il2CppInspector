@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -17,6 +18,9 @@ namespace Il2CppInspector.Reflection
 
         // Information/flags about the event
         public EventAttributes Attributes { get; }
+
+        // Custom attributes for this member
+        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
 
         // Methods for the event
         public MethodInfo AddMethod { get; }

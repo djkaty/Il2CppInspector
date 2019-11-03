@@ -32,7 +32,7 @@ namespace Il2CppInspector
 
         public int[] InterfaceUsageIndices { get; }
         public int[] NestedTypeIndices { get; }
-        public int[] AttributeRangeIndices { get; }
+        public int[] AttributeTypeIndices { get; }
 
         public Dictionary<int, string> Strings { get; } = new Dictionary<int, string>();
 
@@ -106,7 +106,7 @@ namespace Il2CppInspector
             GenericParameters = ReadArray<Il2CppGenericParameter>(Header.genericParametersOffset, Header.genericParametersCount / Sizeof(typeof(Il2CppGenericParameter)));
 
             if (Version >= 21) {
-                AttributeRangeIndices = ReadArray<int>(Header.attributeTypesOffset, Header.attributeTypesCount / sizeof(int));
+                AttributeTypeIndices = ReadArray<int>(Header.attributeTypesOffset, Header.attributeTypesCount / sizeof(int));
                 AttributeTypeRanges = ReadArray<Il2CppCustomAttributeTypeRange>(Header.attributesInfoOffset, Header.attributesInfoCount / Sizeof(typeof(Il2CppCustomAttributeTypeRange)));
             }
             // TODO: ParameterDefaultValue, ParameterConstraints, MetadataUsage

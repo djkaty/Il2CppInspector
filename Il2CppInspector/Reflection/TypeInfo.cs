@@ -59,6 +59,9 @@ namespace Il2CppInspector.Reflection {
                    + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.Name)) + ">" : "")
                    + (IsArray ? "[]" : "");
 
+        // Custom attributes for this member
+        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
+
         public List<ConstructorInfo> DeclaredConstructors { get; } = new List<ConstructorInfo>();
         public List<EventInfo> DeclaredEvents { get; } = new List<EventInfo>();
         public List<FieldInfo> DeclaredFields { get; } = new List<FieldInfo>();
@@ -80,6 +83,7 @@ namespace Il2CppInspector.Reflection {
         public PropertyInfo GetProperty(string name) => DeclaredProperties.First(p => p.Name == name);
 
         // Method that the type is declared in if this is a type parameter of a generic method
+        // TODO: Make a unit test from this: https://docs.microsoft.com/en-us/dotnet/api/system.type.declaringmethod?view=netframework-4.8
         public MethodBase DeclaringMethod;
         
         // IsGenericTypeParameter and IsGenericMethodParameter from https://github.com/dotnet/corefx/issues/23883
@@ -157,8 +161,6 @@ namespace Il2CppInspector.Reflection {
         // Number of dimensions of an array
         private readonly int arrayRank;
         public int GetArrayRank() => arrayRank;
-
-        // TODO: Custom attribute stuff
 
         public string[] GetEnumNames() => IsEnum? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.Name).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
 

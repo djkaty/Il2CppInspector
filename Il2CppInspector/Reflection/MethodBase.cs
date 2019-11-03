@@ -25,8 +25,9 @@ namespace Il2CppInspector.Reflection
         // True if the method contains unresolved generic type parameters
         public bool ContainsGenericParameters { get; }
 
-        // TODO: Custom attribute stuff
-
+        // Custom attributes for this member
+        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
+        
         public List<TypeInfo> GenericTypeParameters { get; } // System.Reflection.MethodInfo.GetGenericArguments()
         public List<ParameterInfo> DeclaredParameters { get; } = new List<ParameterInfo>();
 

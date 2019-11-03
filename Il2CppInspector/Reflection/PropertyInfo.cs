@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -17,7 +18,8 @@ namespace Il2CppInspector.Reflection {
         public bool CanRead => GetMethod != null;
         public bool CanWrite => SetMethod != null;
 
-        // TODO: CustomAttributes
+        // Custom attributes for this member
+        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
 
         public MethodInfo GetMethod { get; }
         public MethodInfo SetMethod { get; }

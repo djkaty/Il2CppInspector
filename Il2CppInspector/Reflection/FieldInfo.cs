@@ -4,7 +4,7 @@
     All rights reserved.
 */
 
-using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Il2CppInspector.Reflection {
@@ -14,7 +14,10 @@ namespace Il2CppInspector.Reflection {
         public Il2CppFieldDefinition Definition { get; }
         public int Index { get; }
         public long Offset { get; }
-        
+
+        // Custom attributes for this member
+        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
+
         public bool HasDefaultValue { get; }
         public object DefaultValue { get; }
 

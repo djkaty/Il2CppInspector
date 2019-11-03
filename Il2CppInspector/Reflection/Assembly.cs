@@ -17,7 +17,8 @@ namespace Il2CppInspector.Reflection {
         public Il2CppCodeGenModule Module { get; }
         public int Index { get; }
 
-        // TODO: CustomAttributes
+        // Custom attributes for this assembly
+        public IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
 
         // Name of the assembly
         public string FullName { get; }
