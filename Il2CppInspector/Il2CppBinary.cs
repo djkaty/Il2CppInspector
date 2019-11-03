@@ -34,6 +34,9 @@ namespace Il2CppInspector
         // Pointers to field offsets
         public long[] FieldOffsetPointers { get; private set; }
 
+        // Generated functions which call constructors on custom attributes
+        public long[] CustomAttributeGenerators { get; private set; }
+
         // Every defined type
         public List<Il2CppType> Types { get; private set; }
 
@@ -176,6 +179,9 @@ namespace Il2CppInspector
 
             // Type definitions (pointer array)
             Types = image.ReadMappedObjectPointerArray<Il2CppType>(MetadataRegistration.ptypes, (int) MetadataRegistration.typesCount);
+
+            // Custom attribute constructors
+            CustomAttributeGenerators = Image.ReadMappedWordArray(CodeRegistration.customAttributeGenerators, (int) CodeRegistration.customAttributeCount);
         }
     }
 }

@@ -12,10 +12,14 @@ namespace Il2CppInspector.Reflection
     // See: https://docs.microsoft.com/en-us/dotnet/api/system.reflection.customattributedata?view=netframework-4.8
     public class CustomAttributeData
     {
+        // IL2CPP-specific data
+        private Il2CppInspector package => AttributeType.Assembly.Model.Package;
+        public int Index { get; set; }
+
         // The type of the attribute
         public TypeInfo AttributeType { get; set; }
 
-        // TODO Constructor, ConstructorArguments, NamedArguments
+        public long VirtualAddress => package.CustomAttributeGenerators[Index];
 
         public override string ToString() => "[" + AttributeType.FullName + "]";
 
@@ -33,7 +37,7 @@ namespace Il2CppInspector.Reflection
             var range = pkg.AttributeTypeRanges[customAttributeIndex];
             for (var i = range.start; i < range.start + range.count; i++) {
                 var typeIndex = pkg.AttributeTypeIndices[i];
-                yield return new CustomAttributeData { AttributeType = asm.Model.GetTypeFromUsage(typeIndex) };
+                yield return new CustomAttributeData { Index = customAttributeIndex, AttributeType = asm.Model.GetTypeFromUsage(typeIndex) };
             }
         }
 

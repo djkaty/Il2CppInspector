@@ -40,6 +40,7 @@ namespace Il2CppInspector
         public List<long> FieldOffsets { get; }
         public List<Il2CppType> TypeUsages => Binary.Types;
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
+        public long[] CustomAttributeGenerators => Binary.CustomAttributeGenerators;
 
         // TODO: Finish all file access in the constructor and eliminate the need for this
         public IFileFormatReader BinaryImage => Binary.Image;
