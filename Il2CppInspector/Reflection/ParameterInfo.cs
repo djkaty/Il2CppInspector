@@ -11,6 +11,10 @@ namespace Il2CppInspector.Reflection
 {
     public class ParameterInfo
     {
+        // IL2CPP-specific data
+        public Il2CppParameterDefinition Definition { get; }
+        public int Index { get; }
+
         // Information/flags about the parameter
         public ParameterAttributes Attributes { get; }
 
@@ -42,6 +46,7 @@ namespace Il2CppInspector.Reflection
 
         // Create a parameter. Specify paramIndex == -1 for a return type parameter
         public ParameterInfo(Il2CppInspector pkg, int paramIndex, MethodBase declaringMethod) {
+            Index = paramIndex;
             Member = declaringMethod;
 
             if (paramIndex == -1) {
@@ -51,10 +56,10 @@ namespace Il2CppInspector.Reflection
                 return;
             }
 
-            var param = pkg.Params[paramIndex];
-            Name = pkg.Strings[param.nameIndex];
+            Definition = pkg.Params[Index];
+            Name = pkg.Strings[Definition.nameIndex];
             Position = paramIndex - declaringMethod.Definition.parameterStart;
-            paramTypeUsage = param.typeIndex;
+            paramTypeUsage = Definition.typeIndex;
             var paramType = pkg.TypeUsages[paramTypeUsage];
 
             if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_OPTIONAL) != 0)
