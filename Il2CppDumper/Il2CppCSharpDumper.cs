@@ -278,7 +278,11 @@ namespace Il2CppInspector
             var sb = new StringBuilder();
 
             foreach (var cad in attributes) {
-                sb.Append($"{linePrefix}[{attributePrefix}{cad.AttributeType.CSharpName[..cad.AttributeType.CSharpName.LastIndexOf("Attribute", StringComparison.Ordinal)]}]\n");
+                var name = cad.AttributeType.CSharpName;
+                var suffix = name.LastIndexOf("Attribute", StringComparison.Ordinal);
+                if (suffix != -1)
+                    name = name[..suffix];
+                sb.Append($"{linePrefix}[{attributePrefix}{name}]\n");
             }
 
             return sb.ToString();
