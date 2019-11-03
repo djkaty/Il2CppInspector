@@ -28,9 +28,11 @@ namespace Il2CppInspector
         public Il2CppEventDefinition[] Events { get; }
         public Il2CppGenericContainer[] GenericContainers { get; }
         public Il2CppGenericParameter[] GenericParameters { get; }
+        public Il2CppCustomAttributeTypeRange[] AttributeTypeRanges { get; }
 
         public int[] InterfaceUsageIndices { get; }
         public int[] NestedTypeIndices { get; }
+        public int[] AttributeRangeIndices { get; }
 
         public Dictionary<int, string> Strings { get; } = new Dictionary<int, string>();
 
@@ -102,7 +104,12 @@ namespace Il2CppInspector
             NestedTypeIndices = ReadArray<int>(Header.nestedTypesOffset, Header.nestedTypesCount / sizeof(int));
             GenericContainers = ReadArray<Il2CppGenericContainer>(Header.genericContainersOffset, Header.genericContainersCount / Sizeof(typeof(Il2CppGenericContainer)));
             GenericParameters = ReadArray<Il2CppGenericParameter>(Header.genericParametersOffset, Header.genericParametersCount / Sizeof(typeof(Il2CppGenericParameter)));
-            // TODO: ParameterDefaultValue, ParameterConstraints, MetadataUsage, CustomAttributes
+
+            if (Version >= 21) {
+                AttributeRangeIndices = ReadArray<int>(Header.attributeTypesOffset, Header.attributeTypesCount / sizeof(int));
+                AttributeTypeRanges = ReadArray<Il2CppCustomAttributeTypeRange>(Header.attributesInfoOffset, Header.attributesInfoCount / Sizeof(typeof(Il2CppCustomAttributeTypeRange)));
+            }
+            // TODO: ParameterDefaultValue, ParameterConstraints, MetadataUsage
 
             // Get all string literals
             Position = Header.stringOffset;

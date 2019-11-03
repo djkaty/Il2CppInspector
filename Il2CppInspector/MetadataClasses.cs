@@ -322,4 +322,13 @@ namespace Il2CppInspector
         public ushort num;
         public ushort flags;
     }
+
+    public class Il2CppCustomAttributeTypeRange
+    {
+        [Version(Min = 24.1)]
+        public uint token;
+
+        public int start;
+        public int count;
+    }
 }

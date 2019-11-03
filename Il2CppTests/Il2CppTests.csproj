@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="TestSources\CustomAttributeData.cs" />
     <Compile Remove="TestSources\GenericTypes.cs" />
     <Compile Remove="TestSources\Methods.cs" />
   </ItemGroup>
@@ -35,6 +36,7 @@
     <Content Include="TestExpectedResults\GameAssembly-Methods-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-Methods-x86.cs" />
     <Content Include="TestExpectedResults\Methods.cs" />
+    <Content Include="TestSources\CustomAttributeData.cs" />
     <Content Include="TestSources\GenericTypes.cs" />
     <Content Include="TestSources\Methods.cs" />
   </ItemGroup>

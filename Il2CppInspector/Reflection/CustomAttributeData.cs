@@ -6,8 +6,10 @@
 
 namespace Il2CppInspector.Reflection
 {
+    // See: https://docs.microsoft.com/en-us/dotnet/api/system.reflection.customattributedata?view=netframework-4.8
+
     public class CustomAttributeData
     {
-        // TODO
+        // TODO: CustomAttributeData
     }
 }

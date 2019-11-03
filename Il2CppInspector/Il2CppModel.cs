@@ -31,8 +31,6 @@ namespace Il2CppInspector.Reflection
         // List of all methods ordered by their MethodDefinitionIndex
         public MethodBase[] MethodsByDefinitionIndex { get; }
 
-        // List of all types 
-
         public Il2CppModel(Il2CppInspector package) {
             Package = package;
             TypesByDefinitionIndex = new TypeInfo[package.TypeDefinitions.Length];
@@ -108,5 +106,19 @@ namespace Il2CppInspector.Reflection
             TypesByVirtualAddress.Add(ptr, newUsage);
             return newUsage;
         }
+
+        // Attribute management
+        private int getCustomAttributeIndex(Assembly asm, uint token, int customAttributeIndex) {
+            var image = asm.Definition;
+
+            throw new NotImplementedException();
+        }
+
+        public int GetCustomAttributeIndex(Assembly asm) => getCustomAttributeIndex(asm, asm.Definition.token, -1);
+        public int GetCustomAttributeIndex(EventInfo evt) => getCustomAttributeIndex(evt.Assembly, evt.Definition.token, evt.Definition.customAttributeIndex);
+        public int GetCustomAttributeIndex(FieldInfo field) => getCustomAttributeIndex(field.Assembly, field.Definition.token, field.Definition.customAttributeIndex);
+        public int GetCustomAttributeIndex(MethodBase method) => getCustomAttributeIndex(method.Assembly, method.Definition.token, method.Definition.customAttributeIndex);
+        public int GetCustomAttributeIndex(ParameterInfo param) => getCustomAttributeIndex(param.Member.Assembly, param.Definition.token, param.Definition.customAttributeIndex);
+        public int GetCustomAttributeIndex(PropertyInfo prop) => getCustomAttributeIndex(prop.Assembly, prop.Definition.token, prop.Definition.customAttributeIndex);
     }
 }
