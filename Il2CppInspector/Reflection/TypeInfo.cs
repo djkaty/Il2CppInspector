@@ -202,7 +202,6 @@ namespace Il2CppInspector.Reflection {
                 GenericTypeParameters = pkg.GenericParameters.Skip((int) container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToList();
 
                 // TODO: Constraints
-                // TODO: Attributes
             }
 
             // Add to global type definition list

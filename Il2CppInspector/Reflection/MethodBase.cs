@@ -76,7 +76,6 @@ namespace Il2CppInspector.Reflection
                 GenericTypeParameters = pkg.GenericParameters.Skip((int)container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToList();
 
                 // TODO: Constraints
-                // TODO: Attributes
             }
 
             // Set method attributes
@@ -159,6 +158,7 @@ namespace Il2CppInspector.Reflection
         }
 
         // Get C# syntax-friendly list of parameters
+        // TODO: Parameter custom attributes
         public string GetParametersString() =>
             string.Join(", ", DeclaredParameters.Select(p => $"{p.GetModifierString()}{p.ParameterType.CSharpName} {p.Name}"));
 
