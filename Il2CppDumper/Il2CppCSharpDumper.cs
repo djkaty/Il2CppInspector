@@ -29,6 +29,12 @@ namespace Il2CppInspector
             using (writer = new StreamWriter(new FileStream(outFile, FileMode.Create), Encoding.UTF8)) {
                 foreach (var asm in model.Assemblies) {
                     writer.Write($"// Image {asm.Index}: {asm.FullName} - {asm.Definition.typeStart}\n");
+
+                    // Assembly-level attributes
+                    var attributes = asm.CustomAttributes;
+                    writer.Write(attributeText(attributes, attributePrefix: "assembly: "));
+                    if (attributes.Any())
+                        writer.Write("\n");
                 }
                 writer.Write("\n");
 
@@ -59,6 +65,9 @@ namespace Il2CppInspector
             if (type.IsSerializable)
                 writer.Write(prefix + "[Serializable]\n");
 
+            // Custom attributes
+            writer.Write(attributeText(type.CustomAttributes, prefix));
+
             writer.Write(prefix);
             if (type.IsPublic || type.IsNestedPublic)
                 writer.Write("public ");
@@ -76,6 +85,7 @@ namespace Il2CppInspector
             // Roll-up multicast delegates to use the 'delegate' syntactic sugar
             if (type.IsClass && type.IsSealed && type.BaseType?.FullName == "System.MulticastDelegate") {
                 var del = type.DeclaredMethods.First(x => x.Name == "Invoke");
+                // TODO: ReturnType attributes
                 writer.Write($"delegate {del.ReturnType.CSharpName} {type.CSharpTypeDeclarationName}(");
 
                 bool first = true;
@@ -126,10 +136,13 @@ namespace Il2CppInspector
                     writer.Write(prefix + "\t// Fields\n");
 
                 foreach (var field in type.DeclaredFields) {
-                    writer.Write(prefix + "\t");
                     if (field.IsNotSerialized)
-                        writer.Write("[NonSerialized]\n" + prefix + "\t");
+                        writer.Write(prefix + "\t[NonSerialized]\n");
 
+                    // Attributes
+                    writer.Write(attributeText(field.CustomAttributes, prefix + "\t"));
+
+                    writer.Write(prefix + "\t");
                     if (field.IsPrivate)
                         writer.Write("private ");
                     if (field.IsPublic)
@@ -177,8 +190,12 @@ namespace Il2CppInspector
                 writer.Write(prefix + "\t// Properties\n");
 
             foreach (var prop in type.DeclaredProperties) {
+                // Attributes
+                writer.Write(attributeText(prop.CustomAttributes, prefix + "\t"));
+
                 string modifiers = prop.GetMethod?.GetModifierString() ?? prop.SetMethod.GetModifierString();
                 writer.Write($"{prefix}\t{modifiers}{prop.PropertyType.CSharpName} {prop.Name} {{ ");
+                // TODO: Custom attributes on getter and setter
                 writer.Write((prop.GetMethod != null ? "get; " : "") + (prop.SetMethod != null ? "set; " : "") + "}");
                 if ((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0) || (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0))
                     writer.Write(" // ");
@@ -195,6 +212,9 @@ namespace Il2CppInspector
                 writer.Write(prefix + "\t// Events\n");
 
             foreach (var evt in type.DeclaredEvents) {
+                // Attributes
+                writer.Write(attributeText(evt.CustomAttributes, prefix + "\t"));
+
                 string modifiers = evt.AddMethod?.GetModifierString();
                 writer.Write($"{prefix}\t{modifiers}event {evt.EventHandlerType.CSharpName} {evt.Name} {{\n");
                 var m = new Dictionary<string, ulong>();
@@ -223,6 +243,9 @@ namespace Il2CppInspector
                 writer.Write(prefix + "\t// Constructors\n");
 
             foreach (var method in type.DeclaredConstructors) {
+                // Attributes
+                writer.Write(attributeText(method.CustomAttributes, prefix + "\t"));
+
                 writer.Write($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString()}(");
                 writer.Write(method.GetParametersString());
                 writer.Write(");" + (method.VirtualAddress != 0 ? $" // {formatAddress(method.VirtualAddress)}" : "") + "\n");
@@ -236,8 +259,12 @@ namespace Il2CppInspector
 
             // Don't re-output methods for constructors, properties, events etc.
             foreach (var method in type.DeclaredMethods.Except(usedMethods)) {
+                // Attributes
+                writer.Write(attributeText(method.CustomAttributes, prefix + "\t"));
+
                 writer.Write($"{prefix}\t{method.GetModifierString()}");
                 if (method.Name != "op_Implicit" && method.Name != "op_Explicit")
+                    // TODO: ReturnType attributes
                     writer.Write($"{method.ReturnType.CSharpName} {method.CSharpName}{method.GetTypeParametersString()}");
                 else
                     writer.Write($"{method.CSharpName}{method.ReturnType.CSharpName}");
@@ -245,6 +272,16 @@ namespace Il2CppInspector
                 writer.Write(");" + (method.VirtualAddress != 0 ? $" // {formatAddress(method.VirtualAddress)}" : "") + "\n");
             }
             writer.Write(prefix + "}\n");
+        }
+
+        private static string attributeText(IEnumerable<CustomAttributeData> attributes, string linePrefix = "", string attributePrefix = "") {
+            var sb = new StringBuilder();
+
+            foreach (var cad in attributes) {
+                sb.Append($"{linePrefix}[{attributePrefix}{cad.AttributeType.CSharpName[..cad.AttributeType.CSharpName.LastIndexOf("Attribute", StringComparison.Ordinal)]}]\n");
+            }
+
+            return sb.ToString();
         }
     }
 }
