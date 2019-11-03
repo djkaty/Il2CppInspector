@@ -274,7 +274,7 @@ namespace Il2CppInspector
             writer.Write(prefix + "}\n");
         }
 
-        private static string attributeText(IEnumerable<CustomAttributeData> attributes, string linePrefix = "", string attributePrefix = "") {
+        private string attributeText(IEnumerable<CustomAttributeData> attributes, string linePrefix = "", string attributePrefix = "") {
             var sb = new StringBuilder();
 
             foreach (var cad in attributes) {
@@ -282,7 +282,7 @@ namespace Il2CppInspector
                 var suffix = name.LastIndexOf("Attribute", StringComparison.Ordinal);
                 if (suffix != -1)
                     name = name[..suffix];
-                sb.Append($"{linePrefix}[{attributePrefix}{name}]\n");
+                sb.Append($"{linePrefix}[{attributePrefix}{name}] // {formatAddress((ulong)cad.VirtualAddress)}\n");
             }
 
             return sb.ToString();
