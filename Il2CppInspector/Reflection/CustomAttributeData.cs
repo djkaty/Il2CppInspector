@@ -4,8 +4,10 @@
     All rights reserved.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Il2CppInspector.Reflection
 {
@@ -52,5 +54,22 @@ namespace Il2CppInspector.Reflection
         public static IList<CustomAttributeData> GetCustomAttributes(ParameterInfo param) => getCustomAttributes(param.Member.Assembly, param.Definition.token, param.Definition.customAttributeIndex);
         public static IList<CustomAttributeData> GetCustomAttributes(PropertyInfo prop) => getCustomAttributes(prop.Assembly, prop.Definition.token, prop.Definition.customAttributeIndex);
         public static IList<CustomAttributeData> GetCustomAttributes(TypeInfo type) => getCustomAttributes(type.Assembly, type.Definition.token, type.Definition.customAttributeIndex);
+    }
+    
+    public static class IEnumerableCustomAttributeDataExtensions
+    {
+        public static string ToString(this IEnumerable<CustomAttributeData> attributes, string linePrefix = "", string attributePrefix = "", bool inline = false) {
+            var sb = new StringBuilder();
+
+            foreach (var cad in attributes) {
+                var name = cad.AttributeType.CSharpName;
+                var suffix = name.LastIndexOf("Attribute", StringComparison.Ordinal);
+                if (suffix != -1)
+                    name = name[..suffix];
+                sb.Append($"{linePrefix}[{attributePrefix}{name}] {(inline? "/*" : "//")} {Il2CppModel.FormatAddress((ulong)cad.VirtualAddress)}{(inline? " */ " : "\n")}");
+            }
+
+            return sb.ToString();
+        }
     }
 }

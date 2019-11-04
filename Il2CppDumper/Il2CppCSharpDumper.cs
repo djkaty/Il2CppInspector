@@ -21,19 +21,14 @@ namespace Il2CppInspector
 
         private StreamWriter writer;
 
-        private string formatAddress(ulong address) => model.Package.BinaryImage.Bits == 32
-            ? string.Format($"0x{(uint) address:X8}")
-            : string.Format($"0x{address:X16}");
-
         public void WriteFile(string outFile) {
             using (writer = new StreamWriter(new FileStream(outFile, FileMode.Create), Encoding.UTF8)) {
                 foreach (var asm in model.Assemblies) {
                     writer.Write($"// Image {asm.Index}: {asm.FullName} - {asm.Definition.typeStart}\n");
 
                     // Assembly-level attributes
-                    var attributes = asm.CustomAttributes;
-                    writer.Write(attributeText(attributes, attributePrefix: "assembly: "));
-                    if (attributes.Any())
+                    writer.Write(asm.CustomAttributes.ToString(attributePrefix: "assembly: "));
+                    if (asm.CustomAttributes.Any())
                         writer.Write("\n");
                 }
                 writer.Write("\n");
@@ -66,7 +61,7 @@ namespace Il2CppInspector
                 writer.Write(prefix + "[Serializable]\n");
 
             // Custom attributes
-            writer.Write(attributeText(type.CustomAttributes, prefix));
+            writer.Write(type.CustomAttributes.ToString(prefix));
 
             writer.Write(prefix);
             if (type.IsPublic || type.IsNestedPublic)
@@ -99,7 +94,7 @@ namespace Il2CppInspector
                         writer.Write("out ");
                     writer.Write($"{param.ParameterType.CSharpName} {param.Name}");
                 }
-                writer.Write($"); // TypeDefIndex: {type.Index}; {formatAddress(del.VirtualAddress)}\n");
+                writer.Write($"); // TypeDefIndex: {type.Index}; {Il2CppModel.FormatAddress(del.VirtualAddress)}\n");
                 return;
             }
 
@@ -140,7 +135,7 @@ namespace Il2CppInspector
                         writer.Write(prefix + "\t[NonSerialized]\n");
 
                     // Attributes
-                    writer.Write(attributeText(field.CustomAttributes, prefix + "\t"));
+                    writer.Write(field.CustomAttributes.ToString(prefix + "\t"));
 
                     writer.Write(prefix + "\t");
                     if (field.IsPrivate)
@@ -191,7 +186,7 @@ namespace Il2CppInspector
 
             foreach (var prop in type.DeclaredProperties) {
                 // Attributes
-                writer.Write(attributeText(prop.CustomAttributes, prefix + "\t"));
+                writer.Write(prop.CustomAttributes.ToString(prefix + "\t"));
 
                 string modifiers = prop.GetMethod?.GetModifierString() ?? prop.SetMethod.GetModifierString();
                 writer.Write($"{prefix}\t{modifiers}{prop.PropertyType.CSharpName} {prop.Name} {{ ");
@@ -199,8 +194,8 @@ namespace Il2CppInspector
                 writer.Write((prop.GetMethod != null ? "get; " : "") + (prop.SetMethod != null ? "set; " : "") + "}");
                 if ((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0) || (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0))
                     writer.Write(" // ");
-                writer.Write((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0 ? formatAddress(prop.GetMethod.VirtualAddress) + " " : "")
-                            + (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0 ? formatAddress(prop.SetMethod.VirtualAddress) : "") + "\n");
+                writer.Write((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0 ? Il2CppModel.FormatAddress(prop.GetMethod.VirtualAddress) + " " : "")
+                            + (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0 ? Il2CppModel.FormatAddress(prop.SetMethod.VirtualAddress) : "") + "\n");
                 usedMethods.Add(prop.GetMethod);
                 usedMethods.Add(prop.SetMethod);
             }
@@ -213,7 +208,7 @@ namespace Il2CppInspector
 
             foreach (var evt in type.DeclaredEvents) {
                 // Attributes
-                writer.Write(attributeText(evt.CustomAttributes, prefix + "\t"));
+                writer.Write(evt.CustomAttributes.ToString(prefix + "\t"));
 
                 string modifiers = evt.AddMethod?.GetModifierString();
                 writer.Write($"{prefix}\t{modifiers}event {evt.EventHandlerType.CSharpName} {evt.Name} {{\n");
@@ -221,7 +216,7 @@ namespace Il2CppInspector
                 if (evt.AddMethod != null) m.Add("add", evt.AddMethod.VirtualAddress);
                 if (evt.RemoveMethod != null) m.Add("remove", evt.RemoveMethod.VirtualAddress);
                 if (evt.RaiseMethod != null) m.Add("raise", evt.RaiseMethod.VirtualAddress);
-                writer.Write(string.Join("\n", m.Select(x => $"{prefix}\t\t{x.Key}; // {formatAddress(x.Value)}")) + "\n" + prefix + "\t}\n");
+                writer.Write(string.Join("\n", m.Select(x => $"{prefix}\t\t{x.Key}; // {Il2CppModel.FormatAddress(x.Value)}")) + "\n" + prefix + "\t}\n");
                 usedMethods.Add(evt.AddMethod);
                 usedMethods.Add(evt.RemoveMethod);
                 usedMethods.Add(evt.RaiseMethod);
@@ -244,11 +239,11 @@ namespace Il2CppInspector
 
             foreach (var method in type.DeclaredConstructors) {
                 // Attributes
-                writer.Write(attributeText(method.CustomAttributes, prefix + "\t"));
+                writer.Write(method.CustomAttributes.ToString(prefix + "\t"));
 
                 writer.Write($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString()}(");
                 writer.Write(method.GetParametersString());
-                writer.Write(");" + (method.VirtualAddress != 0 ? $" // {formatAddress(method.VirtualAddress)}" : "") + "\n");
+                writer.Write(");" + (method.VirtualAddress != 0 ? $" // {Il2CppModel.FormatAddress(method.VirtualAddress)}" : "") + "\n");
             }
             if (type.DeclaredConstructors.Any())
                 writer.Write("\n");
@@ -260,7 +255,7 @@ namespace Il2CppInspector
             // Don't re-output methods for constructors, properties, events etc.
             foreach (var method in type.DeclaredMethods.Except(usedMethods)) {
                 // Attributes
-                writer.Write(attributeText(method.CustomAttributes, prefix + "\t"));
+                writer.Write(method.CustomAttributes.ToString(prefix + "\t"));
 
                 writer.Write($"{prefix}\t{method.GetModifierString()}");
                 if (method.Name != "op_Implicit" && method.Name != "op_Explicit")
@@ -269,23 +264,9 @@ namespace Il2CppInspector
                 else
                     writer.Write($"{method.CSharpName}{method.ReturnType.CSharpName}");
                 writer.Write("(" + method.GetParametersString());
-                writer.Write(");" + (method.VirtualAddress != 0 ? $" // {formatAddress(method.VirtualAddress)}" : "") + "\n");
+                writer.Write(");" + (method.VirtualAddress != 0 ? $" // {Il2CppModel.FormatAddress(method.VirtualAddress)}" : "") + "\n");
             }
             writer.Write(prefix + "}\n");
-        }
-
-        private string attributeText(IEnumerable<CustomAttributeData> attributes, string linePrefix = "", string attributePrefix = "") {
-            var sb = new StringBuilder();
-
-            foreach (var cad in attributes) {
-                var name = cad.AttributeType.CSharpName;
-                var suffix = name.LastIndexOf("Attribute", StringComparison.Ordinal);
-                if (suffix != -1)
-                    name = name[..suffix];
-                sb.Append($"{linePrefix}[{attributePrefix}{name}] // {formatAddress((ulong)cad.VirtualAddress)}\n");
-            }
-
-            return sb.ToString();
         }
     }
 }
