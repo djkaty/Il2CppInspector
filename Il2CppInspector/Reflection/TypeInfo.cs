@@ -26,7 +26,8 @@ namespace Il2CppInspector.Reflection {
         public TypeInfo BaseType => baseTypeUsage != -1
             ? Assembly.Model.GetTypeFromUsage(baseTypeUsage, MemberTypes.TypeInfo)
             : IsArray? Assembly.Model.TypesByDefinitionIndex.First(t => t.FullName == "System.Array")
-            : Assembly.Model.TypesByDefinitionIndex.First(t => t.FullName == "System.Object");
+            : Namespace != "System" || BaseName != "Object" ? Assembly.Model.TypesByDefinitionIndex.First(t => t.FullName == "System.Object")
+                : null;
 
         // True if the type contains unresolved generic type parameters
         public bool ContainsGenericParameters { get; }
