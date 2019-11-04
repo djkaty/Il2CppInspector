@@ -67,7 +67,7 @@ md $asm, $bin 2>&1 >$null
 
 # Compile all .cs files in TestSources
 echo "Compiling source code..."
-gci $src | % { & $csc "/t:library" "/nologo" "/out:$asm/$($_.BaseName).dll" "$src/$_" }
+gci $src | % { & $csc "/t:library" "/nologo" "/unsafe" "/out:$asm/$($_.BaseName).dll" "$src/$_" }
 
 # Run IL2CPP on all generated assemblies for both x86 and ARM
 # Earlier builds of Unity included mscorlib.dll automatically; in current versions we must specify its location
