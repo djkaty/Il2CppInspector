@@ -25,6 +25,7 @@ namespace Il2CppInspector.Reflection {
 
         public TypeInfo BaseType => baseTypeUsage != -1
             ? Assembly.Model.GetTypeFromUsage(baseTypeUsage, MemberTypes.TypeInfo)
+            : IsArray? Assembly.Model.TypesByDefinitionIndex.First(t => t.FullName == "System.Array")
             : Assembly.Model.TypesByDefinitionIndex.First(t => t.FullName == "System.Object");
 
         // True if the type contains unresolved generic type parameters
@@ -326,13 +327,16 @@ namespace Il2CppInspector.Reflection {
                 }
             }
 
-            // TODO: Set Assembly, BaseType and DeclaringType for the two below
+            // TODO: Set DeclaringType for the two below
 
             // Array with known dimensions and bounds
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_ARRAY) {
                 var descriptor = image.ReadMappedObject<Il2CppArrayType>(pType.datapoint);
                 elementType = model.GetTypeFromVirtualAddress(descriptor.etype);
 
+                Assembly = ElementType.Assembly;
+                Definition = ElementType.Definition;
+                Index = ElementType.Index;
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
 
@@ -344,6 +348,9 @@ namespace Il2CppInspector.Reflection {
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY) {
                 elementType = model.GetTypeFromVirtualAddress(pType.datapoint);
 
+                Assembly = ElementType.Assembly;
+                Definition = ElementType.Definition;
+                Index = ElementType.Index;
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
 
