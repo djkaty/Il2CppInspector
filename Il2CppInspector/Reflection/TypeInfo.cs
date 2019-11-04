@@ -48,7 +48,7 @@ namespace Il2CppInspector.Reflection {
                     n = ElementType.CSharpName;
                 var g = (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.CSharpName)) + ">" : "");
                 g = (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.CSharpName)) + ">" : g);
-                return n + g + (IsArray ? "[]" : "") + (IsPointer ? "*" : "");
+                return n + g + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "") + (IsPointer ? "*" : "");
             }
         }
 
@@ -57,7 +57,7 @@ namespace Il2CppInspector.Reflection {
                      (base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
                    + (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.Name)) + ">" : "")
                    + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.Name)) + ">" : "")
-                   + (IsArray ? "[]" : "")
+                   + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
                    + (IsPointer ? "*" : "");
 
         // Custom attributes for this member
@@ -110,7 +110,7 @@ namespace Il2CppInspector.Reflection {
             + base.Name
             + (GenericTypeParameters != null ? "[" + string.Join(",", GenericTypeParameters.Select(x => x.FullName ?? x.Name)) + "]" : "")
             + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.FullName ?? x.Name)) + "]" : "")
-            + (IsArray? "[]" : "")
+            + (IsArray? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
             + (IsPointer? "*" : "");
 
         public List<TypeInfo> GenericTypeParameters { get; }
@@ -357,6 +357,9 @@ namespace Il2CppInspector.Reflection {
 
                 IsPointer = (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_PTR);
                 IsArray = !IsPointer;
+
+                // Heap arrays always have one dimension
+                arrayRank = 1;
             }
 
             // Generic type parameter
@@ -425,7 +428,7 @@ namespace Il2CppInspector.Reflection {
             + base.Name
             + (GenericTypeParameters != null ? "[" + string.Join(",", GenericTypeParameters.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.ToString())) + "]" : "")
             + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.ToString())) + "]" : "")
-            + (IsArray ? "[]" : "")
+            + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
             + (IsPointer ? "*" : "");
     }
 }
