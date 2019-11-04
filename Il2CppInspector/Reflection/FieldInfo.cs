@@ -25,6 +25,8 @@ namespace Il2CppInspector.Reflection {
             get {
                 if (!HasDefaultValue)
                     return "";
+                if (DefaultValue is bool)
+                    return (bool) DefaultValue ? "true" : "false";
                 if (DefaultValue is string)
                     return $"\"{DefaultValue}\"";
                 if (!(DefaultValue is char))
