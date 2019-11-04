@@ -20,7 +20,7 @@ namespace Il2CppInspector.Reflection
         private readonly int returnTypeUsage;
         public TypeInfo ReturnType => Assembly.Model.GetTypeFromUsage(returnTypeUsage, MemberTypes.TypeInfo);
 
-        // TODO: ReturnTypeCustomAttributes
+        // IL2CPP doesn't seem to retain return type custom attributes
 
         public MethodInfo(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) : base(pkg, methodIndex, declaringType) {
             // Add return parameter

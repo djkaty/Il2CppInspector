@@ -80,7 +80,8 @@ namespace Il2CppInspector
             // Roll-up multicast delegates to use the 'delegate' syntactic sugar
             if (type.IsClass && type.IsSealed && type.BaseType?.FullName == "System.MulticastDelegate") {
                 var del = type.DeclaredMethods.First(x => x.Name == "Invoke");
-                // TODO: ReturnType attributes
+                // IL2CPP doesn't seem to retain return type attributes
+                //writer.Write(del.ReturnType.CustomAttributes.ToString(prefix, "return: "));
                 writer.Write($"delegate {del.ReturnType.CSharpName} {type.CSharpTypeDeclarationName}(");
 
                 bool first = true;
@@ -190,8 +191,8 @@ namespace Il2CppInspector
 
                 string modifiers = prop.GetMethod?.GetModifierString() ?? prop.SetMethod.GetModifierString();
                 writer.Write($"{prefix}\t{modifiers}{prop.PropertyType.CSharpName} {prop.Name} {{ ");
-                // TODO: Custom attributes on getter and setter
-                writer.Write((prop.GetMethod != null ? "get; " : "") + (prop.SetMethod != null ? "set; " : "") + "}");
+                writer.Write((prop.GetMethod != null ? prop.GetMethod.CustomAttributes.ToString(inline: true) + "get; " : "")
+                             + (prop.SetMethod != null ? prop.SetMethod.CustomAttributes.ToString(inline: true) + "set; " : "") + "}");
                 if ((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0) || (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0))
                     writer.Write(" // ");
                 writer.Write((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0 ? Il2CppModel.FormatAddress(prop.GetMethod.VirtualAddress) + " " : "")
@@ -256,10 +257,10 @@ namespace Il2CppInspector
             foreach (var method in type.DeclaredMethods.Except(usedMethods)) {
                 // Attributes
                 writer.Write(method.CustomAttributes.ToString(prefix + "\t"));
-
+                // IL2CPP doesn't seem to retain return type attributes
+                //writer.Write(method.ReturnType.CustomAttributes.ToString(prefix + "\t", "return: "));
                 writer.Write($"{prefix}\t{method.GetModifierString()}");
                 if (method.Name != "op_Implicit" && method.Name != "op_Explicit")
-                    // TODO: ReturnType attributes
                     writer.Write($"{method.ReturnType.CSharpName} {method.CSharpName}{method.GetTypeParametersString()}");
                 else
                     writer.Write($"{method.CSharpName}{method.ReturnType.CSharpName}");
