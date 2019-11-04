@@ -48,17 +48,17 @@ namespace Il2CppInspector.Reflection {
                     n = ElementType.CSharpName;
                 var g = (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.CSharpName)) + ">" : "");
                 g = (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.CSharpName)) + ">" : g);
-                return (IsPointer ? "void *" : "") + n + g + (IsArray ? "[]" : "");
+                return n + g + (IsArray ? "[]" : "") + (IsPointer ? "*" : "");
             }
         }
 
         // C# name as it would be written in a type declaration
         public string CSharpTypeDeclarationName => 
-            (IsPointer ? "void *" : "")
-                   + (base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
+                     (base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
                    + (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.Name)) + ">" : "")
                    + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.Name)) + ">" : "")
-                   + (IsArray ? "[]" : "");
+                   + (IsArray ? "[]" : "")
+                   + (IsPointer ? "*" : "");
 
         // Custom attributes for this member
         public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
@@ -106,18 +106,19 @@ namespace Il2CppInspector.Reflection {
         // Type name including namespace
         public string FullName =>
             IsGenericParameter? null :
-            (IsPointer? "void *" : "")
-            + (DeclaringType != null? DeclaringType.FullName + "+" :
-                Namespace + (Namespace.Length > 0? "." : ""))
+              (DeclaringType != null? DeclaringType.FullName + "+" : Namespace + (Namespace.Length > 0? "." : ""))
             + base.Name
             + (GenericTypeParameters != null ? "[" + string.Join(",", GenericTypeParameters.Select(x => x.FullName ?? x.Name)) + "]" : "")
             + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.FullName ?? x.Name)) + "]" : "")
-            + (IsArray? "[]" : "");
+            + (IsArray? "[]" : "")
+            + (IsPointer? "*" : "");
 
         public List<TypeInfo> GenericTypeParameters { get; }
 
         public List<TypeInfo> GenericTypeArguments { get; }
 
+        // True if an array, pointer or reference, otherwise false
+        // See: https://docs.microsoft.com/en-us/dotnet/api/system.type.haselementtype?view=netframework-4.8
         public bool HasElementType => ElementType != null;
 
         private readonly int[] implementedInterfaceUsages;
@@ -344,8 +345,8 @@ namespace Il2CppInspector.Reflection {
                 arrayRank = descriptor.rank;
             }
 
-            // Dynamically allocated array
-            if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY) {
+            // Dynamically allocated array or pointer type
+            if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY || pType.type == Il2CppTypeEnum.IL2CPP_TYPE_PTR) {
                 elementType = model.GetTypeFromVirtualAddress(pType.datapoint);
 
                 Assembly = ElementType.Assembly;
@@ -354,7 +355,8 @@ namespace Il2CppInspector.Reflection {
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
 
-                IsArray = true;
+                IsPointer = (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_PTR);
+                IsArray = !IsPointer;
             }
 
             // Generic type parameter
@@ -389,10 +391,6 @@ namespace Il2CppInspector.Reflection {
                 IsGenericType = false;
                 IsGenericTypeDefinition = false;
             }
-
-            // Pointer type
-            // TODO: Should set ElementType etc.
-            IsPointer = (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_PTR);
         }
 
         // Initialize a type that is a generic parameter of a generic type
@@ -423,11 +421,11 @@ namespace Il2CppInspector.Reflection {
 
         // Display name of object
         public override string ToString() => IsGenericParameter ? Name :
-            (IsPointer ? "void *" : "")
-            + (DeclaringType != null ? DeclaringType.Name + "+" : "")
+              (DeclaringType != null ? DeclaringType.Name + "+" : "")
             + base.Name
             + (GenericTypeParameters != null ? "[" + string.Join(",", GenericTypeParameters.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.ToString())) + "]" : "")
             + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.ToString())) + "]" : "")
-            + (IsArray ? "[]" : "");
+            + (IsArray ? "[]" : "")
+            + (IsPointer ? "*" : "");
     }
 }
