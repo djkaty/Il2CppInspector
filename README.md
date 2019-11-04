@@ -6,7 +6,7 @@ Extract types, methods, properties and fields from Unity IL2CPP binaries.
 * 32-bit and 64-bit support for all file formats
 * Supports ARMv7, Thumb-2, ARMv8 (A64), x86 and x64 architectures regardless of file format
 * Supports metadata versions 16, 21, 22, 23, 24, 24.1 (Unity 2018.3+) and 24.2 (Unity 2019+) (other versions may or may not work)
-* Support for classes, methods, constructors, fields, properties, enumerations, events, delegates, interfaces, structs, nested types, generic types, generic methods and default field values
+* Support for classes, methods, constructors, fields, properties, enumerations, events, delegates, interfaces, structs, pointers, attributes, nested types, generic types, generic methods and default field values
 * Static symbol table scanning for ELF and Mach-O binaries if present
 * Dynamic symbol table scanning for ELF binaries if present
 * Symbol relocation handling for ELF binaries
@@ -31,7 +31,7 @@ The output binary is placed in `Il2CppInspector/Il2CppDumper/bin/Release/netcore
 ### Usage
 
 ```
-Il2CppDumper [--bin=<binary-file>] [--metadata=<metadata-file>] [--cs-out=<output-file>] [--exclude-namespaces=<ns1,ns2,...>|none]
+Il2CppDumper [--bin=<binary-file>] [--metadata=<metadata-file>] [--cs-out=<output-file>] [--exclude-namespaces=<ns1,ns2,...>|none] [--suppress-compiler-generated=false]
 ```
 
 Defaults if not specified:
@@ -40,7 +40,7 @@ Defaults if not specified:
 - _metadata-file_ - `global-metadata.dat`
 - _output-file_ - `types.cs`
 
-To exclude types from certain namespaces from being generated in the C¤ source file output, provide a comma-separated list of case-sensitive namespaces in `--exclude-namespaces`. The following namespaces will be excluded if no argument is specified:
+To exclude types from certain namespaces from being generated in the C# source file output, provide a comma-separated list of case-sensitive namespaces in `--exclude-namespaces`. The following namespaces will be excluded if no argument is specified:
 
 ```
 System
@@ -52,6 +52,7 @@ Microsoft.Win32
 
 Providing an argument to `--exclude-namespaces` will override the default list. To output all namespaces, use `--exclude-namespaces=none`.
 
+By default, types and fields declared with the `System.Runtime.CompilerServices.CompilerGeneratedAttribute` attribute will be suppresssed from the C# code output. The attribute itself will be suppressed from property getters and setters. This is useful if you would like to be able to compile the output code. To include these constructs in the output, use `--suppress-compiler-generated=false`.
 
 File format and architecture are automatically detected.
 

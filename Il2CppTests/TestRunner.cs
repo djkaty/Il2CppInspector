@@ -53,7 +53,8 @@ namespace Il2CppInspector
             // Dump each image in the binary separately
             int i = 0;
             foreach (var il2cpp in inspectors)
-                new Il2CppCSharpDumper(new Il2CppModel(il2cpp)) {ExcludedNamespaces = excludedNamespaces}.WriteFile(testPath + @"\test-result" + (i++ > 0 ? "-" + (i - 1) : "") + ".cs");
+                new Il2CppCSharpDumper(new Il2CppModel(il2cpp)) {ExcludedNamespaces = excludedNamespaces, SuppressGenerated = true}
+                    .WriteFile(testPath + @"\test-result" + (i++ > 0 ? "-" + (i - 1) : "") + ".cs");
 
             // Compare test result with expected result
             for (i = 0; i < inspectors.Count; i++) {

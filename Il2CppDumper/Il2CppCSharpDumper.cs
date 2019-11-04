@@ -17,6 +17,11 @@ namespace Il2CppInspector
         // Namespace prefixes whose contents should be skipped
         public List<string> ExcludedNamespaces { get; set; }
 
+        // Suppress types, fields and methods with the CompilerGenerated attribute; suppress the attribute itself from property getters and setters
+        public bool SuppressGenerated { get; set; }
+
+        private const string CGAttribute = "System.Runtime.CompilerServices.CompilerGeneratedAttribute";
+
         public Il2CppCSharpDumper(Il2CppModel model) => this.model = model;
 
         private StreamWriter writer;
@@ -49,6 +54,9 @@ namespace Il2CppInspector
         }
 
         private void writeType(TypeInfo type, string prefix = "") {
+            // Don't output compiler-generated types if desired
+            if (SuppressGenerated && type.GetCustomAttributes(CGAttribute).Any())
+                return;
 
             // Only print namespace if we're not nested
             if (!type.IsNested)
@@ -132,6 +140,9 @@ namespace Il2CppInspector
                     writer.Write(prefix + "\t// Fields\n");
 
                 foreach (var field in type.DeclaredFields) {
+                    if (SuppressGenerated && field.GetCustomAttributes(CGAttribute).Any())
+                        continue;
+
                     if (field.IsNotSerialized)
                         writer.Write(prefix + "\t[NonSerialized]\n");
 
@@ -191,8 +202,8 @@ namespace Il2CppInspector
 
                 string modifiers = prop.GetMethod?.GetModifierString() ?? prop.SetMethod.GetModifierString();
                 writer.Write($"{prefix}\t{modifiers}{prop.PropertyType.CSharpName} {prop.Name} {{ ");
-                writer.Write((prop.GetMethod != null ? prop.GetMethod.CustomAttributes.ToString(inline: true) + "get; " : "")
-                             + (prop.SetMethod != null ? prop.SetMethod.CustomAttributes.ToString(inline: true) + "set; " : "") + "}");
+                writer.Write((prop.GetMethod != null ? prop.GetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) + "get; " : "")
+                             + (prop.SetMethod != null ? prop.SetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) + "set; " : "") + "}");
                 if ((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0) || (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0))
                     writer.Write(" // ");
                 writer.Write((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0 ? Il2CppModel.FormatAddress(prop.GetMethod.VirtualAddress) + " " : "")
@@ -255,6 +266,9 @@ namespace Il2CppInspector
 
             // Don't re-output methods for constructors, properties, events etc.
             foreach (var method in type.DeclaredMethods.Except(usedMethods)) {
+                if (SuppressGenerated && method.GetCustomAttributes(CGAttribute).Any())
+                    continue;
+
                 // Attributes
                 writer.Write(method.CustomAttributes.ToString(prefix + "\t"));
                 // IL2CPP doesn't seem to retain return type attributes

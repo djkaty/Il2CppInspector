@@ -19,7 +19,7 @@ namespace Il2CppInspector
             Console.WriteLine("(c) 2017-2019 Katy Coe - www.djkaty.com");
             Console.WriteLine("");
 
-            // Command-line usage: dotnet run [--bin=<binary-file>] [--metadata=<metadata-file>] [--cs-out=<output-file>] [--py-out=<output-file>] [--exclude-namespaces=<ns1,n2,...>|none]
+            // Command-line usage: dotnet run [--bin=<binary-file>] [--metadata=<metadata-file>] [--cs-out=<output-file>] [--py-out=<output-file>] [--exclude-namespaces=<ns1,n2,...>|none] [--suppress-compiler-generated=false]
             // Defaults to libil2cpp.so or GameAssembly.dll if binary file not specified
             IConfiguration config = new ConfigurationBuilder().AddCommandLine(args).Build();
 
@@ -27,6 +27,8 @@ namespace Il2CppInspector
             string metaFile = config["metadata"] ?? "global-metadata.dat";
             string outCsFile = config["cs-out"] ?? "types.cs";
             string outPythonFile = config["py-out"] ?? "ida.py";
+            if (!bool.TryParse(config["suppress-compiler-generated"], out var suppressGenerated))
+                suppressGenerated = true;
 
             // Exclusions
             var excludedNamespaces = config["exclude-namespaces"]?.Split(',').ToList() ?? 
@@ -63,7 +65,8 @@ namespace Il2CppInspector
                 var model = new Il2CppModel(il2cpp);
 
                 // C# signatures output
-                new Il2CppCSharpDumper(model) {ExcludedNamespaces = excludedNamespaces}.WriteFile(outCsFile + (i++ > 0 ? "-" + (i-1) : ""));
+                new Il2CppCSharpDumper(model) {ExcludedNamespaces = excludedNamespaces, SuppressGenerated = suppressGenerated}
+                    .WriteFile(outCsFile + (i++ > 0 ? "-" + (i-1) : ""));
 
                 // IDA Python script output
                 // TODO: IDA Python script output
