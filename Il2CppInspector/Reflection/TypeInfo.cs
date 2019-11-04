@@ -286,6 +286,9 @@ namespace Il2CppInspector.Reflection {
                 var generic = image.ReadMappedObject<Il2CppGenericClass>(pType.datapoint); // Il2CppGenericClass *
                 var genericTypeDef = model.TypesByDefinitionIndex[generic.typeDefinitionIndex];
 
+                Definition = model.Package.TypeDefinitions[generic.typeDefinitionIndex];
+                Index = (int) generic.typeDefinitionIndex;
+
                 Assembly = genericTypeDef.Assembly;
                 Namespace = genericTypeDef.Namespace;
                 Name = genericTypeDef.BaseName;
