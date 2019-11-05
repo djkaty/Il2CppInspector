@@ -18,7 +18,7 @@ namespace Il2CppInspector.Reflection {
         // Custom attributes for this member
         public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
 
-        public bool HasDefaultValue { get; }
+        public bool HasDefaultValue => (Attributes & FieldAttributes.HasDefault) != 0;
         public object DefaultValue { get; }
 
         public string DefaultValueString => HasDefaultValue ? DefaultValue.ToCSharpValue() : "";
@@ -105,12 +105,12 @@ namespace Il2CppInspector.Reflection {
                 Attributes |= FieldAttributes.SpecialName;
             if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_PINVOKE_IMPL) == Il2CppConstants.FIELD_ATTRIBUTE_PINVOKE_IMPL)
                 Attributes |= FieldAttributes.PinvokeImpl;
+            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_HAS_DEFAULT) != 0)
+                Attributes |= FieldAttributes.HasDefault;
 
             // Default initialization value if present
-            if (pkg.FieldDefaultValue.TryGetValue(fieldIndex, out object variant)) {
-                HasDefaultValue = true;
+            if (pkg.FieldDefaultValue.TryGetValue(fieldIndex, out object variant))
                 DefaultValue = variant;
-            }
         }
     }
 }
