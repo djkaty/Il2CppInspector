@@ -49,6 +49,8 @@ namespace Il2CppInspector.Reflection {
                 var g = (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.CSharpName)) + ">" : "");
                 g = (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.CSharpName)) + ">" : g);
                 n += g;
+                if (s == "System.Nullable`1" && GenericTypeArguments.Any())
+                    n = GenericTypeArguments[0].CSharpName + "?";
                 if (HasElementType)
                     n = ElementType.CSharpName;
                 return n + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "") + (IsPointer ? "*" : "");
