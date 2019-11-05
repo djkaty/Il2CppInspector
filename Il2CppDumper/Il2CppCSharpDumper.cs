@@ -104,7 +104,7 @@ namespace Il2CppInspector
                         writer.Write("out ");
                     writer.Write($"{param.ParameterType.CSharpName} {param.Name}");
                 }
-                writer.Write($"); // TypeDefIndex: {type.Index}; {Il2CppModel.FormatAddress(del.VirtualAddress)}\n");
+                writer.Write($"); // TypeDefIndex: {type.Index}; {del.VirtualAddress.ToAddressString()}\n");
                 return;
             }
 
@@ -173,7 +173,7 @@ namespace Il2CppInspector
                     if (field.IsPinvokeImpl)
                         writer.Write("extern ");
                     if (field.GetCustomAttributes(FBAttribute).Any())
-                        writer.Write($"fixed /* {Il2CppModel.FormatAddress((ulong) field.CustomAttributes.First(a => a.AttributeType.FullName == FBAttribute).VirtualAddress)} */" +
+                        writer.Write($"fixed /* {((ulong) field.CustomAttributes.First(a => a.AttributeType.FullName == FBAttribute).VirtualAddress).ToAddressString()} */" +
                                      $" {field.FieldType.DeclaredFields.First(f => f.Name == "FixedElementField").FieldType.CSharpName} {field.Name}[0]");
                     else
                         writer.Write($"{field.FieldType.CSharpName} {field.Name}");
@@ -211,8 +211,8 @@ namespace Il2CppInspector
                              + (prop.SetMethod != null ? prop.SetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) + "set; " : "") + "}");
                 if ((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0) || (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0))
                     writer.Write(" // ");
-                writer.Write((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0 ? Il2CppModel.FormatAddress(prop.GetMethod.VirtualAddress) + " " : "")
-                            + (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0 ? Il2CppModel.FormatAddress(prop.SetMethod.VirtualAddress) : "") + "\n");
+                writer.Write((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0 ? prop.GetMethod.VirtualAddress.ToAddressString() + " " : "")
+                            + (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0 ? prop.SetMethod.VirtualAddress.ToAddressString() : "") + "\n");
                 usedMethods.Add(prop.GetMethod);
                 usedMethods.Add(prop.SetMethod);
             }
@@ -233,7 +233,7 @@ namespace Il2CppInspector
                 if (evt.AddMethod != null) m.Add("add", evt.AddMethod.VirtualAddress);
                 if (evt.RemoveMethod != null) m.Add("remove", evt.RemoveMethod.VirtualAddress);
                 if (evt.RaiseMethod != null) m.Add("raise", evt.RaiseMethod.VirtualAddress);
-                writer.Write(string.Join("\n", m.Select(x => $"{prefix}\t\t{x.Key}; // {Il2CppModel.FormatAddress(x.Value)}")) + "\n" + prefix + "\t}\n");
+                writer.Write(string.Join("\n", m.Select(x => $"{prefix}\t\t{x.Key}; // {x.Value.ToAddressString()}")) + "\n" + prefix + "\t}\n");
                 usedMethods.Add(evt.AddMethod);
                 usedMethods.Add(evt.RemoveMethod);
                 usedMethods.Add(evt.RaiseMethod);
@@ -260,7 +260,7 @@ namespace Il2CppInspector
 
                 writer.Write($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString()}(");
                 writer.Write(method.GetParametersString());
-                writer.Write(");" + (method.VirtualAddress != 0 ? $" // {Il2CppModel.FormatAddress(method.VirtualAddress)}" : "") + "\n");
+                writer.Write(");" + (method.VirtualAddress != 0 ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
             }
             if (type.DeclaredConstructors.Any())
                 writer.Write("\n");
@@ -284,7 +284,7 @@ namespace Il2CppInspector
                 else
                     writer.Write($"{method.CSharpName}{method.ReturnType.CSharpName}");
                 writer.Write("(" + method.GetParametersString());
-                writer.Write(");" + (method.VirtualAddress != 0 ? $" // {Il2CppModel.FormatAddress(method.VirtualAddress)}" : "") + "\n");
+                writer.Write(");" + (method.VirtualAddress != 0 ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
             }
             writer.Write(prefix + "}\n");
         }

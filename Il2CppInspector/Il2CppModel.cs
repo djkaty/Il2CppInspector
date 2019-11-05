@@ -120,9 +120,5 @@ namespace Il2CppInspector.Reflection
             var index = Array.FindIndex(Package.AttributeTypeRanges[imageRange], x => x.token == token);
             return index == -1 ? -1 : index + image.customAttributeStart;
         }
-
-        public static string FormatAddress(ulong address) => address <= 0xffff_ffff
-            ? string.Format($"0x{(uint)address:X8}")
-            : string.Format($"0x{address:X16}");
     }
 }
