@@ -64,15 +64,21 @@ namespace Il2CppInspector.Reflection
             paramTypeUsage = Definition.typeIndex;
             var paramType = pkg.TypeUsages[paramTypeUsage];
 
+            if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_HAS_DEFAULT) != 0)
+                Attributes |= ParameterAttributes.HasDefault;
             if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_OPTIONAL) != 0)
                 Attributes |= ParameterAttributes.Optional;
+            if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_IN) != 0)
+                Attributes |= ParameterAttributes.In;
             if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_OUT) != 0)
                 Attributes |= ParameterAttributes.Out;
+            if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_RESERVED_MASK) != 0)
+                Attributes |= ParameterAttributes.ReservedMask;
+            if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_HAS_FIELD_MARSHAL) != 0)
+                Attributes |= ParameterAttributes.HasFieldMarshal;
 
             if (Position == -1)
                 Attributes |= ParameterAttributes.Retval;
-            else if (!IsOut)
-                Attributes |= ParameterAttributes.In;
 
             // TODO: DefaultValue/HasDefaultValue
         }
