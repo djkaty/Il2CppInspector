@@ -5,8 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Il2CppInspector.Reflection;
+using MethodInfo = Il2CppInspector.Reflection.MethodInfo;
+using TypeInfo = Il2CppInspector.Reflection.TypeInfo;
 
 namespace Il2CppInspector
 {
@@ -205,10 +208,16 @@ namespace Il2CppInspector
                 // Attributes
                 writer.Write(prop.CustomAttributes.ToString(prefix + "\t"));
 
-                string modifiers = prop.GetMethod?.GetModifierString() ?? prop.SetMethod.GetModifierString();
+                // The access mask enum values go from 1 (private) to 6 (public) in order from most to least restrictive
+                var getAccess = (prop.GetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
+                var setAccess = (prop.SetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
+
+                string modifiers = getAccess > setAccess? prop.GetMethod.GetModifierString() : prop.SetMethod.GetModifierString();
                 writer.Write($"{prefix}\t{modifiers}{prop.PropertyType.CSharpName} {prop.Name} {{ ");
-                writer.Write((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) + "get; " : "")
-                             + (prop.CanWrite? prop.SetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) + "set; " : "") + "}");
+                writer.Write((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) 
+                                               + (getAccess < setAccess? prop.GetMethod.GetAccessModifierString() : "") + "get; " : "")
+                             + (prop.CanWrite? prop.SetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) 
+                                               + (setAccess < getAccess? prop.SetMethod.GetAccessModifierString() : "") + "set; " : "") + "}");
                 if ((prop.CanRead && prop.GetMethod.VirtualAddress != 0) || (prop.CanWrite && prop.SetMethod.VirtualAddress != 0))
                     writer.Write(" // ");
                 writer.Write((prop.CanRead && prop.GetMethod.VirtualAddress != 0 ? prop.GetMethod.VirtualAddress.ToAddressString() + " " : "")

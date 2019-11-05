@@ -115,6 +115,18 @@ namespace Il2CppInspector.Reflection
                 DeclaredParameters.Add(new ParameterInfo(pkg, p, this));
         }
 
+        public string GetAccessModifierString() {
+            return this switch {
+                { IsPrivate: true } => "private ",
+                { IsPublic: true } => "public ",
+                { IsFamily: true } => "protected ",
+                { IsAssembly: true } => "internal ",
+                { IsFamilyOrAssembly: true } => "protected internal ",
+                { IsFamilyAndAssembly: true } => "private protected ",
+                _ => ""
+            };
+        }
+
         public string GetModifierString() {
             // Interface methods and properties have no visible modifiers (they are always declared 'public abstract')
             if (DeclaringType.IsInterface)
@@ -122,18 +134,7 @@ namespace Il2CppInspector.Reflection
 
             StringBuilder modifiers = new StringBuilder();
 
-            if (IsPrivate)
-                modifiers.Append("private ");
-            if (IsPublic)
-                modifiers.Append("public ");
-            if (IsFamily)
-                modifiers.Append("protected ");
-            if (IsAssembly)
-                modifiers.Append("internal ");
-            if (IsFamilyOrAssembly)
-                modifiers.Append("protected internal ");
-            if (IsFamilyAndAssembly)
-                modifiers.Append("private protected ");
+            modifiers.Append(GetAccessModifierString());
 
             if (IsAbstract)
                 modifiers.Append("abstract ");
