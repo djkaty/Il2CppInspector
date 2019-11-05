@@ -128,8 +128,8 @@ namespace Il2CppInspector
             var @base = type.ImplementedInterfaces.Select(x => x.CSharpName).ToList();
             if (type.BaseType != null && type.BaseType.FullName != "System.Object" && type.BaseType.FullName != "System.ValueType" && !type.IsEnum)
                 @base.Insert(0, type.BaseType.CSharpName);
-            if (type.IsEnum && type.ElementType.CSharpName != "int") // enums derive from int by default
-                @base.Insert(0, type.ElementType.CSharpName);
+            if (type.IsEnum && type.GetEnumUnderlyingType().FullName != "System.Int32") // enums derive from int by default
+                @base.Insert(0, type.GetEnumUnderlyingType().CSharpName);
             var baseText = @base.Count > 0 ? " : " + string.Join(", ", @base) : string.Empty;
 
             writer.Write($"{type.CSharpTypeDeclarationName}{baseText} // TypeDefIndex: {type.Index}\n" + prefix + "{\n");

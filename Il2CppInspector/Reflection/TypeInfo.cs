@@ -93,16 +93,7 @@ namespace Il2CppInspector.Reflection {
         public bool IsGenericMethodParameter => IsGenericParameter && DeclaringMethod != null;
 
         // Gets the type of the object encompassed or referred to by the current array, pointer or reference type
-        private readonly int enumElementTypeUsage;
-
-        private TypeInfo elementType;
-        public TypeInfo ElementType {
-            get {
-                if (IsEnum && elementType == null)
-                    elementType = Assembly.Model.GetTypeFromUsage(enumElementTypeUsage, MemberTypes.TypeInfo);
-                return elementType;
-            }
-        }
+        public TypeInfo ElementType { get; }
 
         // Type name including namespace
         public string FullName =>
@@ -129,7 +120,7 @@ namespace Il2CppInspector.Reflection {
         public bool IsArray { get; }
         public bool IsByRef => throw new NotImplementedException();
         public bool IsClass => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Class;
-        public bool IsEnum { get; }
+        public bool IsEnum => enumUnderlyingTypeUsage != -1;
         public bool IsGenericParameter { get; }
         public bool IsGenericType { get; }
         public bool IsGenericTypeDefinition { get; }
@@ -167,7 +158,16 @@ namespace Il2CppInspector.Reflection {
 
         public string[] GetEnumNames() => IsEnum? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.Name).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
 
-        public TypeInfo GetEnumUnderlyingType() => ElementType;
+        // The underlying type of an enumeration (int by default)
+        private readonly int enumUnderlyingTypeUsage = -1;
+        private TypeInfo enumUnderlyingType;
+
+        public TypeInfo GetEnumUnderlyingType() {
+            if (!IsEnum)
+                return null;
+            enumUnderlyingType ??= Assembly.Model.GetTypeFromUsage(enumUnderlyingTypeUsage, MemberTypes.TypeInfo);
+            return enumUnderlyingType;
+        }
 
         public Array GetEnumValues() => IsEnum? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.DefaultValue).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
 
@@ -242,10 +242,8 @@ namespace Il2CppInspector.Reflection {
                 Attributes |= TypeAttributes.Interface;
 
             // Enumerations - bit 1 of bitfield indicates this (also the baseTypeUsage will be System.Enum)
-            if (((Definition.bitfield >> 1) & 1) == 1) {
-                IsEnum = true;
-                enumElementTypeUsage = Definition.elementTypeIndex;
-            }
+            if (((Definition.bitfield >> 1) & 1) == 1)
+                enumUnderlyingTypeUsage = Definition.elementTypeIndex;
 
             // Add all implemented interfaces
             implementedInterfaceUsages = new int[Definition.interfaces_count];
@@ -334,7 +332,7 @@ namespace Il2CppInspector.Reflection {
             // Array with known dimensions and bounds
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_ARRAY) {
                 var descriptor = image.ReadMappedObject<Il2CppArrayType>(pType.datapoint);
-                elementType = model.GetTypeFromVirtualAddress(descriptor.etype);
+                ElementType = model.GetTypeFromVirtualAddress(descriptor.etype);
 
                 Assembly = ElementType.Assembly;
                 Definition = ElementType.Definition;
@@ -348,7 +346,7 @@ namespace Il2CppInspector.Reflection {
 
             // Dynamically allocated array or pointer type
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY || pType.type == Il2CppTypeEnum.IL2CPP_TYPE_PTR) {
-                elementType = model.GetTypeFromVirtualAddress(pType.datapoint);
+                ElementType = model.GetTypeFromVirtualAddress(pType.datapoint);
 
                 Assembly = ElementType.Assembly;
                 Definition = ElementType.Definition;
