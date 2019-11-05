@@ -16,7 +16,7 @@ public class Derived<V> : Base<string, V> // TypeDefIndex: 1812
 	public G<Derived<V>> F; // 0x00
 
 	// Nested types
-	public class Nested<V> // TypeDefIndex: 1813
+	public class Nested // TypeDefIndex: 1813
 	{
 		// Constructors
 		public Nested();

@@ -27,15 +27,29 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="TestSources\ArraysAndPointers.cs" />
     <Compile Remove="TestSources\CustomAttributeData.cs" />
     <Compile Remove="TestSources\GenericTypes.cs" />
     <Compile Remove="TestSources\Methods.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="TestExpectedResults\ArraysAndPointers.cs" />
+    <Content Include="TestExpectedResults\CustomAttributeData.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-ArraysAndPointers-x64.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-ArraysAndPointers-x86.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-CustomAttributeData-x64.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-CustomAttributeData-x86.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-GenericTypes-x64.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-GenericTypes-x86.cs" />
+    <Content Include="TestExpectedResults\GenericTypes.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="TestExpectedResults\GameAssembly-Methods-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-Methods-x86.cs" />
     <Content Include="TestExpectedResults\Methods.cs" />
+    <Content Include="TestSources\ArraysAndPointers.cs" />
     <Content Include="TestSources\CustomAttributeData.cs" />
     <Content Include="TestSources\GenericTypes.cs" />
     <Content Include="TestSources\Methods.cs" />

@@ -53,7 +53,7 @@ namespace Il2CppInspector
                 //(tDerivedArray, "Derived`1[System.Int32][]", false, false, false, false),
                 (tT, "T", false, false, true, true),
                 (tF, "G`1[Derived`1[V]]", true, false, true, false),
-                (tNested, "Derived`1+Nested[V]", true, true, true, false)
+                (tNested, "Derived`1[V]+Nested[V]", true, true, true, false)
             };
 
             foreach (var check in checks) {
