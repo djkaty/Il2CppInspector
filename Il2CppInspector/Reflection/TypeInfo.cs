@@ -23,10 +23,11 @@ namespace Il2CppInspector.Reflection {
         // Type that this type inherits from
         private readonly int baseTypeUsage = -1;
 
-        public TypeInfo BaseType => baseTypeUsage != -1
-            ? Assembly.Model.GetTypeFromUsage(baseTypeUsage, MemberTypes.TypeInfo)
-            : IsArray? Assembly.Model.TypesByDefinitionIndex.First(t => t.FullName == "System.Array")
-            : Namespace != "System" || BaseName != "Object" ? Assembly.Model.TypesByDefinitionIndex.First(t => t.FullName == "System.Object")
+        public TypeInfo BaseType => IsPointer? null :
+            baseTypeUsage != -1?
+                Assembly.Model.GetTypeFromUsage(baseTypeUsage, MemberTypes.TypeInfo)
+                : IsArray? Assembly.Model.TypesByDefinitionIndex.First(t => t.FullName == "System.Array")
+                : Namespace != "System" || BaseName != "Object" ? Assembly.Model.TypesByDefinitionIndex.First(t => t.FullName == "System.Object")
                 : null;
 
         // True if the type contains unresolved generic type parameters
