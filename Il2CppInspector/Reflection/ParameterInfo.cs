@@ -26,7 +26,7 @@ namespace Il2CppInspector.Reflection
         public bool HasDefaultValue => (Attributes & ParameterAttributes.HasDefault) != 0;
 
         // Default value for the parameter
-        public object DefaultValue => throw new NotImplementedException();
+        public object DefaultValue { get; }
 
         public bool IsIn => (Attributes & ParameterAttributes.In) != 0;
         public bool IsOptional => (Attributes & ParameterAttributes.Optional) != 0;
@@ -80,11 +80,12 @@ namespace Il2CppInspector.Reflection
             if (Position == -1)
                 Attributes |= ParameterAttributes.Retval;
 
-            // TODO: DefaultValue/HasDefaultValue
+            // Default initialization value if present
+            if (pkg.ParameterDefaultValue.TryGetValue(paramIndex, out object variant))
+                DefaultValue = variant;
         }
 
         public string GetModifierString() =>
-            (IsOptional? "optional " : "") +
             (IsOut? "out " : "");
     }
 }

@@ -254,6 +254,13 @@ namespace Il2CppInspector
         public int typeIndex;
     }
 
+    public class Il2CppParameterDefaultValue
+    {
+        public int parameterIndex;
+        public int typeIndex;
+        public int dataIndex;
+    }
+
     public class Il2CppFieldDefinition
     {
         public int nameIndex;

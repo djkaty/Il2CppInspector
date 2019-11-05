@@ -24,6 +24,7 @@ namespace Il2CppInspector
         public Il2CppParameterDefinition[] Params { get; }
         public Il2CppFieldDefinition[] Fields { get; }
         public Il2CppFieldDefaultValue[] FieldDefaultValues { get; }
+        public Il2CppParameterDefaultValue[] ParameterDefaultValues { get; }
         public Il2CppPropertyDefinition[] Properties { get; }
         public Il2CppEventDefinition[] Events { get; }
         public Il2CppGenericContainer[] GenericContainers { get; }
@@ -98,6 +99,7 @@ namespace Il2CppInspector
             Params = ReadArray<Il2CppParameterDefinition>(Header.parametersOffset, Header.parametersCount / Sizeof(typeof(Il2CppParameterDefinition)));
             Fields = ReadArray<Il2CppFieldDefinition>(Header.fieldsOffset, Header.fieldsCount / Sizeof(typeof(Il2CppFieldDefinition)));
             FieldDefaultValues = ReadArray<Il2CppFieldDefaultValue>(Header.fieldDefaultValuesOffset, Header.fieldDefaultValuesCount / Sizeof(typeof(Il2CppFieldDefaultValue)));
+            ParameterDefaultValues = ReadArray<Il2CppParameterDefaultValue>(Header.parameterDefaultValuesOffset, Header.parameterDefaultValuesCount / Sizeof(typeof(Il2CppParameterDefaultValue)));
             Properties = ReadArray<Il2CppPropertyDefinition>(Header.propertiesOffset, Header.propertiesCount / Sizeof(typeof(Il2CppPropertyDefinition)));
             Events = ReadArray<Il2CppEventDefinition>(Header.eventsOffset, Header.eventsCount / Sizeof(typeof(Il2CppEventDefinition)));
             InterfaceUsageIndices = ReadArray<int>(Header.interfacesOffset, Header.interfacesCount / sizeof(int));
@@ -109,7 +111,7 @@ namespace Il2CppInspector
                 AttributeTypeIndices = ReadArray<int>(Header.attributeTypesOffset, Header.attributeTypesCount / sizeof(int));
                 AttributeTypeRanges = ReadArray<Il2CppCustomAttributeTypeRange>(Header.attributesInfoOffset, Header.attributesInfoCount / Sizeof(typeof(Il2CppCustomAttributeTypeRange)));
             }
-            // TODO: ParameterDefaultValue, ParameterConstraints, MetadataUsage
+            // TODO: ParameterConstraints, MetadataUsage
 
             // Get all string literals
             Position = Header.stringOffset;

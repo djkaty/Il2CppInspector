@@ -37,6 +37,7 @@ namespace Il2CppInspector
         public int[] NestedTypeIndices => Metadata.NestedTypeIndices;
         public int[] AttributeTypeIndices => Metadata.AttributeTypeIndices;
         public Dictionary<int, object> FieldDefaultValue { get; } = new Dictionary<int, object>();
+        public Dictionary<int, object> ParameterDefaultValue { get; } = new Dictionary<int, object>();
         public List<long> FieldOffsets { get; }
         public List<Il2CppType> TypeUsages => Binary.Types;
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
@@ -45,75 +46,77 @@ namespace Il2CppInspector
         // TODO: Finish all file access in the constructor and eliminate the need for this
         public IFileFormatReader BinaryImage => Binary.Image;
 
+        private object getDefaultValue(int typeIndex, int dataIndex) {
+            // No default
+            if (dataIndex == -1)
+                return null;
+
+            // Get pointer in binary to default value
+            var pValue = Metadata.Header.fieldAndParameterDefaultValueDataOffset + dataIndex;
+            var type = TypeUsages[typeIndex];
+
+            // Default value is null
+            if (pValue == 0)
+                return null;
+
+            object value = null;
+            Metadata.Position = pValue;
+            switch (type.type) {
+                case Il2CppTypeEnum.IL2CPP_TYPE_BOOLEAN:
+                    value = Metadata.ReadBoolean();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_U1:
+                case Il2CppTypeEnum.IL2CPP_TYPE_I1:
+                    value = Metadata.ReadByte();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_CHAR:
+                    // UTF-8 character assumed
+                    value = BitConverter.ToChar(Metadata.ReadBytes(2), 0);
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_U2:
+                    value = Metadata.ReadUInt16();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_I2:
+                    value = Metadata.ReadInt16();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_U4:
+                    value = Metadata.ReadUInt32();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_I4:
+                    value = Metadata.ReadInt32();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_U8:
+                    value = Metadata.ReadUInt64();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_I8:
+                    value = Metadata.ReadInt64();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_R4:
+                    value = Metadata.ReadSingle();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_R8:
+                    value = Metadata.ReadDouble();
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_STRING:
+                    var uiLen = Metadata.ReadInt32();
+                    value = Encoding.UTF8.GetString(Metadata.ReadBytes(uiLen));
+                    break;
+            }
+            return value;
+        }
+
         public Il2CppInspector(Il2CppBinary binary, Metadata metadata) {
             // Store stream representations
             Binary = binary;
             Metadata = metadata;
 
             // Get all field default values
-            foreach (var fdv in Metadata.FieldDefaultValues) {
-                // No default
-                if (fdv.dataIndex == -1) {
-                    FieldDefaultValue.Add(fdv.fieldIndex, null);
-                    continue;
-                }
+            foreach (var fdv in Metadata.FieldDefaultValues)
+                FieldDefaultValue.Add(fdv.fieldIndex, getDefaultValue(fdv.typeIndex, fdv.dataIndex));
 
-                // Get pointer in binary to default value
-                var pValue = Metadata.Header.fieldAndParameterDefaultValueDataOffset + fdv.dataIndex;
-                var type = TypeUsages[fdv.typeIndex];
-
-                // Default value is null
-                if (pValue == 0) {
-                    FieldDefaultValue.Add(fdv.fieldIndex, null);
-                    continue;
-                }
-
-                object value = null;
-                Metadata.Position = pValue;
-                switch (type.type) {
-                    case Il2CppTypeEnum.IL2CPP_TYPE_BOOLEAN:
-                        value = Metadata.ReadBoolean();
-                        break;
-                    case Il2CppTypeEnum.IL2CPP_TYPE_U1:
-                    case Il2CppTypeEnum.IL2CPP_TYPE_I1:
-                        value = Metadata.ReadByte();
-                        break;
-                    case Il2CppTypeEnum.IL2CPP_TYPE_CHAR:
-                        // UTF-8 character assumed
-                        value = BitConverter.ToChar(Metadata.ReadBytes(2), 0);
-                        break;
-                    case Il2CppTypeEnum.IL2CPP_TYPE_U2:
-                        value = Metadata.ReadUInt16();
-                        break;
-                    case Il2CppTypeEnum.IL2CPP_TYPE_I2:
-                        value = Metadata.ReadInt16();
-                        break;
-                    case Il2CppTypeEnum.IL2CPP_TYPE_U4:
-                        value = Metadata.ReadUInt32();
-                        break;
-                    case Il2CppTypeEnum.IL2CPP_TYPE_I4:
-                        value = Metadata.ReadInt32();
-                        break;
-                    case Il2CppTypeEnum.IL2CPP_TYPE_U8:
-                        value = Metadata.ReadUInt64();
-                        break;
-                    case Il2CppTypeEnum.IL2CPP_TYPE_I8:
-                        value = Metadata.ReadInt64();
-                        break;
-                    case Il2CppTypeEnum.IL2CPP_TYPE_R4:
-                        value = Metadata.ReadSingle();
-                        break;
-                    case Il2CppTypeEnum.IL2CPP_TYPE_R8:
-                        value = Metadata.ReadDouble();
-                        break;
-                    case Il2CppTypeEnum.IL2CPP_TYPE_STRING:
-                        var uiLen = Metadata.ReadInt32();
-                        value = Encoding.UTF8.GetString(Metadata.ReadBytes(uiLen));
-                        break;
-                }
-
-                FieldDefaultValue.Add(fdv.fieldIndex, value);
-            }
+            // Get all parameter default values
+            foreach (var pdv in Metadata.ParameterDefaultValues)
+                ParameterDefaultValue.Add(pdv.parameterIndex, getDefaultValue(pdv.typeIndex, pdv.dataIndex));
 
             // Get all field offsets
             if (Binary.FieldOffsets != null) {
