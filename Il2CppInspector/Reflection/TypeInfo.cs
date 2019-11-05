@@ -45,19 +45,22 @@ namespace Il2CppInspector.Reflection {
                 var n = (i != -1 ? Il2CppConstants.CSharpTypeString[i] : base.Name);
                 if (n?.IndexOf("`", StringComparison.Ordinal) != -1)
                     n = n?.Remove(n.IndexOf("`", StringComparison.Ordinal));
-                if (IsArray)
-                    n = ElementType.CSharpName;
                 var g = (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.CSharpName)) + ">" : "");
                 g = (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.CSharpName)) + ">" : g);
-                return n + g + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "") + (IsPointer ? "*" : "");
+                n += g;
+                if (HasElementType)
+                    n = ElementType.CSharpName;
+                return n + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "") + (IsPointer ? "*" : "");
             }
         }
 
         // C# name as it would be written in a type declaration
-        public string CSharpTypeDeclarationName => 
-                     (base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
-                   + (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.Name)) + ">" : "")
-                   + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.Name)) + ">" : "")
+        public string CSharpTypeDeclarationName =>
+                    (HasElementType?
+                        ElementType.CSharpTypeDeclarationName :
+                        base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal))
+                        + (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.Name)) + ">" : "")
+                        + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.Name)) + ">" : ""))
                    + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
                    + (IsPointer ? "*" : "");
 
@@ -98,12 +101,13 @@ namespace Il2CppInspector.Reflection {
         // Type name including namespace
         public string FullName =>
             IsGenericParameter? null :
-              (DeclaringType != null? DeclaringType.FullName + "+" : Namespace + (Namespace.Length > 0? "." : ""))
-            + base.Name
-            + (GenericTypeParameters != null ? "[" + string.Join(",", GenericTypeParameters.Select(x => x.FullName ?? x.Name)) + "]" : "")
-            + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.FullName ?? x.Name)) + "]" : "")
-            + (IsArray? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
-            + (IsPointer? "*" : "");
+                (HasElementType? ElementType.FullName : 
+                    (DeclaringType != null? DeclaringType.FullName + "+" : Namespace + (Namespace.Length > 0? "." : ""))
+                    + base.Name
+                    + (GenericTypeParameters != null ? "[" + string.Join(",", GenericTypeParameters.Select(x => x.FullName ?? x.Name)) + "]" : "")
+                    + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.FullName ?? x.Name)) + "]" : ""))
+                + (IsArray? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
+                + (IsPointer? "*" : "");
 
         public List<TypeInfo> GenericTypeParameters { get; }
 
@@ -422,12 +426,15 @@ namespace Il2CppInspector.Reflection {
         }
 
         // Display name of object
-        public override string ToString() => IsGenericParameter ? Name :
-              (DeclaringType != null ? DeclaringType.Name + "+" : "")
-            + base.Name
-            + (GenericTypeParameters != null ? "[" + string.Join(",", GenericTypeParameters.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.ToString())) + "]" : "")
-            + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.ToString())) + "]" : "")
+        public override string Name => IsGenericParameter ? base.Name :
+            (HasElementType? ElementType.Name :
+                (DeclaringType != null ? DeclaringType.Name + "+" : "")
+                + base.Name
+                + (GenericTypeParameters != null ? "[" + string.Join(",", GenericTypeParameters.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.Name)) + "]" : "")
+                + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.Name)) + "]" : ""))
             + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
             + (IsPointer ? "*" : "");
+
+        public override string ToString() => Name;
     }
 }
