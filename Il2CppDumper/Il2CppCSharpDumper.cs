@@ -21,6 +21,7 @@ namespace Il2CppInspector
         public bool SuppressGenerated { get; set; }
 
         private const string CGAttribute = "System.Runtime.CompilerServices.CompilerGeneratedAttribute";
+        private const string FBAttribute = "System.Runtime.CompilerServices.FixedBufferAttribute";
 
         public Il2CppCSharpDumper(Il2CppModel model) => this.model = model;
 
@@ -147,7 +148,7 @@ namespace Il2CppInspector
                         writer.Write(prefix + "\t[NonSerialized]\n");
 
                     // Attributes
-                    writer.Write(field.CustomAttributes.ToString(prefix + "\t"));
+                    writer.Write(field.CustomAttributes.Where(a => a.AttributeType.FullName != FBAttribute).ToString(prefix + "\t"));
 
                     writer.Write(prefix + "\t");
                     if (field.IsPrivate)
@@ -171,7 +172,11 @@ namespace Il2CppInspector
                         writer.Write("readonly ");
                     if (field.IsPinvokeImpl)
                         writer.Write("extern ");
-                    writer.Write($"{field.FieldType.CSharpName} {field.Name}");
+                    if (field.GetCustomAttributes(FBAttribute).Any())
+                        writer.Write($"fixed /* {Il2CppModel.FormatAddress((ulong) field.CustomAttributes.First(a => a.AttributeType.FullName == FBAttribute).VirtualAddress)} */" +
+                                     $" {field.FieldType.DeclaredFields.First(f => f.Name == "FixedElementField").FieldType.CSharpName} {field.Name}[0]");
+                    else
+                        writer.Write($"{field.FieldType.CSharpName} {field.Name}");
                     if (field.HasDefaultValue)
                         writer.Write($" = {field.DefaultValueString}");
                     writer.Write(";");
