@@ -133,7 +133,7 @@ namespace Il2CppInspector.Reflection
             if (IsFamilyOrAssembly)
                 modifiers.Append("protected internal ");
             if (IsFamilyAndAssembly)
-                modifiers.Append("[family and assembly] ");
+                modifiers.Append("private protected ");
 
             if (IsAbstract)
                 modifiers.Append("abstract ");

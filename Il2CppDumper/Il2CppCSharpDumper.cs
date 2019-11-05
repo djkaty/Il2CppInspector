@@ -84,7 +84,7 @@ namespace Il2CppInspector
             if (type.IsNestedFamORAssem)
                 writer.Write("protected internal ");
             if (type.IsNestedFamANDAssem)
-                writer.Write("[family and assembly] ");
+                writer.Write("private protected ");
 
             // Roll-up multicast delegates to use the 'delegate' syntactic sugar
             if (type.IsClass && type.IsSealed && type.BaseType?.FullName == "System.MulticastDelegate") {
@@ -162,7 +162,7 @@ namespace Il2CppInspector
                     if (field.IsFamilyOrAssembly)
                         writer.Write("protected internal ");
                     if (field.IsFamilyAndAssembly)
-                        writer.Write("[family and assembly] ");
+                        writer.Write("private protected ");
                     if (field.IsLiteral)
                         writer.Write("const ");
                     // All const fields are also static by implication
@@ -207,12 +207,12 @@ namespace Il2CppInspector
 
                 string modifiers = prop.GetMethod?.GetModifierString() ?? prop.SetMethod.GetModifierString();
                 writer.Write($"{prefix}\t{modifiers}{prop.PropertyType.CSharpName} {prop.Name} {{ ");
-                writer.Write((prop.GetMethod != null ? prop.GetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) + "get; " : "")
-                             + (prop.SetMethod != null ? prop.SetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) + "set; " : "") + "}");
-                if ((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0) || (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0))
+                writer.Write((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) + "get; " : "")
+                             + (prop.CanWrite? prop.SetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) + "set; " : "") + "}");
+                if ((prop.CanRead && prop.GetMethod.VirtualAddress != 0) || (prop.CanWrite && prop.SetMethod.VirtualAddress != 0))
                     writer.Write(" // ");
-                writer.Write((prop.GetMethod != null && prop.GetMethod.VirtualAddress != 0 ? prop.GetMethod.VirtualAddress.ToAddressString() + " " : "")
-                            + (prop.SetMethod != null && prop.SetMethod.VirtualAddress != 0 ? prop.SetMethod.VirtualAddress.ToAddressString() : "") + "\n");
+                writer.Write((prop.CanRead && prop.GetMethod.VirtualAddress != 0 ? prop.GetMethod.VirtualAddress.ToAddressString() + " " : "")
+                            + (prop.CanWrite && prop.SetMethod.VirtualAddress != 0 ? prop.SetMethod.VirtualAddress.ToAddressString() : "") + "\n");
                 usedMethods.Add(prop.GetMethod);
                 usedMethods.Add(prop.SetMethod);
             }
