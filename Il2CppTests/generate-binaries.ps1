@@ -9,6 +9,11 @@
 # These are ordered from least to most preferred. If no files exist at the specified path,
 # a silent exception will be thrown and the variable will not be re-assigned.
 
+param (
+	# Which assemblies in the TestAssemblies folder to generate binaries for with il2cpp
+	[string]$assemblies = "*"
+)
+
 $ErrorActionPreference = "SilentlyContinue"
 
 # Look for Unity Roslyn installs
@@ -90,7 +95,7 @@ gci $src | % {
 
 # Run IL2CPP on all generated assemblies for both x86 and ARM
 # Earlier builds of Unity included mscorlib.dll automatically; in current versions we must specify its location
-gci $asm | % {
+gci $asm -filter $assemblies | % {
 	# x86
 	$name = "GameAssembly-$($_.BaseName)-x86"
 	echo "Running il2cpp for test assembly $name (Windows/x86)..."
