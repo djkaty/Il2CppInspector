@@ -28,7 +28,7 @@ namespace Il2CppInspector.Reflection
         // Default value for the parameter
         public object DefaultValue { get; }
 
-        public bool IsByRef => paramTypeUsage == ParameterType.Definition.byrefTypeIndex;
+        public bool IsByRef => !ParameterType.ContainsGenericParameters && paramTypeUsage == ParameterType.Definition.byrefTypeIndex;
 
         public bool IsIn => (Attributes & ParameterAttributes.In) != 0;
         public bool IsOptional => (Attributes & ParameterAttributes.Optional) != 0;
