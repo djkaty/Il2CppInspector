@@ -346,6 +346,7 @@ namespace Il2CppInspector.Reflection {
                 Index = ElementType.Index;
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
+                ContainsGenericParameters = ElementType.ContainsGenericParameters;
 
                 IsArray = true;
                 arrayRank = descriptor.rank;
@@ -360,6 +361,7 @@ namespace Il2CppInspector.Reflection {
                 Index = ElementType.Index;
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
+                ContainsGenericParameters = ElementType.ContainsGenericParameters;
 
                 IsPointer = (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_PTR);
                 IsArray = !IsPointer;
