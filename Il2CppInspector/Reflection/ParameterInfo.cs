@@ -28,6 +28,8 @@ namespace Il2CppInspector.Reflection
         // Default value for the parameter
         public object DefaultValue { get; }
 
+        public bool IsByRef => paramTypeUsage == ParameterType.Definition.byrefTypeIndex;
+
         public bool IsIn => (Attributes & ParameterAttributes.In) != 0;
         public bool IsOptional => (Attributes & ParameterAttributes.Optional) != 0;
         public bool IsOut => (Attributes & ParameterAttributes.Out) != 0;
@@ -86,6 +88,8 @@ namespace Il2CppInspector.Reflection
         }
 
         public string GetModifierString() =>
-            (IsOut? "out " : "");
+              (IsIn ? "in " : "")
+            + (IsByRef? "ref " : "")
+            + (IsOut? "out " : "");
     }
 }
