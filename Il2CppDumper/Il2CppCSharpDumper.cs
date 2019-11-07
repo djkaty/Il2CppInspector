@@ -289,7 +289,7 @@ namespace Il2CppInspector
                 //writer.Write(method.ReturnType.CustomAttributes.ToString(prefix + "\t", "return: "));
                 writer.Write($"{prefix}\t{method.GetModifierString()}");
                 if (method.Name != "op_Implicit" && method.Name != "op_Explicit")
-                    writer.Write($"{method.ReturnType.CSharpName} {method.CSharpName}{method.GetTypeParametersString()}");
+                    writer.Write($"{method.ReturnParameter.GetReturnParameterString()} {method.CSharpName}{method.GetTypeParametersString()}");
                 else
                     writer.Write($"{method.CSharpName}{method.ReturnType.CSharpName}");
                 writer.Write("(" + method.GetParametersString());
