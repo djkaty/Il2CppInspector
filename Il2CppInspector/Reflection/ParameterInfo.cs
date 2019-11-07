@@ -91,5 +91,13 @@ namespace Il2CppInspector.Reflection
               (IsIn ? "in " : "")
             + (IsByRef? "ref " : "")
             + (IsOut? "out " : "");
+
+        public string GetParameterString() => IsRetval? null :
+            $"{CustomAttributes.ToString(inline: true).Replace("[ParamArray]", "params")}"
+            + $"{GetModifierString()}{ParameterType.CSharpName} {Name}"
+            + (HasDefaultValue ? " = " + DefaultValue.ToCSharpValue() : "");
+
+        public string GetReturnParameterString() => !IsRetval? null :
+            $"{GetModifierString()}{ParameterType.CSharpName}";
     }
 }

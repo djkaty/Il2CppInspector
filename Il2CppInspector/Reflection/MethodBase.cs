@@ -159,10 +159,7 @@ namespace Il2CppInspector.Reflection
         }
 
         // Get C# syntax-friendly list of parameters
-        public string GetParametersString() =>
-            string.Join(", ", DeclaredParameters.Select(p => $"{p.CustomAttributes.ToString(inline: true).Replace("[ParamArray]", "params")}"
-                                                                        + $"{p.GetModifierString()}{p.ParameterType.CSharpName} {p.Name}"
-                                                                        + (p.HasDefaultValue? " = " + p.DefaultValue.ToCSharpValue() : "")));
+        public string GetParametersString() => string.Join(", ", DeclaredParameters.Select(p => p.GetParameterString()));
 
         public string GetTypeParametersString() => GenericTypeParameters == null? "" :
             "<" + string.Join(", ", GenericTypeParameters.Select(p => p.CSharpName)) + ">";
