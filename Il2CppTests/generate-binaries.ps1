@@ -6,11 +6,23 @@
 # Requires Android NDK r13b or newer for Android test builds (https://developer.android.com/ndk/downloads)
 
 # Path to C¤ compiler (14.0 = Visual Studio 2017, 15.0 = Visual Studio 2019 etc.)
-$CSC = (gci 'C:\Program Files (x86)\MSBuild\*\Bin\csc.exe' | sort FullName)[-1].FullName
+# These are ordered from least to most preferred. If no files exist at the specified path,
+# a silent exception will be thrown and the variable will not be re-assigned.
+
+$ErrorActionPreference = "SilentlyContinue"
+
+# Look for Unity Roslyn installs
+$CSC = (gci "$env:ProgramFiles\Unity\Hub\Editor\*\Editor\Data\Tools\Roslyn\csc.exe" | sort FullName)[-1].FullName
+# Look for .NET Framework installs
+$CSC = (gci "${env:ProgramFiles(x86)}\MSBuild\*\Bin\csc.exe" | sort FullName)[-1].FullName
+# Look for Visual Studio Roslyn installs
+$CSC = (gci "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\Bin\Roslyn\csc.exe" | sort FullName)[-1].FullName
 
 # Path to latest installed version of Unity
 # The introduction of Unity Hub changed the base path of the Unity editor
-$UnityPath = (gci 'C:\Program Files\Unity\Hub\Editor\*\Editor\Data' | sort FullName)[-1].FullName
+$UnityPath = (gci "$env:ProgramFiles\Unity\Hub\Editor\*\Editor\Data" | sort FullName)[-1].FullName
+
+$ErrorActionPreference = "Continue"
 
 # Calculate Unity paths
 $il2cpp = $UnityPath + '\il2cpp\build\il2cpp.exe'
@@ -24,30 +36,30 @@ $AndroidPlayer = $UnityPath + '\PlaybackEngines\AndroidPlayer'
 $AndroidNDK = $AndroidPlayer + '\NDK'
 
 # Check that everything is installed
-if (!(Test-Path -Path $CSC -PathType leaf)) {
-	echo "Could not find C¤ compiler csc.exe at '$CSC' - aborting"
+if (!$CSC) {
+	Write-Error "Could not find C¤ compiler csc.exe - aborting"
 	Exit
 } else {
 	echo "Using C# compiler at '$CSC'"
 }
 
-if (!(Test-Path -Path $UnityPath -PathType container)) {
-	echo "Could not find Unity editor at '$UnityPath' - aborting"
+if (!$UnityPath) {
+	Write-Error "Could not find Unity editor - aborting"
 	Exit
 } else {
 	echo "Using Unity installation at '$UnityPath'"
 }
 
 if (!(Test-Path -Path $AndroidNDK -PathType container)) {
-	echo "Could not find Android NDK at '$AndroidNDK' - aborting"
+	Write-Error "Could not find Android NDK at '$AndroidNDK' - aborting"
 	Exit
 }
 if (!(Test-Path -Path $il2cpp -PathType leaf)) {
-	echo "Could not find Unity IL2CPP build support - aborting"
+	Write-Error "Could not find Unity IL2CPP build support - aborting"
 	Exit
 }
 if (!(Test-Path -Path $AndroidPlayer -PathType container)) {
-	echo "Could not find Unity Android build support - aborting"
+	Write-Error "Could not find Unity Android build support - aborting"
 	Exit
 }
 
@@ -67,7 +79,14 @@ md $asm, $bin 2>&1 >$null
 
 # Compile all .cs files in TestSources
 echo "Compiling source code..."
-gci $src | % { & $csc "/t:library" "/nologo" "/unsafe" "/out:$asm/$($_.BaseName).dll" "$src/$_" }
+gci $src | % {
+	& $csc "/t:library" "/nologo" "/unsafe" "/out:$asm/$($_.BaseName).dll" "$src/$_"
+	
+	if ($LastExitCode -ne 0) {
+		Write-Error "Compilation error - aborting"
+		Exit
+	}
+}
 
 # Run IL2CPP on all generated assemblies for both x86 and ARM
 # Earlier builds of Unity included mscorlib.dll automatically; in current versions we must specify its location
@@ -79,6 +98,11 @@ gci $asm | % {
 	& $il2cpp $arg '--platform=WindowsDesktop', '--architecture=x86', `
 				"--assembly=$asm/$_,$mscorlib", `
 				"--outputpath=$bin/$name/$name.dll"
+	if ($LastExitCode -ne 0) {
+		Write-Error "IL2CPP error - aborting"
+		Exit
+	}
+
 	mv -Force $bin/$name/Data/metadata/global-metadata.dat $bin/$name
 	rm -Force -Recurse $bin/$name/Data
 
@@ -89,6 +113,10 @@ gci $asm | % {
 	& $il2cpp $arg '--platform=WindowsDesktop', '--architecture=x64', `
 				"--assembly=$asm/$_,$mscorlib", `
 				"--outputpath=$bin/$name/$name.dll"
+	if ($LastExitCode -ne 0) {
+		Write-Error "IL2CPP error - aborting"
+		Exit
+	}
 	mv -Force $bin/$name/Data/metadata/global-metadata.dat $bin/$name
 	rm -Force -Recurse $bin/$name/Data
 
@@ -102,6 +130,10 @@ gci $asm | % {
 				"--additional-include-directories=$AndroidPlayer/Tools/bdwgc/include" `
 				"--additional-include-directories=$AndroidPlayer/Tools/libil2cpp/include" `
 				"--tool-chain-path=$AndroidNDK"
+	if ($LastExitCode -ne 0) {
+		Write-Error "IL2CPP error - aborting"
+		Exit
+	}
 	mv -Force $bin/$name/Data/metadata/global-metadata.dat $bin/$name
 	rm -Force -Recurse $bin/$name/Data
 }
