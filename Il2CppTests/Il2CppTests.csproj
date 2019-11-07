@@ -32,6 +32,7 @@
     <Compile Remove="TestSources\GenericTypes.cs" />
     <Compile Remove="TestSources\Methods.cs" />
     <Compile Remove="TestSources\Properties.cs" />
+    <Compile Remove="TestSources\References.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,6 +56,7 @@
     <Content Include="TestSources\GenericTypes.cs" />
     <Content Include="TestSources\Methods.cs" />
     <Content Include="TestSources\Properties.cs" />
+    <Content Include="TestSources\References.cs" />
   </ItemGroup>
 
   <ItemGroup>
