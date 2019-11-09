@@ -92,12 +92,14 @@ namespace Il2CppInspector.Reflection
             + (IsByRef? "ref " : "")
             + (IsOut? "out " : "");
 
+        private string getCSharpSignatureString() => $"{GetModifierString()}{ParameterType.CSharpName}";
+        public string GetSignatureString() => $"{GetModifierString()}{ParameterType.FullName}";
+
         public string GetParameterString() => IsRetval? null :
             $"{CustomAttributes.ToString(inline: true).Replace("[ParamArray]", "params")}"
-            + $"{GetModifierString()}{ParameterType.CSharpName} {Name}"
+            + $"{getCSharpSignatureString()} {Name}"
             + (HasDefaultValue ? " = " + DefaultValue.ToCSharpValue() : "");
 
-        public string GetReturnParameterString() => !IsRetval? null :
-            $"{GetModifierString()}{ParameterType.CSharpName}";
+        public string GetReturnParameterString() => !IsRetval? null : getCSharpSignatureString();
     }
 }
