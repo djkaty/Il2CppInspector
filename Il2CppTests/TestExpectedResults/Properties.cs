@@ -7,13 +7,18 @@ internal class Test // TypeDefIndex: 1811
 	// Fields
 
 	// Properties
-	private int prop1 { get; set; } // 0x00561178 0x00561180
-	protected int prop2 { get; private set; } // 0x00561188 0x00561190
-	protected int prop3 { private get; set; } // 0x00561198 0x005611A0
-	public static int prop4 { private get; set; } // 0x005611A8 0x0056120C
+	private int prop1 { get; set; } // 0x00561230 0x00561238
+	protected int prop2 { get; private set; } // 0x00561240 0x00561248
+	protected int prop3 { private get; set; } // 0x00561250 0x00561258
+	public static int prop4 { private get; set; } // 0x00561260 0x005612C4
+	public string this[int i] { get; } // 0x00561328 
+	public string this[double d] { get; } // 0x00561384 
+	public string this[long l] { set; } // 0x005613DC
+	public string this[] { get; set; } // 0x005613E0 0x0056143C
+	public bool this[int i, int j] { get; } // 0x00561440 
 
 	// Constructors
-	public Test(); // 0x00561270
+	public Test(); // 0x00561448
 
 }
 
