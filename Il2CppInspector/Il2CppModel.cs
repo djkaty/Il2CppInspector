@@ -43,10 +43,10 @@ namespace Il2CppInspector.Reflection
         }
 
         // Get an assembly by its name
-        public Assembly GetAssembly(string name) => Assemblies.First(a => a.FullName == name);
+        public Assembly GetAssembly(string name) => Assemblies.FirstOrDefault(a => a.FullName == name);
 
         // Get a type by its full name
-        public TypeInfo GetType(string name) => Types.First(t => t.FullName == name);
+        public TypeInfo GetType(string name) => Types.FirstOrDefault(t => t.FullName == name);
 
         private TypeInfo getNewTypeUsage(Il2CppType usage, MemberTypes memberType) {
             switch (usage.type) {

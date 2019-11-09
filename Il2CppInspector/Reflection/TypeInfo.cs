@@ -82,13 +82,13 @@ namespace Il2CppInspector.Reflection {
         public List<PropertyInfo> DeclaredProperties { get; } = new List<PropertyInfo>();
 
         // Get a field by its name
-        public FieldInfo GetField(string name) => DeclaredFields.First(f => f.Name == name);
+        public FieldInfo GetField(string name) => DeclaredFields.FirstOrDefault(f => f.Name == name);
 
         // Get a method by its name
-        public MethodInfo GetMethod(string name) => DeclaredMethods.First(m => m.Name == name);
+        public MethodInfo GetMethod(string name) => DeclaredMethods.FirstOrDefault(m => m.Name == name);
 
         // Get a property by its name
-        public PropertyInfo GetProperty(string name) => DeclaredProperties.First(p => p.Name == name);
+        public PropertyInfo GetProperty(string name) => DeclaredProperties.FirstOrDefault(p => p.Name == name);
 
         // Method that the type is declared in if this is a type parameter of a generic method
         // TODO: Make a unit test from this: https://docs.microsoft.com/en-us/dotnet/api/system.type.declaringmethod?view=netframework-4.8
