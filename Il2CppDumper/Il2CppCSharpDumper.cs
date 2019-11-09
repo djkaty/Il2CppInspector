@@ -222,7 +222,7 @@ namespace Il2CppInspector
                     writer.Write($"{prop.Name} {{ ");
                 // Indexer
                 else
-                    writer.Write("this[" + string.Join(", ", primary.DeclaredParameters.SkipLast(getAccess > setAccess? 0 : 1).Select(p => p.GetParameterString())) + "] { ");
+                    writer.Write("this[" + string.Join(", ", primary.DeclaredParameters.SkipLast(getAccess >= setAccess? 0 : 1).Select(p => p.GetParameterString())) + "] { ");
 
                 writer.Write((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) 
                                                + (getAccess < setAccess? prop.GetMethod.GetAccessModifierString() : "") + "get; " : "")
