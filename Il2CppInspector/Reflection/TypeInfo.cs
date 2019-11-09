@@ -87,6 +87,19 @@ namespace Il2CppInspector.Reflection {
         // Get a method by its name
         public MethodInfo GetMethod(string name) => DeclaredMethods.FirstOrDefault(m => m.Name == name);
 
+        // Get all methods with same name (overloads)
+        public MethodInfo[] GetMethods(string name) => DeclaredMethods.Where(m => m.Name == Name).ToArray();
+
+        // Get methods including inherited methods
+        public MethodInfo[] GetAllMethods() {
+            var methods = new List<IEnumerable<MethodInfo>>();
+
+            for (var type = this; type != null; type = type.BaseType)
+                methods.Add(type.DeclaredMethods);
+
+            return methods.SelectMany(m => m).ToArray();
+        }
+
         // Get a property by its name
         public PropertyInfo GetProperty(string name) => DeclaredProperties.FirstOrDefault(p => p.Name == name);
 
