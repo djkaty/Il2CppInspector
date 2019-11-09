@@ -212,8 +212,16 @@ namespace Il2CppInspector
                 var getAccess = (prop.GetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
                 var setAccess = (prop.SetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
 
-                string modifiers = getAccess > setAccess? prop.GetMethod.GetModifierString() : prop.SetMethod.GetModifierString();
-                writer.Write($"{prefix}\t{modifiers}{prop.PropertyType.CSharpName} {prop.Name} {{ ");
+                var primary = getAccess >= setAccess ? prop.GetMethod : prop.SetMethod;
+                writer.Write($"{prefix}\t{primary.GetModifierString()}{prop.PropertyType.CSharpName} ");
+
+                // Non-indexer
+                if ((!prop.CanRead || !prop.GetMethod.DeclaredParameters.Any()) && (!prop.CanWrite || prop.SetMethod.DeclaredParameters.Count == 1))
+                    writer.Write($"{prop.Name} {{ ");
+                // Indexer
+                else
+                    writer.Write("this[" + string.Join(", ", primary.DeclaredParameters.SkipLast(getAccess > setAccess? 0 : 1).Select(p => p.GetParameterString())) + "] { ");
+
                 writer.Write((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) 
                                                + (getAccess < setAccess? prop.GetMethod.GetAccessModifierString() : "") + "get; " : "")
                              + (prop.CanWrite? prop.SetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) 
