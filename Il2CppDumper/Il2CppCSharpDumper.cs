@@ -91,7 +91,7 @@ namespace Il2CppInspector
 
             // Roll-up multicast delegates to use the 'delegate' syntactic sugar
             if (type.IsClass && type.IsSealed && type.BaseType?.FullName == "System.MulticastDelegate") {
-                var del = type.DeclaredMethods.First(x => x.Name == "Invoke");
+                var del = type.GetMethod("Invoke");
                 // IL2CPP doesn't seem to retain return type attributes
                 //writer.Write(del.ReturnType.CustomAttributes.ToString(prefix, "return: "));
                 writer.Write($"delegate {del.ReturnType.CSharpName} {type.CSharpTypeDeclarationName}(");
@@ -176,8 +176,8 @@ namespace Il2CppInspector
                     if (field.IsPinvokeImpl)
                         writer.Write("extern ");
                     if (field.GetCustomAttributes(FBAttribute).Any())
-                        writer.Write($"fixed /* {((ulong) field.CustomAttributes.First(a => a.AttributeType.FullName == FBAttribute).VirtualAddress).ToAddressString()} */" +
-                                     $" {field.FieldType.DeclaredFields.First(f => f.Name == "FixedElementField").FieldType.CSharpName} {field.Name}[0]");
+                        writer.Write($"fixed /* {((ulong) field.GetCustomAttributes(FBAttribute)[0].VirtualAddress).ToAddressString()} */" +
+                                     $" {field.FieldType.GetField("FixedElementField").FieldType.CSharpName} {field.Name}[0]");
                     else
                         writer.Write($"{field.FieldType.CSharpName} {field.Name}");
                     if (field.HasDefaultValue)
