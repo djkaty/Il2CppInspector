@@ -73,7 +73,9 @@ namespace Il2CppInspector
                 writer.Write(prefix + "[Serializable]\n");
 
             // Custom attributes
-            writer.Write(type.CustomAttributes.ToString(prefix));
+            // TODO: DefaultMemberAttribute should be output if it is present and the type does not have an indexer, otherwise suppressed
+            // See https://docs.microsoft.com/en-us/dotnet/api/system.reflection.defaultmemberattribute?view=netframework-4.8
+            writer.Write(type.CustomAttributes.Where(a => a.AttributeType.Name != "DefaultMemberAttribute").ToString(prefix));
 
             writer.Write(prefix);
             if (type.IsPublic || type.IsNestedPublic)
