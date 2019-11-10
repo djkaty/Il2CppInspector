@@ -77,22 +77,10 @@ namespace Il2CppInspector
             // See https://docs.microsoft.com/en-us/dotnet/api/system.reflection.defaultmemberattribute?view=netframework-4.8
             writer.Write(type.CustomAttributes.Where(a => a.AttributeType.Name != "DefaultMemberAttribute").ToString(prefix));
 
-            writer.Write(prefix);
-            if (type.IsPublic || type.IsNestedPublic)
-                writer.Write("public ");
-            if (type.IsNestedPrivate)
-                writer.Write("private ");
-            if (type.IsNestedFamily)
-                writer.Write("protected ");
-            if (type.IsNestedAssembly || type.IsNotPublic)
-                writer.Write("internal ");
-            if (type.IsNestedFamORAssem)
-                writer.Write("protected internal ");
-            if (type.IsNestedFamANDAssem)
-                writer.Write("private protected ");
-
             // Roll-up multicast delegates to use the 'delegate' syntactic sugar
             if (type.IsClass && type.IsSealed && type.BaseType?.FullName == "System.MulticastDelegate") {
+                writer.Write(prefix + type.GetAccessModifierString());
+
                 var del = type.GetMethod("Invoke");
                 // IL2CPP doesn't seem to retain return type attributes
                 //writer.Write(del.ReturnType.CustomAttributes.ToString(prefix, "return: "));
@@ -102,23 +90,7 @@ namespace Il2CppInspector
                 return;
             }
 
-            // An abstract sealed class is a static class
-            if (type.IsAbstract && type.IsSealed)
-                writer.Write("static ");
-            else {
-                if (type.IsAbstract && !type.IsInterface)
-                    writer.Write("abstract ");
-                if (type.IsSealed && !type.IsValueType && !type.IsEnum)
-                    writer.Write("sealed ");
-            }
-            if (type.IsInterface)
-                writer.Write("interface ");
-            else if (type.IsValueType)
-                writer.Write("struct ");
-            else if (type.IsEnum)
-                writer.Write("enum ");
-            else
-                writer.Write("class ");
+            writer.Write(prefix + type.GetModifierString());
 
             var @base = type.ImplementedInterfaces.Select(x => x.CSharpName).ToList();
             if (type.BaseType != null && type.BaseType.FullName != "System.Object" && type.BaseType.FullName != "System.ValueType" && !type.IsEnum)
@@ -143,32 +115,14 @@ namespace Il2CppInspector
 
                     // Attributes
                     writer.Write(field.CustomAttributes.Where(a => a.AttributeType.FullName != FBAttribute).ToString(prefix + "\t"));
-
                     writer.Write(prefix + "\t");
-                    if (field.IsPrivate)
-                        writer.Write("private ");
-                    if (field.IsPublic)
-                        writer.Write("public ");
-                    if (field.IsFamily)
-                        writer.Write("protected ");
-                    if (field.IsAssembly)
-                        writer.Write("internal ");
-                    if (field.IsFamilyOrAssembly)
-                        writer.Write("protected internal ");
-                    if (field.IsFamilyAndAssembly)
-                        writer.Write("private protected ");
-                    if (field.IsLiteral)
-                        writer.Write("const ");
-                    // All const fields are also static by implication
-                    else if (field.IsStatic)
-                        writer.Write("static ");
-                    if (field.IsInitOnly)
-                        writer.Write("readonly ");
-                    if (field.IsPinvokeImpl)
-                        writer.Write("extern ");
+                    writer.Write(field.GetModifierString());
+
+                    // Fixed buffers
                     if (field.GetCustomAttributes(FBAttribute).Any())
-                        writer.Write($"fixed /* {((ulong) field.GetCustomAttributes(FBAttribute)[0].VirtualAddress).ToAddressString()} */" +
+                        writer.Write($"/* {((ulong) field.GetCustomAttributes(FBAttribute)[0].VirtualAddress).ToAddressString()} */" +
                                      $" {field.FieldType.GetField("FixedElementField").FieldType.CSharpName} {field.Name}[0]");
+                    // Regular fields
                     else
                         writer.Write($"{field.FieldType.CSharpName} {field.Name}");
                     if (field.HasDefaultValue)

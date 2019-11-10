@@ -5,7 +5,9 @@
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Il2CppInspector.Reflection {
     public class FieldInfo : MemberInfo
@@ -111,6 +113,33 @@ namespace Il2CppInspector.Reflection {
             // Default initialization value if present
             if (pkg.FieldDefaultValue.TryGetValue(fieldIndex, out object variant))
                 DefaultValue = variant;
+        }
+
+        public string GetAccessModifierString() => this switch {
+            { IsPrivate: true } => "private ",
+            { IsPublic: true } => "public ",
+            { IsFamily: true } => "protected ",
+            { IsAssembly: true } => "internal ",
+            { IsFamilyOrAssembly: true } => "protected internal ",
+            { IsFamilyAndAssembly: true } => "private protected ",
+            _ => ""
+        };
+
+        public string GetModifierString() {
+            var modifiers = new StringBuilder(GetAccessModifierString());
+
+            if (IsLiteral)
+                modifiers.Append("const ");
+            // All const fields are also static by implication
+            else if (IsStatic)
+                modifiers.Append("static ");
+            if (IsInitOnly)
+                modifiers.Append("readonly ");
+            if (IsPinvokeImpl)
+                modifiers.Append("extern ");
+            if (GetCustomAttributes("System.Runtime.CompilerServices.FixedBufferAttribute").Any())
+                modifiers.Append("fixed ");
+            return modifiers.ToString();
         }
     }
 }

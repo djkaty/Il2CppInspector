@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Il2CppInspector.Reflection {
     public class TypeInfo : MemberInfo
@@ -452,6 +453,43 @@ namespace Il2CppInspector.Reflection {
                 + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.Name)) + "]" : ""))
             + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
             + (IsPointer ? "*" : "");
+
+        public string GetAccessModifierString() => this switch {
+            { IsPublic: true } => "public ",
+            { IsNotPublic: true } => "internal ",
+
+            { IsNestedPublic: true } => "public ",
+            { IsNestedPrivate: true } => "private ",
+            { IsNestedFamily: true } => "protected ",
+            { IsNestedAssembly: true } => "internal ",
+            { IsNestedFamORAssem: true } => "protected internal ",
+            { IsNestedFamANDAssem: true } => "private protected ",
+            _ => throw new InvalidOperationException("Unknown type access modifier")
+        };
+
+        public string GetModifierString() {
+            var modifiers = new StringBuilder(GetAccessModifierString());
+
+            // An abstract sealed class is a static class
+            if (IsAbstract && IsSealed)
+                modifiers.Append("static ");
+            else {
+                if (IsAbstract && !IsInterface)
+                    modifiers.Append("abstract ");
+                if (IsSealed && !IsValueType && !IsEnum)
+                    modifiers.Append("sealed ");
+            }
+            if (IsInterface)
+                modifiers.Append("interface ");
+            else if (IsValueType)
+                modifiers.Append("struct ");
+            else if (IsEnum)
+                modifiers.Append("enum ");
+            else
+                modifiers.Append("class ");
+
+            return modifiers.ToString();
+        }
 
         public override string ToString() => Name;
     }
