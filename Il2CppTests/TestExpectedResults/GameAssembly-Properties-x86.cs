@@ -14,7 +14,7 @@ internal class Test // TypeDefIndex: 1811
 	public string this[int i] { get; } // 0x1034DA90 
 	public string this[double d] { get; } // 0x1034DA60 
 	public string this[long l] { set; } // 0x100C5530
-	public string this[] { get; set; } // 0x1034DAC0 0x100C5530
+	public string this[float f] { get; set; } // 0x1034DAC0 0x100C5530
 	public bool this[int i, int j] { get; } // 0x100E5880 
 
 	// Constructors

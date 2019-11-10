@@ -7,14 +7,14 @@
 namespace Il2CppTests.TestSources
 {
 #pragma warning disable CS0169
-    internal unsafe class Test
+    internal class Test
     {
         private int[] foo;
         private int[] bar = new int[10];
 
         private struct fixedSizeArrayStruct
         {
-            private fixed int fixedSizeArray[25];
+            private unsafe fixed int fixedSizeArray[25];
         }
 
         private float[][] arrayOfArrays;
@@ -25,10 +25,40 @@ namespace Il2CppTests.TestSources
 
         public int[,] BarMethod(int[,,] baz) => new int[5, 6];
 
-        private int*[] arrayOfPointer;
-        private int** pointerToPointer;
+        // Unsafe fields
+        private unsafe int*[] arrayOfPointer;
+        private unsafe int** pointerToPointer;
+        private unsafe float*[][,,][] confusedElephant;
 
-        private float*[][,,][] confusedElephant;
+        // Unsafe constructor
+        public unsafe Test(int* u) {}
+
+        // Unsafe delegate
+        public unsafe delegate void OnUnsafe(int*ud);
+
+        // Unsafe property
+        public unsafe int* PointerProperty { get; set; }
+
+        // Unsafe method (method with unsafe parameter)
+        public unsafe void UnsafeMethod(int* unsafePointerArgument) {}
+
+        // Unsafe method (method with unsafe return type)
+        public unsafe int* UnsafeReturnMethod() => (int*) 0;
+
+        // Unsafe method with both
+        public unsafe int* UnsafeMethod2(int* i) => i;
+
+        // Unsafe indexers
+        public unsafe int* this[int i] => (int*) 0;
+        public unsafe int this[int* p] => 0;
+        public unsafe float* this[float* fp] => (float*) 0;
+
+        // Unsafe generic type (unmanaged constraint introduced in C# 7.3)
+        public class NestedUnsafe<T> where T : unmanaged
+        {
+            unsafe T* UnsafeGenericReturn() => null;
+            unsafe void UnsafeGenericMethod(T* pt) {}
+        }
     }
 #pragma warning restore CS0169
 }
