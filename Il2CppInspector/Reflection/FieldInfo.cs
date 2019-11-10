@@ -128,6 +128,8 @@ namespace Il2CppInspector.Reflection {
         public string GetModifierString() {
             var modifiers = new StringBuilder(GetAccessModifierString());
 
+            if (FieldType.RequiresUnsafeContext || GetCustomAttributes("System.Runtime.CompilerServices.FixedBufferAttribute").Any())
+                modifiers.Append("unsafe ");
             if (IsLiteral)
                 modifiers.Append("const ");
             // All const fields are also static by implication

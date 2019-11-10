@@ -47,6 +47,8 @@ namespace Il2CppInspector.Reflection
         public bool IsStatic => (Attributes & MethodAttributes.Static) == MethodAttributes.Static;
         public bool IsVirtual => (Attributes & MethodAttributes.Virtual) == MethodAttributes.Virtual;
 
+        public virtual bool RequiresUnsafeContext => DeclaredParameters.Any(p => p.ParameterType.RequiresUnsafeContext);
+
         // TODO: GetMethodBody()
 
         public string CSharpName =>
@@ -132,6 +134,8 @@ namespace Il2CppInspector.Reflection
 
             var modifiers = new StringBuilder(GetAccessModifierString());
 
+            if (RequiresUnsafeContext)
+                modifiers.Append("unsafe ");
             if (IsAbstract)
                 modifiers.Append("abstract ");
             // Methods that implement interfaces are IsVirtual && IsFinal with MethodAttributes.NewSlot (don't show 'virtual sealed' for these)

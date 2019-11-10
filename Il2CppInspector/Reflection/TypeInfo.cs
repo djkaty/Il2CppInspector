@@ -164,6 +164,9 @@ namespace Il2CppInspector.Reflection {
         public bool IsSpecialName => (Attributes & TypeAttributes.SpecialName) == TypeAttributes.SpecialName;
         public bool IsValueType => BaseType?.FullName == "System.ValueType";
 
+        // Helper function for determining if using this type as a field, parameter etc. requires that field or method to be declared as unsafe
+        public bool RequiresUnsafeContext => IsPointer || (HasElementType && ElementType.RequiresUnsafeContext);
+
         // May get overridden by Il2CppType-based constructor below
         public override MemberTypes MemberType { get; } = MemberTypes.TypeInfo;
 

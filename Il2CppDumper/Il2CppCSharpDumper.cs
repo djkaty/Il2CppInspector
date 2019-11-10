@@ -84,6 +84,8 @@ namespace Il2CppInspector
                 var del = type.GetMethod("Invoke");
                 // IL2CPP doesn't seem to retain return type attributes
                 //writer.Write(del.ReturnType.CustomAttributes.ToString(prefix, "return: "));
+                if (del.RequiresUnsafeContext)
+                    writer.Write("unsafe ");
                 writer.Write($"delegate {del.ReturnType.CSharpName} {type.CSharpTypeDeclarationName}(");
                 writer.Write(del.GetParametersString());
                 writer.Write($"); // TypeDefIndex: {type.Index}; {del.VirtualAddress.ToAddressString()}\n");
