@@ -97,18 +97,7 @@ namespace Il2CppInspector
                 // IL2CPP doesn't seem to retain return type attributes
                 //writer.Write(del.ReturnType.CustomAttributes.ToString(prefix, "return: "));
                 writer.Write($"delegate {del.ReturnType.CSharpName} {type.CSharpTypeDeclarationName}(");
-
-                bool first = true;
-                foreach (var param in del.DeclaredParameters) {
-                    if (!first)
-                        writer.Write(", ");
-                    first = false;
-                    if (param.IsOptional)
-                        writer.Write("optional ");
-                    if (param.IsOut)
-                        writer.Write("out ");
-                    writer.Write($"{param.ParameterType.CSharpName} {param.Name}");
-                }
+                writer.Write(del.GetParametersString());
                 writer.Write($"); // TypeDefIndex: {type.Index}; {del.VirtualAddress.ToAddressString()}\n");
                 return;
             }
