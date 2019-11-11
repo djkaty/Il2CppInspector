@@ -33,6 +33,7 @@ namespace Il2CppInspector
         public Il2CppEventDefinition[] Events => Metadata.Events;
         public Il2CppGenericContainer[] GenericContainers => Metadata.GenericContainers;
         public Il2CppGenericParameter[] GenericParameters => Metadata.GenericParameters;
+        public int[] GenericConstraintIndices => Metadata.GenericConstraintIndices;
         public Il2CppCustomAttributeTypeRange[] AttributeTypeRanges => Metadata.AttributeTypeRanges;
         public int[] InterfaceUsageIndices => Metadata.InterfaceUsageIndices;
         public int[] NestedTypeIndices => Metadata.NestedTypeIndices;
