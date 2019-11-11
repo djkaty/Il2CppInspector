@@ -36,7 +36,7 @@ namespace Il2CppInspector
                     writer.Write($"// Image {asm.Index}: {asm.FullName} - {asm.ImageDefinition.typeStart}\n");
 
                     // Assembly-level attributes
-                    writer.Write(asm.CustomAttributes.ToString(attributePrefix: "assembly: "));
+                    writer.Write(asm.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(attributePrefix: "assembly: "));
                     if (asm.CustomAttributes.Any())
                         writer.Write("\n");
                 }
@@ -75,7 +75,7 @@ namespace Il2CppInspector
             // Custom attributes
             // TODO: DefaultMemberAttribute should be output if it is present and the type does not have an indexer, otherwise suppressed
             // See https://docs.microsoft.com/en-us/dotnet/api/system.reflection.defaultmemberattribute?view=netframework-4.8
-            writer.Write(type.CustomAttributes.Where(a => a.AttributeType.Name != "DefaultMemberAttribute").ToString(prefix));
+            writer.Write(type.CustomAttributes.Where(a => a.AttributeType.Name != "DefaultMemberAttribute").OrderBy(a => a.AttributeType.Name).ToString(prefix));
 
             // Roll-up multicast delegates to use the 'delegate' syntactic sugar
             if (type.IsClass && type.IsSealed && type.BaseType?.FullName == "System.MulticastDelegate") {
@@ -116,7 +116,7 @@ namespace Il2CppInspector
                         writer.Write(prefix + "\t[NonSerialized]\n");
 
                     // Attributes
-                    writer.Write(field.CustomAttributes.Where(a => a.AttributeType.FullName != FBAttribute).ToString(prefix + "\t"));
+                    writer.Write(field.CustomAttributes.Where(a => a.AttributeType.FullName != FBAttribute).OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
                     writer.Write(prefix + "\t");
                     writer.Write(field.GetModifierString());
 
@@ -153,7 +153,7 @@ namespace Il2CppInspector
 
             foreach (var prop in type.DeclaredProperties) {
                 // Attributes
-                writer.Write(prop.CustomAttributes.ToString(prefix + "\t"));
+                writer.Write(prop.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
 
                 // The access mask enum values go from 1 (private) to 6 (public) in order from most to least restrictive
                 var getAccess = (prop.GetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
@@ -189,7 +189,7 @@ namespace Il2CppInspector
 
             foreach (var evt in type.DeclaredEvents) {
                 // Attributes
-                writer.Write(evt.CustomAttributes.ToString(prefix + "\t"));
+                writer.Write(evt.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
 
                 string modifiers = evt.AddMethod?.GetModifierString();
                 writer.Write($"{prefix}\t{modifiers}event {evt.EventHandlerType.CSharpName} {evt.Name} {{\n");
@@ -220,7 +220,7 @@ namespace Il2CppInspector
 
             foreach (var method in type.DeclaredConstructors) {
                 // Attributes
-                writer.Write(method.CustomAttributes.ToString(prefix + "\t"));
+                writer.Write(method.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
 
                 writer.Write($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString()}(");
                 writer.Write(method.GetParametersString());
@@ -239,7 +239,8 @@ namespace Il2CppInspector
                     continue;
 
                 // Attributes
-                writer.Write(method.CustomAttributes.ToString(prefix + "\t"));
+                writer.Write(method.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
+
                 // IL2CPP doesn't seem to retain return type attributes
                 //writer.Write(method.ReturnType.CustomAttributes.ToString(prefix + "\t", "return: "));
                 writer.Write($"{prefix}\t{method.GetModifierString()}");
