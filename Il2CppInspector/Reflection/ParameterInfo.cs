@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Il2CppInspector.Reflection
@@ -96,7 +97,8 @@ namespace Il2CppInspector.Reflection
         public string GetSignatureString() => $"{GetModifierString()}{ParameterType.FullName}";
 
         public string GetParameterString() => IsRetval? null :
-            $"{CustomAttributes.ToString(inline: true).Replace("[ParamArray]", "params")}"
+            (Position == 0 && Member.GetCustomAttributes("System.Runtime.CompilerServices.ExtensionAttribute").Any()? "this ":"")
+            + $"{CustomAttributes.ToString(inline: true).Replace("[ParamArray]", "params")}"
             + $"{getCSharpSignatureString()} {Name}"
             + (HasDefaultValue ? " = " + DefaultValue.ToCSharpValue() : "");
 

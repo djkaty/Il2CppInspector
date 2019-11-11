@@ -25,6 +25,8 @@ namespace Il2CppInspector
 
         private const string CGAttribute = "System.Runtime.CompilerServices.CompilerGeneratedAttribute";
         private const string FBAttribute = "System.Runtime.CompilerServices.FixedBufferAttribute";
+        private const string ExtAttribute = "System.Runtime.CompilerServices.ExtensionAttribute";
+        private const string DMAttribute = "System.Reflection.DefaultMemberAttribute";
 
         public Il2CppCSharpDumper(Il2CppModel model) => this.model = model;
 
@@ -36,7 +38,7 @@ namespace Il2CppInspector
                     writer.Write($"// Image {asm.Index}: {asm.FullName} - {asm.ImageDefinition.typeStart}\n");
 
                     // Assembly-level attributes
-                    writer.Write(asm.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(attributePrefix: "assembly: "));
+                    writer.Write(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name).ToString(attributePrefix: "assembly: "));
                     if (asm.CustomAttributes.Any())
                         writer.Write("\n");
                 }
@@ -75,7 +77,8 @@ namespace Il2CppInspector
             // Custom attributes
             // TODO: DefaultMemberAttribute should be output if it is present and the type does not have an indexer, otherwise suppressed
             // See https://docs.microsoft.com/en-us/dotnet/api/system.reflection.defaultmemberattribute?view=netframework-4.8
-            writer.Write(type.CustomAttributes.Where(a => a.AttributeType.Name != "DefaultMemberAttribute").OrderBy(a => a.AttributeType.Name).ToString(prefix));
+            writer.Write(type.CustomAttributes.Where(a => a.AttributeType.FullName != DMAttribute && a.AttributeType.FullName != ExtAttribute)
+                                            .OrderBy(a => a.AttributeType.Name).ToString(prefix));
 
             // Roll-up multicast delegates to use the 'delegate' syntactic sugar
             if (type.IsClass && type.IsSealed && type.BaseType?.FullName == "System.MulticastDelegate") {
@@ -230,28 +233,50 @@ namespace Il2CppInspector
                 writer.Write("\n");
 
             // Methods
-            if (type.DeclaredMethods.Except(usedMethods).Any())
+            // Don't re-output methods for constructors, properties, events etc.
+            var methods = type.DeclaredMethods.Except(usedMethods).Where(m => m.CustomAttributes.All(a => a.AttributeType.FullName != ExtAttribute));
+            if (methods.Any()) {
                 writer.Write(prefix + "\t// Methods\n");
 
-            // Don't re-output methods for constructors, properties, events etc.
-            foreach (var method in type.DeclaredMethods.Except(usedMethods)) {
-                if (SuppressGenerated && method.GetCustomAttributes(CGAttribute).Any())
-                    continue;
-
-                // Attributes
-                writer.Write(method.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
-
-                // IL2CPP doesn't seem to retain return type attributes
-                //writer.Write(method.ReturnType.CustomAttributes.ToString(prefix + "\t", "return: "));
-                writer.Write($"{prefix}\t{method.GetModifierString()}");
-                if (method.Name != "op_Implicit" && method.Name != "op_Explicit")
-                    writer.Write($"{method.ReturnParameter.GetReturnParameterString()} {method.CSharpName}{method.GetTypeParametersString()}");
-                else
-                    writer.Write($"{method.CSharpName}{method.ReturnType.CSharpName}");
-                writer.Write("(" + method.GetParametersString());
-                writer.Write(");" + (method.VirtualAddress != 0 ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
+                foreach (var method in methods) {
+                    writer.Write(generateMethod(method, prefix));
+                    usedMethods.Add(method);
+                }
+                writer.Write("\n");
             }
+
+            // Extension methods
+            methods = type.DeclaredMethods.Except(usedMethods);
+            if (methods.Any())
+                writer.Write(prefix + "\t// Extension methods\n");
+
+            foreach (var method in type.DeclaredMethods.Except(usedMethods)) {
+                writer.Write(generateMethod(method, prefix));
+            }
+
             writer.Write(prefix + "}\n");
+        }
+
+        private string generateMethod(MethodInfo method, string prefix) {
+            if (SuppressGenerated && method.GetCustomAttributes(CGAttribute).Any())
+                return string.Empty;
+
+            var writer = new StringBuilder();
+
+            // Attributes
+            writer.Append(method.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
+
+            // IL2CPP doesn't seem to retain return type attributes
+            //writer.Append(method.ReturnType.CustomAttributes.ToString(prefix + "\t", "return: "));
+            writer.Append($"{prefix}\t{method.GetModifierString()}");
+            if (method.Name != "op_Implicit" && method.Name != "op_Explicit")
+                writer.Append($"{method.ReturnParameter.GetReturnParameterString()} {method.CSharpName}{method.GetTypeParametersString()}");
+            else
+                writer.Append($"{method.CSharpName}{method.ReturnType.CSharpName}");
+            writer.Append("(" + method.GetParametersString());
+            writer.Append(");" + (method.VirtualAddress != 0 ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
+
+            return writer.ToString();
         }
     }
 }
