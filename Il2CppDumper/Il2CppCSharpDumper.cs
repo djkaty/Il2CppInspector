@@ -104,7 +104,16 @@ namespace Il2CppInspector
                 @base.Insert(0, type.GetEnumUnderlyingType().CSharpName);
             var baseText = @base.Count > 0 ? " : " + string.Join(", ", @base) : string.Empty;
 
-            writer.Write($"{type.CSharpTypeDeclarationName}{baseText} // TypeDefIndex: {type.Index}\n" + prefix + "{\n");
+            writer.Write($"{type.CSharpTypeDeclarationName}{baseText} // TypeDefIndex: {type.Index}\n");
+
+            if (type.GenericTypeParameters != null)
+                foreach (var gp in type.GenericTypeParameters) {
+                    var constraint = gp.GetTypeConstraintsString();
+                    if (constraint != string.Empty)
+                        writer.Write($"{prefix}\t{constraint}\n");
+                }
+
+            writer.Write(prefix + "{\n");
 
             // Fields
             if (!type.IsEnum) {
@@ -273,8 +282,16 @@ namespace Il2CppInspector
                 writer.Append($"{method.ReturnParameter.GetReturnParameterString()} {method.CSharpName}{method.GetTypeParametersString()}");
             else
                 writer.Append($"{method.CSharpName}{method.ReturnType.CSharpName}");
-            writer.Append("(" + method.GetParametersString());
-            writer.Append(");" + (method.VirtualAddress != 0 ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
+            writer.Append("(" + method.GetParametersString() + ")");
+
+            if (method.GenericTypeParameters != null)
+                foreach (var gp in method.GenericTypeParameters) {
+                    var constraint = gp.GetTypeConstraintsString();
+                    if (constraint != string.Empty)
+                        writer.Append($"\n{prefix}\t\t{constraint}");
+                }
+
+            writer.Append(";" + (method.VirtualAddress != 0 ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
 
             return writer.ToString();
         }

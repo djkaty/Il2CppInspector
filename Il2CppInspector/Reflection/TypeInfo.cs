@@ -85,6 +85,18 @@ namespace Il2CppInspector.Reflection {
         // Get a field by its name
         public FieldInfo GetField(string name) => DeclaredFields.FirstOrDefault(f => f.Name == name);
 
+        private readonly int genericConstraintIndex;
+
+        private readonly int genericConstraintCount;
+
+        // Get type constraints on a generic parameter
+        public TypeInfo[] GetGenericParameterConstraints() {
+            var types = new TypeInfo[genericConstraintCount];
+            for (int c = 0; c < genericConstraintCount; c++)
+                types[c] = Assembly.Model.GetTypeFromUsage(Assembly.Model.Package.GenericConstraintIndices[genericConstraintIndex + c], MemberTypes.TypeInfo);
+            return types;
+        }
+
         // Get a method by its name
         public MethodInfo GetMethod(string name) => DeclaredMethods.FirstOrDefault(m => m.Name == name);
 
@@ -125,6 +137,10 @@ namespace Il2CppInspector.Reflection {
                     + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.FullName ?? x.Name)) + "]" : ""))
                 + (IsArray? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
                 + (IsPointer? "*" : "");
+
+        public GenericParameterAttributes GenericParameterAttributes { get; }
+
+        public int GenericParameterPosition { get; }
 
         public List<TypeInfo> GenericTypeParameters { get; }
 
@@ -227,8 +243,6 @@ namespace Il2CppInspector.Reflection {
                 var container = pkg.GenericContainers[Definition.genericContainerIndex];
 
                 GenericTypeParameters = pkg.GenericParameters.Skip((int) container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToList();
-
-                // TODO: Constraints
             }
 
             // Add to global type definition list
@@ -427,14 +441,23 @@ namespace Il2CppInspector.Reflection {
             // Same visibility attributes as declaring type
             Attributes = declaringType.Attributes;
 
-            // Same namespace as delcaring type
+            // Same namespace as declaring type
             Namespace = declaringType.Namespace;
 
-            // Base type of object
-            // TODO: This may change under constraints
+            // Special constraints
+            GenericParameterAttributes = (GenericParameterAttributes) param.flags;
+
+            // Type constraints
+            genericConstraintIndex = param.constraintsStart;
+            genericConstraintCount = param.constraintsCount;
+
+            // Base type of object (set by default)
 
             // Name of parameter
-            Name = declaringType.Assembly.Model.Package.Strings[param.nameIndex];
+            Name = Assembly.Model.Package.Strings[param.nameIndex];
+
+            // Position
+            GenericParameterPosition = param.num;
 
             IsGenericParameter = true;
             IsGenericType = false;
@@ -492,6 +515,27 @@ namespace Il2CppInspector.Reflection {
                 modifiers.Append("class ");
 
             return modifiers.ToString();
+        }
+
+        public string GetTypeConstraintsString() {
+            if (!IsGenericParameter)
+                return string.Empty;
+
+            var typeConstraints = GetGenericParameterConstraints();
+            if (GenericParameterAttributes == GenericParameterAttributes.None && typeConstraints.Length == 0)
+                return string.Empty;
+
+            var constraintList = typeConstraints.Where(c => c.FullName != "System.ValueType").Select(c => c.CSharpTypeDeclarationName).ToList();
+
+            if ((GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) == GenericParameterAttributes.NotNullableValueTypeConstraint)
+                constraintList.Add("struct");
+            if ((GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) == GenericParameterAttributes.ReferenceTypeConstraint)
+                constraintList.Add("class");
+            if ((GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) == GenericParameterAttributes.DefaultConstructorConstraint
+                && !constraintList.Contains("struct"))
+                constraintList.Add("new()");
+
+            return "where " + Name + " : " + string.Join(", ", constraintList);
         }
 
         public override string ToString() => Name;

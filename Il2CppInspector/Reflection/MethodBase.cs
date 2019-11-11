@@ -76,8 +76,6 @@ namespace Il2CppInspector.Reflection
                 var container = pkg.GenericContainers[Definition.genericContainerIndex];
 
                 GenericTypeParameters = pkg.GenericParameters.Skip((int)container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToList();
-
-                // TODO: Constraints
             }
 
             // Set method attributes

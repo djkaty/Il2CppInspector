@@ -382,8 +382,8 @@ namespace Il2CppInspector
         public int nameIndex; // StringIndex
         public short constraintsStart; // GenericParameterConstraintIndex
         public short constraintsCount;
-        public ushort num;
-        public ushort flags;
+        public ushort num; // Generic parameter position
+        public ushort flags; // GenericParameterAttributes
     }
 
     public class Il2CppCustomAttributeTypeRange
