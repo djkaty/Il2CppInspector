@@ -1,30 +1,30 @@
 ﻿// Image 0: mscorlib.dll - 0
-[assembly: AssemblyCompany] // 0x000000018000E950
-[assembly: AssemblyCopyright] // 0x000000018000E950
-[assembly: AssemblyDefaultAlias] // 0x000000018000E950
-[assembly: AssemblyDelaySign] // 0x000000018000E950
-[assembly: AssemblyDescription] // 0x000000018000E950
-[assembly: AssemblyFileVersion] // 0x000000018000E950
-[assembly: AssemblyInformationalVersion] // 0x000000018000E950
-[assembly: AssemblyKeyFile] // 0x000000018000E950
-[assembly: AssemblyProduct] // 0x000000018000E950
-[assembly: AssemblyTitle] // 0x000000018000E950
-[assembly: CLSCompliant] // 0x000000018000E950
-[assembly: CompilationRelaxations] // 0x000000018000E950
-[assembly: ComVisible] // 0x000000018000E950
-[assembly: Debuggable] // 0x000000018000E950
-[assembly: DefaultDependency] // 0x000000018000E950
-[assembly: Guid] // 0x000000018000E950
-[assembly: NeutralResourcesLanguage] // 0x000000018000E950
-[assembly: RuntimeCompatibility] // 0x000000018000E950
-[assembly: SatelliteContractVersion] // 0x000000018000E950
-[assembly: StringFreezing] // 0x000000018000E950
-[assembly: TypeLibVersion] // 0x000000018000E950
+[assembly: AssemblyCompany] // 0x000000018000E050
+[assembly: AssemblyCopyright] // 0x000000018000E050
+[assembly: AssemblyDefaultAlias] // 0x000000018000E050
+[assembly: AssemblyDelaySign] // 0x000000018000E050
+[assembly: AssemblyDescription] // 0x000000018000E050
+[assembly: AssemblyFileVersion] // 0x000000018000E050
+[assembly: AssemblyInformationalVersion] // 0x000000018000E050
+[assembly: AssemblyKeyFile] // 0x000000018000E050
+[assembly: AssemblyProduct] // 0x000000018000E050
+[assembly: AssemblyTitle] // 0x000000018000E050
+[assembly: CLSCompliant] // 0x000000018000E050
+[assembly: CompilationRelaxations] // 0x000000018000E050
+[assembly: ComVisible] // 0x000000018000E050
+[assembly: Debuggable] // 0x000000018000E050
+[assembly: DefaultDependency] // 0x000000018000E050
+[assembly: Guid] // 0x000000018000E050
+[assembly: NeutralResourcesLanguage] // 0x000000018000E050
+[assembly: RuntimeCompatibility] // 0x000000018000E050
+[assembly: SatelliteContractVersion] // 0x000000018000E050
+[assembly: StringFreezing] // 0x000000018000E050
+[assembly: TypeLibVersion] // 0x000000018000E050
 
 // Image 1: GenericTypes.dll - 1810
-[assembly: CompilationRelaxations] // 0x000000018000CAF0
-[assembly: Debuggable] // 0x000000018000CAF0
-[assembly: RuntimeCompatibility] // 0x000000018000CAF0
+[assembly: CompilationRelaxations] // 0x000000018000C150
+[assembly: Debuggable] // 0x000000018000C150
+[assembly: RuntimeCompatibility] // 0x000000018000C150
 
 
 // Namespace: <default namespace>
@@ -71,12 +71,14 @@ internal sealed class Locale // TypeDefIndex: 101
 
 	// Methods
 	public static string GetText(string msg); // 0x0000000180123590
-	public static string GetText(string fmt, params /* 0x0000000180009C10 */ object[] args); // 0x00000001802C64F0
+	public static string GetText(string fmt, params /* 0x00000001800090D0 */ object[] args); // 0x00000001802C64F0
+
 }
 
 
+
 // Namespace: Il2CppTests.TestSources
-public class Base<T, U> // TypeDefIndex: 1811
+public class Base<T, U> // TypeDefIndex: 1815
 {
 	// Constructors
 	public Base();
@@ -84,13 +86,13 @@ public class Base<T, U> // TypeDefIndex: 1811
 }
 
 // Namespace: Il2CppTests.TestSources
-public class Derived<V> : Base<string, V> // TypeDefIndex: 1812
+public class Derived<V> : Base<string, V> // TypeDefIndex: 1816
 {
 	// Fields
 	public G<Derived<V>> F; // 0x00
 
 	// Nested types
-	public class Nested // TypeDefIndex: 1813
+	public class Nested // TypeDefIndex: 1817
 	{
 		// Constructors
 		public Nested();
@@ -103,7 +105,7 @@ public class Derived<V> : Base<string, V> // TypeDefIndex: 1812
 }
 
 // Namespace: Il2CppTests.TestSources
-public class G<T> // TypeDefIndex: 1814
+public class G<T> // TypeDefIndex: 1818
 {
 	// Constructors
 	public G();
@@ -111,12 +113,46 @@ public class G<T> // TypeDefIndex: 1814
 }
 
 // Namespace: Il2CppTests.TestSources
-internal class Test // TypeDefIndex: 1815
+internal class Test // TypeDefIndex: 1819
 {
 	// Constructors
 	public Test(); // 0x00000001800E2000
 
 	// Methods
-	public void GenericTypesTest(); // 0x00000001803E0E50
+	public void GenericTypesTest(); // 0x00000001803E0ED0
+
+}
+
+// Namespace: Il2CppTests.TestSources
+internal class ConstrainedValueType<V> // TypeDefIndex: 1820
+	where V : struct
+{
+	// Constructors
+	public ConstrainedValueType();
+
+}
+
+// Namespace: Il2CppTests.TestSources
+internal class ConstrainedRefType<R> // TypeDefIndex: 1821
+	where R : class
+{
+	// Constructors
+	public ConstrainedRefType();
+
+	// Methods
+	[NullableContext] // 0x0000000180009190
+	public void ConstrainedMethodNotNull<N>(N notnullArgument, R bar);
+	public void ConstrainedUnmanaged<U>(U unmanagedArgument)
+		where U : struct;
+	public void MultipleConstraintsMethod<C>(C constrained)
+		where C : R, new();
+	public void MultipleArgumentsMultipleConstraintsMethod<B, I>(B baseArgument, I interfaceArgument)
+		where B : Derived<R>, new()
+		where I : Test, IDisposable, IEnumerable<R>;
+	public void DelegateConstraint<D>(D del)
+		where D : Delegate;
+	public void EnumConstraint<E>(E enumeration)
+		where E : Enum;
+
 }
 

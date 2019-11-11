@@ -73,6 +73,7 @@ internal sealed class Locale // TypeDefIndex: 101
 	// Methods
 	public static string GetText(string msg); // 0x100F7810
 	public static string GetText(string fmt, params /* 0x10009B80 */ object[] args); // 0x10261460
+
 }
 
 
@@ -118,5 +119,6 @@ public class Test // TypeDefIndex: 1813
 	// Methods
 	[Example] // 0x1000D550
 	public void TestMethod([Example] /* 0x1000D590 */ object arg); // 0x100C5530
+
 }
 

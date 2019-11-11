@@ -72,6 +72,7 @@ internal sealed class Locale // TypeDefIndex: 101
 	// Methods
 	public static string GetText(string msg); // 0x003EC500
 	public static string GetText(string fmt, params /* 0x000A375C */ object[] args); // 0x003EC504
+
 }
 
 
@@ -86,8 +87,9 @@ internal class Test // TypeDefIndex: 1811
 
 	// Methods
 	public void MethodWithRefParameters(int a, ref int b, int c, ref int d); // 0x00561080
-	public void MethowWithInRefOut(in int a, ref int b, out int c); // 0x00561084
+	public void MethodWithInRefOut(in int a, ref int b, out int c); // 0x00561084
 	public ref float MethodWithRefReturnType(); // 0x00561090
+
 }
 
 // Namespace: Il2CppTests.TestSources

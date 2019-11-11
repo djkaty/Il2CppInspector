@@ -72,6 +72,7 @@ internal sealed class Locale // TypeDefIndex: 101
 	// Methods
 	public static string GetText(string msg); // 0x100F7810
 	public static string GetText(string fmt, params /* 0x10009AA0 */ object[] args); // 0x10261460
+
 }
 
 
@@ -108,6 +109,7 @@ internal class Test // TypeDefIndex: 1813
 	public unsafe delegate void OnUnsafe(int* ud); // TypeDefIndex: 1816; 0x1034DA60
 
 	public class NestedUnsafe<T> // TypeDefIndex: 1817
+		where T : struct
 	{
 		// Constructors
 		public NestedUnsafe();
@@ -115,6 +117,7 @@ internal class Test // TypeDefIndex: 1813
 		// Methods
 		private unsafe T* UnsafeGenericReturn();
 		private unsafe void UnsafeGenericMethod(T* pt);
+
 	}
 
 	// Constructors
@@ -126,5 +129,6 @@ internal class Test // TypeDefIndex: 1813
 	public unsafe void UnsafeMethod(int* unsafePointerArgument); // 0x100C5530
 	public unsafe int* UnsafeReturnMethod(); // 0x100C5600
 	public unsafe int* UnsafeMethod2(int* i); // 0x10102390
+
 }
 
