@@ -11,6 +11,8 @@ namespace Il2CppInspector
 {
     // Unity 4.6.1p5 - first release, no global-metadata.dat
     // Unity 5.2.0f3 -> v15
+    // Unity 5.3.0f1 -> v16
+    // ..
     // Unity 5.6.2p3 -> v23
     // Unity 5.6.4f1 -> v23
     // Unity 2017.2f3 -> v24
@@ -39,7 +41,9 @@ namespace Il2CppInspector
         public int methodsOffset; // Il2CppMethodDefinition
         public int methodsCount;
 
+        [Version(Min = 16)]
         public int parameterDefaultValuesOffset; // Il2CppParameterDefaultValue
+        [Version(Min = 16)]
         public int parameterDefaultValuesCount;
 
         public int fieldDefaultValuesOffset; // Il2CppFieldDefaultValue
@@ -47,7 +51,9 @@ namespace Il2CppInspector
         public int fieldAndParameterDefaultValueDataOffset; // uint8_t
         public int fieldAndParameterDefaultValueDataCount;
 
+        [Version(Min = 16)]
         public int fieldMarshaledSizesOffset; // Il2CppFieldMarshaledSize
+        [Version(Min = 16)]
         public int fieldMarshaledSizesCount;
 
         public int parametersOffset; // Il2CppParameterDefinition
@@ -76,9 +82,13 @@ namespace Il2CppInspector
         [Version(Max = 24.1)]
         public int rgctxEntriesCount;
 
+        [Version(Min = 16)]
         public int imagesOffset; // Il2CppImageDefinition
+        [Version(Min = 16)]
         public int imagesCount;
+        [Version(Min = 16)]
         public int assembliesOffset; // Il2CppAssemblyDefinition
+        [Version(Min = 16)]
         public int assembliesCount;
 
         [Version(Min = 19)]
@@ -159,7 +169,13 @@ namespace Il2CppInspector
     public class Il2CppAssemblyDefinition
     {
         public int imageIndex;
+
+        [Version(Min = 19)]
         public uint token;
+
+        [Version(Max = 24.0)]
+        public int customAttributeIndex;
+
         public int referencedAssemblyStart;
         public int referencedAssemblyCount;
         public Il2CppAssemblyNameDefinition aname;
@@ -253,7 +269,10 @@ namespace Il2CppInspector
     public class Il2CppMethodDefinition
     {
         public int nameIndex;
+
+        [Version(Min = 16)]
         public int declaringType;
+
         public int returnType;
         public int parameterStart;
 
