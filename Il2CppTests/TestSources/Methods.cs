@@ -14,10 +14,16 @@ namespace Il2CppTests.TestSources
         public virtual void VirtualMethod() { }
 
         // Method with value type return type
-        public int ValueTypeReturnMethod() => 0;
+        public double ValueTypeReturnMethod() => 1.DivideByXExtension(2.0f);
 
         // Method with reference type return type
         public StringBuilder ReferenceTypeReturnMethod() => new StringBuilder();
+    }
+
+    public static class TestExtension
+    {
+        // Extension method on int
+        public static double DivideByXExtension(this int a, float x) => (double) a / x;
     }
 
     internal abstract class TestAbstract
