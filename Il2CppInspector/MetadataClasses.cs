@@ -9,11 +9,16 @@ using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
+    // Unity 4.6.1p5 - first release, no global-metadata.dat
+    // Unity 5.2.0f3 -> v15
     // Unity 5.6.2p3 -> v23
     // Unity 5.6.4f1 -> v23
     // Unity 2017.2f3 -> v24
+    // Unity 2018.2.0f2 -> v24
     // Unity 2018.3.0f2 -> v24.1
     // Unity 2019.2.8f1 -> v24.2
+    // https://unity3d.com/get-unity/download/archive
+    // Metadata version is written at the end of Unity.IL2CPP.MetadataCacheWriter.WriteLibIl2CppMetadata (Unity.IL2CPP.dll)
 
     // From il2cpp-metadata.h
 #pragma warning disable CS0649
@@ -33,14 +38,18 @@ namespace Il2CppInspector
         public int propertiesCount;
         public int methodsOffset; // Il2CppMethodDefinition
         public int methodsCount;
+
         public int parameterDefaultValuesOffset; // Il2CppParameterDefaultValue
         public int parameterDefaultValuesCount;
+
         public int fieldDefaultValuesOffset; // Il2CppFieldDefaultValue
         public int fieldDefaultValuesCount;
         public int fieldAndParameterDefaultValueDataOffset; // uint8_t
         public int fieldAndParameterDefaultValueDataCount;
+
         public int fieldMarshaledSizesOffset; // Il2CppFieldMarshaledSize
         public int fieldMarshaledSizesCount;
+
         public int parametersOffset; // Il2CppParameterDefinition
         public int parametersCount;
         public int fieldsOffset; // Il2CppFieldDefinition
@@ -145,6 +154,34 @@ namespace Il2CppInspector
         public uint customAttributeCount;
     }
 #pragma warning restore CS0649
+
+    // Renamed from Il2CppAssembly somewhere after Unity 2017.2f3 up to Unity 2018.2.0f2
+    public class Il2CppAssemblyDefinition
+    {
+        public int imageIndex;
+        public uint token;
+        public int referencedAssemblyStart;
+        public int referencedAssemblyCount;
+        public Il2CppAssemblyNameDefinition aname;
+    }
+
+    // Renamed from Il2CppAssemblyName somewhere after Unity 2017.2f3 up to Unity 2018.2.0f2
+    public class Il2CppAssemblyNameDefinition
+    {
+        public uint nameIndex;
+        public uint cultureIndex;
+        public uint hashValueIndex;
+        public uint publicKeyIndex;
+        public uint hash_alg;
+        public int hash_len;
+        public uint flags;
+        public int major;
+        public int minor;
+        public int build;
+        public int revision;
+        [ArrayLength(FixedSize = 8)]
+        public byte[] publicKeyToken;
+    }
 
     public class Il2CppTypeDefinition
     {

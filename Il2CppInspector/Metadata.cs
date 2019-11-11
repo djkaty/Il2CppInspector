@@ -18,6 +18,7 @@ namespace Il2CppInspector
     {
         public Il2CppGlobalMetadataHeader Header;
 
+        public Il2CppAssemblyDefinition[] Assemblies { get; }
         public Il2CppImageDefinition[] Images { get; }
         public Il2CppTypeDefinition[] Types { get; }
         public Il2CppMethodDefinition[] Methods { get; }
@@ -94,6 +95,7 @@ namespace Il2CppInspector
                         throw new InvalidOperationException("ERROR: Could not verify the integrity of the metadata file image list");
                 }
 
+            Assemblies = ReadArray<Il2CppAssemblyDefinition>(Header.assembliesOffset, Header.assembliesCount / Sizeof(typeof(Il2CppAssemblyDefinition)));
             Types = ReadArray<Il2CppTypeDefinition>(Header.typeDefinitionsOffset, Header.typeDefinitionsCount / Sizeof(typeof(Il2CppTypeDefinition)));
             Methods = ReadArray<Il2CppMethodDefinition>(Header.methodsOffset, Header.methodsCount / Sizeof(typeof(Il2CppMethodDefinition)));
             Params = ReadArray<Il2CppParameterDefinition>(Header.parametersOffset, Header.parametersCount / Sizeof(typeof(Il2CppParameterDefinition)));
@@ -135,8 +137,19 @@ namespace Il2CppInspector
 
                 if (i.FieldType == typeof(int) || i.FieldType == typeof(uint))
                     size += 4;
-                if (i.FieldType == typeof(short) || i.FieldType == typeof(ushort))
+                else if (i.FieldType == typeof(short) || i.FieldType == typeof(ushort))
                     size += 2;
+
+                // Fixed-length array
+                else if (i.FieldType.IsArray) {
+                    var attr = i.GetCustomAttribute<ArrayLengthAttribute>(false) ??
+                               throw new InvalidOperationException("Array field " + i.Name + " must have ArrayLength attribute");
+                    size += attr.FixedSize;
+                }
+
+                // Embedded object
+                else
+                    size += Sizeof(i.FieldType);
             }
             return size;
         }
