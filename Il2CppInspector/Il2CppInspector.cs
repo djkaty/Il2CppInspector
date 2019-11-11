@@ -24,6 +24,7 @@ namespace Il2CppInspector
 
         public Dictionary<int, string> Strings => Metadata.Strings;
         public Il2CppTypeDefinition[] TypeDefinitions => Metadata.Types;
+        public Il2CppAssemblyDefinition[] Assemblies => Metadata.Assemblies;
         public Il2CppImageDefinition[] Images => Metadata.Images;
         public Il2CppMethodDefinition[] Methods => Metadata.Methods;
         public Il2CppParameterDefinition[] Params => Metadata.Params;

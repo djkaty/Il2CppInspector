@@ -33,7 +33,7 @@ namespace Il2CppInspector
         public void WriteFile(string outFile) {
             using (writer = new StreamWriter(new FileStream(outFile, FileMode.Create), Encoding.UTF8)) {
                 foreach (var asm in model.Assemblies) {
-                    writer.Write($"// Image {asm.Index}: {asm.FullName} - {asm.Definition.typeStart}\n");
+                    writer.Write($"// Image {asm.Index}: {asm.FullName} - {asm.ImageDefinition.typeStart}\n");
 
                     // Assembly-level attributes
                     writer.Write(asm.CustomAttributes.ToString(attributePrefix: "assembly: "));

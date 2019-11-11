@@ -61,7 +61,7 @@ namespace Il2CppInspector.Reflection
             Name = pkg.Strings[Definition.nameIndex];
 
             // Find method pointer
-            VirtualAddress = pkg.GetMethodPointer(Assembly.Module, Definition);
+            VirtualAddress = pkg.GetMethodPointer(Assembly.ModuleDefinition, Definition);
 
             // Add to global method definition list
             Assembly.Model.MethodsByDefinitionIndex[Index] = this;

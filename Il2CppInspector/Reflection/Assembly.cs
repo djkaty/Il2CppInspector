@@ -13,8 +13,9 @@ namespace Il2CppInspector.Reflection {
     {
         // IL2CPP-specific data
         public Il2CppModel Model { get; }
-        public Il2CppImageDefinition Definition { get; }
-        public Il2CppCodeGenModule Module { get; }
+        public Il2CppImageDefinition ImageDefinition { get; }
+        public Il2CppAssemblyDefinition AssemblyDefinition { get; }
+        public Il2CppCodeGenModule ModuleDefinition { get; }
         public int Index { get; }
 
         // Custom attributes for this assembly
@@ -35,19 +36,24 @@ namespace Il2CppInspector.Reflection {
         // Initialize from specified assembly index in package
         public Assembly(Il2CppModel model, int imageIndex) {
             Model = model;
-            Definition = Model.Package.Images[imageIndex];
-            Index = Definition.assemblyIndex;
-            FullName = Model.Package.Strings[Definition.nameIndex];
+            ImageDefinition = Model.Package.Images[imageIndex];
+            AssemblyDefinition = Model.Package.Assemblies[ImageDefinition.assemblyIndex];
 
-            if (Definition.entryPointIndex != -1) {
+            if (AssemblyDefinition.imageIndex != imageIndex)
+                throw new InvalidOperationException("Assembly/image index mismatch");
+
+            Index = ImageDefinition.assemblyIndex;
+            FullName = Model.Package.Strings[ImageDefinition.nameIndex];
+
+            if (ImageDefinition.entryPointIndex != -1) {
                 // TODO: Generate EntryPoint method from entryPointIndex
             }
 
             // Find corresponding module (we'll need this for method pointers)
-            Module = Model.Package.Modules?[FullName];
+            ModuleDefinition = Model.Package.Modules?[FullName];
 
             // Generate types in DefinedTypes from typeStart to typeStart+typeCount-1
-            for (var t = Definition.typeStart; t < Definition.typeStart + Definition.typeCount; t++) {
+            for (var t = ImageDefinition.typeStart; t < ImageDefinition.typeStart + ImageDefinition.typeCount; t++) {
                 var type = new TypeInfo(t, this);
 
                 // Don't add empty module definitions
