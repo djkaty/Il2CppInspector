@@ -34,10 +34,11 @@ namespace Il2CppInspector
             var excludedNamespaces = config["exclude-namespaces"]?.Split(',').ToList() ?? 
             new List<string> {
                 "System",
+                "Unity",
                 "UnityEngine",
+                "UnityEngineInternal",
                 "Mono",
                 "Microsoft.Win32",
-                ""
             };
 
             if (excludedNamespaces.Count == 1 && excludedNamespaces[0].ToLower() == "none")

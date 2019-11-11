@@ -44,10 +44,11 @@ namespace Il2CppInspector
             
             var excludedNamespaces = new List<string> {
                 "System",
+                "Unity",
                 "UnityEngine",
+                "UnityEngineInternal",
                 "Mono",
                 "Microsoft.Win32",
-                ""
             };
             
             // Dump each image in the binary separately
