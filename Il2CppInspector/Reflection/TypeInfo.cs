@@ -74,7 +74,12 @@ namespace Il2CppInspector.Reflection {
         public List<ConstructorInfo> DeclaredConstructors { get; } = new List<ConstructorInfo>();
         public List<EventInfo> DeclaredEvents { get; } = new List<EventInfo>();
         public List<FieldInfo> DeclaredFields { get; } = new List<FieldInfo>();
-        public List<MemberInfo> DeclaredMembers => throw new NotImplementedException();
+
+        public List<MemberInfo> DeclaredMembers => new IEnumerable<MemberInfo>[] {
+            DeclaredConstructors, DeclaredEvents, DeclaredFields, DeclaredMethods,
+            DeclaredNestedTypes?.ToList() ?? new List<TypeInfo>(), DeclaredProperties
+        }.SelectMany(m => m).ToList();
+
         public List<MethodInfo> DeclaredMethods { get; } = new List<MethodInfo>();
 
         private int[] declaredNestedTypes;
@@ -468,6 +473,88 @@ namespace Il2CppInspector.Reflection {
         // Initialize a type that is a generic parameter of a generic method
         public TypeInfo(MethodBase declaringMethod, Il2CppGenericParameter param) : this(declaringMethod.DeclaringType, param) {
             DeclaringMethod = declaringMethod;
+        }
+
+        // Get all the other types directly referenced by this type (single level depth; no recursion)
+        public List<TypeInfo> GetAllTypeReferences() {
+            var refs = new HashSet<TypeInfo>();
+
+            // Constructor, event, field, method, nested type, property attributes
+            var attrs = DeclaredMembers.Select(m => m.CustomAttributes).SelectMany(a => a);
+            refs.UnionWith(attrs.Select(a => a.AttributeType));
+
+            // Events
+            refs.UnionWith(DeclaredEvents.Select(e => e.EventHandlerType));
+
+            // Fields
+            refs.UnionWith(DeclaredFields.Select(f => f.FieldType));
+
+            // Properties (return type of getters or argument type of setters)
+            refs.UnionWith(DeclaredProperties.Select(p => p.PropertyType));
+
+            // Nested types
+            refs.UnionWith(DeclaredNestedTypes);
+            refs.UnionWith(DeclaredNestedTypes.Select(n => n.GetAllTypeReferences()).SelectMany(t => t));
+
+            // Constructors
+            refs.UnionWith(DeclaredConstructors.Select(m => m.DeclaredParameters).SelectMany(p => p).Select(p => p.ParameterType));
+
+            // Methods (includes event add/remove/raise, property get/set methods and extension methods)
+            refs.UnionWith(DeclaredMethods.Select(m => m.ReturnParameter.ParameterType));
+            refs.UnionWith(DeclaredMethods.Select(m => m.DeclaredParameters).SelectMany(p => p).Select(p => p.ParameterType));
+
+            // Method generic type parameters and constraints
+            // TODO: Needs to recurse through nested generic parameters
+            refs.UnionWith(DeclaredMethods.Select(m => m.GenericTypeParameters ?? new List<TypeInfo>()).SelectMany(p => p));
+            refs.UnionWith(DeclaredMethods.Select(m => m.GenericTypeParameters ?? new List<TypeInfo>()).SelectMany(p => p)
+                .Select(p => p.GetGenericParameterConstraints()).SelectMany(c => c));
+
+            // Type declaration attributes
+            refs.UnionWith(CustomAttributes.Select(a => a.AttributeType));
+
+            // Parent type
+            if (BaseType != null)
+                refs.Add(BaseType);
+
+            // Declaring type
+            if (DeclaringType != null)
+                refs.Add(DeclaringType);
+
+            // Element type
+            if (HasElementType)
+                refs.Add(ElementType);
+
+            // Enum type
+            if (IsEnum)
+                refs.Add(GetEnumUnderlyingType());
+
+            // Generic type parameters and constraints
+            // TODO: Needs to recurse through nested generic parameters
+            if (GenericTypeParameters != null)
+                refs.UnionWith(GenericTypeParameters);
+            if (GenericTypeArguments != null)
+                refs.UnionWith(GenericTypeArguments);
+            refs.UnionWith(GetGenericParameterConstraints());
+
+            // Implemented interfaces
+            refs.UnionWith(ImplementedInterfaces);
+
+            IEnumerable<TypeInfo> refList = refs.ToList();
+
+            // Repeatedly replace arrays, pointers and references with their element types
+            while (refList.Any(r => r.HasElementType))
+                refList = refList.Select(r => r.HasElementType ? r.ElementType : r);
+
+            // Remove anonymous types
+            refList = refList.Where(r => !string.IsNullOrEmpty(r.FullName));
+
+            // Eliminated named duplicates (the HashSet removes instance duplicates)
+            refList = refList.GroupBy(r => r.FullName).Select(p => p.First());
+
+            // Remove System.Object
+            refList = refList.Where(r => r.FullName != "System.Object");
+
+            return refList.ToList();
         }
 
         // Display name of object
