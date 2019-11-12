@@ -30,72 +30,180 @@ namespace Il2CppInspector
 
         public Il2CppCSharpDumper(Il2CppModel model) => this.model = model;
 
-        private StreamWriter writer;
-
         public void WriteFile(string outFile) {
-            using (writer = new StreamWriter(new FileStream(outFile, FileMode.Create), Encoding.UTF8)) {
-                foreach (var asm in model.Assemblies) {
-                    writer.Write($"// Image {asm.Index}: {asm.FullName} - {asm.ImageDefinition.typeStart}\n");
+            using StreamWriter writer = new StreamWriter(new FileStream(outFile, FileMode.Create), Encoding.UTF8);
 
-                    // Assembly-level attributes
-                    writer.Write(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name).ToString(attributePrefix: "assembly: "));
-                    if (asm.CustomAttributes.Any())
-                        writer.Write("\n");
-                }
-                writer.Write("\n");
+            foreach (var asm in model.Assemblies) {
+                writer.Write($"// Image {asm.Index}: {asm.FullName} - {asm.ImageDefinition.typeStart}\n");
 
-                foreach (var type in model.Assemblies.SelectMany(x => x.DefinedTypes)) {
+                // Assembly-level attributes
+                writer.Write(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name).ToString(attributePrefix: "assembly: "));
+                if (asm.CustomAttributes.Any())
+                    writer.Write("\n");
+            }
+            writer.Write("\n");
 
-                    // Skip namespace and any children if requested
-                    if (ExcludedNamespaces?.Any(x => x == type.Namespace || type.Namespace.StartsWith(x + ".")) ?? false)
-                        continue;
+            foreach (var type in model.Assemblies.SelectMany(x => x.DefinedTypes)) {
 
-                    // Assembly.DefinedTypes returns nested types in the assembly by design - ignore them
-                    if (!type.IsNested) {
-                        writeType(type);
-                        writer.Write("\n");
-                    }
+                // Skip namespace and any children if requested
+                if (ExcludedNamespaces?.Any(x => x == type.Namespace || type.Namespace.StartsWith(x + ".")) ?? false)
+                    continue;
+
+                // Assembly.DefinedTypes returns nested types in the assembly by design - ignore them
+                if (!type.IsNested) {
+                    writer.Write($"// Namespace: {(!string.IsNullOrEmpty(type.Namespace) ? type.Namespace : "<default namespace>")}\n");
+                    writer.Write(writeType(type) + "\n");
                 }
             }
         }
 
-        private void writeType(TypeInfo type, string prefix = "") {
+        private string writeType(TypeInfo type, string prefix = "") {
             // Don't output compiler-generated types if desired
             if (SuppressGenerated && type.GetCustomAttributes(CGAttribute).Any())
-                return;
+                return string.Empty;
 
-            // Only print namespace if we're not nested
-            if (!type.IsNested)
-                writer.Write($"{prefix}// Namespace: {(!string.IsNullOrEmpty(type.Namespace)? type.Namespace : "<default namespace>")}\n");
+            var codeBlocks = new Dictionary<string, string>();
+            var usedMethods = new List<MethodInfo>();
+            var sb = new StringBuilder();
+
+            // Fields
+            sb.Clear();
+            if (!type.IsEnum) {
+                foreach (var field in type.DeclaredFields) {
+                    if (SuppressGenerated && field.GetCustomAttributes(CGAttribute).Any())
+                        continue;
+
+                    if (field.IsNotSerialized)
+                        sb.Append(prefix + "\t[NonSerialized]\n");
+
+                    // Attributes
+                    sb.Append(field.CustomAttributes.Where(a => a.AttributeType.FullName != FBAttribute).OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
+                    sb.Append(prefix + "\t");
+                    sb.Append(field.GetModifierString());
+
+                    // Fixed buffers
+                    if (field.GetCustomAttributes(FBAttribute).Any())
+                        sb.Append($"/* {((ulong) field.GetCustomAttributes(FBAttribute)[0].VirtualAddress).ToAddressString()} */" +
+                                     $" {field.FieldType.GetField("FixedElementField").FieldType.CSharpName} {field.Name}[0]");
+                    // Regular fields
+                    else
+                        sb.Append($"{field.FieldType.CSharpName} {field.Name}");
+                    if (field.HasDefaultValue)
+                        sb.Append($" = {field.DefaultValueString}");
+                    sb.Append(";");
+                    // Don't output field indices for const fields (they don't have any storage)
+                    if (!field.IsLiteral)
+                        sb.Append($" // 0x{(uint) field.Offset:X2}");
+                    sb.Append("\n");
+                }
+                codeBlocks.Add("Fields", sb.ToString());
+            }
+
+            // Properties
+            sb.Clear();
+            foreach (var prop in type.DeclaredProperties) {
+                // Attributes
+                sb.Append(prop.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
+
+                // The access mask enum values go from 1 (private) to 6 (public) in order from most to least restrictive
+                var getAccess = (prop.GetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
+                var setAccess = (prop.SetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
+
+                var primary = getAccess >= setAccess ? prop.GetMethod : prop.SetMethod;
+                sb.Append($"{prefix}\t{primary.GetModifierString()}{prop.PropertyType.CSharpName} ");
+
+                // Non-indexer
+                if ((!prop.CanRead || !prop.GetMethod.DeclaredParameters.Any()) && (!prop.CanWrite || prop.SetMethod.DeclaredParameters.Count == 1))
+                    sb.Append($"{prop.Name} {{ ");
+                // Indexer
+                else
+                    sb.Append("this[" + string.Join(", ", primary.DeclaredParameters.SkipLast(getAccess >= setAccess? 0 : 1).Select(p => p.GetParameterString())) + "] { ");
+
+                sb.Append((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) 
+                                               + (getAccess < setAccess? prop.GetMethod.GetAccessModifierString() : "") + "get; " : "")
+                             + (prop.CanWrite? prop.SetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) 
+                                               + (setAccess < getAccess? prop.SetMethod.GetAccessModifierString() : "") + "set; " : "") + "}");
+                if ((prop.CanRead && prop.GetMethod.VirtualAddress != 0) || (prop.CanWrite && prop.SetMethod.VirtualAddress != 0))
+                    sb.Append(" // ");
+                sb.Append((prop.CanRead && prop.GetMethod.VirtualAddress != 0 ? prop.GetMethod.VirtualAddress.ToAddressString() + " " : "")
+                            + (prop.CanWrite && prop.SetMethod.VirtualAddress != 0 ? prop.SetMethod.VirtualAddress.ToAddressString() : "") + "\n");
+                usedMethods.Add(prop.GetMethod);
+                usedMethods.Add(prop.SetMethod);
+            }
+            codeBlocks.Add("Properties", sb.ToString());
+
+            // Events
+            sb.Clear();
+            foreach (var evt in type.DeclaredEvents) {
+                // Attributes
+                sb.Append(evt.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
+
+                string modifiers = evt.AddMethod?.GetModifierString();
+                sb.Append($"{prefix}\t{modifiers}event {evt.EventHandlerType.CSharpName} {evt.Name} {{\n");
+                var m = new Dictionary<string, ulong>();
+                if (evt.AddMethod != null) m.Add("add", evt.AddMethod.VirtualAddress);
+                if (evt.RemoveMethod != null) m.Add("remove", evt.RemoveMethod.VirtualAddress);
+                if (evt.RaiseMethod != null) m.Add("raise", evt.RaiseMethod.VirtualAddress);
+                sb.Append(string.Join("\n", m.Select(x => $"{prefix}\t\t{x.Key}; // {x.Value.ToAddressString()}")) + "\n" + prefix + "\t}\n");
+                usedMethods.Add(evt.AddMethod);
+                usedMethods.Add(evt.RemoveMethod);
+                usedMethods.Add(evt.RaiseMethod);
+            }
+            codeBlocks.Add("Events", sb.ToString());
+
+            // Nested types
+            codeBlocks.Add("Nested types", string.Join("\n", type.DeclaredNestedTypes.Select(n => writeType(n, prefix + "\t"))));
+
+            // Constructors
+            sb.Clear();
+            foreach (var method in type.DeclaredConstructors) {
+                // Attributes
+                sb.Append(method.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
+
+                sb.Append($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString()}(");
+                sb.Append(method.GetParametersString());
+                sb.Append(");" + (method.VirtualAddress != 0 ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
+            }
+            codeBlocks.Add("Constructors", sb.ToString());
+
+            // Methods
+            // Don't re-output methods for constructors, properties, events etc.
+            var methods = type.DeclaredMethods.Except(usedMethods).Where(m => m.CustomAttributes.All(a => a.AttributeType.FullName != ExtAttribute));
+            codeBlocks.Add("Methods", string.Concat(methods.Select(m => generateMethod(m, prefix))));
+            usedMethods.AddRange(methods);
+
+            // Extension methods 
+            codeBlocks.Add("Extension methods", string.Concat(type.DeclaredMethods.Except(usedMethods).Select(m => generateMethod(m, prefix))));
 
             // Type declaration
-            if (type.IsImport)
-                writer.Write(prefix + "[ComImport]\n");
-            if (type.IsSerializable)
-                writer.Write(prefix + "[Serializable]\n");
+            sb.Clear();
 
-            // Custom attributes
+            if (type.IsImport)
+                sb.Append(prefix + "[ComImport]\n");
+            if (type.IsSerializable)
+                sb.Append(prefix + "[Serializable]\n");
+
             // TODO: DefaultMemberAttribute should be output if it is present and the type does not have an indexer, otherwise suppressed
             // See https://docs.microsoft.com/en-us/dotnet/api/system.reflection.defaultmemberattribute?view=netframework-4.8
-            writer.Write(type.CustomAttributes.Where(a => a.AttributeType.FullName != DMAttribute && a.AttributeType.FullName != ExtAttribute)
+            sb.Append(type.CustomAttributes.Where(a => a.AttributeType.FullName != DMAttribute && a.AttributeType.FullName != ExtAttribute)
                                             .OrderBy(a => a.AttributeType.Name).ToString(prefix));
 
             // Roll-up multicast delegates to use the 'delegate' syntactic sugar
             if (type.IsClass && type.IsSealed && type.BaseType?.FullName == "System.MulticastDelegate") {
-                writer.Write(prefix + type.GetAccessModifierString());
+                sb.Append(prefix + type.GetAccessModifierString());
 
                 var del = type.GetMethod("Invoke");
                 // IL2CPP doesn't seem to retain return type attributes
-                //writer.Write(del.ReturnType.CustomAttributes.ToString(prefix, "return: "));
+                //sb.Append(del.ReturnType.CustomAttributes.ToString(prefix, "return: "));
                 if (del.RequiresUnsafeContext)
-                    writer.Write("unsafe ");
-                writer.Write($"delegate {del.ReturnType.CSharpName} {type.CSharpTypeDeclarationName}(");
-                writer.Write(del.GetParametersString());
-                writer.Write($"); // TypeDefIndex: {type.Index}; {del.VirtualAddress.ToAddressString()}\n");
-                return;
+                    sb.Append("unsafe ");
+                sb.Append($"delegate {del.ReturnType.CSharpName} {type.CSharpTypeDeclarationName}(");
+                sb.Append(del.GetParametersString());
+                sb.Append($"); // TypeDefIndex: {type.Index}; {del.VirtualAddress.ToAddressString()}\n");
+                return sb.ToString();
             }
 
-            writer.Write(prefix + type.GetModifierString());
+            sb.Append(prefix + type.GetModifierString());
 
             var @base = type.ImplementedInterfaces.Select(x => x.CSharpName).ToList();
             if (type.BaseType != null && type.BaseType.FullName != "System.Object" && type.BaseType.FullName != "System.ValueType" && !type.IsEnum)
@@ -104,166 +212,29 @@ namespace Il2CppInspector
                 @base.Insert(0, type.GetEnumUnderlyingType().CSharpName);
             var baseText = @base.Count > 0 ? " : " + string.Join(", ", @base) : string.Empty;
 
-            writer.Write($"{type.CSharpTypeDeclarationName}{baseText} // TypeDefIndex: {type.Index}\n");
+            sb.Append($"{type.CSharpTypeDeclarationName}{baseText} // TypeDefIndex: {type.Index}\n");
 
             if (type.GenericTypeParameters != null)
                 foreach (var gp in type.GenericTypeParameters) {
                     var constraint = gp.GetTypeConstraintsString();
                     if (constraint != string.Empty)
-                        writer.Write($"{prefix}\t{constraint}\n");
+                        sb.Append($"{prefix}\t{constraint}\n");
                 }
 
-            writer.Write(prefix + "{\n");
-
-            // Fields
-            if (!type.IsEnum) {
-                if (type.DeclaredFields.Any())
-                    writer.Write(prefix + "\t// Fields\n");
-
-                foreach (var field in type.DeclaredFields) {
-                    if (SuppressGenerated && field.GetCustomAttributes(CGAttribute).Any())
-                        continue;
-
-                    if (field.IsNotSerialized)
-                        writer.Write(prefix + "\t[NonSerialized]\n");
-
-                    // Attributes
-                    writer.Write(field.CustomAttributes.Where(a => a.AttributeType.FullName != FBAttribute).OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
-                    writer.Write(prefix + "\t");
-                    writer.Write(field.GetModifierString());
-
-                    // Fixed buffers
-                    if (field.GetCustomAttributes(FBAttribute).Any())
-                        writer.Write($"/* {((ulong) field.GetCustomAttributes(FBAttribute)[0].VirtualAddress).ToAddressString()} */" +
-                                     $" {field.FieldType.GetField("FixedElementField").FieldType.CSharpName} {field.Name}[0]");
-                    // Regular fields
-                    else
-                        writer.Write($"{field.FieldType.CSharpName} {field.Name}");
-                    if (field.HasDefaultValue)
-                        writer.Write($" = {field.DefaultValueString}");
-                    writer.Write(";");
-                    // Don't output field indices for const fields (they don't have any storage)
-                    if (!field.IsLiteral)
-                        writer.Write(" // 0x{0:X2}", (uint)field.Offset);
-                    writer.Write("\n");
-                }
-                if (type.DeclaredFields.Any())
-                    writer.Write("\n");
-            }
+            sb.Append(prefix + "{\n");
 
             // Enumeration
-            else {
-                writer.Write(string.Join(",\n", type.GetEnumNames().Zip(type.GetEnumValues().OfType<object>(),
-                    (k, v) => new { k, v }).OrderBy(x => x.v).Select(x => $"{prefix}\t{x.k} = {x.v}")) + "\n");
+            if (type.IsEnum) {
+                sb.Append(string.Join(",\n", type.GetEnumNames().Zip(type.GetEnumValues().OfType<object>(),
+                              (k, v) => new { k, v }).OrderBy(x => x.v).Select(x => $"{prefix}\t{x.k} = {x.v}")) + "\n");
             }
 
-            var usedMethods = new List<MethodInfo>();
+            // Type definition
+            else
+                sb.Append(string.Join("\n", codeBlocks.Where(b => b.Value != string.Empty).Select(b => prefix + "\t// " + b.Key + "\n" + b.Value)));
 
-            // Properties
-            if (type.DeclaredProperties.Any())
-                writer.Write(prefix + "\t// Properties\n");
-
-            foreach (var prop in type.DeclaredProperties) {
-                // Attributes
-                writer.Write(prop.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
-
-                // The access mask enum values go from 1 (private) to 6 (public) in order from most to least restrictive
-                var getAccess = (prop.GetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
-                var setAccess = (prop.SetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
-
-                var primary = getAccess >= setAccess ? prop.GetMethod : prop.SetMethod;
-                writer.Write($"{prefix}\t{primary.GetModifierString()}{prop.PropertyType.CSharpName} ");
-
-                // Non-indexer
-                if ((!prop.CanRead || !prop.GetMethod.DeclaredParameters.Any()) && (!prop.CanWrite || prop.SetMethod.DeclaredParameters.Count == 1))
-                    writer.Write($"{prop.Name} {{ ");
-                // Indexer
-                else
-                    writer.Write("this[" + string.Join(", ", primary.DeclaredParameters.SkipLast(getAccess >= setAccess? 0 : 1).Select(p => p.GetParameterString())) + "] { ");
-
-                writer.Write((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) 
-                                               + (getAccess < setAccess? prop.GetMethod.GetAccessModifierString() : "") + "get; " : "")
-                             + (prop.CanWrite? prop.SetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true) 
-                                               + (setAccess < getAccess? prop.SetMethod.GetAccessModifierString() : "") + "set; " : "") + "}");
-                if ((prop.CanRead && prop.GetMethod.VirtualAddress != 0) || (prop.CanWrite && prop.SetMethod.VirtualAddress != 0))
-                    writer.Write(" // ");
-                writer.Write((prop.CanRead && prop.GetMethod.VirtualAddress != 0 ? prop.GetMethod.VirtualAddress.ToAddressString() + " " : "")
-                            + (prop.CanWrite && prop.SetMethod.VirtualAddress != 0 ? prop.SetMethod.VirtualAddress.ToAddressString() : "") + "\n");
-                usedMethods.Add(prop.GetMethod);
-                usedMethods.Add(prop.SetMethod);
-            }
-            if (type.DeclaredProperties.Any())
-                writer.Write("\n");
-
-            // Events
-            if (type.DeclaredEvents.Any())
-                writer.Write(prefix + "\t// Events\n");
-
-            foreach (var evt in type.DeclaredEvents) {
-                // Attributes
-                writer.Write(evt.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
-
-                string modifiers = evt.AddMethod?.GetModifierString();
-                writer.Write($"{prefix}\t{modifiers}event {evt.EventHandlerType.CSharpName} {evt.Name} {{\n");
-                var m = new Dictionary<string, ulong>();
-                if (evt.AddMethod != null) m.Add("add", evt.AddMethod.VirtualAddress);
-                if (evt.RemoveMethod != null) m.Add("remove", evt.RemoveMethod.VirtualAddress);
-                if (evt.RaiseMethod != null) m.Add("raise", evt.RaiseMethod.VirtualAddress);
-                writer.Write(string.Join("\n", m.Select(x => $"{prefix}\t\t{x.Key}; // {x.Value.ToAddressString()}")) + "\n" + prefix + "\t}\n");
-                usedMethods.Add(evt.AddMethod);
-                usedMethods.Add(evt.RemoveMethod);
-                usedMethods.Add(evt.RaiseMethod);
-            }
-            if (type.DeclaredEvents.Any())
-                writer.Write("\n");
-
-            // Nested types
-            if (type.DeclaredNestedTypes.Any())
-                writer.Write(prefix + "\t// Nested types\n");
-
-            foreach (var nestedType in type.DeclaredNestedTypes) {
-                writeType(nestedType, prefix + "\t");
-                writer.Write("\n");
-            }
-
-            // Constructors
-            if (type.DeclaredConstructors.Any())
-                writer.Write(prefix + "\t// Constructors\n");
-
-            foreach (var method in type.DeclaredConstructors) {
-                // Attributes
-                writer.Write(method.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t"));
-
-                writer.Write($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString()}(");
-                writer.Write(method.GetParametersString());
-                writer.Write(");" + (method.VirtualAddress != 0 ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
-            }
-            if (type.DeclaredConstructors.Any())
-                writer.Write("\n");
-
-            // Methods
-            // Don't re-output methods for constructors, properties, events etc.
-            var methods = type.DeclaredMethods.Except(usedMethods).Where(m => m.CustomAttributes.All(a => a.AttributeType.FullName != ExtAttribute));
-            if (methods.Any()) {
-                writer.Write(prefix + "\t// Methods\n");
-
-                foreach (var method in methods) {
-                    writer.Write(generateMethod(method, prefix));
-                    usedMethods.Add(method);
-                }
-                writer.Write("\n");
-            }
-
-            // Extension methods
-            methods = type.DeclaredMethods.Except(usedMethods);
-            if (methods.Any())
-                writer.Write(prefix + "\t// Extension methods\n");
-
-            foreach (var method in type.DeclaredMethods.Except(usedMethods)) {
-                writer.Write(generateMethod(method, prefix));
-            }
-
-            writer.Write(prefix + "}\n");
+            sb.Append(prefix + "}\n");
+            return sb.ToString();
         }
 
         private string generateMethod(MethodInfo method, string prefix) {
