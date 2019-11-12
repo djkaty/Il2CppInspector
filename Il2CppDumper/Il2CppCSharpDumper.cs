@@ -32,10 +32,11 @@ namespace Il2CppInspector
 
         public void WriteSingleFile(string outFile) => writeFile(outFile, model.Assemblies.SelectMany(x => x.DefinedTypes));
 
-        private void writeFile(string outFile, IEnumerable<TypeInfo> types) {
+        private void writeFile(string outFile, IEnumerable<TypeInfo> types, bool useNamespaceSyntax = true) {
 
             var nsRefs = new HashSet<string>();
             var code = new StringBuilder();
+            var nsContext = "";
 
             foreach (var type in types) {
 
@@ -52,8 +53,27 @@ namespace Il2CppInspector
                 if (string.IsNullOrEmpty(text))
                     continue;
 
+                // Determine if we need to change namespace (after we have established the code block is not empty)
+                if (useNamespaceSyntax) {
+                    if (type.Namespace != nsContext) {
+                        if (!string.IsNullOrEmpty(nsContext))
+                            code.Remove(code.Length - 1, 1).Append("}\n\n");
+
+                        if (!string.IsNullOrEmpty(type.Namespace))
+                            code.Append("namespace " + type.Namespace + "\n{\n");
+
+                        nsContext = type.Namespace;
+                    }
+
+                    if (!string.IsNullOrEmpty(nsContext)) {
+                        text = "\t" + text.Replace("\n", "\n\t");
+                        text = text.Remove(text.Length - 1);
+                    }
+                }
+
                 // Append namespace
-                code.Append($"// Namespace: {(!string.IsNullOrEmpty(type.Namespace) ? type.Namespace : "<global namespace>")}\n");
+                if (!useNamespaceSyntax)
+                    code.Append($"// Namespace: {(!string.IsNullOrEmpty(type.Namespace) ? type.Namespace : "<global namespace>")}\n");
                 
                 // Determine namespace references
                 var refs = type.GetAllTypeReferences();
@@ -63,6 +83,10 @@ namespace Il2CppInspector
                 // Append type definition
                 code.Append(text + "\n");
             }
+
+            // Close namespace
+            if (useNamespaceSyntax && !string.IsNullOrEmpty(nsContext))
+                code.Remove(code.Length - 1, 1).Append("}\n");
             
             // Determine assemblies used in this file
             var assemblies = types.Select(t => t.Assembly).Distinct();
