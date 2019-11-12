@@ -480,7 +480,7 @@ namespace Il2CppInspector.Reflection {
             var refs = new HashSet<TypeInfo>();
 
             // Constructor, event, field, method, nested type, property attributes
-            var attrs = DeclaredMembers.Select(m => m.CustomAttributes).SelectMany(a => a);
+            var attrs = DeclaredMembers.SelectMany(m => m.CustomAttributes);
             refs.UnionWith(attrs.Select(a => a.AttributeType));
 
             // Events
@@ -494,20 +494,20 @@ namespace Il2CppInspector.Reflection {
 
             // Nested types
             refs.UnionWith(DeclaredNestedTypes);
-            refs.UnionWith(DeclaredNestedTypes.Select(n => n.GetAllTypeReferences()).SelectMany(t => t));
+            refs.UnionWith(DeclaredNestedTypes.SelectMany(n => n.GetAllTypeReferences()));
 
             // Constructors
-            refs.UnionWith(DeclaredConstructors.Select(m => m.DeclaredParameters).SelectMany(p => p).Select(p => p.ParameterType));
+            refs.UnionWith(DeclaredConstructors.SelectMany(m => m.DeclaredParameters).Select(p => p.ParameterType));
 
             // Methods (includes event add/remove/raise, property get/set methods and extension methods)
             refs.UnionWith(DeclaredMethods.Select(m => m.ReturnParameter.ParameterType));
-            refs.UnionWith(DeclaredMethods.Select(m => m.DeclaredParameters).SelectMany(p => p).Select(p => p.ParameterType));
+            refs.UnionWith(DeclaredMethods.SelectMany(m => m.DeclaredParameters).Select(p => p.ParameterType));
 
             // Method generic type parameters and constraints
             // TODO: Needs to recurse through nested generic parameters
-            refs.UnionWith(DeclaredMethods.Select(m => m.GenericTypeParameters ?? new List<TypeInfo>()).SelectMany(p => p));
-            refs.UnionWith(DeclaredMethods.Select(m => m.GenericTypeParameters ?? new List<TypeInfo>()).SelectMany(p => p)
-                .Select(p => p.GetGenericParameterConstraints()).SelectMany(c => c));
+            refs.UnionWith(DeclaredMethods.SelectMany(m => m.GenericTypeParameters ?? new List<TypeInfo>()));
+            refs.UnionWith(DeclaredMethods.SelectMany(m => m.GenericTypeParameters ?? new List<TypeInfo>())
+                .SelectMany(p => p.GetGenericParameterConstraints()));
 
             // Type declaration attributes
             refs.UnionWith(CustomAttributes.Select(a => a.AttributeType));
