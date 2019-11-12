@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+ * Generated code file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
@@ -34,7 +38,6 @@ using System.Runtime.InteropServices;
 [assembly: Debuggable] // 0x000000018000C150
 [assembly: RuntimeCompatibility] // 0x000000018000C150
 
-// Namespace: <global namespace>
 internal static class Consts // TypeDefIndex: 100
 {
 	// Fields
@@ -69,7 +72,6 @@ internal static class Consts // TypeDefIndex: 100
 	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
 }
 
-// Namespace: <global namespace>
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
@@ -80,75 +82,71 @@ internal sealed class Locale // TypeDefIndex: 101
 	public static string GetText(string fmt, params /* 0x00000001800090D0 */ object[] args); // 0x00000001802C64F0
 }
 
-// Namespace: Il2CppTests.TestSources
-public class Base<T, U> // TypeDefIndex: 1815
+namespace Il2CppTests.TestSources
 {
-	// Constructors
-	public Base();
-}
-
-// Namespace: Il2CppTests.TestSources
-public class Derived<V> : Base<string, V> // TypeDefIndex: 1816
-{
-	// Fields
-	public G<Derived<V>> F; // 0x00
-
-	// Nested types
-	public class Nested // TypeDefIndex: 1817
+	public class Base<T, U> // TypeDefIndex: 1815
 	{
 		// Constructors
-		public Nested();
+		public Base();
 	}
 
-	// Constructors
-	public Derived();
+	public class Derived<V> : Base<string, V> // TypeDefIndex: 1816
+	{
+		// Fields
+		public G<Derived<V>> F; // 0x00
+	
+		// Nested types
+		public class Nested // TypeDefIndex: 1817
+		{
+			// Constructors
+			public Nested();
+		}
+	
+		// Constructors
+		public Derived();
+	}
+
+	public class G<T> // TypeDefIndex: 1818
+	{
+		// Constructors
+		public G();
+	}
+
+	internal class Test // TypeDefIndex: 1819
+	{
+		// Constructors
+		public Test(); // 0x00000001800E2000
+	
+		// Methods
+		public void GenericTypesTest(); // 0x00000001803E0ED0
+	}
+
+	internal class ConstrainedValueType<V> // TypeDefIndex: 1820
+		where V : struct
+	{
+		// Constructors
+		public ConstrainedValueType();
+	}
+
+	internal class ConstrainedRefType<R> // TypeDefIndex: 1821
+		where R : class
+	{
+		// Constructors
+		public ConstrainedRefType();
+	
+		// Methods
+		[NullableContext] // 0x0000000180009190
+		public void ConstrainedMethodNotNull<N>(N notnullArgument, R bar);
+		public void ConstrainedUnmanaged<U>(U unmanagedArgument)
+			where U : struct;
+		public void MultipleConstraintsMethod<C>(C constrained)
+			where C : R, new();
+		public void MultipleArgumentsMultipleConstraintsMethod<B, I>(B baseArgument, I interfaceArgument)
+			where B : Derived<R>, new()
+			where I : Test, IDisposable, IEnumerable<R>;
+		public void DelegateConstraint<D>(D del)
+			where D : Delegate;
+		public void EnumConstraint<E>(E enumeration)
+			where E : Enum;
+	}
 }
-
-// Namespace: Il2CppTests.TestSources
-public class G<T> // TypeDefIndex: 1818
-{
-	// Constructors
-	public G();
-}
-
-// Namespace: Il2CppTests.TestSources
-internal class Test // TypeDefIndex: 1819
-{
-	// Constructors
-	public Test(); // 0x00000001800E2000
-
-	// Methods
-	public void GenericTypesTest(); // 0x00000001803E0ED0
-}
-
-// Namespace: Il2CppTests.TestSources
-internal class ConstrainedValueType<V> // TypeDefIndex: 1820
-	where V : struct
-{
-	// Constructors
-	public ConstrainedValueType();
-}
-
-// Namespace: Il2CppTests.TestSources
-internal class ConstrainedRefType<R> // TypeDefIndex: 1821
-	where R : class
-{
-	// Constructors
-	public ConstrainedRefType();
-
-	// Methods
-	[NullableContext] // 0x0000000180009190
-	public void ConstrainedMethodNotNull<N>(N notnullArgument, R bar);
-	public void ConstrainedUnmanaged<U>(U unmanagedArgument)
-		where U : struct;
-	public void MultipleConstraintsMethod<C>(C constrained)
-		where C : R, new();
-	public void MultipleArgumentsMultipleConstraintsMethod<B, I>(B baseArgument, I interfaceArgument)
-		where B : Derived<R>, new()
-		where I : Test, IDisposable, IEnumerable<R>;
-	public void DelegateConstraint<D>(D del)
-		where D : Delegate;
-	public void EnumConstraint<E>(E enumeration)
-		where E : Enum;
-}
-

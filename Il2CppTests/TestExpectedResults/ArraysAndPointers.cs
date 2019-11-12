@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+ * Generated code file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+ */
+
+using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Resources;
@@ -33,7 +37,6 @@ using System.Runtime.InteropServices;
 [assembly: Debuggable] // 0x000A6D34
 [assembly: RuntimeCompatibility] // 0x000A6D34
 
-// Namespace: <global namespace>
 internal static class Consts // TypeDefIndex: 100
 {
 	// Fields
@@ -68,7 +71,6 @@ internal static class Consts // TypeDefIndex: 100
 	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
 }
 
-// Namespace: <global namespace>
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
@@ -79,53 +81,54 @@ internal sealed class Locale // TypeDefIndex: 101
 	public static string GetText(string fmt, params /* 0x000A50D8 */ object[] args); // 0x003EE224
 }
 
-// Namespace: Il2CppTests.TestSources
-internal class Test // TypeDefIndex: 1813
+namespace Il2CppTests.TestSources
 {
-	// Fields
-	private int[] foo; // 0x08
-	private int[] bar; // 0x0C
-	private float[][] arrayOfArrays; // 0x10
-	private float[,] twoDimensionalArray; // 0x14
-	private float[,,] threeDimensionalArray; // 0x18
-	private unsafe int*[] arrayOfPointer; // 0x1C
-	private unsafe int** pointerToPointer; // 0x20
-	private unsafe float*[][,,][] confusedElephant; // 0x24
-
-	// Properties
-	public unsafe int* PointerProperty { get; set; } // 0x00562EEC 0x00562EF4
-	public unsafe int* this[int i] { get; } // 0x00562F10 
-	public unsafe int this[int* p] { get; } // 0x00562F18 
-	public unsafe float* this[float* fp] { get; } // 0x00562F20 
-
-	// Nested types
-	private struct fixedSizeArrayStruct // TypeDefIndex: 1814
+	internal class Test // TypeDefIndex: 1813
 	{
 		// Fields
-		private unsafe fixed /* 0x000A6C98 */ int fixedSizeArray[0]; // 0x08
-	}
-
-	public unsafe delegate void OnUnsafe(int* ud); // TypeDefIndex: 1816; 0x00562F3C
-
-	public class NestedUnsafe<T> // TypeDefIndex: 1817
-		where T : struct
-	{
+		private int[] foo; // 0x08
+		private int[] bar; // 0x0C
+		private float[][] arrayOfArrays; // 0x10
+		private float[,] twoDimensionalArray; // 0x14
+		private float[,,] threeDimensionalArray; // 0x18
+		private unsafe int*[] arrayOfPointer; // 0x1C
+		private unsafe int** pointerToPointer; // 0x20
+		private unsafe float*[][,,][] confusedElephant; // 0x24
+	
+		// Properties
+		public unsafe int* PointerProperty { get; set; } // 0x00562EEC 0x00562EF4
+		public unsafe int* this[int i] { get; } // 0x00562F10 
+		public unsafe int this[int* p] { get; } // 0x00562F18 
+		public unsafe float* this[float* fp] { get; } // 0x00562F20 
+	
+		// Nested types
+		private struct fixedSizeArrayStruct // TypeDefIndex: 1814
+		{
+			// Fields
+			private unsafe fixed /* 0x000A6C98 */ int fixedSizeArray[0]; // 0x08
+		}
+	
+		public unsafe delegate void OnUnsafe(int* ud); // TypeDefIndex: 1816; 0x00562F3C
+	
+		public class NestedUnsafe<T> // TypeDefIndex: 1817
+			where T : struct
+		{
+			// Constructors
+			public NestedUnsafe();
+	
+			// Methods
+			private unsafe T* UnsafeGenericReturn();
+			private unsafe void UnsafeGenericMethod(T* pt);
+		}
+	
 		// Constructors
-		public NestedUnsafe();
-
+		public unsafe Test(int* u); // 0x00562E78
+	
 		// Methods
-		private unsafe T* UnsafeGenericReturn();
-		private unsafe void UnsafeGenericMethod(T* pt);
+		public int[] FooMethod(int[][] bar); // 0x00562DA0
+		public int[,] BarMethod(int[,,] baz); // 0x00562E00
+		public unsafe void UnsafeMethod(int* unsafePointerArgument); // 0x00562EFC
+		public unsafe int* UnsafeReturnMethod(); // 0x00562F00
+		public unsafe int* UnsafeMethod2(int* i); // 0x00562F08
 	}
-
-	// Constructors
-	public unsafe Test(int* u); // 0x00562E78
-
-	// Methods
-	public int[] FooMethod(int[][] bar); // 0x00562DA0
-	public int[,] BarMethod(int[,,] baz); // 0x00562E00
-	public unsafe void UnsafeMethod(int* unsafePointerArgument); // 0x00562EFC
-	public unsafe int* UnsafeReturnMethod(); // 0x00562F00
-	public unsafe int* UnsafeMethod2(int* i); // 0x00562F08
 }
-

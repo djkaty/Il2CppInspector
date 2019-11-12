@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+ * Generated code file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+ */
+
+using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Resources;
@@ -35,7 +39,6 @@ using Il2CppTests.TestSources;
 [assembly: Example] // 0x1000D360
 [assembly: RuntimeCompatibility] // 0x1000D360
 
-// Namespace: <global namespace>
 internal static class Consts // TypeDefIndex: 100
 {
 	// Fields
@@ -70,7 +73,6 @@ internal static class Consts // TypeDefIndex: 100
 	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
 }
 
-// Namespace: <global namespace>
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
@@ -81,46 +83,45 @@ internal sealed class Locale // TypeDefIndex: 101
 	public static string GetText(string fmt, params /* 0x10009B80 */ object[] args); // 0x10261460
 }
 
-// Namespace: Il2CppTests.TestSources
-public enum ExampleKind // TypeDefIndex: 1811
+namespace Il2CppTests.TestSources
 {
-	FirstKind = 0,
-	SecondKind = 1,
-	ThirdKind = 2,
-	FourthKind = 3
+	public enum ExampleKind // TypeDefIndex: 1811
+	{
+		FirstKind = 0,
+		SecondKind = 1,
+		ThirdKind = 2,
+		FourthKind = 3
+	}
+
+	[AttributeUsage] // 0x1000D430
+	public class ExampleAttribute : Attribute // TypeDefIndex: 1812
+	{
+		// Fields
+		private ExampleKind kindValue; // 0x08
+		private string noteValue; // 0x0C
+		private string[] arrayStrings; // 0x10
+		private int[] arrayNumbers; // 0x14
+	
+		// Properties
+		public ExampleKind Kind { get; } // 0x100BF0C0 
+		public string[] Strings { get; } // 0x100BFC20 
+		public string Note { get; set; } // 0x100C5B30 0x100C5B50
+		public int[] Numbers { get; set; } // 0x100EF0C0 0x10127B00
+	
+		// Constructors
+		public ExampleAttribute(ExampleKind initKind, string[] initStrings); // 0x1034DA90
+		public ExampleAttribute(ExampleKind initKind); // 0x1034DAC0
+		public ExampleAttribute(); // 0x1034DA60
+	}
+
+	[Example] // 0x1000D450
+	public class Test // TypeDefIndex: 1813
+	{
+		// Constructors
+		public Test(); // 0x100BF000
+	
+		// Methods
+		[Example] // 0x1000D550
+		public void TestMethod([Example] /* 0x1000D590 */ object arg); // 0x100C5530
+	}
 }
-
-// Namespace: Il2CppTests.TestSources
-[AttributeUsage] // 0x1000D430
-public class ExampleAttribute : Attribute // TypeDefIndex: 1812
-{
-	// Fields
-	private ExampleKind kindValue; // 0x08
-	private string noteValue; // 0x0C
-	private string[] arrayStrings; // 0x10
-	private int[] arrayNumbers; // 0x14
-
-	// Properties
-	public ExampleKind Kind { get; } // 0x100BF0C0 
-	public string[] Strings { get; } // 0x100BFC20 
-	public string Note { get; set; } // 0x100C5B30 0x100C5B50
-	public int[] Numbers { get; set; } // 0x100EF0C0 0x10127B00
-
-	// Constructors
-	public ExampleAttribute(ExampleKind initKind, string[] initStrings); // 0x1034DA90
-	public ExampleAttribute(ExampleKind initKind); // 0x1034DAC0
-	public ExampleAttribute(); // 0x1034DA60
-}
-
-// Namespace: Il2CppTests.TestSources
-[Example] // 0x1000D450
-public class Test // TypeDefIndex: 1813
-{
-	// Constructors
-	public Test(); // 0x100BF000
-
-	// Methods
-	[Example] // 0x1000D550
-	public void TestMethod([Example] /* 0x1000D590 */ object arg); // 0x100C5530
-}
-

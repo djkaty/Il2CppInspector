@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+ * Generated code file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+ */
+
+using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Resources;
@@ -33,7 +37,6 @@ using System.Runtime.InteropServices;
 [assembly: Debuggable] // 0x000000018000C0D0
 [assembly: RuntimeCompatibility] // 0x000000018000C0D0
 
-// Namespace: <global namespace>
 internal static class Consts // TypeDefIndex: 100
 {
 	// Fields
@@ -68,7 +71,6 @@ internal static class Consts // TypeDefIndex: 100
 	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
 }
 
-// Namespace: <global namespace>
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
@@ -79,21 +81,22 @@ internal sealed class Locale // TypeDefIndex: 101
 	public static string GetText(string fmt, params /* 0x00000001800091F0 */ object[] args); // 0x00000001802C64F0
 }
 
-// Namespace: Il2CppTests.TestSources
-internal class Test // TypeDefIndex: 1811
+namespace Il2CppTests.TestSources
 {
-	// Properties
-	private int prop1 { get; set; } // 0x00000001800ECD10 0x0000000180143AD0
-	protected int prop2 { get; private set; } // 0x0000000180156360 0x00000001803E0F20
-	protected int prop3 { private get; set; } // 0x00000001800ED060 0x000000018019DD90
-	public static int prop4 { private get; set; } // 0x00000001803E0EE0 0x00000001803E0F30
-	public string this[int i] { get; } // 0x00000001803E0E80 
-	public string this[double d] { get; } // 0x00000001803E0E50 
-	public string this[long l] { set; } // 0x00000001800EA7B0
-	public string this[float f] { get; set; } // 0x00000001803E0EB0 0x00000001800EA7B0
-	public bool this[int i, int j] { get; } // 0x000000018010E420 
-
-	// Constructors
-	public Test(); // 0x00000001800E2000
+	internal class Test // TypeDefIndex: 1811
+	{
+		// Properties
+		private int prop1 { get; set; } // 0x00000001800ECD10 0x0000000180143AD0
+		protected int prop2 { get; private set; } // 0x0000000180156360 0x00000001803E0F20
+		protected int prop3 { private get; set; } // 0x00000001800ED060 0x000000018019DD90
+		public static int prop4 { private get; set; } // 0x00000001803E0EE0 0x00000001803E0F30
+		public string this[int i] { get; } // 0x00000001803E0E80 
+		public string this[double d] { get; } // 0x00000001803E0E50 
+		public string this[long l] { set; } // 0x00000001800EA7B0
+		public string this[float f] { get; set; } // 0x00000001803E0EB0 0x00000001800EA7B0
+		public bool this[int i, int j] { get; } // 0x000000018010E420 
+	
+		// Constructors
+		public Test(); // 0x00000001800E2000
+	}
 }
-

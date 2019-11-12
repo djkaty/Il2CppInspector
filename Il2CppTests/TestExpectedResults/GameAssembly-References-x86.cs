@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+ * Generated code file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+ */
+
+using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Resources;
@@ -33,7 +37,6 @@ using System.Runtime.InteropServices;
 [assembly: Debuggable] // 0x1000DC90
 [assembly: RuntimeCompatibility] // 0x1000DC90
 
-// Namespace: <global namespace>
 internal static class Consts // TypeDefIndex: 100
 {
 	// Fields
@@ -68,7 +71,6 @@ internal static class Consts // TypeDefIndex: 100
 	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
 }
 
-// Namespace: <global namespace>
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
@@ -79,26 +81,26 @@ internal sealed class Locale // TypeDefIndex: 101
 	public static string GetText(string fmt, params /* 0x1000A660 */ object[] args); // 0x10261460
 }
 
-// Namespace: Il2CppTests.TestSources
-internal class Test // TypeDefIndex: 1811
+namespace Il2CppTests.TestSources
 {
-	// Fields
-	private float floatField; // 0x08
+	internal class Test // TypeDefIndex: 1811
+	{
+		// Fields
+		private float floatField; // 0x08
+	
+		// Constructors
+		public Test(); // 0x100BF000
+	
+		// Methods
+		public void MethodWithRefParameters(int a, ref int b, int c, ref int d); // 0x100C5530
+		public void MethodWithInRefOut(in int a, ref int b, out int c); // 0x1034DA60
+		public ref float MethodWithRefReturnType(); // 0x1034DA70
+	}
 
-	// Constructors
-	public Test(); // 0x100BF000
-
-	// Methods
-	public void MethodWithRefParameters(int a, ref int b, int c, ref int d); // 0x100C5530
-	public void MethodWithInRefOut(in int a, ref int b, out int c); // 0x1034DA60
-	public ref float MethodWithRefReturnType(); // 0x1034DA70
+	[Obsolete] // 0x1000DD10
+	public struct RefStruct // TypeDefIndex: 1812
+	{
+		// Fields
+		private int structField1; // 0x08
+	}
 }
-
-// Namespace: Il2CppTests.TestSources
-[Obsolete] // 0x1000DD10
-public struct RefStruct // TypeDefIndex: 1812
-{
-	// Fields
-	private int structField1; // 0x08
-}
-

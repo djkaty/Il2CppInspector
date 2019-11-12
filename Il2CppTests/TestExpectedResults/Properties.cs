@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+ * Generated code file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+ */
+
+using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Resources;
@@ -33,7 +37,6 @@ using System.Runtime.InteropServices;
 [assembly: Debuggable] // 0x000A5264
 [assembly: RuntimeCompatibility] // 0x000A5264
 
-// Namespace: <global namespace>
 internal static class Consts // TypeDefIndex: 100
 {
 	// Fields
@@ -68,7 +71,6 @@ internal static class Consts // TypeDefIndex: 100
 	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
 }
 
-// Namespace: <global namespace>
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
@@ -79,21 +81,22 @@ internal sealed class Locale // TypeDefIndex: 101
 	public static string GetText(string fmt, params /* 0x000A3618 */ object[] args); // 0x003EC6B4
 }
 
-// Namespace: Il2CppTests.TestSources
-internal class Test // TypeDefIndex: 1811
+namespace Il2CppTests.TestSources
 {
-	// Properties
-	private int prop1 { get; set; } // 0x00561230 0x00561238
-	protected int prop2 { get; private set; } // 0x00561240 0x00561248
-	protected int prop3 { private get; set; } // 0x00561250 0x00561258
-	public static int prop4 { private get; set; } // 0x00561260 0x005612C4
-	public string this[int i] { get; } // 0x00561328 
-	public string this[double d] { get; } // 0x00561384 
-	public string this[long l] { set; } // 0x005613DC
-	public string this[float f] { get; set; } // 0x005613E0 0x0056143C
-	public bool this[int i, int j] { get; } // 0x00561440 
-
-	// Constructors
-	public Test(); // 0x00561448
+	internal class Test // TypeDefIndex: 1811
+	{
+		// Properties
+		private int prop1 { get; set; } // 0x00561230 0x00561238
+		protected int prop2 { get; private set; } // 0x00561240 0x00561248
+		protected int prop3 { private get; set; } // 0x00561250 0x00561258
+		public static int prop4 { private get; set; } // 0x00561260 0x005612C4
+		public string this[int i] { get; } // 0x00561328 
+		public string this[double d] { get; } // 0x00561384 
+		public string this[long l] { set; } // 0x005613DC
+		public string this[float f] { get; set; } // 0x005613E0 0x0056143C
+		public bool this[int i, int j] { get; } // 0x00561440 
+	
+		// Constructors
+		public Test(); // 0x00561448
+	}
 }
-
