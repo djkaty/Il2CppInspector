@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017-2019 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
+﻿// Copyright (c) 2017-2019 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 // All rights reserved
 
 using System;
@@ -33,8 +33,6 @@ namespace Il2CppInspector
         public void WriteSingleFile(string outFile) => writeFile(outFile, model.Assemblies.SelectMany(x => x.DefinedTypes));
 
         private void writeFile(string outFile, IEnumerable<TypeInfo> types) {
-
-            using StreamWriter writer = new StreamWriter(new FileStream(outFile, FileMode.Create), Encoding.UTF8);
 
             var nsRefs = new HashSet<string>();
             var code = new StringBuilder();
@@ -74,7 +72,17 @@ namespace Il2CppInspector
 
             // Determine using directives (put System namespaces first)
             var usings = nsRefs.OrderBy(n => (n.StartsWith("System.") || n == "System") ? "0" + n : "1" + n);
-            
+
+            // Create output file
+            using StreamWriter writer = new StreamWriter(new FileStream(outFile, FileMode.Create), Encoding.UTF8);
+
+            // Write preamble
+            writer.Write(@"/*
+ * Generated code file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+ */
+
+");
+
             // Output using directives
             writer.Write(string.Concat(usings.Select(n => $"using {n};\n")));
             if (nsRefs.Any())
