@@ -30,34 +30,75 @@ namespace Il2CppInspector
 
         public Il2CppCSharpDumper(Il2CppModel model) => this.model = model;
 
-        public void WriteFile(string outFile) {
+        public void WriteSingleFile(string outFile) => writeFile(outFile, model.Assemblies.SelectMany(x => x.DefinedTypes));
+
+        private void writeFile(string outFile, IEnumerable<TypeInfo> types) {
+
             using StreamWriter writer = new StreamWriter(new FileStream(outFile, FileMode.Create), Encoding.UTF8);
 
-            foreach (var asm in model.Assemblies) {
-                writer.Write($"// Image {asm.Index}: {asm.FullName} - {asm.ImageDefinition.typeStart}\n");
+            var nsRefs = new HashSet<string>();
+            var code = new StringBuilder();
 
-                // Assembly-level attributes
-                writer.Write(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name).ToString(attributePrefix: "assembly: "));
-                if (asm.CustomAttributes.Any())
-                    writer.Write("\n");
-            }
-            writer.Write("\n");
-
-            foreach (var type in model.Assemblies.SelectMany(x => x.DefinedTypes)) {
+            foreach (var type in types) {
 
                 // Skip namespace and any children if requested
                 if (ExcludedNamespaces?.Any(x => x == type.Namespace || type.Namespace.StartsWith(x + ".")) ?? false)
                     continue;
 
                 // Assembly.DefinedTypes returns nested types in the assembly by design - ignore them
-                if (!type.IsNested) {
-                    writer.Write($"// Namespace: {(!string.IsNullOrEmpty(type.Namespace) ? type.Namespace : "<default namespace>")}\n");
-                    writer.Write(writeType(type) + "\n");
-                }
+                if (type.IsNested)
+                    continue;
+
+                // Get code
+                var text = generateType(type);
+                if (string.IsNullOrEmpty(text))
+                    continue;
+
+                // Append namespace
+                code.Append($"// Namespace: {(!string.IsNullOrEmpty(type.Namespace) ? type.Namespace : "<global namespace>")}\n");
+                
+                // Determine namespace references
+                var refs = type.GetAllTypeReferences();
+                var ns = refs.Where(r => !string.IsNullOrEmpty(r.Namespace) && r.Namespace != type.Namespace).Select(r => r.Namespace);
+                nsRefs.UnionWith(ns);
+
+                // Append type definition
+                code.Append(text + "\n");
             }
+            
+            // Determine using directives (put System namespaces first)
+            var usings = nsRefs.OrderBy(n => (n.StartsWith("System.") || n == "System") ? "0" + n : "1" + n);
+            
+            // Output using directives
+            writer.Write(string.Concat(usings.Select(n => $"using {n};\n")));
+            if (nsRefs.Any())
+                writer.Write("\n");
+
+            // Determine assemblies used in this file
+            var assemblies = types.Select(t => t.Assembly).Distinct();
+
+            // Output assembly information and attributes
+            writer.Write(generateAssemblyInfo(assemblies) + "\n\n");
+
+            // Output type definitions
+            writer.Write(code);
         }
 
-        private string writeType(TypeInfo type, string prefix = "") {
+        private string generateAssemblyInfo(IEnumerable<Reflection.Assembly> assemblies) {
+            var text = new StringBuilder();
+
+            foreach (var asm in assemblies) {
+                text.Append($"// Image {asm.Index}: {asm.FullName} - {asm.ImageDefinition.typeStart}\n");
+
+                // Assembly-level attributes
+                text.Append(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name).ToString(attributePrefix: "assembly: "));
+                if (asm.CustomAttributes.Any())
+                    text.Append("\n");
+            }
+            return text.ToString().TrimEnd();
+        }
+
+        private string generateType(TypeInfo type, string prefix = "") {
             // Don't output compiler-generated types if desired
             if (SuppressGenerated && type.GetCustomAttributes(CGAttribute).Any())
                 return string.Empty;
@@ -152,7 +193,7 @@ namespace Il2CppInspector
             codeBlocks.Add("Events", sb.ToString());
 
             // Nested types
-            codeBlocks.Add("Nested types", string.Join("\n", type.DeclaredNestedTypes.Select(n => writeType(n, prefix + "\t"))));
+            codeBlocks.Add("Nested types", string.Join("\n", type.DeclaredNestedTypes.Select(n => generateType(n, prefix + "\t")).Where(c => !string.IsNullOrEmpty(c))));
 
             // Constructors
             sb.Clear();

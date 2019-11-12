@@ -67,7 +67,7 @@ namespace Il2CppInspector
 
                 // C# signatures output
                 new Il2CppCSharpDumper(model) {ExcludedNamespaces = excludedNamespaces, SuppressGenerated = suppressGenerated}
-                    .WriteFile(outCsFile + (i++ > 0 ? "-" + (i-1) : ""));
+                    .WriteSingleFile(outCsFile + (i++ > 0 ? "-" + (i-1) : ""));
 
                 // IDA Python script output
                 // TODO: IDA Python script output
