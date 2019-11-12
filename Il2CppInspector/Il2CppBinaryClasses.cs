@@ -102,7 +102,7 @@ namespace Il2CppInspector
         public ulong methodReferences;
 
         public long fieldOffsetsCount;
-        public ulong pfieldOffsets;
+        public ulong pfieldOffsets; // Changed from int32_t* to int32_t** after 5.4.0f3, before 5.5.0f3
 
         public long typeDefinitionsSizesCount;
         public ulong typeDefinitionsSizes;

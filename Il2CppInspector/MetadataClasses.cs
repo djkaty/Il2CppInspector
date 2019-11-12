@@ -11,8 +11,14 @@ namespace Il2CppInspector
 {
     // Unity 4.6.1p5 - first release, no global-metadata.dat
     // Unity 5.2.0f3 -> v15
-    // Unity 5.3.0f1 -> v16
-    // ..
+    // Unity 5.3.0f4 -> v16
+    // Unity 5.3.1f1 -> v16
+    // Unity 5.3.2f1 -> v19
+    // Unity 5.3.3f1 -> v20
+    // Unity 5.3.4f1 -> v20
+    // Unity 5.3.5f1 -> v21
+    // Unity 5.4.0f3 -> v21
+    // Unity 5.5.0f3 -> v22
     // Unity 5.6.2p3 -> v23
     // Unity 5.6.4f1 -> v23
     // Unity 2017.2f3 -> v24
@@ -20,7 +26,7 @@ namespace Il2CppInspector
     // Unity 2018.3.0f2 -> v24.1
     // Unity 2019.2.8f1 -> v24.2
     // https://unity3d.com/get-unity/download/archive
-    // Metadata version is written at the end of Unity.IL2CPP.MetadataCacheWriter.WriteLibIl2CppMetadata (Unity.IL2CPP.dll)
+    // Metadata version is written at the end of Unity.IL2CPP.MetadataCacheWriter.WriteLibIl2CppMetadata or WriteMetadata (Unity.IL2CPP.dll)
 
     // From il2cpp-metadata.h
 #pragma warning disable CS0649
@@ -168,26 +174,41 @@ namespace Il2CppInspector
     // Renamed from Il2CppAssembly somewhere after Unity 2017.2f3 up to Unity 2018.2.0f2
     public class Il2CppAssemblyDefinition
     {
+        // They moved the position of aname in v16 from the top to the bottom of the struct
+        public Il2CppAssemblyNameDefinition aname => aname_pre16 ?? aname_post16;
+
+        [Version(Max = 15)]
+        public Il2CppAssemblyNameDefinition aname_pre16;
+
         public int imageIndex;
 
-        [Version(Min = 19)]
+        [Version(Min = 24.1)]
         public uint token;
 
         [Version(Max = 24.0)]
         public int customAttributeIndex;
 
+        [Version(Min = 20)]
         public int referencedAssemblyStart;
+        [Version(Min = 20)]
         public int referencedAssemblyCount;
-        public Il2CppAssemblyNameDefinition aname;
+
+        [Version(Min = 16)]
+        public Il2CppAssemblyNameDefinition aname_post16;
     }
 
     // Renamed from Il2CppAssemblyName somewhere after Unity 2017.2f3 up to Unity 2018.2.0f2
     public class Il2CppAssemblyNameDefinition
     {
+        // They moved the position of publicKeyToken in v16 from the middle to the bottom of the struct
+        public byte[] publicKeyToken => publicKeyToken_post16;
+
         public uint nameIndex;
         public uint cultureIndex;
         public uint hashValueIndex;
         public uint publicKeyIndex;
+        [Version(Max = 15), ArrayLength(FixedSize = 8)]
+        public byte[] publicKeyToken_pre16;
         public uint hash_alg;
         public int hash_len;
         public uint flags;
@@ -195,8 +216,8 @@ namespace Il2CppInspector
         public int minor;
         public int build;
         public int revision;
-        [ArrayLength(FixedSize = 8)]
-        public byte[] publicKeyToken;
+        [Version(Min = 16), ArrayLength(FixedSize = 8)]
+        public byte[] publicKeyToken_post16;
     }
 
     public class Il2CppTypeDefinition
