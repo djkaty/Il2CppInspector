@@ -1,4 +1,12 @@
-﻿// Image 0: mscorlib.dll - 0
+﻿using System;
+using System.Diagnostics;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using Il2CppTests.TestSources;
+
+// Image 0: mscorlib.dll - 0
 [assembly: AssemblyCompany] // 0x1000EFA0
 [assembly: AssemblyCopyright] // 0x1000EFA0
 [assembly: AssemblyDefaultAlias] // 0x1000EFA0
@@ -27,8 +35,7 @@
 [assembly: Example] // 0x1000D360
 [assembly: RuntimeCompatibility] // 0x1000D360
 
-
-// Namespace: <default namespace>
+// Namespace: <global namespace>
 internal static class Consts // TypeDefIndex: 100
 {
 	// Fields
@@ -61,10 +68,9 @@ internal static class Consts // TypeDefIndex: 100
 	public const string AssemblySystem_Web = "System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
 	public const string AssemblySystem_Windows_Forms = "System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
 	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
-
 }
 
-// Namespace: <default namespace>
+// Namespace: <global namespace>
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
@@ -73,9 +79,7 @@ internal sealed class Locale // TypeDefIndex: 101
 	// Methods
 	public static string GetText(string msg); // 0x100F7810
 	public static string GetText(string fmt, params /* 0x10009B80 */ object[] args); // 0x10261460
-
 }
-
 
 // Namespace: Il2CppTests.TestSources
 public enum ExampleKind // TypeDefIndex: 1811
@@ -106,7 +110,6 @@ public class ExampleAttribute : Attribute // TypeDefIndex: 1812
 	public ExampleAttribute(ExampleKind initKind, string[] initStrings); // 0x1034DA90
 	public ExampleAttribute(ExampleKind initKind); // 0x1034DAC0
 	public ExampleAttribute(); // 0x1034DA60
-
 }
 
 // Namespace: Il2CppTests.TestSources
@@ -119,6 +122,5 @@ public class Test // TypeDefIndex: 1813
 	// Methods
 	[Example] // 0x1000D550
 	public void TestMethod([Example] /* 0x1000D590 */ object arg); // 0x100C5530
-
 }
 

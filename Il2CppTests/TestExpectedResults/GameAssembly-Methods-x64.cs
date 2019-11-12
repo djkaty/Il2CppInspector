@@ -1,4 +1,12 @@
-﻿// Image 0: mscorlib.dll - 0
+﻿using System;
+using System.Diagnostics;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Text;
+
+// Image 0: mscorlib.dll - 0
 [assembly: AssemblyCompany] // 0x000000018000E950
 [assembly: AssemblyCopyright] // 0x000000018000E950
 [assembly: AssemblyDefaultAlias] // 0x000000018000E950
@@ -26,8 +34,7 @@
 [assembly: Debuggable] // 0x000000018000CAF0
 [assembly: RuntimeCompatibility] // 0x000000018000CAF0
 
-
-// Namespace: <default namespace>
+// Namespace: <global namespace>
 internal static class Consts // TypeDefIndex: 100
 {
 	// Fields
@@ -60,10 +67,9 @@ internal static class Consts // TypeDefIndex: 100
 	public const string AssemblySystem_Web = "System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
 	public const string AssemblySystem_Windows_Forms = "System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
 	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
-
 }
 
-// Namespace: <default namespace>
+// Namespace: <global namespace>
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
@@ -72,9 +78,7 @@ internal sealed class Locale // TypeDefIndex: 101
 	// Methods
 	public static string GetText(string msg); // 0x0000000180123590
 	public static string GetText(string fmt, params /* 0x0000000180009C10 */ object[] args); // 0x00000001802C64F0
-
 }
-
 
 // Namespace: Il2CppTests.TestSources
 internal class Test // TypeDefIndex: 1811
@@ -86,7 +90,6 @@ internal class Test // TypeDefIndex: 1811
 	public virtual void VirtualMethod(); // 0x00000001800EA7B0
 	public double ValueTypeReturnMethod(); // 0x00000001803E0EC0
 	public StringBuilder ReferenceTypeReturnMethod(); // 0x00000001803E0E70
-
 }
 
 // Namespace: Il2CppTests.TestSources
@@ -94,7 +97,6 @@ public static class TestExtension // TypeDefIndex: 1812
 {
 	// Methods
 	public static double DivideByXExtension(int a, float x); // 0x00000001803E0E50
-
 }
 
 // Namespace: Il2CppTests.TestSources
@@ -105,7 +107,6 @@ internal abstract class TestAbstract // TypeDefIndex: 1813
 
 	// Methods
 	public abstract void AbstractMethod();
-
 }
 
 // Namespace: Il2CppTests.TestSources
@@ -116,7 +117,6 @@ internal class TestOverride : Test // TypeDefIndex: 1814
 
 	// Methods
 	public override void VirtualMethod(); // 0x00000001800EA7B0
-
 }
 
 // Namespace: Il2CppTests.TestSources
@@ -127,7 +127,6 @@ internal class TestHideVirtual : Test // TypeDefIndex: 1815
 
 	// Methods
 	public new void VirtualMethod(); // 0x00000001800EA7B0
-
 }
 
 // Namespace: Il2CppTests.TestSources
@@ -138,7 +137,6 @@ internal class TestHideOverride : TestOverride // TypeDefIndex: 1816
 
 	// Methods
 	public new void VirtualMethod(); // 0x00000001800EA7B0
-
 }
 
 // Namespace: Il2CppTests.TestSources
@@ -149,7 +147,6 @@ internal class TestOverrideAbstract : TestAbstract // TypeDefIndex: 1817
 
 	// Methods
 	public override void AbstractMethod(); // 0x00000001800EA7B0
-
 }
 
 // Namespace: Il2CppTests.TestSources
@@ -160,7 +157,6 @@ internal class TestHideAbstractOverride : TestOverrideAbstract // TypeDefIndex: 
 
 	// Methods
 	public new void AbstractMethod(); // 0x00000001800EA7B0
-
 }
 
 // Namespace: Il2CppTests.TestSources
@@ -171,7 +167,6 @@ internal class TestHideVirtualAndNewVirtual : Test // TypeDefIndex: 1819
 
 	// Methods
 	public virtual new void VirtualMethod(); // 0x00000001800EA7B0
-
 }
 
 // Namespace: Il2CppTests.TestSources
@@ -182,7 +177,6 @@ internal class TestHideOverrideAndNewVirtual : TestOverride // TypeDefIndex: 182
 
 	// Methods
 	public virtual new void VirtualMethod(); // 0x00000001800EA7B0
-
 }
 
 // Namespace: Il2CppTests.TestSources
@@ -193,7 +187,6 @@ internal abstract class TestAbstractNew : TestOverride // TypeDefIndex: 1821
 
 	// Methods
 	public abstract new void VirtualMethod();
-
 }
 
 // Namespace: Il2CppTests.TestSources
@@ -204,6 +197,5 @@ internal class TestNewNonVirtualMethod : Test // TypeDefIndex: 1822
 
 	// Methods
 	public int ValueTypeReturnMethod(); // 0x0000000180119A50
-
 }
 

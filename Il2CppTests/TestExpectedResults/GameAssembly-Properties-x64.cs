@@ -1,4 +1,11 @@
-﻿// Image 0: mscorlib.dll - 0
+﻿using System;
+using System.Diagnostics;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+// Image 0: mscorlib.dll - 0
 [assembly: AssemblyCompany] // 0x000000018000DF60
 [assembly: AssemblyCopyright] // 0x000000018000DF60
 [assembly: AssemblyDefaultAlias] // 0x000000018000DF60
@@ -26,8 +33,7 @@
 [assembly: Debuggable] // 0x000000018000C0D0
 [assembly: RuntimeCompatibility] // 0x000000018000C0D0
 
-
-// Namespace: <default namespace>
+// Namespace: <global namespace>
 internal static class Consts // TypeDefIndex: 100
 {
 	// Fields
@@ -60,10 +66,9 @@ internal static class Consts // TypeDefIndex: 100
 	public const string AssemblySystem_Web = "System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
 	public const string AssemblySystem_Windows_Forms = "System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
 	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
-
 }
 
-// Namespace: <default namespace>
+// Namespace: <global namespace>
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
@@ -72,15 +77,11 @@ internal sealed class Locale // TypeDefIndex: 101
 	// Methods
 	public static string GetText(string msg); // 0x0000000180123590
 	public static string GetText(string fmt, params /* 0x00000001800091F0 */ object[] args); // 0x00000001802C64F0
-
 }
-
 
 // Namespace: Il2CppTests.TestSources
 internal class Test // TypeDefIndex: 1811
 {
-	// Fields
-
 	// Properties
 	private int prop1 { get; set; } // 0x00000001800ECD10 0x0000000180143AD0
 	protected int prop2 { get; private set; } // 0x0000000180156360 0x00000001803E0F20
@@ -94,6 +95,5 @@ internal class Test // TypeDefIndex: 1811
 
 	// Constructors
 	public Test(); // 0x00000001800E2000
-
 }
 

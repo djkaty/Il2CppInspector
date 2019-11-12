@@ -1,4 +1,11 @@
-﻿// Image 0: mscorlib.dll - 0
+﻿using System;
+using System.Diagnostics;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+// Image 0: mscorlib.dll - 0
 [assembly: AssemblyCompany] // 0x000A68AC
 [assembly: AssemblyCopyright] // 0x000A68AC
 [assembly: AssemblyDefaultAlias] // 0x000A68AC
@@ -26,8 +33,7 @@
 [assembly: Debuggable] // 0x000A6D34
 [assembly: RuntimeCompatibility] // 0x000A6D34
 
-
-// Namespace: <default namespace>
+// Namespace: <global namespace>
 internal static class Consts // TypeDefIndex: 100
 {
 	// Fields
@@ -60,10 +66,9 @@ internal static class Consts // TypeDefIndex: 100
 	public const string AssemblySystem_Web = "System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
 	public const string AssemblySystem_Windows_Forms = "System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
 	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
-
 }
 
-// Namespace: <default namespace>
+// Namespace: <global namespace>
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
@@ -72,10 +77,7 @@ internal sealed class Locale // TypeDefIndex: 101
 	// Methods
 	public static string GetText(string msg); // 0x003EE220
 	public static string GetText(string fmt, params /* 0x000A50D8 */ object[] args); // 0x003EE224
-
 }
-
-
 
 // Namespace: Il2CppTests.TestSources
 internal class Test // TypeDefIndex: 1813
@@ -101,9 +103,6 @@ internal class Test // TypeDefIndex: 1813
 	{
 		// Fields
 		private unsafe fixed /* 0x000A6C98 */ int fixedSizeArray[0]; // 0x08
-
-		// Nested types
-
 	}
 
 	public unsafe delegate void OnUnsafe(int* ud); // TypeDefIndex: 1816; 0x00562F3C
@@ -117,7 +116,6 @@ internal class Test // TypeDefIndex: 1813
 		// Methods
 		private unsafe T* UnsafeGenericReturn();
 		private unsafe void UnsafeGenericMethod(T* pt);
-
 	}
 
 	// Constructors
@@ -129,6 +127,5 @@ internal class Test // TypeDefIndex: 1813
 	public unsafe void UnsafeMethod(int* unsafePointerArgument); // 0x00562EFC
 	public unsafe int* UnsafeReturnMethod(); // 0x00562F00
 	public unsafe int* UnsafeMethod2(int* i); // 0x00562F08
-
 }
 

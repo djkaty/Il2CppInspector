@@ -1,4 +1,11 @@
-﻿// Image 0: mscorlib.dll - 0
+﻿using System;
+using System.Diagnostics;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+// Image 0: mscorlib.dll - 0
 [assembly: AssemblyCompany] // 0x000A4F30
 [assembly: AssemblyCopyright] // 0x000A4F30
 [assembly: AssemblyDefaultAlias] // 0x000A4F30
@@ -26,8 +33,7 @@
 [assembly: Debuggable] // 0x000A525C
 [assembly: RuntimeCompatibility] // 0x000A525C
 
-
-// Namespace: <default namespace>
+// Namespace: <global namespace>
 internal static class Consts // TypeDefIndex: 100
 {
 	// Fields
@@ -60,10 +66,9 @@ internal static class Consts // TypeDefIndex: 100
 	public const string AssemblySystem_Web = "System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
 	public const string AssemblySystem_Windows_Forms = "System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
 	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
-
 }
 
-// Namespace: <default namespace>
+// Namespace: <global namespace>
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
@@ -72,9 +77,7 @@ internal sealed class Locale // TypeDefIndex: 101
 	// Methods
 	public static string GetText(string msg); // 0x003EC500
 	public static string GetText(string fmt, params /* 0x000A375C */ object[] args); // 0x003EC504
-
 }
-
 
 // Namespace: Il2CppTests.TestSources
 internal class Test // TypeDefIndex: 1811
@@ -89,7 +92,6 @@ internal class Test // TypeDefIndex: 1811
 	public void MethodWithRefParameters(int a, ref int b, int c, ref int d); // 0x00561080
 	public void MethodWithInRefOut(in int a, ref int b, out int c); // 0x00561084
 	public ref float MethodWithRefReturnType(); // 0x00561090
-
 }
 
 // Namespace: Il2CppTests.TestSources
@@ -98,6 +100,5 @@ public struct RefStruct // TypeDefIndex: 1812
 {
 	// Fields
 	private int structField1; // 0x08
-
 }
 
