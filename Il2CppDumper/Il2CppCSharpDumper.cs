@@ -128,7 +128,7 @@ namespace Il2CppInspector
                     // Fixed buffers
                     if (field.GetCustomAttributes(FBAttribute).Any())
                         sb.Append($"/* {((ulong) field.GetCustomAttributes(FBAttribute)[0].VirtualAddress).ToAddressString()} */" +
-                                     $" {field.FieldType.GetField("FixedElementField").FieldType.CSharpName} {field.Name}[0]");
+                                     $" {field.FieldType.DeclaredFields[0].FieldType.CSharpName} {field.Name}[0]"); // FixedElementField
                     // Regular fields
                     else
                         sb.Append($"{field.FieldType.CSharpName} {field.Name}");
