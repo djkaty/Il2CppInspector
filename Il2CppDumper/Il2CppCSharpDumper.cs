@@ -66,6 +66,12 @@ namespace Il2CppInspector
                 code.Append(text + "\n");
             }
             
+            // Determine assemblies used in this file
+            var assemblies = types.Select(t => t.Assembly).Distinct();
+
+            // Add assembly attribute namespaces to reference list
+            nsRefs.UnionWith(assemblies.SelectMany(a => a.CustomAttributes).Select(a => a.AttributeType.Namespace));
+
             // Determine using directives (put System namespaces first)
             var usings = nsRefs.OrderBy(n => (n.StartsWith("System.") || n == "System") ? "0" + n : "1" + n);
             
@@ -73,9 +79,6 @@ namespace Il2CppInspector
             writer.Write(string.Concat(usings.Select(n => $"using {n};\n")));
             if (nsRefs.Any())
                 writer.Write("\n");
-
-            // Determine assemblies used in this file
-            var assemblies = types.Select(t => t.Assembly).Distinct();
 
             // Output assembly information and attributes
             writer.Write(generateAssemblyInfo(assemblies) + "\n\n");
