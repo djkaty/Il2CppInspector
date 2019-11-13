@@ -8,6 +8,7 @@ Extract types, methods, properties and fields from Unity IL2CPP binaries.
 * Supports applications created with Unity 5.3.0 onwards (full IL2CPP version table below)
 * Support for classes, methods, constructors, fields, properties, enumerations, events, interfaces, structs, pointers, references, attributes, nested types, generic types, generic methods, generic constraints, default field values and default method parameter values
 * C# syntactic sugar for CTS value types, compiler-generated types, delegates, extension methods, operator overloading, indexers, user-defined conversion operators, nullable types, unsafe contexts, fixed-size arrays, variable length argument lists and method hiding
+* Partition C# code output by namespace, assembly, class or single file; sort by index or type name; output flat or nested folder hierarchy. Each file includes the necessary `using` directives to enable compilation
 * Static symbol table scanning for ELF and Mach-O binaries if present
 * Dynamic symbol table scanning for ELF binaries if present
 * Symbol relocation handling for ELF binaries
@@ -31,15 +32,26 @@ The output binary is placed in `Il2CppInspector/Il2CppDumper/bin/Release/netcore
 
 ### Usage
 
+Run `Il2CppDumper.exe` at the command prompt.
+
+File format and architecture are automatically detected.
+
 ```
-Il2CppDumper [--bin=<binary-file>] [--metadata=<metadata-file>] [--cs-out=<output-file>] [--exclude-namespaces=<ns1,ns2,...>|none] [--suppress-compiler-generated=false]
+  -i, --bin                   Required. (Default: libil2cpp.so) IL2CPP binary file input
+  -m, --metadata              Required. (Default: global-metadata.data) IL2CPP metadata file input
+  -c, --cs-out                (Default: types.cs) C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)
+  -e, --exclude-namespaces    (Default: System Unity UnityEngine UnityEngineInternal Mono Microsoft.Win32) Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces
+  -l, --layout                (Default: single) Partitioning of C# output ('single' = single file, 'namespace' = one file per namespace, 'assembly' = one file per assembly, 'class' = one file per class)
+  -s, --sort                  (Default: index) Sort order of type definitions in C# output ('index' = by type definition index, 'name' = by type name). No effect when using file-per-class layout
+  -f, --flatten               (Default: false) Flatten the namespace hierarchy into a single folder rather than using per-namespace subfolders. Only used when layout is per-namespace or per-class
+  -g, --no-suppress-cg        (Default: false) Don't suppress generation of C# code for items with CompilerGenerated attribute
 ```
 
 Defaults if not specified:
 
-- _binary-file_ - searches for `libil2cpp.so`
-- _metadata-file_ - `global-metadata.dat`
-- _output-file_ - `types.cs`
+- _bin_ - `libil2cpp.so`
+- _metadata_ - `global-metadata.dat`
+- _cs-out_ - `types.cs`
 
 To exclude types from certain namespaces from being generated in the C# source file output, provide a comma-separated list of case-sensitive namespaces in `--exclude-namespaces`. The following namespaces will be excluded if no argument is specified:
 
@@ -54,9 +66,7 @@ Microsoft.Win32
 
 Providing an argument to `--exclude-namespaces` will override the default list. To output all namespaces, use `--exclude-namespaces=none`.
 
-By default, types and fields declared with the `System.Runtime.CompilerServices.CompilerGeneratedAttribute` attribute will be suppresssed from the C# code output. The attribute itself will be suppressed from property getters and setters. This is useful if you would like to be able to compile the output code. To include these constructs in the output, use `--suppress-compiler-generated=false`.
-
-File format and architecture are automatically detected.
+By default, types and fields declared with the `System.Runtime.CompilerServices.CompilerGeneratedAttribute` attribute will be suppresssed from the C# code output. The attribute itself will be suppressed from property getters and setters. This is useful if you would like to be able to compile the output code. To include these constructs in the output, use `--no-suppress-cg`.
 
 For Apple Universal Binaries, multiple output files will be generated, with each filename besides the first suffixed by the index of the image in the Universal Binary. Unsupported images will be skipped.
 
@@ -71,20 +81,19 @@ The auto-generated tests generate a file in the test IL2CPP binary's folder call
 
 ### Version support
 
-* Confirmed working version support:
-  - Unity 5.3.0-5.3.1 (IL2CPP version 16)
-  - Unity 5.3.5-5.4.x (IL2CPP version 21)
-  - Unity 5.5.x (IL2CPP version 22)
-  - Unity 5.6.x (IL2CPP version 23)
-  - Unity 2017.x-2018.2 (IL2CPP version 24.0)
-  - Unity 2018.3-2019.x (IL2CPP version 24.1)
-  - Unity 2019.x+ (IL2CPP version 24.2)
-* Untested version support (may or may not work):
-  - Unity 5.3.2 (IL2CPP version 19)
-  - Unity 5.3.3-5.3.4 (IL2CPP version 20)
-* Will not be supported:
-  - Unity 4.6.1+ (IL2CPP first release; no metadata file)
-  - Unity 5.2.x (IL2CPP version 15; does not retain assembly information)
+Unity version | IL2CPP version | Support
+--- | --- | ---
+4.6.1+ | First release | Unsupported
+5.2.x | 15 | Unsupported
+5.3.0-5.3.1 | 16 | Working
+5.3.2 | 19 | Untested
+5.3.3-5.3.4 | 20 | Untested
+5.3.5-5.4.x | 21 | Working
+5.5.x | 22 | Working
+5.6.x | 23 | Working
+2017.x-2018.2 | 24.0 | Working
+2018.3-2019.x | 24.1 | Working
+2019.x+ | 24.2 | Working
 
 ### Problems
 
