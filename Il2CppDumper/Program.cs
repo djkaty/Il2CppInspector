@@ -5,57 +5,64 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CommandLine;
 using Il2CppInspector.Reflection;
-using Microsoft.Extensions.Configuration;
 
 namespace Il2CppInspector
 {
     public class App
     {
-        static void Main(string[] args) {
+        private class Options
+        {
+            [Option('i', "bin", Required = true, HelpText = "IL2CPP binary file input", Default = "libil2cpp.so")]
+            public string BinaryFile { get; set; }
 
-            // Banner
-            Console.WriteLine("Il2CppDumper");
-            Console.WriteLine("(c) 2017-2019 Katy Coe - www.djkaty.com");
-            Console.WriteLine("");
+            [Option('m', "metadata", Required = true, HelpText = "IL2CPP metadata file input", Default = "global-metadata.data")]
+            public string MetadataFile { get; set; }
 
-            // Command-line usage: dotnet run [--bin=<binary-file>] [--metadata=<metadata-file>] [--cs-out=<output-file>] [--py-out=<output-file>] [--exclude-namespaces=<ns1,n2,...>|none] [--suppress-compiler-generated=false]
-            // Defaults to libil2cpp.so or GameAssembly.dll if binary file not specified
-            IConfiguration config = new ConfigurationBuilder().AddCommandLine(args).Build();
+            [Option('c', "cs-out", Required = false, HelpText = "C# output file or path", Default = "types.cs")]
+            public string CSharpOutPath { get; set; }
 
-            string imageFile = config["bin"] ?? "libil2cpp.so";
-            string metaFile = config["metadata"] ?? "global-metadata.dat";
-            string outCsFile = config["cs-out"] ?? "types.cs";
-            string outPythonFile = config["py-out"] ?? "ida.py";
-            if (!bool.TryParse(config["suppress-compiler-generated"], out var suppressGenerated))
-                suppressGenerated = true;
+            [Option('p', "py-out", Required = false, Hidden = true, HelpText = "IDA Python script output file", Default = "ida.py")]
+            public string PythonOutFile { get; set; }
 
-            // Exclusions
-            var excludedNamespaces = config["exclude-namespaces"]?.Split(',').ToList() ?? 
-            new List<string> {
-                "System",
-                "Unity",
-                "UnityEngine",
-                "UnityEngineInternal",
-                "Mono",
-                "Microsoft.Win32",
-            };
+            [Option("exclude-namespaces", Required = false, Separator = ',', HelpText = "Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces",
+                Default = new [] {
+                    "System",
+                    "Unity",
+                    "UnityEngine",
+                    "UnityEngineInternal",
+                    "Mono",
+                    "Microsoft.Win32",
+                })]
+            public IEnumerable<string> ExcludedNamespaces { get; set; }
 
-            if (excludedNamespaces.Count == 1 && excludedNamespaces[0].ToLower() == "none")
-                excludedNamespaces = null;
+            [Option("no-suppress-cg", Required = false, HelpText = "Don't suppress C# generation of items with CompilerGenerated attribute", Default = false)]
+            public bool DontSuppressCompilerGenerated { get; set; }
+        }
+
+        public static int Main(string[] args) =>
+            Parser.Default.ParseArguments<Options>(args).MapResult(
+                options => Run(options),
+                _ => 1);
+
+        private static int Run(Options options) {
+            // Check excluded namespaces
+            if (options.ExcludedNamespaces.Count() == 1 && options.ExcludedNamespaces.First().ToLower() == "none")
+                options.ExcludedNamespaces = new List<string>();
 
             // Check files
-            if (!File.Exists(imageFile)) {
-                Console.Error.WriteLine($"File {imageFile} does not exist");
-                Environment.Exit(1);
+            if (!File.Exists(options.BinaryFile)) {
+                Console.Error.WriteLine($"File {options.BinaryFile} does not exist");
+                return 1;
             }
-            if (!File.Exists(metaFile)) {
-                Console.Error.WriteLine($"File {metaFile} does not exist");
-                Environment.Exit(1);
+            if (!File.Exists(options.MetadataFile)) {
+                Console.Error.WriteLine($"File {options.MetadataFile} does not exist");
+                return 1;
             }
 
             // Analyze data
-            var il2cppInspectors = Il2CppInspector.LoadFromFile(imageFile, metaFile);
+            var il2cppInspectors = Il2CppInspector.LoadFromFile(options.BinaryFile, options.MetadataFile);
             if (il2cppInspectors == null)
                 Environment.Exit(1);
 
@@ -66,12 +73,15 @@ namespace Il2CppInspector
                 var model = new Il2CppModel(il2cpp);
 
                 // C# signatures output
-                new Il2CppCSharpDumper(model) {ExcludedNamespaces = excludedNamespaces, SuppressGenerated = suppressGenerated}
-                    .WriteSingleFile(outCsFile + (i++ > 0 ? "-" + (i-1) : ""));
+                new Il2CppCSharpDumper(model) {ExcludedNamespaces = options.ExcludedNamespaces.ToList(), SuppressGenerated = !options.DontSuppressCompilerGenerated}
+                    .WriteSingleFile(options.CSharpOutPath + (i++ > 0 ? "-" + (i-1) : ""));
 
                 // IDA Python script output
                 // TODO: IDA Python script output
             }
+
+            // Success exit code
+            return 0;
         }
     }
 }
