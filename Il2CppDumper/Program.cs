@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using CommandLine;
 using Il2CppInspector.Reflection;
-using TypeInfo = CommandLine.TypeInfo;
 
 namespace Il2CppInspector
 {
@@ -21,7 +20,7 @@ namespace Il2CppInspector
             [Option('m', "metadata", Required = true, HelpText = "IL2CPP metadata file input", Default = "global-metadata.data")]
             public string MetadataFile { get; set; }
 
-            [Option('c', "cs-out", Required = false, HelpText = "C# output file or path", Default = "types.cs")]
+            [Option('c', "cs-out", Required = false, HelpText = "C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)", Default = "types.cs")]
             public string CSharpOutPath { get; set; }
 
             [Option('p', "py-out", Required = false, Hidden = true, HelpText = "IDA Python script output file", Default = "ida.py")]
@@ -38,10 +37,16 @@ namespace Il2CppInspector
                 })]
             public IEnumerable<string> ExcludedNamespaces { get; set; }
 
-            [Option('s', "sort", Required = false, HelpText = "Sort order of type definitions in C# output ('index' = by type definition index, 'name' = by type name)", Default = "index")]
+            [Option('l', "layout", Required = false, HelpText = "Partitioning of C# output ('single' = single file, 'namespace' = one file per namespace, 'assembly' = one file per assembly, 'class' = one file per class)", Default = "single")]
+            public string LayoutSchema { get; set; }
+
+            [Option('s', "sort", Required = false, HelpText = "Sort order of type definitions in C# output ('index' = by type definition index, 'name' = by type name). No effect when using file-per-class layout", Default = "index")]
             public string SortOrder { get; set; }
 
-            [Option('g', "no-suppress-cg", Required = false, HelpText = "Don't suppress C# generation of items with CompilerGenerated attribute", Default = false)]
+            [Option('f', "flatten", Required = false, HelpText = "Flatten the namespace hierarchy into a single folder rather than using per-namespace subfolders. Only used when layout is per-namespace or per-class", Default = false)]
+            public bool FlattenHierarchy { get; set; }
+
+            [Option('g', "no-suppress-cg", Required = false, HelpText = "Don't suppress generation of C# code for items with CompilerGenerated attribute", Default = false)]
             public bool DontSuppressCompilerGenerated { get; set; }
         }
 
@@ -90,10 +95,32 @@ namespace Il2CppInspector
                 else
                     csOut += imageSuffix;
 
-                if (options.SortOrder.ToLower() == "index")
-                    writer.WriteSingleFile(csOut, t => t.Index);
-                else if (options.SortOrder.ToLower() == "name")
-                    writer.WriteSingleFile(csOut, t => t.Name);
+                switch (options.LayoutSchema.ToLower(), options.SortOrder.ToLower()) {
+                    case ("single", "index"):
+                        writer.WriteSingleFile(csOut, t => t.Index);
+                        break;
+                    case ("single", "name"):
+                        writer.WriteSingleFile(csOut, t => t.Name);
+                        break;
+
+                    case ("namespace", "index"):
+                        writer.WriteFilesByNamespace(csOut, t => t.Index, options.FlattenHierarchy);
+                        break;
+                    case ("namespace", "name"):
+                        writer.WriteFilesByNamespace(csOut, t => t.Name, options.FlattenHierarchy);
+                        break;
+
+                    case ("assembly", "index"):
+                        writer.WriteFilesByAssembly(csOut, t => t.Index);
+                        break;
+                    case ("assembly", "name"):
+                        writer.WriteFilesByAssembly(csOut, t => t.Name);
+                        break;
+
+                    case ("class", _):
+                        writer.WriteFilesByClass(csOut, options.FlattenHierarchy);
+                        break;
+                }
 
                 // IDA Python script output
                 // TODO: IDA Python script output
