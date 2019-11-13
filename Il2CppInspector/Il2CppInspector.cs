@@ -170,12 +170,10 @@ namespace Il2CppInspector
             // In the event of an exception, the method pointer is not set in the file
             // This probably means it has been optimized away by the compiler, or is an unused generic method
             try {
-                BinaryImage.Position = BinaryImage.MapVATR(module.methodPointers + (ulong)((method - 1) * (BinaryImage.Bits / 8)));
-
                 // Remove ARM Thumb marker LSB if necessary
-                return (ulong) BinaryImage.ReadWord() & 0xffff_ffff_ffff_fffe;
+                return Binary.ModuleMethodPointers[module][method - 1] & 0xffff_ffff_ffff_fffe;
             }
-            catch (Exception) { }
+            catch (IndexOutOfRangeException) { }
 
             return 0;
         }

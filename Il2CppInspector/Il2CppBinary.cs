@@ -23,6 +23,9 @@ namespace Il2CppInspector
         // Only for <=v24.1
         public ulong[] GlobalMethodPointers { get; set; }
 
+        // Only for >=v24.2
+        public Dictionary<Il2CppCodeGenModule, ulong[]> ModuleMethodPointers { get; set; } = new Dictionary<Il2CppCodeGenModule, ulong[]>();
+
         // NOTE: In versions <21 and earlier releases of v21, use FieldOffsets:
         // global field index => field offset
         // In versions >=22 and later releases of v21, use FieldOffsetPointers:
@@ -153,6 +156,9 @@ namespace Il2CppInspector
                 foreach (var module in modules) {
                     var name = image.ReadMappedNullTerminatedString(module.moduleName);
                     Modules.Add(name, module);
+
+                    // Read method pointers
+                    ModuleMethodPointers.Add(module, image.ReadMappedArray<ulong>(module.methodPointers, (int) module.methodPointerCount));
                 }
             }
 
