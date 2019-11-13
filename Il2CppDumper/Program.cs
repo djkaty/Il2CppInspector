@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using CommandLine;
 using Il2CppInspector.Reflection;
+using TypeInfo = CommandLine.TypeInfo;
 
 namespace Il2CppInspector
 {
@@ -26,7 +27,7 @@ namespace Il2CppInspector
             [Option('p', "py-out", Required = false, Hidden = true, HelpText = "IDA Python script output file", Default = "ida.py")]
             public string PythonOutFile { get; set; }
 
-            [Option("exclude-namespaces", Required = false, Separator = ',', HelpText = "Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces",
+            [Option('e', "exclude-namespaces", Required = false, Separator = ',', HelpText = "Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces",
                 Default = new [] {
                     "System",
                     "Unity",
@@ -37,7 +38,10 @@ namespace Il2CppInspector
                 })]
             public IEnumerable<string> ExcludedNamespaces { get; set; }
 
-            [Option("no-suppress-cg", Required = false, HelpText = "Don't suppress C# generation of items with CompilerGenerated attribute", Default = false)]
+            [Option('s', "sort", Required = false, HelpText = "Sort order of type definitions in C# output ('index' = by type definition index, 'name' = by type name)", Default = "index")]
+            public string SortOrder { get; set; }
+
+            [Option('g', "no-suppress-cg", Required = false, HelpText = "Don't suppress C# generation of items with CompilerGenerated attribute", Default = false)]
             public bool DontSuppressCompilerGenerated { get; set; }
         }
 
@@ -73,8 +77,23 @@ namespace Il2CppInspector
                 var model = new Il2CppModel(il2cpp);
 
                 // C# signatures output
-                new Il2CppCSharpDumper(model) {ExcludedNamespaces = options.ExcludedNamespaces.ToList(), SuppressGenerated = !options.DontSuppressCompilerGenerated}
-                    .WriteSingleFile(options.CSharpOutPath + (i++ > 0 ? "-" + (i-1) : ""));
+                var writer = new Il2CppCSharpDumper(model) {
+                    ExcludedNamespaces = options.ExcludedNamespaces.ToList(),
+                    SuppressGenerated = !options.DontSuppressCompilerGenerated
+                };
+
+                var imageSuffix = i++ > 0 ? "-" + (i - 1) : "";
+
+                var csOut = options.CSharpOutPath;
+                if (csOut.ToLower().EndsWith(".cs"))
+                    csOut = csOut.Insert(csOut.Length - 3, imageSuffix);
+                else
+                    csOut += imageSuffix;
+
+                if (options.SortOrder.ToLower() == "index")
+                    writer.WriteSingleFile(csOut, t => t.Index);
+                else if (options.SortOrder.ToLower() == "name")
+                    writer.WriteSingleFile(csOut, t => t.Name);
 
                 // IDA Python script output
                 // TODO: IDA Python script output
