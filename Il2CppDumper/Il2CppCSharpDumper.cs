@@ -126,7 +126,8 @@ namespace Il2CppInspector
             var usings = nsRefs.OrderBy(n => (n.StartsWith("System.") || n == "System") ? "0" + n : "1" + n);
 
             // Ensure output directory exists
-            Directory.CreateDirectory(Path.GetDirectoryName(outFile));
+            if (!string.IsNullOrEmpty(Path.GetDirectoryName(outFile)))
+                Directory.CreateDirectory(Path.GetDirectoryName(outFile));
 
             // Create output file
             using StreamWriter writer = new StreamWriter(new FileStream(outFile, FileMode.Create), Encoding.UTF8);
