@@ -30,13 +30,34 @@ namespace Il2CppInspector
 
         public Il2CppCSharpDumper(Il2CppModel model) => this.model = model;
 
-        public void WriteSingleFile(string outFile) => writeFile(outFile, model.Assemblies.SelectMany(x => x.DefinedTypes));
+        public void WriteSingleFile(string outFile) => WriteSingleFile(outFile, t => t.Index);
+
+        public void WriteSingleFile<TKey>(string outFile, Func<TypeInfo, TKey> orderBy) => writeFile(outFile, model.Assemblies.SelectMany(x => x.DefinedTypes).OrderBy(orderBy));
+
+        public void WriteFilesByNamespace<TKey>(string outPath, Func<TypeInfo, TKey> orderBy, bool flattenHierarchy) {
+            var namespaces = model.Assemblies.SelectMany(x => x.DefinedTypes).GroupBy(t => t.Namespace);
+            foreach (var ns in namespaces)
+                writeFile($"{outPath}\\{(!string.IsNullOrEmpty(ns.Key)? ns.Key : "global").Replace('.', flattenHierarchy? '.' : '\\')}.cs", ns.OrderBy(orderBy));
+        }
+
+        public void WriteFilesByAssembly<TKey>(string outPath, Func<TypeInfo, TKey> orderBy) {
+            foreach (var asm in model.Assemblies) {
+                // Sort namespaces into alphabetical order, then sort types within the namespaces by the specified sort function
+                writeFile($"{outPath}\\{asm.FullName}.cs", asm.DefinedTypes.OrderBy(t => t.Namespace).ThenBy(orderBy));
+            }
+        }
+
+        public void WriteFilesByClass(string outPath, bool flattenHierarchy) {
+            foreach (var type in model.Assemblies.SelectMany(x => x.DefinedTypes))
+                writeFile($"{outPath}\\{type.FullName.Replace('.', flattenHierarchy ? '.' : '\\')}.cs", new [] {type});
+        }
 
         private void writeFile(string outFile, IEnumerable<TypeInfo> types, bool useNamespaceSyntax = true) {
 
             var nsRefs = new HashSet<string>();
             var code = new StringBuilder();
             var nsContext = "";
+            var usedTypes = new List<TypeInfo>();
 
             foreach (var type in types) {
 
@@ -82,7 +103,14 @@ namespace Il2CppInspector
 
                 // Append type definition
                 code.Append(text + "\n");
+
+                // Add to list of used types
+                usedTypes.Add(type);
             }
+
+            // Stop if nothing to output
+            if (!usedTypes.Any())
+                return;
 
             // Close namespace
             if (useNamespaceSyntax && !string.IsNullOrEmpty(nsContext))
@@ -96,6 +124,9 @@ namespace Il2CppInspector
 
             // Determine using directives (put System namespaces first)
             var usings = nsRefs.OrderBy(n => (n.StartsWith("System.") || n == "System") ? "0" + n : "1" + n);
+
+            // Ensure output directory exists
+            Directory.CreateDirectory(Path.GetDirectoryName(outFile));
 
             // Create output file
             using StreamWriter writer = new StreamWriter(new FileStream(outFile, FileMode.Create), Encoding.UTF8);
