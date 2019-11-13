@@ -278,7 +278,7 @@ namespace Il2CppInspector
                 sb.Append(method.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t", emitPointer: !SuppressMetadata));
 
                 sb.Append($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString()}(");
-                sb.Append(method.GetParametersString(!SuppressMetadata) + ");");
+                sb.Append(method.GetParametersString(!SuppressMetadata) + ")" + (method.IsAbstract? ";" : @" {}"));
                 sb.Append((!SuppressMetadata && method.VirtualAddress != 0 ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
             }
             codeBlocks.Add("Constructors", sb.ToString());
@@ -384,7 +384,7 @@ namespace Il2CppInspector
                         writer.Append($"\n{prefix}\t\t{constraint}");
                 }
 
-            writer.Append(";" + (!SuppressMetadata && method.VirtualAddress != 0 ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
+            writer.Append((method.IsAbstract? ";" : @" {}") + (!SuppressMetadata && method.VirtualAddress != 0 ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
 
             return writer.ToString();
         }
