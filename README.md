@@ -1,5 +1,5 @@
 # Il2CppInspector
-Extract types, methods, properties and fields from Unity IL2CPP binaries.
+Easily extract types and metadata from IL2CPP binaries.
 
 * **No manual reverse-engineering required; all data is calculated automatically!**
 * Supports ELF (Android .so), PE (Windows .exe), Mach-O (Apple iOS/Mac) and Universal Binary (Fat Mach-O) file formats
@@ -13,7 +13,7 @@ Extract types, methods, properties and fields from Unity IL2CPP binaries.
 * Dynamic symbol table scanning for ELF binaries if present
 * Symbol relocation handling for ELF binaries
 * **Il2CppInspector** re-usable class library for low-level access to IL2CPP binaries and metadata
-* **Il2CppReflector** re-usable class library for high-level .NET Reflection-style access to IL2CPP types and data as a tree model
+* **Il2CppModel** re-usable class library for high-level .NET Reflection-style access to IL2CPP types and data as a tree model
 * Test chassis for automated integration testing of IL2CPP binaries
 
 Class library targets .NET Standard 2.1. Application targets .NET Core 3.0. Built with Visual Studio 2019.
@@ -45,6 +45,7 @@ File format and architecture are automatically detected.
   -s, --sort                  (Default: index) Sort order of type definitions in C# output ('index' = by type definition index, 'name' = by type name). No effect when using file-per-class layout
   -f, --flatten               (Default: false) Flatten the namespace hierarchy into a single folder rather than using per-namespace subfolders. Only used when layout is per-namespace or per-class
   -g, --no-suppress-cg        (Default: false) Don't suppress generation of C# code for items with CompilerGenerated attribute
+  -n, --suppress-metadata     (Default: false) Suppress method pointers, field offsets and type indices from C# output. Useful for comparing two versions of a binary for changes with a diff tool
 ```
 
 Defaults if not specified:

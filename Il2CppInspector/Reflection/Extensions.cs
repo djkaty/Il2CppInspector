@@ -7,7 +7,7 @@ namespace Il2CppInspector.Reflection
     public static class Extensions
     {
         // Convert a list of CustomAttributeData objects into C#-friendly attribute usages
-        public static string ToString(this IEnumerable<CustomAttributeData> attributes, string linePrefix = "", string attributePrefix = "", bool inline = false) {
+        public static string ToString(this IEnumerable<CustomAttributeData> attributes, string linePrefix = "", string attributePrefix = "", bool inline = false, bool emitPointer = false) {
             var sb = new StringBuilder();
 
             foreach (var cad in attributes) {
@@ -15,7 +15,10 @@ namespace Il2CppInspector.Reflection
                 var suffix = name.LastIndexOf("Attribute", StringComparison.Ordinal);
                 if (suffix != -1)
                     name = name[..suffix];
-                sb.Append($"{linePrefix}[{attributePrefix}{name}] {(inline? "/*" : "//")} {((ulong)cad.VirtualAddress).ToAddressString()}{(inline? " */ " : "\n")}");
+                sb.Append($"{linePrefix}[{attributePrefix}{name}]");
+                if (emitPointer)
+                    sb.Append($" {(inline? "/*" : "//")} {((ulong)cad.VirtualAddress).ToAddressString()}{(inline? " */" : "")}");
+                sb.Append(inline? " ":"\n");
             }
 
             return sb.ToString();

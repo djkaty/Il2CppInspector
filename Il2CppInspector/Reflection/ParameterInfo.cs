@@ -96,9 +96,9 @@ namespace Il2CppInspector.Reflection
         private string getCSharpSignatureString() => $"{GetModifierString()}{ParameterType.CSharpName}";
         public string GetSignatureString() => $"{GetModifierString()}{ParameterType.FullName}";
 
-        public string GetParameterString() => IsRetval? null :
+        public string GetParameterString(bool emitPointer = false) => IsRetval? null :
             (Position == 0 && Member.GetCustomAttributes("System.Runtime.CompilerServices.ExtensionAttribute").Any()? "this ":"")
-            + $"{CustomAttributes.ToString(inline: true).Replace("[ParamArray]", "params")}"
+            + $"{CustomAttributes.ToString(inline: true, emitPointer: emitPointer).Replace("[ParamArray]", "params")}"
             + $"{getCSharpSignatureString()} {Name}"
             + (HasDefaultValue ? " = " + DefaultValue.ToCSharpValue() : "");
 
