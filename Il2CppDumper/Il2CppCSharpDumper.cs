@@ -158,7 +158,7 @@ namespace Il2CppInspector
             var text = new StringBuilder();
 
             foreach (var asm in assemblies) {
-                text.Append($"// Image {asm.Index}: {asm.FullName} - {asm.ImageDefinition.typeStart}\n");
+                text.Append($"// Image {asm.Index}: {asm.FullName} - {asm.ImageDefinition.typeStart}-{asm.ImageDefinition.typeStart + asm.ImageDefinition.typeCount - 1}\n");
 
                 // Assembly-level attributes
                 text.Append(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name).ToString(attributePrefix: "assembly: ", emitPointer: !SuppressMetadata));
