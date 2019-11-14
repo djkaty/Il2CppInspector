@@ -17,7 +17,7 @@ namespace Il2CppInspector.Reflection
         // IL2CPP-specific data
         public Il2CppMethodDefinition Definition { get; }
         public int Index { get; }
-        public ulong VirtualAddress { get; }
+        public (ulong Start, ulong End)? VirtualAddress { get; }
 
         // Information/flags about the method
         public MethodAttributes Attributes { get; protected set; }

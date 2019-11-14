@@ -19,6 +19,9 @@ namespace Il2CppInspector
         private Il2CppBinary Binary { get; }
         private Metadata Metadata { get; }
 
+        // All method pointers sorted in ascending order (for finding the end of a method)
+        private List<ulong> sortedMethodPointers { get; set; }
+
         // Shortcuts
         public double Version => Metadata.Version;
 
@@ -43,7 +46,7 @@ namespace Il2CppInspector
         public List<long> FieldOffsets { get; }
         public List<Il2CppType> TypeUsages => Binary.Types;
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
-        public long[] CustomAttributeGenerators => Binary.CustomAttributeGenerators;
+        public ulong[] CustomAttributeGenerators => Binary.CustomAttributeGenerators;
 
         // TODO: Finish all file access in the constructor and eliminate the need for this
         public IFileFormatReader BinaryImage => Binary.Image;
@@ -149,33 +152,50 @@ namespace Il2CppInspector
 
                 FieldOffsets = offsets.OrderBy(x => x.Key).Select(x => x.Value).ToList();
             }
+
+            // Get sorted list of method pointers
+            if (Version <= 24.1)
+                sortedMethodPointers = Binary.GlobalMethodPointers.OrderBy(m => m).ToList();
+            if (Version >= 24.2)
+                sortedMethodPointers = Binary.ModuleMethodPointers.SelectMany(module => module.Value).OrderBy(m => m).ToList();
         }
 
-        public ulong GetMethodPointer(Il2CppCodeGenModule module, Il2CppMethodDefinition methodDef) {
+        public (ulong Start, ulong End)? GetMethodPointer(Il2CppCodeGenModule module, Il2CppMethodDefinition methodDef) {
             // Find method pointer
             if (methodDef.methodIndex < 0)
-                return 0;
+                return null;
+
+            ulong start = 0;
 
             // Global method pointer array
             if (Version <= 24.1) {
-                return Binary.GlobalMethodPointers[methodDef.methodIndex] & 0xffff_ffff_ffff_fffe;
+                start = Binary.GlobalMethodPointers[methodDef.methodIndex] & 0xffff_ffff_ffff_fffe;
             }
 
             // Per-module method pointer array uses the bottom 24 bits of the method's metadata token
             // Derived from il2cpp::vm::MetadataCache::GetMethodPointer
-            var method = (methodDef.token & 0xffffff);
-            if (method == 0)
-                return 0;
+            if (Version >= 24.2) {
+                var method = (methodDef.token & 0xffffff);
+                if (method == 0)
+                    return null;
 
-            // In the event of an exception, the method pointer is not set in the file
-            // This probably means it has been optimized away by the compiler, or is an unused generic method
-            try {
-                // Remove ARM Thumb marker LSB if necessary
-                return Binary.ModuleMethodPointers[module][method - 1] & 0xffff_ffff_ffff_fffe;
+                // In the event of an exception, the method pointer is not set in the file
+                // This probably means it has been optimized away by the compiler, or is an unused generic method
+                try {
+                    // Remove ARM Thumb marker LSB if necessary
+                    start = Binary.ModuleMethodPointers[module][method - 1] & 0xffff_ffff_ffff_fffe;
+                }
+                catch (IndexOutOfRangeException) {
+                    return null;
+                }
             }
-            catch (IndexOutOfRangeException) { }
 
-            return 0;
+            if (start == 0)
+                return null;
+
+            // Consider the end of the method to be the start of the next method (or zero)
+            // The last method end will be wrong but there is no way to calculate it
+            return (start, sortedMethodPointers.FirstOrDefault(p => p > start));
         }
 
         public static List<Il2CppInspector> LoadFromFile(string codeFile, string metadataFile) {

@@ -195,7 +195,7 @@ namespace Il2CppInspector
                     // Fixed buffers
                     if (field.GetCustomAttributes(FBAttribute).Any()) {
                         if (!SuppressMetadata)
-                            sb.Append($"/* {((ulong) field.GetCustomAttributes(FBAttribute)[0].VirtualAddress).ToAddressString()} */ ");
+                            sb.Append($"/* {field.GetCustomAttributes(FBAttribute)[0].VirtualAddress.ToAddressString()} */ ");
                         sb.Append($"{field.FieldType.DeclaredFields[0].FieldType.CSharpName} {field.Name}[0]"); // FixedElementField
                     }
                     // Regular fields
@@ -237,10 +237,10 @@ namespace Il2CppInspector
                              + (prop.CanWrite? prop.SetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true, emitPointer: !SuppressMetadata) 
                                                + (setAccess < getAccess? prop.SetMethod.GetAccessModifierString() : "") + "set; " : "") + "}");
                 if (!SuppressMetadata) {
-                    if ((prop.CanRead && prop.GetMethod.VirtualAddress != 0) || (prop.CanWrite && prop.SetMethod.VirtualAddress != 0))
+                    if ((prop.CanRead && prop.GetMethod.VirtualAddress != null) || (prop.CanWrite && prop.SetMethod.VirtualAddress != null))
                         sb.Append(" // ");
-                    sb.Append((prop.CanRead && prop.GetMethod.VirtualAddress != 0 ? prop.GetMethod.VirtualAddress.ToAddressString() + " " : "")
-                                + (prop.CanWrite && prop.SetMethod.VirtualAddress != 0 ? prop.SetMethod.VirtualAddress.ToAddressString() : ""));
+                    sb.Append((prop.CanRead && prop.GetMethod.VirtualAddress != null ? prop.GetMethod.VirtualAddress.ToAddressString() + " " : "")
+                                + (prop.CanWrite && prop.SetMethod.VirtualAddress != null ? prop.SetMethod.VirtualAddress.ToAddressString() : ""));
                 }
                 sb.Append("\n");
 
@@ -257,7 +257,7 @@ namespace Il2CppInspector
 
                 string modifiers = evt.AddMethod?.GetModifierString();
                 sb.Append($"{prefix}\t{modifiers}event {evt.EventHandlerType.CSharpName} {evt.Name} {{\n");
-                var m = new Dictionary<string, ulong>();
+                var m = new Dictionary<string, (ulong, ulong)?>();
                 if (evt.AddMethod != null) m.Add("add", evt.AddMethod.VirtualAddress);
                 if (evt.RemoveMethod != null) m.Add("remove", evt.RemoveMethod.VirtualAddress);
                 if (evt.RaiseMethod != null) m.Add("raise", evt.RaiseMethod.VirtualAddress);
@@ -279,7 +279,7 @@ namespace Il2CppInspector
 
                 sb.Append($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString()}(");
                 sb.Append(method.GetParametersString(!SuppressMetadata) + ")" + (method.IsAbstract? ";" : @" {}"));
-                sb.Append((!SuppressMetadata && method.VirtualAddress != 0 ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
+                sb.Append((!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
             }
             codeBlocks.Add("Constructors", sb.ToString());
 
@@ -384,7 +384,7 @@ namespace Il2CppInspector
                         writer.Append($"\n{prefix}\t\t{constraint}");
                 }
 
-            writer.Append((method.IsAbstract? ";" : @" {}") + (!SuppressMetadata && method.VirtualAddress != 0 ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
+            writer.Append((method.IsAbstract? ";" : @" {}") + (!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
 
             return writer.ToString();
         }

@@ -21,7 +21,9 @@ namespace Il2CppInspector.Reflection
         // The type of the attribute
         public TypeInfo AttributeType { get; set; }
 
-        public long VirtualAddress => package.CustomAttributeGenerators[Index];
+        public (ulong Start, ulong End)? VirtualAddress =>
+            // The last one will be wrong but there is no way to calculate it
+            (package.CustomAttributeGenerators[Index], package.CustomAttributeGenerators[Math.Min(Index + 1, package.CustomAttributeGenerators.Length - 1)]);
 
         public override string ToString() => "[" + AttributeType.FullName + "]";
 
