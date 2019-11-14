@@ -16,6 +16,7 @@ namespace Il2CppInspector.Reflection
         // IL2CPP-specific data
         public Il2CppParameterDefinition Definition { get; }
         public int Index { get; }
+        public ulong DefaultValueMetadataAddress { get; }
 
         // Information/flags about the parameter
         public ParameterAttributes Attributes { get; }
@@ -84,8 +85,10 @@ namespace Il2CppInspector.Reflection
                 Attributes |= ParameterAttributes.Retval;
 
             // Default initialization value if present
-            if (pkg.ParameterDefaultValue.TryGetValue(paramIndex, out object variant))
-                DefaultValue = variant;
+            if (pkg.ParameterDefaultValue.TryGetValue(paramIndex, out (ulong address, object variant) value)) {
+                DefaultValue = value.variant;
+                DefaultValueMetadataAddress = value.address;
+            }
         }
 
         public string GetModifierString() =>
@@ -100,7 +103,7 @@ namespace Il2CppInspector.Reflection
             (Position == 0 && Member.GetCustomAttributes("System.Runtime.CompilerServices.ExtensionAttribute").Any()? "this ":"")
             + $"{CustomAttributes.ToString(inline: true, emitPointer: emitPointer).Replace("[ParamArray]", "params")}"
             + $"{getCSharpSignatureString()} {Name}"
-            + (HasDefaultValue ? " = " + DefaultValue.ToCSharpValue() : "");
+            + (HasDefaultValue ? " = " + DefaultValue.ToCSharpValue() + (emitPointer && !(DefaultValue is null)? $" /* Metadata: 0x{(uint) DefaultValueMetadataAddress:X8} */" : "") : "");
 
         public string GetReturnParameterString() => !IsRetval? null : getCSharpSignatureString();
     }

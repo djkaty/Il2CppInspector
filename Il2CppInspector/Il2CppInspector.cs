@@ -20,7 +20,7 @@ namespace Il2CppInspector
         private Metadata Metadata { get; }
 
         // All method pointers sorted in ascending order (for finding the end of a method)
-        private List<ulong> sortedMethodPointers { get; set; }
+        private List<ulong> sortedMethodPointers { get; }
 
         // Shortcuts
         public double Version => Metadata.Version;
@@ -41,8 +41,8 @@ namespace Il2CppInspector
         public int[] InterfaceUsageIndices => Metadata.InterfaceUsageIndices;
         public int[] NestedTypeIndices => Metadata.NestedTypeIndices;
         public int[] AttributeTypeIndices => Metadata.AttributeTypeIndices;
-        public Dictionary<int, object> FieldDefaultValue { get; } = new Dictionary<int, object>();
-        public Dictionary<int, object> ParameterDefaultValue { get; } = new Dictionary<int, object>();
+        public Dictionary<int, (ulong, object)> FieldDefaultValue { get; } = new Dictionary<int, (ulong, object)>();
+        public Dictionary<int, (ulong, object)> ParameterDefaultValue { get; } = new Dictionary<int, (ulong, object)>();
         public List<long> FieldOffsets { get; }
         public List<Il2CppType> TypeUsages => Binary.Types;
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
@@ -51,10 +51,10 @@ namespace Il2CppInspector
         // TODO: Finish all file access in the constructor and eliminate the need for this
         public IFileFormatReader BinaryImage => Binary.Image;
 
-        private object getDefaultValue(int typeIndex, int dataIndex) {
+        private (ulong MetadataAddress, object Value)? getDefaultValue(int typeIndex, int dataIndex) {
             // No default
             if (dataIndex == -1)
-                return null;
+                return (0ul, null);
 
             // Get pointer in binary to default value
             var pValue = Metadata.Header.fieldAndParameterDefaultValueDataOffset + dataIndex;
@@ -62,7 +62,7 @@ namespace Il2CppInspector
 
             // Default value is null
             if (pValue == 0)
-                return null;
+                return (0ul, null);
 
             object value = null;
             Metadata.Position = pValue;
@@ -107,7 +107,7 @@ namespace Il2CppInspector
                     value = Encoding.UTF8.GetString(Metadata.ReadBytes(uiLen));
                     break;
             }
-            return value;
+            return ((ulong) pValue, value);
         }
 
         public Il2CppInspector(Il2CppBinary binary, Metadata metadata) {
@@ -117,11 +117,11 @@ namespace Il2CppInspector
 
             // Get all field default values
             foreach (var fdv in Metadata.FieldDefaultValues)
-                FieldDefaultValue.Add(fdv.fieldIndex, getDefaultValue(fdv.typeIndex, fdv.dataIndex));
+                FieldDefaultValue.Add(fdv.fieldIndex, ((ulong,object)) getDefaultValue(fdv.typeIndex, fdv.dataIndex));
 
             // Get all parameter default values
             foreach (var pdv in Metadata.ParameterDefaultValues)
-                ParameterDefaultValue.Add(pdv.parameterIndex, getDefaultValue(pdv.typeIndex, pdv.dataIndex));
+                ParameterDefaultValue.Add(pdv.parameterIndex, ((ulong,object)) getDefaultValue(pdv.typeIndex, pdv.dataIndex));
 
             // Get all field offsets
             if (Binary.FieldOffsets != null) {

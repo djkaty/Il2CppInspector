@@ -16,6 +16,7 @@ namespace Il2CppInspector.Reflection {
         public Il2CppFieldDefinition Definition { get; }
         public int Index { get; }
         public long Offset { get; }
+        public ulong DefaultValueMetadataAddress { get; }
 
         // Custom attributes for this member
         public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
@@ -111,8 +112,10 @@ namespace Il2CppInspector.Reflection {
                 Attributes |= FieldAttributes.HasDefault;
 
             // Default initialization value if present
-            if (pkg.FieldDefaultValue.TryGetValue(fieldIndex, out object variant))
-                DefaultValue = variant;
+            if (pkg.FieldDefaultValue.TryGetValue(fieldIndex, out (ulong address, object variant) value)) {
+                DefaultValue = value.variant;
+                DefaultValueMetadataAddress = value.address;
+            }
         }
 
         public string GetAccessModifierString() => this switch {
