@@ -22,6 +22,9 @@ namespace Il2CppInspector
         // All method pointers sorted in ascending order (for finding the end of a method)
         private List<ulong> sortedMethodPointers { get; }
 
+        // Attribute indexes (>=24.1) arranged by customAttributeStart and token
+        public Dictionary<int, Dictionary<uint, int>> AttributeIndicesByToken { get; }
+
         // Shortcuts
         public double Version => Metadata.Version;
 
@@ -158,6 +161,20 @@ namespace Il2CppInspector
                 sortedMethodPointers = Binary.GlobalMethodPointers.OrderBy(m => m).ToList();
             if (Version >= 24.2)
                 sortedMethodPointers = Binary.ModuleMethodPointers.SelectMany(module => module.Value).OrderBy(m => m).ToList();
+
+            // Organize custom attribute indices
+            if (Version >= 24.1) {
+                AttributeIndicesByToken = new Dictionary<int, Dictionary<uint, int>>();
+                foreach (var image in Images) {
+                    var attsByToken = new Dictionary<uint, int>();
+                    for (int i = 0; i < image.customAttributeCount; i++) {
+                        var index = image.customAttributeStart + i;
+                        var token = AttributeTypeRanges[index].token;
+                        attsByToken.Add(token, index);
+                    }
+                    AttributeIndicesByToken.Add(image.customAttributeStart, attsByToken);
+                }
+            }
         }
 
         public (ulong Start, ulong End)? GetMethodPointer(Il2CppCodeGenModule module, Il2CppMethodDefinition methodDef) {

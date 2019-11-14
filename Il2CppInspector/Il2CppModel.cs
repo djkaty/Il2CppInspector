@@ -113,12 +113,10 @@ namespace Il2CppInspector.Reflection
             if (Package.Version <= 24.0)
                 return customAttributeIndex;
 
-            var image = asm.ImageDefinition;
-            var imageRange = image.customAttributeStart..(int)(image.customAttributeStart + image.customAttributeCount);
-
             // From v24.1 onwards, token was added to Il2CppCustomAttributeTypeRange and each Il2CppImageDefinition noted the CustomAttributeTypeRanges for the image
-            var index = Array.FindIndex(Package.AttributeTypeRanges[imageRange], x => x.token == token);
-            return index == -1 ? -1 : index + image.customAttributeStart;
+            if (!Package.AttributeIndicesByToken[asm.ImageDefinition.customAttributeStart].TryGetValue(token, out var index))
+                return -1;
+            return index;
         }
     }
 }
