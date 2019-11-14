@@ -164,9 +164,9 @@ namespace Il2CppInspector
             // Guestimate method end addresses
             methodPointers = new Dictionary<ulong, ulong>(sortedMethodPointers.Count);
             for (var i = 0; i < sortedMethodPointers.Count - 1; i++)
-                methodPointers.Add(sortedMethodPointers[i], sortedMethodPointers[i + 1]);
+                methodPointers.TryAdd(sortedMethodPointers[i], sortedMethodPointers[i + 1]);
             // The last method end pointer will be incorrect but there is no way of calculating it
-            methodPointers.Add(sortedMethodPointers[^1], sortedMethodPointers[^1]);
+            methodPointers.TryAdd(sortedMethodPointers[^1], sortedMethodPointers[^1]);
 
             // Organize custom attribute indices
             if (Version >= 24.1) {
@@ -192,7 +192,7 @@ namespace Il2CppInspector
 
             // Global method pointer array
             if (Version <= 24.1) {
-                start = Binary.GlobalMethodPointers[methodDef.methodIndex] & 0xffff_ffff_ffff_fffe;
+                start = Binary.GlobalMethodPointers[methodDef.methodIndex];
             }
 
             // Per-module method pointer array uses the bottom 24 bits of the method's metadata token
@@ -206,7 +206,7 @@ namespace Il2CppInspector
                 // This probably means it has been optimized away by the compiler, or is an unused generic method
                 try {
                     // Remove ARM Thumb marker LSB if necessary
-                    start = Binary.ModuleMethodPointers[module][method - 1] & 0xffff_ffff_ffff_fffe;
+                    start = Binary.ModuleMethodPointers[module][method - 1];
                 }
                 catch (IndexOutOfRangeException) {
                     return null;
@@ -218,7 +218,7 @@ namespace Il2CppInspector
 
             // Consider the end of the method to be the start of the next method (or zero)
             // The last method end will be wrong but there is no way to calculate it
-            return (start, methodPointers[start]);
+            return (start & 0xffff_ffff_ffff_fffe, methodPointers[start]);
         }
 
         public static List<Il2CppInspector> LoadFromFile(string codeFile, string metadataFile) {
