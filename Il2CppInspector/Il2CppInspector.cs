@@ -19,8 +19,8 @@ namespace Il2CppInspector
         private Il2CppBinary Binary { get; }
         private Metadata Metadata { get; }
 
-        // All method pointers sorted in ascending order (for finding the end of a method)
-        private List<ulong> sortedMethodPointers { get; }
+        // All method pointers (start => end)
+        private Dictionary<ulong, ulong> methodPointers { get; }
 
         // Attribute indexes (>=24.1) arranged by customAttributeStart and token
         public Dictionary<int, Dictionary<uint, int>> AttributeIndicesByToken { get; }
@@ -157,10 +157,16 @@ namespace Il2CppInspector
             }
 
             // Get sorted list of method pointers
-            if (Version <= 24.1)
-                sortedMethodPointers = Binary.GlobalMethodPointers.OrderBy(m => m).ToList();
-            if (Version >= 24.2)
-                sortedMethodPointers = Binary.ModuleMethodPointers.SelectMany(module => module.Value).OrderBy(m => m).ToList();
+            var sortedMethodPointers = (Version <= 24.1)?
+                Binary.GlobalMethodPointers.OrderBy(m => m).ToList() :
+                Binary.ModuleMethodPointers.SelectMany(module => module.Value).OrderBy(m => m).ToList();
+
+            // Guestimate method end addresses
+            methodPointers = new Dictionary<ulong, ulong>(sortedMethodPointers.Count);
+            for (var i = 0; i < sortedMethodPointers.Count - 1; i++)
+                methodPointers.Add(sortedMethodPointers[i], sortedMethodPointers[i + 1]);
+            // The last method end pointer will be incorrect but there is no way of calculating it
+            methodPointers.Add(sortedMethodPointers[^1], sortedMethodPointers[^1]);
 
             // Organize custom attribute indices
             if (Version >= 24.1) {
@@ -212,7 +218,7 @@ namespace Il2CppInspector
 
             // Consider the end of the method to be the start of the next method (or zero)
             // The last method end will be wrong but there is no way to calculate it
-            return (start, sortedMethodPointers.FirstOrDefault(p => p > start));
+            return (start, methodPointers[start]);
         }
 
         public static List<Il2CppInspector> LoadFromFile(string codeFile, string metadataFile) {
