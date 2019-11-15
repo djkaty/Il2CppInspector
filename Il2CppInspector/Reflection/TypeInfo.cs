@@ -457,6 +457,8 @@ namespace Il2CppInspector.Reflection {
             genericConstraintCount = param.constraintsCount;
 
             // Base type of object (set by default)
+            // TODO: BaseType should be set to base type constraint
+            // TODO: ImplementedInterfaces should be set to interface types constraints
 
             // Name of parameter
             Name = Assembly.Model.Package.Strings[param.nameIndex];
@@ -612,6 +614,11 @@ namespace Il2CppInspector.Reflection {
             if (GenericParameterAttributes == GenericParameterAttributes.None && typeConstraints.Length == 0)
                 return string.Empty;
 
+            // Check if we are a nested type, and if so, exclude ourselves if we are a generic type parameter from the outer type
+            // All constraints are inherited automatically by all nested types so we only have to look at the immediate outer type
+            if (DeclaringMethod == null && DeclaringType.IsNested && (DeclaringType.DeclaringType.GenericTypeParameters?.Any(p => p.Name == Name) ?? false))
+                return string.Empty;
+
             var constraintList = typeConstraints.Where(c => c.FullName != "System.ValueType").Select(c => c.CSharpTypeDeclarationName).ToList();
 
             if ((GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) == GenericParameterAttributes.NotNullableValueTypeConstraint)
@@ -620,6 +627,7 @@ namespace Il2CppInspector.Reflection {
                 constraintList.Add("class");
             if ((GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) == GenericParameterAttributes.DefaultConstructorConstraint
                 && !constraintList.Contains("struct"))
+                // new() must be the last constraint specified
                 constraintList.Add("new()");
 
             return "where " + Name + " : " + string.Join(", ", constraintList);
