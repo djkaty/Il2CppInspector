@@ -116,6 +116,9 @@ namespace Il2CppInspector.Reflection
         }
 
         public string GetAccessModifierString() => this switch {
+            // Static constructors can not have an access level modifier
+            { IsConstructor: true, IsStatic: true } => "",
+
             { IsPrivate: true } => "private ",
             { IsPublic: true } => "public ",
             { IsFamily: true } => "protected ",
