@@ -49,8 +49,8 @@ namespace Il2CppInspector
             [Option('n', "suppress-metadata", Required = false, HelpText = "Diff tidying: suppress method pointers, field offsets and type indices from C# output. Useful for comparing two versions of a binary for changes with a diff tool", Default = false)]
             public bool SuppressMetadata { get; set; }
 
-            [Option('g', "no-suppress-cg", Required = false, HelpText = "Compilation tidying: don't 'suppress generation of C# code for items with CompilerGenerated attribute", Default = false)]
-            public bool DontSuppressCompilerGenerated { get; set; }
+            [Option('g', "suppress-cg", Required = false, HelpText = "Compilation tidying: Suppress generation of C# code for items with CompilerGenerated attribute", Default = false)]
+            public bool SuppressCompilerGenerated { get; set; }
 
             [Option('a', "comment-attributes", Required = false, HelpText = "Compilation tidying: comment out attributes without parameterless constructors or all-optional constructor arguments")]
             public bool CommentParameterizedAttributeConstructors { get; set; }
@@ -90,7 +90,7 @@ namespace Il2CppInspector
                 // C# signatures output
                 var writer = new Il2CppCSharpDumper(model) {
                     ExcludedNamespaces = options.ExcludedNamespaces.ToList(),
-                    SuppressGenerated = !options.DontSuppressCompilerGenerated,
+                    SuppressGenerated = options.SuppressCompilerGenerated,
                     SuppressMetadata = options.SuppressMetadata,
                     CommentAttributes = options.CommentParameterizedAttributeConstructors
                 };
