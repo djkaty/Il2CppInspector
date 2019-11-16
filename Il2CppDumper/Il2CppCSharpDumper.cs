@@ -387,7 +387,11 @@ namespace Il2CppInspector
                         writer.Append($"\n{prefix}\t\t{constraint}");
                 }
 
-            writer.Append((method.IsAbstract? ";" : @" {}") + (!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
+            var methodBody = method.ReturnType switch {
+                { FullName: "System.Void" } => @"{}",
+                _ => "=> default;"
+            };
+            writer.Append((method.IsAbstract? ";" : " " + methodBody) + (!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
 
             return writer.ToString();
         }
