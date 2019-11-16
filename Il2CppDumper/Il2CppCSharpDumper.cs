@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Il2CppInspector.Reflection;
+using CustomAttributeData = Il2CppInspector.Reflection.CustomAttributeData;
 using MethodInfo = Il2CppInspector.Reflection.MethodInfo;
 using TypeInfo = Il2CppInspector.Reflection.TypeInfo;
 
@@ -42,8 +43,12 @@ namespace Il2CppInspector
 
         public void WriteFilesByNamespace<TKey>(string outPath, Func<TypeInfo, TKey> orderBy, bool flattenHierarchy) {
             var namespaces = model.Assemblies.SelectMany(x => x.DefinedTypes).GroupBy(t => t.Namespace);
-            foreach (var ns in namespaces)
-                writeFile($"{outPath}\\{(!string.IsNullOrEmpty(ns.Key)? ns.Key : "global").Replace('.', flattenHierarchy? '.' : '\\')}.cs", ns.OrderBy(orderBy));
+            var usedAssemblyAttributes = new HashSet<CustomAttributeData>();
+            foreach (var ns in namespaces) {
+                writeFile($"{outPath}\\{(!string.IsNullOrEmpty(ns.Key)? ns.Key : "global").Replace('.', flattenHierarchy? '.' : '\\')}.cs", 
+                    ns.OrderBy(orderBy), excludedAssemblyAttributes: usedAssemblyAttributes);
+                usedAssemblyAttributes.UnionWith(ns.Select(t => t.Assembly).Distinct().SelectMany(a => a.CustomAttributes));
+            }
         }
 
         public void WriteFilesByAssembly<TKey>(string outPath, Func<TypeInfo, TKey> orderBy) {
@@ -54,11 +59,15 @@ namespace Il2CppInspector
         }
 
         public void WriteFilesByClass(string outPath, bool flattenHierarchy) {
-            foreach (var type in model.Assemblies.SelectMany(x => x.DefinedTypes))
-                writeFile($"{outPath}\\{type.FullName.Replace('.', flattenHierarchy ? '.' : '\\')}.cs", new [] {type});
+            var usedAssemblyAttributes = new HashSet<CustomAttributeData>();
+            foreach (var type in model.Assemblies.SelectMany(x => x.DefinedTypes)) {
+                writeFile($"{outPath}\\{type.FullName.Replace('.', flattenHierarchy ? '.' : '\\')}.cs",
+                    new[] {type}, excludedAssemblyAttributes: usedAssemblyAttributes);
+                usedAssemblyAttributes.UnionWith(type.Assembly.CustomAttributes);
+            }
         }
 
-        private void writeFile(string outFile, IEnumerable<TypeInfo> types, bool useNamespaceSyntax = true) {
+        private void writeFile(string outFile, IEnumerable<TypeInfo> types, bool useNamespaceSyntax = true, IEnumerable<CustomAttributeData> excludedAssemblyAttributes = null) {
 
             var nsRefs = new HashSet<string>();
             var code = new StringBuilder();
@@ -102,7 +111,7 @@ namespace Il2CppInspector
                 if (!useNamespaceSyntax)
                     code.Append($"// Namespace: {(!string.IsNullOrEmpty(type.Namespace) ? type.Namespace : "<global namespace>")}\n");
                 
-                // Determine namespace references
+                // Determine namespace references (note: this may include some that aren't actually used due to output suppression in generateType()
                 var refs = type.GetAllTypeReferences();
                 var ns = refs.Where(r => !string.IsNullOrEmpty(r.Namespace) && r.Namespace != type.Namespace).Select(r => r.Namespace);
                 nsRefs.UnionWith(ns);
@@ -151,20 +160,23 @@ namespace Il2CppInspector
                 writer.Write("\n");
 
             // Output assembly information and attributes
-            writer.Write(generateAssemblyInfo(assemblies) + "\n\n");
+            writer.Write(generateAssemblyInfo(assemblies, excludedAssemblyAttributes) + "\n\n");
 
             // Output type definitions
             writer.Write(code);
         }
 
-        private string generateAssemblyInfo(IEnumerable<Reflection.Assembly> assemblies) {
+        private string generateAssemblyInfo(IEnumerable<Reflection.Assembly> assemblies, IEnumerable<CustomAttributeData> excludedAttributes = null) {
             var text = new StringBuilder();
 
             foreach (var asm in assemblies) {
                 text.Append($"// Image {asm.Index}: {asm.FullName} - {asm.ImageDefinition.typeStart}-{asm.ImageDefinition.typeStart + asm.ImageDefinition.typeCount - 1}\n");
 
                 // Assembly-level attributes
-                text.Append(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name).ToString(attributePrefix: "assembly: ", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                text.Append(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute)
+                    .Except(excludedAttributes ?? new List<CustomAttributeData>())
+                    .OrderBy(a => a.AttributeType.Name)
+                    .ToString(attributePrefix: "assembly: ", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
                 if (asm.CustomAttributes.Any())
                     text.Append("\n");
             }
