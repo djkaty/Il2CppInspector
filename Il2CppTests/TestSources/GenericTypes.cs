@@ -70,5 +70,21 @@ namespace Il2CppTests.TestSources
         // Added in C# 7.3
         public void DelegateConstraint<D>(D del) where D : Delegate {}
         public void EnumConstraint<E>(E enumeration) where E : Enum {}
+
+        // Nested types inherit parent constraints but should not be output
+        private class NestedWithAutomaticConstraints {}
+
+        // Generates a compiler warning
+        //private class NestedWithDeclaringTypeGenericParameter<R> {}
+
+        private class NestedWithNewGenericParameter<T> {}
+
+        private class NestedWithNewGenericParameterAndConstraint<T> where T : new() {}
+
+        private class NestedWithNewGenericParameterAndDependentConstraint<T> where T : G<R>, new() {}
+
+        private enum NestedEnumWithAutomaticConstraints {}
+
+        private delegate void NestedDelegateWithAutomaticConstraints();
     }
 }
