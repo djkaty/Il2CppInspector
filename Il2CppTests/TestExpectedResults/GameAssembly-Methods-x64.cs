@@ -11,31 +11,31 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 // Image 0: mscorlib.dll - 0-1809
-[assembly: AssemblyCompany] // 0x000000018000E950-0x000000018000CAF0
-[assembly: AssemblyCopyright] // 0x000000018000E950-0x000000018000CAF0
-[assembly: AssemblyDefaultAlias] // 0x000000018000E950-0x000000018000CAF0
-[assembly: AssemblyDelaySign] // 0x000000018000E950-0x000000018000CAF0
-[assembly: AssemblyDescription] // 0x000000018000E950-0x000000018000CAF0
-[assembly: AssemblyFileVersion] // 0x000000018000E950-0x000000018000CAF0
-[assembly: AssemblyInformationalVersion] // 0x000000018000E950-0x000000018000CAF0
-[assembly: AssemblyKeyFile] // 0x000000018000E950-0x000000018000CAF0
-[assembly: AssemblyProduct] // 0x000000018000E950-0x000000018000CAF0
-[assembly: AssemblyTitle] // 0x000000018000E950-0x000000018000CAF0
-[assembly: CLSCompliant] // 0x000000018000E950-0x000000018000CAF0
-[assembly: CompilationRelaxations] // 0x000000018000E950-0x000000018000CAF0
-[assembly: ComVisible] // 0x000000018000E950-0x000000018000CAF0
-[assembly: Debuggable] // 0x000000018000E950-0x000000018000CAF0
-[assembly: DefaultDependency] // 0x000000018000E950-0x000000018000CAF0
-[assembly: Guid] // 0x000000018000E950-0x000000018000CAF0
-[assembly: NeutralResourcesLanguage] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: AssemblyCompany] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: AssemblyCopyright] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: AssemblyDefaultAlias] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: AssemblyDelaySign] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: AssemblyDescription] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: AssemblyFileVersion] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: AssemblyInformationalVersion] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: AssemblyKeyFile] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: AssemblyProduct] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: AssemblyTitle] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: CLSCompliant] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: CompilationRelaxations] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: ComVisible] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: Debuggable] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: DefaultDependency] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: Guid] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: NeutralResourcesLanguage] // 0x000000018000E950-0x000000018000CAF0
 [assembly: RuntimeCompatibility] // 0x000000018000E950-0x000000018000CAF0
-[assembly: SatelliteContractVersion] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: SatelliteContractVersion] // 0x000000018000E950-0x000000018000CAF0
 [assembly: StringFreezing] // 0x000000018000E950-0x000000018000CAF0
-[assembly: TypeLibVersion] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: TypeLibVersion] // 0x000000018000E950-0x000000018000CAF0
 
 // Image 1: Methods.dll - 1810-1822
-[assembly: CompilationRelaxations] // 0x000000018000CAF0-0x000000018000CAF0
-[assembly: Debuggable] // 0x000000018000CAF0-0x000000018000CAF0
+// [assembly: CompilationRelaxations] // 0x000000018000CAF0-0x000000018000CAF0
+// [assembly: Debuggable] // 0x000000018000CAF0-0x000000018000CAF0
 [assembly: RuntimeCompatibility] // 0x000000018000CAF0-0x000000018000CAF0
 
 internal static class Consts // TypeDefIndex: 100
@@ -78,8 +78,8 @@ internal sealed class Locale // TypeDefIndex: 101
 	private Locale() {} // 0x00000001800E2000-0x00000001800E2000
 
 	// Methods
-	public static string GetText(string msg) {} // 0x0000000180123590-0x0000000180123590
-	public static string GetText(string fmt, params /* 0x0000000180009C10-0x0000000180009C10 */ object[] args) {} // 0x00000001802C64F0-0x00000001802C6560
+	public static string GetText(string msg) => default; // 0x0000000180123590-0x0000000180123590
+	public static string GetText(string fmt, params /* 0x0000000180009C10-0x0000000180009C10 */ object[] args) => default; // 0x00000001802C64F0-0x00000001802C6560
 }
 
 namespace Il2CppTests.TestSources
@@ -91,14 +91,14 @@ namespace Il2CppTests.TestSources
 	
 		// Methods
 		public virtual void VirtualMethod() {} // 0x00000001800EA7B0-0x00000001800EA7B0
-		public double ValueTypeReturnMethod() {} // 0x00000001803E0EC0-0x00000001803E0EC0
-		public StringBuilder ReferenceTypeReturnMethod() {} // 0x00000001803E0E70-0x00000001803E0EC0
+		public double ValueTypeReturnMethod() => default; // 0x00000001803E0EC0-0x00000001803E0EC0
+		public StringBuilder ReferenceTypeReturnMethod() => default; // 0x00000001803E0E70-0x00000001803E0EC0
 	}
 
 	public static class TestExtension // TypeDefIndex: 1812
 	{
 		// Methods
-		public static double DivideByXExtension(int a, float x) {} // 0x00000001803E0E50-0x00000001803E0E70
+		public static double DivideByXExtension(int a, float x) => default; // 0x00000001803E0E50-0x00000001803E0E70
 	}
 
 	internal abstract class TestAbstract // TypeDefIndex: 1813
@@ -188,6 +188,6 @@ namespace Il2CppTests.TestSources
 		public TestNewNonVirtualMethod() {} // 0x00000001800E2000-0x00000001800E2000
 	
 		// Methods
-		public int ValueTypeReturnMethod() {} // 0x0000000180119A50-0x0000000180119A50
+		public int ValueTypeReturnMethod() => default; // 0x0000000180119A50-0x0000000180119A50
 	}
 }

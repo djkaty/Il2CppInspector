@@ -10,31 +10,31 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Image 0: mscorlib.dll - 0-1809
-[assembly: AssemblyCompany] // 0x000000018000E980-0x000000018000CB80
-[assembly: AssemblyCopyright] // 0x000000018000E980-0x000000018000CB80
-[assembly: AssemblyDefaultAlias] // 0x000000018000E980-0x000000018000CB80
-[assembly: AssemblyDelaySign] // 0x000000018000E980-0x000000018000CB80
-[assembly: AssemblyDescription] // 0x000000018000E980-0x000000018000CB80
-[assembly: AssemblyFileVersion] // 0x000000018000E980-0x000000018000CB80
-[assembly: AssemblyInformationalVersion] // 0x000000018000E980-0x000000018000CB80
-[assembly: AssemblyKeyFile] // 0x000000018000E980-0x000000018000CB80
-[assembly: AssemblyProduct] // 0x000000018000E980-0x000000018000CB80
-[assembly: AssemblyTitle] // 0x000000018000E980-0x000000018000CB80
-[assembly: CLSCompliant] // 0x000000018000E980-0x000000018000CB80
-[assembly: CompilationRelaxations] // 0x000000018000E980-0x000000018000CB80
-[assembly: ComVisible] // 0x000000018000E980-0x000000018000CB80
-[assembly: Debuggable] // 0x000000018000E980-0x000000018000CB80
-[assembly: DefaultDependency] // 0x000000018000E980-0x000000018000CB80
-[assembly: Guid] // 0x000000018000E980-0x000000018000CB80
-[assembly: NeutralResourcesLanguage] // 0x000000018000E980-0x000000018000CB80
+// [assembly: AssemblyCompany] // 0x000000018000E980-0x000000018000CB80
+// [assembly: AssemblyCopyright] // 0x000000018000E980-0x000000018000CB80
+// [assembly: AssemblyDefaultAlias] // 0x000000018000E980-0x000000018000CB80
+// [assembly: AssemblyDelaySign] // 0x000000018000E980-0x000000018000CB80
+// [assembly: AssemblyDescription] // 0x000000018000E980-0x000000018000CB80
+// [assembly: AssemblyFileVersion] // 0x000000018000E980-0x000000018000CB80
+// [assembly: AssemblyInformationalVersion] // 0x000000018000E980-0x000000018000CB80
+// [assembly: AssemblyKeyFile] // 0x000000018000E980-0x000000018000CB80
+// [assembly: AssemblyProduct] // 0x000000018000E980-0x000000018000CB80
+// [assembly: AssemblyTitle] // 0x000000018000E980-0x000000018000CB80
+// [assembly: CLSCompliant] // 0x000000018000E980-0x000000018000CB80
+// [assembly: CompilationRelaxations] // 0x000000018000E980-0x000000018000CB80
+// [assembly: ComVisible] // 0x000000018000E980-0x000000018000CB80
+// [assembly: Debuggable] // 0x000000018000E980-0x000000018000CB80
+// [assembly: DefaultDependency] // 0x000000018000E980-0x000000018000CB80
+// [assembly: Guid] // 0x000000018000E980-0x000000018000CB80
+// [assembly: NeutralResourcesLanguage] // 0x000000018000E980-0x000000018000CB80
 [assembly: RuntimeCompatibility] // 0x000000018000E980-0x000000018000CB80
-[assembly: SatelliteContractVersion] // 0x000000018000E980-0x000000018000CB80
+// [assembly: SatelliteContractVersion] // 0x000000018000E980-0x000000018000CB80
 [assembly: StringFreezing] // 0x000000018000E980-0x000000018000CB80
-[assembly: TypeLibVersion] // 0x000000018000E980-0x000000018000CB80
+// [assembly: TypeLibVersion] // 0x000000018000E980-0x000000018000CB80
 
 // Image 1: References.dll - 1810-1812
-[assembly: CompilationRelaxations] // 0x000000018000CAF0-0x000000018000CAF0
-[assembly: Debuggable] // 0x000000018000CAF0-0x000000018000CAF0
+// [assembly: CompilationRelaxations] // 0x000000018000CAF0-0x000000018000CAF0
+// [assembly: Debuggable] // 0x000000018000CAF0-0x000000018000CAF0
 [assembly: RuntimeCompatibility] // 0x000000018000CAF0-0x000000018000CAF0
 
 internal static class Consts // TypeDefIndex: 100
@@ -77,8 +77,8 @@ internal sealed class Locale // TypeDefIndex: 101
 	private Locale() {} // 0x00000001800E2000-0x00000001800E2000
 
 	// Methods
-	public static string GetText(string msg) {} // 0x0000000180123590-0x0000000180123590
-	public static string GetText(string fmt, params /* 0x0000000180009C10-0x0000000180009C10 */ object[] args) {} // 0x00000001802C64F0-0x00000001802C6560
+	public static string GetText(string msg) => default; // 0x0000000180123590-0x0000000180123590
+	public static string GetText(string fmt, params /* 0x0000000180009C10-0x0000000180009C10 */ object[] args) => default; // 0x00000001802C64F0-0x00000001802C6560
 }
 
 namespace Il2CppTests.TestSources
@@ -94,7 +94,7 @@ namespace Il2CppTests.TestSources
 		// Methods
 		public void MethodWithRefParameters(int a, ref int b, int c, ref int d) {} // 0x00000001800EA7B0-0x00000001800EA7B0
 		public void MethodWithInRefOut(in int a, ref int b, out int c) {} // 0x00000001803E0E50-0x00000001803E0E60
-		public ref float MethodWithRefReturnType() {} // 0x00000001803E0E60-0x00000001803E0E60
+		public ref float MethodWithRefReturnType() => default; // 0x00000001803E0E60-0x00000001803E0E60
 	}
 
 	[Obsolete] // 0x000000018000CB80-0x000000018000CAF0

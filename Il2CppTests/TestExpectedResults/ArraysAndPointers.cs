@@ -10,31 +10,31 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Image 0: mscorlib.dll - 0-1809
-[assembly: AssemblyCompany] // 0x000A68AC-0x000A6BA0
-[assembly: AssemblyCopyright] // 0x000A68AC-0x000A6BA0
-[assembly: AssemblyDefaultAlias] // 0x000A68AC-0x000A6BA0
-[assembly: AssemblyDelaySign] // 0x000A68AC-0x000A6BA0
-[assembly: AssemblyDescription] // 0x000A68AC-0x000A6BA0
-[assembly: AssemblyFileVersion] // 0x000A68AC-0x000A6BA0
-[assembly: AssemblyInformationalVersion] // 0x000A68AC-0x000A6BA0
-[assembly: AssemblyKeyFile] // 0x000A68AC-0x000A6BA0
-[assembly: AssemblyProduct] // 0x000A68AC-0x000A6BA0
-[assembly: AssemblyTitle] // 0x000A68AC-0x000A6BA0
-[assembly: CLSCompliant] // 0x000A68AC-0x000A6BA0
-[assembly: CompilationRelaxations] // 0x000A68AC-0x000A6BA0
-[assembly: ComVisible] // 0x000A68AC-0x000A6BA0
-[assembly: Debuggable] // 0x000A68AC-0x000A6BA0
-[assembly: DefaultDependency] // 0x000A68AC-0x000A6BA0
-[assembly: Guid] // 0x000A68AC-0x000A6BA0
-[assembly: NeutralResourcesLanguage] // 0x000A68AC-0x000A6BA0
+// [assembly: AssemblyCompany] // 0x000A68AC-0x000A6BA0
+// [assembly: AssemblyCopyright] // 0x000A68AC-0x000A6BA0
+// [assembly: AssemblyDefaultAlias] // 0x000A68AC-0x000A6BA0
+// [assembly: AssemblyDelaySign] // 0x000A68AC-0x000A6BA0
+// [assembly: AssemblyDescription] // 0x000A68AC-0x000A6BA0
+// [assembly: AssemblyFileVersion] // 0x000A68AC-0x000A6BA0
+// [assembly: AssemblyInformationalVersion] // 0x000A68AC-0x000A6BA0
+// [assembly: AssemblyKeyFile] // 0x000A68AC-0x000A6BA0
+// [assembly: AssemblyProduct] // 0x000A68AC-0x000A6BA0
+// [assembly: AssemblyTitle] // 0x000A68AC-0x000A6BA0
+// [assembly: CLSCompliant] // 0x000A68AC-0x000A6BA0
+// [assembly: CompilationRelaxations] // 0x000A68AC-0x000A6BA0
+// [assembly: ComVisible] // 0x000A68AC-0x000A6BA0
+// [assembly: Debuggable] // 0x000A68AC-0x000A6BA0
+// [assembly: DefaultDependency] // 0x000A68AC-0x000A6BA0
+// [assembly: Guid] // 0x000A68AC-0x000A6BA0
+// [assembly: NeutralResourcesLanguage] // 0x000A68AC-0x000A6BA0
 [assembly: RuntimeCompatibility] // 0x000A68AC-0x000A6BA0
-[assembly: SatelliteContractVersion] // 0x000A68AC-0x000A6BA0
+// [assembly: SatelliteContractVersion] // 0x000A68AC-0x000A6BA0
 [assembly: StringFreezing] // 0x000A68AC-0x000A6BA0
-[assembly: TypeLibVersion] // 0x000A68AC-0x000A6BA0
+// [assembly: TypeLibVersion] // 0x000A68AC-0x000A6BA0
 
 // Image 1: ArraysAndPointers.dll - 1810-1817
-[assembly: CompilationRelaxations] // 0x000A6D34-0x000A6D34
-[assembly: Debuggable] // 0x000A6D34-0x000A6D34
+// [assembly: CompilationRelaxations] // 0x000A6D34-0x000A6D34
+// [assembly: Debuggable] // 0x000A6D34-0x000A6D34
 [assembly: RuntimeCompatibility] // 0x000A6D34-0x000A6D34
 
 internal static class Consts // TypeDefIndex: 100
@@ -77,8 +77,8 @@ internal sealed class Locale // TypeDefIndex: 101
 	private Locale() {} // 0x003EE218-0x003EE220
 
 	// Methods
-	public static string GetText(string msg) {} // 0x003EE220-0x003EE224
-	public static string GetText(string fmt, params /* 0x000A50D8-0x000A50E8 */ object[] args) {} // 0x003EE224-0x003EE2B0
+	public static string GetText(string msg) => default; // 0x003EE220-0x003EE224
+	public static string GetText(string fmt, params /* 0x000A50D8-0x000A50E8 */ object[] args) => default; // 0x003EE224-0x003EE2B0
 }
 
 namespace Il2CppTests.TestSources
@@ -117,7 +117,7 @@ namespace Il2CppTests.TestSources
 			public NestedUnsafe() {}
 	
 			// Methods
-			private unsafe T* UnsafeGenericReturn() {}
+			private unsafe T* UnsafeGenericReturn() => default;
 			private unsafe void UnsafeGenericMethod(T* pt) {}
 		}
 	
@@ -125,10 +125,10 @@ namespace Il2CppTests.TestSources
 		public unsafe Test(int* u) {} // 0x00562E78-0x00562EEC
 	
 		// Methods
-		public int[] FooMethod(int[][] bar) {} // 0x00562DA0-0x00562E00
-		public int[,] BarMethod(int[,,] baz) {} // 0x00562E00-0x00562E78
+		public int[] FooMethod(int[][] bar) => default; // 0x00562DA0-0x00562E00
+		public int[,] BarMethod(int[,,] baz) => default; // 0x00562E00-0x00562E78
 		public unsafe void UnsafeMethod(int* unsafePointerArgument) {} // 0x00562EFC-0x00562F00
-		public unsafe int* UnsafeReturnMethod() {} // 0x00562F00-0x00562F08
-		public unsafe int* UnsafeMethod2(int* i) {} // 0x00562F08-0x00562F10
+		public unsafe int* UnsafeReturnMethod() => default; // 0x00562F00-0x00562F08
+		public unsafe int* UnsafeMethod2(int* i) => default; // 0x00562F08-0x00562F10
 	}
 }

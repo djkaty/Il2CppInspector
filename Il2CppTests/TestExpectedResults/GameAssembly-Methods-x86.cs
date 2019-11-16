@@ -11,31 +11,31 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 // Image 0: mscorlib.dll - 0-1809
-[assembly: AssemblyCompany] // 0x1000F760-0x1000DC90
-[assembly: AssemblyCopyright] // 0x1000F760-0x1000DC90
-[assembly: AssemblyDefaultAlias] // 0x1000F760-0x1000DC90
-[assembly: AssemblyDelaySign] // 0x1000F760-0x1000DC90
-[assembly: AssemblyDescription] // 0x1000F760-0x1000DC90
-[assembly: AssemblyFileVersion] // 0x1000F760-0x1000DC90
-[assembly: AssemblyInformationalVersion] // 0x1000F760-0x1000DC90
-[assembly: AssemblyKeyFile] // 0x1000F760-0x1000DC90
-[assembly: AssemblyProduct] // 0x1000F760-0x1000DC90
-[assembly: AssemblyTitle] // 0x1000F760-0x1000DC90
-[assembly: CLSCompliant] // 0x1000F760-0x1000DC90
-[assembly: CompilationRelaxations] // 0x1000F760-0x1000DC90
-[assembly: ComVisible] // 0x1000F760-0x1000DC90
-[assembly: Debuggable] // 0x1000F760-0x1000DC90
-[assembly: DefaultDependency] // 0x1000F760-0x1000DC90
-[assembly: Guid] // 0x1000F760-0x1000DC90
-[assembly: NeutralResourcesLanguage] // 0x1000F760-0x1000DC90
+// [assembly: AssemblyCompany] // 0x1000F760-0x1000DC90
+// [assembly: AssemblyCopyright] // 0x1000F760-0x1000DC90
+// [assembly: AssemblyDefaultAlias] // 0x1000F760-0x1000DC90
+// [assembly: AssemblyDelaySign] // 0x1000F760-0x1000DC90
+// [assembly: AssemblyDescription] // 0x1000F760-0x1000DC90
+// [assembly: AssemblyFileVersion] // 0x1000F760-0x1000DC90
+// [assembly: AssemblyInformationalVersion] // 0x1000F760-0x1000DC90
+// [assembly: AssemblyKeyFile] // 0x1000F760-0x1000DC90
+// [assembly: AssemblyProduct] // 0x1000F760-0x1000DC90
+// [assembly: AssemblyTitle] // 0x1000F760-0x1000DC90
+// [assembly: CLSCompliant] // 0x1000F760-0x1000DC90
+// [assembly: CompilationRelaxations] // 0x1000F760-0x1000DC90
+// [assembly: ComVisible] // 0x1000F760-0x1000DC90
+// [assembly: Debuggable] // 0x1000F760-0x1000DC90
+// [assembly: DefaultDependency] // 0x1000F760-0x1000DC90
+// [assembly: Guid] // 0x1000F760-0x1000DC90
+// [assembly: NeutralResourcesLanguage] // 0x1000F760-0x1000DC90
 [assembly: RuntimeCompatibility] // 0x1000F760-0x1000DC90
-[assembly: SatelliteContractVersion] // 0x1000F760-0x1000DC90
+// [assembly: SatelliteContractVersion] // 0x1000F760-0x1000DC90
 [assembly: StringFreezing] // 0x1000F760-0x1000DC90
-[assembly: TypeLibVersion] // 0x1000F760-0x1000DC90
+// [assembly: TypeLibVersion] // 0x1000F760-0x1000DC90
 
 // Image 1: Methods.dll - 1810-1822
-[assembly: CompilationRelaxations] // 0x1000DC90-0x1000DC90
-[assembly: Debuggable] // 0x1000DC90-0x1000DC90
+// [assembly: CompilationRelaxations] // 0x1000DC90-0x1000DC90
+// [assembly: Debuggable] // 0x1000DC90-0x1000DC90
 [assembly: RuntimeCompatibility] // 0x1000DC90-0x1000DC90
 
 internal static class Consts // TypeDefIndex: 100
@@ -78,8 +78,8 @@ internal sealed class Locale // TypeDefIndex: 101
 	private Locale() {} // 0x100BF000-0x100BF000
 
 	// Methods
-	public static string GetText(string msg) {} // 0x100F7810-0x100F7810
-	public static string GetText(string fmt, params /* 0x1000A660-0x1000A660 */ object[] args) {} // 0x10261460-0x102614B0
+	public static string GetText(string msg) => default; // 0x100F7810-0x100F7810
+	public static string GetText(string fmt, params /* 0x1000A660-0x1000A660 */ object[] args) => default; // 0x10261460-0x102614B0
 }
 
 namespace Il2CppTests.TestSources
@@ -91,14 +91,14 @@ namespace Il2CppTests.TestSources
 	
 		// Methods
 		public virtual void VirtualMethod() {} // 0x100C5530-0x100C5530
-		public double ValueTypeReturnMethod() {} // 0x1034DAD0-0x1034DAD0
-		public StringBuilder ReferenceTypeReturnMethod() {} // 0x1034DA90-0x1034DAD0
+		public double ValueTypeReturnMethod() => default; // 0x1034DAD0-0x1034DAD0
+		public StringBuilder ReferenceTypeReturnMethod() => default; // 0x1034DA90-0x1034DAD0
 	}
 
 	public static class TestExtension // TypeDefIndex: 1812
 	{
 		// Methods
-		public static double DivideByXExtension(int a, float x) {} // 0x1034DA60-0x1034DA90
+		public static double DivideByXExtension(int a, float x) => default; // 0x1034DA60-0x1034DA90
 	}
 
 	internal abstract class TestAbstract // TypeDefIndex: 1813
@@ -188,6 +188,6 @@ namespace Il2CppTests.TestSources
 		public TestNewNonVirtualMethod() {} // 0x100BF000-0x100BF000
 	
 		// Methods
-		public int ValueTypeReturnMethod() {} // 0x100EF660-0x100EF660
+		public int ValueTypeReturnMethod() => default; // 0x100EF660-0x100EF660
 	}
 }

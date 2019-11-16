@@ -10,31 +10,31 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Image 0: mscorlib.dll - 0-1809
-[assembly: AssemblyCompany] // 0x000A4DEC-0x000A50E0
-[assembly: AssemblyCopyright] // 0x000A4DEC-0x000A50E0
-[assembly: AssemblyDefaultAlias] // 0x000A4DEC-0x000A50E0
-[assembly: AssemblyDelaySign] // 0x000A4DEC-0x000A50E0
-[assembly: AssemblyDescription] // 0x000A4DEC-0x000A50E0
-[assembly: AssemblyFileVersion] // 0x000A4DEC-0x000A50E0
-[assembly: AssemblyInformationalVersion] // 0x000A4DEC-0x000A50E0
-[assembly: AssemblyKeyFile] // 0x000A4DEC-0x000A50E0
-[assembly: AssemblyProduct] // 0x000A4DEC-0x000A50E0
-[assembly: AssemblyTitle] // 0x000A4DEC-0x000A50E0
-[assembly: CLSCompliant] // 0x000A4DEC-0x000A50E0
-[assembly: CompilationRelaxations] // 0x000A4DEC-0x000A50E0
-[assembly: ComVisible] // 0x000A4DEC-0x000A50E0
-[assembly: Debuggable] // 0x000A4DEC-0x000A50E0
-[assembly: DefaultDependency] // 0x000A4DEC-0x000A50E0
-[assembly: Guid] // 0x000A4DEC-0x000A50E0
-[assembly: NeutralResourcesLanguage] // 0x000A4DEC-0x000A50E0
+// [assembly: AssemblyCompany] // 0x000A4DEC-0x000A50E0
+// [assembly: AssemblyCopyright] // 0x000A4DEC-0x000A50E0
+// [assembly: AssemblyDefaultAlias] // 0x000A4DEC-0x000A50E0
+// [assembly: AssemblyDelaySign] // 0x000A4DEC-0x000A50E0
+// [assembly: AssemblyDescription] // 0x000A4DEC-0x000A50E0
+// [assembly: AssemblyFileVersion] // 0x000A4DEC-0x000A50E0
+// [assembly: AssemblyInformationalVersion] // 0x000A4DEC-0x000A50E0
+// [assembly: AssemblyKeyFile] // 0x000A4DEC-0x000A50E0
+// [assembly: AssemblyProduct] // 0x000A4DEC-0x000A50E0
+// [assembly: AssemblyTitle] // 0x000A4DEC-0x000A50E0
+// [assembly: CLSCompliant] // 0x000A4DEC-0x000A50E0
+// [assembly: CompilationRelaxations] // 0x000A4DEC-0x000A50E0
+// [assembly: ComVisible] // 0x000A4DEC-0x000A50E0
+// [assembly: Debuggable] // 0x000A4DEC-0x000A50E0
+// [assembly: DefaultDependency] // 0x000A4DEC-0x000A50E0
+// [assembly: Guid] // 0x000A4DEC-0x000A50E0
+// [assembly: NeutralResourcesLanguage] // 0x000A4DEC-0x000A50E0
 [assembly: RuntimeCompatibility] // 0x000A4DEC-0x000A50E0
-[assembly: SatelliteContractVersion] // 0x000A4DEC-0x000A50E0
+// [assembly: SatelliteContractVersion] // 0x000A4DEC-0x000A50E0
 [assembly: StringFreezing] // 0x000A4DEC-0x000A50E0
-[assembly: TypeLibVersion] // 0x000A4DEC-0x000A50E0
+// [assembly: TypeLibVersion] // 0x000A4DEC-0x000A50E0
 
 // Image 1: Properties.dll - 1810-1811
-[assembly: CompilationRelaxations] // 0x000A5264-0x000A5264
-[assembly: Debuggable] // 0x000A5264-0x000A5264
+// [assembly: CompilationRelaxations] // 0x000A5264-0x000A5264
+// [assembly: Debuggable] // 0x000A5264-0x000A5264
 [assembly: RuntimeCompatibility] // 0x000A5264-0x000A5264
 
 internal static class Consts // TypeDefIndex: 100
@@ -77,8 +77,8 @@ internal sealed class Locale // TypeDefIndex: 101
 	private Locale() {} // 0x003EC6A8-0x003EC6B0
 
 	// Methods
-	public static string GetText(string msg) {} // 0x003EC6B0-0x003EC6B4
-	public static string GetText(string fmt, params /* 0x000A3618-0x000A3628 */ object[] args) {} // 0x003EC6B4-0x003EC740
+	public static string GetText(string msg) => default; // 0x003EC6B0-0x003EC6B4
+	public static string GetText(string fmt, params /* 0x000A3618-0x000A3628 */ object[] args) => default; // 0x003EC6B4-0x003EC740
 }
 
 namespace Il2CppTests.TestSources

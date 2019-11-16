@@ -11,31 +11,31 @@ using System.Runtime.InteropServices;
 using Il2CppTests.TestSources;
 
 // Image 0: mscorlib.dll - 0-1809
-[assembly: AssemblyCompany] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: AssemblyCopyright] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: AssemblyDefaultAlias] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: AssemblyDelaySign] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: AssemblyDescription] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: AssemblyFileVersion] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: AssemblyInformationalVersion] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: AssemblyKeyFile] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: AssemblyProduct] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: AssemblyTitle] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: CLSCompliant] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: CompilationRelaxations] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: ComVisible] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: Debuggable] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: DefaultDependency] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: Guid] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: NeutralResourcesLanguage] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: AssemblyCompany] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: AssemblyCopyright] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: AssemblyDefaultAlias] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: AssemblyDelaySign] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: AssemblyDescription] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: AssemblyFileVersion] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: AssemblyInformationalVersion] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: AssemblyKeyFile] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: AssemblyProduct] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: AssemblyTitle] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: CLSCompliant] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: CompilationRelaxations] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: ComVisible] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: Debuggable] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: DefaultDependency] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: Guid] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: NeutralResourcesLanguage] // 0x000000018000E4A0-0x000000018000C5B0
 [assembly: RuntimeCompatibility] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: SatelliteContractVersion] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: SatelliteContractVersion] // 0x000000018000E4A0-0x000000018000C5B0
 [assembly: StringFreezing] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: TypeLibVersion] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: TypeLibVersion] // 0x000000018000E4A0-0x000000018000C5B0
 
 // Image 1: CustomAttributeData.dll - 1810-1813
-[assembly: CompilationRelaxations] // 0x000000018000C4B0-0x000000018000C4B0
-[assembly: Debuggable] // 0x000000018000C4B0-0x000000018000C4B0
+// [assembly: CompilationRelaxations] // 0x000000018000C4B0-0x000000018000C4B0
+// [assembly: Debuggable] // 0x000000018000C4B0-0x000000018000C4B0
 [assembly: Example] // 0x000000018000C4B0-0x000000018000C4B0
 [assembly: RuntimeCompatibility] // 0x000000018000C4B0-0x000000018000C4B0
 
@@ -79,8 +79,8 @@ internal sealed class Locale // TypeDefIndex: 101
 	private Locale() {} // 0x00000001800E2000-0x00000001800E2000
 
 	// Methods
-	public static string GetText(string msg) {} // 0x0000000180123590-0x0000000180123590
-	public static string GetText(string fmt, params /* 0x0000000180009150-0x0000000180009150 */ object[] args) {} // 0x00000001802C64F0-0x00000001802C6560
+	public static string GetText(string msg) => default; // 0x0000000180123590-0x0000000180123590
+	public static string GetText(string fmt, params /* 0x0000000180009150-0x0000000180009150 */ object[] args) => default; // 0x00000001802C64F0-0x00000001802C6560
 }
 
 namespace Il2CppTests.TestSources
@@ -93,7 +93,7 @@ namespace Il2CppTests.TestSources
 		FourthKind = 3
 	}
 
-	[AttributeUsage] // 0x000000018000C5B0-0x000000018000C5D0
+	// [AttributeUsage] // 0x000000018000C5B0-0x000000018000C5D0
 	public class ExampleAttribute : Attribute // TypeDefIndex: 1812
 	{
 		// Fields

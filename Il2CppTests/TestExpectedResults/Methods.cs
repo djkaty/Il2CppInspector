@@ -11,31 +11,31 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 // Image 0: mscorlib.dll - 0-1809
-[assembly: AssemblyCompany] // 0x000A5098-0x000A538C
-[assembly: AssemblyCopyright] // 0x000A5098-0x000A538C
-[assembly: AssemblyDefaultAlias] // 0x000A5098-0x000A538C
-[assembly: AssemblyDelaySign] // 0x000A5098-0x000A538C
-[assembly: AssemblyDescription] // 0x000A5098-0x000A538C
-[assembly: AssemblyFileVersion] // 0x000A5098-0x000A538C
-[assembly: AssemblyInformationalVersion] // 0x000A5098-0x000A538C
-[assembly: AssemblyKeyFile] // 0x000A5098-0x000A538C
-[assembly: AssemblyProduct] // 0x000A5098-0x000A538C
-[assembly: AssemblyTitle] // 0x000A5098-0x000A538C
-[assembly: CLSCompliant] // 0x000A5098-0x000A538C
-[assembly: CompilationRelaxations] // 0x000A5098-0x000A538C
-[assembly: ComVisible] // 0x000A5098-0x000A538C
-[assembly: Debuggable] // 0x000A5098-0x000A538C
-[assembly: DefaultDependency] // 0x000A5098-0x000A538C
-[assembly: Guid] // 0x000A5098-0x000A538C
-[assembly: NeutralResourcesLanguage] // 0x000A5098-0x000A538C
+// [assembly: AssemblyCompany] // 0x000A5098-0x000A538C
+// [assembly: AssemblyCopyright] // 0x000A5098-0x000A538C
+// [assembly: AssemblyDefaultAlias] // 0x000A5098-0x000A538C
+// [assembly: AssemblyDelaySign] // 0x000A5098-0x000A538C
+// [assembly: AssemblyDescription] // 0x000A5098-0x000A538C
+// [assembly: AssemblyFileVersion] // 0x000A5098-0x000A538C
+// [assembly: AssemblyInformationalVersion] // 0x000A5098-0x000A538C
+// [assembly: AssemblyKeyFile] // 0x000A5098-0x000A538C
+// [assembly: AssemblyProduct] // 0x000A5098-0x000A538C
+// [assembly: AssemblyTitle] // 0x000A5098-0x000A538C
+// [assembly: CLSCompliant] // 0x000A5098-0x000A538C
+// [assembly: CompilationRelaxations] // 0x000A5098-0x000A538C
+// [assembly: ComVisible] // 0x000A5098-0x000A538C
+// [assembly: Debuggable] // 0x000A5098-0x000A538C
+// [assembly: DefaultDependency] // 0x000A5098-0x000A538C
+// [assembly: Guid] // 0x000A5098-0x000A538C
+// [assembly: NeutralResourcesLanguage] // 0x000A5098-0x000A538C
 [assembly: RuntimeCompatibility] // 0x000A5098-0x000A538C
-[assembly: SatelliteContractVersion] // 0x000A5098-0x000A538C
+// [assembly: SatelliteContractVersion] // 0x000A5098-0x000A538C
 [assembly: StringFreezing] // 0x000A5098-0x000A538C
-[assembly: TypeLibVersion] // 0x000A5098-0x000A538C
+// [assembly: TypeLibVersion] // 0x000A5098-0x000A538C
 
 // Image 1: Methods.dll - 1810-1822
-[assembly: CompilationRelaxations] // 0x000A538C-0x000A538C
-[assembly: Debuggable] // 0x000A538C-0x000A538C
+// [assembly: CompilationRelaxations] // 0x000A538C-0x000A538C
+// [assembly: Debuggable] // 0x000A538C-0x000A538C
 [assembly: RuntimeCompatibility] // 0x000A538C-0x000A538C
 
 internal static class Consts // TypeDefIndex: 100
@@ -78,8 +78,8 @@ internal sealed class Locale // TypeDefIndex: 101
 	private Locale() {} // 0x003EC600-0x003EC608
 
 	// Methods
-	public static string GetText(string msg) {} // 0x003EC608-0x003EC60C
-	public static string GetText(string fmt, params /* 0x000A38C4-0x000A38D4 */ object[] args) {} // 0x003EC60C-0x003EC698
+	public static string GetText(string msg) => default; // 0x003EC608-0x003EC60C
+	public static string GetText(string fmt, params /* 0x000A38C4-0x000A38D4 */ object[] args) => default; // 0x003EC60C-0x003EC698
 }
 
 namespace Il2CppTests.TestSources
@@ -91,14 +91,14 @@ namespace Il2CppTests.TestSources
 	
 		// Methods
 		public virtual void VirtualMethod() {} // 0x00561188-0x0056118C
-		public double ValueTypeReturnMethod() {} // 0x0056118C-0x00561198
-		public StringBuilder ReferenceTypeReturnMethod() {} // 0x005611B4-0x00561220
+		public double ValueTypeReturnMethod() => default; // 0x0056118C-0x00561198
+		public StringBuilder ReferenceTypeReturnMethod() => default; // 0x005611B4-0x00561220
 	}
 
 	public static class TestExtension // TypeDefIndex: 1812
 	{
 		// Methods
-		public static double DivideByXExtension(int a, float x) {} // 0x00561198-0x005611B4
+		public static double DivideByXExtension(int a, float x) => default; // 0x00561198-0x005611B4
 	}
 
 	internal abstract class TestAbstract // TypeDefIndex: 1813
@@ -188,6 +188,6 @@ namespace Il2CppTests.TestSources
 		public TestNewNonVirtualMethod() {} // 0x0056128C-0x00561294
 	
 		// Methods
-		public int ValueTypeReturnMethod() {} // 0x00561284-0x0056128C
+		public int ValueTypeReturnMethod() => default; // 0x00561284-0x0056128C
 	}
 }

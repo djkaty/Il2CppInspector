@@ -11,31 +11,31 @@ using System.Runtime.InteropServices;
 using Il2CppTests.TestSources;
 
 // Image 0: mscorlib.dll - 0-1809
-[assembly: AssemblyCompany] // 0x1000EFA0-0x1000D430
-[assembly: AssemblyCopyright] // 0x1000EFA0-0x1000D430
-[assembly: AssemblyDefaultAlias] // 0x1000EFA0-0x1000D430
-[assembly: AssemblyDelaySign] // 0x1000EFA0-0x1000D430
-[assembly: AssemblyDescription] // 0x1000EFA0-0x1000D430
-[assembly: AssemblyFileVersion] // 0x1000EFA0-0x1000D430
-[assembly: AssemblyInformationalVersion] // 0x1000EFA0-0x1000D430
-[assembly: AssemblyKeyFile] // 0x1000EFA0-0x1000D430
-[assembly: AssemblyProduct] // 0x1000EFA0-0x1000D430
-[assembly: AssemblyTitle] // 0x1000EFA0-0x1000D430
-[assembly: CLSCompliant] // 0x1000EFA0-0x1000D430
-[assembly: CompilationRelaxations] // 0x1000EFA0-0x1000D430
-[assembly: ComVisible] // 0x1000EFA0-0x1000D430
-[assembly: Debuggable] // 0x1000EFA0-0x1000D430
-[assembly: DefaultDependency] // 0x1000EFA0-0x1000D430
-[assembly: Guid] // 0x1000EFA0-0x1000D430
-[assembly: NeutralResourcesLanguage] // 0x1000EFA0-0x1000D430
+// [assembly: AssemblyCompany] // 0x1000EFA0-0x1000D430
+// [assembly: AssemblyCopyright] // 0x1000EFA0-0x1000D430
+// [assembly: AssemblyDefaultAlias] // 0x1000EFA0-0x1000D430
+// [assembly: AssemblyDelaySign] // 0x1000EFA0-0x1000D430
+// [assembly: AssemblyDescription] // 0x1000EFA0-0x1000D430
+// [assembly: AssemblyFileVersion] // 0x1000EFA0-0x1000D430
+// [assembly: AssemblyInformationalVersion] // 0x1000EFA0-0x1000D430
+// [assembly: AssemblyKeyFile] // 0x1000EFA0-0x1000D430
+// [assembly: AssemblyProduct] // 0x1000EFA0-0x1000D430
+// [assembly: AssemblyTitle] // 0x1000EFA0-0x1000D430
+// [assembly: CLSCompliant] // 0x1000EFA0-0x1000D430
+// [assembly: CompilationRelaxations] // 0x1000EFA0-0x1000D430
+// [assembly: ComVisible] // 0x1000EFA0-0x1000D430
+// [assembly: Debuggable] // 0x1000EFA0-0x1000D430
+// [assembly: DefaultDependency] // 0x1000EFA0-0x1000D430
+// [assembly: Guid] // 0x1000EFA0-0x1000D430
+// [assembly: NeutralResourcesLanguage] // 0x1000EFA0-0x1000D430
 [assembly: RuntimeCompatibility] // 0x1000EFA0-0x1000D430
-[assembly: SatelliteContractVersion] // 0x1000EFA0-0x1000D430
+// [assembly: SatelliteContractVersion] // 0x1000EFA0-0x1000D430
 [assembly: StringFreezing] // 0x1000EFA0-0x1000D430
-[assembly: TypeLibVersion] // 0x1000EFA0-0x1000D430
+// [assembly: TypeLibVersion] // 0x1000EFA0-0x1000D430
 
 // Image 1: CustomAttributeData.dll - 1810-1813
-[assembly: CompilationRelaxations] // 0x1000D360-0x1000D360
-[assembly: Debuggable] // 0x1000D360-0x1000D360
+// [assembly: CompilationRelaxations] // 0x1000D360-0x1000D360
+// [assembly: Debuggable] // 0x1000D360-0x1000D360
 [assembly: Example] // 0x1000D360-0x1000D360
 [assembly: RuntimeCompatibility] // 0x1000D360-0x1000D360
 
@@ -79,8 +79,8 @@ internal sealed class Locale // TypeDefIndex: 101
 	private Locale() {} // 0x100BF000-0x100BF000
 
 	// Methods
-	public static string GetText(string msg) {} // 0x100F7810-0x100F7810
-	public static string GetText(string fmt, params /* 0x10009B80-0x10009B80 */ object[] args) {} // 0x10261460-0x102614B0
+	public static string GetText(string msg) => default; // 0x100F7810-0x100F7810
+	public static string GetText(string fmt, params /* 0x10009B80-0x10009B80 */ object[] args) => default; // 0x10261460-0x102614B0
 }
 
 namespace Il2CppTests.TestSources
@@ -93,7 +93,7 @@ namespace Il2CppTests.TestSources
 		FourthKind = 3
 	}
 
-	[AttributeUsage] // 0x1000D430-0x1000D450
+	// [AttributeUsage] // 0x1000D430-0x1000D450
 	public class ExampleAttribute : Attribute // TypeDefIndex: 1812
 	{
 		// Fields

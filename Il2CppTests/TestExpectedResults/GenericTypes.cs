@@ -11,75 +11,75 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Image 0: mscorlib.dll - 0-1809
-[assembly: AssemblyCompany] // 0x000A534C-0x000A5640
-[assembly: AssemblyCopyright] // 0x000A534C-0x000A5640
-[assembly: AssemblyDefaultAlias] // 0x000A534C-0x000A5640
-[assembly: AssemblyDelaySign] // 0x000A534C-0x000A5640
-[assembly: AssemblyDescription] // 0x000A534C-0x000A5640
-[assembly: AssemblyFileVersion] // 0x000A534C-0x000A5640
-[assembly: AssemblyInformationalVersion] // 0x000A534C-0x000A5640
-[assembly: AssemblyKeyFile] // 0x000A534C-0x000A5640
-[assembly: AssemblyProduct] // 0x000A534C-0x000A5640
-[assembly: AssemblyTitle] // 0x000A534C-0x000A5640
-[assembly: CLSCompliant] // 0x000A534C-0x000A5640
-[assembly: CompilationRelaxations] // 0x000A534C-0x000A5640
-[assembly: ComVisible] // 0x000A534C-0x000A5640
-[assembly: Debuggable] // 0x000A534C-0x000A5640
-[assembly: DefaultDependency] // 0x000A534C-0x000A5640
-[assembly: Guid] // 0x000A534C-0x000A5640
-[assembly: NeutralResourcesLanguage] // 0x000A534C-0x000A5640
-[assembly: RuntimeCompatibility] // 0x000A534C-0x000A5640
-[assembly: SatelliteContractVersion] // 0x000A534C-0x000A5640
-[assembly: StringFreezing] // 0x000A534C-0x000A5640
-[assembly: TypeLibVersion] // 0x000A534C-0x000A5640
+// [assembly: AssemblyCompany] // 0x000A5524-0x000A5818
+// [assembly: AssemblyCopyright] // 0x000A5524-0x000A5818
+// [assembly: AssemblyDefaultAlias] // 0x000A5524-0x000A5818
+// [assembly: AssemblyDelaySign] // 0x000A5524-0x000A5818
+// [assembly: AssemblyDescription] // 0x000A5524-0x000A5818
+// [assembly: AssemblyFileVersion] // 0x000A5524-0x000A5818
+// [assembly: AssemblyInformationalVersion] // 0x000A5524-0x000A5818
+// [assembly: AssemblyKeyFile] // 0x000A5524-0x000A5818
+// [assembly: AssemblyProduct] // 0x000A5524-0x000A5818
+// [assembly: AssemblyTitle] // 0x000A5524-0x000A5818
+// [assembly: CLSCompliant] // 0x000A5524-0x000A5818
+// [assembly: CompilationRelaxations] // 0x000A5524-0x000A5818
+// [assembly: ComVisible] // 0x000A5524-0x000A5818
+// [assembly: Debuggable] // 0x000A5524-0x000A5818
+// [assembly: DefaultDependency] // 0x000A5524-0x000A5818
+// [assembly: Guid] // 0x000A5524-0x000A5818
+// [assembly: NeutralResourcesLanguage] // 0x000A5524-0x000A5818
+[assembly: RuntimeCompatibility] // 0x000A5524-0x000A5818
+// [assembly: SatelliteContractVersion] // 0x000A5524-0x000A5818
+[assembly: StringFreezing] // 0x000A5524-0x000A5818
+// [assembly: TypeLibVersion] // 0x000A5524-0x000A5818
 
-// Image 1: GenericTypes.dll - 1810-1821
-[assembly: CompilationRelaxations] // 0x000A5754-0x000A5754
-[assembly: Debuggable] // 0x000A5754-0x000A5754
-[assembly: RuntimeCompatibility] // 0x000A5754-0x000A5754
+// Image 1: GenericTypes.dll - 1810-1827
+// [assembly: CompilationRelaxations] // 0x000A592C-0x000A592C
+// [assembly: Debuggable] // 0x000A592C-0x000A592C
+[assembly: RuntimeCompatibility] // 0x000A592C-0x000A592C
 
 internal static class Consts // TypeDefIndex: 100
 {
 	// Fields
-	public const string MonoVersion = "2.6.5.0"; // Metadata: 0x000ECCEC
-	public const string MonoCompany = "MONO development team"; // Metadata: 0x000ECCF7
-	public const string MonoProduct = "MONO Common language infrastructure"; // Metadata: 0x000ECD10
-	public const string MonoCopyright = "(c) various MONO Authors"; // Metadata: 0x000ECD37
-	public const string FxVersion = "2.0.0.0"; // Metadata: 0x000ECD53
-	public const string VsVersion = "8.0.0.0"; // Metadata: 0x000ECD5E
-	public const string FxFileVersion = "2.0.50727.1433"; // Metadata: 0x000ECD69
-	public const string VsFileVersion = "8.0.50727.1433"; // Metadata: 0x000ECD7B
-	public const string AssemblyI18N = "I18N, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECD8D
-	public const string AssemblyMicrosoft_VisualStudio = "Microsoft.VisualStudio, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECDD8
-	public const string AssemblyMicrosoft_VisualStudio_Web = "Microsoft.VisualStudio.Web, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECE35
-	public const string AssemblyMicrosoft_VSDesigner = "Microsoft.VSDesigner, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECE96
-	public const string AssemblyMono_Http = "Mono.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECEF1
-	public const string AssemblyMono_Posix = "Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECF41
-	public const string AssemblyMono_Security = "Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECF92
-	public const string AssemblyMono_Messaging_RabbitMQ = "Mono.Messaging.RabbitMQ, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECFE6
-	public const string AssemblyCorlib = "mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ED044
-	public const string AssemblySystem = "System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ED093
-	public const string AssemblySystem_Data = "System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ED0E0
-	public const string AssemblySystem_Design = "System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED132
-	public const string AssemblySystem_DirectoryServices = "System.DirectoryServices, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED186
-	public const string AssemblySystem_Drawing = "System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED1E5
-	public const string AssemblySystem_Drawing_Design = "System.Drawing.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED23A
-	public const string AssemblySystem_Messaging = "System.Messaging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED296
-	public const string AssemblySystem_Security = "System.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED2ED
-	public const string AssemblySystem_ServiceProcess = "System.ServiceProcess, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED343
-	public const string AssemblySystem_Web = "System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED39F
-	public const string AssemblySystem_Windows_Forms = "System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ED3F0
-	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ED44B
+	public const string MonoVersion = "2.6.5.0"; // Metadata: 0x000ECED8
+	public const string MonoCompany = "MONO development team"; // Metadata: 0x000ECEE3
+	public const string MonoProduct = "MONO Common language infrastructure"; // Metadata: 0x000ECEFC
+	public const string MonoCopyright = "(c) various MONO Authors"; // Metadata: 0x000ECF23
+	public const string FxVersion = "2.0.0.0"; // Metadata: 0x000ECF3F
+	public const string VsVersion = "8.0.0.0"; // Metadata: 0x000ECF4A
+	public const string FxFileVersion = "2.0.50727.1433"; // Metadata: 0x000ECF55
+	public const string VsFileVersion = "8.0.50727.1433"; // Metadata: 0x000ECF67
+	public const string AssemblyI18N = "I18N, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECF79
+	public const string AssemblyMicrosoft_VisualStudio = "Microsoft.VisualStudio, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECFC4
+	public const string AssemblyMicrosoft_VisualStudio_Web = "Microsoft.VisualStudio.Web, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED021
+	public const string AssemblyMicrosoft_VSDesigner = "Microsoft.VSDesigner, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED082
+	public const string AssemblyMono_Http = "Mono.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ED0DD
+	public const string AssemblyMono_Posix = "Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ED12D
+	public const string AssemblyMono_Security = "Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ED17E
+	public const string AssemblyMono_Messaging_RabbitMQ = "Mono.Messaging.RabbitMQ, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ED1D2
+	public const string AssemblyCorlib = "mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ED230
+	public const string AssemblySystem = "System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ED27F
+	public const string AssemblySystem_Data = "System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ED2CC
+	public const string AssemblySystem_Design = "System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED31E
+	public const string AssemblySystem_DirectoryServices = "System.DirectoryServices, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED372
+	public const string AssemblySystem_Drawing = "System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED3D1
+	public const string AssemblySystem_Drawing_Design = "System.Drawing.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED426
+	public const string AssemblySystem_Messaging = "System.Messaging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED482
+	public const string AssemblySystem_Security = "System.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED4D9
+	public const string AssemblySystem_ServiceProcess = "System.ServiceProcess, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED52F
+	public const string AssemblySystem_Web = "System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED58B
+	public const string AssemblySystem_Windows_Forms = "System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ED5DC
+	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ED637
 }
 
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x003ECCE8-0x003ECCF0
+	private Locale() {} // 0x003ED1B0-0x003ED1B8
 
 	// Methods
-	public static string GetText(string msg) {} // 0x003ECCF0-0x003ECCF4
-	public static string GetText(string fmt, params /* 0x000A3B78-0x000A3B88 */ object[] args) {} // 0x003ECCF4-0x003ECD80
+	public static string GetText(string msg) => default; // 0x003ED1B8-0x003ED1BC
+	public static string GetText(string fmt, params /* 0x000A3D50-0x000A3D60 */ object[] args) => default; // 0x003ED1BC-0x003ED248
 }
 
 namespace Il2CppTests.TestSources
@@ -115,10 +115,10 @@ namespace Il2CppTests.TestSources
 	internal class Test // TypeDefIndex: 1819
 	{
 		// Constructors
-		public Test() {} // 0x00561A3C-0x00561A44
+		public Test() {} // 0x00561F04-0x00561F0C
 	
 		// Methods
-		public void GenericTypesTest() {} // 0x00561880-0x00561A3C
+		public void GenericTypesTest() {} // 0x00561D48-0x00561F04
 	}
 
 	internal class ConstrainedValueType<V> // TypeDefIndex: 1820
@@ -131,11 +131,45 @@ namespace Il2CppTests.TestSources
 	internal class ConstrainedRefType<R> // TypeDefIndex: 1821
 		where R : class
 	{
+		// Nested types
+		private class NestedWithAutomaticConstraints // TypeDefIndex: 1822
+		{
+			// Constructors
+			public NestedWithAutomaticConstraints() {}
+		}
+	
+		private class NestedWithNewGenericParameter<R, T> // TypeDefIndex: 1823
+		{
+			// Constructors
+			public NestedWithNewGenericParameter() {}
+		}
+	
+		private class NestedWithNewGenericParameterAndConstraint<R, T> // TypeDefIndex: 1824
+			where T : new()
+		{
+			// Constructors
+			public NestedWithNewGenericParameterAndConstraint() {}
+		}
+	
+		private class NestedWithNewGenericParameterAndDependentConstraint<R, T> // TypeDefIndex: 1825
+			where T : G<R>, new()
+		{
+			// Constructors
+			public NestedWithNewGenericParameterAndDependentConstraint() {}
+		}
+	
+		private enum NestedEnumWithAutomaticConstraints // TypeDefIndex: 1826
+		{
+	
+		}
+	
+		private delegate void NestedDelegateWithAutomaticConstraints(); // TypeDefIndex: 1827; 0x00000000-0x00000000
+	
 		// Constructors
 		public ConstrainedRefType() {}
 	
 		// Methods
-		[NullableContext] // 0x000A5740-0x000A5754
+		// [NullableContext] // 0x000A5918-0x000A592C
 		public void ConstrainedMethodNotNull<N>(N notnullArgument, R bar) {}
 		public void ConstrainedUnmanaged<U>(U unmanagedArgument)
 			where U : struct {}
