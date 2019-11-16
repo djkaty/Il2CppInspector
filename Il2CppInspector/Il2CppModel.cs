@@ -31,6 +31,9 @@ namespace Il2CppInspector.Reflection
         // List of all methods ordered by their MethodDefinitionIndex
         public MethodBase[] MethodsByDefinitionIndex { get; }
 
+        // List of all generated CustomAttributeData objects by their index into AttributeTypeIndices
+        public Dictionary<int, CustomAttributeData> AttributesByIndices { get; } = new Dictionary<int, CustomAttributeData>();
+
         public Il2CppModel(Il2CppInspector package) {
             Package = package;
             TypesByDefinitionIndex = new TypeInfo[package.TypeDefinitions.Length];

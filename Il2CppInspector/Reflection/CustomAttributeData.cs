@@ -15,7 +15,7 @@ namespace Il2CppInspector.Reflection
     public class CustomAttributeData
     {
         // IL2CPP-specific data
-        private Il2CppInspector package => AttributeType.Assembly.Model.Package;
+        public Il2CppModel Model => AttributeType.Assembly.Model;
         public int Index { get; set; }
 
         // The type of the attribute
@@ -23,7 +23,7 @@ namespace Il2CppInspector.Reflection
 
         public (ulong Start, ulong End)? VirtualAddress =>
             // The last one will be wrong but there is no way to calculate it
-            (package.CustomAttributeGenerators[Index], package.CustomAttributeGenerators[Math.Min(Index + 1, package.CustomAttributeGenerators.Length - 1)]);
+            (Model.Package.CustomAttributeGenerators[Index], Model.Package.CustomAttributeGenerators[Math.Min(Index + 1, Model.Package.CustomAttributeGenerators.Length - 1)]);
 
         public override string ToString() => "[" + AttributeType.FullName + "]";
 
@@ -41,7 +41,16 @@ namespace Il2CppInspector.Reflection
             var range = pkg.AttributeTypeRanges[customAttributeIndex];
             for (var i = range.start; i < range.start + range.count; i++) {
                 var typeIndex = pkg.AttributeTypeIndices[i];
-                yield return new CustomAttributeData { Index = customAttributeIndex, AttributeType = asm.Model.GetTypeFromUsage(typeIndex) };
+
+                if (asm.Model.AttributesByIndices.TryGetValue(i, out var attribute)) {
+                    yield return attribute;
+                    continue;
+                }
+
+                attribute = new CustomAttributeData { Index = customAttributeIndex, AttributeType = asm.Model.GetTypeFromUsage(typeIndex) };
+
+                asm.Model.AttributesByIndices.Add(i, attribute);
+                yield return attribute;
             }
         }
 
