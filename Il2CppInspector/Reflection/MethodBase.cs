@@ -166,7 +166,8 @@ namespace Il2CppInspector.Reflection
         }
 
         // Get C# syntax-friendly list of parameters
-        public string GetParametersString(bool emitPointer = false) => string.Join(", ", DeclaredParameters.Select(p => p.GetParameterString(emitPointer)));
+        public string GetParametersString(bool emitPointer = false, bool commentAttributes = false)
+            => string.Join(", ", DeclaredParameters.Select(p => p.GetParameterString(emitPointer, commentAttributes)));
 
         public string GetTypeParametersString() => GenericTypeParameters == null? "" :
             "<" + string.Join(", ", GenericTypeParameters.Select(p => p.CSharpName)) + ">";

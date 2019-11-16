@@ -46,11 +46,14 @@ namespace Il2CppInspector
             [Option('f', "flatten", Required = false, HelpText = "Flatten the namespace hierarchy into a single folder rather than using per-namespace subfolders. Only used when layout is per-namespace or per-class", Default = false)]
             public bool FlattenHierarchy { get; set; }
 
-            [Option('g', "no-suppress-cg", Required = false, HelpText = "Don't suppress generation of C# code for items with CompilerGenerated attribute", Default = false)]
+            [Option('n', "suppress-metadata", Required = false, HelpText = "Diff tidying: suppress method pointers, field offsets and type indices from C# output. Useful for comparing two versions of a binary for changes with a diff tool", Default = false)]
+            public bool SuppressMetadata { get; set; }
+
+            [Option('g', "no-suppress-cg", Required = false, HelpText = "Compilation tidying: don't 'suppress generation of C# code for items with CompilerGenerated attribute", Default = false)]
             public bool DontSuppressCompilerGenerated { get; set; }
 
-            [Option('n', "suppress-metadata", Required = false, HelpText = "Suppress method pointers, field offsets and type indices from C# output. Useful for comparing two versions of a binary for changes with a diff tool", Default = false)]
-            public bool SuppressMetadata { get; set; }
+            [Option('a', "comment-attributes", Required = false, HelpText = "Compilation tidying: comment out attributes without parameterless constructors or all-optional constructor arguments")]
+            public bool CommentParameterizedAttributeConstructors { get; set; }
         }
 
         public static int Main(string[] args) =>
@@ -88,7 +91,8 @@ namespace Il2CppInspector
                 var writer = new Il2CppCSharpDumper(model) {
                     ExcludedNamespaces = options.ExcludedNamespaces.ToList(),
                     SuppressGenerated = !options.DontSuppressCompilerGenerated,
-                    SuppressMetadata = options.SuppressMetadata
+                    SuppressMetadata = options.SuppressMetadata,
+                    CommentAttributes = options.CommentParameterizedAttributeConstructors
                 };
 
                 var imageSuffix = i++ > 0 ? "-" + (i - 1) : "";

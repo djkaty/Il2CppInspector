@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Il2CppInspector.Reflection
@@ -7,15 +8,23 @@ namespace Il2CppInspector.Reflection
     public static class Extensions
     {
         // Convert a list of CustomAttributeData objects into C#-friendly attribute usages
-        public static string ToString(this IEnumerable<CustomAttributeData> attributes, string linePrefix = "", string attributePrefix = "", bool inline = false, bool emitPointer = false) {
+        public static string ToString(this IEnumerable<CustomAttributeData> attributes, string linePrefix = "", string attributePrefix = "",
+            bool inline = false, bool emitPointer = false, bool mustCompile = false) {
             var sb = new StringBuilder();
 
             foreach (var cad in attributes) {
+                // Find a constructor that either has no parameters, or all optional parameters
+                var parameterlessConstructor = cad.AttributeType.DeclaredConstructors.Any(c => c.DeclaredParameters.All(p => p.IsOptional));
+
+                // IL2CPP doesn't retain attribute arguments so we have to comment out those with non-optional arguments if we want the output to compile
+                var commentStart = mustCompile && !parameterlessConstructor? inline? "/* " : "// " : "";
+                var commentEnd = commentStart.Length > 0 && inline? " */" : "";
+
                 var name = cad.AttributeType.CSharpName;
                 var suffix = name.LastIndexOf("Attribute", StringComparison.Ordinal);
                 if (suffix != -1)
                     name = name[..suffix];
-                sb.Append($"{linePrefix}[{attributePrefix}{name}]");
+                sb.Append($"{linePrefix}{commentStart}[{attributePrefix}{name}]{commentEnd}");
                 if (emitPointer)
                     sb.Append($" {(inline? "/*" : "//")} {cad.VirtualAddress.ToAddressString()}{(inline? " */" : "")}");
                 sb.Append(inline? " ":"\n");

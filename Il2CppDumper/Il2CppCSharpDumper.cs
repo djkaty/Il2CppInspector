@@ -26,6 +26,9 @@ namespace Il2CppInspector
         // Suppress binary metadata in code comments
         public bool SuppressMetadata { get; set; }
 
+        // Comment out custom attributes with non-optional constructor arguments
+        public bool CommentAttributes { get; set; }
+
         private const string CGAttribute = "System.Runtime.CompilerServices.CompilerGeneratedAttribute";
         private const string FBAttribute = "System.Runtime.CompilerServices.FixedBufferAttribute";
         private const string ExtAttribute = "System.Runtime.CompilerServices.ExtensionAttribute";
@@ -161,7 +164,7 @@ namespace Il2CppInspector
                 text.Append($"// Image {asm.Index}: {asm.FullName} - {asm.ImageDefinition.typeStart}-{asm.ImageDefinition.typeStart + asm.ImageDefinition.typeCount - 1}\n");
 
                 // Assembly-level attributes
-                text.Append(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name).ToString(attributePrefix: "assembly: ", emitPointer: !SuppressMetadata));
+                text.Append(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name).ToString(attributePrefix: "assembly: ", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
                 if (asm.CustomAttributes.Any())
                     text.Append("\n");
             }
@@ -188,7 +191,7 @@ namespace Il2CppInspector
                         sb.Append(prefix + "\t[NonSerialized]\n");
 
                     // Attributes
-                    sb.Append(field.CustomAttributes.Where(a => a.AttributeType.FullName != FBAttribute).OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t", emitPointer: !SuppressMetadata));
+                    sb.Append(field.CustomAttributes.Where(a => a.AttributeType.FullName != FBAttribute).OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
                     sb.Append(prefix + "\t");
                     sb.Append(field.GetModifierString());
 
@@ -219,7 +222,7 @@ namespace Il2CppInspector
             sb.Clear();
             foreach (var prop in type.DeclaredProperties) {
                 // Attributes
-                sb.Append(prop.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t", emitPointer: !SuppressMetadata));
+                sb.Append(prop.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
 
                 // The access mask enum values go from 1 (private) to 6 (public) in order from most to least restrictive
                 var getAccess = (prop.GetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
@@ -233,11 +236,14 @@ namespace Il2CppInspector
                     sb.Append($"{prop.Name} {{ ");
                 // Indexer
                 else
-                    sb.Append("this[" + string.Join(", ", primary.DeclaredParameters.SkipLast(getAccess >= setAccess? 0 : 1).Select(p => p.GetParameterString(!SuppressMetadata))) + "] { ");
+                    sb.Append("this[" + string.Join(", ", primary.DeclaredParameters.SkipLast(getAccess >= setAccess? 0 : 1)
+                                  .Select(p => p.GetParameterString(!SuppressMetadata, CommentAttributes))) + "] { ");
 
-                sb.Append((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true, emitPointer: !SuppressMetadata) 
+                sb.Append((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute)
+                                             .ToString(inline: true, emitPointer: !SuppressMetadata, mustCompile: CommentAttributes) 
                                                + (getAccess < setAccess? prop.GetMethod.GetAccessModifierString() : "") + "get; " : "")
-                             + (prop.CanWrite? prop.SetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute).ToString(inline: true, emitPointer: !SuppressMetadata) 
+                             + (prop.CanWrite? prop.SetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute)
+                                                   .ToString(inline: true, emitPointer: !SuppressMetadata, mustCompile: CommentAttributes) 
                                                + (setAccess < getAccess? prop.SetMethod.GetAccessModifierString() : "") + "set; " : "") + "}");
                 if (!SuppressMetadata) {
                     if ((prop.CanRead && prop.GetMethod.VirtualAddress != null) || (prop.CanWrite && prop.SetMethod.VirtualAddress != null))
@@ -256,7 +262,7 @@ namespace Il2CppInspector
             sb.Clear();
             foreach (var evt in type.DeclaredEvents) {
                 // Attributes
-                sb.Append(evt.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t", emitPointer: !SuppressMetadata));
+                sb.Append(evt.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
 
                 string modifiers = evt.AddMethod?.GetModifierString();
                 sb.Append($"{prefix}\t{modifiers}event {evt.EventHandlerType.CSharpName} {evt.Name} {{\n");
@@ -278,7 +284,7 @@ namespace Il2CppInspector
             sb.Clear();
             foreach (var method in type.DeclaredConstructors) {
                 // Attributes
-                sb.Append(method.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t", emitPointer: !SuppressMetadata));
+                sb.Append(method.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
 
                 sb.Append($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString()}(");
                 sb.Append(method.GetParametersString(!SuppressMetadata) + ")" + (method.IsAbstract? ";" : @" {}"));
@@ -306,7 +312,7 @@ namespace Il2CppInspector
             // TODO: DefaultMemberAttribute should be output if it is present and the type does not have an indexer, otherwise suppressed
             // See https://docs.microsoft.com/en-us/dotnet/api/system.reflection.defaultmemberattribute?view=netframework-4.8
             sb.Append(type.CustomAttributes.Where(a => a.AttributeType.FullName != DMAttribute && a.AttributeType.FullName != ExtAttribute)
-                                            .OrderBy(a => a.AttributeType.Name).ToString(prefix, emitPointer: !SuppressMetadata));
+                                            .OrderBy(a => a.AttributeType.Name).ToString(prefix, emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
 
             // Roll-up multicast delegates to use the 'delegate' syntactic sugar
             if (type.IsClass && type.IsSealed && type.BaseType?.FullName == "System.MulticastDelegate") {
@@ -314,7 +320,7 @@ namespace Il2CppInspector
 
                 var del = type.GetMethod("Invoke");
                 // IL2CPP doesn't seem to retain return type attributes
-                //sb.Append(del.ReturnType.CustomAttributes.ToString(prefix, "return: ", emitPointer: !SuppressMetadata));
+                //sb.Append(del.ReturnType.CustomAttributes.ToString(prefix, "return: ", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
                 if (del.RequiresUnsafeContext)
                     sb.Append("unsafe ");
                 sb.Append($"delegate {del.ReturnType.CSharpName} {type.CSharpTypeDeclarationName}(");
@@ -369,7 +375,8 @@ namespace Il2CppInspector
             var writer = new StringBuilder();
 
             // Attributes
-            writer.Append(method.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t", emitPointer: !SuppressMetadata));
+            writer.Append(method.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name)
+                .ToString(prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
 
             // IL2CPP doesn't seem to retain return type attributes
             //writer.Append(method.ReturnType.CustomAttributes.ToString(prefix + "\t", "return: ", emitPointer: !SuppressMetadata));
