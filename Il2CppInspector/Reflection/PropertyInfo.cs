@@ -26,6 +26,13 @@ namespace Il2CppInspector.Reflection {
 
         public override string Name { get; protected set; }
 
+        public string CSharpName =>
+            // Explicit interface implementation
+            Name.IndexOf('.') != -1? string.Join('.', Name.Split('.')[^2..])
+
+            // Regular method
+            : Name;
+
         public TypeInfo PropertyType => GetMethod?.ReturnType ?? SetMethod.DeclaredParameters[^1].ParameterType;
 
         public override MemberTypes MemberType => MemberTypes.Property;

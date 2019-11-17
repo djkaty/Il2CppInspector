@@ -261,7 +261,7 @@ namespace Il2CppInspector
 
                 // Non-indexer
                 if ((!prop.CanRead || !prop.GetMethod.DeclaredParameters.Any()) && (!prop.CanWrite || prop.SetMethod.DeclaredParameters.Count == 1))
-                    sb.Append($"{prop.Name} {{ ");
+                    sb.Append($"{prop.CSharpName} {{ ");
                 // Indexer
                 else
                     sb.Append("this[" + string.Join(", ", primary.DeclaredParameters.SkipLast(getAccess >= setAccess? 0 : 1)

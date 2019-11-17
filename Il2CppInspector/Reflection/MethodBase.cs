@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Il2CppInspector.Reflection
 {
@@ -53,7 +54,21 @@ namespace Il2CppInspector.Reflection
 
         public string CSharpName =>
             // Operator overload or user-defined conversion operator
-            OperatorMethodNames.ContainsKey(Name)? "operator " + OperatorMethodNames[Name] : Name;
+            OperatorMethodNames.ContainsKey(Name)? "operator " + OperatorMethodNames[Name]
+
+            // Explicit interface implementation
+            : (IsVirtual && IsFinal && (Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot)? 
+            ((Func<string>)(() => {
+                var implementingInterface = DeclaringType.ImplementedInterfaces.FirstOrDefault(i => Name.StartsWith(Regex.Replace(i.FullName, @"`\d", "").Replace('[', '<').Replace(']', '>') + "."));
+                // Regular interface implementation
+                if (implementingInterface == null)
+                    return Name;
+                var sliceLength = Regex.Replace(implementingInterface.FullName, @"`\d", "").Length + 1;
+                return implementingInterface.CSharpName + "." + Name.Substring(sliceLength);
+            }))()
+
+            // Regular method
+            : Name;
 
         protected MethodBase(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) : base(declaringType) {
             Definition = pkg.Methods[methodIndex];
@@ -120,7 +135,7 @@ namespace Il2CppInspector.Reflection
             { IsConstructor: true, IsStatic: true } => "",
 
             // Explicit interface implementations do not have an access level modifier
-            { Name: var name } when name.IndexOf('.') != -1 => "",
+            { IsVirtual: true, IsFinal: true, Attributes: var a } when (a & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot => "",
 
             { IsPrivate: true } => "private ",
             { IsPublic: true } => "public ",
