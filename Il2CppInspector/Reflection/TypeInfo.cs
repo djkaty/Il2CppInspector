@@ -143,6 +143,103 @@ namespace Il2CppInspector.Reflection {
                 + (IsArray? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
                 + (IsPointer? "*" : "");
 
+        // Returns the minimally qualified type name required to refer to this type within the specified scope
+        public string GetScopedFullName(Scope scope) {
+            // This is the scope in which this type is currently being used
+            // If Scope.Current is null, our scope is at the assembly level
+            var usingScope = scope.Current?.FullName ?? "";
+
+            // This is the scope in which this type's definition is located
+            var declaringScope = DeclaringType?.FullName ?? Namespace;
+
+            // If the scope of usage is inside the scope in which the type is declared, no additional scope is needed
+            if ((usingScope + ".").StartsWith(declaringScope + ".") || (usingScope + "+").StartsWith(declaringScope + "+"))
+                return base.Name;
+
+            // Global (unnamed) namespace?
+            string scopedName;
+            if (string.IsNullOrEmpty(declaringScope))
+                scopedName = base.Name;
+
+            // Find first difference in the declaring scope from the using scope, moving one namespace/type name at a time
+            else {
+                var diff = 0;
+
+                usingScope += ".";
+                while (usingScope.IndexOf(".", diff) == declaringScope.IndexOf(".", diff)
+                       && usingScope.IndexOf(".", diff) != -1
+                       && usingScope.Substring(0, usingScope.IndexOf(".", diff))
+                       == declaringScope.Substring(0, declaringScope.IndexOf(".", diff)))
+                    diff = usingScope.IndexOf(".", diff) + 1;
+
+                usingScope = usingScope.Substring(0, usingScope.Length -1) + "+";
+                while (usingScope.IndexOf("+", diff) == declaringScope.IndexOf("+", diff)
+                       && usingScope.IndexOf("+", diff) != -1
+                       && usingScope.Substring(0, usingScope.IndexOf("+", diff))
+                       == declaringScope.Substring(0, declaringScope.IndexOf("+", diff)))
+                    diff = usingScope.IndexOf("+", diff) + 1;
+
+                scopedName = declaringScope.Substring(diff) + (DeclaringType != null? "+" : ".") + base.Name;
+            }
+
+            // At this point, scopedName contains the minimum required scope, discounting any using directives
+            // or whether there are conflicts with any ancestor scope
+
+            // Check to see if there is a namespace in our using directives which brings this type into scope
+            var usingRef = scope.Namespaces.OrderByDescending(n => n.Length).FirstOrDefault(n => scopedName.StartsWith(n + "."));
+            var minimallyScopedName = usingRef == null ? scopedName : scopedName.Substring(usingRef.Length + 1);
+
+            // minimallyScopedName now contains the minimum required scope, taking using directives into account
+
+            // Are there any ancestors in the using scope with the same type name as the first part of the minimally scoped name?
+            // If so, the ancestor type name will hide the type we are trying to reference,
+            // so we need to provide the scope ignoring any using directives
+            var firstPart = minimallyScopedName.Split('.')[0].Split('+')[0];
+            for (var d = scope.Current; d != null; d = d.DeclaringType)
+                if (d.BaseName == firstPart)
+                    return scopedName.Replace('+', '.');
+
+            // If there are multiple using directives that would allow the same minimally scoped name to be used,
+            // then the minimally scoped name is ambiguous and we can't use it
+            // NOTE: We should check all the parts, not just the first part, but this works in the vast majority of cases
+            if (scope.Namespaces.Count(n => Assembly.Model.TypesByFullName.ContainsKey(n + "." + firstPart)) > 1)
+                return scopedName.Replace('+', '.');
+
+            return minimallyScopedName.Replace('+', '.');
+        }
+
+        // C#-friendly type name as it should be used in the scope of a given type
+        public string GetScopedCSharpName(Scope usingScope = null) {
+            // Unscoped name if no using scope specified
+            if (usingScope == null)
+                return CSharpName;
+
+            var s = Namespace + "." + base.Name;
+
+            // Built-in keyword type names do not require a scope
+            var i = Il2CppConstants.FullNameTypeString.IndexOf(s);
+            var n = i != -1 ? Il2CppConstants.CSharpTypeString[i] : GetScopedFullName(usingScope);
+
+            // Unmangle generic type names
+            if (n?.IndexOf("`", StringComparison.Ordinal) != -1)
+                n = n?.Remove(n.IndexOf("`", StringComparison.Ordinal));
+
+            // Generic type parameters and type arguments
+            var g = (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.GetScopedCSharpName(usingScope))) + ">" : "");
+            g = (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.GetScopedCSharpName(usingScope))) + ">" : g);
+            n += g;
+
+            // Nullable types
+            if (s == "System.Nullable`1" && GenericTypeArguments.Any())
+                n = GenericTypeArguments[0].GetScopedCSharpName(usingScope) + "?";
+
+            // Arrays, pointers, references
+            if (HasElementType)
+                n = ElementType.GetScopedCSharpName(usingScope);
+
+            return n + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "") + (IsPointer ? "*" : "");
+        }
+
         public GenericParameterAttributes GenericParameterAttributes { get; }
 
         public int GenericParameterPosition { get; }
@@ -607,7 +704,7 @@ namespace Il2CppInspector.Reflection {
             return modifiers.ToString();
         }
 
-        public string GetTypeConstraintsString() {
+        public string GetTypeConstraintsString(Scope scope) {
             if (!IsGenericParameter)
                 return string.Empty;
 
@@ -620,7 +717,7 @@ namespace Il2CppInspector.Reflection {
             if (DeclaringMethod == null && DeclaringType.IsNested && (DeclaringType.DeclaringType.GenericTypeParameters?.Any(p => p.Name == Name) ?? false))
                 return string.Empty;
 
-            var constraintList = typeConstraints.Where(c => c.FullName != "System.ValueType").Select(c => c.CSharpTypeDeclarationName).ToList();
+            var constraintList = typeConstraints.Where(c => c.FullName != "System.ValueType").Select(c => c.GetScopedCSharpName(scope)).ToList();
 
             if ((GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) == GenericParameterAttributes.NotNullableValueTypeConstraint)
                 constraintList.Add("struct");

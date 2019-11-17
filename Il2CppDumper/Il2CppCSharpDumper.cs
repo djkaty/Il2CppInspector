@@ -74,6 +74,21 @@ namespace Il2CppInspector
             var nsContext = "";
             var usedTypes = new List<TypeInfo>();
 
+            // Determine all namespace references (note: this may include some that aren't actually used due to output suppression in generateType()
+            // We have to do this first so that we can generate properly scoped type references in the code
+            foreach (var type in types) {
+                var refs = type.GetAllTypeReferences();
+                var ns = refs.Where(r => !string.IsNullOrEmpty(r.Namespace) && r.Namespace != type.Namespace).Select(r => r.Namespace);
+                nsRefs.UnionWith(ns);
+            }
+
+            // Determine assemblies used in this file
+            var assemblies = types.Select(t => t.Assembly).Distinct();
+
+            // Add assembly attribute namespaces to reference list
+            nsRefs.UnionWith(assemblies.SelectMany(a => a.CustomAttributes).Select(a => a.AttributeType.Namespace));
+
+            // Generate each type
             foreach (var type in types) {
 
                 // Skip namespace and any children if requested
@@ -85,7 +100,7 @@ namespace Il2CppInspector
                     continue;
 
                 // Get code
-                var text = generateType(type);
+                var text = generateType(type, nsRefs);
                 if (string.IsNullOrEmpty(text))
                     continue;
 
@@ -111,11 +126,6 @@ namespace Il2CppInspector
                 if (!useNamespaceSyntax)
                     code.Append($"// Namespace: {(!string.IsNullOrEmpty(type.Namespace) ? type.Namespace : "<global namespace>")}\n");
                 
-                // Determine namespace references (note: this may include some that aren't actually used due to output suppression in generateType()
-                var refs = type.GetAllTypeReferences();
-                var ns = refs.Where(r => !string.IsNullOrEmpty(r.Namespace) && r.Namespace != type.Namespace).Select(r => r.Namespace);
-                nsRefs.UnionWith(ns);
-
                 // Append type definition
                 code.Append(text + "\n");
 
@@ -131,13 +141,15 @@ namespace Il2CppInspector
             if (useNamespaceSyntax && !string.IsNullOrEmpty(nsContext))
                 code.Remove(code.Length - 1, 1).Append("}\n");
             
-            // Determine assemblies used in this file
-            var assemblies = types.Select(t => t.Assembly).Distinct();
-
-            // Add assembly attribute namespaces to reference list
+            // Determine using directives (put System namespaces first)
+            nsRefs.Clear();
+            foreach (var type in usedTypes) {
+                var refs = type.GetAllTypeReferences();
+                var ns = refs.Where(r => !string.IsNullOrEmpty(r.Namespace) && r.Namespace != type.Namespace).Select(r => r.Namespace);
+                nsRefs.UnionWith(ns);
+            }
             nsRefs.UnionWith(assemblies.SelectMany(a => a.CustomAttributes).Select(a => a.AttributeType.Namespace));
 
-            // Determine using directives (put System namespaces first)
             var usings = nsRefs.OrderBy(n => (n.StartsWith("System.") || n == "System") ? "0" + n : "1" + n);
 
             // Ensure output directory exists
@@ -160,13 +172,13 @@ namespace Il2CppInspector
                 writer.Write("\n");
 
             // Output assembly information and attributes
-            writer.Write(generateAssemblyInfo(assemblies, excludedAssemblyAttributes) + "\n\n");
+            writer.Write(generateAssemblyInfo(assemblies, nsRefs, excludedAssemblyAttributes) + "\n\n");
 
             // Output type definitions
             writer.Write(code);
         }
 
-        private string generateAssemblyInfo(IEnumerable<Reflection.Assembly> assemblies, IEnumerable<CustomAttributeData> excludedAttributes = null) {
+        private string generateAssemblyInfo(IEnumerable<Reflection.Assembly> assemblies, IEnumerable<string> namespaces, IEnumerable<CustomAttributeData> excludedAttributes = null) {
             var text = new StringBuilder();
 
             foreach (var asm in assemblies) {
@@ -176,14 +188,14 @@ namespace Il2CppInspector
                 text.Append(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute)
                     .Except(excludedAttributes ?? new List<CustomAttributeData>())
                     .OrderBy(a => a.AttributeType.Name)
-                    .ToString(attributePrefix: "assembly: ", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                    .ToString(new Scope { Current = null, Namespaces = namespaces }, attributePrefix: "assembly: ", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
                 if (asm.CustomAttributes.Any())
                     text.Append("\n");
             }
             return text.ToString().TrimEnd();
         }
 
-        private string generateType(TypeInfo type, string prefix = "") {
+        private string generateType(TypeInfo type, IEnumerable<string> namespaces, string prefix = "") {
             // Don't output compiler-generated types if desired
             if (SuppressGenerated && type.GetCustomAttributes(CGAttribute).Any())
                 return string.Empty;
@@ -191,6 +203,11 @@ namespace Il2CppInspector
             var codeBlocks = new Dictionary<string, string>();
             var usedMethods = new List<MethodInfo>();
             var sb = new StringBuilder();
+
+            var scope = new Scope {
+                Current = type,
+                Namespaces = namespaces
+            };
 
             // Fields
             sb.Clear();
@@ -203,7 +220,8 @@ namespace Il2CppInspector
                         sb.Append(prefix + "\t[NonSerialized]\n");
 
                     // Attributes
-                    sb.Append(field.CustomAttributes.Where(a => a.AttributeType.FullName != FBAttribute).OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                    sb.Append(field.CustomAttributes.Where(a => a.AttributeType.FullName != FBAttribute).OrderBy(a => a.AttributeType.Name)
+                        .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
                     sb.Append(prefix + "\t");
                     sb.Append(field.GetModifierString());
 
@@ -211,11 +229,11 @@ namespace Il2CppInspector
                     if (field.GetCustomAttributes(FBAttribute).Any()) {
                         if (!SuppressMetadata)
                             sb.Append($"/* {field.GetCustomAttributes(FBAttribute)[0].VirtualAddress.ToAddressString()} */ ");
-                        sb.Append($"{field.FieldType.DeclaredFields[0].FieldType.CSharpName} {field.Name}[0]"); // FixedElementField
+                        sb.Append($"{field.FieldType.DeclaredFields[0].FieldType.GetScopedCSharpName(scope)} {field.Name}[0]"); // FixedElementField
                     }
                     // Regular fields
                     else
-                        sb.Append($"{field.FieldType.CSharpName} {field.Name}");
+                        sb.Append($"{field.FieldType.GetScopedCSharpName(scope)} {field.Name}");
                     if (field.HasDefaultValue)
                         sb.Append($" = {field.DefaultValueString}");
                     sb.Append(";");
@@ -234,14 +252,15 @@ namespace Il2CppInspector
             sb.Clear();
             foreach (var prop in type.DeclaredProperties) {
                 // Attributes
-                sb.Append(prop.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                sb.Append(prop.CustomAttributes.OrderBy(a => a.AttributeType.Name)
+                    .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
 
                 // The access mask enum values go from 1 (private) to 6 (public) in order from most to least restrictive
                 var getAccess = (prop.GetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
                 var setAccess = (prop.SetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
 
                 var primary = getAccess >= setAccess ? prop.GetMethod : prop.SetMethod;
-                sb.Append($"{prefix}\t{primary.GetModifierString()}{prop.PropertyType.CSharpName} ");
+                sb.Append($"{prefix}\t{primary.GetModifierString(scope)}{prop.PropertyType.GetScopedCSharpName(scope)} ");
 
                 // Non-indexer
                 if ((!prop.CanRead || !prop.GetMethod.DeclaredParameters.Any()) && (!prop.CanWrite || prop.SetMethod.DeclaredParameters.Count == 1))
@@ -249,13 +268,13 @@ namespace Il2CppInspector
                 // Indexer
                 else
                     sb.Append("this[" + string.Join(", ", primary.DeclaredParameters.SkipLast(getAccess >= setAccess? 0 : 1)
-                                  .Select(p => p.GetParameterString(!SuppressMetadata, CommentAttributes))) + "] { ");
+                                  .Select(p => p.GetParameterString(scope, !SuppressMetadata, CommentAttributes))) + "] { ");
 
                 sb.Append((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute)
-                                             .ToString(inline: true, emitPointer: !SuppressMetadata, mustCompile: CommentAttributes) 
+                                             .ToString(scope, inline: true, emitPointer: !SuppressMetadata, mustCompile: CommentAttributes) 
                                                + (getAccess < setAccess? prop.GetMethod.GetAccessModifierString() : "") + "get; " : "")
                              + (prop.CanWrite? prop.SetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute)
-                                                   .ToString(inline: true, emitPointer: !SuppressMetadata, mustCompile: CommentAttributes) 
+                                                   .ToString(scope, inline: true, emitPointer: !SuppressMetadata, mustCompile: CommentAttributes) 
                                                + (setAccess < getAccess? prop.SetMethod.GetAccessModifierString() : "") + "set; " : "") + "}");
                 if (!SuppressMetadata) {
                     if ((prop.CanRead && prop.GetMethod.VirtualAddress != null) || (prop.CanWrite && prop.SetMethod.VirtualAddress != null))
@@ -274,10 +293,11 @@ namespace Il2CppInspector
             sb.Clear();
             foreach (var evt in type.DeclaredEvents) {
                 // Attributes
-                sb.Append(evt.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                sb.Append(evt.CustomAttributes.OrderBy(a => a.AttributeType.Name)
+                    .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
 
-                string modifiers = evt.AddMethod?.GetModifierString();
-                sb.Append($"{prefix}\t{modifiers}event {evt.EventHandlerType.CSharpName} {evt.Name} {{\n");
+                string modifiers = evt.AddMethod?.GetModifierString(scope);
+                sb.Append($"{prefix}\t{modifiers}event {evt.EventHandlerType.GetScopedCSharpName(scope)} {evt.Name} {{\n");
                 var m = new Dictionary<string, (ulong, ulong)?>();
                 if (evt.AddMethod != null) m.Add("add", evt.AddMethod.VirtualAddress);
                 if (evt.RemoveMethod != null) m.Add("remove", evt.RemoveMethod.VirtualAddress);
@@ -290,16 +310,18 @@ namespace Il2CppInspector
             codeBlocks.Add("Events", sb.ToString());
 
             // Nested types
-            codeBlocks.Add("Nested types", string.Join("\n", type.DeclaredNestedTypes.Select(n => generateType(n, prefix + "\t")).Where(c => !string.IsNullOrEmpty(c))));
+            codeBlocks.Add("Nested types", string.Join("\n", type.DeclaredNestedTypes
+                .Select(n => generateType(n, namespaces, prefix + "\t")).Where(c => !string.IsNullOrEmpty(c))));
 
             // Constructors
             sb.Clear();
             foreach (var method in type.DeclaredConstructors) {
                 // Attributes
-                sb.Append(method.CustomAttributes.OrderBy(a => a.AttributeType.Name).ToString(prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                sb.Append(method.CustomAttributes.OrderBy(a => a.AttributeType.Name)
+                    .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
 
-                sb.Append($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString()}(");
-                sb.Append(method.GetParametersString(!SuppressMetadata) + ")" + (method.IsAbstract? ";" : @" {}"));
+                sb.Append($"{prefix}\t{method.GetModifierString(scope)}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString(scope)}(");
+                sb.Append(method.GetParametersString(scope, !SuppressMetadata) + ")" + (method.IsAbstract? ";" : @" {}"));
                 sb.Append((!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
             }
             codeBlocks.Add("Constructors", sb.ToString());
@@ -307,11 +329,11 @@ namespace Il2CppInspector
             // Methods
             // Don't re-output methods for constructors, properties, events etc.
             var methods = type.DeclaredMethods.Except(usedMethods).Where(m => m.CustomAttributes.All(a => a.AttributeType.FullName != ExtAttribute));
-            codeBlocks.Add("Methods", string.Concat(methods.Select(m => generateMethod(m, prefix))));
+            codeBlocks.Add("Methods", string.Concat(methods.Select(m => generateMethod(m, scope, prefix))));
             usedMethods.AddRange(methods);
 
             // Extension methods 
-            codeBlocks.Add("Extension methods", string.Concat(type.DeclaredMethods.Except(usedMethods).Select(m => generateMethod(m, prefix))));
+            codeBlocks.Add("Extension methods", string.Concat(type.DeclaredMethods.Except(usedMethods).Select(m => generateMethod(m, scope, prefix))));
 
             // Type declaration
             sb.Clear();
@@ -324,7 +346,7 @@ namespace Il2CppInspector
             // TODO: DefaultMemberAttribute should be output if it is present and the type does not have an indexer, otherwise suppressed
             // See https://docs.microsoft.com/en-us/dotnet/api/system.reflection.defaultmemberattribute?view=netframework-4.8
             sb.Append(type.CustomAttributes.Where(a => a.AttributeType.FullName != DMAttribute && a.AttributeType.FullName != ExtAttribute)
-                                            .OrderBy(a => a.AttributeType.Name).ToString(prefix, emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                                            .OrderBy(a => a.AttributeType.Name).ToString(scope, prefix, emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
 
             // Roll-up multicast delegates to use the 'delegate' syntactic sugar
             if (type.IsClass && type.IsSealed && type.BaseType?.FullName == "System.MulticastDelegate") {
@@ -335,8 +357,8 @@ namespace Il2CppInspector
                 //sb.Append(del.ReturnType.CustomAttributes.ToString(prefix, "return: ", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
                 if (del.RequiresUnsafeContext)
                     sb.Append("unsafe ");
-                sb.Append($"delegate {del.ReturnType.CSharpName} {type.CSharpTypeDeclarationName}(");
-                sb.Append(del.GetParametersString(!SuppressMetadata) + ");");
+                sb.Append($"delegate {del.ReturnType.GetScopedCSharpName(scope)} {type.CSharpTypeDeclarationName}(");
+                sb.Append(del.GetParametersString(scope, !SuppressMetadata) + ");");
                 if (!SuppressMetadata)
                     sb.Append($" // TypeDefIndex: {type.Index}; {del.VirtualAddress.ToAddressString()}");
                 sb.Append("\n");
@@ -345,11 +367,11 @@ namespace Il2CppInspector
 
             sb.Append(prefix + type.GetModifierString());
 
-            var @base = type.ImplementedInterfaces.Select(x => x.CSharpName).ToList();
+            var @base = type.ImplementedInterfaces.Select(x => x.GetScopedCSharpName(scope)).ToList();
             if (type.BaseType != null && type.BaseType.FullName != "System.Object" && type.BaseType.FullName != "System.ValueType" && !type.IsEnum)
-                @base.Insert(0, type.BaseType.CSharpName);
+                @base.Insert(0, type.BaseType.GetScopedCSharpName(scope));
             if (type.IsEnum && type.GetEnumUnderlyingType().FullName != "System.Int32") // enums derive from int by default
-                @base.Insert(0, type.GetEnumUnderlyingType().CSharpName);
+                @base.Insert(0, type.GetEnumUnderlyingType().GetScopedCSharpName(scope));
             var baseText = @base.Count > 0 ? " : " + string.Join(", ", @base) : string.Empty;
 
             sb.Append($"{type.CSharpTypeDeclarationName}{baseText}");
@@ -359,7 +381,7 @@ namespace Il2CppInspector
 
             if (type.GenericTypeParameters != null)
                 foreach (var gp in type.GenericTypeParameters) {
-                    var constraint = gp.GetTypeConstraintsString();
+                    var constraint = gp.GetTypeConstraintsString(scope);
                     if (constraint != string.Empty)
                         sb.Append($"{prefix}\t{constraint}\n");
                 }
@@ -380,7 +402,7 @@ namespace Il2CppInspector
             return sb.ToString();
         }
 
-        private string generateMethod(MethodInfo method, string prefix) {
+        private string generateMethod(MethodInfo method, Scope scope, string prefix) {
             if (SuppressGenerated && method.GetCustomAttributes(CGAttribute).Any())
                 return string.Empty;
 
@@ -388,20 +410,20 @@ namespace Il2CppInspector
 
             // Attributes
             writer.Append(method.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name)
-                .ToString(prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
 
             // IL2CPP doesn't seem to retain return type attributes
             //writer.Append(method.ReturnType.CustomAttributes.ToString(prefix + "\t", "return: ", emitPointer: !SuppressMetadata));
-            writer.Append($"{prefix}\t{method.GetModifierString()}");
+            writer.Append($"{prefix}\t{method.GetModifierString(scope)}");
             if (method.Name != "op_Implicit" && method.Name != "op_Explicit")
-                writer.Append($"{method.ReturnParameter.GetReturnParameterString()} {method.CSharpName}{method.GetTypeParametersString()}");
+                writer.Append($"{method.ReturnParameter.GetReturnParameterString(scope)} {method.CSharpName}{method.GetTypeParametersString(scope)}");
             else
-                writer.Append($"{method.CSharpName}{method.ReturnType.CSharpName}");
-            writer.Append("(" + method.GetParametersString(!SuppressMetadata) + ")");
+                writer.Append($"{method.CSharpName}{method.ReturnType.GetScopedCSharpName(scope)}");
+            writer.Append("(" + method.GetParametersString(scope, !SuppressMetadata) + ")");
 
             if (method.GenericTypeParameters != null)
                 foreach (var gp in method.GenericTypeParameters) {
-                    var constraint = gp.GetTypeConstraintsString();
+                    var constraint = gp.GetTypeConstraintsString(scope);
                     if (constraint != string.Empty)
                         writer.Append($"\n{prefix}\t\t{constraint}");
                 }

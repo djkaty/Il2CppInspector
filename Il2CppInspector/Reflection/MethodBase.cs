@@ -128,7 +128,7 @@ namespace Il2CppInspector.Reflection
             _ => ""
         };
 
-        public string GetModifierString() {
+        public string GetModifierString(Scope usingScope) {
             // Interface methods and properties have no visible modifiers (they are always declared 'public abstract')
             if (DeclaringType.IsInterface)
                 return string.Empty;
@@ -151,7 +151,7 @@ namespace Il2CppInspector.Reflection
                 modifiers.Append("extern ");
 
             // Method hiding
-            if ((DeclaringType.BaseType?.GetAllMethods().Any(m => m.GetSignatureString() == GetSignatureString() && m.IsHideBySig) ?? false)
+            if ((DeclaringType.BaseType?.GetAllMethods().Any(m => m.GetSignatureString(usingScope) == GetSignatureString(usingScope) && m.IsHideBySig) ?? false)
                 && (((Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.ReuseSlot && !IsVirtual)
                     || (Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot))
                 modifiers.Append($"new ");
@@ -166,13 +166,13 @@ namespace Il2CppInspector.Reflection
         }
 
         // Get C# syntax-friendly list of parameters
-        public string GetParametersString(bool emitPointer = false, bool commentAttributes = false)
-            => string.Join(", ", DeclaredParameters.Select(p => p.GetParameterString(emitPointer, commentAttributes)));
+        public string GetParametersString(Scope usingScope, bool emitPointer = false, bool commentAttributes = false)
+            => string.Join(", ", DeclaredParameters.Select(p => p.GetParameterString(usingScope, emitPointer, commentAttributes)));
 
-        public string GetTypeParametersString() => GenericTypeParameters == null? "" :
-            "<" + string.Join(", ", GenericTypeParameters.Select(p => p.CSharpName)) + ">";
+        public string GetTypeParametersString(Scope usingScope) => GenericTypeParameters == null? "" :
+            "<" + string.Join(", ", GenericTypeParameters.Select(p => p.GetScopedCSharpName(usingScope))) + ">";
 
-        public abstract string GetSignatureString();
+        public abstract string GetSignatureString(Scope usingScope);
 
         // List of operator overload metadata names
         // https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/operator-overloads

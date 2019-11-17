@@ -33,7 +33,7 @@ namespace Il2CppInspector.Reflection
         // TODO: Generic arguments (and on ConstructorInfo)
         public override string ToString() => ReturnType.Name + " " + Name + "(" + string.Join(", ", DeclaredParameters.Select(x => x.ParameterType.Name)) + ")";
 
-        public override string GetSignatureString() => ReturnParameter.GetSignatureString() + " " + Name + GetTypeParametersString()
+        public override string GetSignatureString(Scope usingScope) => ReturnParameter.GetSignatureString() + " " + Name + GetTypeParametersString(usingScope)
                                               + "(" + string.Join(",", DeclaredParameters.Select(x => x.GetSignatureString())) + ")";
     }
 }

@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+
+    All rights reserved.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +14,8 @@ namespace Il2CppInspector.Reflection
     public static class Extensions
     {
         // Convert a list of CustomAttributeData objects into C#-friendly attribute usages
-        public static string ToString(this IEnumerable<CustomAttributeData> attributes, string linePrefix = "", string attributePrefix = "",
-            bool inline = false, bool emitPointer = false, bool mustCompile = false) {
+        public static string ToString(this IEnumerable<CustomAttributeData> attributes, Scope scope = null,
+            string linePrefix = "", string attributePrefix = "", bool inline = false, bool emitPointer = false, bool mustCompile = false) {
             var sb = new StringBuilder();
 
             foreach (var cad in attributes) {
@@ -20,7 +26,7 @@ namespace Il2CppInspector.Reflection
                 var commentStart = mustCompile && !parameterlessConstructor? inline? "/* " : "// " : "";
                 var commentEnd = commentStart.Length > 0 && inline? " */" : "";
 
-                var name = cad.AttributeType.CSharpName;
+                var name = cad.AttributeType.GetScopedCSharpName(scope);
                 var suffix = name.LastIndexOf("Attribute", StringComparison.Ordinal);
                 if (suffix != -1)
                     name = name[..suffix];

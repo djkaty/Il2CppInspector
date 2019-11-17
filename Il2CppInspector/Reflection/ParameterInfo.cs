@@ -37,15 +37,15 @@ namespace Il2CppInspector.Reflection
         public bool IsOut => (Attributes & ParameterAttributes.Out) != 0;
         public bool IsRetval => (Attributes & ParameterAttributes.Retval) != 0;
 
-        // The member in which the parameter is defined
-        public MemberInfo Member { get; }
+        // The method in which the parameter is defined
+        public MethodBase DeclaringMethod { get; }
 
         // Name of parameter
         public string Name { get; }
 
         // Type of this parameter
         private readonly int paramTypeUsage;
-        public TypeInfo ParameterType => Member.Assembly.Model.GetTypeFromUsage(paramTypeUsage, MemberTypes.TypeInfo);
+        public TypeInfo ParameterType => DeclaringMethod.Assembly.Model.GetTypeFromUsage(paramTypeUsage, MemberTypes.TypeInfo);
 
         // Zero-indexed position of the parameter in parameter list
         public int Position { get; }
@@ -53,7 +53,7 @@ namespace Il2CppInspector.Reflection
         // Create a parameter. Specify paramIndex == -1 for a return type parameter
         public ParameterInfo(Il2CppInspector pkg, int paramIndex, MethodBase declaringMethod) {
             Index = paramIndex;
-            Member = declaringMethod;
+            DeclaringMethod = declaringMethod;
 
             if (paramIndex == -1) {
                 Position = -1;
@@ -96,15 +96,15 @@ namespace Il2CppInspector.Reflection
             + (IsByRef? "ref " : "")
             + (IsOut? "out " : "");
 
-        private string getCSharpSignatureString() => $"{GetModifierString()}{ParameterType.CSharpName}";
+        private string getCSharpSignatureString(Scope scope) => $"{GetModifierString()}{ParameterType.GetScopedCSharpName(scope)}";
         public string GetSignatureString() => $"{GetModifierString()}{ParameterType.FullName}";
 
-        public string GetParameterString(bool emitPointer = false, bool compileAttributes = false) => IsRetval? null :
-            (Position == 0 && Member.GetCustomAttributes("System.Runtime.CompilerServices.ExtensionAttribute").Any()? "this ":"")
-            + $"{CustomAttributes.ToString(inline: true, emitPointer: emitPointer, mustCompile: compileAttributes).Replace("[ParamArray]", "params")}"
-            + $"{getCSharpSignatureString()} {Name}"
+        public string GetParameterString(Scope usingScope, bool emitPointer = false, bool compileAttributes = false) => IsRetval? null :
+            (Position == 0 && DeclaringMethod.GetCustomAttributes("System.Runtime.CompilerServices.ExtensionAttribute").Any()? "this ":"")
+            + $"{CustomAttributes.ToString(usingScope, inline: true, emitPointer: emitPointer, mustCompile: compileAttributes).Replace("[ParamArray]", "params")}"
+            + $"{getCSharpSignatureString(usingScope)} {Name}"
             + (HasDefaultValue ? " = " + DefaultValue.ToCSharpValue() + (emitPointer && !(DefaultValue is null)? $" /* Metadata: 0x{(uint) DefaultValueMetadataAddress:X8} */" : "") : "");
 
-        public string GetReturnParameterString() => !IsRetval? null : getCSharpSignatureString();
+        public string GetReturnParameterString(Scope scope) => !IsRetval? null : getCSharpSignatureString(scope);
     }
 }
