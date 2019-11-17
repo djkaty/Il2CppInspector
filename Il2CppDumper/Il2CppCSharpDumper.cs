@@ -21,14 +21,11 @@ namespace Il2CppInspector
         // Namespace prefixes whose contents should be skipped
         public List<string> ExcludedNamespaces { get; set; }
 
-        // Suppress types, fields and methods with the CompilerGenerated attribute; suppress the attribute itself from property getters and setters
-        public bool SuppressGenerated { get; set; }
+        // Make adjustments to ensure that the generated code compiles
+        public bool MustCompile { get; set; }
 
         // Suppress binary metadata in code comments
         public bool SuppressMetadata { get; set; }
-
-        // Comment out custom attributes with non-optional constructor arguments
-        public bool CommentAttributes { get; set; }
 
         private const string CGAttribute = "System.Runtime.CompilerServices.CompilerGeneratedAttribute";
         private const string FBAttribute = "System.Runtime.CompilerServices.FixedBufferAttribute";
@@ -188,7 +185,7 @@ namespace Il2CppInspector
                 text.Append(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute)
                     .Except(excludedAttributes ?? new List<CustomAttributeData>())
                     .OrderBy(a => a.AttributeType.Name)
-                    .ToString(new Scope { Current = null, Namespaces = namespaces }, attributePrefix: "assembly: ", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                    .ToString(new Scope { Current = null, Namespaces = namespaces }, attributePrefix: "assembly: ", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
                 if (asm.CustomAttributes.Any())
                     text.Append("\n");
             }
@@ -197,7 +194,7 @@ namespace Il2CppInspector
 
         private string generateType(TypeInfo type, IEnumerable<string> namespaces, string prefix = "") {
             // Don't output compiler-generated types if desired
-            if (SuppressGenerated && type.GetCustomAttributes(CGAttribute).Any())
+            if (MustCompile && type.GetCustomAttributes(CGAttribute).Any())
                 return string.Empty;
 
             var codeBlocks = new Dictionary<string, string>();
@@ -213,7 +210,7 @@ namespace Il2CppInspector
             sb.Clear();
             if (!type.IsEnum) {
                 foreach (var field in type.DeclaredFields) {
-                    if (SuppressGenerated && field.GetCustomAttributes(CGAttribute).Any())
+                    if (MustCompile && field.GetCustomAttributes(CGAttribute).Any())
                         continue;
 
                     if (field.IsNotSerialized)
@@ -221,7 +218,7 @@ namespace Il2CppInspector
 
                     // Attributes
                     sb.Append(field.CustomAttributes.Where(a => a.AttributeType.FullName != FBAttribute).OrderBy(a => a.AttributeType.Name)
-                        .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                        .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
                     sb.Append(prefix + "\t");
                     sb.Append(field.GetModifierString());
 
@@ -253,7 +250,7 @@ namespace Il2CppInspector
             foreach (var prop in type.DeclaredProperties) {
                 // Attributes
                 sb.Append(prop.CustomAttributes.OrderBy(a => a.AttributeType.Name)
-                    .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                    .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
 
                 // The access mask enum values go from 1 (private) to 6 (public) in order from most to least restrictive
                 var getAccess = (prop.GetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
@@ -268,13 +265,13 @@ namespace Il2CppInspector
                 // Indexer
                 else
                     sb.Append("this[" + string.Join(", ", primary.DeclaredParameters.SkipLast(getAccess >= setAccess? 0 : 1)
-                                  .Select(p => p.GetParameterString(scope, !SuppressMetadata, CommentAttributes))) + "] { ");
+                                  .Select(p => p.GetParameterString(scope, !SuppressMetadata, MustCompile))) + "] { ");
 
-                sb.Append((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute)
-                                             .ToString(scope, inline: true, emitPointer: !SuppressMetadata, mustCompile: CommentAttributes) 
+                sb.Append((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !MustCompile || a.AttributeType.FullName != CGAttribute)
+                                             .ToString(scope, inline: true, emitPointer: !SuppressMetadata, mustCompile: MustCompile) 
                                                + (getAccess < setAccess? prop.GetMethod.GetAccessModifierString() : "") + "get; " : "")
-                             + (prop.CanWrite? prop.SetMethod.CustomAttributes.Where(a => !SuppressGenerated || a.AttributeType.FullName != CGAttribute)
-                                                   .ToString(scope, inline: true, emitPointer: !SuppressMetadata, mustCompile: CommentAttributes) 
+                             + (prop.CanWrite? prop.SetMethod.CustomAttributes.Where(a => !MustCompile || a.AttributeType.FullName != CGAttribute)
+                                                   .ToString(scope, inline: true, emitPointer: !SuppressMetadata, mustCompile: MustCompile) 
                                                + (setAccess < getAccess? prop.SetMethod.GetAccessModifierString() : "") + "set; " : "") + "}");
                 if (!SuppressMetadata) {
                     if ((prop.CanRead && prop.GetMethod.VirtualAddress != null) || (prop.CanWrite && prop.SetMethod.VirtualAddress != null))
@@ -294,7 +291,7 @@ namespace Il2CppInspector
             foreach (var evt in type.DeclaredEvents) {
                 // Attributes
                 sb.Append(evt.CustomAttributes.OrderBy(a => a.AttributeType.Name)
-                    .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                    .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
 
                 string modifiers = evt.AddMethod?.GetModifierString(scope);
                 sb.Append($"{prefix}\t{modifiers}event {evt.EventHandlerType.GetScopedCSharpName(scope)} {evt.Name} {{\n");
@@ -318,7 +315,7 @@ namespace Il2CppInspector
             foreach (var method in type.DeclaredConstructors) {
                 // Attributes
                 sb.Append(method.CustomAttributes.OrderBy(a => a.AttributeType.Name)
-                    .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                    .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
 
                 sb.Append($"{prefix}\t{method.GetModifierString(scope)}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString(scope)}(");
                 sb.Append(method.GetParametersString(scope, !SuppressMetadata) + ")" + (method.IsAbstract? ";" : @" {}"));
@@ -346,7 +343,7 @@ namespace Il2CppInspector
             // TODO: DefaultMemberAttribute should be output if it is present and the type does not have an indexer, otherwise suppressed
             // See https://docs.microsoft.com/en-us/dotnet/api/system.reflection.defaultmemberattribute?view=netframework-4.8
             sb.Append(type.CustomAttributes.Where(a => a.AttributeType.FullName != DMAttribute && a.AttributeType.FullName != ExtAttribute)
-                                            .OrderBy(a => a.AttributeType.Name).ToString(scope, prefix, emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                                            .OrderBy(a => a.AttributeType.Name).ToString(scope, prefix, emitPointer: !SuppressMetadata, mustCompile: MustCompile));
 
             // Roll-up multicast delegates to use the 'delegate' syntactic sugar
             if (type.IsClass && type.IsSealed && type.BaseType?.FullName == "System.MulticastDelegate") {
@@ -354,7 +351,7 @@ namespace Il2CppInspector
 
                 var del = type.GetMethod("Invoke");
                 // IL2CPP doesn't seem to retain return type attributes
-                //sb.Append(del.ReturnType.CustomAttributes.ToString(prefix, "return: ", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                //sb.Append(del.ReturnType.CustomAttributes.ToString(prefix, "return: ", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
                 if (del.RequiresUnsafeContext)
                     sb.Append("unsafe ");
                 sb.Append($"delegate {del.ReturnType.GetScopedCSharpName(scope)} {type.CSharpTypeDeclarationName}(");
@@ -403,14 +400,14 @@ namespace Il2CppInspector
         }
 
         private string generateMethod(MethodInfo method, Scope scope, string prefix) {
-            if (SuppressGenerated && method.GetCustomAttributes(CGAttribute).Any())
+            if (MustCompile && method.GetCustomAttributes(CGAttribute).Any())
                 return string.Empty;
 
             var writer = new StringBuilder();
 
             // Attributes
             writer.Append(method.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name)
-                .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: CommentAttributes));
+                .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
 
             // IL2CPP doesn't seem to retain return type attributes
             //writer.Append(method.ReturnType.CustomAttributes.ToString(prefix + "\t", "return: ", emitPointer: !SuppressMetadata));

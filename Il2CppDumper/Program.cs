@@ -49,11 +49,8 @@ namespace Il2CppInspector
             [Option('n', "suppress-metadata", Required = false, HelpText = "Diff tidying: suppress method pointers, field offsets and type indices from C# output. Useful for comparing two versions of a binary for changes with a diff tool", Default = false)]
             public bool SuppressMetadata { get; set; }
 
-            [Option('g', "suppress-cg", Required = false, HelpText = "Compilation tidying: Suppress generation of C# code for items with CompilerGenerated attribute", Default = false)]
-            public bool SuppressCompilerGenerated { get; set; }
-
-            [Option('a', "comment-attributes", Required = false, HelpText = "Compilation tidying: comment out attributes without parameterless constructors or all-optional constructor arguments")]
-            public bool CommentParameterizedAttributeConstructors { get; set; }
+            [Option('k', "must-compile", Required = false, HelpText = "Compilation tidying: try really hard to make code that compiles. Suppress generation of code for items with CompilerGenerated attribute. Comment out attributes without parameterless constructors or all-optional constructor arguments")]
+            public bool MustCompile { get; set; }
         }
 
         public static int Main(string[] args) =>
@@ -90,9 +87,8 @@ namespace Il2CppInspector
                 // C# signatures output
                 var writer = new Il2CppCSharpDumper(model) {
                     ExcludedNamespaces = options.ExcludedNamespaces.ToList(),
-                    SuppressGenerated = options.SuppressCompilerGenerated,
                     SuppressMetadata = options.SuppressMetadata,
-                    CommentAttributes = options.CommentParameterizedAttributeConstructors
+                    MustCompile = options.MustCompile
                 };
 
                 var imageSuffix = i++ > 0 ? "-" + (i - 1) : "";

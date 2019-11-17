@@ -56,9 +56,8 @@ namespace Il2CppInspector
             foreach (var il2cpp in inspectors)
                 new Il2CppCSharpDumper(new Il2CppModel(il2cpp)) {
                         ExcludedNamespaces = excludedNamespaces,
-                        SuppressGenerated = true,
                         SuppressMetadata = false,
-                        CommentAttributes = true
+                        MustCompile = true
                 }.WriteSingleFile(testPath + @"\test-result" + (i++ > 0 ? "-" + (i - 1) : "") + ".cs");
 
             // Compare test result with expected result
