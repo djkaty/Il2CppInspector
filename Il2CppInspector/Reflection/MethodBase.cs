@@ -119,6 +119,9 @@ namespace Il2CppInspector.Reflection
             // Static constructors can not have an access level modifier
             { IsConstructor: true, IsStatic: true } => "",
 
+            // Explicit interface implementations do not have an access level modifier
+            { Name: var name } when name.IndexOf('.') != -1 => "",
+
             { IsPrivate: true } => "private ",
             { IsPublic: true } => "public ",
             { IsFamily: true } => "protected ",
