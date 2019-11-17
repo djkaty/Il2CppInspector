@@ -294,12 +294,18 @@ namespace Il2CppInspector
                     .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
 
                 string modifiers = evt.AddMethod?.GetModifierString(scope);
-                sb.Append($"{prefix}\t{modifiers}event {evt.EventHandlerType.GetScopedCSharpName(scope)} {evt.Name} {{\n");
-                var m = new Dictionary<string, (ulong, ulong)?>();
-                if (evt.AddMethod != null) m.Add("add", evt.AddMethod.VirtualAddress);
-                if (evt.RemoveMethod != null) m.Add("remove", evt.RemoveMethod.VirtualAddress);
-                if (evt.RaiseMethod != null) m.Add("raise", evt.RaiseMethod.VirtualAddress);
-                sb.Append(string.Join("\n", m.Select(x => $"{prefix}\t\t{x.Key};{(SuppressMetadata? "" : " // " + x.Value.ToAddressString())}")) + "\n" + prefix + "\t}\n");
+                sb.Append($"{prefix}\t{modifiers}event {evt.EventHandlerType.GetScopedCSharpName(scope)} {evt.Name}");
+                
+                if (!MustCompile) {
+                    sb.Append(" {{\n");
+                    var m = new Dictionary<string, (ulong, ulong)?>();
+                    if (evt.AddMethod != null) m.Add("add", evt.AddMethod.VirtualAddress);
+                    if (evt.RemoveMethod != null) m.Add("remove", evt.RemoveMethod.VirtualAddress);
+                    if (evt.RaiseMethod != null) m.Add("raise", evt.RaiseMethod.VirtualAddress);
+                    sb.Append(string.Join("\n", m.Select(x => $"{prefix}\t\t{x.Key};{(SuppressMetadata? "" : " // " + x.Value.ToAddressString())}")) + "\n" + prefix + "\t}\n");
+                } else
+                    sb.Append(";\n");
+
                 usedMethods.Add(evt.AddMethod);
                 usedMethods.Add(evt.RemoveMethod);
                 usedMethods.Add(evt.RaiseMethod);
