@@ -27,8 +27,8 @@ namespace Il2CppInspector.Reflection {
         public TypeInfo BaseType => IsPointer? null :
             baseTypeUsage != -1?
                 Assembly.Model.GetTypeFromUsage(baseTypeUsage, MemberTypes.TypeInfo)
-                : IsArray? Assembly.Model.TypesByDefinitionIndex.First(t => t.FullName == "System.Array")
-                : Namespace != "System" || BaseName != "Object" ? Assembly.Model.TypesByDefinitionIndex.First(t => t.FullName == "System.Object")
+                : IsArray? Assembly.Model.TypesByFullName["System.Array"]
+                : Namespace != "System" || BaseName != "Object" ? Assembly.Model.TypesByFullName["System.Object"]
                 : null;
 
         // True if the type contains unresolved generic type parameters
@@ -252,6 +252,7 @@ namespace Il2CppInspector.Reflection {
 
             // Add to global type definition list
             Assembly.Model.TypesByDefinitionIndex[Index] = this;
+            Assembly.Model.TypesByFullName[FullName] = this;
 
             if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_SERIALIZABLE) != 0)
                 Attributes |= TypeAttributes.Serializable;

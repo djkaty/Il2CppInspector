@@ -19,6 +19,9 @@ namespace Il2CppInspector.Reflection
         // List of all types ordered by their TypeDefinitionIndex
         public TypeInfo[] TypesByDefinitionIndex { get; }
         
+        // List of all type definitions by fully qualified name
+        public Dictionary<string, TypeInfo> TypesByFullName { get; } = new Dictionary<string, TypeInfo>();
+
         // List of all type usages ordered by their type usage index
         public TypeInfo[] TypesByUsageIndex { get; }
 
@@ -47,9 +50,6 @@ namespace Il2CppInspector.Reflection
 
         // Get an assembly by its name
         public Assembly GetAssembly(string name) => Assemblies.FirstOrDefault(a => a.FullName == name);
-
-        // Get a type by its full name
-        public TypeInfo GetType(string name) => Types.FirstOrDefault(t => t.FullName == name);
 
         private TypeInfo getNewTypeUsage(Il2CppType usage, MemberTypes memberType) {
             switch (usage.type) {
@@ -94,7 +94,7 @@ namespace Il2CppInspector.Reflection
                 return null;
 
             var fqn = Il2CppConstants.FullNameTypeString[(int) t];
-            return TypesByDefinitionIndex.First(x => x.FullName == fqn);
+            return TypesByFullName[fqn];
         }
 
         // Type from a virtual address pointer
