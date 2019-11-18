@@ -61,6 +61,9 @@ namespace Il2CppInspector.Reflection
             ((Func<string>)(() => {
                 var implementingInterface = DeclaringType.ImplementedInterfaces.FirstOrDefault(i => Name.StartsWith(i.Namespace + "." + i.CSharpName + "."))
                     ?? DeclaringType.ImplementedInterfaces.FirstOrDefault(i => Name.StartsWith(Regex.Replace(i.FullName, @"`\d", "").Replace('[', '<').Replace(']', '>') + "."));
+                // TODO: There are some combinations we haven't dealt with so use this test as a safety valve
+                if (implementingInterface == null)
+                    return Name;
                 var sliceLength = Regex.Replace(implementingInterface.FullName, @"`\d", "").Length + 1;
                 return implementingInterface.CSharpName + "." + Name.Substring(sliceLength);
             }))()
