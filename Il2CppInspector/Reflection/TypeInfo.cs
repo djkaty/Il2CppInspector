@@ -119,6 +119,7 @@ namespace Il2CppInspector.Reflection {
         public MethodInfo[] GetAllMethods() {
             var methods = new List<IEnumerable<MethodInfo>>();
 
+            // Specifically return a list in order of most derived to least derived
             for (var type = this; type != null; type = type.BaseType)
                 methods.Add(type.DeclaredMethods);
 
@@ -725,10 +726,24 @@ namespace Il2CppInspector.Reflection {
             if (GenericParameterAttributes == GenericParameterAttributes.None && typeConstraints.Length == 0)
                 return string.Empty;
 
-            // Check if we are a nested type, and if so, exclude ourselves if we are a generic type parameter from the outer type
+            // Check if we are in a nested type, and if so, exclude ourselves if we are a generic type parameter from the outer type
             // All constraints are inherited automatically by all nested types so we only have to look at the immediate outer type
             if (DeclaringMethod == null && DeclaringType.IsNested && (DeclaringType.DeclaringType.GenericTypeParameters?.Any(p => p.Name == Name) ?? false))
                 return string.Empty;
+
+            // Check if we are in an overriding method, and if so, exclude ourselves if we are a generic type parameter from the base method
+            // All constraints are inherited automatically by all overriding methods so we only have to look at the immediate base method
+            if (DeclaringMethod != null && DeclaringMethod.IsVirtual && !DeclaringMethod.IsAbstract && !DeclaringMethod.IsFinal
+                && (DeclaringMethod.Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.ReuseSlot) {
+                // Find nearest ancestor base method which has us as a generic type parameter
+                var sig = DeclaringMethod.GetSignatureString();
+                var method = DeclaringMethod.DeclaringType.BaseType.GetAllMethods()
+                    .FirstOrDefault(m => m.IsHideBySig && m.IsVirtual && m.GetSignatureString() == sig && (m.GenericTypeParameters?.Any(p => p.Name == Name) ?? false));
+
+                // Stop if we are inherited from a base method
+                if (method != null)
+                    return string.Empty;
+            }
 
             var constraintList = typeConstraints.Where(c => c.FullName != "System.ValueType").Select(c => c.GetScopedCSharpName(scope)).ToList();
 
