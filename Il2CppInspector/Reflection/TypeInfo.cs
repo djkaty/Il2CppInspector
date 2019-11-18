@@ -54,6 +54,10 @@ namespace Il2CppInspector.Reflection {
                     n = GenericTypeArguments[0].CSharpName + "?";
                 if (HasElementType)
                     n = ElementType.CSharpName;
+                if ((GenericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant)
+                    n = "out " + n;
+                if ((GenericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant)
+                    n = "in " + n;
                 return n + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "") + (IsPointer ? "*" : "");
             }
         }
@@ -62,9 +66,11 @@ namespace Il2CppInspector.Reflection {
         public string CSharpTypeDeclarationName =>
                     (HasElementType?
                         ElementType.CSharpTypeDeclarationName :
-                        base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal))
-                        + (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.Name)) + ">" : "")
-                        + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.Name)) + ">" : ""))
+                        ((GenericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant? "in " : "")
+                        + ((GenericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant? "out ":"")
+                        + (base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
+                        + (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.CSharpTypeDeclarationName)) + ">" : "")
+                        + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.CSharpTypeDeclarationName)) + ">" : ""))
                    + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
                    + (IsPointer ? "*" : "");
 
@@ -727,6 +733,10 @@ namespace Il2CppInspector.Reflection {
                 && !constraintList.Contains("struct"))
                 // new() must be the last constraint specified
                 constraintList.Add("new()");
+
+            // Covariance/contravariance constraints can lead to an empty constraint list
+            if (!constraintList.Any())
+                return string.Empty;
 
             return "where " + Name + " : " + string.Join(", ", constraintList);
         }
