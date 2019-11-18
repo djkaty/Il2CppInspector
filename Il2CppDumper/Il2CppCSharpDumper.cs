@@ -418,8 +418,16 @@ namespace Il2CppInspector
             // IL2CPP doesn't seem to retain return type attributes
             //writer.Append(method.ReturnType.CustomAttributes.ToString(prefix + "\t", "return: ", emitPointer: !SuppressMetadata));
             writer.Append($"{prefix}\t{method.GetModifierString(scope)}");
-            if (method.Name != "op_Implicit" && method.Name != "op_Explicit")
+
+            // Finalizers become destructors
+            if (method.Name == "Finalize" && method.IsVirtual && method.ReturnType.FullName == "System.Void" && method.IsFamily)
+                writer.Append("~" + method.DeclaringType.UnmangledBaseName);
+                
+            // Regular method or operator overload
+            else if (method.Name != "op_Implicit" && method.Name != "op_Explicit")
                 writer.Append($"{method.ReturnParameter.GetReturnParameterString(scope)} {method.CSharpName}{method.GetTypeParametersString(scope)}");
+
+            // User-defined conversion operator
             else
                 writer.Append($"{method.CSharpName}{method.ReturnType.GetScopedCSharpName(scope)}");
             writer.Append("(" + method.GetParametersString(scope, !SuppressMetadata) + ")");

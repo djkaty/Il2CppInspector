@@ -135,6 +135,9 @@ namespace Il2CppInspector.Reflection
             // Static constructors can not have an access level modifier
             { IsConstructor: true, IsStatic: true } => "",
 
+            // Finalizers can not have an access level modifier
+            { Name: "Finalize", IsVirtual: true, IsFamily: true } => "",
+
             // Explicit interface implementations do not have an access level modifier
             { IsVirtual: true, IsFinal: true, Attributes: var a } when (a & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot && Name.IndexOf('.') != -1 => "",
 
@@ -162,7 +165,7 @@ namespace Il2CppInspector.Reflection
             if (IsFinal && (Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.ReuseSlot)
                 modifiers.Append("sealed override ");
             // All abstract, override and sealed methods are also virtual by nature
-            if (IsVirtual && !IsAbstract && !IsFinal)
+            if (IsVirtual && !IsAbstract && !IsFinal && Name != "Finalize")
                 modifiers.Append((Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot ? "virtual " : "override ");
             if (IsStatic)
                 modifiers.Append("static ");
