@@ -173,7 +173,7 @@ namespace Il2CppInspector.Reflection
                 modifiers.Append("extern ");
 
             // Method hiding
-            if ((DeclaringType.BaseType?.GetAllMethods().Any(m => m.GetSignatureString(usingScope) == GetSignatureString(usingScope) && m.IsHideBySig) ?? false)
+            if ((DeclaringType.BaseType?.GetAllMethods().Any(m => m.GetSignatureString() == GetSignatureString() && m.IsHideBySig) ?? false)
                 && (((Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.ReuseSlot && !IsVirtual)
                     || (Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot))
                 modifiers.Append($"new ");
@@ -194,7 +194,10 @@ namespace Il2CppInspector.Reflection
         public string GetTypeParametersString(Scope usingScope) => GenericTypeParameters == null? "" :
             "<" + string.Join(", ", GenericTypeParameters.Select(p => p.GetScopedCSharpName(usingScope))) + ">";
 
-        public abstract string GetSignatureString(Scope usingScope);
+        public string GetFullTypeParametersString() => GenericTypeParameters == null? "" :
+            "[" + string.Join(",", GenericTypeParameters.Select(p => p.FullName ?? p.Name)) + "]";
+
+        public abstract string GetSignatureString();
 
         // List of operator overload metadata names
         // https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/operator-overloads
