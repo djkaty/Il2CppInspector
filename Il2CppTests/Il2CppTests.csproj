@@ -28,6 +28,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="TestExpectedResults\ExplicitInterfaces.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-ExplicitInterfaces-x64.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-ExplicitInterfaces-x86.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="TestExpectedResults\GameAssembly-Scope-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-Scope-x86.cs" />
     <Content Include="TestExpectedResults\Scope.cs" />
@@ -52,6 +58,7 @@
     <Content Include="TestExpectedResults\GameAssembly-Methods-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-Methods-x86.cs" />
     <Content Include="TestExpectedResults\Methods.cs" />
+    <Content Include="TestSources\ExplicitInterfaces.cs" />
     <Content Include="TestSources\Scope.cs" />
   </ItemGroup>
 
