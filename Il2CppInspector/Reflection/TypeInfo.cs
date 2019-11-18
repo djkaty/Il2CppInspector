@@ -69,7 +69,7 @@ namespace Il2CppInspector.Reflection {
                         ((GenericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant? "in " : "")
                         + ((GenericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant? "out ":"")
                         + (base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
-                        + (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.CSharpTypeDeclarationName)) + ">" : "")
+                        + ((IsNested? GenericTypeParameters.Where(p => DeclaringType.GenericTypeParameters.All(dp => dp.Name != p.Name)) : GenericTypeParameters)?.Any() ?? false ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.CSharpTypeDeclarationName)) + ">" : "")
                         + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.CSharpTypeDeclarationName)) + ">" : ""))
                    + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
                    + (IsPointer ? "*" : "");
