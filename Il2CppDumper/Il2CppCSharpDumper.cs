@@ -431,11 +431,21 @@ namespace Il2CppInspector
                         writer.Append($"\n{prefix}\t\t{constraint}");
                 }
 
-            var methodBody = method.ReturnType switch {
-                { FullName: "System.Void" } => @"{}",
-                _ => "=> default;"
+            var methodBody = method switch {
+                // Abstract method
+                { IsAbstract: true } => ";",
+
+                // Extern method
+                { Attributes: var a } when (a & MethodAttributes.PinvokeImpl) == MethodAttributes.PinvokeImpl => ";",
+
+                // No return type
+                { ReturnType: var retType } when retType.FullName == "System.Void" => @" {}",
+
+                // Return type
+                _ => " => default;"
             };
-            writer.Append((method.IsAbstract? ";" : " " + methodBody) + (!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
+
+            writer.Append(methodBody + (!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
 
             return writer.ToString();
         }
