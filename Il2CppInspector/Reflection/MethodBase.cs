@@ -57,12 +57,10 @@ namespace Il2CppInspector.Reflection
             OperatorMethodNames.ContainsKey(Name)? "operator " + OperatorMethodNames[Name]
 
             // Explicit interface implementation
-            : (IsVirtual && IsFinal && (Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot)? 
+            : (IsVirtual && IsFinal && (Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot && Name.IndexOf('.') != -1)? 
             ((Func<string>)(() => {
-                var implementingInterface = DeclaringType.ImplementedInterfaces.FirstOrDefault(i => Name.StartsWith(Regex.Replace(i.FullName, @"`\d", "").Replace('[', '<').Replace(']', '>') + "."));
-                // Regular interface implementation
-                if (implementingInterface == null)
-                    return Name;
+                var implementingInterface = DeclaringType.ImplementedInterfaces.FirstOrDefault(i => Name.StartsWith(i.Namespace + "." + i.CSharpName + "."))
+                    ?? DeclaringType.ImplementedInterfaces.FirstOrDefault(i => Name.StartsWith(Regex.Replace(i.FullName, @"`\d", "").Replace('[', '<').Replace(']', '>') + "."));
                 var sliceLength = Regex.Replace(implementingInterface.FullName, @"`\d", "").Length + 1;
                 return implementingInterface.CSharpName + "." + Name.Substring(sliceLength);
             }))()
@@ -135,7 +133,7 @@ namespace Il2CppInspector.Reflection
             { IsConstructor: true, IsStatic: true } => "",
 
             // Explicit interface implementations do not have an access level modifier
-            { IsVirtual: true, IsFinal: true, Attributes: var a } when (a & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot => "",
+            { IsVirtual: true, IsFinal: true, Attributes: var a } when (a & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot && Name.IndexOf('.') != -1 => "",
 
             { IsPrivate: true } => "private ",
             { IsPublic: true } => "public ",
