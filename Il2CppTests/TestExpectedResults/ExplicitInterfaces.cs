@@ -127,7 +127,7 @@ namespace Il2CppTests.TestSources
 		public Middle() {} // 0x0056158C-0x00561594
 	
 		// Methods
-		int P() => default; // 0x0056157C-0x00561584
+		public int P() => default; // 0x0056157C-0x00561584
 	}
 
 	internal interface IGeneric<in T> // TypeDefIndex: 1817
