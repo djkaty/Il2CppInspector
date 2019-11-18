@@ -586,6 +586,12 @@ namespace Il2CppInspector.Reflection {
         public List<TypeInfo> GetAllTypeReferences() {
             var refs = new HashSet<TypeInfo>();
 
+            // Fixed attributes
+            if (IsImport)
+                refs.Add(Assembly.Model.TypesByFullName["System.Runtime.InteropServices.ComVisibleAttribute"]);
+            if (IsSerializable)
+                refs.Add(Assembly.Model.TypesByFullName["System.SerializableAttribute"]);
+
             // Constructor, event, field, method, nested type, property attributes
             var attrs = DeclaredMembers.SelectMany(m => m.CustomAttributes);
             refs.UnionWith(attrs.Select(a => a.AttributeType));
