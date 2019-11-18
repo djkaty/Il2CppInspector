@@ -66,6 +66,8 @@ namespace Il2CppInspector.Reflection
         public static string ToCSharpValue(this object value) {
             if (value is bool)
                 return (bool) value ? "true" : "false";
+            if (value is float)
+                return value + "f";
             if (value is string str) {
                 // Replace standard escape characters
                 var s = new StringBuilder();
