@@ -17,7 +17,7 @@ namespace Il2CppInspector
 	{
 "@ > $testGen
 
-gci $bin | % {
+gci -Directory $bin | % {
 	echo @"
 		[Test]
 		public void $($_.Name.Replace("-","_").Replace(" ","_").Replace(".","_"))() {
