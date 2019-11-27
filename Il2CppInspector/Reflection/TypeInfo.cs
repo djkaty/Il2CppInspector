@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -153,67 +154,143 @@ namespace Il2CppInspector.Reflection {
 
         // Returns the minimally qualified type name required to refer to this type within the specified scope
         public string GetScopedFullName(Scope scope) {
+            // This is the type to be used (generic type parameters have a null FullName)
+            var usedType = FullName?.Replace('+', '.') ?? Name;
+
             // This is the scope in which this type is currently being used
             // If Scope.Current is null, our scope is at the assembly level
-            var usingScope = scope.Current?.FullName ?? "";
+            var usingScope = scope.Current?.FullName.Replace('+', '.') ?? "";
 
             // This is the scope in which this type's definition is located
-            var declaringScope = DeclaringType?.FullName ?? Namespace;
+            var declaringScope = DeclaringType?.FullName.Replace('+', '.') ?? Namespace;
 
-            // If the scope of usage is inside the scope in which the type is declared, no additional scope is needed
-            if ((usingScope + ".").StartsWith(declaringScope + ".") || (usingScope + "+").StartsWith(declaringScope + "+"))
+            Debug.WriteLine("\n\nType to be used: " + usedType);
+            Debug.WriteLine("Declaring scope: " + declaringScope);
+            Debug.WriteLine("Using scope: " + usingScope);
+
+            // Are we in the same scope as the scope the type is defined in? Save ourselves a bunch of work if so
+            if (usingScope == declaringScope) {
+                Debug.WriteLine("Using scope is same as declaring scope - result: " + base.Name);
                 return base.Name;
-
-            // Global (unnamed) namespace?
-            string scopedName;
-            if (string.IsNullOrEmpty(declaringScope))
-                scopedName = base.Name;
-
-            // Find first difference in the declaring scope from the using scope, moving one namespace/type name at a time
-            else {
-                var diff = 0;
-
-                usingScope += ".";
-                while (usingScope.IndexOf(".", diff) == declaringScope.IndexOf(".", diff)
-                       && usingScope.IndexOf(".", diff) != -1
-                       && usingScope.Substring(0, usingScope.IndexOf(".", diff))
-                       == declaringScope.Substring(0, declaringScope.IndexOf(".", diff)))
-                    diff = usingScope.IndexOf(".", diff) + 1;
-
-                usingScope = usingScope.Substring(0, usingScope.Length -1) + "+";
-                while (usingScope.IndexOf("+", diff) == declaringScope.IndexOf("+", diff)
-                       && usingScope.IndexOf("+", diff) != -1
-                       && usingScope.Substring(0, usingScope.IndexOf("+", diff))
-                       == declaringScope.Substring(0, declaringScope.IndexOf("+", diff)))
-                    diff = usingScope.IndexOf("+", diff) + 1;
-
-                scopedName = declaringScope.Substring(diff) + (DeclaringType != null? "+" : ".") + base.Name;
             }
 
-            // At this point, scopedName contains the minimum required scope, discounting any using directives
-            // or whether there are conflicts with any ancestor scope
+            // We're also in the same scope the type is defined in if we're looking for a nested type
+            // that is declared in a type we derive from
+            for (var b = scope.Current?.BaseType; b != null; b = b.BaseType)
+                if (b.FullName.Replace('+', '.') == declaringScope) {
+                    Debug.WriteLine("Base scope of using scope is same as declaring scope - result: " + base.Name);
+                    return base.Name;
+                }
 
-            // Check to see if there is a namespace in our using directives which brings this type into scope
-            var usingRef = scope.Namespaces.OrderByDescending(n => n.Length).FirstOrDefault(n => scopedName.StartsWith(n + "."));
-            var minimallyScopedName = usingRef == null ? scopedName : scopedName.Substring(usingRef.Length + 1);
+            // Find first difference in the declaring scope from the using scope, moving one namespace/type name at a time
+            var diff = 1;
+            usingScope += ".";
+            declaringScope += ".";
+            while (usingScope.IndexOf('.', diff) == declaringScope.IndexOf('.', diff)
+                   && usingScope.IndexOf('.', diff) != -1
+                   && usingScope.Substring(0, usingScope.IndexOf('.', diff))
+                   == declaringScope.Substring(0, declaringScope.IndexOf('.', diff)))
+                diff = usingScope.IndexOf('.', diff) + 1;
+            usingScope = usingScope.Substring(0, usingScope.Length - 1);
+            declaringScope = declaringScope.Substring(0, declaringScope.Length - 1);
 
-            // minimallyScopedName now contains the minimum required scope, taking using directives into account
+            // This is the mutual root namespace and optionally nested types that the two scopes share
+            var mutualRootScope = usingScope.Substring(0, diff - 1);
 
-            // Are there any ancestors in the using scope with the same type name as the first part of the minimally scoped name?
-            // If so, the ancestor type name will hide the type we are trying to reference,
-            // so we need to provide the scope ignoring any using directives
-            var firstPart = minimallyScopedName.Split('.')[0].Split('+')[0];
-            for (var d = scope.Current; d != null; d = d.DeclaringType)
-                if (d.BaseName == firstPart)
-                    return scopedName.Replace('+', '.');
+            Debug.WriteLine("Mutual scope root: " + mutualRootScope);
+
+            // Determine if the using scope is a child of the declaring scope (always a child if declaring scope is empty)
+            var usingScopeIsChildOfDeclaringScope = string.IsNullOrEmpty(declaringScope) || (usingScope + ".").StartsWith(declaringScope + ".");
+
+            // Determine using directive to use
+            var usingDirective =
+                
+                // If the scope of usage is inside the scope in which the type is declared, no additional scope is needed
+                // but we still need to check for ancestor conflicts below
+                usingScopeIsChildOfDeclaringScope? declaringScope
+                
+                // Check to see if there is a namespace in our using directives which brings this type into scope
+                // Sort by descending order of length to search the deepest namespaces first
+                : scope.Namespaces.OrderByDescending(n => n.Length).FirstOrDefault(n => declaringScope == n || declaringScope.StartsWith(n + "."));
+
+            Debug.WriteLine("Best using directive for this type: " + usingDirective);
+
+            // minimallyScopedName will eventually contain the least qualified name needed to access the type
+            // Initially we set it as follows:
+            // - The non-mutual part of the declaring scope if there is a mutual root scope
+            // - The fully-qualified type name if there is no mutual root scope
+            // - The leaf name if the declaring scope and mutual root scope are the same
+            // The first two must be checked in this order to avoid a . at the start
+            // when the mutual root scope and declaring scope are both empty
+            var minimallyScopedName =
+                    declaringScope == mutualRootScope? base.Name :
+                    string.IsNullOrEmpty(mutualRootScope)? declaringScope + '.' + base.Name :
+                    declaringScope.Substring(mutualRootScope.Length + 1) + '.' + base.Name;
+
+            Debug.WriteLine("Worst case minimally scoped name: " + minimallyScopedName);
+
+            // Find the outermost type name if the wanted type is a nested type (if we need it below)
+            string outerTypeName = "";
+            if (!usingScopeIsChildOfDeclaringScope)
+                for (var d = this; d != null; d = d.DeclaringType)
+                    outerTypeName = d.BaseName;
+
+            // Are there any ancestor nested types or namespaces in the using scope with the same name as the wanted type's unqualified name?
+            // If so, the ancestor name will hide the type we are trying to reference, so we need to provide a higher-level scope
+
+            // If the using scope is a child of the declaring scope, we can try every parent scope until we find one that doesn't hide the type
+            // Otherwise, we just try the unqualified outer (least nested) type name to make sure it's accessible
+            // and revert to the fully qualified name if it's hidden
+            var nsAndTypeHierarchy = usingScopeIsChildOfDeclaringScope? 
+                usingDirective.Split('.').Append(minimallyScopedName).ToArray()
+                : new [] {outerTypeName};
+
+            var hidden = true;
+            var foundTypeInAncestorScope = false;
+            string testTypeName = "";
+
+            for (var depth = nsAndTypeHierarchy.Length - 1; depth >= 0 && hidden; depth--) {
+                testTypeName = nsAndTypeHierarchy[depth] + (testTypeName.Length > 0? "." : "") + testTypeName;
+
+                Debug.WriteLine("Testing: " + testTypeName);
+
+                hidden = false;
+                for (var d = scope.Current; d != null && !hidden && !foundTypeInAncestorScope; d = d.DeclaringType) {
+                    // If neither condition is true, the wanted type is not hidden by the type we are testing
+                    foundTypeInAncestorScope = d.FullName == FullName;
+                    hidden = !foundTypeInAncestorScope && d.BaseName == testTypeName;
+                }
+
+                // We found the shortest non-hidden scope we can use
+                // For a child scope, use the shortest found scope
+                // Otherwise, we've confirmed the outer nested type name is not hidden so go ahead and use the nested type name without a namespace
+                if (!hidden)
+                    minimallyScopedName = usingScopeIsChildOfDeclaringScope? testTypeName : Name.Replace('+', '.');
+
+                // If the wanted type is an unhidden ancestor, we don't need any additional scope at all
+                if (foundTypeInAncestorScope)
+                    minimallyScopedName = base.Name;
+            }
+
+            Debug.WriteLine("Minimally scoped name after hiding checks: " + minimallyScopedName);
 
             // If there are multiple using directives that would allow the same minimally scoped name to be used,
             // then the minimally scoped name is ambiguous and we can't use it
-            // NOTE: We should check all the parts, not just the first part, but this works in the vast majority of cases
-            if (scope.Namespaces.Count(n => Assembly.Model.TypesByFullName.ContainsKey(n + "." + firstPart)) > 1)
-                return scopedName.Replace('+', '.');
+            // Note that if the wanted type is an unhidden outer class relative to the using scope, this takes precedence and there can be no ambiguity
+            if (!foundTypeInAncestorScope) {
+                // Only test the outermost type name
+                outerTypeName = minimallyScopedName.Split('.')[0];
 
-            return minimallyScopedName.Replace('+', '.');
+                var matchingNamespaces = scope.Namespaces.Where(n => Assembly.Model.TypesByFullName.ContainsKey(n + "." + outerTypeName)).ToList();
+                if (matchingNamespaces.Count > 1) {
+                    Debug.WriteLine("Minimally scoped name would be ambiguous between: " + string.Join(" and ", matchingNamespaces.Select(n => n + "." + minimallyScopedName)));
+                    // TODO: This can be improved to cut off a new mutual root that doesn't cause ambiguity
+                    minimallyScopedName = usedType;
+                }
+            }
+
+            Debug.WriteLine("Resolved type name: " + minimallyScopedName);
+            return minimallyScopedName;
         }
 
         // C#-friendly type name as it should be used in the scope of a given type
