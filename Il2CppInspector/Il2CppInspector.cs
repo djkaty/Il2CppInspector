@@ -159,7 +159,7 @@ namespace Il2CppInspector
             // Get sorted list of method pointers
             var sortedMethodPointers = (Version <= 24.1)?
                 Binary.GlobalMethodPointers.OrderBy(m => m).ToList() :
-                Binary.ModuleMethodPointers.SelectMany(module => module.Value).OrderBy(m => m).ToList();
+                Binary.ModuleMethodPointers.SelectMany(module => module.Value).OrderBy(m => m).Distinct().ToList();
 
             // Guestimate method end addresses
             methodPointers = new Dictionary<ulong, ulong>(sortedMethodPointers.Count);
