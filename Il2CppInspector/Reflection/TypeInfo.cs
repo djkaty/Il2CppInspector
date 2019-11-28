@@ -114,7 +114,7 @@ namespace Il2CppInspector.Reflection {
         public MethodInfo GetMethod(string name) => DeclaredMethods.FirstOrDefault(m => m.Name == name);
 
         // Get all methods with same name (overloads)
-        public MethodInfo[] GetMethods(string name) => DeclaredMethods.Where(m => m.Name == Name).ToArray();
+        public MethodInfo[] GetMethods(string name) => DeclaredMethods.Where(m => m.Name == name).ToArray();
 
         // Get methods including inherited methods
         public MethodInfo[] GetAllMethods() {
