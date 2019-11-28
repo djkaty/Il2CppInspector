@@ -64,6 +64,11 @@ namespace Il2CppInspector.Reflection
 
             Definition = pkg.Params[Index];
             Name = pkg.Strings[Definition.nameIndex];
+
+            // Handle unnamed/obfuscated parameter names
+            if (string.IsNullOrEmpty(Name))
+                Name = string.Format($"param_{Index:x8}");
+
             Position = paramIndex - declaringMethod.Definition.parameterStart;
             paramTypeUsage = Definition.typeIndex;
             var paramType = pkg.TypeUsages[paramTypeUsage];
