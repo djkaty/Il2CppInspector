@@ -203,10 +203,10 @@ namespace Il2CppInspector
         // They moved the position of publicKeyToken in v16 from the middle to the bottom of the struct
         public byte[] publicKeyToken => publicKeyToken_post16;
 
-        public uint nameIndex;
-        public uint cultureIndex;
-        public uint hashValueIndex;
-        public uint publicKeyIndex;
+        public int nameIndex;
+        public int cultureIndex;
+        public int hashValueIndex;
+        public int publicKeyIndex;
         [Version(Max = 15), ArrayLength(FixedSize = 8)]
         public byte[] publicKeyToken_pre16;
         public uint hash_alg;

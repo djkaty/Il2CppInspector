@@ -51,7 +51,7 @@ namespace Il2CppInspector
         public void WriteFilesByAssembly<TKey>(string outPath, Func<TypeInfo, TKey> orderBy) {
             foreach (var asm in model.Assemblies) {
                 // Sort namespaces into alphabetical order, then sort types within the namespaces by the specified sort function
-                writeFile($"{outPath}\\{asm.FullName}.cs", asm.DefinedTypes.OrderBy(t => t.Namespace).ThenBy(orderBy));
+                writeFile($"{outPath}\\{asm.ShortName}.cs", asm.DefinedTypes.OrderBy(t => t.Namespace).ThenBy(orderBy));
             }
         }
 
@@ -179,7 +179,7 @@ namespace Il2CppInspector
             var text = new StringBuilder();
 
             foreach (var asm in assemblies) {
-                text.Append($"// Image {asm.Index}: {asm.FullName} - {asm.ImageDefinition.typeStart}-{asm.ImageDefinition.typeStart + asm.ImageDefinition.typeCount - 1}\n");
+                text.Append($"// Image {asm.Index}: {asm.ShortName} - Assembly: {asm.FullName} - Types {asm.ImageDefinition.typeStart}-{asm.ImageDefinition.typeStart + asm.ImageDefinition.typeCount - 1}\n");
 
                 // Assembly-level attributes
                 text.Append(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute)

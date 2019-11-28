@@ -48,8 +48,8 @@ namespace Il2CppInspector.Reflection
                 Assemblies.Add(new Assembly(this, image));
         }
 
-        // Get an assembly by its name
-        public Assembly GetAssembly(string name) => Assemblies.FirstOrDefault(a => a.FullName == name);
+        // Get an assembly by its image name
+        public Assembly GetAssembly(string name) => Assemblies.FirstOrDefault(a => a.ShortName == name);
 
         private TypeInfo getNewTypeUsage(Il2CppType usage, MemberTypes memberType) {
             switch (usage.type) {

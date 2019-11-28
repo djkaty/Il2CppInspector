@@ -21,8 +21,11 @@ namespace Il2CppInspector.Reflection {
         // Custom attributes for this assembly
         public IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
 
-        // Name of the assembly
+        // Fully qualified name of the assembly
         public string FullName { get; }
+
+        // Display name of the assembly
+        public string ShortName { get; }
 
         // Entry point method for the assembly
         public MethodInfo EntryPoint => throw new NotImplementedException();
@@ -43,14 +46,27 @@ namespace Il2CppInspector.Reflection {
                 throw new InvalidOperationException("Assembly/image index mismatch");
 
             Index = ImageDefinition.assemblyIndex;
-            FullName = Model.Package.Strings[ImageDefinition.nameIndex];
+            ShortName = Model.Package.Strings[ImageDefinition.nameIndex];
+
+            // Get full assembly name
+            var nameDef = AssemblyDefinition.aname;
+            var name = Model.Package.Strings[nameDef.nameIndex];
+            var culture = Model.Package.Strings[nameDef.cultureIndex];
+            if (string.IsNullOrEmpty(culture))
+                culture = "neutral";
+            var pkt = BitConverter.ToString(nameDef.publicKeyToken).Replace("-", "");
+            if (pkt == "0000000000000000")
+                pkt = "null";
+            var version = string.Format($"{nameDef.major}.{nameDef.minor}.{nameDef.build}.{nameDef.revision}");
+
+            FullName = string.Format($"{name}, Version={version}, Culture={culture}, PublicKeyToken={pkt.ToLower()}");
 
             if (ImageDefinition.entryPointIndex != -1) {
                 // TODO: Generate EntryPoint method from entryPointIndex
             }
 
             // Find corresponding module (we'll need this for method pointers)
-            ModuleDefinition = Model.Package.Modules?[FullName];
+            ModuleDefinition = Model.Package.Modules?[ShortName];
 
             // Generate types in DefinedTypes from typeStart to typeStart+typeCount-1
             for (var t = ImageDefinition.typeStart; t < ImageDefinition.typeStart + ImageDefinition.typeCount; t++) {
