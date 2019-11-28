@@ -694,7 +694,6 @@ namespace Il2CppInspector.Reflection {
             refs.UnionWith(DeclaredMethods.SelectMany(m => m.DeclaredParameters).Select(p => p.ParameterType));
 
             // Method generic type parameters and constraints
-            // TODO: Needs to recurse through nested generic parameters
             refs.UnionWith(DeclaredMethods.SelectMany(m => m.GenericTypeParameters ?? new List<TypeInfo>()));
             refs.UnionWith(DeclaredMethods.SelectMany(m => m.GenericTypeParameters ?? new List<TypeInfo>())
                 .SelectMany(p => p.GetGenericParameterConstraints()));
@@ -719,7 +718,6 @@ namespace Il2CppInspector.Reflection {
                 refs.Add(GetEnumUnderlyingType());
 
             // Generic type parameters and constraints
-            // TODO: Needs to recurse through nested generic parameters
             if (GenericTypeParameters != null)
                 refs.UnionWith(GenericTypeParameters);
             if (GenericTypeArguments != null)
@@ -729,14 +727,21 @@ namespace Il2CppInspector.Reflection {
             // Implemented interfaces
             refs.UnionWith(ImplementedInterfaces);
 
-            IEnumerable<TypeInfo> refList = refs.ToList();
-
             // Repeatedly replace arrays, pointers and references with their element types
-            while (refList.Any(r => r.HasElementType))
-                refList = refList.Select(r => r.HasElementType ? r.ElementType : r);
+            while (refs.Any(r => r.HasElementType))
+                refs = refs.Select(r => r.HasElementType ? r.ElementType : r).ToHashSet();
+
+            // Type arguments in generic types that may have been a field, method parameter etc.
+            IEnumerable<TypeInfo> genericArguments = refs.ToList();
+            do {
+                genericArguments = genericArguments.Where(r => r.GenericTypeArguments != null).SelectMany(r => r.GenericTypeArguments);
+                refs.UnionWith(genericArguments);
+            } while (genericArguments.Any());
 
             // Remove anonymous types
-            refList = refList.Where(r => !string.IsNullOrEmpty(r.FullName));
+            refs.RemoveWhere(r => string.IsNullOrEmpty(r.FullName));
+
+            IEnumerable<TypeInfo> refList = refs;
 
             // Eliminated named duplicates (the HashSet removes instance duplicates)
             refList = refList.GroupBy(r => r.FullName).Select(p => p.First());
