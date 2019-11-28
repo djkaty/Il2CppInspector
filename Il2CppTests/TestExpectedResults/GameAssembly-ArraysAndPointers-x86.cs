@@ -9,7 +9,7 @@ using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// Image 0: mscorlib.dll - 0-1809
+// Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
 // [assembly: AssemblyCompany] // 0x1000EDA0-0x1000BD20
 // [assembly: AssemblyCopyright] // 0x1000EDA0-0x1000BD20
 // [assembly: AssemblyDefaultAlias] // 0x1000EDA0-0x1000BD20
@@ -32,7 +32,7 @@ using System.Runtime.InteropServices;
 [assembly: StringFreezing] // 0x1000EDA0-0x1000BD20
 // [assembly: TypeLibVersion] // 0x1000EDA0-0x1000BD20
 
-// Image 1: ArraysAndPointers.dll - 1810-1817
+// Image 1: ArraysAndPointers.dll - Assembly: ArraysAndPointers, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1817
 // [assembly: CompilationRelaxations] // 0x1000D250-0x1000D250
 // [assembly: Debuggable] // 0x1000D250-0x1000D250
 [assembly: RuntimeCompatibility] // 0x1000D250-0x1000D250
@@ -74,10 +74,10 @@ internal static class Consts // TypeDefIndex: 100
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x100BF000-0x100BF000
+	private Locale() {} // 0x100BF000-0x100BF010
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x100F7810-0x100F7810
+	public static string GetText(string msg) => default; // 0x100F7810-0x100F7820
 	public static string GetText(string fmt, params /* 0x10009AA0-0x10009AA0 */ object[] args) => default; // 0x10261460-0x102614B0
 }
 
@@ -96,10 +96,10 @@ namespace Il2CppTests.TestSources
 		private unsafe float*[][,,][] confusedElephant; // 0x24
 	
 		// Properties
-		public unsafe int* PointerProperty { get; set; } // 0x100EB040-0x100EB040 0x100EB250-0x100EB250
-		public unsafe int* this[int i] { get; } // 0x100C5600-0x100C5600 
-		public unsafe int this[int* p] { get; } // 0x100C5600-0x100C5600 
-		public unsafe float* this[float* fp] { get; } // 0x100C5600-0x100C5600 
+		public unsafe int* PointerProperty { get; set; } // 0x100EB040-0x100EB050 0x100EB250-0x100EB260
+		public unsafe int* this[int i] { get; } // 0x100C5600-0x100C5610 
+		public unsafe int this[int* p] { get; } // 0x100C5600-0x100C5610 
+		public unsafe float* this[float* fp] { get; } // 0x100C5600-0x100C5610 
 	
 		// Nested types
 		private struct fixedSizeArrayStruct // TypeDefIndex: 1814
@@ -127,8 +127,8 @@ namespace Il2CppTests.TestSources
 		// Methods
 		public int[] FooMethod(int[][] bar) => default; // 0x1034DCE0-0x1034DD10
 		public int[,] BarMethod(int[,,] baz) => default; // 0x1034DC90-0x1034DCE0
-		public unsafe void UnsafeMethod(int* unsafePointerArgument) {} // 0x100C5530-0x100C5530
-		public unsafe int* UnsafeReturnMethod() => default; // 0x100C5600-0x100C5600
-		public unsafe int* UnsafeMethod2(int* i) => default; // 0x10102390-0x10102390
+		public unsafe void UnsafeMethod(int* unsafePointerArgument) {} // 0x100C5530-0x100C5540
+		public unsafe int* UnsafeReturnMethod() => default; // 0x100C5600-0x100C5610
+		public unsafe int* UnsafeMethod2(int* i) => default; // 0x10102390-0x101023A0
 	}
 }

@@ -10,7 +10,7 @@ using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// Image 0: mscorlib.dll - 0-1809
+// Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
 // [assembly: AssemblyCompany] // 0x000000018000E050-0x000000018000A8A0
 // [assembly: AssemblyCopyright] // 0x000000018000E050-0x000000018000A8A0
 // [assembly: AssemblyDefaultAlias] // 0x000000018000E050-0x000000018000A8A0
@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 [assembly: StringFreezing] // 0x000000018000E050-0x000000018000A8A0
 // [assembly: TypeLibVersion] // 0x000000018000E050-0x000000018000A8A0
 
-// Image 1: GenericTypes.dll - 1810-1827
+// Image 1: GenericTypes.dll - Assembly: GenericTypes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1827
 // [assembly: CompilationRelaxations] // 0x000000018000C150-0x000000018000C150
 // [assembly: Debuggable] // 0x000000018000C150-0x000000018000C150
 [assembly: RuntimeCompatibility] // 0x000000018000C150-0x000000018000C150
@@ -75,10 +75,10 @@ internal static class Consts // TypeDefIndex: 100
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x00000001800E2000-0x00000001800E2000
+	private Locale() {} // 0x00000001800E2000-0x00000001800E2010
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x0000000180123590-0x0000000180123590
+	public static string GetText(string msg) => default; // 0x0000000180123590-0x00000001801235A0
 	public static string GetText(string fmt, params /* 0x00000001800090D0-0x00000001800090D0 */ object[] args) => default; // 0x00000001802C6900-0x00000001802C6970
 }
 
@@ -115,7 +115,7 @@ namespace Il2CppTests.TestSources
 	internal class Test // TypeDefIndex: 1819
 	{
 		// Constructors
-		public Test() {} // 0x00000001800E2000-0x00000001800E2000
+		public Test() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
 		public void GenericTypesTest() {} // 0x00000001803E11C0-0x00000001803E11C0

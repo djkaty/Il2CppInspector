@@ -10,7 +10,7 @@ using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// Image 0: mscorlib.dll - 0-1809
+// Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
 // [assembly: AssemblyCompany] // 0x000A5524-0x000A5818
 // [assembly: AssemblyCopyright] // 0x000A5524-0x000A5818
 // [assembly: AssemblyDefaultAlias] // 0x000A5524-0x000A5818
@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 [assembly: StringFreezing] // 0x000A5524-0x000A5818
 // [assembly: TypeLibVersion] // 0x000A5524-0x000A5818
 
-// Image 1: GenericTypes.dll - 1810-1827
+// Image 1: GenericTypes.dll - Assembly: GenericTypes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1827
 // [assembly: CompilationRelaxations] // 0x000A592C-0x000A592C
 // [assembly: Debuggable] // 0x000A592C-0x000A592C
 [assembly: RuntimeCompatibility] // 0x000A592C-0x000A592C

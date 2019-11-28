@@ -10,7 +10,7 @@ using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// Image 0: mscorlib.dll - 0-1809
+// Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
 // [assembly: AssemblyCompany] // 0x000000018000E950-0x000000018000CAF0
 // [assembly: AssemblyCopyright] // 0x000000018000E950-0x000000018000CAF0
 // [assembly: AssemblyDefaultAlias] // 0x000000018000E950-0x000000018000CAF0
@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 [assembly: StringFreezing] // 0x000000018000E950-0x000000018000CAF0
 // [assembly: TypeLibVersion] // 0x000000018000E950-0x000000018000CAF0
 
-// Image 1: ExplicitInterfaces.dll - 1810-1818
+// Image 1: ExplicitInterfaces.dll - Assembly: ExplicitInterfaces, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1818
 // [assembly: CompilationRelaxations] // 0x000000018000CAF0-0x000000018000CAF0
 // [assembly: Debuggable] // 0x000000018000CAF0-0x000000018000CAF0
 [assembly: RuntimeCompatibility] // 0x000000018000CAF0-0x000000018000CAF0
@@ -75,10 +75,10 @@ internal static class Consts // TypeDefIndex: 100
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x00000001800E2000-0x00000001800E2000
+	private Locale() {} // 0x00000001800E2000-0x00000001800E2010
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x0000000180123590-0x0000000180123590
+	public static string GetText(string msg) => default; // 0x0000000180123590-0x00000001801235A0
 	public static string GetText(string fmt, params /* 0x0000000180009C10-0x0000000180009C10 */ object[] args) => default; // 0x00000001802C64F0-0x00000001802C6560
 }
 
@@ -99,11 +99,11 @@ namespace Il2CppTests.TestSources
 	internal class Test : IControl, ISurface // TypeDefIndex: 1813
 	{
 		// Constructors
-		public Test() {} // 0x00000001800E2000-0x00000001800E2000
+		public Test() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
-		void IControl.Paint() {} // 0x00000001800EA7B0-0x00000001800EA7B0
-		void ISurface.Paint() {} // 0x00000001800EA7B0-0x00000001800EA7B0
+		void IControl.Paint() {} // 0x00000001800EA7B0-0x00000001800EA7C0
+		void ISurface.Paint() {} // 0x00000001800EA7B0-0x00000001800EA7C0
 	}
 
 	internal interface ILeft // TypeDefIndex: 1814
@@ -121,13 +121,13 @@ namespace Il2CppTests.TestSources
 	internal class Middle : ILeft, IRight // TypeDefIndex: 1816
 	{
 		// Properties
-		int ILeft.P { get; } // 0x00000001800EA8C0-0x00000001800EA8C0 
+		int ILeft.P { get; } // 0x00000001800EA8C0-0x00000001800EA8D0 
 	
 		// Constructors
-		public Middle() {} // 0x00000001800E2000-0x00000001800E2000
+		public Middle() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
-		public int P() => default; // 0x00000001800EA8C0-0x00000001800EA8C0
+		public int P() => default; // 0x00000001800EA8C0-0x00000001800EA8D0
 	}
 
 	internal interface IGeneric<in T> // TypeDefIndex: 1817
@@ -139,9 +139,9 @@ namespace Il2CppTests.TestSources
 	internal class ImplementsGenericInterface : IGeneric<KeyValuePair<int, double>> // TypeDefIndex: 1818
 	{
 		// Constructors
-		public ImplementsGenericInterface() {} // 0x00000001800E2000-0x00000001800E2000
+		public ImplementsGenericInterface() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
-		void IGeneric<KeyValuePair<int, double>>.GenericMethod(KeyValuePair<int, double> t) {} // 0x00000001800EA7B0-0x00000001800EA7B0
+		void IGeneric<KeyValuePair<int, double>>.GenericMethod(KeyValuePair<int, double> t) {} // 0x00000001800EA7B0-0x00000001800EA7C0
 	}
 }

@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Il2CppTests.TestSources;
 
-// Image 0: mscorlib.dll - 0-1809
+// Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
 // [assembly: AssemblyCompany] // 0x000A4D7C-0x000A5070
 // [assembly: AssemblyCopyright] // 0x000A4D7C-0x000A5070
 // [assembly: AssemblyDefaultAlias] // 0x000A4D7C-0x000A5070
@@ -33,7 +33,7 @@ using Il2CppTests.TestSources;
 [assembly: StringFreezing] // 0x000A4D7C-0x000A5070
 // [assembly: TypeLibVersion] // 0x000A4D7C-0x000A5070
 
-// Image 1: CustomAttributeData.dll - 1810-1813
+// Image 1: CustomAttributeData.dll - Assembly: CustomAttributeData, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1813
 // [assembly: CompilationRelaxations] // 0x000A526C-0x000A526C
 // [assembly: Debuggable] // 0x000A526C-0x000A526C
 [assembly: Example] // 0x000A526C-0x000A526C

@@ -14,7 +14,7 @@ using Some.Namespace;
 using Some.Namespace.Again.SameLeafName;
 using Some.Namespace.SameLeafName;
 
-// Image 0: mscorlib.dll - 0-1809
+// Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
 // [assembly: AssemblyCompany] // 0x000A53A8-0x000A569C
 // [assembly: AssemblyCopyright] // 0x000A53A8-0x000A569C
 // [assembly: AssemblyDefaultAlias] // 0x000A53A8-0x000A569C
@@ -37,7 +37,7 @@ using Some.Namespace.SameLeafName;
 [assembly: StringFreezing] // 0x000A53A8-0x000A569C
 // [assembly: TypeLibVersion] // 0x000A53A8-0x000A569C
 
-// Image 1: Scope.dll - 1810-1829
+// Image 1: Scope.dll - Assembly: Scope, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1829
 // [assembly: CompilationRelaxations] // 0x000A569C-0x000A569C
 // [assembly: Debuggable] // 0x000A569C-0x000A569C
 [assembly: RuntimeCompatibility] // 0x000A569C-0x000A569C

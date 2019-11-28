@@ -14,7 +14,7 @@ using Some.Namespace;
 using Some.Namespace.Again.SameLeafName;
 using Some.Namespace.SameLeafName;
 
-// Image 0: mscorlib.dll - 0-1809
+// Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
 // [assembly: AssemblyCompany] // 0x1000F760-0x1000DC90
 // [assembly: AssemblyCopyright] // 0x1000F760-0x1000DC90
 // [assembly: AssemblyDefaultAlias] // 0x1000F760-0x1000DC90
@@ -37,7 +37,7 @@ using Some.Namespace.SameLeafName;
 [assembly: StringFreezing] // 0x1000F760-0x1000DC90
 // [assembly: TypeLibVersion] // 0x1000F760-0x1000DC90
 
-// Image 1: Scope.dll - 1810-1829
+// Image 1: Scope.dll - Assembly: Scope, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1829
 // [assembly: CompilationRelaxations] // 0x1000DC90-0x1000DC90
 // [assembly: Debuggable] // 0x1000DC90-0x1000DC90
 [assembly: RuntimeCompatibility] // 0x1000DC90-0x1000DC90
@@ -79,10 +79,10 @@ internal static class Consts // TypeDefIndex: 100
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x100BF000-0x100BF000
+	private Locale() {} // 0x100BF000-0x100BF010
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x100F7810-0x100F7810
+	public static string GetText(string msg) => default; // 0x100F7810-0x100F7820
 	public static string GetText(string fmt, params /* 0x1000A660-0x1000A660 */ object[] args) => default; // 0x10261460-0x102614B0
 }
 
@@ -94,7 +94,7 @@ namespace Some.Namespace
 		public Again.SameLeafName.Test foo; // 0x08
 	
 		// Constructors
-		public Test() {} // 0x100BF000-0x100BF000
+		public Test() {} // 0x100BF000-0x100BF010
 	}
 }
 
@@ -106,10 +106,10 @@ namespace Some.Namespace.Again.SameLeafName
 		public Namespace.Test foo; // 0x08
 	
 		// Constructors
-		public Test() {} // 0x100BF000-0x100BF000
+		public Test() {} // 0x100BF000-0x100BF010
 	
 		// Methods
-		public AClassFromUsingDirective Test1() => default; // 0x100C5600-0x100C5600
+		public AClassFromUsingDirective Test1() => default; // 0x100C5600-0x100C5610
 	}
 }
 
@@ -118,7 +118,7 @@ namespace Some.Namespace.SameLeafName
 	public class AClassFromUsingDirective // TypeDefIndex: 1813
 	{
 		// Constructors
-		public AClassFromUsingDirective() {} // 0x100BF000-0x100BF000
+		public AClassFromUsingDirective() {} // 0x100BF000-0x100BF010
 	}
 }
 
@@ -133,26 +133,26 @@ namespace DifferentNamespace
 			public class NestedInner // TypeDefIndex: 1816
 			{
 				// Constructors
-				public NestedInner() {} // 0x100BF000-0x100BF000
+				public NestedInner() {} // 0x100BF000-0x100BF010
 	
 				// Methods
-				public Il2CppTests.TestSources.NestedOuter Test1() => default; // 0x100C5600-0x100C5600
-				public Il2CppTests.TestSources.NestedOuter.NestedInner Test2() => default; // 0x100C5600-0x100C5600
-				public Il2CppTests.TestSources.NestedOuter.NestedInner.NestedSubInner Test3() => default; // 0x100C5600-0x100C5600
+				public Il2CppTests.TestSources.NestedOuter Test1() => default; // 0x100C5600-0x100C5610
+				public Il2CppTests.TestSources.NestedOuter.NestedInner Test2() => default; // 0x100C5600-0x100C5610
+				public Il2CppTests.TestSources.NestedOuter.NestedInner.NestedSubInner Test3() => default; // 0x100C5600-0x100C5610
 			}
 	
 			// Constructors
-			public NestedIntermediate() {} // 0x100BF000-0x100BF000
+			public NestedIntermediate() {} // 0x100BF000-0x100BF010
 		}
 	
 		// Constructors
-		public NestedOuter() {} // 0x100BF000-0x100BF000
+		public NestedOuter() {} // 0x100BF000-0x100BF010
 	
 		// Methods
-		public NestedOuter Test1() => default; // 0x100C5600-0x100C5600
-		public Il2CppTests.DifferentNamespace.NestedOuter Test2() => default; // 0x100C5600-0x100C5600
-		public Il2CppTests.TestSources.NestedOuter Test3() => default; // 0x100C5600-0x100C5600
-		public Il2CppTests.TestSources.NestedOuter.NestedInner Test4() => default; // 0x100C5600-0x100C5600
+		public NestedOuter Test1() => default; // 0x100C5600-0x100C5610
+		public Il2CppTests.DifferentNamespace.NestedOuter Test2() => default; // 0x100C5600-0x100C5610
+		public Il2CppTests.TestSources.NestedOuter Test3() => default; // 0x100C5600-0x100C5610
+		public Il2CppTests.TestSources.NestedOuter.NestedInner Test4() => default; // 0x100C5600-0x100C5610
 	}
 
 	public class TwoLevelConflictingParentScope // TypeDefIndex: 1817
@@ -167,22 +167,22 @@ namespace DifferentNamespace
 				public class NestedSubInner // TypeDefIndex: 1820
 				{
 					// Constructors
-					public NestedSubInner() {} // 0x100BF000-0x100BF000
+					public NestedSubInner() {} // 0x100BF000-0x100BF010
 				}
 	
 				// Constructors
-				public NestedInner() {} // 0x100BF000-0x100BF000
+				public NestedInner() {} // 0x100BF000-0x100BF010
 	
 				// Methods
-				public Il2CppTests.TestSources.NestedOuter.NestedInner.NestedSubInner Test1() => default; // 0x100C5600-0x100C5600
+				public Il2CppTests.TestSources.NestedOuter.NestedInner.NestedSubInner Test1() => default; // 0x100C5600-0x100C5610
 			}
 	
 			// Constructors
-			public NestedOuter() {} // 0x100BF000-0x100BF000
+			public NestedOuter() {} // 0x100BF000-0x100BF010
 		}
 	
 		// Constructors
-		public TwoLevelConflictingParentScope() {} // 0x100BF000-0x100BF000
+		public TwoLevelConflictingParentScope() {} // 0x100BF000-0x100BF010
 	}
 }
 
@@ -191,12 +191,12 @@ namespace Il2CppTests.DifferentNamespace
 	public class NestedOuter // TypeDefIndex: 1821
 	{
 		// Constructors
-		public NestedOuter() {} // 0x100BF000-0x100BF000
+		public NestedOuter() {} // 0x100BF000-0x100BF010
 	
 		// Methods
-		public NestedOuter Test1() => default; // 0x100C5600-0x100C5600
-		public TestSources.NestedOuter Test2() => default; // 0x100C5600-0x100C5600
-		public TestSources.NestedOuter.NestedInner Test3() => default; // 0x100C5600-0x100C5600
+		public NestedOuter Test1() => default; // 0x100C5600-0x100C5610
+		public TestSources.NestedOuter Test2() => default; // 0x100C5600-0x100C5610
+		public TestSources.NestedOuter.NestedInner Test3() => default; // 0x100C5600-0x100C5610
 	}
 }
 
@@ -214,23 +214,23 @@ namespace Il2CppTests.TestSources
 				public class NestedSubSubInner // TypeDefIndex: 1825
 				{
 					// Constructors
-					public NestedSubSubInner() {} // 0x100BF000-0x100BF000
+					public NestedSubSubInner() {} // 0x100BF000-0x100BF010
 	
 					// Methods
-					public NestedOuter Test1() => default; // 0x100C5600-0x100C5600
-					public NestedInner Test2() => default; // 0x100C5600-0x100C5600
-					public NestedSubInner Test3() => default; // 0x100C5600-0x100C5600
-					public NestedSubSubInner Test4() => default; // 0x100C5600-0x100C5600
+					public NestedOuter Test1() => default; // 0x100C5600-0x100C5610
+					public NestedInner Test2() => default; // 0x100C5600-0x100C5610
+					public NestedSubInner Test3() => default; // 0x100C5600-0x100C5610
+					public NestedSubSubInner Test4() => default; // 0x100C5600-0x100C5610
 				}
 	
 				// Constructors
-				public NestedSubInner() {} // 0x100BF000-0x100BF000
+				public NestedSubInner() {} // 0x100BF000-0x100BF010
 	
 				// Methods
-				public NestedOuter Test1() => default; // 0x100C5600-0x100C5600
-				public NestedInner Test2() => default; // 0x100C5600-0x100C5600
-				public NestedSubInner Test3() => default; // 0x100C5600-0x100C5600
-				public NestedSubSubInner Test4() => default; // 0x100C5600-0x100C5600
+				public NestedOuter Test1() => default; // 0x100C5600-0x100C5610
+				public NestedInner Test2() => default; // 0x100C5600-0x100C5610
+				public NestedSubInner Test3() => default; // 0x100C5600-0x100C5610
+				public NestedSubSubInner Test4() => default; // 0x100C5600-0x100C5610
 			}
 	
 			public class NestedGeneric<T> // TypeDefIndex: 1826
@@ -244,13 +244,13 @@ namespace Il2CppTests.TestSources
 			}
 	
 			// Constructors
-			public NestedInner() {} // 0x100BF000-0x100BF000
+			public NestedInner() {} // 0x100BF000-0x100BF010
 	
 			// Methods
-			public NestedOuter Test1() => default; // 0x100C5600-0x100C5600
-			public NestedInner Test2() => default; // 0x100C5600-0x100C5600
-			public NestedSubInner Test3() => default; // 0x100C5600-0x100C5600
-			public NestedSubInner.NestedSubSubInner Test4() => default; // 0x100C5600-0x100C5600
+			public NestedOuter Test1() => default; // 0x100C5600-0x100C5610
+			public NestedInner Test2() => default; // 0x100C5600-0x100C5610
+			public NestedSubInner Test3() => default; // 0x100C5600-0x100C5610
+			public NestedSubInner.NestedSubSubInner Test4() => default; // 0x100C5600-0x100C5610
 		}
 	
 		public class NestedInnerSibling // TypeDefIndex: 1828
@@ -259,27 +259,27 @@ namespace Il2CppTests.TestSources
 			public class NestedSubInnerSibling // TypeDefIndex: 1829
 			{
 				// Constructors
-				public NestedSubInnerSibling() {} // 0x100BF000-0x100BF000
+				public NestedSubInnerSibling() {} // 0x100BF000-0x100BF010
 	
 				// Methods
-				public NestedOuter Test1() => default; // 0x100C5600-0x100C5600
-				public NestedInner Test2() => default; // 0x100C5600-0x100C5600
-				public NestedInner.NestedSubInner Test3() => default; // 0x100C5600-0x100C5600
+				public NestedOuter Test1() => default; // 0x100C5600-0x100C5610
+				public NestedInner Test2() => default; // 0x100C5600-0x100C5610
+				public NestedInner.NestedSubInner Test3() => default; // 0x100C5600-0x100C5610
 			}
 	
 			// Constructors
-			public NestedInnerSibling() {} // 0x100BF000-0x100BF000
+			public NestedInnerSibling() {} // 0x100BF000-0x100BF010
 		}
 	
 		// Constructors
-		public NestedOuter() {} // 0x100BF000-0x100BF000
+		public NestedOuter() {} // 0x100BF000-0x100BF010
 	
 		// Methods
-		public NestedOuter Test1() => default; // 0x100C5600-0x100C5600
-		public NestedInner Test2() => default; // 0x100C5600-0x100C5600
-		public NestedInner.NestedSubInner Test3() => default; // 0x100C5600-0x100C5600
-		public NestedInner.NestedSubInner.NestedSubSubInner Test4() => default; // 0x100C5600-0x100C5600
-		public NestedInner.NestedGeneric<NestedInner.NestedSubInner.NestedSubSubInner> GenericNestingScopes() => default; // 0x100C5600-0x100C5600
-		public NestedInner.NestedStruct? NullableStruct() => default; // 0x100C5600-0x100C5600
+		public NestedOuter Test1() => default; // 0x100C5600-0x100C5610
+		public NestedInner Test2() => default; // 0x100C5600-0x100C5610
+		public NestedInner.NestedSubInner Test3() => default; // 0x100C5600-0x100C5610
+		public NestedInner.NestedSubInner.NestedSubSubInner Test4() => default; // 0x100C5600-0x100C5610
+		public NestedInner.NestedGeneric<NestedInner.NestedSubInner.NestedSubSubInner> GenericNestingScopes() => default; // 0x100C5600-0x100C5610
+		public NestedInner.NestedStruct? NullableStruct() => default; // 0x100C5600-0x100C5610
 	}
 }

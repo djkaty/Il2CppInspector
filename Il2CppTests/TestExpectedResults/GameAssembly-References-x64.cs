@@ -9,7 +9,7 @@ using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// Image 0: mscorlib.dll - 0-1809
+// Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
 // [assembly: AssemblyCompany] // 0x000000018000E980-0x000000018000CB80
 // [assembly: AssemblyCopyright] // 0x000000018000E980-0x000000018000CB80
 // [assembly: AssemblyDefaultAlias] // 0x000000018000E980-0x000000018000CB80
@@ -32,7 +32,7 @@ using System.Runtime.InteropServices;
 [assembly: StringFreezing] // 0x000000018000E980-0x000000018000CB80
 // [assembly: TypeLibVersion] // 0x000000018000E980-0x000000018000CB80
 
-// Image 1: References.dll - 1810-1812
+// Image 1: References.dll - Assembly: References, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1812
 // [assembly: CompilationRelaxations] // 0x000000018000CAF0-0x000000018000CAF0
 // [assembly: Debuggable] // 0x000000018000CAF0-0x000000018000CAF0
 [assembly: RuntimeCompatibility] // 0x000000018000CAF0-0x000000018000CAF0
@@ -74,10 +74,10 @@ internal static class Consts // TypeDefIndex: 100
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x00000001800E2000-0x00000001800E2000
+	private Locale() {} // 0x00000001800E2000-0x00000001800E2010
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x0000000180123590-0x0000000180123590
+	public static string GetText(string msg) => default; // 0x0000000180123590-0x00000001801235A0
 	public static string GetText(string fmt, params /* 0x0000000180009C10-0x0000000180009C10 */ object[] args) => default; // 0x00000001802C64F0-0x00000001802C6560
 }
 
@@ -89,10 +89,10 @@ namespace Il2CppTests.TestSources
 		private float floatField; // 0x10
 	
 		// Constructors
-		public Test() {} // 0x00000001800E2000-0x00000001800E2000
+		public Test() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
-		public void MethodWithRefParameters(int a, ref int b, int c, ref int d) {} // 0x00000001800EA7B0-0x00000001800EA7B0
+		public void MethodWithRefParameters(int a, ref int b, int c, ref int d) {} // 0x00000001800EA7B0-0x00000001800EA7C0
 		public void MethodWithInRefOut(in int a, ref int b, out int c) {} // 0x00000001803E0E50-0x00000001803E0E60
 		public ref float MethodWithRefReturnType() => default; // 0x00000001803E0E60-0x00000001803E0E60
 	}

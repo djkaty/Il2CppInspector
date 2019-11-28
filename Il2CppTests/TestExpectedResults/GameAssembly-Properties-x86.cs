@@ -9,7 +9,7 @@ using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// Image 0: mscorlib.dll - 0-1809
+// Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
 // [assembly: AssemblyCompany] // 0x1000EC00-0x1000C110
 // [assembly: AssemblyCopyright] // 0x1000EC00-0x1000C110
 // [assembly: AssemblyDefaultAlias] // 0x1000EC00-0x1000C110
@@ -32,7 +32,7 @@ using System.Runtime.InteropServices;
 [assembly: StringFreezing] // 0x1000EC00-0x1000C110
 // [assembly: TypeLibVersion] // 0x1000EC00-0x1000C110
 
-// Image 1: Properties.dll - 1810-1811
+// Image 1: Properties.dll - Assembly: Properties, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1811
 // [assembly: CompilationRelaxations] // 0x1000D0F0-0x1000D0F0
 // [assembly: Debuggable] // 0x1000D0F0-0x1000D0F0
 [assembly: RuntimeCompatibility] // 0x1000D0F0-0x1000D0F0
@@ -74,10 +74,10 @@ internal static class Consts // TypeDefIndex: 100
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x100BF000-0x100BF000
+	private Locale() {} // 0x100BF000-0x100BF010
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x100F7810-0x100F7810
+	public static string GetText(string msg) => default; // 0x100F7810-0x100F7820
 	public static string GetText(string fmt, params /* 0x10009AD0-0x10009AD0 */ object[] args) => default; // 0x10261460-0x102614B0
 }
 
@@ -86,17 +86,17 @@ namespace Il2CppTests.TestSources
 	internal class Test // TypeDefIndex: 1811
 	{
 		// Properties
-		private int prop1 { get; set; } // 0x100BF0C0-0x100BF0C0 0x100EB270-0x100EB270
-		protected int prop2 { get; private set; } // 0x100C5B30-0x100C5B30 0x100C5B50-0x100C5B50
-		protected int prop3 { private get; set; } // 0x100BFC20-0x100BFC20 0x100C5B40-0x100C5B40
+		private int prop1 { get; set; } // 0x100BF0C0-0x100BF0D0 0x100EB270-0x100EB280
+		protected int prop2 { get; private set; } // 0x100C5B30-0x100C5B40 0x100C5B50-0x100C5B60
+		protected int prop3 { private get; set; } // 0x100BFC20-0x100BFC30 0x100C5B40-0x100C5B50
 		public static int prop4 { private get; set; } // 0x1034DAF0-0x1034DB20 0x1034DB20-0x1034DB20
 		public string this[int i] { get; } // 0x1034DA90-0x1034DAC0 
 		public string this[double d] { get; } // 0x1034DA60-0x1034DA90 
-		public string this[long l] { set; } // 0x100C5530-0x100C5530
-		public string this[float f] { get; set; } // 0x1034DAC0-0x1034DAF0 0x100C5530-0x100C5530
-		public bool this[int i, int j] { get; } // 0x100E5880-0x100E5880 
+		public string this[long l] { set; } // 0x100C5530-0x100C5540
+		public string this[float f] { get; set; } // 0x1034DAC0-0x1034DAF0 0x100C5530-0x100C5540
+		public bool this[int i, int j] { get; } // 0x100E5880-0x100E5890 
 	
 		// Constructors
-		public Test() {} // 0x100BF000-0x100BF000
+		public Test() {} // 0x100BF000-0x100BF010
 	}
 }

@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Il2CppTests.TestSources;
 
-// Image 0: mscorlib.dll - 0-1809
+// Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
 // [assembly: AssemblyCompany] // 0x000000018000E4A0-0x000000018000C5B0
 // [assembly: AssemblyCopyright] // 0x000000018000E4A0-0x000000018000C5B0
 // [assembly: AssemblyDefaultAlias] // 0x000000018000E4A0-0x000000018000C5B0
@@ -33,7 +33,7 @@ using Il2CppTests.TestSources;
 [assembly: StringFreezing] // 0x000000018000E4A0-0x000000018000C5B0
 // [assembly: TypeLibVersion] // 0x000000018000E4A0-0x000000018000C5B0
 
-// Image 1: CustomAttributeData.dll - 1810-1813
+// Image 1: CustomAttributeData.dll - Assembly: CustomAttributeData, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1813
 // [assembly: CompilationRelaxations] // 0x000000018000C4B0-0x000000018000C4B0
 // [assembly: Debuggable] // 0x000000018000C4B0-0x000000018000C4B0
 [assembly: Example] // 0x000000018000C4B0-0x000000018000C4B0
@@ -76,10 +76,10 @@ internal static class Consts // TypeDefIndex: 100
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x00000001800E2000-0x00000001800E2000
+	private Locale() {} // 0x00000001800E2000-0x00000001800E2010
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x0000000180123590-0x0000000180123590
+	public static string GetText(string msg) => default; // 0x0000000180123590-0x00000001801235A0
 	public static string GetText(string fmt, params /* 0x0000000180009150-0x0000000180009150 */ object[] args) => default; // 0x00000001802C64F0-0x00000001802C6560
 }
 
@@ -103,10 +103,10 @@ namespace Il2CppTests.TestSources
 		private int[] arrayNumbers; // 0x8047D628
 	
 		// Properties
-		public ExampleKind Kind { get; } // 0x00000001800ECD10-0x00000001800ECD10 
-		public string[] Strings { get; } // 0x00000001800EAEB0-0x00000001800EAEB0 
-		public string Note { get; set; } // 0x00000001803E0EE0-0x00000001803E0EF0 0x00000001800EAEE0-0x00000001800EAEE0
-		public int[] Numbers { get; set; } // 0x00000001803E0EF0-0x00000001803E0EF0 0x000000018015B760-0x000000018015B760
+		public ExampleKind Kind { get; } // 0x00000001800ECD10-0x00000001800ECD20 
+		public string[] Strings { get; } // 0x00000001800EAEB0-0x00000001800EAEC0 
+		public string Note { get; set; } // 0x00000001803E0EE0-0x00000001803E0EF0 0x00000001800EAEE0-0x00000001800EAEF0
+		public int[] Numbers { get; set; } // 0x00000001803E0EF0-0x00000001803E0EF0 0x000000018015B760-0x000000018015B770
 	
 		// Constructors
 		public ExampleAttribute(ExampleKind initKind, string[] initStrings) {} // 0x00000001803E0E70-0x00000001803E0EB0
@@ -118,10 +118,10 @@ namespace Il2CppTests.TestSources
 	public class Test // TypeDefIndex: 1813
 	{
 		// Constructors
-		public Test() {} // 0x00000001800E2000-0x00000001800E2000
+		public Test() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
 		[Example] // 0x000000018000C710-0x000000018000C750
-		public void TestMethod([Example] /* 0x000000018000C750-0x000000018000C4B0 */ object arg) {} // 0x00000001800EA7B0-0x00000001800EA7B0
+		public void TestMethod([Example] /* 0x000000018000C750-0x000000018000C4B0 */ object arg) {} // 0x00000001800EA7B0-0x00000001800EA7C0
 	}
 }

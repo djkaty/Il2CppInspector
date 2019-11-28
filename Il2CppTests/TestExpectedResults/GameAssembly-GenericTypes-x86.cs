@@ -10,7 +10,7 @@ using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// Image 0: mscorlib.dll - 0-1809
+// Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
 // [assembly: AssemblyCompany] // 0x1000ED00-0x1000BC80
 // [assembly: AssemblyCopyright] // 0x1000ED00-0x1000BC80
 // [assembly: AssemblyDefaultAlias] // 0x1000ED00-0x1000BC80
@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 [assembly: StringFreezing] // 0x1000ED00-0x1000BC80
 // [assembly: TypeLibVersion] // 0x1000ED00-0x1000BC80
 
-// Image 1: GenericTypes.dll - 1810-1827
+// Image 1: GenericTypes.dll - Assembly: GenericTypes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1827
 // [assembly: CompilationRelaxations] // 0x1000D1B0-0x1000D1B0
 // [assembly: Debuggable] // 0x1000D1B0-0x1000D1B0
 [assembly: RuntimeCompatibility] // 0x1000D1B0-0x1000D1B0
@@ -75,10 +75,10 @@ internal static class Consts // TypeDefIndex: 100
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x100BF000-0x100BF000
+	private Locale() {} // 0x100BF000-0x100BF010
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x100F7810-0x100F7810
+	public static string GetText(string msg) => default; // 0x100F7810-0x100F7820
 	public static string GetText(string fmt, params /* 0x10009B20-0x10009B20 */ object[] args) => default; // 0x10261460-0x102614B0
 }
 
@@ -115,7 +115,7 @@ namespace Il2CppTests.TestSources
 	internal class Test // TypeDefIndex: 1819
 	{
 		// Constructors
-		public Test() {} // 0x100BF000-0x100BF000
+		public Test() {} // 0x100BF000-0x100BF010
 	
 		// Methods
 		public void GenericTypesTest() {} // 0x1034DA60-0x1034DA60

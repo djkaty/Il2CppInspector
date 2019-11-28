@@ -9,7 +9,7 @@ using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// Image 0: mscorlib.dll - 0-1809
+// Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
 // [assembly: AssemblyCompany] // 0x1000F7A0-0x1000DD10
 // [assembly: AssemblyCopyright] // 0x1000F7A0-0x1000DD10
 // [assembly: AssemblyDefaultAlias] // 0x1000F7A0-0x1000DD10
@@ -32,7 +32,7 @@ using System.Runtime.InteropServices;
 [assembly: StringFreezing] // 0x1000F7A0-0x1000DD10
 // [assembly: TypeLibVersion] // 0x1000F7A0-0x1000DD10
 
-// Image 1: References.dll - 1810-1812
+// Image 1: References.dll - Assembly: References, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1812
 // [assembly: CompilationRelaxations] // 0x1000DC90-0x1000DC90
 // [assembly: Debuggable] // 0x1000DC90-0x1000DC90
 [assembly: RuntimeCompatibility] // 0x1000DC90-0x1000DC90
@@ -74,10 +74,10 @@ internal static class Consts // TypeDefIndex: 100
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x100BF000-0x100BF000
+	private Locale() {} // 0x100BF000-0x100BF010
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x100F7810-0x100F7810
+	public static string GetText(string msg) => default; // 0x100F7810-0x100F7820
 	public static string GetText(string fmt, params /* 0x1000A660-0x1000A660 */ object[] args) => default; // 0x10261460-0x102614B0
 }
 
@@ -89,10 +89,10 @@ namespace Il2CppTests.TestSources
 		private float floatField; // 0x08
 	
 		// Constructors
-		public Test() {} // 0x100BF000-0x100BF000
+		public Test() {} // 0x100BF000-0x100BF010
 	
 		// Methods
-		public void MethodWithRefParameters(int a, ref int b, int c, ref int d) {} // 0x100C5530-0x100C5530
+		public void MethodWithRefParameters(int a, ref int b, int c, ref int d) {} // 0x100C5530-0x100C5540
 		public void MethodWithInRefOut(in int a, ref int b, out int c) {} // 0x1034DA60-0x1034DA70
 		public ref float MethodWithRefReturnType() => default; // 0x1034DA70-0x1034DA70
 	}

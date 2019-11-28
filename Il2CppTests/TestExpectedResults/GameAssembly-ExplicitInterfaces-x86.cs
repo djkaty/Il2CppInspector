@@ -10,7 +10,7 @@ using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// Image 0: mscorlib.dll - 0-1809
+// Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
 // [assembly: AssemblyCompany] // 0x1000F760-0x1000DC90
 // [assembly: AssemblyCopyright] // 0x1000F760-0x1000DC90
 // [assembly: AssemblyDefaultAlias] // 0x1000F760-0x1000DC90
@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 [assembly: StringFreezing] // 0x1000F760-0x1000DC90
 // [assembly: TypeLibVersion] // 0x1000F760-0x1000DC90
 
-// Image 1: ExplicitInterfaces.dll - 1810-1818
+// Image 1: ExplicitInterfaces.dll - Assembly: ExplicitInterfaces, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1818
 // [assembly: CompilationRelaxations] // 0x1000DC90-0x1000DC90
 // [assembly: Debuggable] // 0x1000DC90-0x1000DC90
 [assembly: RuntimeCompatibility] // 0x1000DC90-0x1000DC90
@@ -75,10 +75,10 @@ internal static class Consts // TypeDefIndex: 100
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x100BF000-0x100BF000
+	private Locale() {} // 0x100BF000-0x100BF010
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x100F7810-0x100F7810
+	public static string GetText(string msg) => default; // 0x100F7810-0x100F7820
 	public static string GetText(string fmt, params /* 0x1000A660-0x1000A660 */ object[] args) => default; // 0x10261460-0x102614B0
 }
 
@@ -99,11 +99,11 @@ namespace Il2CppTests.TestSources
 	internal class Test : IControl, ISurface // TypeDefIndex: 1813
 	{
 		// Constructors
-		public Test() {} // 0x100BF000-0x100BF000
+		public Test() {} // 0x100BF000-0x100BF010
 	
 		// Methods
-		void IControl.Paint() {} // 0x100C5530-0x100C5530
-		void ISurface.Paint() {} // 0x100C5530-0x100C5530
+		void IControl.Paint() {} // 0x100C5530-0x100C5540
+		void ISurface.Paint() {} // 0x100C5530-0x100C5540
 	}
 
 	internal interface ILeft // TypeDefIndex: 1814
@@ -121,13 +121,13 @@ namespace Il2CppTests.TestSources
 	internal class Middle : ILeft, IRight // TypeDefIndex: 1816
 	{
 		// Properties
-		int ILeft.P { get; } // 0x100C5600-0x100C5600 
+		int ILeft.P { get; } // 0x100C5600-0x100C5610 
 	
 		// Constructors
-		public Middle() {} // 0x100BF000-0x100BF000
+		public Middle() {} // 0x100BF000-0x100BF010
 	
 		// Methods
-		public int P() => default; // 0x100C5600-0x100C5600
+		public int P() => default; // 0x100C5600-0x100C5610
 	}
 
 	internal interface IGeneric<in T> // TypeDefIndex: 1817
@@ -139,9 +139,9 @@ namespace Il2CppTests.TestSources
 	internal class ImplementsGenericInterface : IGeneric<KeyValuePair<int, double>> // TypeDefIndex: 1818
 	{
 		// Constructors
-		public ImplementsGenericInterface() {} // 0x100BF000-0x100BF000
+		public ImplementsGenericInterface() {} // 0x100BF000-0x100BF010
 	
 		// Methods
-		void IGeneric<KeyValuePair<int, double>>.GenericMethod(KeyValuePair<int, double> t) {} // 0x100C5530-0x100C5530
+		void IGeneric<KeyValuePair<int, double>>.GenericMethod(KeyValuePair<int, double> t) {} // 0x100C5530-0x100C5540
 	}
 }

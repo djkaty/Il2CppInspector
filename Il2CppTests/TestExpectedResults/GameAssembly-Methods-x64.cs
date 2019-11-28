@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-// Image 0: mscorlib.dll - 0-1809
+// Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
 // [assembly: AssemblyCompany] // 0x000000018000E950-0x000000018000CAF0
 // [assembly: AssemblyCopyright] // 0x000000018000E950-0x000000018000CAF0
 // [assembly: AssemblyDefaultAlias] // 0x000000018000E950-0x000000018000CAF0
@@ -33,7 +33,7 @@ using System.Text;
 [assembly: StringFreezing] // 0x000000018000E950-0x000000018000CAF0
 // [assembly: TypeLibVersion] // 0x000000018000E950-0x000000018000CAF0
 
-// Image 1: Methods.dll - 1810-1822
+// Image 1: Methods.dll - Assembly: Methods, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1822
 // [assembly: CompilationRelaxations] // 0x000000018000CAF0-0x000000018000CAF0
 // [assembly: Debuggable] // 0x000000018000CAF0-0x000000018000CAF0
 [assembly: RuntimeCompatibility] // 0x000000018000CAF0-0x000000018000CAF0
@@ -75,10 +75,10 @@ internal static class Consts // TypeDefIndex: 100
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x00000001800E2000-0x00000001800E2000
+	private Locale() {} // 0x00000001800E2000-0x00000001800E2010
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x0000000180123590-0x0000000180123590
+	public static string GetText(string msg) => default; // 0x0000000180123590-0x00000001801235A0
 	public static string GetText(string fmt, params /* 0x0000000180009C10-0x0000000180009C10 */ object[] args) => default; // 0x00000001802C64F0-0x00000001802C6560
 }
 
@@ -87,10 +87,10 @@ namespace Il2CppTests.TestSources
 	internal class Test // TypeDefIndex: 1811
 	{
 		// Constructors
-		public Test() {} // 0x00000001800E2000-0x00000001800E2000
+		public Test() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
-		public virtual void VirtualMethod() {} // 0x00000001800EA7B0-0x00000001800EA7B0
+		public virtual void VirtualMethod() {} // 0x00000001800EA7B0-0x00000001800EA7C0
 		public double ValueTypeReturnMethod() => default; // 0x00000001803E0EC0-0x00000001803E0EC0
 		public StringBuilder ReferenceTypeReturnMethod() => default; // 0x00000001803E0E70-0x00000001803E0EC0
 	}
@@ -104,7 +104,7 @@ namespace Il2CppTests.TestSources
 	internal abstract class TestAbstract // TypeDefIndex: 1813
 	{
 		// Constructors
-		protected TestAbstract() {} // 0x00000001800E2000-0x00000001800E2000
+		protected TestAbstract() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
 		public abstract void AbstractMethod();
@@ -113,70 +113,70 @@ namespace Il2CppTests.TestSources
 	internal class TestOverride : Test // TypeDefIndex: 1814
 	{
 		// Constructors
-		public TestOverride() {} // 0x00000001800E2000-0x00000001800E2000
+		public TestOverride() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
-		public override void VirtualMethod() {} // 0x00000001800EA7B0-0x00000001800EA7B0
+		public override void VirtualMethod() {} // 0x00000001800EA7B0-0x00000001800EA7C0
 	}
 
 	internal class TestHideVirtual : Test // TypeDefIndex: 1815
 	{
 		// Constructors
-		public TestHideVirtual() {} // 0x00000001800E2000-0x00000001800E2000
+		public TestHideVirtual() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
-		public new void VirtualMethod() {} // 0x00000001800EA7B0-0x00000001800EA7B0
+		public new void VirtualMethod() {} // 0x00000001800EA7B0-0x00000001800EA7C0
 	}
 
 	internal class TestHideOverride : TestOverride // TypeDefIndex: 1816
 	{
 		// Constructors
-		public TestHideOverride() {} // 0x00000001800E2000-0x00000001800E2000
+		public TestHideOverride() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
-		public new void VirtualMethod() {} // 0x00000001800EA7B0-0x00000001800EA7B0
+		public new void VirtualMethod() {} // 0x00000001800EA7B0-0x00000001800EA7C0
 	}
 
 	internal class TestOverrideAbstract : TestAbstract // TypeDefIndex: 1817
 	{
 		// Constructors
-		public TestOverrideAbstract() {} // 0x00000001800E2000-0x00000001800E2000
+		public TestOverrideAbstract() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
-		public override void AbstractMethod() {} // 0x00000001800EA7B0-0x00000001800EA7B0
+		public override void AbstractMethod() {} // 0x00000001800EA7B0-0x00000001800EA7C0
 	}
 
 	internal class TestHideAbstractOverride : TestOverrideAbstract // TypeDefIndex: 1818
 	{
 		// Constructors
-		public TestHideAbstractOverride() {} // 0x00000001800E2000-0x00000001800E2000
+		public TestHideAbstractOverride() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
-		public new void AbstractMethod() {} // 0x00000001800EA7B0-0x00000001800EA7B0
+		public new void AbstractMethod() {} // 0x00000001800EA7B0-0x00000001800EA7C0
 	}
 
 	internal class TestHideVirtualAndNewVirtual : Test // TypeDefIndex: 1819
 	{
 		// Constructors
-		public TestHideVirtualAndNewVirtual() {} // 0x00000001800E2000-0x00000001800E2000
+		public TestHideVirtualAndNewVirtual() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
-		public virtual new void VirtualMethod() {} // 0x00000001800EA7B0-0x00000001800EA7B0
+		public virtual new void VirtualMethod() {} // 0x00000001800EA7B0-0x00000001800EA7C0
 	}
 
 	internal class TestHideOverrideAndNewVirtual : TestOverride // TypeDefIndex: 1820
 	{
 		// Constructors
-		public TestHideOverrideAndNewVirtual() {} // 0x00000001800E2000-0x00000001800E2000
+		public TestHideOverrideAndNewVirtual() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
-		public virtual new void VirtualMethod() {} // 0x00000001800EA7B0-0x00000001800EA7B0
+		public virtual new void VirtualMethod() {} // 0x00000001800EA7B0-0x00000001800EA7C0
 	}
 
 	internal abstract class TestAbstractNew : TestOverride // TypeDefIndex: 1821
 	{
 		// Constructors
-		protected TestAbstractNew() {} // 0x00000001800E2000-0x00000001800E2000
+		protected TestAbstractNew() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
 		public abstract new void VirtualMethod();
@@ -185,9 +185,9 @@ namespace Il2CppTests.TestSources
 	internal class TestNewNonVirtualMethod : Test // TypeDefIndex: 1822
 	{
 		// Constructors
-		public TestNewNonVirtualMethod() {} // 0x00000001800E2000-0x00000001800E2000
+		public TestNewNonVirtualMethod() {} // 0x00000001800E2000-0x00000001800E2010
 	
 		// Methods
-		public int ValueTypeReturnMethod() => default; // 0x0000000180119A50-0x0000000180119A50
+		public int ValueTypeReturnMethod() => default; // 0x0000000180119A50-0x0000000180119A60
 	}
 }
