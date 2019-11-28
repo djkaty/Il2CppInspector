@@ -37,7 +37,8 @@ namespace Il2CppInspector
 
                 Position = arch.Offset;
                 Endianness = Endianness.Little;
-                var s = new MemoryStream(ReadBytes((int) arch.Size));
+
+                using var s = new MemoryStream(ReadBytes((int) arch.Size));
                 return (IFileFormatReader) MachOReader32.Load(s) ?? MachOReader64.Load(s);
             }
         }

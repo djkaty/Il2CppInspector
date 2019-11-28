@@ -257,7 +257,7 @@ namespace Il2CppInspector
                 var setAccess = (prop.SetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
 
                 var primary = getAccess >= setAccess ? prop.GetMethod : prop.SetMethod;
-                sb.Append($"{prefix}\t{primary.GetModifierString(scope)}{prop.PropertyType.GetScopedCSharpName(scope)} ");
+                sb.Append($"{prefix}\t{primary.GetModifierString()}{prop.PropertyType.GetScopedCSharpName(scope)} ");
 
                 // Non-indexer
                 if ((!prop.CanRead || !prop.GetMethod.DeclaredParameters.Any()) && (!prop.CanWrite || prop.SetMethod.DeclaredParameters.Count == 1))
@@ -293,7 +293,7 @@ namespace Il2CppInspector
                 sb.Append(evt.CustomAttributes.OrderBy(a => a.AttributeType.Name)
                     .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
 
-                string modifiers = evt.AddMethod?.GetModifierString(scope);
+                string modifiers = evt.AddMethod?.GetModifierString();
                 sb.Append($"{prefix}\t{modifiers}event {evt.EventHandlerType.GetScopedCSharpName(scope)} {evt.Name}");
                 
                 if (!MustCompile) {
@@ -323,7 +323,7 @@ namespace Il2CppInspector
                 sb.Append(method.CustomAttributes.OrderBy(a => a.AttributeType.Name)
                     .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
 
-                sb.Append($"{prefix}\t{method.GetModifierString(scope)}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString(scope)}(");
+                sb.Append($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString(scope)}(");
                 sb.Append(method.GetParametersString(scope, !SuppressMetadata) + ")" + (method.IsAbstract? ";" : @" {}"));
                 sb.Append((!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
             }
@@ -417,7 +417,7 @@ namespace Il2CppInspector
 
             // IL2CPP doesn't seem to retain return type attributes
             //writer.Append(method.ReturnType.CustomAttributes.ToString(prefix + "\t", "return: ", emitPointer: !SuppressMetadata));
-            writer.Append($"{prefix}\t{method.GetModifierString(scope)}");
+            writer.Append($"{prefix}\t{method.GetModifierString()}");
 
             // Finalizers become destructors
             if (method.Name == "Finalize" && method.IsVirtual && method.ReturnType.FullName == "System.Void" && method.IsFamily)

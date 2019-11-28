@@ -150,7 +150,7 @@ namespace Il2CppInspector.Reflection
             _ => ""
         };
 
-        public string GetModifierString(Scope usingScope) {
+        public string GetModifierString() {
             // Interface methods and properties have no visible modifiers (they are always declared 'public abstract')
             if (DeclaringType.IsInterface)
                 return string.Empty;
@@ -176,7 +176,7 @@ namespace Il2CppInspector.Reflection
             if ((DeclaringType.BaseType?.GetAllMethods().Any(m => m.GetSignatureString() == GetSignatureString() && m.IsHideBySig) ?? false)
                 && (((Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.ReuseSlot && !IsVirtual)
                     || (Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot))
-                modifiers.Append($"new ");
+                modifiers.Append("new ");
 
             if (Name == "op_Implicit")
                 modifiers.Append("implicit ");

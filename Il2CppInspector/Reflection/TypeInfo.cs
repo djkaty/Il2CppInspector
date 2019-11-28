@@ -90,7 +90,7 @@ namespace Il2CppInspector.Reflection {
 
         public List<MethodInfo> DeclaredMethods { get; } = new List<MethodInfo>();
 
-        private int[] declaredNestedTypes;
+        private readonly int[] declaredNestedTypes;
         public IEnumerable<TypeInfo> DeclaredNestedTypes => declaredNestedTypes.Select(x => Assembly.Model.TypesByDefinitionIndex[x]);
 
         public List<PropertyInfo> DeclaredProperties { get; } = new List<PropertyInfo>();
@@ -191,8 +191,8 @@ namespace Il2CppInspector.Reflection {
                    && usingScope.Substring(0, usingScope.IndexOf('.', diff))
                    == declaringScope.Substring(0, declaringScope.IndexOf('.', diff)))
                 diff = usingScope.IndexOf('.', diff) + 1;
-            usingScope = usingScope.Substring(0, usingScope.Length - 1);
-            declaringScope = declaringScope.Substring(0, declaringScope.Length - 1);
+            usingScope = usingScope.Remove(usingScope.Length - 1);
+            declaringScope = declaringScope.Remove(declaringScope.Length - 1);
 
             // This is the mutual root namespace and optionally nested types that the two scopes share
             var mutualRootScope = usingScope.Substring(0, diff - 1);
@@ -656,9 +656,8 @@ namespace Il2CppInspector.Reflection {
         }
 
         // Initialize a type that is a generic parameter of a generic method
-        public TypeInfo(MethodBase declaringMethod, Il2CppGenericParameter param) : this(declaringMethod.DeclaringType, param) {
-            DeclaringMethod = declaringMethod;
-        }
+        public TypeInfo(MethodBase declaringMethod, Il2CppGenericParameter param) : this(declaringMethod.DeclaringType, param)
+            => DeclaringMethod = declaringMethod;
 
         // Get all the other types directly referenced by this type (single level depth; no recursion)
         public List<TypeInfo> GetAllTypeReferences() {
