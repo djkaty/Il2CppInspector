@@ -12,6 +12,22 @@ using Some.Namespace.SameLeafName;
 
 #pragma warning disable CS0169
 
+// Type in global namespace should not overwrite selection of type with namespace
+public class TestGlobal {}
+
+namespace NotGlobalNamespace
+{
+    public class TestGlobal {}
+}
+
+namespace NotGlobalUsingNamespace
+{
+    public class TestUsingNonGlobalNamespaceType
+    {
+        public NotGlobalNamespace.TestGlobal Test() => default;
+    }
+}
+
 // Namespace nesting and using directive tests
 namespace Some.Namespace
 {

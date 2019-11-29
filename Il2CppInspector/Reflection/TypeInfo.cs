@@ -281,7 +281,14 @@ namespace Il2CppInspector.Reflection {
                 // Only test the outermost type name
                 outerTypeName = minimallyScopedName.Split('.')[0];
 
+                // Take matching type names from all namespaces in scope
                 var matchingNamespaces = scope.Namespaces.Where(n => Assembly.Model.TypesByFullName.ContainsKey(n + "." + outerTypeName)).ToList();
+
+                // The global namespace is in scope so take every matching type from that too
+                if (Assembly.Model.TypesByFullName.ContainsKey(outerTypeName))
+                    matchingNamespaces.Add("");
+
+                // More than one possible matching type? If so, the type reference is ambiguous
                 if (matchingNamespaces.Count > 1) {
                     Debug.WriteLine("Minimally scoped name would be ambiguous between: " + string.Join(" and ", matchingNamespaces.Select(n => n + "." + minimallyScopedName)));
                     // TODO: This can be improved to cut off a new mutual root that doesn't cause ambiguity
