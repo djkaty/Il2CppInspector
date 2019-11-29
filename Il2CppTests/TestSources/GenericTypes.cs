@@ -87,4 +87,28 @@ namespace Il2CppTests.TestSources
 
         private delegate void NestedDelegateWithAutomaticConstraints();
     }
+
+    // Nested generic types should not be referenced using outer type parameters
+    public class OuterGeneric<T1, T2> {
+        public class InnerGeneric1 : List<T1> {}
+
+        public class InnerGeneric2 : List<T2>
+        {
+            public class SubInnerGeneric2 : List<T2> {}
+            public class SubInnerGeneric3<V> {}
+
+            public SubInnerGeneric2 Test() => default;
+            public SubInnerGeneric3<int> Test2() => default;
+        }
+
+        public InnerGeneric1 fieldOfInnerGeneric1;
+        public InnerGeneric2 fieldOfInnerGeneric2;
+
+        public OuterGeneric<T1, float> fieldOfOuterGenericOpen1;
+        public OuterGeneric<int, T2> fieldOfOuterGenericOpen2;
+        public OuterGeneric<int, float> fieldOfOuterGenericClosed;
+
+        public InnerGeneric2.SubInnerGeneric2 fieldOfSubInnerGeneric2;
+        public InnerGeneric2.SubInnerGeneric3<string> fieldOfSubInnerGeneric3;
+    }
 }

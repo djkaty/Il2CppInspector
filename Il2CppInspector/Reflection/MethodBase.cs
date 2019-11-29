@@ -59,13 +59,13 @@ namespace Il2CppInspector.Reflection
             // Explicit interface implementation
             : (IsVirtual && IsFinal && (Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot && Name.IndexOf('.') != -1)? 
             ((Func<string>)(() => {
+                // This is some shenanigans because IL2CPP does not use a consistent naming scheme for explicit interface implementation method names
                 var implementingInterface = DeclaringType.ImplementedInterfaces.FirstOrDefault(i => Name.StartsWith(i.Namespace + "." + i.CSharpName + "."))
-                    ?? DeclaringType.ImplementedInterfaces.FirstOrDefault(i => Name.StartsWith(Regex.Replace(i.FullName, @"`\d", "").Replace('[', '<').Replace(']', '>') + "."));
+                    ?? DeclaringType.ImplementedInterfaces.FirstOrDefault(i => Name.StartsWith(i.Namespace + "." + i.CSharpTypeDeclarationName.Replace(" ", "") + "."));
                 // TODO: There are some combinations we haven't dealt with so use this test as a safety valve
                 if (implementingInterface == null)
                     return Name;
-                var sliceLength = Regex.Replace(implementingInterface.FullName, @"`\d", "").Length + 1;
-                return implementingInterface.CSharpName + "." + Name.Substring(sliceLength);
+                return implementingInterface.CSharpName + Name.Substring(Name.LastIndexOf('.'));
             }))()
 
             // Regular method

@@ -72,7 +72,7 @@ namespace Il2CppInspector.Reflection {
                         + (base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
                         + ((IsNested? GenericTypeParameters?.Where(p => DeclaringType.GenericTypeParameters?.All(dp => dp.Name != p.Name) ?? true) : GenericTypeParameters)?.Any() ?? false?
                             "<" + string.Join(", ", GenericTypeParameters.Select(x => x.CSharpTypeDeclarationName)) + ">" : "")
-                        + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.CSharpTypeDeclarationName)) + ">" : ""))
+                        + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => (!x.IsGenericTypeParameter? x.Namespace + "." : "") + x.CSharpTypeDeclarationName)) + ">" : ""))
                    + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
                    + (IsPointer ? "*" : "");
 
@@ -146,9 +146,7 @@ namespace Il2CppInspector.Reflection {
             IsGenericParameter? null :
                 (HasElementType? ElementType.FullName : 
                     (DeclaringType != null? DeclaringType.FullName + "+" : Namespace + (Namespace.Length > 0? "." : ""))
-                    + base.Name
-                    + (GenericTypeParameters != null ? "[" + string.Join(",", GenericTypeParameters.Select(x => x.FullName ?? x.Name)) + "]" : "")
-                    + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.FullName ?? x.Name)) + "]" : ""))
+                    + base.Name)
                 + (IsArray? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
                 + (IsPointer? "*" : "");
 
