@@ -24,7 +24,7 @@ namespace Il2CppInspector.Reflection {
         public bool HasDefaultValue => (Attributes & FieldAttributes.HasDefault) != 0;
         public object DefaultValue { get; }
 
-        public string DefaultValueString => HasDefaultValue ? DefaultValue.ToCSharpValue() : "";
+        public string DefaultValueString => HasDefaultValue ? DefaultValue.ToCSharpValue(FieldType) : "";
 
         // Information/flags about the field
         public FieldAttributes Attributes { get; }
