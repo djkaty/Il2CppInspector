@@ -317,9 +317,9 @@ namespace Il2CppInspector.Reflection {
                 n = n?.Remove(n.IndexOf("`", StringComparison.Ordinal));
 
             // Generic type parameters and type arguments
-            var g = (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.GetScopedCSharpName(usingScope))) + ">" : "");
-            g = (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.GetScopedCSharpName(usingScope))) + ">" : g);
-            n += g;
+            var g = string.Join(", ", getGenericTypeParameters(usingScope).Select(x => x.GetScopedCSharpName(usingScope)));
+            if (!string.IsNullOrEmpty(g))
+                n += "<" + g + ">";
 
             // Nullable types
             if (s == "System.Nullable`1" && GenericTypeArguments.Any())
@@ -330,6 +330,34 @@ namespace Il2CppInspector.Reflection {
                 n = ElementType.GetScopedCSharpName(usingScope);
 
             return n + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "") + (IsPointer ? "*" : "");
+        }
+
+        // Get the generic type parameters for a specific usage of this type based on its scope,
+        // or all generic type parameters if no scope specified
+        private IEnumerable<TypeInfo> getGenericTypeParameters(Scope scope = null) {
+            // Merge generic type parameters and generic type arguments
+            var gp = (GenericTypeParameters ?? new List<TypeInfo>()).Concat(GenericTypeArguments ?? new List<TypeInfo>());
+
+            // If no scope or empty scope specified, or no type parameters, stop here
+            if (scope?.Current == null || !gp.Any())
+                return gp;
+
+            // In order to elide generic type parameters, the using scope must be a parent of the declaring scope
+            // Determine if the using scope is a parent of the declaring scope (always a child if using scope is empty)
+            var usingScopeIsParent = false;
+            for (var s = DeclaringType; s != null && !usingScopeIsParent; s = s.DeclaringType)
+                if (s == scope.Current)
+                    usingScopeIsParent = true;
+
+            if (!usingScopeIsParent)
+                return gp;
+
+            // Get the generic type parameters available in the using scope
+            // (no need to recurse because every nested type inherits all of the generic type parameters of all of its ancestors)
+            var gpsInScope = (scope.Current.GenericTypeParameters ?? new List<TypeInfo>()).Concat(scope.Current.GenericTypeArguments ?? new List<TypeInfo>());
+
+            // Return all of the generic type parameters this type uses minus those already in scope
+            return gp.Where(p => gpsInScope.All(pp => pp.Name != p.Name));
         }
 
         public GenericParameterAttributes GenericParameterAttributes { get; }
