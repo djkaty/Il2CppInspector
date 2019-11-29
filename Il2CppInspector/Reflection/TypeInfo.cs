@@ -731,6 +731,10 @@ namespace Il2CppInspector.Reflection {
                 refs.UnionWith(GenericTypeArguments);
             refs.UnionWith(GetGenericParameterConstraints());
 
+            // Generic type constraints of type parameters in generic type definition
+            if (GenericTypeParameters != null)
+                refs.UnionWith(GenericTypeParameters.SelectMany(p => p.GetGenericParameterConstraints()));
+
             // Implemented interfaces
             refs.UnionWith(ImplementedInterfaces);
 
