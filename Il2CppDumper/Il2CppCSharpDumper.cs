@@ -260,19 +260,25 @@ namespace Il2CppInspector
                 sb.Append($"{prefix}\t{primary.GetModifierString()}{prop.PropertyType.GetScopedCSharpName(scope)} ");
 
                 // Non-indexer
+                var getBody = ";";
+                var setBody = ";";
                 if ((!prop.CanRead || !prop.GetMethod.DeclaredParameters.Any()) && (!prop.CanWrite || prop.SetMethod.DeclaredParameters.Count == 1))
                     sb.Append($"{prop.CSharpName} {{ ");
+                
                 // Indexer
-                else
-                    sb.Append("this[" + string.Join(", ", primary.DeclaredParameters.SkipLast(getAccess >= setAccess? 0 : 1)
+                else {
+                    sb.Append("this[" + string.Join(", ", primary.DeclaredParameters.SkipLast(getAccess >= setAccess ? 0 : 1)
                                   .Select(p => p.GetParameterString(scope, !SuppressMetadata, MustCompile))) + "] { ");
+                    getBody = " => default;";
+                    setBody = " {}";
+                }
 
                 sb.Append((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !MustCompile || a.AttributeType.FullName != CGAttribute)
                                              .ToString(scope, inline: true, emitPointer: !SuppressMetadata, mustCompile: MustCompile) 
-                                               + (getAccess < setAccess? prop.GetMethod.GetAccessModifierString() : "") + "get; " : "")
+                                               + (getAccess < setAccess? prop.GetMethod.GetAccessModifierString() : "") + $"get{getBody} " : "")
                              + (prop.CanWrite? prop.SetMethod.CustomAttributes.Where(a => !MustCompile || a.AttributeType.FullName != CGAttribute)
                                                    .ToString(scope, inline: true, emitPointer: !SuppressMetadata, mustCompile: MustCompile) 
-                                               + (setAccess < getAccess? prop.SetMethod.GetAccessModifierString() : "") + "set; " : "") + "}");
+                                               + (setAccess < getAccess? prop.SetMethod.GetAccessModifierString() : "") + $"set{setBody} " : "") + "}");
                 if (!SuppressMetadata) {
                     if ((prop.CanRead && prop.GetMethod.VirtualAddress != null) || (prop.CanWrite && prop.SetMethod.VirtualAddress != null))
                         sb.Append(" // ");
