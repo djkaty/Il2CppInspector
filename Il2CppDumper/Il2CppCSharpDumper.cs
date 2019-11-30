@@ -430,8 +430,11 @@ namespace Il2CppInspector
             // User-defined conversion operator
             else
                 writer.Append($"{method.CSharpName}{method.ReturnType.GetScopedCSharpName(scope)}");
+
+            // Parameters
             writer.Append("(" + method.GetParametersString(scope, !SuppressMetadata) + ")");
 
+            // Generic type constraints
             if (method.GenericTypeParameters != null)
                 foreach (var gp in method.GenericTypeParameters) {
                     var constraint = gp.GetTypeConstraintsString(scope);
@@ -439,6 +442,7 @@ namespace Il2CppInspector
                         writer.Append($"\n{prefix}\t\t{constraint}");
                 }
 
+            // Body
             var methodBody = method switch {
                 // Abstract method
                 { IsAbstract: true } => ";",
@@ -446,15 +450,20 @@ namespace Il2CppInspector
                 // Extern method
                 { Attributes: var a } when (a & MethodAttributes.PinvokeImpl) == MethodAttributes.PinvokeImpl => ";",
 
+                // Method with out parameters
+                { DeclaredParameters: var d } when d.Any(p => p.IsOut) =>
+                    " {\n" + string.Join("\n", d.Where(p => p.IsOut).Select(p => $"{prefix}\t\t{p.Name} = default;"))
+                    + (method.ReturnType.FullName != "System.Void"? $"\n{prefix}\t\treturn default;" : "")
+                    + $"\n{prefix}\t}}",
+
                 // No return type
-                { ReturnType: var retType } when retType.FullName == "System.Void" => @" {}",
+                { ReturnType: var retType } when retType.FullName == "System.Void" => " {}",
 
                 // Return type
                 _ => " => default;"
             };
 
             writer.Append(methodBody + (!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
-
             return writer.ToString();
         }
     }
