@@ -865,10 +865,12 @@ namespace Il2CppInspector.Reflection {
 
             var constraintList = typeConstraints.Where(c => c.FullName != "System.ValueType").Select(c => c.GetScopedCSharpName(scope)).ToList();
 
+            // struct or class must be the first constraint specified
             if ((GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) == GenericParameterAttributes.NotNullableValueTypeConstraint)
-                constraintList.Add("struct");
+                constraintList.Insert(0, "struct");
             if ((GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) == GenericParameterAttributes.ReferenceTypeConstraint)
-                constraintList.Add("class");
+                constraintList.Insert(0, "class");
+
             if ((GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) == GenericParameterAttributes.DefaultConstructorConstraint
                 && !constraintList.Contains("struct"))
                 // new() must be the last constraint specified
