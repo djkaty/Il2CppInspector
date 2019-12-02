@@ -325,14 +325,29 @@ namespace Il2CppInspector
                 .Select(n => generateType(n, namespaces, prefix + "\t")).Where(c => !string.IsNullOrEmpty(c))));
 
             // Constructors
+            var fields = type.DeclaredFields.Where(f => !f.GetCustomAttributes(CGAttribute).Any());
+
             sb.Clear();
             foreach (var method in type.DeclaredConstructors) {
                 // Attributes
                 sb.Append(method.CustomAttributes.OrderBy(a => a.AttributeType.Name)
                     .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
 
-                sb.Append($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString(scope)}(");
-                sb.Append(method.GetParametersString(scope, !SuppressMetadata) + ")" + (method.IsAbstract? ";" : @" {}"));
+                sb.Append($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString(scope)}");
+                sb.Append($"({method.GetParametersString(scope, !SuppressMetadata)})");
+
+                if (method.IsAbstract)
+                    sb.Append(";");
+                else if (!type.IsValueType || !fields.Any())
+                    sb.Append(" {}");
+                // Struct constructors must initialize all fields in the struct
+                else {
+                    var paramNames = method.DeclaredParameters.Select(p => p.Name);
+                    sb.Append(" {\n" + string.Join("\n",
+                                fields.Select(f => $"{prefix}\t\t{(paramNames.Contains(f.Name) ? "this." : "")}{f.Name} = default;"))
+                                + $"\n{prefix}\t}}");
+                }
+
                 sb.Append((!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
             }
             codeBlocks.Add("Constructors", sb.ToString());
