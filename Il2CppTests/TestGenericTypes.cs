@@ -29,15 +29,15 @@ namespace Il2CppInspector
             var asm = model.GetAssembly("GenericTypes.dll");
 
             // Act
-            TypeInfo tDerived = asm.GetType("Il2CppTests.TestSources.Derived`1[V]");
+            TypeInfo tDerived = asm.GetType("Il2CppTests.TestSources.Derived`1");
             TypeInfo tDerivedBase = tDerived.BaseType;
 
             // TODO: array of Derived<int>
             // TypeInfo tDerivedArray
 
-            TypeInfo tT = asm.GetType("Il2CppTests.TestSources.Base`2[T,U]").GenericTypeParameters[0];
+            TypeInfo tT = asm.GetType("Il2CppTests.TestSources.Base`2").GenericTypeParameters[0];
             TypeInfo tF = tDerived.GetField("F").FieldType;
-            TypeInfo tNested = asm.GetType("Il2CppTests.TestSources.Derived`1[V]+Nested[V]");
+            TypeInfo tNested = asm.GetType("Il2CppTests.TestSources.Derived`1+Nested");
 
             DisplayGenericType(tDerived, "Derived<V>");
             DisplayGenericType(tDerivedBase, "Base type of Derived<V>");
