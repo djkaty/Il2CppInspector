@@ -336,16 +336,27 @@ namespace Il2CppInspector
                 sb.Append($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString(scope)}");
                 sb.Append($"({method.GetParametersString(scope, !SuppressMetadata)})");
 
+                // Class constructor
                 if (method.IsAbstract)
                     sb.Append(";");
-                else if (!type.IsValueType || !fields.Any())
+                else if (!type.IsValueType)
                     sb.Append(" {}");
-                // Struct constructors must initialize all fields in the struct
+
+                // Struct constructor
                 else {
-                    var paramNames = method.DeclaredParameters.Select(p => p.Name);
-                    sb.Append(" {\n" + string.Join("\n",
-                                fields.Select(f => $"{prefix}\t\t{(paramNames.Contains(f.Name) ? "this." : "")}{f.Name} = default;"))
-                                + $"\n{prefix}\t}}");
+                    // Parameterized struct constructors must call the parameterless constructor to create the object
+                    // if the object has any auto-implemented properties
+                    if (type.DeclaredProperties.Any() && method.DeclaredParameters.Any())
+                        sb.Append(" : this()");
+
+                    // Struct construvctors must initialize all fields in the struct
+                    if (fields.Any()) {
+                        var paramNames = method.DeclaredParameters.Select(p => p.Name);
+                        sb.Append(" {\n" + string.Join("\n",
+                                    fields.Select(f => $"{prefix}\t\t{(paramNames.Contains(f.Name) ? "this." : "")}{f.Name} = default;"))
+                                    + $"\n{prefix}\t}}");
+                    } else
+                        sb.Append(" {}");
                 }
 
                 sb.Append((!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
