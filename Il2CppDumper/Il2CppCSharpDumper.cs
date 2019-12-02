@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using Il2CppInspector.Reflection;
 using CustomAttributeData = Il2CppInspector.Reflection.CustomAttributeData;
 using MethodInfo = Il2CppInspector.Reflection.MethodInfo;
@@ -58,7 +59,8 @@ namespace Il2CppInspector
         public void WriteFilesByClass(string outPath, bool flattenHierarchy) {
             var usedAssemblyAttributes = new HashSet<CustomAttributeData>();
             foreach (var type in model.Assemblies.SelectMany(x => x.DefinedTypes)) {
-                writeFile($"{outPath}\\{type.FullName.Replace('.', flattenHierarchy ? '.' : '\\')}.cs",
+                writeFile($"{outPath}\\" + (type.Namespace + (type.Namespace.Length > 0? "." : "") + Regex.Replace(type.Name, "`[0-9]", ""))
+                          .Replace('.', flattenHierarchy ? '.' : '\\') + ".cs",
                     new[] {type}, excludedAssemblyAttributes: usedAssemblyAttributes);
                 usedAssemblyAttributes.UnionWith(type.Assembly.CustomAttributes);
             }
