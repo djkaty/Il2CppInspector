@@ -6,9 +6,9 @@ Easily extract types and metadata from IL2CPP binaries.
 * 32-bit and 64-bit support for all file formats
 * Supports ARMv7, Thumb-2, ARMv8 (A64), x86 and x64 architectures regardless of file format
 * Supports applications created with Unity 5.3.0 onwards (full IL2CPP version table below)
-* Support for classes, methods, constructors, fields, properties, enumerations, events, interfaces, structs, pointers, references, attributes, nested types, generic types, generic methods, generic constraints, default field values and default method parameter values
-* C# syntactic sugar for CTS value types, compiler-generated types, delegates, extension methods, operator overloading, indexers, user-defined conversion operators, nullable types, unsafe contexts, fixed-size arrays, variable length argument lists and method hiding
-* Partition C# code output by namespace, assembly, class or single file; sort by index or type name; output flat or nested folder hierarchy. Each file includes the necessary `using` directives to enable compilation
+* Support for assemblies, classes, methods, constructors, fields, properties, enumerations, events, interfaces, structs, pointers, references, attributes, nested types, generic types, generic methods, generic constraints, default field values and default method parameter values
+* C# syntactic sugar for CTS value types, compiler-generated types, delegates, extension methods, operator overloading, indexers, user-defined conversion operators, explicit interface instantiations, finalizers, nullable types, unsafe contexts, fixed-size arrays, variable length argument lists, method hiding and escaped strings
+* Partition C# code output by namespace, assembly, class or single file; sort by index or type name; output flat or nested folder hierarchy. Each file includes the necessary `using` directives. Scope and type name conflicts are resolved automatically to produce code that compiles.
 * Static symbol table scanning for ELF and Mach-O binaries if present
 * Dynamic symbol table scanning for ELF binaries if present
 * Symbol relocation handling for ELF binaries
@@ -38,14 +38,14 @@ File format and architecture are automatically detected.
 
 ```
   -i, --bin                   Required. (Default: libil2cpp.so) IL2CPP binary file input
-  -m, --metadata              Required. (Default: global-metadata.data) IL2CPP metadata file input
+  -m, --metadata              Required. (Default: global-metadata.dat) IL2CPP metadata file input
   -c, --cs-out                (Default: types.cs) C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)
   -e, --exclude-namespaces    (Default: System Unity UnityEngine UnityEngineInternal Mono Microsoft.Win32) Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces
   -l, --layout                (Default: single) Partitioning of C# output ('single' = single file, 'namespace' = one file per namespace, 'assembly' = one file per assembly, 'class' = one file per class)
   -s, --sort                  (Default: index) Sort order of type definitions in C# output ('index' = by type definition index, 'name' = by type name). No effect when using file-per-class layout
-  -f, --flatten               (Default: false) Flatten the namespace hierarchy into a single folder rather than using per-namespace subfolders. Only used when layout is per-namespace or per-class
-  -g, --no-suppress-cg        (Default: false) Don't suppress generation of C# code for items with CompilerGenerated attribute
-  -n, --suppress-metadata     (Default: false) Suppress method pointers, field offsets and type indices from C# output. Useful for comparing two versions of a binary for changes with a diff tool
+  -f, --flatten               Flatten the namespace hierarchy into a single folder rather than using per-namespace subfolders. Only used when layout is per-namespace or per-class
+  -n, --suppress-metadata     Diff tidying: suppress method pointers, field offsets and type indices from C# output. Useful for comparing two versions of a binary for changes with a diff tool
+  -k, --must-compile          Compilation tidying: try really hard to make code that compiles. Suppress generation of code for items with CompilerGenerated attribute. Comment out attributes without parameterless constructors or all-optional constructor arguments. Don't emit add/remove/raise on events.
 ```
 
 Defaults if not specified:
