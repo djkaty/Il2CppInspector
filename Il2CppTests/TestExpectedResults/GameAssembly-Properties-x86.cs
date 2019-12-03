@@ -90,11 +90,11 @@ namespace Il2CppTests.TestSources
 		protected int prop2 { get; private set; } // 0x100C5B30-0x100C5B40 0x100C5B50-0x100C5B60
 		protected int prop3 { private get; set; } // 0x100BFC20-0x100BFC30 0x100C5B40-0x100C5B50
 		public static int prop4 { private get; set; } // 0x1034DAF0-0x1034DB20 0x1034DB20-0x1034DB20
-		public string this[int i] { get; } // 0x1034DA90-0x1034DAC0 
-		public string this[double d] { get; } // 0x1034DA60-0x1034DA90 
-		public string this[long l] { set; } // 0x100C5530-0x100C5540
-		public string this[float f] { get; set; } // 0x1034DAC0-0x1034DAF0 0x100C5530-0x100C5540
-		public bool this[int i, int j] { get; } // 0x100E5880-0x100E5890 
+		public string this[int i] { get => default; } // 0x1034DA90-0x1034DAC0 
+		public string this[double d] { get => default; } // 0x1034DA60-0x1034DA90 
+		public string this[long l] { set {} } // 0x100C5530-0x100C5540
+		public string this[float f] { get => default; set {} } // 0x1034DAC0-0x1034DAF0 0x100C5530-0x100C5540
+		public bool this[int i, int j] { get => default; } // 0x100E5880-0x100E5890 
 	
 		// Constructors
 		public Test() {} // 0x100BF000-0x100BF010

@@ -97,9 +97,9 @@ namespace Il2CppTests.TestSources
 	
 		// Properties
 		public unsafe int* PointerProperty { get; set; } // 0x00000001801513A0-0x00000001801513B0 0x00000001801140B0-0x00000001801140C0
-		public unsafe int* this[int i] { get; } // 0x00000001800EA8C0-0x00000001800EA8D0 
-		public unsafe int this[int* p] { get; } // 0x00000001800EA8C0-0x00000001800EA8D0 
-		public unsafe float* this[float* fp] { get; } // 0x00000001800EA8C0-0x00000001800EA8D0 
+		public unsafe int* this[int i] { get => default; } // 0x00000001800EA8C0-0x00000001800EA8D0 
+		public unsafe int this[int* p] { get => default; } // 0x00000001800EA8C0-0x00000001800EA8D0 
+		public unsafe float* this[float* fp] { get => default; } // 0x00000001800EA8C0-0x00000001800EA8D0 
 	
 		// Nested types
 		private struct fixedSizeArrayStruct // TypeDefIndex: 1814

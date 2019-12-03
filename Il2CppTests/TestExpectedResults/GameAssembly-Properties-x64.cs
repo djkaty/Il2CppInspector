@@ -90,11 +90,11 @@ namespace Il2CppTests.TestSources
 		protected int prop2 { get; private set; } // 0x0000000180156360-0x0000000180156370 0x00000001803E0F20-0x00000001803E0F30
 		protected int prop3 { private get; set; } // 0x00000001800ED060-0x00000001800ED070 0x000000018019DD90-0x000000018019DDA0
 		public static int prop4 { private get; set; } // 0x00000001803E0EE0-0x00000001803E0F20 0x00000001803E0F30-0x00000001803E0F30
-		public string this[int i] { get; } // 0x00000001803E0E80-0x00000001803E0EB0 
-		public string this[double d] { get; } // 0x00000001803E0E50-0x00000001803E0E80 
-		public string this[long l] { set; } // 0x00000001800EA7B0-0x00000001800EA7C0
-		public string this[float f] { get; set; } // 0x00000001803E0EB0-0x00000001803E0EE0 0x00000001800EA7B0-0x00000001800EA7C0
-		public bool this[int i, int j] { get; } // 0x000000018010E420-0x000000018010E430 
+		public string this[int i] { get => default; } // 0x00000001803E0E80-0x00000001803E0EB0 
+		public string this[double d] { get => default; } // 0x00000001803E0E50-0x00000001803E0E80 
+		public string this[long l] { set {} } // 0x00000001800EA7B0-0x00000001800EA7C0
+		public string this[float f] { get => default; set {} } // 0x00000001803E0EB0-0x00000001803E0EE0 0x00000001800EA7B0-0x00000001800EA7C0
+		public bool this[int i, int j] { get => default; } // 0x000000018010E420-0x000000018010E430 
 	
 		// Constructors
 		public Test() {} // 0x00000001800E2000-0x00000001800E2010

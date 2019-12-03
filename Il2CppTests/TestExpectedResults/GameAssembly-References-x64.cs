@@ -93,7 +93,9 @@ namespace Il2CppTests.TestSources
 	
 		// Methods
 		public void MethodWithRefParameters(int a, ref int b, int c, ref int d) {} // 0x00000001800EA7B0-0x00000001800EA7C0
-		public void MethodWithInRefOut(in int a, ref int b, out int c) {} // 0x00000001803E0E50-0x00000001803E0E60
+		public void MethodWithInRefOut(in int a, ref int b, out int c) {
+			c = default;
+		} // 0x00000001803E0E50-0x00000001803E0E60
 		public ref float MethodWithRefReturnType() => default; // 0x00000001803E0E60-0x00000001803E0E60
 	}
 
