@@ -278,6 +278,8 @@ namespace Il2CppInspector
                 sb.Append((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !MustCompile || a.AttributeType.FullName != CGAttribute)
                                              .ToString(scope, inline: true, emitPointer: !SuppressMetadata, mustCompile: MustCompile) 
                                                + (getAccess < setAccess? prop.GetMethod.GetAccessModifierString() : "") + $"get{getBody} " : "")
+                             // Auto-properties must have get accessors
+                             + (MustCompile && !prop.CanRead? "get; " : "")
                              + (prop.CanWrite? prop.SetMethod.CustomAttributes.Where(a => !MustCompile || a.AttributeType.FullName != CGAttribute)
                                                    .ToString(scope, inline: true, emitPointer: !SuppressMetadata, mustCompile: MustCompile) 
                                                + (setAccess < getAccess? prop.SetMethod.GetAccessModifierString() : "") + $"set{setBody} " : "") + "}");
