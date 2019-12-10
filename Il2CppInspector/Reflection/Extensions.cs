@@ -25,12 +25,20 @@ namespace Il2CppInspector.Reflection
                 // IL2CPP doesn't retain attribute arguments so we have to comment out those with non-optional arguments if we want the output to compile
                 var commentStart = mustCompile && !parameterlessConstructor? inline? "/* " : "// " : "";
                 var commentEnd = commentStart.Length > 0 && inline? " */" : "";
+                var arguments = "";
+
+                // Set AttributeUsage(AttributeTargets.All) if making output that compiles to mitigate CS0592
+                if (mustCompile && cad.AttributeType.FullName == "System.AttributeUsageAttribute") {
+                    commentStart = "";
+                    commentEnd = "";
+                    arguments = "(AttributeTargets.All)";
+                }
 
                 var name = cad.AttributeType.GetScopedCSharpName(scope);
                 var suffix = name.LastIndexOf("Attribute", StringComparison.Ordinal);
                 if (suffix != -1)
                     name = name[..suffix];
-                sb.Append($"{linePrefix}{commentStart}[{attributePrefix}{name}]{commentEnd}");
+                sb.Append($"{linePrefix}{commentStart}[{attributePrefix}{name}{arguments}]{commentEnd}");
                 if (emitPointer)
                     sb.Append($" {(inline? "/*" : "//")} {cad.VirtualAddress.ToAddressString()}{(inline? " */" : "")}");
                 sb.Append(inline? " ":"\n");
