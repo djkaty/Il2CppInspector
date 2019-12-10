@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Il2CppInspector", "Il2CppIn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Il2CppDumper", "Il2CppDumper\Il2CppDumper.csproj", "{EA4C27DF-4640-48DF-8CAF-5587884CAF30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Il2CppTests", "Il2CppTests\Il2CppTests.csproj", "{389E4BDF-A749-4554-848B-32B3B6EE5684}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Il2CppTests", "Il2CppTests\Il2CppTests.csproj", "{389E4BDF-A749-4554-848B-32B3B6EE5684}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{46226B08-22BA-455E-8B99-F496E90EDCBC}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
