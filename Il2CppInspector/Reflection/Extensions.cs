@@ -99,7 +99,8 @@ namespace Il2CppInspector.Reflection
                 var setFlags = values.Where(x => (Convert.ToInt64(x.Value) & flagValue) == Convert.ToInt64(x.Value)).Select(x => typePrefix + x.Key);
                 return string.Join(" | ", setFlags);
             }
-            return (value?.ToString() ?? "null");
+            // Structs and generic type parameters must use 'default' rather than 'null'
+            return value?.ToString() ?? (type.IsValueType || type.IsGenericParameter? "default" : "null");
         }
     }
 }
