@@ -108,7 +108,7 @@ namespace Il2CppInspector.Reflection
             (Position == 0 && DeclaringMethod.GetCustomAttributes("System.Runtime.CompilerServices.ExtensionAttribute").Any()? "this ":"")
             + $"{CustomAttributes.ToString(usingScope, inline: true, emitPointer: emitPointer, mustCompile: compileAttributes).Replace("[ParamArray]", "params")}"
             + $"{getCSharpSignatureString(usingScope)} {Name}"
-            + (HasDefaultValue ? " = " + DefaultValue.ToCSharpValue(ParameterType, usingScope) 
+            + (IsOptional? " = " + DefaultValue.ToCSharpValue(ParameterType, usingScope) 
             + (emitPointer && !(DefaultValue is null)? $" /* Metadata: 0x{(uint) DefaultValueMetadataAddress:X8} */" : "") : "");
 
         public string GetReturnParameterString(Scope scope) => !IsRetval? null : getCSharpSignatureString(scope);
