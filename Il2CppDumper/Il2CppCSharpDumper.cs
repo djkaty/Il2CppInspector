@@ -261,9 +261,11 @@ namespace Il2CppInspector
                 var primary = getAccess >= setAccess ? prop.GetMethod : prop.SetMethod;
                 sb.Append($"{prefix}\t{primary.GetModifierString()}{prop.PropertyType.GetScopedCSharpName(scope)} ");
 
-                // Non-indexer
-                var getBody = ";";
-                var setBody = ";";
+                // Non-indexer; non-auto-properties should have a body
+                var needsBody = MustCompile && !type.IsInterface && !type.IsAbstract && !prop.IsAutoProperty;
+
+                var getBody = needsBody? " => default;" : ";";
+                var setBody = needsBody? " {}" : ";";
                 if ((!prop.CanRead || !prop.GetMethod.DeclaredParameters.Any()) && (!prop.CanWrite || prop.SetMethod.DeclaredParameters.Count == 1))
                     sb.Append($"{prop.CSharpName} {{ ");
                 
