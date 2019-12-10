@@ -31,11 +31,13 @@ namespace Il2CppInspector
         public Il2CppGenericContainer[] GenericContainers { get; }
         public Il2CppGenericParameter[] GenericParameters { get; }
         public Il2CppCustomAttributeTypeRange[] AttributeTypeRanges { get; }
+        public Il2CppInterfaceOffsetPair[] InterfaceOffsets { get; }
 
         public int[] InterfaceUsageIndices { get; }
         public int[] NestedTypeIndices { get; }
         public int[] AttributeTypeIndices { get; }
         public int[] GenericConstraintIndices { get; }
+        public uint[] VTableMethodIndices { get; }
 
         public Dictionary<int, string> Strings { get; } = new Dictionary<int, string>();
 
@@ -109,6 +111,8 @@ namespace Il2CppInspector
             GenericContainers = ReadArray<Il2CppGenericContainer>(Header.genericContainersOffset, Header.genericContainersCount / Sizeof(typeof(Il2CppGenericContainer)));
             GenericParameters = ReadArray<Il2CppGenericParameter>(Header.genericParametersOffset, Header.genericParametersCount / Sizeof(typeof(Il2CppGenericParameter)));
             GenericConstraintIndices = ReadArray<int>(Header.genericParameterConstraintsOffset, Header.genericParameterConstraintsCount / sizeof(int));
+            InterfaceOffsets = ReadArray<Il2CppInterfaceOffsetPair>(Header.interfaceOffsetsOffset, Header.interfaceOffsetsCount / Sizeof(typeof(Il2CppInterfaceOffsetPair)));
+            VTableMethodIndices = ReadArray<uint>(Header.vtableMethodsOffset, Header.vtableMethodsCount / sizeof(uint));
 
             if (Version >= 16) {
                 Assemblies = ReadArray<Il2CppAssemblyDefinition>(Header.assembliesOffset, Header.assembliesCount / Sizeof(typeof(Il2CppAssemblyDefinition)));

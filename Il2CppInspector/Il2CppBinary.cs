@@ -40,6 +40,9 @@ namespace Il2CppInspector
         // Generated functions which call constructors on custom attributes
         public ulong[] CustomAttributeGenerators { get; private set; }
 
+        // Generic method specs for vtables
+        public Il2CppMethodSpec[] MethodSpecs { get; private set; }
+
         // Every defined type
         public List<Il2CppType> Types { get; private set; }
 
@@ -187,7 +190,10 @@ namespace Il2CppInspector
             Types = image.ReadMappedObjectPointerArray<Il2CppType>(MetadataRegistration.ptypes, (int) MetadataRegistration.typesCount);
 
             // Custom attribute constructors
-            CustomAttributeGenerators = Image.ReadMappedArray<ulong>(CodeRegistration.customAttributeGenerators, (int) CodeRegistration.customAttributeCount);
+            CustomAttributeGenerators = image.ReadMappedArray<ulong>(CodeRegistration.customAttributeGenerators, (int) CodeRegistration.customAttributeCount);
+
+            // Generic method specs
+            MethodSpecs = image.ReadMappedArray<Il2CppMethodSpec>(MetadataRegistration.methodSpecs, (int) MetadataRegistration.methodSpecsCount);
         }
     }
 }

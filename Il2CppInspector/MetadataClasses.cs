@@ -415,4 +415,10 @@ namespace Il2CppInspector
         public int start;
         public int count;
     }
+
+    public class Il2CppInterfaceOffsetPair
+    {
+        public int interfaceTypeIndex;
+        public int offset;
+    }
 }

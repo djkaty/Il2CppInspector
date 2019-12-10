@@ -209,4 +209,11 @@ namespace Il2CppInspector
         public ulong sizes;
         public ulong lobounds;
     }
+
+    public class Il2CppMethodSpec
+    {
+        public int methodDefinitionIndex;
+        public int classIndexIndex;
+        public int methodIndexIndex;
+    }
 }
