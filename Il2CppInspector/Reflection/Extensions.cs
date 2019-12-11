@@ -20,7 +20,7 @@ namespace Il2CppInspector.Reflection
 
             foreach (var cad in attributes) {
                 // Find a constructor that either has no parameters, or all optional parameters
-                var parameterlessConstructor = cad.AttributeType.DeclaredConstructors.Any(c => c.DeclaredParameters.All(p => p.IsOptional));
+                var parameterlessConstructor = cad.AttributeType.DeclaredConstructors.Any(c => !c.IsStatic && c.IsPublic && c.DeclaredParameters.All(p => p.IsOptional));
 
                 // IL2CPP doesn't retain attribute arguments so we have to comment out those with non-optional arguments if we want the output to compile
                 var commentStart = mustCompile && !parameterlessConstructor? inline? "/* " : "// " : "";
