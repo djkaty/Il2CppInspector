@@ -40,35 +40,35 @@ using System.Runtime.InteropServices;
 internal static class Consts // TypeDefIndex: 100
 {
 	// Fields
-	public const string MonoVersion = "2.6.5.0"; // Metadata: 0x000EC99C
-	public const string MonoCompany = "MONO development team"; // Metadata: 0x000EC9A7
-	public const string MonoProduct = "MONO Common language infrastructure"; // Metadata: 0x000EC9C0
-	public const string MonoCopyright = "(c) various MONO Authors"; // Metadata: 0x000EC9E7
-	public const string FxVersion = "2.0.0.0"; // Metadata: 0x000ECA03
-	public const string VsVersion = "8.0.0.0"; // Metadata: 0x000ECA0E
-	public const string FxFileVersion = "2.0.50727.1433"; // Metadata: 0x000ECA19
-	public const string VsFileVersion = "8.0.50727.1433"; // Metadata: 0x000ECA2B
-	public const string AssemblyI18N = "I18N, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECA3D
-	public const string AssemblyMicrosoft_VisualStudio = "Microsoft.VisualStudio, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECA88
-	public const string AssemblyMicrosoft_VisualStudio_Web = "Microsoft.VisualStudio.Web, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECAE5
-	public const string AssemblyMicrosoft_VSDesigner = "Microsoft.VSDesigner, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECB46
-	public const string AssemblyMono_Http = "Mono.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECBA1
-	public const string AssemblyMono_Posix = "Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECBF1
-	public const string AssemblyMono_Security = "Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECC42
-	public const string AssemblyMono_Messaging_RabbitMQ = "Mono.Messaging.RabbitMQ, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECC96
-	public const string AssemblyCorlib = "mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ECCF4
-	public const string AssemblySystem = "System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ECD43
-	public const string AssemblySystem_Data = "System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ECD90
-	public const string AssemblySystem_Design = "System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECDE2
-	public const string AssemblySystem_DirectoryServices = "System.DirectoryServices, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECE36
-	public const string AssemblySystem_Drawing = "System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECE95
-	public const string AssemblySystem_Drawing_Design = "System.Drawing.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECEEA
-	public const string AssemblySystem_Messaging = "System.Messaging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECF46
-	public const string AssemblySystem_Security = "System.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECF9D
-	public const string AssemblySystem_ServiceProcess = "System.ServiceProcess, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECFF3
-	public const string AssemblySystem_Web = "System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED04F
-	public const string AssemblySystem_Windows_Forms = "System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ED0A0
-	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ED0FB
+	public const string MonoVersion = "2.6.5.0"; // Metadata: 0x000ECA00
+	public const string MonoCompany = "MONO development team"; // Metadata: 0x000ECA0B
+	public const string MonoProduct = "MONO Common language infrastructure"; // Metadata: 0x000ECA24
+	public const string MonoCopyright = "(c) various MONO Authors"; // Metadata: 0x000ECA4B
+	public const string FxVersion = "2.0.0.0"; // Metadata: 0x000ECA67
+	public const string VsVersion = "8.0.0.0"; // Metadata: 0x000ECA72
+	public const string FxFileVersion = "2.0.50727.1433"; // Metadata: 0x000ECA7D
+	public const string VsFileVersion = "8.0.50727.1433"; // Metadata: 0x000ECA8F
+	public const string AssemblyI18N = "I18N, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECAA1
+	public const string AssemblyMicrosoft_VisualStudio = "Microsoft.VisualStudio, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECAEC
+	public const string AssemblyMicrosoft_VisualStudio_Web = "Microsoft.VisualStudio.Web, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECB49
+	public const string AssemblyMicrosoft_VSDesigner = "Microsoft.VSDesigner, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECBAA
+	public const string AssemblyMono_Http = "Mono.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECC05
+	public const string AssemblyMono_Posix = "Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECC55
+	public const string AssemblyMono_Security = "Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECCA6
+	public const string AssemblyMono_Messaging_RabbitMQ = "Mono.Messaging.RabbitMQ, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x000ECCFA
+	public const string AssemblyCorlib = "mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ECD58
+	public const string AssemblySystem = "System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ECDA7
+	public const string AssemblySystem_Data = "System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ECDF4
+	public const string AssemblySystem_Design = "System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECE46
+	public const string AssemblySystem_DirectoryServices = "System.DirectoryServices, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECE9A
+	public const string AssemblySystem_Drawing = "System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECEF9
+	public const string AssemblySystem_Drawing_Design = "System.Drawing.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECF4E
+	public const string AssemblySystem_Messaging = "System.Messaging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ECFAA
+	public const string AssemblySystem_Security = "System.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED001
+	public const string AssemblySystem_ServiceProcess = "System.ServiceProcess, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED057
+	public const string AssemblySystem_Web = "System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x000ED0B3
+	public const string AssemblySystem_Windows_Forms = "System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ED104
+	public const string AssemblySystem_Core = "System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x000ED15F
 }
 
 internal sealed class Locale // TypeDefIndex: 101
@@ -87,6 +87,7 @@ namespace Il2CppTests.TestSources
 	{
 		// Fields
 		private float floatField; // 0x10
+		private Test test; // 0x10
 	
 		// Constructors
 		public Test() {} // 0x00000001800E2000-0x00000001800E2010
@@ -95,8 +96,9 @@ namespace Il2CppTests.TestSources
 		public void MethodWithRefParameters(int a, ref int b, int c, ref int d) {} // 0x00000001800EA7B0-0x00000001800EA7C0
 		public void MethodWithInRefOut(in int a, ref int b, out int c) {
 			c = default;
-		} // 0x00000001803E0E50-0x00000001803E0E60
-		public ref float MethodWithRefReturnType() => default; // 0x00000001803E0E60-0x00000001803E0E60
+		} // 0x00000001803E0E60-0x00000001803E0E70
+		public ref float MethodWithRefReturnType() => default; // 0x00000001803E0E70-0x00000001803E0E70
+		public ref Test MethodWithGenericAndClassRefs<T>(ref T argGeneric, ref int argValueType, ref Test argClass) => default;
 	}
 
 	[Obsolete] // 0x000000018000CB80-0x000000018000CAF0

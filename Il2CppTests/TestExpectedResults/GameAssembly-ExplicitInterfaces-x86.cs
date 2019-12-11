@@ -121,7 +121,7 @@ namespace Il2CppTests.TestSources
 	internal class Middle : ILeft, IRight // TypeDefIndex: 1816
 	{
 		// Properties
-		int ILeft.P { get; } // 0x100C5600-0x100C5610 
+		int ILeft.P { get => default; } // 0x100C5600-0x100C5610 
 	
 		// Constructors
 		public Middle() {} // 0x100BF000-0x100BF010

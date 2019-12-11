@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace Il2CppInspector
 {
     [TestFixture]
-    public class FixedTests 
+    public partial class FixedTests 
     {
         // Check generic flags according to https://docs.microsoft.com/en-us/dotnet/api/system.type.isgenerictype?view=netframework-4.8
         [Test]

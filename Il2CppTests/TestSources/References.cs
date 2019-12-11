@@ -17,6 +17,12 @@ namespace Il2CppTests.TestSources
         public void MethodWithInRefOut(in int a, ref int b, out int c) => c = 1;
 
         public ref float MethodWithRefReturnType() => ref floatField;
+
+        // Reference to generic type will require a new type to be created
+        // Reference to reference type
+        // Reference to reference type return type
+        private Test test;
+        public ref Test MethodWithGenericAndClassRefs<T>(ref T argGeneric, ref int argValueType, ref Test argClass) => ref test;
     }
 
     // Ref structs were introduced in C# 7.2 - creates IsByRefLike attribute on type in assembly

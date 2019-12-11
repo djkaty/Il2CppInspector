@@ -93,7 +93,7 @@ namespace Il2CppTests.TestSources
 		FourthKind = 3
 	}
 
-	// [AttributeUsage] // 0x1000D430-0x1000D450
+	[AttributeUsage(AttributeTargets.All)] // 0x1000D430-0x1000D450
 	public class ExampleAttribute : Attribute // TypeDefIndex: 1812
 	{
 		// Fields
@@ -103,10 +103,10 @@ namespace Il2CppTests.TestSources
 		private int[] arrayNumbers; // 0x14
 	
 		// Properties
-		public ExampleKind Kind { get; } // 0x100BF0C0-0x100BF0D0 
-		public string[] Strings { get; } // 0x100BFC20-0x100BFC30 
-		public string Note { get; set; } // 0x100C5B30-0x100C5B40 0x100C5B50-0x100C5B60
-		public int[] Numbers { get; set; } // 0x100EF0C0-0x100EF0D0 0x10127B00-0x10127B50
+		public ExampleKind Kind { get => default; } // 0x100BF0C0-0x100BF0D0 
+		public string[] Strings { get => default; } // 0x100BFC20-0x100BFC30 
+		public string Note { get => default; set {} } // 0x100C5B30-0x100C5B40 0x100C5B50-0x100C5B60
+		public int[] Numbers { get => default; set {} } // 0x100EF0C0-0x100EF0D0 0x10127B00-0x10127B50
 	
 		// Constructors
 		public ExampleAttribute(ExampleKind initKind, string[] initStrings) {} // 0x1034DA90-0x1034DAC0
