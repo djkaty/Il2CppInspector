@@ -59,13 +59,16 @@ namespace Il2CppInspector.Reflection {
                     n = "out " + n;
                 if ((GenericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant)
                     n = "in " + n;
+                if (IsByRef)
+                    n = "ref " + n;
                 return n + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "") + (IsPointer ? "*" : "");
             }
         }
 
         // C# name as it would be written in a type declaration
         public string CSharpTypeDeclarationName =>
-                    (HasElementType?
+                    (IsByRef? "ref " : "")
+                    + (HasElementType?
                         ElementType.CSharpTypeDeclarationName :
                         ((GenericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant? "in " : "")
                         + ((GenericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant? "out ":"")
@@ -144,14 +147,16 @@ namespace Il2CppInspector.Reflection {
         // Type name including namespace
         public string FullName =>
             IsGenericParameter? null :
+            HasElementType && ElementType.IsGenericParameter? null :
                 (HasElementType? ElementType.FullName : 
                     (DeclaringType != null? DeclaringType.FullName + "+" : Namespace + (Namespace.Length > 0? "." : ""))
                     + base.Name)
                 + (IsArray? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
+                + (IsByRef? "&" : "")
                 + (IsPointer? "*" : "");
 
         // Returns the minimally qualified type name required to refer to this type within the specified scope
-        public string GetScopedFullName(Scope scope) {
+        private string getScopedFullName(Scope scope) {
             // This is the type to be used (generic type parameters have a null FullName)
             var usedType = FullName?.Replace('+', '.') ?? Name;
 
@@ -299,7 +304,7 @@ namespace Il2CppInspector.Reflection {
         }
 
         // C#-friendly type name as it should be used in the scope of a given type
-        public string GetScopedCSharpName(Scope usingScope = null) {
+        public string GetScopedCSharpName(Scope usingScope = null, bool omitRef = false) {
             // Unscoped name if no using scope specified
             if (usingScope == null)
                 return CSharpName;
@@ -308,7 +313,7 @@ namespace Il2CppInspector.Reflection {
 
             // Built-in keyword type names do not require a scope
             var i = Il2CppConstants.FullNameTypeString.IndexOf(s);
-            var n = i != -1 ? Il2CppConstants.CSharpTypeString[i] : GetScopedFullName(usingScope);
+            var n = i != -1 ? Il2CppConstants.CSharpTypeString[i] : getScopedFullName(usingScope);
 
             // Unmangle generic type names
             if (n?.IndexOf("`", StringComparison.Ordinal) != -1)
@@ -327,7 +332,7 @@ namespace Il2CppInspector.Reflection {
             if (HasElementType)
                 n = ElementType.GetScopedCSharpName(usingScope);
 
-            return n + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "") + (IsPointer ? "*" : "");
+            return (IsByRef && !omitRef? "ref " : "") + n + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "") + (IsPointer ? "*" : "");
         }
 
         // Get the generic type parameters for a specific usage of this type based on its scope,
@@ -375,7 +380,7 @@ namespace Il2CppInspector.Reflection {
 
         public bool IsAbstract => (Attributes & TypeAttributes.Abstract) == TypeAttributes.Abstract;
         public bool IsArray { get; }
-        public bool IsByRef => throw new NotImplementedException();
+        public bool IsByRef { get; }
         public bool IsClass => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Class;
         public bool IsEnum => enumUnderlyingTypeUsage != -1;
         public bool IsGenericParameter { get; }
@@ -503,6 +508,10 @@ namespace Il2CppInspector.Reflection {
             // Enumerations - bit 1 of bitfield indicates this (also the baseTypeUsage will be System.Enum)
             if (((Definition.bitfield >> 1) & 1) == 1)
                 enumUnderlyingTypeUsage = Definition.elementTypeIndex;
+
+            // Pass-by-reference type
+            // NOTE: This should actually always evaluate to false in the current implementation
+            IsByRef = Index == Definition.byrefTypeIndex;
 
             // Add all implemented interfaces
             implementedInterfaceUsages = new int[Definition.interfaces_count];
@@ -692,6 +701,23 @@ namespace Il2CppInspector.Reflection {
         public TypeInfo(MethodBase declaringMethod, Il2CppGenericParameter param) : this(declaringMethod.DeclaringType, param)
             => DeclaringMethod = declaringMethod;
 
+        // Initialize a type that is a reference to the specified type
+        private TypeInfo(TypeInfo underlyingType) {
+            ElementType = underlyingType;
+            IsByRef = true;
+
+            // No base type or declaring type for reference types
+            Assembly = ElementType.Assembly;
+            Definition = ElementType.Definition;
+            Index = ElementType.Index;
+            Namespace = ElementType.Namespace;
+            Name = ElementType.Name;
+
+            Attributes = ElementType.Attributes;
+        }
+
+        public TypeInfo MakeByRefType() => new TypeInfo(this);
+
         // Get all the other types directly referenced by this type (single level depth; no recursion)
         public List<TypeInfo> GetAllTypeReferences() {
             var refs = new HashSet<TypeInfo>();
@@ -797,6 +823,7 @@ namespace Il2CppInspector.Reflection {
                 + (GenericTypeParameters != null ? "[" + string.Join(",", GenericTypeParameters.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.Name)) + "]" : "")
                 + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.Name)) + "]" : ""))
             + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
+            + (IsByRef ? "&" : "")
             + (IsPointer ? "*" : "");
 
         public string GetAccessModifierString() => this switch {

@@ -30,8 +30,6 @@ namespace Il2CppInspector.Reflection
         // Default value for the parameter
         public object DefaultValue { get; }
 
-        public bool IsByRef => !ParameterType.ContainsGenericParameters && paramTypeUsage == ParameterType.Definition.byrefTypeIndex;
-
         public bool IsIn => (Attributes & ParameterAttributes.In) != 0;
         public bool IsOptional => (Attributes & ParameterAttributes.Optional) != 0;
         public bool IsOut => (Attributes & ParameterAttributes.Out) != 0;
@@ -96,12 +94,13 @@ namespace Il2CppInspector.Reflection
             }
         }
 
+        // ref will be handled as part of the type name
         public string GetModifierString() =>
               (IsIn ? "in " : "")
-            + (IsByRef? "ref " : "")
-            + (IsOut? "out " : "");
+            + (IsOut ? "out " : "")
+            + (!IsIn && !IsOut && ParameterType.IsByRef ? "ref " : "");
 
-        private string getCSharpSignatureString(Scope scope) => $"{GetModifierString()}{ParameterType.GetScopedCSharpName(scope)}";
+        private string getCSharpSignatureString(Scope scope) => $"{GetModifierString()}{ParameterType.GetScopedCSharpName(scope, omitRef: true)}";
         public string GetSignatureString() => $"{GetModifierString()}{ParameterType.FullName}";
 
         public string GetParameterString(Scope usingScope, bool emitPointer = false, bool compileAttributes = false) => IsRetval? null :
@@ -112,5 +111,7 @@ namespace Il2CppInspector.Reflection
             + (emitPointer && !(DefaultValue is null)? $" /* Metadata: 0x{(uint) DefaultValueMetadataAddress:X8} */" : "") : "");
 
         public string GetReturnParameterString(Scope scope) => !IsRetval? null : getCSharpSignatureString(scope);
+
+        public override string ToString() => ParameterType.Name + " " + Name;
     }
 }

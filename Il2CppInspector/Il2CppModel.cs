@@ -52,11 +52,14 @@ namespace Il2CppInspector.Reflection
         public Assembly GetAssembly(string name) => Assemblies.FirstOrDefault(a => a.ShortName == name);
 
         private TypeInfo getNewTypeUsage(Il2CppType usage, MemberTypes memberType) {
+            TypeInfo underlyingType;
+
             switch (usage.type) {
                 case Il2CppTypeEnum.IL2CPP_TYPE_CLASS:
                 case Il2CppTypeEnum.IL2CPP_TYPE_VALUETYPE:
                     // Classes defined in the metadata
-                    return TypesByDefinitionIndex[usage.datapoint]; // klassIndex
+                    underlyingType = TypesByDefinitionIndex[usage.datapoint]; // klassIndex
+                    break;
 
                 case Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST:
                 case Il2CppTypeEnum.IL2CPP_TYPE_ARRAY:
@@ -65,12 +68,17 @@ namespace Il2CppInspector.Reflection
                 case Il2CppTypeEnum.IL2CPP_TYPE_VAR:
                 case Il2CppTypeEnum.IL2CPP_TYPE_MVAR:
                     // Everything that requires special handling
-                    return new TypeInfo(this, usage, memberType);
+                    underlyingType = new TypeInfo(this, usage, memberType);
+                    break;
 
                 default:
                     // Primitive types
-                    return GetTypeFromTypeEnum(usage.type);
+                    underlyingType = GetTypeFromTypeEnum(usage.type);
+                    break;
             }
+
+            // Create a reference type if necessary
+            return usage.byref? underlyingType.MakeByRefType() : underlyingType;
         }
 
         // Get or generate a type from its IL2CPP binary type usage reference
