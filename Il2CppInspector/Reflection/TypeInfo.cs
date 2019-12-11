@@ -66,18 +66,22 @@ namespace Il2CppInspector.Reflection {
         }
 
         // C# name as it would be written in a type declaration
-        public string CSharpTypeDeclarationName =>
-                    (IsByRef? "ref " : "")
-                    + (HasElementType?
-                        ElementType.CSharpTypeDeclarationName :
-                        ((GenericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant? "in " : "")
-                        + ((GenericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant? "out ":"")
-                        + (base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
-                        + ((IsNested? GenericTypeParameters?.Where(p => DeclaringType.GenericTypeParameters?.All(dp => dp.Name != p.Name) ?? true) : GenericTypeParameters)?.Any() ?? false?
-                            "<" + string.Join(", ", GenericTypeParameters.Select(x => x.CSharpTypeDeclarationName)) + ">" : "")
-                        + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => (!x.IsGenericTypeParameter? x.Namespace + "." : "") + x.CSharpTypeDeclarationName)) + ">" : ""))
-                   + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
-                   + (IsPointer ? "*" : "");
+        public string CSharpTypeDeclarationName {
+            get {
+                var gtp = IsNested? GenericTypeParameters?.Where(p => DeclaringType.GenericTypeParameters?.All(dp => dp.Name != p.Name) ?? true) : GenericTypeParameters;
+
+                return (IsByRef ? "ref " : "")
+                    + (HasElementType
+                        ? ElementType.CSharpTypeDeclarationName
+                        : ((GenericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant ? "in " : "")
+                          + ((GenericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant ? "out " : "")
+                          + (base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
+                          + (gtp?.Any() ?? false? "<" + string.Join(", ", gtp.Select(x => x.CSharpTypeDeclarationName)) + ">" : "")
+                          + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => (!x.IsGenericTypeParameter ? x.Namespace + "." : "") + x.CSharpTypeDeclarationName)) + ">" : ""))
+                    + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
+                    + (IsPointer ? "*" : "");
+            }
+        }
 
         // Custom attributes for this member
         public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);

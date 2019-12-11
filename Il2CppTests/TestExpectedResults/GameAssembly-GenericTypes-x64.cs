@@ -138,20 +138,20 @@ namespace Il2CppTests.TestSources
 			public NestedWithAutomaticConstraints() {}
 		}
 	
-		private class NestedWithNewGenericParameter<R, T> // TypeDefIndex: 1823
+		private class NestedWithNewGenericParameter<T> // TypeDefIndex: 1823
 		{
 			// Constructors
 			public NestedWithNewGenericParameter() {}
 		}
 	
-		private class NestedWithNewGenericParameterAndConstraint<R, T> // TypeDefIndex: 1824
+		private class NestedWithNewGenericParameterAndConstraint<T> // TypeDefIndex: 1824
 			where T : new()
 		{
 			// Constructors
 			public NestedWithNewGenericParameterAndConstraint() {}
 		}
 	
-		private class NestedWithNewGenericParameterAndDependentConstraint<R, T> // TypeDefIndex: 1825
+		private class NestedWithNewGenericParameterAndDependentConstraint<T> // TypeDefIndex: 1825
 			where T : G<R>, new()
 		{
 			// Constructors
@@ -211,7 +211,7 @@ namespace Il2CppTests.TestSources
 				public SubInnerGeneric2() {}
 			}
 	
-			public class SubInnerGeneric3<T1, T2, V> // TypeDefIndex: 1832
+			public class SubInnerGeneric3<V> // TypeDefIndex: 1832
 			{
 				// Constructors
 				public SubInnerGeneric3() {}
