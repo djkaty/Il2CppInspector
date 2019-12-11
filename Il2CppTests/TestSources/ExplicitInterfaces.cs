@@ -55,5 +55,20 @@ namespace Il2CppTests.TestSources
     {
         void IGeneric<KeyValuePair<int, double>>.GenericMethod(KeyValuePair<int, double> t) {}
     }
+
+    // Explicit implementation of an indexer
+    interface IIndexer
+    {
+        bool this[int i] { get; }
+    }
+
+    internal class ImplementsIndexer : IIndexer
+    {
+        // Normal indexer
+        public bool this[int i] => default;
+
+        // Explicit interface indexer
+        bool IIndexer.this[int i] => default;
+    }
 }
 #pragma warning restore CS0169
