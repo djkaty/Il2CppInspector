@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -28,12 +29,17 @@ namespace Il2CppInspector.Reflection {
 
         public override string Name { get; protected set; }
 
-        public string CSharpName =>
-            // Explicit interface implementation
-            CSharpSafeName.IndexOf('.') != -1? string.Join('.', CSharpSafeName.Split('.')[^2..])
+        public string CSharpName {
+            get {
+                // Explicit interface implementation
+                if (DeclaringType.ImplementedInterfaces
+                    .FirstOrDefault(i => CSharpSafeName.IndexOf("." + i.CSharpTypeDeclarationName, StringComparison.Ordinal) != -1) is TypeInfo @interface)
+                    return CSharpSafeName.Substring(CSharpSafeName.IndexOf("." + @interface.CSharpTypeDeclarationName, StringComparison.Ordinal) + 1);
 
-            // Regular method
-            : Name;
+                // Regular method
+                return Name;
+            }
+        }
 
         public TypeInfo PropertyType => GetMethod?.ReturnType ?? SetMethod.DeclaredParameters[^1].ParameterType;
 
