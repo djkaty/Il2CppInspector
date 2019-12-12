@@ -20,7 +20,7 @@ namespace Il2CppInspector
 gci -Directory $bin | % {
 	echo @"
 		[Test]
-		public void $($_.Name.Replace("-","_").Replace(" ","_").Replace(".","_"))() {
+		public void $($_.Name -Replace '\W','_')() {
 			runTest(@"$($_.FullName)");
 		}
 
