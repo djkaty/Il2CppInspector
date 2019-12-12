@@ -83,7 +83,7 @@ namespace Il2CppInspector.Reflection
                     // Standard escape characters
                     s.Append(escapeChars.ContainsKey(str[i]) ? escapeChars[str[i]]
                         // Replace everything else with UTF-16 Unicode
-                        : str[i] < 32 || str[i] > 126 ? @"\u" + $"{str[i]:X4}"
+                        : str[i] < 32 || str[i] > 126 ? @"\u" + $"{(int) str[i]:X4}"
                         : str[i].ToString());
                 return $"\"{s}\"";
             }
