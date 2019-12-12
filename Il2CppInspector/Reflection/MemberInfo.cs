@@ -29,6 +29,9 @@ namespace Il2CppInspector.Reflection {
         // Name of the member
         public virtual string Name { get; protected set; }
 
+        // Name of the member with @ prepended if the name is a C# reserved keyword
+        public string CSharpSafeName => Constants.Keywords.Contains(Name) ? "@" + Name : Name;
+
         // For top-level members in an assembly (ie. non-nested types)
         protected MemberInfo(Assembly asm) => Assembly = asm;
 

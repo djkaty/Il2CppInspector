@@ -228,11 +228,11 @@ namespace Il2CppInspector
                     if (field.GetCustomAttributes(FBAttribute).Any()) {
                         if (!SuppressMetadata)
                             sb.Append($"/* {field.GetCustomAttributes(FBAttribute)[0].VirtualAddress.ToAddressString()} */ ");
-                        sb.Append($"{field.FieldType.DeclaredFields[0].FieldType.GetScopedCSharpName(scope)} {field.Name}[0]"); // FixedElementField
+                        sb.Append($"{field.FieldType.DeclaredFields[0].FieldType.GetScopedCSharpName(scope)} {field.CSharpSafeName}[0]"); // FixedElementField
                     }
                     // Regular fields
                     else
-                        sb.Append($"{field.FieldType.GetScopedCSharpName(scope)} {field.Name}");
+                        sb.Append($"{field.FieldType.GetScopedCSharpName(scope)} {field.CSharpSafeName}");
                     if (field.HasDefaultValue)
                         sb.Append($" = {field.DefaultValueString}");
                     sb.Append(";");
@@ -308,7 +308,7 @@ namespace Il2CppInspector
                     .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
 
                 string modifiers = evt.AddMethod?.GetModifierString();
-                sb.Append($"{prefix}\t{modifiers}event {evt.EventHandlerType.GetScopedCSharpName(scope)} {evt.Name}");
+                sb.Append($"{prefix}\t{modifiers}event {evt.EventHandlerType.GetScopedCSharpName(scope)} {evt.CSharpSafeName}");
                 
                 if (!MustCompile) {
                     sb.Append(" {{\n");

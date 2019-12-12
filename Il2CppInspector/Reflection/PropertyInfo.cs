@@ -30,7 +30,7 @@ namespace Il2CppInspector.Reflection {
 
         public string CSharpName =>
             // Explicit interface implementation
-            Name.IndexOf('.') != -1? string.Join('.', Name.Split('.')[^2..])
+            CSharpSafeName.IndexOf('.') != -1? string.Join('.', CSharpSafeName.Split('.')[^2..])
 
             // Regular method
             : Name;

@@ -544,6 +544,10 @@ namespace Il2CppInspector.Reflection {
             for (var p = Definition.propertyStart; p < Definition.propertyStart + Definition.property_count; p++)
                 DeclaredProperties.Add(new PropertyInfo(pkg, p, this));
 
+            // There are rare cases when properties are only given as methods in the metadata
+            // Find these and add them as properties
+
+
             // Add all events
             for (var e = Definition.eventStart; e < Definition.eventStart + Definition.event_count; e++)
                 DeclaredEvents.Add(new EventInfo(pkg, e, this));
