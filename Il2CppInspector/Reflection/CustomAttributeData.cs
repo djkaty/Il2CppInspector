@@ -49,14 +49,20 @@ namespace Il2CppInspector.Reflection
 
                 attribute = new CustomAttributeData { Index = customAttributeIndex, AttributeType = asm.Model.GetTypeFromUsage(typeIndex) };
 
-                asm.Model.AttributesByIndices.Add(i, attribute);
+                asm.Model.AttributesByIndices.TryAdd(i, attribute);
                 yield return attribute;
             }
         }
 
-        private static IList<CustomAttributeData> getCustomAttributes(Assembly asm, uint token, int customAttributeIndex)
-            => getCustomAttributes(asm, asm.Model.GetCustomAttributeIndex(asm, token, customAttributeIndex)).ToList();
-
+        private static readonly object gcaLock = new object();
+        private static IList<CustomAttributeData> getCustomAttributes(Assembly asm, uint token, int customAttributeIndex) {
+            // Force the generation of the collection to be thread-safe
+            // Convert the result into a list for thread-safe enumeration
+            lock (gcaLock) {
+                return getCustomAttributes(asm, asm.Model.GetCustomAttributeIndex(asm, token, customAttributeIndex)).ToList();
+            }
+        }
+            
         public static IList<CustomAttributeData> GetCustomAttributes(Assembly asm) => getCustomAttributes(asm, asm.AssemblyDefinition.token, asm.AssemblyDefinition.customAttributeIndex);
         public static IList<CustomAttributeData> GetCustomAttributes(EventInfo evt) => getCustomAttributes(evt.Assembly, evt.Definition.token, evt.Definition.customAttributeIndex);
         public static IList<CustomAttributeData> GetCustomAttributes(FieldInfo field) => getCustomAttributes(field.Assembly, field.Definition.token, field.Definition.customAttributeIndex);

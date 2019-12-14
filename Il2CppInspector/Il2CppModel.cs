@@ -5,6 +5,7 @@
 */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -26,7 +27,7 @@ namespace Il2CppInspector.Reflection
         public TypeInfo[] TypesByUsageIndex { get; }
 
         // List of type usages that are initialized via pointers in the image
-        public Dictionary<ulong, TypeInfo> TypesByVirtualAddress { get; } = new Dictionary<ulong, TypeInfo>();
+        public ConcurrentDictionary<ulong, TypeInfo> TypesByVirtualAddress { get; } = new ConcurrentDictionary<ulong, TypeInfo>();
 
         // Every type
         public IEnumerable<TypeInfo> Types => new IEnumerable<TypeInfo>[] { TypesByDefinitionIndex, TypesByUsageIndex, TypesByVirtualAddress.Values }.SelectMany(t => t);
@@ -35,7 +36,7 @@ namespace Il2CppInspector.Reflection
         public MethodBase[] MethodsByDefinitionIndex { get; }
 
         // List of all generated CustomAttributeData objects by their index into AttributeTypeIndices
-        public Dictionary<int, CustomAttributeData> AttributesByIndices { get; } = new Dictionary<int, CustomAttributeData>();
+        public ConcurrentDictionary<int, CustomAttributeData> AttributesByIndices { get; } = new ConcurrentDictionary<int, CustomAttributeData>();
 
         public Il2CppModel(Il2CppInspector package) {
             Package = package;
@@ -114,7 +115,7 @@ namespace Il2CppInspector.Reflection
             var type = Package.BinaryImage.ReadMappedObject<Il2CppType>(ptr);
             var newUsage = getNewTypeUsage(type, MemberTypes.NestedType);
 
-            TypesByVirtualAddress.Add(ptr, newUsage);
+            TypesByVirtualAddress.TryAdd(ptr, newUsage);
             return newUsage;
         }
 
