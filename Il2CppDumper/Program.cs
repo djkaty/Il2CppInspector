@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using CommandLine;
@@ -53,6 +54,25 @@ namespace Il2CppInspector
             public bool MustCompile { get; set; }
         }
 
+        // Adapted from: https://stackoverflow.com/questions/16376191/measuring-code-execution-time
+        public class Benchmark : IDisposable 
+        {
+            private readonly Stopwatch timer = new Stopwatch();
+            private readonly string benchmarkName;
+
+            public Benchmark(string benchmarkName)
+            {
+                this.benchmarkName = benchmarkName;
+                timer.Start();
+            }
+
+            public void Dispose() 
+            {
+                timer.Stop();
+                Console.WriteLine($"{benchmarkName}: {timer.Elapsed.TotalSeconds:N2} sec");
+            }
+        }
+
         public static int Main(string[] args) =>
             Parser.Default.ParseArguments<Options>(args).MapResult(
                 options => Run(options),
@@ -74,7 +94,10 @@ namespace Il2CppInspector
             }
 
             // Analyze data
-            var il2cppInspectors = Il2CppInspector.LoadFromFile(options.BinaryFile, options.MetadataFile);
+            List<Il2CppInspector> il2cppInspectors;
+            using (var timer = new Benchmark("Analyze IL2CPP data"))
+                il2cppInspectors = Il2CppInspector.LoadFromFile(options.BinaryFile, options.MetadataFile);
+
             if (il2cppInspectors == null)
                 Environment.Exit(1);
 
@@ -82,9 +105,13 @@ namespace Il2CppInspector
             int i = 0;
             foreach (var il2cpp in il2cppInspectors) {
                 // Create model
-                var model = new Il2CppModel(il2cpp);
+                Il2CppModel model;
+                using (var timer1 = new Benchmark("Create type model"))
+                    model = new Il2CppModel(il2cpp);
 
                 // C# signatures output
+                using var timer2 = new Benchmark("Generate C# code");
+
                 var writer = new Il2CppCSharpDumper(model) {
                     ExcludedNamespaces = options.ExcludedNamespaces.ToList(),
                     SuppressMetadata = options.SuppressMetadata,
