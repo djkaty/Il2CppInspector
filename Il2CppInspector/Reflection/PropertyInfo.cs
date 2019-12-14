@@ -33,8 +33,8 @@ namespace Il2CppInspector.Reflection {
             get {
                 // Explicit interface implementation
                 if (DeclaringType.ImplementedInterfaces
-                    .FirstOrDefault(i => CSharpSafeName.IndexOf("." + i.CSharpTypeDeclarationName, StringComparison.Ordinal) != -1) is TypeInfo @interface)
-                    return CSharpSafeName.Substring(CSharpSafeName.IndexOf("." + @interface.CSharpTypeDeclarationName, StringComparison.Ordinal) + 1);
+                    .FirstOrDefault(i => CSharpSafeName.IndexOf("." + i.CSharpName, StringComparison.Ordinal) != -1) is TypeInfo @interface)
+                    return CSharpSafeName.Substring(CSharpSafeName.IndexOf("." + @interface.CSharpName, StringComparison.Ordinal) + 1);
 
                 // Regular method
                 return Name;
