@@ -171,23 +171,15 @@ namespace Il2CppInspector.Reflection {
             // This is the scope in which this type's definition is located
             var declaringScope = DeclaringType?.FullName.Replace('+', '.') ?? Namespace;
 
-            Debug.WriteLine("\n\nType to be used: " + usedType);
-            Debug.WriteLine("Declaring scope: " + declaringScope);
-            Debug.WriteLine("Using scope: " + usingScope);
-
             // Are we in the same scope as the scope the type is defined in? Save ourselves a bunch of work if so
-            if (usingScope == declaringScope) {
-                Debug.WriteLine("Using scope is same as declaring scope - result: " + base.Name);
+            if (usingScope == declaringScope)
                 return base.Name;
-            }
 
             // We're also in the same scope the type is defined in if we're looking for a nested type
             // that is declared in a type we derive from
             for (var b = scope.Current?.BaseType; b != null; b = b.BaseType)
-                if (b.FullName.Replace('+', '.') == declaringScope) {
-                    Debug.WriteLine("Base scope of using scope is same as declaring scope - result: " + base.Name);
+                if (b.FullName.Replace('+', '.') == declaringScope)
                     return base.Name;
-                }
 
             // Find first difference in the declaring scope from the using scope, moving one namespace/type name at a time
             var diff = 1;
@@ -204,8 +196,6 @@ namespace Il2CppInspector.Reflection {
             // This is the mutual root namespace and optionally nested types that the two scopes share
             var mutualRootScope = usingScope.Substring(0, diff - 1);
 
-            Debug.WriteLine("Mutual scope root: " + mutualRootScope);
-
             // Determine if the using scope is a child of the declaring scope (always a child if declaring scope is empty)
             var usingScopeIsChildOfDeclaringScope = string.IsNullOrEmpty(declaringScope) || (usingScope + ".").StartsWith(declaringScope + ".");
 
@@ -220,8 +210,6 @@ namespace Il2CppInspector.Reflection {
                 // Sort by descending order of length to search the deepest namespaces first
                 : scope.Namespaces.OrderByDescending(n => n.Length).FirstOrDefault(n => declaringScope == n || declaringScope.StartsWith(n + "."));
 
-            Debug.WriteLine("Best using directive for this type: " + usingDirective);
-
             // minimallyScopedName will eventually contain the least qualified name needed to access the type
             // Initially we set it as follows:
             // - The non-mutual part of the declaring scope if there is a mutual root scope
@@ -233,8 +221,6 @@ namespace Il2CppInspector.Reflection {
                     declaringScope == mutualRootScope? base.Name :
                     string.IsNullOrEmpty(mutualRootScope)? declaringScope + '.' + base.Name :
                     declaringScope.Substring(mutualRootScope.Length + 1) + '.' + base.Name;
-
-            Debug.WriteLine("Worst case minimally scoped name: " + minimallyScopedName);
 
             // Find the outermost type name if the wanted type is a nested type (if we need it below)
             string outerTypeName = "";
@@ -259,8 +245,6 @@ namespace Il2CppInspector.Reflection {
             for (var depth = nsAndTypeHierarchy.Length - 1; depth >= 0 && hidden; depth--) {
                 testTypeName = nsAndTypeHierarchy[depth] + (testTypeName.Length > 0? "." : "") + testTypeName;
 
-                Debug.WriteLine("Testing: " + testTypeName);
-
                 hidden = false;
                 for (var d = scope.Current; d != null && !hidden && !foundTypeInAncestorScope; d = d.DeclaringType) {
                     // If neither condition is true, the wanted type is not hidden by the type we are testing
@@ -279,8 +263,6 @@ namespace Il2CppInspector.Reflection {
                     minimallyScopedName = base.Name;
             }
 
-            Debug.WriteLine("Minimally scoped name after hiding checks: " + minimallyScopedName);
-
             // If there are multiple using directives that would allow the same minimally scoped name to be used,
             // then the minimally scoped name is ambiguous and we can't use it
             // Note that if the wanted type is an unhidden outer class relative to the using scope, this takes precedence and there can be no ambiguity
@@ -297,13 +279,10 @@ namespace Il2CppInspector.Reflection {
 
                 // More than one possible matching type? If so, the type reference is ambiguous
                 if (matchingNamespaces.Count > 1) {
-                    Debug.WriteLine("Minimally scoped name would be ambiguous between: " + string.Join(" and ", matchingNamespaces.Select(n => n + "." + minimallyScopedName)));
                     // TODO: This can be improved to cut off a new mutual root that doesn't cause ambiguity
                     minimallyScopedName = usedType;
                 }
             }
-
-            Debug.WriteLine("Resolved type name: " + minimallyScopedName);
             return minimallyScopedName;
         }
 
