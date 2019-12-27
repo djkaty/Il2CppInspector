@@ -32,6 +32,8 @@ namespace Il2CppInspector
         public Il2CppGenericParameter[] GenericParameters { get; }
         public Il2CppCustomAttributeTypeRange[] AttributeTypeRanges { get; }
         public Il2CppInterfaceOffsetPair[] InterfaceOffsets { get; }
+        public Il2CppMetadataUsageList[] MetadataUsageLists { get; }
+        public Il2CppMetadataUsagePair[] MetadataUsagePairs { get; }
 
         public int[] InterfaceUsageIndices { get; }
         public int[] NestedTypeIndices { get; }
@@ -117,6 +119,11 @@ namespace Il2CppInspector
             if (Version >= 16) {
                 Assemblies = ReadArray<Il2CppAssemblyDefinition>(Header.assembliesOffset, Header.assembliesCount / Sizeof(typeof(Il2CppAssemblyDefinition)));
                 ParameterDefaultValues = ReadArray<Il2CppParameterDefaultValue>(Header.parameterDefaultValuesOffset, Header.parameterDefaultValuesCount / Sizeof(typeof(Il2CppParameterDefaultValue)));
+            }
+            if (Version >= 19)
+            {
+                MetadataUsageLists = ReadArray<Il2CppMetadataUsageList>(Header.metadataUsageListsOffset, Header.metadataUsageListsCount / Sizeof(typeof(Il2CppMetadataUsageList)));
+                MetadataUsagePairs = ReadArray<Il2CppMetadataUsagePair>(Header.metadataUsagePairsOffset, Header.metadataUsagePairsCount / Sizeof(typeof(Il2CppMetadataUsagePair)));
             }
             if (Version >= 21) {
                 AttributeTypeIndices = ReadArray<int>(Header.attributeTypesOffset, Header.attributeTypesCount / sizeof(int));

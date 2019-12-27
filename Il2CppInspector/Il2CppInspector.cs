@@ -42,6 +42,8 @@ namespace Il2CppInspector
         public int[] GenericConstraintIndices => Metadata.GenericConstraintIndices;
         public Il2CppCustomAttributeTypeRange[] AttributeTypeRanges => Metadata.AttributeTypeRanges;
         public Il2CppInterfaceOffsetPair[] InterfaceOffsets => Metadata.InterfaceOffsets;
+        public Il2CppMetadataUsageList[] MetadataUsageLists => Metadata.MetadataUsageLists;
+        public Il2CppMetadataUsagePair[] MetadataUsagePairs => Metadata.MetadataUsagePairs;
         public int[] InterfaceUsageIndices => Metadata.InterfaceUsageIndices;
         public int[] NestedTypeIndices => Metadata.NestedTypeIndices;
         public int[] AttributeTypeIndices => Metadata.AttributeTypeIndices;
@@ -53,6 +55,7 @@ namespace Il2CppInspector
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
         public ulong[] CustomAttributeGenerators => Binary.CustomAttributeGenerators;
         public Il2CppMethodSpec[] MethodSpecs => Binary.MethodSpecs;
+        public ulong[] MetadataUsages => Binary.MetadataUsages;
 
         // TODO: Finish all file access in the constructor and eliminate the need for this
         public IFileFormatReader BinaryImage => Binary.Image;

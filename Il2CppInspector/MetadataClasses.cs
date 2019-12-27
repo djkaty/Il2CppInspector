@@ -421,4 +421,16 @@ namespace Il2CppInspector
         public int interfaceTypeIndex;
         public int offset;
     }
+
+    public class Il2CppMetadataUsageList
+    {
+        public uint start;
+        public uint count;
+    }
+
+    public class Il2CppMetadataUsagePair
+    {
+        public uint destinationindex;
+        public uint encodedSourceIndex;
+    }
 }
