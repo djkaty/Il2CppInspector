@@ -105,16 +105,17 @@ namespace Il2CppInspector
                         );
                         break;
                     case MetadataUsageType.StringLiteral:
-                        var str = stringIndex[usage.SourceIndex];
-                        if (usage.DestinationIndex >= model.Package.MetadataUsages.Length)
-                        {
-                            Console.WriteLine($"WARNING: Destination Index out of bounds: {usage.DestinationIndex} ({str})");
-                            break;
-                        }
+                        // TODO this doesn't seem to be working as expected
+                        //var str = stringIndex[usage.SourceIndex];
+                        //if (usage.DestinationIndex >= model.Package.MetadataUsages.Length)
+                        //{
+                        //    Console.WriteLine($"WARNING: Destination Index out of bounds: {usage.DestinationIndex} ({str})");
+                        //    break;
+                        //}
 
-                        writeLines(writer,
-                            $"SetString({toHex(model.Package.MetadataUsages[usage.DestinationIndex])}, r'{str}')"
-                        );
+                        //writeLines(writer,
+                        //    $"SetString({toHex(model.Package.MetadataUsages[usage.DestinationIndex])}, r'{str}')"
+                        //);
                         break;
                     case MetadataUsageType.MethodRef:
                         var methodSpec = model.Package.MethodSpecs[usage.SourceIndex];
