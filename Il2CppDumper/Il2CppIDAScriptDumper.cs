@@ -51,17 +51,14 @@ namespace Il2CppInspector
             );
         }
 
-        private static void writeMethods(StreamWriter writer, IEnumerable<TypeInfo> types)
-        {
-            foreach (var type in types.Where(t => t != null))
-            {
+        private static void writeMethods(StreamWriter writer, IEnumerable<TypeInfo> types) {
+            foreach (var type in types.Where(t => t != null)) {
                 writeMethods(writer, type.Name, type.DeclaredConstructors);
                 writeMethods(writer, type.Name, type.DeclaredMethods);
             }
         }
 
-        private static void writeMethods(StreamWriter writer, string typeName, IEnumerable<MethodBase> methods)
-        {
+        private static void writeMethods(StreamWriter writer, string typeName, IEnumerable<MethodBase> methods) {
             foreach (var method in methods) {
                 if (!method.VirtualAddress.HasValue) continue;
 
@@ -71,18 +68,15 @@ namespace Il2CppInspector
             }
         }
 
-        private static void writeUsages(StreamWriter writer, Il2CppModel model)
-        {
+        private static void writeUsages(StreamWriter writer, Il2CppModel model) {
             var stringIndex = model.Package.Strings
                                 .OrderBy(str => str.Key)
                                 .Select(kvp => kvp.Value)
                                 .ToList();
 
             var usages = BuildMetadataUsages(model.Package);
-            foreach (var usage in usages)
-            {
-                switch (usage.Type)
-                {
+            foreach (var usage in usages) {
+                switch (usage.Type) {
                     case MetadataUsageType.TypeInfo:
                     case MetadataUsageType.Type:
                         var type = model.GetTypeFromUsage(usage.SourceIndex);
@@ -133,8 +127,7 @@ namespace Il2CppInspector
             }
         }
 
-        private static void writeSectionHeader(StreamWriter writer, string sectionName)
-        {
+        private static void writeSectionHeader(StreamWriter writer, string sectionName) {
             writeLines(writer,
                 $"# SECTION: {sectionName}",
                 $"# -----------------------------"
@@ -151,13 +144,10 @@ namespace Il2CppInspector
 
         #region Helpers
 
-        private static List<MetadataUsage> BuildMetadataUsages(Il2CppInspector package)
-        {
+        private static List<MetadataUsage> BuildMetadataUsages(Il2CppInspector package) {
             var metadataUsages = new Dictionary<uint, MetadataUsage>();
-            foreach (var metadataUsageList in package.MetadataUsageLists)
-            {
-                for (var i = 0; i < metadataUsageList.count; i++)
-                {
+            foreach (var metadataUsageList in package.MetadataUsageLists) {
+                for (var i = 0; i < metadataUsageList.count; i++) {
                     var metadataUsagePair = package.MetadataUsagePairs[metadataUsageList.start + i];
                     (var type, var sourceIndex) = DecodeEncodedSourceIndex(metadataUsagePair.encodedSourceIndex);
                     var destinationIndex = metadataUsagePair.destinationindex;
@@ -169,18 +159,15 @@ namespace Il2CppInspector
             return metadataUsages.Values.ToList();
         }
 
-        private static string FormatAsGeneric(TypeInfo type)
-        {
+        private static string FormatAsGeneric(TypeInfo type) {
             return FormatAsGeneric(type, t => t.IsGenericType, t => t.Name, t => t.GenericTypeParameters);
         }
 
-        private static string FormatAsGeneric(MethodBase method)
-        {
+        private static string FormatAsGeneric(MethodBase method) {
             return FormatAsGeneric(method, m => m.IsGenericMethod, m => m.Name, m => m.GenericTypeParameters);
         }
 
-        private static string FormatAsGeneric<T>(T t, Func<T, bool> getIsGeneric, Func<T, string> getName, Func<T, List<TypeInfo>> getParams)
-        {
+        private static string FormatAsGeneric<T>(T t, Func<T, bool> getIsGeneric, Func<T, string> getName, Func<T, List<TypeInfo>> getParams) {
             if (!getIsGeneric(t)) return getName(t);
 
             return $"{getName(t)}<{string.Join(", ", getParams(t).Select(tp => FormatAsGeneric(tp)))}>";
@@ -191,8 +178,7 @@ namespace Il2CppInspector
             return $"0x{l.ToString("X")}";
         }
 
-        private static (MetadataUsageType, uint) DecodeEncodedSourceIndex(uint srcIndex)
-        {
+        private static (MetadataUsageType, uint) DecodeEncodedSourceIndex(uint srcIndex) {
             var encodedType = srcIndex & 0xE0000000;
             var methodIndex = srcIndex & 0x1FFFFFFF;
 
