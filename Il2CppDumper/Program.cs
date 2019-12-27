@@ -154,12 +154,10 @@ namespace Il2CppInspector
                 }
 
                 // IDA Python script output
-                Console.WriteLine("Writing out ida");
-                var idaWriter = new Il2CppIDAScriptDumper(model);
-                idaWriter.WriteScriptToFile(options.PythonOutFile);
-
-                Console.WriteLine("Done!");
-                Console.ReadLine();
+                using (var scriptDumperTimer = new Benchmark("IDA Python Script Dumper")) {
+                    var idaWriter = new Il2CppIDAScriptDumper(model);
+                    idaWriter.WriteScriptToFile(options.PythonOutFile);
+                }
             }
 
             // Success exit code
