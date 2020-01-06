@@ -193,8 +193,15 @@ namespace Il2CppInspector
             foreach (var rel in rels) {
                 var symValue = ReadObject<TSym>(conv.Long(rel.SymbolTable) + conv.Long(rel.SymbolIndex) * relsz).st_value; // S
 
+                // Ignore relocations into memory addresses not mapped from the image
+                try {
+                    Position = MapVATR(conv.ULong(rel.Offset));
+                }
+                catch (InvalidOperationException) {
+                    continue;
+                }
+
                 // The addend is specified in the struct for rela, and comes from the target location for rel
-                Position = MapVATR(conv.ULong(rel.Offset));
                 var addend = rel.Addend ?? ReadObject<TWord>(); // A
 
                 // Only handle relocation types we understand, skip the rest
