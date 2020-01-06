@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -152,7 +152,7 @@ namespace Il2CppInspector
                         }
 
                         for (var f = 0; f < def.field_count; f++)
-                            offsets.Add(def.fieldStart + f, available? BinaryImage.ReadWord() : 0);
+                            offsets.Add(def.fieldStart + f, available? BinaryImage.ReadUInt32() : 0);
                     }
                 }
 

@@ -98,9 +98,9 @@ namespace Il2CppTests.TestSources
 	{
 		// Fields
 		private ExampleKind kindValue; // 0x10
-		private string noteValue; // 0x20
-		private string[] arrayStrings; // 0x29
-		private int[] arrayNumbers; // 0x8047D628
+		private string noteValue; // 0x18
+		private string[] arrayStrings; // 0x20
+		private int[] arrayNumbers; // 0x28
 	
 		// Properties
 		public ExampleKind Kind { get => default; } // 0x00000001800ECD10-0x00000001800ECD20 

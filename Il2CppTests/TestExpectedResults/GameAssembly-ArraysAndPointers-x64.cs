@@ -87,13 +87,13 @@ namespace Il2CppTests.TestSources
 	{
 		// Fields
 		private int[] foo; // 0x10
-		private int[] bar; // 0x20
-		private float[][] arrayOfArrays; // 0x30
-		private float[,] twoDimensionalArray; // 0x40
-		private float[,,] threeDimensionalArray; // 0x50
-		private unsafe int*[] arrayOfPointer; // 0x10
-		private unsafe int** pointerToPointer; // 0x19
-		private unsafe float*[][,,][] confusedElephant; // 0x8047EDC0
+		private int[] bar; // 0x18
+		private float[][] arrayOfArrays; // 0x20
+		private float[,] twoDimensionalArray; // 0x28
+		private float[,,] threeDimensionalArray; // 0x30
+		private unsafe int*[] arrayOfPointer; // 0x38
+		private unsafe int** pointerToPointer; // 0x40
+		private unsafe float*[][,,][] confusedElephant; // 0x48
 	
 		// Properties
 		public unsafe int* PointerProperty { get; set; } // 0x00000001801513A0-0x00000001801513B0 0x00000001801140B0-0x00000001801140C0

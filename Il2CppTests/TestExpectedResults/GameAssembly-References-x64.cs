@@ -87,7 +87,7 @@ namespace Il2CppTests.TestSources
 	{
 		// Fields
 		private float floatField; // 0x10
-		private Test test; // 0x10
+		private Test test; // 0x18
 	
 		// Constructors
 		public Test() {} // 0x00000001800E2000-0x00000001800E2010
