@@ -1,6 +1,6 @@
 ﻿/*
     Copyright 2017 Perfare - https://github.com/Perfare/Il2CppDumper
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -266,7 +266,11 @@ namespace Il2CppInspector
                     var end = (from x in dynamic_table where conv.Gt(x.d_un, DT_SYMTAB.d_un) orderby x.d_un select x).First().d_un;
 
                     // Dynamic symbol table
-                    pTables.Add((DT_SYMTAB.d_un, conv.Div(conv.Sub(end, DT_SYMTAB.d_un), Sizeof(typeof(TSym))), DT_STRTAB.d_un));
+                    pTables.Add((
+                        conv.FromUInt(MapVATR(conv.ULong(DT_SYMTAB.d_un))),
+                        conv.Div(conv.Sub(end, DT_SYMTAB.d_un), Sizeof(typeof(TSym))),
+                        DT_STRTAB.d_un
+                    ));
                 }
             }
 
