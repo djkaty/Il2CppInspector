@@ -59,7 +59,7 @@ namespace Il2CppInspector
             usedAssemblyAttributes.Clear();
             Parallel.ForEach(model.Assemblies, asm => {
                 // Sort namespaces into alphabetical order, then sort types within the namespaces by the specified sort function
-                writeFile($"{outPath}\\{asm.ShortName}.cs", asm.DefinedTypes.OrderBy(t => t.Namespace).ThenBy(orderBy));
+                writeFile($"{outPath}\\{asm.ShortName.Replace(".dll", "")}.cs", asm.DefinedTypes.OrderBy(t => t.Namespace).ThenBy(orderBy));
             });
         }
 
@@ -67,7 +67,15 @@ namespace Il2CppInspector
             usedAssemblyAttributes.Clear();
             Parallel.ForEach(model.Assemblies.SelectMany(x => x.DefinedTypes), type => {
                 writeFile($"{outPath}\\" + (type.Namespace + (type.Namespace.Length > 0 ? "." : "") + Regex.Replace(type.Name, "`[0-9]", ""))
-                          .Replace('.', flattenHierarchy ? '.' : '\\') + ".cs",new[] {type});
+                          .Replace('.', flattenHierarchy ? '.' : '\\') + ".cs", new[] {type});
+            });
+        }
+
+        public void WriteFilesByClassTree(string outPath) {
+            usedAssemblyAttributes.Clear();
+            Parallel.ForEach(model.Assemblies.SelectMany(x => x.DefinedTypes), type => {
+                writeFile($"{outPath}\\{type.Assembly.ShortName.Replace(".dll", "")}\\" + (type.Namespace + (type.Namespace.Length > 0 ? "." : "") + Regex.Replace(type.Name, "`[0-9]", ""))
+                          .Replace('.', '\\') + ".cs", new[] {type});
             });
         }
 
