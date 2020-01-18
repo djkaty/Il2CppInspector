@@ -10,32 +10,32 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
-// [assembly: AssemblyCompany] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: AssemblyCopyright] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: AssemblyDefaultAlias] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: AssemblyDelaySign] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: AssemblyDescription] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: AssemblyFileVersion] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: AssemblyInformationalVersion] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: AssemblyKeyFile] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: AssemblyProduct] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: AssemblyTitle] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: CLSCompliant] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: CompilationRelaxations] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: ComVisible] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: Debuggable] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: DefaultDependency] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: Guid] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: NeutralResourcesLanguage] // 0x000000018000E0A0-0x000000018000A910
-[assembly: RuntimeCompatibility] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: SatelliteContractVersion] // 0x000000018000E0A0-0x000000018000A910
-[assembly: StringFreezing] // 0x000000018000E0A0-0x000000018000A910
-// [assembly: TypeLibVersion] // 0x000000018000E0A0-0x000000018000A910
+// [assembly: AssemblyCompany] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: AssemblyCopyright] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: AssemblyDefaultAlias] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: AssemblyDelaySign] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: AssemblyDescription] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: AssemblyFileVersion] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: AssemblyInformationalVersion] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: AssemblyKeyFile] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: AssemblyProduct] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: AssemblyTitle] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: CLSCompliant] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: CompilationRelaxations] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: ComVisible] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: Debuggable] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: DefaultDependency] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: Guid] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: NeutralResourcesLanguage] // 0x000000018000E0A0-0x000000018000E310
+[assembly: RuntimeCompatibility] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: SatelliteContractVersion] // 0x000000018000E0A0-0x000000018000E310
+[assembly: StringFreezing] // 0x000000018000E0A0-0x000000018000E310
+// [assembly: TypeLibVersion] // 0x000000018000E0A0-0x000000018000E310
 
 // Image 1: ArraysAndPointers.dll - Assembly: ArraysAndPointers, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1817
-// [assembly: CompilationRelaxations] // 0x000000018000C1C0-0x000000018000C1C0
-// [assembly: Debuggable] // 0x000000018000C1C0-0x000000018000C1C0
-[assembly: RuntimeCompatibility] // 0x000000018000C1C0-0x000000018000C1C0
+// [assembly: CompilationRelaxations] // 0x000000018000C1C0-0x000000018000C220
+// [assembly: Debuggable] // 0x000000018000C1C0-0x000000018000C220
+[assembly: RuntimeCompatibility] // 0x000000018000C1C0-0x000000018000C220
 
 internal static class Consts // TypeDefIndex: 100
 {
@@ -78,7 +78,7 @@ internal sealed class Locale // TypeDefIndex: 101
 
 	// Methods
 	public static string GetText(string msg) => default; // 0x0000000180123590-0x00000001801235A0
-	public static string GetText(string fmt, params /* 0x00000001800090A0-0x00000001800090A0 */ object[] args) => default; // 0x00000001802C64F0-0x00000001802C6560
+	public static string GetText(string fmt, params /* 0x00000001800090A0-0x00000001800090B0 */ object[] args) => default; // 0x00000001802C64F0-0x00000001802C6560
 }
 
 namespace Il2CppTests.TestSources
@@ -105,7 +105,7 @@ namespace Il2CppTests.TestSources
 		private struct fixedSizeArrayStruct // TypeDefIndex: 1814
 		{
 			// Fields
-			private unsafe fixed /* 0x000000018000C310-0x00000001800090A0 */ int fixedSizeArray[0]; // 0x10
+			private unsafe fixed /* 0x000000018000C310-0x000000018000C360 */ int fixedSizeArray[0]; // 0x10
 		}
 	
 		public unsafe delegate void OnUnsafe(int* ud); // TypeDefIndex: 1816; 0x00000001803E0E50-0x00000001803E10A0

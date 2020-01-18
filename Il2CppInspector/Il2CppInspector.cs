@@ -19,8 +19,8 @@ namespace Il2CppInspector
         private Il2CppBinary Binary { get; }
         private Metadata Metadata { get; }
 
-        // All method pointers (start => end)
-        private Dictionary<ulong, ulong> methodPointers { get; }
+        // All function pointers including attribute initialization functions etc. (start => end)
+        public Dictionary<ulong, ulong> FunctionAddresses { get; }
 
         // Attribute indexes (>=24.1) arranged by customAttributeStart and token
         public Dictionary<int, Dictionary<uint, int>> AttributeIndicesByToken { get; }
@@ -159,17 +159,21 @@ namespace Il2CppInspector
                 FieldOffsets = offsets.OrderBy(x => x.Key).Select(x => x.Value).ToList();
             }
 
-            // Get sorted list of method pointers
-            var sortedMethodPointers = (Version <= 24.1)?
-                Binary.GlobalMethodPointers.OrderBy(m => m).ToList() :
-                Binary.ModuleMethodPointers.SelectMany(module => module.Value).OrderBy(m => m).Distinct().ToList();
+            // Get sorted list of function pointers from all sources
+            var sortedFunctionPointers = (Version <= 24.1)?
+                Binary.GlobalMethodPointers.ToList() :
+                Binary.ModuleMethodPointers.SelectMany(module => module.Value).ToList();
 
-            // Guestimate method end addresses
-            methodPointers = new Dictionary<ulong, ulong>(sortedMethodPointers.Count);
-            for (var i = 0; i < sortedMethodPointers.Count - 1; i++)
-                methodPointers.TryAdd(sortedMethodPointers[i], sortedMethodPointers[i + 1]);
+            sortedFunctionPointers.AddRange(CustomAttributeGenerators);
+            sortedFunctionPointers.Sort();
+            sortedFunctionPointers = sortedFunctionPointers.Distinct().ToList();
+
+            // Guestimate function end addresses
+            FunctionAddresses = new Dictionary<ulong, ulong>(sortedFunctionPointers.Count);
+            for (var i = 0; i < sortedFunctionPointers.Count - 1; i++)
+                FunctionAddresses.Add(sortedFunctionPointers[i], sortedFunctionPointers[i + 1]);
             // The last method end pointer will be incorrect but there is no way of calculating it
-            methodPointers.TryAdd(sortedMethodPointers[^1], sortedMethodPointers[^1]);
+            FunctionAddresses.Add(sortedFunctionPointers[^1], sortedFunctionPointers[^1]);
 
             // Organize custom attribute indices
             if (Version >= 24.1) {
@@ -221,7 +225,7 @@ namespace Il2CppInspector
 
             // Consider the end of the method to be the start of the next method (or zero)
             // The last method end will be wrong but there is no way to calculate it
-            return (start & 0xffff_ffff_ffff_fffe, methodPointers[start]);
+            return (start & 0xffff_ffff_ffff_fffe, FunctionAddresses[start]);
         }
 
         public static List<Il2CppInspector> LoadFromFile(string codeFile, string metadataFile) {

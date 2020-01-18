@@ -23,7 +23,7 @@ namespace Il2CppInspector.Reflection
 
         public (ulong Start, ulong End)? VirtualAddress =>
             // The last one will be wrong but there is no way to calculate it
-            (Model.Package.CustomAttributeGenerators[Index], Model.Package.CustomAttributeGenerators[Math.Min(Index + 1, Model.Package.CustomAttributeGenerators.Length - 1)]);
+            (Model.Package.CustomAttributeGenerators[Index], Model.Package.FunctionAddresses[Model.Package.CustomAttributeGenerators[Index]]);
 
         public override string ToString() => "[" + AttributeType.FullName + "]";
 

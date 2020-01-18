@@ -39,9 +39,9 @@ using Some.Namespace.SameLeafName;
 // [assembly: TypeLibVersion] // 0x000A5410-0x000A5704
 
 // Image 1: Scope.dll - Assembly: Scope, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1832
-// [assembly: CompilationRelaxations] // 0x000A5704-0x000A5704
-// [assembly: Debuggable] // 0x000A5704-0x000A5704
-[assembly: RuntimeCompatibility] // 0x000A5704-0x000A5704
+// [assembly: CompilationRelaxations] // 0x000A5704-0x000A6830
+// [assembly: Debuggable] // 0x000A5704-0x000A6830
+[assembly: RuntimeCompatibility] // 0x000A5704-0x000A6830
 
 internal static class Consts // TypeDefIndex: 100
 {
