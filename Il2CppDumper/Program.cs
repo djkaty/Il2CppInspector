@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017-2019 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
+﻿// Copyright (c) 2017-2020 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
 // All rights reserved
 
 using System;
@@ -35,16 +35,17 @@ namespace Il2CppInspector
                     "UnityEngineInternal",
                     "Mono",
                     "Microsoft.Win32",
+                    "AOT"
                 })]
             public IEnumerable<string> ExcludedNamespaces { get; set; }
 
-            [Option('l', "layout", Required = false, HelpText = "Partitioning of C# output ('single' = single file, 'namespace' = one file per namespace, 'assembly' = one file per assembly, 'class' = one file per class)", Default = "single")]
+            [Option('l', "layout", Required = false, HelpText = "Partitioning of C# output ('single' = single file, 'namespace' = one file per namespace in folders, 'assembly' = one file per assembly, 'class' = one file per class in namespace folders, 'tree' = one file per class in assembly and namespace folders)", Default = "single")]
             public string LayoutSchema { get; set; }
 
-            [Option('s', "sort", Required = false, HelpText = "Sort order of type definitions in C# output ('index' = by type definition index, 'name' = by type name). No effect when using file-per-class layout", Default = "index")]
+            [Option('s', "sort", Required = false, HelpText = "Sort order of type definitions in C# output ('index' = by type definition index, 'name' = by type name). No effect when using file-per-class or tree layout", Default = "index")]
             public string SortOrder { get; set; }
 
-            [Option('f', "flatten", Required = false, HelpText = "Flatten the namespace hierarchy into a single folder rather than using per-namespace subfolders. Only used when layout is per-namespace or per-class")]
+            [Option('f', "flatten", Required = false, HelpText = "Flatten the namespace hierarchy into a single folder rather than using per-namespace subfolders. Only used when layout is per-namespace or per-class. Ignored for tree layout")]
             public bool FlattenHierarchy { get; set; }
 
             [Option('n', "suppress-metadata", Required = false, HelpText = "Diff tidying: suppress method pointers, field offsets and type indices from C# output. Useful for comparing two versions of a binary for changes with a diff tool")]
@@ -150,6 +151,10 @@ namespace Il2CppInspector
 
                     case ("class", _):
                         writer.WriteFilesByClass(csOut, options.FlattenHierarchy);
+                        break;
+
+                    case ("tree", _):
+                        writer.WriteFilesByClassTree(csOut);
                         break;
                 }
 

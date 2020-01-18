@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017-2019 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+﻿// Copyright (c) 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 // All rights reserved
 
 using System;
@@ -59,7 +59,7 @@ namespace Il2CppInspector
             usedAssemblyAttributes.Clear();
             Parallel.ForEach(model.Assemblies, asm => {
                 // Sort namespaces into alphabetical order, then sort types within the namespaces by the specified sort function
-                writeFile($"{outPath}\\{asm.ShortName}.cs", asm.DefinedTypes.OrderBy(t => t.Namespace).ThenBy(orderBy));
+                writeFile($"{outPath}\\{asm.ShortName.Replace(".dll", "")}.cs", asm.DefinedTypes.OrderBy(t => t.Namespace).ThenBy(orderBy));
             });
         }
 
@@ -67,7 +67,15 @@ namespace Il2CppInspector
             usedAssemblyAttributes.Clear();
             Parallel.ForEach(model.Assemblies.SelectMany(x => x.DefinedTypes), type => {
                 writeFile($"{outPath}\\" + (type.Namespace + (type.Namespace.Length > 0 ? "." : "") + Regex.Replace(type.Name, "`[0-9]", ""))
-                          .Replace('.', flattenHierarchy ? '.' : '\\') + ".cs",new[] {type});
+                          .Replace('.', flattenHierarchy ? '.' : '\\') + ".cs", new[] {type});
+            });
+        }
+
+        public void WriteFilesByClassTree(string outPath) {
+            usedAssemblyAttributes.Clear();
+            Parallel.ForEach(model.Assemblies.SelectMany(x => x.DefinedTypes), type => {
+                writeFile($"{outPath}\\{type.Assembly.ShortName.Replace(".dll", "")}\\" + (type.Namespace + (type.Namespace.Length > 0 ? "." : "") + Regex.Replace(type.Name, "`[0-9]", ""))
+                          .Replace('.', '\\') + ".cs", new[] {type});
             });
         }
 
@@ -282,7 +290,8 @@ namespace Il2CppInspector
                 var getAccess = (prop.GetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
                 var setAccess = (prop.SetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
 
-                var primary = getAccess >= setAccess ? prop.GetMethod : prop.SetMethod;
+                // In case the access level of both is the same and the selected method is null, pick the other one (rare edge case)
+                var primary = (getAccess >= setAccess ? prop.GetMethod : prop.SetMethod) ?? prop.GetMethod ?? prop.SetMethod;
                 sb.Append($"{prefix}\t{primary.GetModifierString()}{prop.PropertyType.GetScopedCSharpName(scope)} ");
 
                 // Non-indexer; non-auto-properties should have a body

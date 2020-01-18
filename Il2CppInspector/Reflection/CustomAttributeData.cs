@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -23,7 +23,7 @@ namespace Il2CppInspector.Reflection
 
         public (ulong Start, ulong End)? VirtualAddress =>
             // The last one will be wrong but there is no way to calculate it
-            (Model.Package.CustomAttributeGenerators[Index], Model.Package.CustomAttributeGenerators[Math.Min(Index + 1, Model.Package.CustomAttributeGenerators.Length - 1)]);
+            (Model.Package.CustomAttributeGenerators[Index], Model.Package.FunctionAddresses[Model.Package.CustomAttributeGenerators[Index]]);
 
         public override string ToString() => "[" + AttributeType.FullName + "]";
 
@@ -68,7 +68,8 @@ namespace Il2CppInspector.Reflection
         public static IList<CustomAttributeData> GetCustomAttributes(FieldInfo field) => getCustomAttributes(field.Assembly, field.Definition.token, field.Definition.customAttributeIndex);
         public static IList<CustomAttributeData> GetCustomAttributes(MethodBase method) => getCustomAttributes(method.Assembly, method.Definition.token, method.Definition.customAttributeIndex);
         public static IList<CustomAttributeData> GetCustomAttributes(ParameterInfo param) => getCustomAttributes(param.DeclaringMethod.Assembly, param.Definition.token, param.Definition.customAttributeIndex);
-        public static IList<CustomAttributeData> GetCustomAttributes(PropertyInfo prop) => getCustomAttributes(prop.Assembly, prop.Definition.token, prop.Definition.customAttributeIndex);
+        public static IList<CustomAttributeData> GetCustomAttributes(PropertyInfo prop)
+            => prop.Definition != null ? getCustomAttributes(prop.Assembly, prop.Definition.token, prop.Definition.customAttributeIndex) : new List<CustomAttributeData>();
         public static IList<CustomAttributeData> GetCustomAttributes(TypeInfo type) => getCustomAttributes(type.Assembly, type.Definition.token, type.Definition.customAttributeIndex);
     }
 }

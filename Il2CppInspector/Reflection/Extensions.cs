@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -96,15 +96,21 @@ namespace Il2CppInspector.Reflection
             if (type.IsEnum) {
                 var flags = type.GetCustomAttributes("System.FlagsAttribute").Any();
                 var values = type.GetEnumNames().Zip(type.GetEnumValues().OfType<object>(), (k, v) => new {k, v}).ToDictionary(x => x.k, x => x.v);
-                var typePrefix = type.GetScopedCSharpName(usingScope) + ".";
+                var typeName = type.GetScopedCSharpName(usingScope);
 
                 // We don't know what type the enumeration or value is, so we use Object.Equals() to do content-based equality testing
-                if (!flags)
-                    return typePrefix + values.First(v => v.Value.Equals(value)).Key;
+                if (!flags) {
+                    // Defined enum name
+                    if (values.FirstOrDefault(v => v.Value.Equals(value)).Key is string enumValue)
+                        return typeName + "." + enumValue;
+
+                    // Undefined enum value (return a cast)
+                    return "(" + typeName + ") " + value;
+                }
 
                 // Logical OR a series of flags together
                 var flagValue = Convert.ToInt64(value);
-                var setFlags = values.Where(x => (Convert.ToInt64(x.Value) & flagValue) == Convert.ToInt64(x.Value)).Select(x => typePrefix + x.Key);
+                var setFlags = values.Where(x => (Convert.ToInt64(x.Value) & flagValue) == Convert.ToInt64(x.Value)).Select(x => typeName + "." + x.Key);
                 return string.Join(" | ", setFlags);
             }
             // Structs and generic type parameters must use 'default' rather than 'null'

@@ -11,33 +11,33 @@ using System.Runtime.InteropServices;
 using Il2CppTests.TestSources;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
-// [assembly: AssemblyCompany] // 0x1000EFA0-0x1000D430
-// [assembly: AssemblyCopyright] // 0x1000EFA0-0x1000D430
-// [assembly: AssemblyDefaultAlias] // 0x1000EFA0-0x1000D430
-// [assembly: AssemblyDelaySign] // 0x1000EFA0-0x1000D430
-// [assembly: AssemblyDescription] // 0x1000EFA0-0x1000D430
-// [assembly: AssemblyFileVersion] // 0x1000EFA0-0x1000D430
-// [assembly: AssemblyInformationalVersion] // 0x1000EFA0-0x1000D430
-// [assembly: AssemblyKeyFile] // 0x1000EFA0-0x1000D430
-// [assembly: AssemblyProduct] // 0x1000EFA0-0x1000D430
-// [assembly: AssemblyTitle] // 0x1000EFA0-0x1000D430
-// [assembly: CLSCompliant] // 0x1000EFA0-0x1000D430
-// [assembly: CompilationRelaxations] // 0x1000EFA0-0x1000D430
-// [assembly: ComVisible] // 0x1000EFA0-0x1000D430
-// [assembly: Debuggable] // 0x1000EFA0-0x1000D430
-// [assembly: DefaultDependency] // 0x1000EFA0-0x1000D430
-// [assembly: Guid] // 0x1000EFA0-0x1000D430
-// [assembly: NeutralResourcesLanguage] // 0x1000EFA0-0x1000D430
-[assembly: RuntimeCompatibility] // 0x1000EFA0-0x1000D430
-// [assembly: SatelliteContractVersion] // 0x1000EFA0-0x1000D430
-[assembly: StringFreezing] // 0x1000EFA0-0x1000D430
-// [assembly: TypeLibVersion] // 0x1000EFA0-0x1000D430
+// [assembly: AssemblyCompany] // 0x1000EFA0-0x1000F1B0
+// [assembly: AssemblyCopyright] // 0x1000EFA0-0x1000F1B0
+// [assembly: AssemblyDefaultAlias] // 0x1000EFA0-0x1000F1B0
+// [assembly: AssemblyDelaySign] // 0x1000EFA0-0x1000F1B0
+// [assembly: AssemblyDescription] // 0x1000EFA0-0x1000F1B0
+// [assembly: AssemblyFileVersion] // 0x1000EFA0-0x1000F1B0
+// [assembly: AssemblyInformationalVersion] // 0x1000EFA0-0x1000F1B0
+// [assembly: AssemblyKeyFile] // 0x1000EFA0-0x1000F1B0
+// [assembly: AssemblyProduct] // 0x1000EFA0-0x1000F1B0
+// [assembly: AssemblyTitle] // 0x1000EFA0-0x1000F1B0
+// [assembly: CLSCompliant] // 0x1000EFA0-0x1000F1B0
+// [assembly: CompilationRelaxations] // 0x1000EFA0-0x1000F1B0
+// [assembly: ComVisible] // 0x1000EFA0-0x1000F1B0
+// [assembly: Debuggable] // 0x1000EFA0-0x1000F1B0
+// [assembly: DefaultDependency] // 0x1000EFA0-0x1000F1B0
+// [assembly: Guid] // 0x1000EFA0-0x1000F1B0
+// [assembly: NeutralResourcesLanguage] // 0x1000EFA0-0x1000F1B0
+[assembly: RuntimeCompatibility] // 0x1000EFA0-0x1000F1B0
+// [assembly: SatelliteContractVersion] // 0x1000EFA0-0x1000F1B0
+[assembly: StringFreezing] // 0x1000EFA0-0x1000F1B0
+// [assembly: TypeLibVersion] // 0x1000EFA0-0x1000F1B0
 
 // Image 1: CustomAttributeData.dll - Assembly: CustomAttributeData, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1813
-// [assembly: CompilationRelaxations] // 0x1000D360-0x1000D360
-// [assembly: Debuggable] // 0x1000D360-0x1000D360
-[assembly: Example] // 0x1000D360-0x1000D360
-[assembly: RuntimeCompatibility] // 0x1000D360-0x1000D360
+// [assembly: CompilationRelaxations] // 0x1000D360-0x1000D3D0
+// [assembly: Debuggable] // 0x1000D360-0x1000D3D0
+[assembly: Example] // 0x1000D360-0x1000D3D0
+[assembly: RuntimeCompatibility] // 0x1000D360-0x1000D3D0
 
 internal static class Consts // TypeDefIndex: 100
 {
@@ -80,7 +80,7 @@ internal sealed class Locale // TypeDefIndex: 101
 
 	// Methods
 	public static string GetText(string msg) => default; // 0x100F7810-0x100F7820
-	public static string GetText(string fmt, params /* 0x10009B80-0x10009B80 */ object[] args) => default; // 0x10261460-0x102614B0
+	public static string GetText(string fmt, params /* 0x10009B80-0x10009BA0 */ object[] args) => default; // 0x10261460-0x102614B0
 }
 
 namespace Il2CppTests.TestSources
@@ -114,7 +114,7 @@ namespace Il2CppTests.TestSources
 		public ExampleAttribute() {} // 0x1034DA60-0x1034DA90
 	}
 
-	[Example] // 0x1000D450-0x1000D550
+	[Example] // 0x1000D450-0x1000D510
 	public class Test // TypeDefIndex: 1813
 	{
 		// Constructors
@@ -122,6 +122,6 @@ namespace Il2CppTests.TestSources
 	
 		// Methods
 		[Example] // 0x1000D550-0x1000D590
-		public void TestMethod([Example] /* 0x1000D590-0x1000D360 */ object arg) {} // 0x100C5530-0x100C5540
+		public void TestMethod([Example] /* 0x1000D590-0x1000D5B0 */ object arg) {} // 0x100C5530-0x100C5540
 	}
 }

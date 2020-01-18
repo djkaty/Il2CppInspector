@@ -1,6 +1,6 @@
 ﻿/*
     Copyright 2017 Perfare - https://github.com/Perfare/Il2CppDumper
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -193,8 +193,15 @@ namespace Il2CppInspector
             foreach (var rel in rels) {
                 var symValue = ReadObject<TSym>(conv.Long(rel.SymbolTable) + conv.Long(rel.SymbolIndex) * relsz).st_value; // S
 
+                // Ignore relocations into memory addresses not mapped from the image
+                try {
+                    Position = MapVATR(conv.ULong(rel.Offset));
+                }
+                catch (InvalidOperationException) {
+                    continue;
+                }
+
                 // The addend is specified in the struct for rela, and comes from the target location for rel
-                Position = MapVATR(conv.ULong(rel.Offset));
                 var addend = rel.Addend ?? ReadObject<TWord>(); // A
 
                 // Only handle relocation types we understand, skip the rest
@@ -259,7 +266,11 @@ namespace Il2CppInspector
                     var end = (from x in dynamic_table where conv.Gt(x.d_un, DT_SYMTAB.d_un) orderby x.d_un select x).First().d_un;
 
                     // Dynamic symbol table
-                    pTables.Add((DT_SYMTAB.d_un, conv.Div(conv.Sub(end, DT_SYMTAB.d_un), Sizeof(typeof(TSym))), DT_STRTAB.d_un));
+                    pTables.Add((
+                        conv.FromUInt(MapVATR(conv.ULong(DT_SYMTAB.d_un))),
+                        conv.Div(conv.Sub(end, DT_SYMTAB.d_un), Sizeof(typeof(TSym))),
+                        DT_STRTAB.d_un
+                    ));
                 }
             }
 
@@ -287,7 +298,7 @@ namespace Il2CppInspector
             var init = MapVATR(conv.ULong(getDynamic(Elf.DT_INIT_ARRAY).d_un));
             var size = getDynamic(Elf.DT_INIT_ARRAYSZ).d_un;
 
-            return conv.UIntArray(ReadArray<TWord>(init, conv.Int(size) / (Bits / 8)));
+            return conv.UIntArray(ReadArray<TWord>(init, conv.Int(size) / (Bits / 8))).Select(x => MapVATR(x)).ToArray();
         }
 
         // Map a virtual address to an offset into the image file. Throws an exception if the virtual address is not mapped into the file.

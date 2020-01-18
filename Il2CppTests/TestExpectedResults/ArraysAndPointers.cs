@@ -33,9 +33,9 @@ using System.Runtime.InteropServices;
 // [assembly: TypeLibVersion] // 0x000A68AC-0x000A6BA0
 
 // Image 1: ArraysAndPointers.dll - Assembly: ArraysAndPointers, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1817
-// [assembly: CompilationRelaxations] // 0x000A6D34-0x000A6D34
-// [assembly: Debuggable] // 0x000A6D34-0x000A6D34
-[assembly: RuntimeCompatibility] // 0x000A6D34-0x000A6D34
+// [assembly: CompilationRelaxations] // 0x000A6D34-0x000A6D88
+// [assembly: Debuggable] // 0x000A6D34-0x000A6D88
+[assembly: RuntimeCompatibility] // 0x000A6D34-0x000A6D88
 
 internal static class Consts // TypeDefIndex: 100
 {

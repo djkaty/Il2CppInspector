@@ -33,9 +33,9 @@ using System.Runtime.InteropServices;
 // [assembly: TypeLibVersion] // 0x000A4DEC-0x000A50E0
 
 // Image 1: Properties.dll - Assembly: Properties, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1811
-// [assembly: CompilationRelaxations] // 0x000A5264-0x000A5264
-// [assembly: Debuggable] // 0x000A5264-0x000A5264
-[assembly: RuntimeCompatibility] // 0x000A5264-0x000A5264
+// [assembly: CompilationRelaxations] // 0x000A5264-0x000A52B8
+// [assembly: Debuggable] // 0x000A5264-0x000A52B8
+[assembly: RuntimeCompatibility] // 0x000A5264-0x000A52B8
 
 internal static class Consts // TypeDefIndex: 100
 {

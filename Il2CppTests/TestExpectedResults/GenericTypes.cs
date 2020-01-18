@@ -34,9 +34,9 @@ using System.Runtime.InteropServices;
 // [assembly: TypeLibVersion] // 0x000A795C-0x000A7C50
 
 // Image 1: GenericTypes.dll - Assembly: GenericTypes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1832
-// [assembly: CompilationRelaxations] // 0x000A7D64-0x000A7D64
-// [assembly: Debuggable] // 0x000A7D64-0x000A7D64
-[assembly: RuntimeCompatibility] // 0x000A7D64-0x000A7D64
+// [assembly: CompilationRelaxations] // 0x000A7D64-0x000A7DB8
+// [assembly: Debuggable] // 0x000A7D64-0x000A7DB8
+[assembly: RuntimeCompatibility] // 0x000A7D64-0x000A7DB8
 
 internal static class Consts // TypeDefIndex: 100
 {

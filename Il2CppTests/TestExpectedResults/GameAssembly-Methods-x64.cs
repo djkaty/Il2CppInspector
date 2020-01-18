@@ -11,32 +11,32 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
-// [assembly: AssemblyCompany] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: AssemblyCopyright] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: AssemblyDefaultAlias] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: AssemblyDelaySign] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: AssemblyDescription] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: AssemblyFileVersion] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: AssemblyInformationalVersion] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: AssemblyKeyFile] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: AssemblyProduct] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: AssemblyTitle] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: CLSCompliant] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: CompilationRelaxations] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: ComVisible] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: Debuggable] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: DefaultDependency] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: Guid] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: NeutralResourcesLanguage] // 0x000000018000E950-0x000000018000CAF0
-[assembly: RuntimeCompatibility] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: SatelliteContractVersion] // 0x000000018000E950-0x000000018000CAF0
-[assembly: StringFreezing] // 0x000000018000E950-0x000000018000CAF0
-// [assembly: TypeLibVersion] // 0x000000018000E950-0x000000018000CAF0
+// [assembly: AssemblyCompany] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: AssemblyCopyright] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: AssemblyDefaultAlias] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: AssemblyDelaySign] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: AssemblyDescription] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: AssemblyFileVersion] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: AssemblyInformationalVersion] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: AssemblyKeyFile] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: AssemblyProduct] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: AssemblyTitle] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: CLSCompliant] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: CompilationRelaxations] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: ComVisible] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: Debuggable] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: DefaultDependency] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: Guid] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: NeutralResourcesLanguage] // 0x000000018000E950-0x000000018000EBC0
+[assembly: RuntimeCompatibility] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: SatelliteContractVersion] // 0x000000018000E950-0x000000018000EBC0
+[assembly: StringFreezing] // 0x000000018000E950-0x000000018000EBC0
+// [assembly: TypeLibVersion] // 0x000000018000E950-0x000000018000EBC0
 
 // Image 1: Methods.dll - Assembly: Methods, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1822
-// [assembly: CompilationRelaxations] // 0x000000018000CAF0-0x000000018000CAF0
-// [assembly: Debuggable] // 0x000000018000CAF0-0x000000018000CAF0
-[assembly: RuntimeCompatibility] // 0x000000018000CAF0-0x000000018000CAF0
+// [assembly: CompilationRelaxations] // 0x000000018000CAF0-0x000000018000CB50
+// [assembly: Debuggable] // 0x000000018000CAF0-0x000000018000CB50
+[assembly: RuntimeCompatibility] // 0x000000018000CAF0-0x000000018000CB50
 
 internal static class Consts // TypeDefIndex: 100
 {
@@ -79,7 +79,7 @@ internal sealed class Locale // TypeDefIndex: 101
 
 	// Methods
 	public static string GetText(string msg) => default; // 0x0000000180123590-0x00000001801235A0
-	public static string GetText(string fmt, params /* 0x0000000180009C10-0x0000000180009C10 */ object[] args) => default; // 0x00000001802C64F0-0x00000001802C6560
+	public static string GetText(string fmt, params /* 0x0000000180009C10-0x0000000180009C20 */ object[] args) => default; // 0x00000001802C64F0-0x00000001802C6560
 }
 
 namespace Il2CppTests.TestSources

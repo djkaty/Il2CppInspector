@@ -11,33 +11,33 @@ using System.Runtime.InteropServices;
 using Il2CppTests.TestSources;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
-// [assembly: AssemblyCompany] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: AssemblyCopyright] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: AssemblyDefaultAlias] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: AssemblyDelaySign] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: AssemblyDescription] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: AssemblyFileVersion] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: AssemblyInformationalVersion] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: AssemblyKeyFile] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: AssemblyProduct] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: AssemblyTitle] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: CLSCompliant] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: CompilationRelaxations] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: ComVisible] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: Debuggable] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: DefaultDependency] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: Guid] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: NeutralResourcesLanguage] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: RuntimeCompatibility] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: SatelliteContractVersion] // 0x000000018000E4A0-0x000000018000C5B0
-[assembly: StringFreezing] // 0x000000018000E4A0-0x000000018000C5B0
-// [assembly: TypeLibVersion] // 0x000000018000E4A0-0x000000018000C5B0
+// [assembly: AssemblyCompany] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: AssemblyCopyright] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: AssemblyDefaultAlias] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: AssemblyDelaySign] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: AssemblyDescription] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: AssemblyFileVersion] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: AssemblyInformationalVersion] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: AssemblyKeyFile] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: AssemblyProduct] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: AssemblyTitle] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: CLSCompliant] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: CompilationRelaxations] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: ComVisible] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: Debuggable] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: DefaultDependency] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: Guid] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: NeutralResourcesLanguage] // 0x000000018000E4A0-0x000000018000E710
+[assembly: RuntimeCompatibility] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: SatelliteContractVersion] // 0x000000018000E4A0-0x000000018000E710
+[assembly: StringFreezing] // 0x000000018000E4A0-0x000000018000E710
+// [assembly: TypeLibVersion] // 0x000000018000E4A0-0x000000018000E710
 
 // Image 1: CustomAttributeData.dll - Assembly: CustomAttributeData, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1813
-// [assembly: CompilationRelaxations] // 0x000000018000C4B0-0x000000018000C4B0
-// [assembly: Debuggable] // 0x000000018000C4B0-0x000000018000C4B0
-[assembly: Example] // 0x000000018000C4B0-0x000000018000C4B0
-[assembly: RuntimeCompatibility] // 0x000000018000C4B0-0x000000018000C4B0
+// [assembly: CompilationRelaxations] // 0x000000018000C4B0-0x000000018000C540
+// [assembly: Debuggable] // 0x000000018000C4B0-0x000000018000C540
+[assembly: Example] // 0x000000018000C4B0-0x000000018000C540
+[assembly: RuntimeCompatibility] // 0x000000018000C4B0-0x000000018000C540
 
 internal static class Consts // TypeDefIndex: 100
 {
@@ -80,7 +80,7 @@ internal sealed class Locale // TypeDefIndex: 101
 
 	// Methods
 	public static string GetText(string msg) => default; // 0x0000000180123590-0x00000001801235A0
-	public static string GetText(string fmt, params /* 0x0000000180009150-0x0000000180009150 */ object[] args) => default; // 0x00000001802C64F0-0x00000001802C6560
+	public static string GetText(string fmt, params /* 0x0000000180009150-0x0000000180009160 */ object[] args) => default; // 0x00000001802C64F0-0x00000001802C6560
 }
 
 namespace Il2CppTests.TestSources
@@ -98,9 +98,9 @@ namespace Il2CppTests.TestSources
 	{
 		// Fields
 		private ExampleKind kindValue; // 0x10
-		private string noteValue; // 0x20
-		private string[] arrayStrings; // 0x29
-		private int[] arrayNumbers; // 0x8047D628
+		private string noteValue; // 0x18
+		private string[] arrayStrings; // 0x20
+		private int[] arrayNumbers; // 0x28
 	
 		// Properties
 		public ExampleKind Kind { get => default; } // 0x00000001800ECD10-0x00000001800ECD20 
@@ -114,7 +114,7 @@ namespace Il2CppTests.TestSources
 		public ExampleAttribute() {} // 0x00000001803E0E50-0x00000001803E0E70
 	}
 
-	[Example] // 0x000000018000C5D0-0x000000018000C710
+	[Example] // 0x000000018000C5D0-0x000000018000C6C0
 	public class Test // TypeDefIndex: 1813
 	{
 		// Constructors
@@ -122,6 +122,6 @@ namespace Il2CppTests.TestSources
 	
 		// Methods
 		[Example] // 0x000000018000C710-0x000000018000C750
-		public void TestMethod([Example] /* 0x000000018000C750-0x000000018000C4B0 */ object arg) {} // 0x00000001800EA7B0-0x00000001800EA7C0
+		public void TestMethod([Example] /* 0x000000018000C750-0x000000018000C760 */ object arg) {} // 0x00000001800EA7B0-0x00000001800EA7C0
 	}
 }

@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2019-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -49,6 +49,7 @@ namespace Il2CppInspector
                 "UnityEngineInternal",
                 "Mono",
                 "Microsoft.Win32",
+                "AOT"
             };
             
             // Dump each image in the binary separately

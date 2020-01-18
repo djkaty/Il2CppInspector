@@ -34,10 +34,10 @@ using Il2CppTests.TestSources;
 // [assembly: TypeLibVersion] // 0x000A4D7C-0x000A5070
 
 // Image 1: CustomAttributeData.dll - Assembly: CustomAttributeData, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1813
-// [assembly: CompilationRelaxations] // 0x000A526C-0x000A526C
-// [assembly: Debuggable] // 0x000A526C-0x000A526C
-[assembly: Example] // 0x000A526C-0x000A526C
-[assembly: RuntimeCompatibility] // 0x000A526C-0x000A526C
+// [assembly: CompilationRelaxations] // 0x000A526C-0x000A5310
+// [assembly: Debuggable] // 0x000A526C-0x000A5310
+[assembly: Example] // 0x000A526C-0x000A5310
+[assembly: RuntimeCompatibility] // 0x000A526C-0x000A5310
 
 internal static class Consts // TypeDefIndex: 100
 {

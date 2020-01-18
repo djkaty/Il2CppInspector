@@ -10,32 +10,32 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
-// [assembly: AssemblyCompany] // 0x1000F7A0-0x1000DD10
-// [assembly: AssemblyCopyright] // 0x1000F7A0-0x1000DD10
-// [assembly: AssemblyDefaultAlias] // 0x1000F7A0-0x1000DD10
-// [assembly: AssemblyDelaySign] // 0x1000F7A0-0x1000DD10
-// [assembly: AssemblyDescription] // 0x1000F7A0-0x1000DD10
-// [assembly: AssemblyFileVersion] // 0x1000F7A0-0x1000DD10
-// [assembly: AssemblyInformationalVersion] // 0x1000F7A0-0x1000DD10
-// [assembly: AssemblyKeyFile] // 0x1000F7A0-0x1000DD10
-// [assembly: AssemblyProduct] // 0x1000F7A0-0x1000DD10
-// [assembly: AssemblyTitle] // 0x1000F7A0-0x1000DD10
-// [assembly: CLSCompliant] // 0x1000F7A0-0x1000DD10
-// [assembly: CompilationRelaxations] // 0x1000F7A0-0x1000DD10
-// [assembly: ComVisible] // 0x1000F7A0-0x1000DD10
-// [assembly: Debuggable] // 0x1000F7A0-0x1000DD10
-// [assembly: DefaultDependency] // 0x1000F7A0-0x1000DD10
-// [assembly: Guid] // 0x1000F7A0-0x1000DD10
-// [assembly: NeutralResourcesLanguage] // 0x1000F7A0-0x1000DD10
-[assembly: RuntimeCompatibility] // 0x1000F7A0-0x1000DD10
-// [assembly: SatelliteContractVersion] // 0x1000F7A0-0x1000DD10
-[assembly: StringFreezing] // 0x1000F7A0-0x1000DD10
-// [assembly: TypeLibVersion] // 0x1000F7A0-0x1000DD10
+// [assembly: AssemblyCompany] // 0x1000F7A0-0x1000F9B0
+// [assembly: AssemblyCopyright] // 0x1000F7A0-0x1000F9B0
+// [assembly: AssemblyDefaultAlias] // 0x1000F7A0-0x1000F9B0
+// [assembly: AssemblyDelaySign] // 0x1000F7A0-0x1000F9B0
+// [assembly: AssemblyDescription] // 0x1000F7A0-0x1000F9B0
+// [assembly: AssemblyFileVersion] // 0x1000F7A0-0x1000F9B0
+// [assembly: AssemblyInformationalVersion] // 0x1000F7A0-0x1000F9B0
+// [assembly: AssemblyKeyFile] // 0x1000F7A0-0x1000F9B0
+// [assembly: AssemblyProduct] // 0x1000F7A0-0x1000F9B0
+// [assembly: AssemblyTitle] // 0x1000F7A0-0x1000F9B0
+// [assembly: CLSCompliant] // 0x1000F7A0-0x1000F9B0
+// [assembly: CompilationRelaxations] // 0x1000F7A0-0x1000F9B0
+// [assembly: ComVisible] // 0x1000F7A0-0x1000F9B0
+// [assembly: Debuggable] // 0x1000F7A0-0x1000F9B0
+// [assembly: DefaultDependency] // 0x1000F7A0-0x1000F9B0
+// [assembly: Guid] // 0x1000F7A0-0x1000F9B0
+// [assembly: NeutralResourcesLanguage] // 0x1000F7A0-0x1000F9B0
+[assembly: RuntimeCompatibility] // 0x1000F7A0-0x1000F9B0
+// [assembly: SatelliteContractVersion] // 0x1000F7A0-0x1000F9B0
+[assembly: StringFreezing] // 0x1000F7A0-0x1000F9B0
+// [assembly: TypeLibVersion] // 0x1000F7A0-0x1000F9B0
 
 // Image 1: References.dll - Assembly: References, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1812
-// [assembly: CompilationRelaxations] // 0x1000DC90-0x1000DC90
-// [assembly: Debuggable] // 0x1000DC90-0x1000DC90
-[assembly: RuntimeCompatibility] // 0x1000DC90-0x1000DC90
+// [assembly: CompilationRelaxations] // 0x1000DC90-0x1000DCE0
+// [assembly: Debuggable] // 0x1000DC90-0x1000DCE0
+[assembly: RuntimeCompatibility] // 0x1000DC90-0x1000DCE0
 
 internal static class Consts // TypeDefIndex: 100
 {
@@ -78,7 +78,7 @@ internal sealed class Locale // TypeDefIndex: 101
 
 	// Methods
 	public static string GetText(string msg) => default; // 0x100F7810-0x100F7820
-	public static string GetText(string fmt, params /* 0x1000A660-0x1000A660 */ object[] args) => default; // 0x10261460-0x102614B0
+	public static string GetText(string fmt, params /* 0x1000A660-0x1000A680 */ object[] args) => default; // 0x10261460-0x102614B0
 }
 
 namespace Il2CppTests.TestSources
@@ -101,7 +101,7 @@ namespace Il2CppTests.TestSources
 		public ref Test MethodWithGenericAndClassRefs<T>(ref T argGeneric, ref int argValueType, ref Test argClass) => default;
 	}
 
-	[Obsolete] // 0x1000DD10-0x1000DC90
+	[Obsolete] // 0x1000DD10-0x1000DD40
 	public struct RefStruct // TypeDefIndex: 1812
 	{
 		// Fields
