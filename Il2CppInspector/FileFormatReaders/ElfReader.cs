@@ -298,7 +298,7 @@ namespace Il2CppInspector
             var init = MapVATR(conv.ULong(getDynamic(Elf.DT_INIT_ARRAY).d_un));
             var size = getDynamic(Elf.DT_INIT_ARRAYSZ).d_un;
 
-            return conv.UIntArray(ReadArray<TWord>(init, conv.Int(size) / (Bits / 8)));
+            return conv.UIntArray(ReadArray<TWord>(init, conv.Int(size) / (Bits / 8))).Select(x => MapVATR(x)).ToArray();
         }
 
         // Map a virtual address to an offset into the image file. Throws an exception if the virtual address is not mapped into the file.
