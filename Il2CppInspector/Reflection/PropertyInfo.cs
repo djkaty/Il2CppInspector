@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -56,6 +56,17 @@ namespace Il2CppInspector.Reflection {
                 GetMethod = declaringType.DeclaredMethods.First(x => x.Index == declaringType.Definition.methodStart + Definition.get);
             if (Definition.set >= 0)
                 SetMethod = declaringType.DeclaredMethods.First(x => x.Index == declaringType.Definition.methodStart + Definition.set);
+        }
+
+        // Create a property based on a get and set method
+        public PropertyInfo(MethodInfo getter, MethodInfo setter, TypeInfo declaringType) :
+            base(declaringType) {
+            Index = -1;
+            Definition = null;
+
+            Name = (getter ?? setter).Name.Replace(".get_", ".").Replace(".set_", ".");
+            GetMethod = getter;
+            SetMethod = setter;
         }
     }
 }

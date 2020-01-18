@@ -1,12 +1,11 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -523,9 +522,39 @@ namespace Il2CppInspector.Reflection {
             for (var p = Definition.propertyStart; p < Definition.propertyStart + Definition.property_count; p++)
                 DeclaredProperties.Add(new PropertyInfo(pkg, p, this));
 
-            // There are rare cases when properties are only given as methods in the metadata
-            // Find these and add them as properties
+            // There are rare cases when explicitly implemented interface properties
+            // are only given as methods in the metadata. Find these and add them as properties
+            var eip = DeclaredMethods.Where(m => m.Name.Contains(".get_") || m.Name.Contains(".set_"))
+                .Except(DeclaredProperties.Select(p => p.GetMethod))
+                .Except(DeclaredProperties.Select(p => p.SetMethod));
 
+            // Build a paired list of getters and setters
+            var pairedEip = new List<(MethodInfo get, MethodInfo set)>();
+            foreach (var p in eip) {
+                // Discern property name
+                var n = p.Name.Replace(".get_", ".").Replace(".set_", ".");
+
+                // Find setter with no matching getter
+                if (p.Name.Contains(".get_"))
+                    if (pairedEip.FirstOrDefault(pe => pe.get == null && pe.set.Name == p.Name.Replace(".get_", ".set_")) is (MethodInfo get, MethodInfo set) method) {
+                        pairedEip.Remove(method);
+                        pairedEip.Add((p, method.set));
+                    }
+                    else
+                        pairedEip.Add((p, null));
+
+                // Find getter with no matching setter
+                if (p.Name.Contains(".set_"))
+                    if (pairedEip.FirstOrDefault(pe => pe.set == null && pe.get.Name == p.Name.Replace(".set_", ".get_")) is (MethodInfo get, MethodInfo set) method) {
+                        pairedEip.Remove(method);
+                        pairedEip.Add((method.get, p));
+                    }
+                    else
+                        pairedEip.Add((null, p));
+            }
+
+            foreach (var prop in pairedEip)
+                DeclaredProperties.Add(new PropertyInfo(prop.get, prop.set, this));
 
             // Add all events
             for (var e = Definition.eventStart; e < Definition.eventStart + Definition.event_count; e++)
