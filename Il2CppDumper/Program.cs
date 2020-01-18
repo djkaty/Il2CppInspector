@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017-2019 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
+﻿// Copyright (c) 2017-2020 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
 // All rights reserved
 
 using System;
@@ -35,6 +35,7 @@ namespace Il2CppInspector
                     "UnityEngineInternal",
                     "Mono",
                     "Microsoft.Win32",
+                    "AOT"
                 })]
             public IEnumerable<string> ExcludedNamespaces { get; set; }
 

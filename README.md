@@ -63,6 +63,7 @@ Unity
 UnityEngine
 UnityEngineInternal
 Microsoft.Win32
+AOT
 ```
 
 Providing an argument to `--exclude-namespaces` will override the default list. To output all namespaces, use `--exclude-namespaces=none`.
