@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017-2019 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+﻿// Copyright (c) 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 // All rights reserved
 
 using System;
@@ -282,7 +282,8 @@ namespace Il2CppInspector
                 var getAccess = (prop.GetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
                 var setAccess = (prop.SetMethod?.Attributes ?? 0) & MethodAttributes.MemberAccessMask;
 
-                var primary = getAccess >= setAccess ? prop.GetMethod : prop.SetMethod;
+                // In case the access level of both is the same and the selected method is null, pick the other one (rare edge case)
+                var primary = (getAccess >= setAccess ? prop.GetMethod : prop.SetMethod) ?? prop.GetMethod ?? prop.SetMethod;
                 sb.Append($"{prefix}\t{primary.GetModifierString()}{prop.PropertyType.GetScopedCSharpName(scope)} ");
 
                 // Non-indexer; non-auto-properties should have a body
