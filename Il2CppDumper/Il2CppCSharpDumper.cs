@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Il2CppInspector.Reflection;
+using Assembly = Il2CppInspector.Reflection.Assembly;
 using CustomAttributeData = Il2CppInspector.Reflection.CustomAttributeData;
 using MethodInfo = Il2CppInspector.Reflection.MethodInfo;
 using TypeInfo = Il2CppInspector.Reflection.TypeInfo;
@@ -55,11 +56,14 @@ namespace Il2CppInspector
             });
         }
 
-        public void WriteFilesByAssembly<TKey>(string outPath, Func<TypeInfo, TKey> orderBy) {
+        public void WriteFilesByAssembly<TKey>(string outPath, Func<TypeInfo, TKey> orderBy, bool separateAttributes) {
             usedAssemblyAttributes.Clear();
             Parallel.ForEach(model.Assemblies, asm => {
                 // Sort namespaces into alphabetical order, then sort types within the namespaces by the specified sort function
-                writeFile($"{outPath}\\{asm.ShortName.Replace(".dll", "")}.cs", asm.DefinedTypes.OrderBy(t => t.Namespace).ThenBy(orderBy));
+               if (writeFile($"{outPath}\\{asm.ShortName.Replace(".dll", "")}.cs", asm.DefinedTypes.OrderBy(t => t.Namespace).ThenBy(orderBy), outputAssemblyAttributes: !separateAttributes)
+                    && separateAttributes) {
+                    File.WriteAllText($"{outPath}\\AssemblyInfo_{asm.ShortName.Replace(".dll", "")}.cs", generateAssemblyInfo(new [] {asm}));
+                }
             });
         }
 
@@ -71,15 +75,28 @@ namespace Il2CppInspector
             });
         }
 
-        public void WriteFilesByClassTree(string outPath) {
+        public void WriteFilesByClassTree(string outPath, bool separateAttributes) {
             usedAssemblyAttributes.Clear();
-            Parallel.ForEach(model.Assemblies.SelectMany(x => x.DefinedTypes), type => {
-                writeFile($"{outPath}\\{type.Assembly.ShortName.Replace(".dll", "")}\\" + (type.Namespace + (type.Namespace.Length > 0 ? "." : "") + Regex.Replace(type.Name, "`[0-9]", ""))
-                          .Replace('.', '\\') + ".cs", new[] {type});
-            });
+            var usedAssemblies = new HashSet<Assembly>();
+
+            // Each thread tracks its own list of used assemblies and they are merged as each thread completes
+            Parallel.ForEach(model.Assemblies.SelectMany(x => x.DefinedTypes),
+                () => new HashSet<Assembly>(),
+                (type, _, used) => {
+                    if (writeFile($"{outPath}\\{type.Assembly.ShortName.Replace(".dll", "")}\\" + (type.Namespace + (type.Namespace.Length > 0 ? "." : "") + Regex.Replace(type.Name, "`[0-9]", ""))
+                                  .Replace('.', '\\') + ".cs", new[] {type}, outputAssemblyAttributes: !separateAttributes))
+                        used.Add(type.Assembly);
+                    return used;
+                },
+                usedPartition => usedAssemblies.UnionWith(usedPartition)
+            );
+
+            if (separateAttributes && usedAssemblies.Any())
+                foreach (var asm in usedAssemblies)
+                    File.WriteAllText($"{outPath}\\{asm.ShortName.Replace(".dll", "")}\\AssemblyInfo.cs", generateAssemblyInfo(new [] {asm}));
         }
 
-        private void writeFile(string outFile, IEnumerable<TypeInfo> types, bool useNamespaceSyntax = true) {
+        private bool writeFile(string outFile, IEnumerable<TypeInfo> types, bool useNamespaceSyntax = true, bool outputAssemblyAttributes = true) {
 
             var nsRefs = new HashSet<string>();
             var code = new StringBuilder();
@@ -98,7 +115,8 @@ namespace Il2CppInspector
             var assemblies = types.Select(t => t.Assembly).Distinct();
 
             // Add assembly attribute namespaces to reference list
-            nsRefs.UnionWith(assemblies.SelectMany(a => a.CustomAttributes).Select(a => a.AttributeType.Namespace));
+            if (outputAssemblyAttributes)
+                nsRefs.UnionWith(assemblies.SelectMany(a => a.CustomAttributes).Select(a => a.AttributeType.Namespace));
 
             // Generate each type
             foreach (var type in types) {
@@ -147,7 +165,7 @@ namespace Il2CppInspector
 
             // Stop if nothing to output
             if (!usedTypes.Any())
-                return;
+                return false;
 
             // Close namespace
             if (useNamespaceSyntax && !string.IsNullOrEmpty(nsContext))
@@ -187,7 +205,7 @@ namespace Il2CppInspector
                         writer.Write("\n");
 
                     // Output assembly information and attributes
-                    writer.Write(generateAssemblyInfo(assemblies, nsRefs) + "\n\n");
+                    writer.Write(generateAssemblyInfo(assemblies, nsRefs, outputAssemblyAttributes) + "\n\n");
 
                     // Output type definitions
                     writer.Write(code);
@@ -203,25 +221,28 @@ namespace Il2CppInspector
                     System.Threading.Thread.Sleep(100);
                 }
             } while (!fileWritten);
+
+            return true;
         }
 
-        private string generateAssemblyInfo(IEnumerable<Reflection.Assembly> assemblies, IEnumerable<string> namespaces) {
+        private string generateAssemblyInfo(IEnumerable<Reflection.Assembly> assemblies, IEnumerable<string> namespaces = null, bool outputAssemblyAttributes = true) {
             var text = new StringBuilder();
 
             foreach (var asm in assemblies) {
                 text.Append($"// Image {asm.Index}: {asm.ShortName} - Assembly: {asm.FullName} - Types {asm.ImageDefinition.typeStart}-{asm.ImageDefinition.typeStart + asm.ImageDefinition.typeCount - 1}\n");
 
                 // Assembly-level attributes
-                lock (usedAssemblyAttributesLock) {
-                    text.Append(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute)
-                        .Except(usedAssemblyAttributes ?? new HashSet<CustomAttributeData>())
-                        .OrderBy(a => a.AttributeType.Name)
-                        .ToString(new Scope { Current = null, Namespaces = namespaces }, attributePrefix: "assembly: ", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
-                    if (asm.CustomAttributes.Any())
-                        text.Append("\n");
+                if (outputAssemblyAttributes)
+                    lock (usedAssemblyAttributesLock) {
+                        text.Append(asm.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute)
+                            .Except(usedAssemblyAttributes ?? new HashSet<CustomAttributeData>())
+                            .OrderBy(a => a.AttributeType.Name)
+                            .ToString(new Scope { Current = null, Namespaces = namespaces ?? new List<string>() }, attributePrefix: "assembly: ", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
+                        if (asm.CustomAttributes.Any())
+                            text.Append("\n");
 
-                    usedAssemblyAttributes.UnionWith(asm.CustomAttributes);
-                }
+                        usedAssemblyAttributes.UnionWith(asm.CustomAttributes);
+                    }
             }
             return text.ToString().TrimEnd();
         }

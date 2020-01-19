@@ -53,6 +53,9 @@ namespace Il2CppInspector
 
             [Option('k', "must-compile", Required = false, HelpText = "Compilation tidying: try really hard to make code that compiles. Suppress generation of code for items with CompilerGenerated attribute. Comment out attributes without parameterless constructors or all-optional constructor arguments. Don't emit add/remove/raise on events. Specify AttributeTargets.All on classes with AttributeUsage attribute. Force auto-properties to have get accessors. Force regular properties to have bodies.")]
             public bool MustCompile { get; set; }
+
+            [Option("separate-attributes", Required = false, HelpText = "Place assembly-level attributes in their own AssemblyInfo.cs files. Only used when layout is per-assembly or tree")]
+            public bool SeparateAssemblyAttributesFiles { get; set; }
         }
 
         // Adapted from: https://stackoverflow.com/questions/16376191/measuring-code-execution-time
@@ -143,10 +146,10 @@ namespace Il2CppInspector
                         break;
 
                     case ("assembly", "index"):
-                        writer.WriteFilesByAssembly(csOut, t => t.Index);
+                        writer.WriteFilesByAssembly(csOut, t => t.Index, options.SeparateAssemblyAttributesFiles);
                         break;
                     case ("assembly", "name"):
-                        writer.WriteFilesByAssembly(csOut, t => t.Name);
+                        writer.WriteFilesByAssembly(csOut, t => t.Name, options.SeparateAssemblyAttributesFiles);
                         break;
 
                     case ("class", _):
@@ -154,7 +157,7 @@ namespace Il2CppInspector
                         break;
 
                     case ("tree", _):
-                        writer.WriteFilesByClassTree(csOut);
+                        writer.WriteFilesByClassTree(csOut, options.SeparateAssemblyAttributesFiles);
                         break;
                 }
 
