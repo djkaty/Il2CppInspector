@@ -276,11 +276,16 @@ namespace Il2CppInspector.Reflection {
                 if (Assembly.Model.TypesByFullName.ContainsKey(outerTypeName))
                     matchingNamespaces.Add("");
 
-                // More than one possible matching type? If so, the type reference is ambiguous
+                // More than one possible matching namespace? If so, the type reference is ambiguous
                 if (matchingNamespaces.Count > 1) {
                     // TODO: This can be improved to cut off a new mutual root that doesn't cause ambiguity
                     minimallyScopedName = usedType;
                 }
+
+                // No matching namespaces, not hidden, no mutual root scope in the file and no using directive?
+                // If so, the type's namespace is completely out of scope so use the fully-qualified type name
+                if (matchingNamespaces.Count == 0 && !hidden && string.IsNullOrEmpty(mutualRootScope) && usingDirective == null)
+                    minimallyScopedName = usedType;
             }
             return minimallyScopedName;
         }
