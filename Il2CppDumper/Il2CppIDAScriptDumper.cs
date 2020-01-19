@@ -59,9 +59,7 @@ index = 1
         }
 
         private static void writeMethods(StreamWriter writer, string typeName, IEnumerable<MethodBase> methods) {
-            foreach (var method in methods) {
-                if (!method.VirtualAddress.HasValue) continue;
-
+            foreach (var method in methods.Where(m => m.VirtualAddress.HasValue)) {
                 writeLines(writer,
                     $"SetName({method.VirtualAddress.Value.Start.ToAddressString()}, '{typeName}$${method.Name}')"
                 );
