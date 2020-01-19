@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -133,7 +134,10 @@ namespace Il2CppInspector
                 .Replace("%PROJECTDEFINITIONS%", slnProjectDefs.ToString())
                 .Replace("%PROJECTCONFIGURATIONS%", slnProjectConfigs.ToString());
 
-            File.WriteAllText($"{outPath}\\{Path.GetFileName(outPath)}.sln", sln);
+            var filename = Path.GetFileName(outPath);
+            if (filename == "")
+                filename = "Il2CppProject";
+            File.WriteAllText($"{outPath}\\{filename}.sln", sln);
         }
 
         private bool writeFile(string outFile, IEnumerable<TypeInfo> types, bool useNamespaceSyntax = true, bool outputAssemblyAttributes = true) {
