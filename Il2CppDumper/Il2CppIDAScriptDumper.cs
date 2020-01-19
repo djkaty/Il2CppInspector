@@ -31,23 +31,23 @@ namespace Il2CppInspector
 
         private static void writePreamble(StreamWriter writer) {
             writeLines(writer,
-                "#encoding: utf-8",
-                "import idaapi",
-                "",
-                "def SetString(addr, comm):",
-                "  global index",
-                "  name = 'StringLiteral_' + str(index)",
-                "  ret = idc.set_name(addr, name, SN_NOWARN)",
-                "  idc.set_cmt(addr, comm, 1)",
-                "",
-                "def SetName(addr, name):",
-                "  ret = idc.set_name(addr, name, SN_NOWARN | SN_NOCHECK)",
-                "  if ret == 0:",
-                "    new_name = name + '_' + str(addr)",
-                "    ret = idc.set_name(addr, new_name, SN_NOWARN | SN_NOCHECK)",
-                "",
-                "index = 1",
-                ""
+@"#encoding: utf-8
+import idaapi
+
+def SetString(addr, comm):
+  global index
+  name = 'StringLiteral_' + str(index)
+  ret = idc.set_name(addr, name, SN_NOWARN)
+  idc.set_cmt(addr, comm, 1)
+
+def SetName(addr, name):
+  ret = idc.set_name(addr, name, SN_NOWARN | SN_NOCHECK)
+  if ret == 0:
+    new_name = name + '_' + str(addr)
+    ret = idc.set_name(addr, new_name, SN_NOWARN | SN_NOCHECK)
+
+index = 1
+"
             );
         }
 
