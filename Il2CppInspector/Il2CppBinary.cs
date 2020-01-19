@@ -43,6 +43,7 @@ namespace Il2CppInspector
         // Generic method specs for vtables
         public Il2CppMethodSpec[] MethodSpecs { get; private set; }
 
+        // Addresses where metadata is used
         public ulong[] MetadataUsages { get; private set; }
 
         // Every defined type
@@ -197,6 +198,7 @@ namespace Il2CppInspector
             // Generic method specs
             MethodSpecs = image.ReadMappedArray<Il2CppMethodSpec>(MetadataRegistration.methodSpecs, (int) MetadataRegistration.methodSpecsCount);
 
+            // Metadata usages (addresses)
             MetadataUsages = image.ReadMappedArray<ulong>(MetadataRegistration.metadataUsages, (int)MetadataRegistration.metadataUsagesCount);
         }
     }
