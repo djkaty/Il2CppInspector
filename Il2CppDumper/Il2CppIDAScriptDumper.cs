@@ -99,17 +99,7 @@ index = 1
                         );
                         break;
                     case MetadataUsageType.StringLiteral:
-                        // TODO this doesn't seem to be working as expected
-                        //var str = stringIndex[usage.SourceIndex];
-                        //if (usage.DestinationIndex >= model.Package.MetadataUsages.Length)
-                        //{
-                        //    Console.WriteLine($"WARNING: Destination Index out of bounds: {usage.DestinationIndex} ({str})");
-                        //    break;
-                        //}
-
-                        //writeLines(writer,
-                        //    $"SetString({toHex(model.Package.MetadataUsages[usage.DestinationIndex])}, r'{str}')"
-                        //);
+                        // TODO: String literals
                         break;
                     case MetadataUsageType.MethodRef:
                         var methodSpec = model.Package.MethodSpecs[usage.SourceIndex];
