@@ -3,12 +3,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Il2CppDumper.Properties;
 using Il2CppInspector.Reflection;
 using Assembly = Il2CppInspector.Reflection.Assembly;
 using CustomAttributeData = Il2CppInspector.Reflection.CustomAttributeData;
@@ -75,7 +77,7 @@ namespace Il2CppInspector
             });
         }
 
-        public void WriteFilesByClassTree(string outPath, bool separateAttributes) {
+        public HashSet<Assembly> WriteFilesByClassTree(string outPath, bool separateAttributes) {
             usedAssemblyAttributes.Clear();
             var usedAssemblies = new HashSet<Assembly>();
 
@@ -94,6 +96,44 @@ namespace Il2CppInspector
             if (separateAttributes && usedAssemblies.Any())
                 foreach (var asm in usedAssemblies)
                     File.WriteAllText($"{outPath}\\{asm.ShortName.Replace(".dll", "")}\\AssemblyInfo.cs", generateAssemblyInfo(new [] {asm}));
+
+            return usedAssemblies;
+        }
+
+        // Create a Visual Studio solution
+        public void WriteSolution(string outPath) {
+            // Required settings
+            MustCompile = true;
+
+            // Output source files in tree format with separate assembly attributes
+            var assemblies = WriteFilesByClassTree(outPath, true);
+
+            // Per-project (per-assembly) solution definition and configuration
+            var slnProjectDefs = new StringBuilder();
+            var slnProjectConfigs = new StringBuilder();
+
+            foreach (var asm in assemblies) {
+                var guid = Guid.NewGuid();
+                var name = asm.ShortName.Replace(".dll", "");
+                var def = Resources.SlnProjectDefinition
+                    .Replace("%PROJECTGUID%", guid.ToString())
+                    .Replace("%PROJECTNAME%", name)
+                    .Replace("%CSPROJRELATIVEPATH%", $"{name}\\{name}.csproj");
+
+                slnProjectDefs.Append(def);
+
+                var config = Resources.SlnProjectConfiguration
+                    .Replace("%PROJECTGUID%", guid.ToString());
+
+                slnProjectConfigs.Append(config);
+            }
+
+            // Merge everything into .sln file
+            var sln = Resources.SlnTemplate
+                .Replace("%PROJECTDEFINITIONS%", slnProjectDefs.ToString())
+                .Replace("%PROJECTCONFIGURATIONS%", slnProjectConfigs.ToString());
+
+            File.WriteAllText($"{outPath}\\{Path.GetFileName(outPath)}.sln", sln);
         }
 
         private bool writeFile(string outFile, IEnumerable<TypeInfo> types, bool useNamespaceSyntax = true, bool outputAssemblyAttributes = true) {

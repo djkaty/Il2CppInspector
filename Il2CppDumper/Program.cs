@@ -56,6 +56,9 @@ namespace Il2CppInspector
 
             [Option("separate-attributes", Required = false, HelpText = "Place assembly-level attributes in their own AssemblyInfo.cs files. Only used when layout is per-assembly or tree")]
             public bool SeparateAssemblyAttributesFiles { get; set; }
+
+            [Option('j', "project", Required = false, HelpText = "Create a Visual Studio solution and projects. Implies --layout tree, --must-compile and --separate-attributes")]
+            public bool CreateSolution { get; set; }
         }
 
         // Adapted from: https://stackoverflow.com/questions/16376191/measuring-code-execution-time
@@ -129,6 +132,11 @@ namespace Il2CppInspector
                     csOut = csOut.Insert(csOut.Length - 3, imageSuffix);
                 else
                     csOut += imageSuffix;
+
+                if (options.CreateSolution) {
+                    writer.WriteSolution(csOut);
+                    continue;
+                }
 
                 switch (options.LayoutSchema.ToLower(), options.SortOrder.ToLower()) {
                     case ("single", "index"):
