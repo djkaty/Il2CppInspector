@@ -63,7 +63,7 @@ namespace Il2CppInspector
                 if (!method.VirtualAddress.HasValue) continue;
 
                 writeLines(writer,
-                    $"SetName({toHex(method.VirtualAddress.Value.Start)}, '{typeName}$${method.Name}')"
+                    $"SetName({method.VirtualAddress.Value.Start.ToAddressString()}, '{typeName}$${method.Name}')"
                 );
             }
         }
@@ -81,13 +81,13 @@ namespace Il2CppInspector
                     case MetadataUsageType.Type:
                         var type = model.GetTypeFromUsage(usage.SourceIndex);
                         writeLines(writer,
-                            $"SetName({toHex(model.Package.MetadataUsages[usage.DestinationIndex])}, 'Class${type.Name}')"
+                            $"SetName({model.Package.MetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Class${type.Name}')"
                         );
                         break;
                     case MetadataUsageType.MethodDef:
                         var method = model.MethodsByDefinitionIndex[usage.SourceIndex];
                         writeLines(writer,
-                            $"SetName({toHex(model.Package.MetadataUsages[usage.DestinationIndex])}, 'Method${method.DeclaringType.Name}.{method.Name}')"
+                            $"SetName({model.Package.MetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${method.DeclaringType.Name}.{method.Name}')"
                         );
                         break;
                     case MetadataUsageType.FieldInfo:
@@ -95,7 +95,7 @@ namespace Il2CppInspector
                         type = model.GetTypeFromUsage(field.typeIndex);
                         var fieldName = model.Package.Strings[field.nameIndex];
                         writeLines(writer,
-                            $"SetName({toHex(model.Package.MetadataUsages[usage.DestinationIndex])}, 'Field${type.Name}.{fieldName}')"
+                            $"SetName({model.Package.MetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Field${type.Name}.{fieldName}')"
                         );
                         break;
                     case MetadataUsageType.StringLiteral:
@@ -118,7 +118,7 @@ namespace Il2CppInspector
                         var typeName = FormatAsGeneric(methodDef.DeclaringType);
                         var methodName = FormatAsGeneric(methodDef);
                         writeLines(writer,
-                            $"SetName({toHex(model.Package.MetadataUsages[usage.DestinationIndex])}, 'Method${typeName}.{methodName}')"
+                            $"SetName({model.Package.MetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${typeName}.{methodName}')"
                         );
                         break;
                     default:
@@ -171,11 +171,6 @@ namespace Il2CppInspector
             if (!getIsGeneric(t)) return getName(t);
 
             return $"{getName(t)}<{string.Join(", ", getParams(t).Select(tp => FormatAsGeneric(tp)))}>";
-        }
-
-
-        private static string toHex(ulong l) {
-            return $"0x{l.ToString("X")}";
         }
 
         private static (MetadataUsageType, uint) DecodeEncodedSourceIndex(uint srcIndex) {
