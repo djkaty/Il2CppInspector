@@ -69,11 +69,6 @@ index = 1
         }
 
         private static void writeUsages(StreamWriter writer, Il2CppModel model) {
-            var stringIndex = model.Package.Strings
-                                .OrderBy(str => str.Key)
-                                .Select(kvp => kvp.Value)
-                                .ToList();
-
             var usages = BuildMetadataUsages(model.Package);
             foreach (var usage in usages) {
                 switch (usage.Type) {
