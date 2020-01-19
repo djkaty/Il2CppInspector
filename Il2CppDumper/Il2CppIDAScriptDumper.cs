@@ -99,8 +99,8 @@ index = 1
                         var methodSpec = model.Package.MethodSpecs[usage.SourceIndex];
                         var methodDef = model.MethodsByDefinitionIndex[methodSpec.methodDefinitionIndex];
 
-                        var typeName = FormatAsGeneric(methodDef.DeclaringType);
-                        var methodName = FormatAsGeneric(methodDef);
+                        var typeName = formatAsGeneric(methodDef.DeclaringType);
+                        var methodName = formatAsGeneric(methodDef);
                         writeLines(writer,
                             $"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${typeName}.{methodName}')"
                         );
@@ -128,18 +128,18 @@ index = 1
 
         #region Helpers
 
-        private static string FormatAsGeneric(TypeInfo type) {
-            return FormatAsGeneric(type, t => t.IsGenericType, t => t.Name, t => t.GenericTypeParameters);
+        private static string formatAsGeneric(TypeInfo type) {
+            return formatAsGeneric(type, t => t.IsGenericType, t => t.Name, t => t.GenericTypeParameters);
         }
 
-        private static string FormatAsGeneric(MethodBase method) {
-            return FormatAsGeneric(method, m => m.IsGenericMethod, m => m.Name, m => m.GenericTypeParameters);
+        private static string formatAsGeneric(MethodBase method) {
+            return formatAsGeneric(method, m => m.IsGenericMethod, m => m.Name, m => m.GenericTypeParameters);
         }
 
-        private static string FormatAsGeneric<T>(T t, Func<T, bool> getIsGeneric, Func<T, string> getName, Func<T, List<TypeInfo>> getParams) {
+        private static string formatAsGeneric<T>(T t, Func<T, bool> getIsGeneric, Func<T, string> getName, Func<T, List<TypeInfo>> getParams) {
             if (!getIsGeneric(t)) return getName(t);
 
-            return $"{getName(t)}<{string.Join(", ", getParams(t).Select(tp => FormatAsGeneric(tp)))}>";
+            return $"{getName(t)}<{string.Join(", ", getParams(t).Select(tp => formatAsGeneric(tp)))}>";
         }
 
         #endregion
