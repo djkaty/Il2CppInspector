@@ -69,20 +69,19 @@ index = 1
         }
 
         private static void writeUsages(StreamWriter writer, Il2CppModel model) {
-            var usages = BuildMetadataUsages(model.Package);
-            foreach (var usage in usages) {
+            foreach (var usage in model.Package.MetadataUsages) {
                 switch (usage.Type) {
                     case MetadataUsageType.TypeInfo:
                     case MetadataUsageType.Type:
                         var type = model.GetTypeFromUsage(usage.SourceIndex);
                         writeLines(writer,
-                            $"SetName({model.Package.MetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Class${type.Name}')"
+                            $"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Class${type.Name}')"
                         );
                         break;
                     case MetadataUsageType.MethodDef:
                         var method = model.MethodsByDefinitionIndex[usage.SourceIndex];
                         writeLines(writer,
-                            $"SetName({model.Package.MetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${method.DeclaringType.Name}.{method.Name}')"
+                            $"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${method.DeclaringType.Name}.{method.Name}')"
                         );
                         break;
                     case MetadataUsageType.FieldInfo:
@@ -90,7 +89,7 @@ index = 1
                         type = model.GetTypeFromUsage(field.typeIndex);
                         var fieldName = model.Package.Strings[field.nameIndex];
                         writeLines(writer,
-                            $"SetName({model.Package.MetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Field${type.Name}.{fieldName}')"
+                            $"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Field${type.Name}.{fieldName}')"
                         );
                         break;
                     case MetadataUsageType.StringLiteral:
@@ -103,7 +102,7 @@ index = 1
                         var typeName = FormatAsGeneric(methodDef.DeclaringType);
                         var methodName = FormatAsGeneric(methodDef);
                         writeLines(writer,
-                            $"SetName({model.Package.MetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${typeName}.{methodName}')"
+                            $"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${typeName}.{methodName}')"
                         );
                         break;
                     default:
@@ -129,21 +128,6 @@ index = 1
 
         #region Helpers
 
-        private static List<MetadataUsage> BuildMetadataUsages(Il2CppInspector package) {
-            var metadataUsages = new Dictionary<uint, MetadataUsage>();
-            foreach (var metadataUsageList in package.MetadataUsageLists) {
-                for (var i = 0; i < metadataUsageList.count; i++) {
-                    var metadataUsagePair = package.MetadataUsagePairs[metadataUsageList.start + i];
-                    (var type, var sourceIndex) = DecodeEncodedSourceIndex(metadataUsagePair.encodedSourceIndex);
-                    var destinationIndex = metadataUsagePair.destinationindex;
-
-                    metadataUsages.TryAdd(destinationIndex, new MetadataUsage(type, (int)sourceIndex, (int)destinationIndex));
-                }
-            }
-
-            return metadataUsages.Values.ToList();
-        }
-
         private static string FormatAsGeneric(TypeInfo type) {
             return FormatAsGeneric(type, t => t.IsGenericType, t => t.Name, t => t.GenericTypeParameters);
         }
@@ -156,43 +140,6 @@ index = 1
             if (!getIsGeneric(t)) return getName(t);
 
             return $"{getName(t)}<{string.Join(", ", getParams(t).Select(tp => FormatAsGeneric(tp)))}>";
-        }
-
-        private static (MetadataUsageType, uint) DecodeEncodedSourceIndex(uint srcIndex) {
-            var encodedType = srcIndex & 0xE0000000;
-            var methodIndex = srcIndex & 0x1FFFFFFF;
-
-            var type = (MetadataUsageType)(encodedType >> 29);
-
-            return (type, methodIndex);
-        }
-
-        #endregion
-
-        #region Classes and enums
-
-        public enum MetadataUsageType
-        {
-            TypeInfo = 1,
-            Type = 2,
-            MethodDef = 3,
-            FieldInfo = 4,
-            StringLiteral = 5,
-            MethodRef = 6,
-        }
-
-        public class MetadataUsage
-        {
-            public MetadataUsageType Type { get; }
-            public int SourceIndex { get; }
-            public int DestinationIndex { get; }
-
-            public MetadataUsage(MetadataUsageType type, int sourceIndex, int destinationIndex)
-            {
-                Type = type;
-                SourceIndex = sourceIndex;
-                DestinationIndex = destinationIndex;
-            }
         }
 
         #endregion

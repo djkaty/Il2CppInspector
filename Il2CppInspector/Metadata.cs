@@ -42,6 +42,7 @@ namespace Il2CppInspector
         public uint[] VTableMethodIndices { get; }
 
         public Dictionary<int, string> Strings { get; } = new Dictionary<int, string>();
+        public List<MetadataUsage> MetadataUsages { get; } = new List<MetadataUsage>();
 
         public Metadata(Stream stream) : base(stream)
         {
@@ -123,6 +124,7 @@ namespace Il2CppInspector
             if (Version >= 19) {
                 MetadataUsageLists = ReadArray<Il2CppMetadataUsageList>(Header.metadataUsageListsOffset, Header.metadataUsageListsCount / Sizeof(typeof(Il2CppMetadataUsageList)));
                 MetadataUsagePairs = ReadArray<Il2CppMetadataUsagePair>(Header.metadataUsagePairsOffset, Header.metadataUsagePairsCount / Sizeof(typeof(Il2CppMetadataUsagePair)));
+                MetadataUsages = buildMetadataUsages();
             }
             if (Version >= 21) {
                 AttributeTypeIndices = ReadArray<int>(Header.attributeTypesOffset, Header.attributeTypesCount / sizeof(int));
@@ -133,6 +135,28 @@ namespace Il2CppInspector
             Position = Header.stringOffset;
             while (Position < Header.stringOffset + Header.stringCount)
                 Strings.Add((int)Position - Header.stringOffset, ReadNullTerminatedString());
+        }
+
+        private List<MetadataUsage> buildMetadataUsages()
+        {
+            var usages = new Dictionary<uint, MetadataUsage>();
+            foreach (var metadataUsageList in MetadataUsageLists)
+            {
+                for (var i = 0; i < metadataUsageList.count; i++)
+                {
+                    var metadataUsagePair = MetadataUsagePairs[metadataUsageList.start + i];
+
+                    var encodedType = metadataUsagePair.encodedSourceIndex & 0xE0000000;
+                    var usageType = (MetadataUsageType)(encodedType >> 29);
+
+                    var sourceIndex = metadataUsagePair.encodedSourceIndex & 0x1FFFFFFF;
+                    var destinationIndex = metadataUsagePair.destinationindex;
+
+                    usages.TryAdd(destinationIndex, new MetadataUsage(usageType, (int)sourceIndex, (int)destinationIndex));
+                }
+            }
+
+            return usages.Values.ToList();
         }
 
         private int Sizeof(Type type)
