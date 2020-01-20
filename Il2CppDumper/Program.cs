@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using CommandLine;
 using Il2CppInspector.Reflection;
 
@@ -59,6 +60,12 @@ namespace Il2CppInspector
 
             [Option('j', "project", Required = false, HelpText = "Create a Visual Studio solution and projects. Implies --layout tree, --must-compile and --separate-attributes")]
             public bool CreateSolution { get; set; }
+
+            [Option("unity-path", Required = false, HelpText = "Path to Unity editor (when using --project). Wildcards select last matching folder in alphanumeric order", Default = @"C:\Program Files\Unity\Hub\Editor\*")]
+            public string UnityPath { get; set; }
+
+            [Option("unity-assemblies", Required = false, HelpText = "Path to Unity script assemblies (when using --project). Wildcards select last matching folder in alphanumeric order", Default = @"C:\Program Files\Unity\Hub\Editor\*\Editor\Data\Resources\PackageManager\ProjectTemplates\libcache\com.unity.template.3d-*\ScriptAssemblies")]
+            public string UnityAssembliesPath { get; set; }
         }
 
         // Adapted from: https://stackoverflow.com/questions/16376191/measuring-code-execution-time
@@ -98,6 +105,32 @@ namespace Il2CppInspector
             if (!File.Exists(options.MetadataFile)) {
                 Console.Error.WriteLine($"File {options.MetadataFile} does not exist");
                 return 1;
+            }
+
+            // Creating a Visual Studio solution requires Unity assembly references
+            if (options.CreateSolution) {
+                var unityPath = FindPath(options.UnityPath);
+                var unityAssembliesPath = FindPath(options.UnityAssembliesPath);
+
+                if (!Directory.Exists(unityPath)) {
+                    Console.Error.WriteLine($"Unity path {unityPath} does not exist");
+                    return 1;
+                }
+                if (!File.Exists(unityPath + @"\Editor\Data\Managed\UnityEditor.dll")) {
+                    Console.Error.WriteLine($"No Unity installation found at {unityPath}");
+                    return 1;
+                }
+                if (!Directory.Exists(unityAssembliesPath)) {
+                    Console.Error.WriteLine($"Unity assemblies path {unityAssembliesPath} does not exist");
+                    return 1;
+                }
+                if (!File.Exists(unityAssembliesPath + @"\UnityEngine.UI.dll")) {
+                    Console.Error.WriteLine($"No Unity assemblies found at {unityAssembliesPath}");
+                    return 1;
+                }
+
+                Console.WriteLine("Using Unity editor at " + unityPath);
+                Console.WriteLine("Using Unity assemblies at " + unityAssembliesPath);
             }
 
             // Analyze data
@@ -175,6 +208,35 @@ namespace Il2CppInspector
 
             // Success exit code
             return 0;
+        }
+
+        private static string FindPath(string pathWithWildcards) {
+            var absolutePath = Path.GetFullPath(pathWithWildcards);
+
+            if (absolutePath.IndexOf("*", StringComparison.Ordinal) == -1)
+                return absolutePath;
+
+            Regex sections = new Regex(@"((?:[^*]*)\\)((?:.*?)\*.*?)(?:$|\\)");
+            var matches = sections.Matches(absolutePath);
+
+            var pathLength = 0;
+            var path = "";
+            foreach (Match match in matches) {
+                path += match.Groups[1].Value;
+                var search = match.Groups[2].Value;
+
+                var dir = Directory.GetDirectories(path, search, SearchOption.TopDirectoryOnly)
+                    .OrderByDescending(x => x)
+                    .FirstOrDefault();
+
+                path = dir + @"\";
+                pathLength += match.Groups[1].Value.Length + match.Groups[2].Value.Length + 1;
+            }
+
+            if (pathLength < absolutePath.Length)
+                path += absolutePath.Substring(pathLength);
+
+            return path;
         }
     }
 }
