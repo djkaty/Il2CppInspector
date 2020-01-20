@@ -61,10 +61,31 @@ namespace Il2CppDumper.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {%PROJECTGUID%}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;Project ToolsVersion=&quot;4.0&quot; DefaultTargets=&quot;Build&quot; xmlns=&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;&gt;
+        ///  &lt;PropertyGroup&gt;
+        ///    &lt;LangVersion&gt;latest&lt;/LangVersion&gt;
+        ///  &lt;/PropertyGroup&gt;
+        ///  &lt;PropertyGroup&gt;
+        ///    &lt;Configuration Condition=&quot; &apos;$(Configuration)&apos; == &apos;&apos; &quot;&gt;Debug&lt;/Configuration&gt;
+        ///    &lt;Platform Condition=&quot; &apos;$(Platform)&apos; == &apos;&apos; &quot;&gt;AnyCPU&lt;/Platform&gt;
+        ///    &lt;ProjectGuid&gt;%PROJECTGUID%&lt;/ProjectGuid&gt;
+        ///    &lt;!--&lt;ProductVersion/&gt;--&gt;
+        ///    &lt;!--&lt;SchemaVersion/&gt;--&gt;
+        ///    &lt;Outp [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string CsProjTemplate {
+            get {
+                return ResourceManager.GetString("CsProjTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 		{%PROJECTGUID%}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
         ///		{%PROJECTGUID%}.Debug|Any CPU.Build.0 = Debug|Any CPU
         ///		{%PROJECTGUID%}.Release|Any CPU.ActiveCfg = Release|Any CPU
-        ///		{%PROJECTGUID%}.Release|Any CPU.Build.0 = Release|Any CPU.
+        ///		{%PROJECTGUID%}.Release|Any CPU.Build.0 = Release|Any CPU
+        ///.
         /// </summary>
         internal static string SlnProjectConfiguration {
             get {
@@ -74,7 +95,8 @@ namespace Il2CppDumper.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;%PROJECTNAME%&quot;, &quot;%CSPROJRELATIVEPATH%&quot;, &quot;{%PROJECTGUID%}&quot;
-        ///EndProject.
+        ///EndProject
+        ///.
         /// </summary>
         internal static string SlnProjectDefinition {
             get {
@@ -97,7 +119,8 @@ namespace Il2CppDumper.Properties {
         ///	GlobalSection(SolutionProperties) = preSolution
         ///		HideSolutionNode = FALSE
         ///	EndGlobalSection
-        ///EndGlobal.
+        ///EndGlobal
+        ///.
         /// </summary>
         internal static string SlnTemplate {
             get {
