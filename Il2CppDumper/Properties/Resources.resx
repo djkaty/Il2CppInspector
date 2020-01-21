@@ -733,6 +733,9 @@
       &lt;HintPath&gt;%UNITYPATH%/Editor/Data/NetStandard/compat/2.0.0/shims/netfx/System.Xml.Serialization.dll&lt;/HintPath&gt;
     &lt;/Reference&gt;
   &lt;/ItemGroup&gt;
+  &lt;ItemGroup&gt;
+%PROJECTREFERENCES%
+  &lt;/ItemGroup&gt;
 
   &lt;!--&lt;Target Name="GenerateTargetFrameworkMonikerAttribute"/&gt;--&gt;
   &lt;Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" /&gt;

@@ -130,12 +130,27 @@ namespace Il2CppInspector
 
                 slnProjectConfigs.Append(config);
 
+                // Determine all the assemblies on which this assembly depends
+                var dependencyTypes = asm.DefinedTypes.SelectMany(t => t.GetAllTypeReferences())
+                    .Union(asm.CustomAttributes.SelectMany(a => a.AttributeType.GetAllTypeReferences()))
+                    .Distinct();
+                var dependencyAssemblies = dependencyTypes.Select(t => t.Assembly).Distinct()
+                    .Except(new[] {asm});
+                
+                // Only create project references to those assemblies actually output in our solution
+                dependencyAssemblies = dependencyAssemblies.Intersect(assemblies);
+
+                var referenceXml = string.Concat(dependencyAssemblies.Select(
+                        a => $@"    <ProjectReference Include=""..\{a.ShortName.Replace(".dll", "")}\{a.ShortName.Replace(".dll", "")}.csproj""/>" + "\n"
+                ));
+
                 // Create a .csproj file using the project Guid
                 var csProj = Resources.CsProjTemplate
                     .Replace("%PROJECTGUID%", guid.ToString())
                     .Replace("%ASSEMBLYNAME%", name)
                     .Replace("%UNITYPATH%", unityPath)
-                    .Replace("%SCRIPTASSEMBLIES%", unityAssembliesPath);
+                    .Replace("%SCRIPTASSEMBLIES%", unityAssembliesPath)
+                    .Replace("%PROJECTREFERENCES%", referenceXml);
 
                 File.WriteAllText($"{outPath}\\{csProjFile}", csProj);
             }
