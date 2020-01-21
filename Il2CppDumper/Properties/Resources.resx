@@ -126,7 +126,7 @@
   &lt;PropertyGroup&gt;
     &lt;Configuration Condition=" '$(Configuration)' == '' "&gt;Debug&lt;/Configuration&gt;
     &lt;Platform Condition=" '$(Platform)' == '' "&gt;AnyCPU&lt;/Platform&gt;
-    &lt;ProjectGuid&gt;%PROJECTGUID%&lt;/ProjectGuid&gt;
+    &lt;ProjectGuid&gt;{%PROJECTGUID%}&lt;/ProjectGuid&gt;
     &lt;!--&lt;ProductVersion/&gt;--&gt;
     &lt;!--&lt;SchemaVersion/&gt;--&gt;
     &lt;OutputType&gt;Library&lt;/OutputType&gt;

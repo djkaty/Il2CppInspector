@@ -102,7 +102,7 @@ namespace Il2CppInspector
         }
 
         // Create a Visual Studio solution
-        public void WriteSolution(string outPath) {
+        public void WriteSolution(string outPath, string unityPath, string unityAssembliesPath) {
             // Required settings
             MustCompile = true;
 
@@ -116,10 +116,12 @@ namespace Il2CppInspector
             foreach (var asm in assemblies) {
                 var guid = Guid.NewGuid();
                 var name = asm.ShortName.Replace(".dll", "");
+                var csProjFile = $"{name}\\{name}.csproj";
+
                 var def = Resources.SlnProjectDefinition
                     .Replace("%PROJECTGUID%", guid.ToString())
                     .Replace("%PROJECTNAME%", name)
-                    .Replace("%CSPROJRELATIVEPATH%", $"{name}\\{name}.csproj");
+                    .Replace("%CSPROJRELATIVEPATH%", csProjFile);
 
                 slnProjectDefs.Append(def);
 
@@ -127,6 +129,15 @@ namespace Il2CppInspector
                     .Replace("%PROJECTGUID%", guid.ToString());
 
                 slnProjectConfigs.Append(config);
+
+                // Create a .csproj file using the project Guid
+                var csProj = Resources.CsProjTemplate
+                    .Replace("%PROJECTGUID%", guid.ToString())
+                    .Replace("%ASSEMBLYNAME%", name)
+                    .Replace("%UNITYPATH%", unityPath)
+                    .Replace("%SCRIPTASSEMBLIES%", unityAssembliesPath);
+
+                File.WriteAllText($"{outPath}\\{csProjFile}", csProj);
             }
 
             // Merge everything into .sln file

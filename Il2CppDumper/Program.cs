@@ -108,9 +108,12 @@ namespace Il2CppInspector
             }
 
             // Creating a Visual Studio solution requires Unity assembly references
+            var unityPath = string.Empty;
+            var unityAssembliesPath = string.Empty;
+
             if (options.CreateSolution) {
-                var unityPath = FindPath(options.UnityPath);
-                var unityAssembliesPath = FindPath(options.UnityAssembliesPath);
+                unityPath = FindPath(options.UnityPath);
+                unityAssembliesPath = FindPath(options.UnityAssembliesPath);
 
                 if (!Directory.Exists(unityPath)) {
                     Console.Error.WriteLine($"Unity path {unityPath} does not exist");
@@ -167,7 +170,7 @@ namespace Il2CppInspector
                     csOut += imageSuffix;
 
                 if (options.CreateSolution) {
-                    writer.WriteSolution(csOut);
+                    writer.WriteSolution(csOut, unityPath, unityAssembliesPath);
                     continue;
                 }
 
