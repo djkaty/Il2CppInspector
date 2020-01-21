@@ -195,6 +195,15 @@ namespace Il2CppInspector
                 if (ExcludedNamespaces?.Any(x => x == type.Namespace || type.Namespace.StartsWith(x + ".")) ?? false)
                     continue;
 
+                // Don't output global::Locale if desired
+                if (MustCompile
+                    && type.Name == "Locale" && type.Namespace == string.Empty
+                    && type.BaseType.FullName == "System.Object"
+                    && type.IsClass && type.IsSealed && type.IsNotPublic && !type.ContainsGenericParameters
+                    && type.DeclaredMembers.Count == type.DeclaredMethods.Count
+                    && type.GetMethods("GetText").Length == type.DeclaredMethods.Count)
+                    continue;
+
                 // Assembly.DefinedTypes returns nested types in the assembly by design - ignore them
                 if (type.IsNested)
                     continue;
