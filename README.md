@@ -60,11 +60,13 @@ To exclude types from certain namespaces from being generated in the C# source f
 ```
 System
 Mono
+Microsoft.Win32
 Unity
+UnityEditor
 UnityEngine
 UnityEngineInternal
-Microsoft.Win32
 AOT
+JetBrains.Annotations
 ```
 
 Providing an argument to `--exclude-namespaces` will override the default list. To output all namespaces, use `--exclude-namespaces=none`.

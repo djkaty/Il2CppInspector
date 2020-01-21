@@ -31,12 +31,14 @@ namespace Il2CppInspector
             [Option('e', "exclude-namespaces", Required = false, Separator = ',', HelpText = "Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces",
                 Default = new [] {
                     "System",
-                    "Unity",
-                    "UnityEngine",
-                    "UnityEngineInternal",
                     "Mono",
                     "Microsoft.Win32",
-                    "AOT"
+                    "Unity",
+                    "UnityEditor",
+                    "UnityEngine",
+                    "UnityEngineInternal",
+                    "AOT",
+                    "JetBrains.Annotations"
                 })]
             public IEnumerable<string> ExcludedNamespaces { get; set; }
 
