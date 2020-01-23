@@ -95,12 +95,10 @@ index = 1
                         break;
                     case MetadataUsageType.MethodRef:
                         var methodSpec = model.Package.MethodSpecs[usage.SourceIndex];
-                        var methodDef = model.MethodsByDefinitionIndex[methodSpec.methodDefinitionIndex];
-
-                        var typeName = formatAsGeneric(methodDef.DeclaringType);
-                        var methodName = formatAsGeneric(methodDef);
+                        method = model.MethodsByDefinitionIndex[methodSpec.methodDefinitionIndex];
+                        type = method.DeclaringType;
                         writeLines(writer,
-                            $"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${typeName}.{methodName}')"
+                            $"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${type.Name}.{method.Name}')"
                         );
                         break;
                     default:
@@ -120,24 +118,6 @@ index = 1
             foreach (var line in lines) {
                 writer.WriteLine(line);
             }
-        }
-
-        #endregion
-
-        #region Helpers
-
-        private static string formatAsGeneric(TypeInfo type) {
-            return formatAsGeneric(type, t => t.IsGenericType, t => t.Name, t => t.GenericTypeParameters);
-        }
-
-        private static string formatAsGeneric(MethodBase method) {
-            return formatAsGeneric(method, m => m.IsGenericMethod, m => m.Name, m => m.GenericTypeParameters);
-        }
-
-        private static string formatAsGeneric<T>(T t, Func<T, bool> getIsGeneric, Func<T, string> getName, Func<T, List<TypeInfo>> getParams) {
-            if (!getIsGeneric(t)) return getName(t);
-
-            return $"{getName(t)}<{string.Join(", ", getParams(t).Select(tp => formatAsGeneric(tp)))}>";
         }
 
         #endregion
