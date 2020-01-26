@@ -1,6 +1,6 @@
 ﻿/*
     Copyright (c) 2019-2020 Carter Bush - https://github.com/carterbush
-    Copyright 2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright (c) 2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */

@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -19,7 +19,7 @@ namespace Il2CppInspector.Reflection
 
         // List of all types ordered by their TypeDefinitionIndex
         public TypeInfo[] TypesByDefinitionIndex { get; }
-        
+
         // List of all type definitions by fully qualified name
         public Dictionary<string, TypeInfo> TypesByFullName { get; } = new Dictionary<string, TypeInfo>();
 
@@ -30,7 +30,7 @@ namespace Il2CppInspector.Reflection
         public ConcurrentDictionary<ulong, TypeInfo> TypesByVirtualAddress { get; } = new ConcurrentDictionary<ulong, TypeInfo>();
 
         // Every type
-        public IEnumerable<TypeInfo> Types => new IEnumerable<TypeInfo>[] { TypesByDefinitionIndex, TypesByUsageIndex, TypesByVirtualAddress.Values }.SelectMany(t => t);
+        public IEnumerable<TypeInfo> Types => new IEnumerable<TypeInfo>[] {TypesByDefinitionIndex, TypesByUsageIndex, TypesByVirtualAddress.Values}.SelectMany(t => t);
 
         // List of all methods ordered by their MethodDefinitionIndex
         public MethodBase[] MethodsByDefinitionIndex { get; }
@@ -79,7 +79,7 @@ namespace Il2CppInspector.Reflection
             }
 
             // Create a reference type if necessary
-            return usage.byref? underlyingType.MakeByRefType() : underlyingType;
+            return usage.byref ? underlyingType.MakeByRefType() : underlyingType;
         }
 
         // Get or generate a type from its IL2CPP binary type usage reference
@@ -99,7 +99,7 @@ namespace Il2CppInspector.Reflection
 
         // Basic primitive types
         public TypeInfo GetTypeFromTypeEnum(Il2CppTypeEnum t) {
-            if ((int)t >= Il2CppConstants.FullNameTypeString.Count)
+            if ((int) t >= Il2CppConstants.FullNameTypeString.Count)
                 return null;
 
             var fqn = Il2CppConstants.FullNameTypeString[(int) t];
@@ -129,6 +129,37 @@ namespace Il2CppInspector.Reflection
             if (!Package.AttributeIndicesByToken[asm.ImageDefinition.customAttributeStart].TryGetValue(token, out var index))
                 return -1;
             return index;
+        }
+
+        // Get the name of a metadata usage
+        public string GetMetadataUsageName(MetadataUsage usage) {
+            switch (usage.Type) {
+                case MetadataUsageType.TypeInfo:
+                case MetadataUsageType.Type:
+                var type = GetTypeFromUsage(usage.SourceIndex);
+                return type.Name;
+
+                case MetadataUsageType.MethodDef:
+                var method = MethodsByDefinitionIndex[usage.SourceIndex];
+                return $"{method.DeclaringType.Name}.{method.Name}";
+
+                case MetadataUsageType.FieldInfo:
+                var field = Package.Fields[usage.SourceIndex];
+                type = GetTypeFromUsage(field.typeIndex);
+                var fieldName = Package.Strings[field.nameIndex];
+                return $"{type.Name}.{fieldName}";
+
+                case MetadataUsageType.StringLiteral:
+                // TODO: String literals
+                return string.Empty;
+
+                case MetadataUsageType.MethodRef:
+                var methodSpec = Package.MethodSpecs[usage.SourceIndex];
+                method = MethodsByDefinitionIndex[methodSpec.methodDefinitionIndex];
+                type = method.DeclaringType;
+                return $"{type.Name}.{method.Name}";
+            }
+            throw new NotImplementedException("Unknown metadata usage type: " + usage.Type);
         }
     }
 }

@@ -13,6 +13,15 @@ namespace Il2CppInspector
 {
     public class Il2CppIDAScriptDumper
     {
+        private readonly Dictionary<MetadataUsageType, string> usagePrefixes = new Dictionary<MetadataUsageType, string> {
+            [MetadataUsageType.TypeInfo] = "Class",
+            [MetadataUsageType.Type] = "Class",
+            [MetadataUsageType.MethodDef] = "Method",
+            [MetadataUsageType.FieldInfo] = "Field",
+            [MetadataUsageType.StringLiteral] = "String",
+            [MetadataUsageType.MethodRef] = "Method"
+        };
+
         private readonly Il2CppModel model;
         private StreamWriter writer;
 
@@ -69,32 +78,12 @@ index = 1
 
         private void writeUsages() {
             foreach (var usage in model.Package.MetadataUsages) {
-                switch (usage.Type) {
-                    case MetadataUsageType.TypeInfo:
-                    case MetadataUsageType.Type:
-                        var type = model.GetTypeFromUsage(usage.SourceIndex);
-                        writeLines($"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Class${type.Name}')");
-                        break;
-                    case MetadataUsageType.MethodDef:
-                        var method = model.MethodsByDefinitionIndex[usage.SourceIndex];
-                        writeLines($"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${method.DeclaringType.Name}.{method.Name}')");
-                        break;
-                    case MetadataUsageType.FieldInfo:
-                        var field = model.Package.Fields[usage.SourceIndex];
-                        type = model.GetTypeFromUsage(field.typeIndex);
-                        var fieldName = model.Package.Strings[field.nameIndex];
-                        writeLines($"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Field${type.Name}.{fieldName}')");
-                        break;
-                    case MetadataUsageType.StringLiteral:
-                        // TODO: String literals
-                        break;
-                    case MetadataUsageType.MethodRef:
-                        var methodSpec = model.Package.MethodSpecs[usage.SourceIndex];
-                        method = model.MethodsByDefinitionIndex[methodSpec.methodDefinitionIndex];
-                        type = method.DeclaringType;
-                        writeLines($"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${type.Name}.{method.Name}')");
-                        break;
-                }
+                // TODO: String literals
+                if (usage.Type == MetadataUsageType.StringLiteral)
+                    continue;
+
+                var address = model.Package.BinaryMetadataUsages[usage.DestinationIndex];
+                writeLines($"SetName({address.ToAddressString()}, '{usagePrefixes[usage.Type]}${model.GetMetadataUsageName(usage)}'");
             }
         }
 
