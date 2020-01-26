@@ -13,28 +13,27 @@ namespace Il2CppInspector
 {
     public class Il2CppIDAScriptDumper
     {
-        private Il2CppModel model;
+        private readonly Il2CppModel model;
+        private StreamWriter writer;
 
         public Il2CppIDAScriptDumper(Il2CppModel model) => this.model = model;
 
-        #region Writing
-
         public void WriteScriptToFile(string outputFile) {
-            using (var fs = new FileStream(outputFile, FileMode.Create))
-            using (var sw = new StreamWriter(fs, Encoding.UTF8)) {
-                writeSectionHeader(sw, "Preamble");
-                writePreamble(sw);
+            using var fs = new FileStream(outputFile, FileMode.Create);
+            writer = new StreamWriter(fs, Encoding.UTF8);
 
-                writeSectionHeader(sw, "Methods");
-                writeMethods(sw, this.model.Types);
+            writeSectionHeader("Preamble");
+            writePreamble();
 
-                writeSectionHeader(sw, "Usages");
-                writeUsages(sw, this.model);
-            }
+            writeSectionHeader("Methods");
+            writeMethods();
+
+            writeSectionHeader( "Usages");
+            writeUsages();
         }
 
-        private static void writePreamble(StreamWriter writer) {
-            writeLines(writer,
+        private void writePreamble() {
+            writeLines(
 @"#encoding: utf-8
 import idaapi
 
@@ -55,44 +54,36 @@ index = 1
             );
         }
 
-        private static void writeMethods(StreamWriter writer, IEnumerable<TypeInfo> types) {
-            foreach (var type in types.Where(t => t != null)) {
-                writeMethods(writer, type.Name, type.DeclaredConstructors);
-                writeMethods(writer, type.Name, type.DeclaredMethods);
+        private void writeMethods() {
+            foreach (var type in model.Types.Where(t => t != null)) {
+                writeMethods(type.Name, type.DeclaredConstructors);
+                writeMethods(type.Name, type.DeclaredMethods);
             }
         }
 
-        private static void writeMethods(StreamWriter writer, string typeName, IEnumerable<MethodBase> methods) {
+        private void writeMethods(string typeName, IEnumerable<MethodBase> methods) {
             foreach (var method in methods.Where(m => m.VirtualAddress.HasValue)) {
-                writeLines(writer,
-                    $"SetName({method.VirtualAddress.Value.Start.ToAddressString()}, '{typeName}$${method.Name}')"
-                );
+                writeLines($"SetName({method.VirtualAddress.Value.Start.ToAddressString()}, '{typeName}$${method.Name}')");
             }
         }
 
-        private static void writeUsages(StreamWriter writer, Il2CppModel model) {
+        private void writeUsages() {
             foreach (var usage in model.Package.MetadataUsages) {
                 switch (usage.Type) {
                     case MetadataUsageType.TypeInfo:
                     case MetadataUsageType.Type:
                         var type = model.GetTypeFromUsage(usage.SourceIndex);
-                        writeLines(writer,
-                            $"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Class${type.Name}')"
-                        );
+                        writeLines($"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Class${type.Name}')");
                         break;
                     case MetadataUsageType.MethodDef:
                         var method = model.MethodsByDefinitionIndex[usage.SourceIndex];
-                        writeLines(writer,
-                            $"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${method.DeclaringType.Name}.{method.Name}')"
-                        );
+                        writeLines($"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${method.DeclaringType.Name}.{method.Name}')");
                         break;
                     case MetadataUsageType.FieldInfo:
                         var field = model.Package.Fields[usage.SourceIndex];
                         type = model.GetTypeFromUsage(field.typeIndex);
                         var fieldName = model.Package.Strings[field.nameIndex];
-                        writeLines(writer,
-                            $"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Field${type.Name}.{fieldName}')"
-                        );
+                        writeLines($"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Field${type.Name}.{fieldName}')");
                         break;
                     case MetadataUsageType.StringLiteral:
                         // TODO: String literals
@@ -101,29 +92,23 @@ index = 1
                         var methodSpec = model.Package.MethodSpecs[usage.SourceIndex];
                         method = model.MethodsByDefinitionIndex[methodSpec.methodDefinitionIndex];
                         type = method.DeclaringType;
-                        writeLines(writer,
-                            $"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${type.Name}.{method.Name}')"
-                        );
-                        break;
-                    default:
+                        writeLines($"SetName({model.Package.BinaryMetadataUsages[usage.DestinationIndex].ToAddressString()}, 'Method${type.Name}.{method.Name}')");
                         break;
                 }
             }
         }
 
-        private static void writeSectionHeader(StreamWriter writer, string sectionName) {
-            writeLines(writer,
+        private void writeSectionHeader(string sectionName) {
+            writeLines(
                 $"# SECTION: {sectionName}",
                 $"# -----------------------------"
             );
         }
 
-        private static void writeLines(StreamWriter writer, params string[] lines) {
+        private void writeLines(params string[] lines) {
             foreach (var line in lines) {
                 writer.WriteLine(line);
             }
         }
-
-        #endregion
     }
 }
