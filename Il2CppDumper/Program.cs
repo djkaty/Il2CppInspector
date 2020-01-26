@@ -147,7 +147,7 @@ namespace Il2CppInspector
 
             // Analyze data
             List<Il2CppInspector> il2cppInspectors;
-            using (var timer = new Benchmark("Analyze IL2CPP data"))
+            using (var il2cppTimer = new Benchmark("Analyze IL2CPP data"))
                 il2cppInspectors = Il2CppInspector.LoadFromFile(options.BinaryFile, options.MetadataFile);
 
             if (il2cppInspectors == null)
@@ -158,60 +158,60 @@ namespace Il2CppInspector
             foreach (var il2cpp in il2cppInspectors) {
                 // Create model
                 Il2CppModel model;
-                using (var timer1 = new Benchmark("Create type model"))
+                using (var modelTimer = new Benchmark("Create type model"))
                     model = new Il2CppModel(il2cpp);
 
                 // C# signatures output
-                using var timer2 = new Benchmark("Generate C# code");
+                using (var signaturesDumperTimer = new Benchmark("Generate C# code")) {
+                    var writer = new Il2CppCSharpDumper(model) {
+                        ExcludedNamespaces = options.ExcludedNamespaces.ToList(),
+                        SuppressMetadata = options.SuppressMetadata,
+                        MustCompile = options.MustCompile
+                    };
 
-                var writer = new Il2CppCSharpDumper(model) {
-                    ExcludedNamespaces = options.ExcludedNamespaces.ToList(),
-                    SuppressMetadata = options.SuppressMetadata,
-                    MustCompile = options.MustCompile
-                };
+                    var imageSuffix = i++ > 0 ? "-" + (i - 1) : "";
 
-                var imageSuffix = i++ > 0 ? "-" + (i - 1) : "";
+                    var csOut = options.CSharpOutPath;
+                    if (csOut.ToLower().EndsWith(".cs"))
+                        csOut = csOut.Insert(csOut.Length - 3, imageSuffix);
+                    else
+                        csOut += imageSuffix;
 
-                var csOut = options.CSharpOutPath;
-                if (csOut.ToLower().EndsWith(".cs"))
-                    csOut = csOut.Insert(csOut.Length - 3, imageSuffix);
-                else
-                    csOut += imageSuffix;
+                    if (options.CreateSolution) {
+                        writer.WriteSolution(csOut, unityPath, unityAssembliesPath);
+                        continue;
+                    }
 
-                if (options.CreateSolution) {
-                    writer.WriteSolution(csOut, unityPath, unityAssembliesPath);
-                    continue;
-                }
+                    switch (options.LayoutSchema.ToLower(), options.SortOrder.ToLower()) {
+                        case ("single", "index"):
+                            writer.WriteSingleFile(csOut, t => t.Index);
+                            break;
+                        case ("single", "name"):
+                            writer.WriteSingleFile(csOut, t => t.Name);
+                            break;
 
-                switch (options.LayoutSchema.ToLower(), options.SortOrder.ToLower()) {
-                    case ("single", "index"):
-                        writer.WriteSingleFile(csOut, t => t.Index);
-                        break;
-                    case ("single", "name"):
-                        writer.WriteSingleFile(csOut, t => t.Name);
-                        break;
+                        case ("namespace", "index"):
+                            writer.WriteFilesByNamespace(csOut, t => t.Index, options.FlattenHierarchy);
+                            break;
+                        case ("namespace", "name"):
+                            writer.WriteFilesByNamespace(csOut, t => t.Name, options.FlattenHierarchy);
+                            break;
 
-                    case ("namespace", "index"):
-                        writer.WriteFilesByNamespace(csOut, t => t.Index, options.FlattenHierarchy);
-                        break;
-                    case ("namespace", "name"):
-                        writer.WriteFilesByNamespace(csOut, t => t.Name, options.FlattenHierarchy);
-                        break;
+                        case ("assembly", "index"):
+                            writer.WriteFilesByAssembly(csOut, t => t.Index, options.SeparateAssemblyAttributesFiles);
+                            break;
+                        case ("assembly", "name"):
+                            writer.WriteFilesByAssembly(csOut, t => t.Name, options.SeparateAssemblyAttributesFiles);
+                            break;
 
-                    case ("assembly", "index"):
-                        writer.WriteFilesByAssembly(csOut, t => t.Index, options.SeparateAssemblyAttributesFiles);
-                        break;
-                    case ("assembly", "name"):
-                        writer.WriteFilesByAssembly(csOut, t => t.Name, options.SeparateAssemblyAttributesFiles);
-                        break;
+                        case ("class", _):
+                            writer.WriteFilesByClass(csOut, options.FlattenHierarchy);
+                            break;
 
-                    case ("class", _):
-                        writer.WriteFilesByClass(csOut, options.FlattenHierarchy);
-                        break;
-
-                    case ("tree", _):
-                        writer.WriteFilesByClassTree(csOut, options.SeparateAssemblyAttributesFiles);
-                        break;
+                        case ("tree", _):
+                            writer.WriteFilesByClassTree(csOut, options.SeparateAssemblyAttributesFiles);
+                            break;
+                    }
                 }
 
                 // IDA Python script output
