@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) 2019-2020 Carter Bush - https://github.com/carterbush
+// Copyright (c) 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+// All rights reserved
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
