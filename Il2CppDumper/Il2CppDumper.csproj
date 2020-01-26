@@ -10,8 +10,8 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Version>2.0</Version>
     <Company>Noisy Cow Studios</Company>
-    <Product>Il2CppInspector</Product>
-    <Copyright>(c) 2017-2019 Katy Coe - www.djkaty.com</Copyright>
+    <Product>Il2CppInspector Command-Line Edition</Product>
+    <Copyright>(c) 2017-2020 Katy Coe - www.djkaty.com - www.github.com/djkaty</Copyright>
     <PackageId>Il2CppDumper</PackageId>
     <Authors>Katy Coe</Authors>
   </PropertyGroup>

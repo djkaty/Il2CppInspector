@@ -95,6 +95,13 @@ namespace Il2CppInspector
                 _ => 1);
 
         private static int Run(Options options) {
+            // Banner
+            var asmInfo = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetEntryAssembly().Location);
+            Console.WriteLine(asmInfo.ProductName);
+            Console.WriteLine("Version " + asmInfo.ProductVersion);
+            Console.WriteLine(asmInfo.LegalCopyright);
+            Console.WriteLine("");
+
             // Check excluded namespaces
             if (options.ExcludedNamespaces.Count() == 1 && options.ExcludedNamespaces.First().ToLower() == "none")
                 options.ExcludedNamespaces = new List<string>();
