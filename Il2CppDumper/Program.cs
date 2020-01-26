@@ -177,41 +177,40 @@ namespace Il2CppInspector
                     else
                         csOut += imageSuffix;
 
-                    if (options.CreateSolution) {
+                    if (options.CreateSolution)
                         writer.WriteSolution(csOut, unityPath, unityAssembliesPath);
-                        continue;
-                    }
 
-                    switch (options.LayoutSchema.ToLower(), options.SortOrder.ToLower()) {
-                        case ("single", "index"):
-                            writer.WriteSingleFile(csOut, t => t.Index);
-                            break;
-                        case ("single", "name"):
-                            writer.WriteSingleFile(csOut, t => t.Name);
-                            break;
+                    else
+                        switch (options.LayoutSchema.ToLower(), options.SortOrder.ToLower()) {
+                            case ("single", "index"):
+                                writer.WriteSingleFile(csOut, t => t.Index);
+                                break;
+                            case ("single", "name"):
+                                writer.WriteSingleFile(csOut, t => t.Name);
+                                break;
 
-                        case ("namespace", "index"):
-                            writer.WriteFilesByNamespace(csOut, t => t.Index, options.FlattenHierarchy);
-                            break;
-                        case ("namespace", "name"):
-                            writer.WriteFilesByNamespace(csOut, t => t.Name, options.FlattenHierarchy);
-                            break;
+                            case ("namespace", "index"):
+                                writer.WriteFilesByNamespace(csOut, t => t.Index, options.FlattenHierarchy);
+                                break;
+                            case ("namespace", "name"):
+                                writer.WriteFilesByNamespace(csOut, t => t.Name, options.FlattenHierarchy);
+                                break;
 
-                        case ("assembly", "index"):
-                            writer.WriteFilesByAssembly(csOut, t => t.Index, options.SeparateAssemblyAttributesFiles);
-                            break;
-                        case ("assembly", "name"):
-                            writer.WriteFilesByAssembly(csOut, t => t.Name, options.SeparateAssemblyAttributesFiles);
-                            break;
+                            case ("assembly", "index"):
+                                writer.WriteFilesByAssembly(csOut, t => t.Index, options.SeparateAssemblyAttributesFiles);
+                                break;
+                            case ("assembly", "name"):
+                                writer.WriteFilesByAssembly(csOut, t => t.Name, options.SeparateAssemblyAttributesFiles);
+                                break;
 
-                        case ("class", _):
-                            writer.WriteFilesByClass(csOut, options.FlattenHierarchy);
-                            break;
+                            case ("class", _):
+                                writer.WriteFilesByClass(csOut, options.FlattenHierarchy);
+                                break;
 
-                        case ("tree", _):
-                            writer.WriteFilesByClassTree(csOut, options.SeparateAssemblyAttributesFiles);
-                            break;
-                    }
+                            case ("tree", _):
+                                writer.WriteFilesByClassTree(csOut, options.SeparateAssemblyAttributesFiles);
+                                break;
+                        }
                 }
 
                 // IDA Python script output
