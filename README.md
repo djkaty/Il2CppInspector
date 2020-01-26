@@ -10,6 +10,7 @@ Easily extract types and metadata from IL2CPP binaries.
 * C# syntactic sugar for CTS value types, compiler-generated types, delegates, extension methods, operator overloading, indexers, user-defined conversion operators, explicit interface instantiations, finalizers, nullable types, unsafe contexts, fixed-size arrays, variable length argument lists, method hiding and escaped strings
 * Partition C# code output by namespace, assembly, class, full tree or single file; sort by index or type name; output flat or nested folder hierarchy. Each file includes the necessary `using` directives. Scope and type name conflicts are resolved automatically to produce code that compiles.
 * **NEW!** Create Visual Studio solutions directly from IL2CPP files
+* **NEW!** Create IDA Python scripts to populate symbol and function information
 * Static symbol table scanning for ELF and Mach-O binaries if present
 * Dynamic symbol table scanning for ELF binaries if present
 * Symbol relocation handling for ELF binaries
@@ -41,6 +42,7 @@ File format and architecture are automatically detected.
   -i, --bin                   Required. (Default: libil2cpp.so) IL2CPP binary file input
   -m, --metadata              Required. (Default: global-metadata.dat) IL2CPP metadata file input
   -c, --cs-out                (Default: types.cs) C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)
+  -p, --py-out                (Default: ida.py) IDA Python script output file
   -e, --exclude-namespaces    (Default: System Unity UnityEngine UnityEngineInternal Mono Microsoft.Win32) Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces
   -l, --layout                (Default: single) Partitioning of C# output ('single' = single file, 'namespace' = one file per namespace in folders, 'assembly' = one file per assembly, 'class' = one file per class in namespace folders, 'tree' = one file per class in assembly and namespace folders)
   -s, --sort                  (Default: index) Sort order of type definitions in C# output ('index' = by type definition index, 'name' = by type name). No effect when using file-per-class or tree layout
