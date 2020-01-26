@@ -32,6 +32,8 @@ namespace Il2CppInspector
         public Il2CppGenericParameter[] GenericParameters { get; }
         public Il2CppCustomAttributeTypeRange[] AttributeTypeRanges { get; }
         public Il2CppInterfaceOffsetPair[] InterfaceOffsets { get; }
+        public Il2CppMetadataUsageList[] MetadataUsageLists { get; }
+        public Il2CppMetadataUsagePair[] MetadataUsagePairs { get; }
 
         public int[] InterfaceUsageIndices { get; }
         public int[] NestedTypeIndices { get; }
@@ -40,6 +42,7 @@ namespace Il2CppInspector
         public uint[] VTableMethodIndices { get; }
 
         public Dictionary<int, string> Strings { get; } = new Dictionary<int, string>();
+        public List<MetadataUsage> MetadataUsages { get; } = new List<MetadataUsage>();
 
         public Metadata(Stream stream) : base(stream)
         {
@@ -118,6 +121,11 @@ namespace Il2CppInspector
                 Assemblies = ReadArray<Il2CppAssemblyDefinition>(Header.assembliesOffset, Header.assembliesCount / Sizeof(typeof(Il2CppAssemblyDefinition)));
                 ParameterDefaultValues = ReadArray<Il2CppParameterDefaultValue>(Header.parameterDefaultValuesOffset, Header.parameterDefaultValuesCount / Sizeof(typeof(Il2CppParameterDefaultValue)));
             }
+            if (Version >= 19) {
+                MetadataUsageLists = ReadArray<Il2CppMetadataUsageList>(Header.metadataUsageListsOffset, Header.metadataUsageListsCount / Sizeof(typeof(Il2CppMetadataUsageList)));
+                MetadataUsagePairs = ReadArray<Il2CppMetadataUsagePair>(Header.metadataUsagePairsOffset, Header.metadataUsagePairsCount / Sizeof(typeof(Il2CppMetadataUsagePair)));
+                MetadataUsages = buildMetadataUsages();
+            }
             if (Version >= 21) {
                 AttributeTypeIndices = ReadArray<int>(Header.attributeTypesOffset, Header.attributeTypesCount / sizeof(int));
                 AttributeTypeRanges = ReadArray<Il2CppCustomAttributeTypeRange>(Header.attributesInfoOffset, Header.attributesInfoCount / Sizeof(typeof(Il2CppCustomAttributeTypeRange)));
@@ -127,6 +135,28 @@ namespace Il2CppInspector
             Position = Header.stringOffset;
             while (Position < Header.stringOffset + Header.stringCount)
                 Strings.Add((int)Position - Header.stringOffset, ReadNullTerminatedString());
+        }
+
+        private List<MetadataUsage> buildMetadataUsages()
+        {
+            var usages = new Dictionary<uint, MetadataUsage>();
+            foreach (var metadataUsageList in MetadataUsageLists)
+            {
+                for (var i = 0; i < metadataUsageList.count; i++)
+                {
+                    var metadataUsagePair = MetadataUsagePairs[metadataUsageList.start + i];
+
+                    var encodedType = metadataUsagePair.encodedSourceIndex & 0xE0000000;
+                    var usageType = (MetadataUsageType)(encodedType >> 29);
+
+                    var sourceIndex = metadataUsagePair.encodedSourceIndex & 0x1FFFFFFF;
+                    var destinationIndex = metadataUsagePair.destinationindex;
+
+                    usages.TryAdd(destinationIndex, new MetadataUsage(usageType, (int)sourceIndex, (int)destinationIndex));
+                }
+            }
+
+            return usages.Values.ToList();
         }
 
         private int Sizeof(Type type)

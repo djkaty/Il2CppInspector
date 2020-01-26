@@ -42,6 +42,7 @@ namespace Il2CppInspector
         public int[] GenericConstraintIndices => Metadata.GenericConstraintIndices;
         public Il2CppCustomAttributeTypeRange[] AttributeTypeRanges => Metadata.AttributeTypeRanges;
         public Il2CppInterfaceOffsetPair[] InterfaceOffsets => Metadata.InterfaceOffsets;
+        public List<MetadataUsage> MetadataUsages => Metadata.MetadataUsages;
         public int[] InterfaceUsageIndices => Metadata.InterfaceUsageIndices;
         public int[] NestedTypeIndices => Metadata.NestedTypeIndices;
         public int[] AttributeTypeIndices => Metadata.AttributeTypeIndices;
@@ -53,6 +54,7 @@ namespace Il2CppInspector
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
         public ulong[] CustomAttributeGenerators => Binary.CustomAttributeGenerators;
         public Il2CppMethodSpec[] MethodSpecs => Binary.MethodSpecs;
+        public ulong[] BinaryMetadataUsages => Binary.MetadataUsages;
 
         // TODO: Finish all file access in the constructor and eliminate the need for this
         public IFileFormatReader BinaryImage => Binary.Image;
@@ -272,6 +274,30 @@ namespace Il2CppInspector
                 }
             }
             return processors;
+        }
+    }
+
+    public enum MetadataUsageType
+    {
+        TypeInfo = 1,
+        Type = 2,
+        MethodDef = 3,
+        FieldInfo = 4,
+        StringLiteral = 5,
+        MethodRef = 6,
+    }
+
+    public class MetadataUsage
+    {
+        public MetadataUsageType Type { get; }
+        public int SourceIndex { get; }
+        public int DestinationIndex { get; }
+
+        public MetadataUsage(MetadataUsageType type, int sourceIndex, int destinationIndex)
+        {
+            Type = type;
+            SourceIndex = sourceIndex;
+            DestinationIndex = destinationIndex;
         }
     }
 }

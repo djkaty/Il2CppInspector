@@ -25,7 +25,7 @@ namespace Il2CppInspector
             [Option('c', "cs-out", Required = false, HelpText = "C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)", Default = "types.cs")]
             public string CSharpOutPath { get; set; }
 
-            [Option('p', "py-out", Required = false, Hidden = true, HelpText = "IDA Python script output file", Default = "ida.py")]
+            [Option('p', "py-out", Required = false, HelpText = "IDA Python script output file", Default = "ida.py")]
             public string PythonOutFile { get; set; }
 
             [Option('e', "exclude-namespaces", Required = false, Separator = ',', HelpText = "Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces",
@@ -208,7 +208,10 @@ namespace Il2CppInspector
                 }
 
                 // IDA Python script output
-                // TODO: IDA Python script output
+                using (var scriptDumperTimer = new Benchmark("IDA Python Script Dumper")) {
+                    var idaWriter = new Il2CppIDAScriptDumper(model);
+                    idaWriter.WriteScriptToFile(options.PythonOutFile);
+                }
             }
 
             // Success exit code
