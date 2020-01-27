@@ -29,6 +29,7 @@ namespace Il2CppInspector
         public double Version => Metadata.Version;
 
         public Dictionary<int, string> Strings => Metadata.Strings;
+        public string[] StringLiterals => Metadata.StringLiterals;
         public Il2CppTypeDefinition[] TypeDefinitions => Metadata.Types;
         public Il2CppAssemblyDefinition[] Assemblies => Metadata.Assemblies;
         public Il2CppImageDefinition[] Images => Metadata.Images;
