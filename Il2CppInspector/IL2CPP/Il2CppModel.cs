@@ -150,8 +150,7 @@ namespace Il2CppInspector.Reflection
                 return $"{type.Name}.{fieldName}";
 
                 case MetadataUsageType.StringLiteral:
-                // TODO: String literals
-                return string.Empty;
+                return Package.StringLiterals[usage.SourceIndex];
 
                 case MetadataUsageType.MethodRef:
                 var methodSpec = Package.MethodSpecs[usage.SourceIndex];
