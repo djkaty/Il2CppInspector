@@ -127,7 +127,6 @@ namespace Il2CppInspector
             if (Version >= 19) {
                 MetadataUsageLists = ReadArray<Il2CppMetadataUsageList>(Header.metadataUsageListsOffset, Header.metadataUsageListsCount / Sizeof(typeof(Il2CppMetadataUsageList)));
                 MetadataUsagePairs = ReadArray<Il2CppMetadataUsagePair>(Header.metadataUsagePairsOffset, Header.metadataUsagePairsCount / Sizeof(typeof(Il2CppMetadataUsagePair)));
-                MetadataUsages = buildMetadataUsages();
             }
             if (Version >= 21) {
                 AttributeTypeIndices = ReadArray<int>(Header.attributeTypesOffset, Header.attributeTypesCount / sizeof(int));
@@ -145,28 +144,6 @@ namespace Il2CppInspector
             StringLiterals = new string[stringLiteralList.Length];
             for (var i = 0; i < stringLiteralList.Length; i++)
                 StringLiterals[i] = ReadFixedLengthString(Header.stringLiteralDataOffset + stringLiteralList[i].dataIndex, stringLiteralList[i].length);
-        }
-
-        private List<MetadataUsage> buildMetadataUsages()
-        {
-            var usages = new Dictionary<uint, MetadataUsage>();
-            foreach (var metadataUsageList in MetadataUsageLists)
-            {
-                for (var i = 0; i < metadataUsageList.count; i++)
-                {
-                    var metadataUsagePair = MetadataUsagePairs[metadataUsageList.start + i];
-
-                    var encodedType = metadataUsagePair.encodedSourceIndex & 0xE0000000;
-                    var usageType = (MetadataUsageType)(encodedType >> 29);
-
-                    var sourceIndex = metadataUsagePair.encodedSourceIndex & 0x1FFFFFFF;
-                    var destinationIndex = metadataUsagePair.destinationindex;
-
-                    usages.TryAdd(destinationIndex, new MetadataUsage(usageType, (int)sourceIndex, (int)destinationIndex));
-                }
-            }
-
-            return usages.Values.ToList();
         }
 
         private int Sizeof(Type type)

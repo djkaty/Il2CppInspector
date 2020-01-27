@@ -25,6 +25,10 @@ namespace Il2CppInspector
         // Attribute indexes (>=24.1) arranged by customAttributeStart and token
         public Dictionary<int, Dictionary<uint, int>> AttributeIndicesByToken { get; }
 
+        // Merged list of all metadata usage references
+        public List<MetadataUsage> MetadataUsages { get; }
+        public ulong[] BinaryMetadataUsages { get; } // TODO: Make private
+
         // Shortcuts
         public double Version => Metadata.Version;
 
@@ -43,7 +47,6 @@ namespace Il2CppInspector
         public int[] GenericConstraintIndices => Metadata.GenericConstraintIndices;
         public Il2CppCustomAttributeTypeRange[] AttributeTypeRanges => Metadata.AttributeTypeRanges;
         public Il2CppInterfaceOffsetPair[] InterfaceOffsets => Metadata.InterfaceOffsets;
-        public List<MetadataUsage> MetadataUsages => Metadata.MetadataUsages;
         public int[] InterfaceUsageIndices => Metadata.InterfaceUsageIndices;
         public int[] NestedTypeIndices => Metadata.NestedTypeIndices;
         public int[] AttributeTypeIndices => Metadata.AttributeTypeIndices;
@@ -55,7 +58,6 @@ namespace Il2CppInspector
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
         public ulong[] CustomAttributeGenerators => Binary.CustomAttributeGenerators;
         public Il2CppMethodSpec[] MethodSpecs => Binary.MethodSpecs;
-        public ulong[] BinaryMetadataUsages => Binary.MetadataUsages;
 
         // TODO: Finish all file access in the constructor and eliminate the need for this
         public IFileFormatReader BinaryImage => Binary.Image;
@@ -117,6 +119,27 @@ namespace Il2CppInspector
                     break;
             }
             return ((ulong) pValue, value);
+        }
+
+        private List<MetadataUsage> buildMetadataUsages()
+        {
+            var usages = new Dictionary<uint, MetadataUsage>();
+            foreach (var metadataUsageList in Metadata.MetadataUsageLists)
+            {
+                for (var i = 0; i < metadataUsageList.count; i++)
+                {
+                    var metadataUsagePair = Metadata.MetadataUsagePairs[metadataUsageList.start + i];
+
+                    var encodedType = metadataUsagePair.encodedSourceIndex & 0xE0000000;
+                    var usageType = (MetadataUsageType)(encodedType >> 29);
+
+                    var sourceIndex = metadataUsagePair.encodedSourceIndex & 0x1FFFFFFF;
+                    var destinationIndex = metadataUsagePair.destinationindex;
+
+                    usages.TryAdd(destinationIndex, new MetadataUsage(usageType, (int)sourceIndex, (int)destinationIndex));
+                }
+            }
+            return usages.Values.ToList();
         }
 
         public Il2CppInspector(Il2CppBinary binary, Metadata metadata) {
@@ -190,6 +213,16 @@ namespace Il2CppInspector
                     }
                     AttributeIndicesByToken.Add(image.customAttributeStart, attsByToken);
                 }
+            }
+
+            // Merge all metadata usage references into a single distinct list
+            if (Version >= 19) {
+                MetadataUsages = buildMetadataUsages();
+
+                // Metadata usages (addresses)
+                // Unfortunately the value supplied in MetadataRegistration.matadataUsagesCount seems to be incorrect,
+                // so we have to calculate the correct number of usages above before reading the usage address list from the binary
+                BinaryMetadataUsages = Binary.Image.ReadMappedArray<ulong>(Binary.MetadataRegistration.metadataUsages, MetadataUsages.Count);
             }
         }
 

@@ -197,10 +197,6 @@ namespace Il2CppInspector
 
             // Generic method specs
             MethodSpecs = image.ReadMappedArray<Il2CppMethodSpec>(MetadataRegistration.methodSpecs, (int) MetadataRegistration.methodSpecsCount);
-
-            // Metadata usages (addresses)
-            if (image.Version >= 19)
-                MetadataUsages = image.ReadMappedArray<ulong>(MetadataRegistration.metadataUsages, (int)MetadataRegistration.metadataUsagesCount);
         }
     }
 }
