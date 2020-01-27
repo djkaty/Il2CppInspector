@@ -37,8 +37,10 @@ namespace Il2CppInspector
             writeSectionHeader("Methods");
             writeMethods();
 
-            writeSectionHeader( "Usages");
+            writeSectionHeader("Usages");
             writeUsages();
+
+            writer.Close();
         }
 
         private void writePreamble() {
@@ -47,8 +49,7 @@ namespace Il2CppInspector
 import idaapi
 
 def SetString(addr, comm):
-  global index
-  name = 'StringLiteral_' + str(index)
+  name = 'StringLiteral_' + str(addr)
   ret = idc.set_name(addr, name, SN_NOWARN)
   idc.set_cmt(addr, comm, 1)
 
@@ -57,8 +58,6 @@ def SetName(addr, name):
   if ret == 0:
     new_name = name + '_' + str(addr)
     ret = idc.set_name(addr, new_name, SN_NOWARN | SN_NOCHECK)
-
-index = 1
 "
             );
         }
@@ -78,12 +77,13 @@ index = 1
 
         private void writeUsages() {
             foreach (var usage in model.Package.MetadataUsages) {
-                // TODO: String literals
-                if (usage.Type == MetadataUsageType.StringLiteral)
-                    continue;
-
+                var escapedName = model.GetMetadataUsageName(usage).ToEscapedString();
                 var address = model.Package.BinaryMetadataUsages[usage.DestinationIndex];
-                writeLines($"SetName({address.ToAddressString()}, '{usagePrefixes[usage.Type]}${model.GetMetadataUsageName(usage)}'");
+
+                if (usage.Type != MetadataUsageType.StringLiteral)
+                    writeLines($"SetName({address.ToAddressString()}, '{usagePrefixes[usage.Type]}${escapedName}')");
+                else
+                    writeLines($"SetString({address.ToAddressString()}, r'{escapedName}')");
             }
         }
 

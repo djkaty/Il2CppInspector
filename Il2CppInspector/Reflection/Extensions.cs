@@ -70,6 +70,19 @@ namespace Il2CppInspector.Reflection
             ['\v'] = @"\v"
         };
 
+        // Output a string in Python-friendly syntax
+        public static string ToEscapedString(this string str) {
+            // Replace standard escape characters
+            var s = new StringBuilder();
+            for (var i = 0; i < str.Length; i++)
+                // Standard escape characters
+                s.Append(escapeChars.ContainsKey(str[i]) ? escapeChars[str[i]]
+                        // Replace everything else with UTF-16 Unicode
+                    : str[i] < 32 || str[i] > 126 ? @"\u" + $"{(int) str[i]:X4}"
+                    : str[i].ToString());
+            return s.ToString();
+        }
+
         // Output a value in C#-friendly syntax
         public static string ToCSharpValue(this object value, TypeInfo type, Scope usingScope = null) {
             if (value is bool)
@@ -77,15 +90,7 @@ namespace Il2CppInspector.Reflection
             if (value is float)
                 return value + "f";
             if (value is string str) {
-                // Replace standard escape characters
-                var s = new StringBuilder();
-                for (var i = 0; i < str.Length; i++)
-                    // Standard escape characters
-                    s.Append(escapeChars.ContainsKey(str[i]) ? escapeChars[str[i]]
-                        // Replace everything else with UTF-16 Unicode
-                        : str[i] < 32 || str[i] > 126 ? @"\u" + $"{(int) str[i]:X4}"
-                        : str[i].ToString());
-                return $"\"{s}\"";
+                return $"\"{str.ToEscapedString()}\"";
             }
             if (value is char) {
                 var cValue = (int) (char) value;
