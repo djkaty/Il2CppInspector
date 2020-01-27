@@ -51,6 +51,7 @@ namespace Il2CppInspector
         public int[] NestedTypeIndices => Metadata.NestedTypeIndices;
         public int[] AttributeTypeIndices => Metadata.AttributeTypeIndices;
         public uint[] VTableMethodIndices => Metadata.VTableMethodIndices;
+        public Il2CppFieldRef[] FieldRefs => Metadata.FieldRefs;
         public Dictionary<int, (ulong, object)> FieldDefaultValue { get; } = new Dictionary<int, (ulong, object)>();
         public Dictionary<int, (ulong, object)> ParameterDefaultValue { get; } = new Dictionary<int, (ulong, object)>();
         public List<long> FieldOffsets { get; }

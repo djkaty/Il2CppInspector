@@ -36,6 +36,7 @@ namespace Il2CppInspector
         public Il2CppInterfaceOffsetPair[] InterfaceOffsets { get; }
         public Il2CppMetadataUsageList[] MetadataUsageLists { get; }
         public Il2CppMetadataUsagePair[] MetadataUsagePairs { get; }
+        public Il2CppFieldRef[] FieldRefs { get; }
 
         public int[] InterfaceUsageIndices { get; }
         public int[] NestedTypeIndices { get; }
@@ -127,6 +128,7 @@ namespace Il2CppInspector
             if (Version >= 19) {
                 MetadataUsageLists = ReadArray<Il2CppMetadataUsageList>(Header.metadataUsageListsOffset, Header.metadataUsageListsCount / Sizeof(typeof(Il2CppMetadataUsageList)));
                 MetadataUsagePairs = ReadArray<Il2CppMetadataUsagePair>(Header.metadataUsagePairsOffset, Header.metadataUsagePairsCount / Sizeof(typeof(Il2CppMetadataUsagePair)));
+                FieldRefs = ReadArray<Il2CppFieldRef>(Header.fieldRefsOffset, Header.fieldRefsCount / Sizeof(typeof(Il2CppFieldRef)));
             }
             if (Version >= 21) {
                 AttributeTypeIndices = ReadArray<int>(Header.attributeTypesOffset, Header.attributeTypesCount / sizeof(int));

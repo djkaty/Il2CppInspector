@@ -143,11 +143,11 @@ namespace Il2CppInspector.Reflection
                 var method = MethodsByDefinitionIndex[usage.SourceIndex];
                 return $"{method.DeclaringType.Name}.{method.Name}";
 
-                case MetadataUsageType.FieldInfo:
-                var field = Package.Fields[usage.SourceIndex];
-                type = GetTypeFromUsage(field.typeIndex);
-                var fieldName = Package.Strings[field.nameIndex];
-                return $"{type.Name}.{fieldName}";
+                case MetadataUsageType.FieldInfo: 
+                var fieldRef = Package.FieldRefs[usage.SourceIndex];
+                type = GetTypeFromUsage(fieldRef.typeIndex);
+                var field = type.DeclaredFields.First(f => f.Index == type.Definition.fieldStart + fieldRef.fieldIndex);
+                return $"{type.Name}.{field.Name}";
 
                 case MetadataUsageType.StringLiteral:
                 return Package.StringLiterals[usage.SourceIndex];

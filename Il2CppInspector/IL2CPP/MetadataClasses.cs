@@ -439,4 +439,10 @@ namespace Il2CppInspector
         public int length;
         public int dataIndex;
     }
+
+    public class Il2CppFieldRef
+    {
+        public int typeIndex;
+        public int fieldIndex; // local offset into type fields
+    }
 }
