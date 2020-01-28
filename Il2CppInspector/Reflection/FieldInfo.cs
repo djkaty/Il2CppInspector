@@ -1,5 +1,5 @@
 /*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -82,7 +82,7 @@ namespace Il2CppInspector.Reflection {
             Name = pkg.Strings[Definition.nameIndex];
 
             fieldTypeUsage = Definition.typeIndex;
-            var fieldType = pkg.TypeUsages[fieldTypeUsage];
+            var fieldType = pkg.TypeReferences[fieldTypeUsage];
 
             if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_FIELD_ACCESS_MASK) == Il2CppConstants.FIELD_ATTRIBUTE_PRIVATE)
                 Attributes |= FieldAttributes.Private;

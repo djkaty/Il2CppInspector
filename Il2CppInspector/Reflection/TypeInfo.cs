@@ -440,7 +440,7 @@ namespace Il2CppInspector.Reflection {
 
             // Nested type?
             if (Definition.declaringTypeIndex >= 0) {
-                declaringTypeDefinitionIndex = (int) pkg.TypeUsages[Definition.declaringTypeIndex].datapoint;
+                declaringTypeDefinitionIndex = (int) pkg.TypeReferences[Definition.declaringTypeIndex].datapoint;
                 MemberType |= MemberTypes.NestedType;
             }
 
@@ -590,7 +590,7 @@ namespace Il2CppInspector.Reflection {
 
                 // Nested type?
                 if (genericTypeDef.Definition.declaringTypeIndex >= 0) {
-                    declaringTypeDefinitionIndex = (int)model.Package.TypeUsages[genericTypeDef.Definition.declaringTypeIndex].datapoint;
+                    declaringTypeDefinitionIndex = (int)model.Package.TypeReferences[genericTypeDef.Definition.declaringTypeIndex].datapoint;
                     MemberType = memberType | MemberTypes.NestedType;
                 }
 
@@ -601,6 +601,9 @@ namespace Il2CppInspector.Reflection {
 
                 // Get the instantiation
                 var genericInstance = image.ReadMappedObject<Il2CppGenericInst>(generic.context.class_inst);
+
+                if (generic.context.method_inst != 0)
+                    throw new InvalidOperationException("Generic method instance cannot be non-null when processing a generic class instance");
 
                 // Get list of pointers to type parameters (both unresolved and concrete)
                 var genericTypeArguments = image.ReadMappedWordArray(genericInstance.type_argv, (int)genericInstance.type_argc);

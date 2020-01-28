@@ -47,7 +47,7 @@ namespace Il2CppInspector
         public List<Il2CppGenericInst> GenericInstances { get; private set; }
 
         // Every defined type
-        public List<Il2CppType> Types { get; private set; }
+        public List<Il2CppType> TypeReferences { get; private set; }
 
         // From v24.2 onwards, this structure is stored for each module (image)
         // One assembly may contain multiple modules
@@ -189,13 +189,13 @@ namespace Il2CppInspector
             else
                 FieldOffsetPointers = image.ReadMappedWordArray(MetadataRegistration.pfieldOffsets, (int)MetadataRegistration.fieldOffsetsCount);
 
-            // Type definitions (pointer array)
-            Types = image.ReadMappedObjectPointerArray<Il2CppType>(MetadataRegistration.ptypes, (int) MetadataRegistration.typesCount);
+            // Type references (pointer array)
+            TypeReferences = image.ReadMappedObjectPointerArray<Il2CppType>(MetadataRegistration.ptypes, (int) MetadataRegistration.typesCount);
 
-            // Custom attribute constructors
+            // Custom attribute constructors (function pointers)
             CustomAttributeGenerators = image.ReadMappedArray<ulong>(CodeRegistration.customAttributeGenerators, (int) CodeRegistration.customAttributeCount);
 
-            // Generic method specs
+            // Generic type and method specs (open and closed constructed types)
             MethodSpecs = image.ReadMappedArray<Il2CppMethodSpec>(MetadataRegistration.methodSpecs, (int) MetadataRegistration.methodSpecsCount);
 
             // Concrete generic class and method signatures

@@ -55,7 +55,7 @@ namespace Il2CppInspector
         public Dictionary<int, (ulong, object)> FieldDefaultValue { get; } = new Dictionary<int, (ulong, object)>();
         public Dictionary<int, (ulong, object)> ParameterDefaultValue { get; } = new Dictionary<int, (ulong, object)>();
         public List<long> FieldOffsets { get; }
-        public List<Il2CppType> TypeUsages => Binary.Types;
+        public List<Il2CppType> TypeReferences => Binary.TypeReferences;
         public List<Il2CppGenericInst> GenericInstances => Binary.GenericInstances;
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
         public ulong[] CustomAttributeGenerators => Binary.CustomAttributeGenerators;
@@ -71,7 +71,7 @@ namespace Il2CppInspector
 
             // Get pointer in binary to default value
             var pValue = Metadata.Header.fieldAndParameterDefaultValueDataOffset + dataIndex;
-            var type = TypeUsages[typeIndex];
+            var typeRef = TypeReferences[typeIndex];
 
             // Default value is null
             if (pValue == 0)
@@ -79,7 +79,7 @@ namespace Il2CppInspector
 
             object value = null;
             Metadata.Position = pValue;
-            switch (type.type) {
+            switch (typeRef.type) {
                 case Il2CppTypeEnum.IL2CPP_TYPE_BOOLEAN:
                     value = Metadata.ReadBoolean();
                     break;

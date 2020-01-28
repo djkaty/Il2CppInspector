@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -43,7 +43,7 @@ namespace Il2CppInspector.Reflection
             Name = pkg.Strings[Definition.nameIndex];
 
             eventTypeUsage = Definition.typeIndex;
-            var eventType = pkg.TypeUsages[eventTypeUsage];
+            var eventType = pkg.TypeReferences[eventTypeUsage];
 
             if ((eventType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_SPECIAL_NAME) == Il2CppConstants.FIELD_ATTRIBUTE_SPECIAL_NAME)
                 Attributes |= EventAttributes.SpecialName;

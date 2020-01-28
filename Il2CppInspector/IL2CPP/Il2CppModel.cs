@@ -23,14 +23,14 @@ namespace Il2CppInspector.Reflection
         // List of all type definitions by fully qualified name
         public Dictionary<string, TypeInfo> TypesByFullName { get; } = new Dictionary<string, TypeInfo>();
 
-        // List of all type usages ordered by their type usage index
-        public TypeInfo[] TypesByUsageIndex { get; }
+        // List of all type references ordered by index
+        public TypeInfo[] TypeReferences { get; }
 
         // List of type usages that are initialized via pointers in the image
         public ConcurrentDictionary<ulong, TypeInfo> TypesByVirtualAddress { get; } = new ConcurrentDictionary<ulong, TypeInfo>();
 
         // Every type
-        public IEnumerable<TypeInfo> Types => new IEnumerable<TypeInfo>[] {TypesByDefinitionIndex, TypesByUsageIndex, TypesByVirtualAddress.Values}.SelectMany(t => t);
+        public IEnumerable<TypeInfo> Types => new IEnumerable<TypeInfo>[] {TypesByDefinitionIndex, TypeReferences, TypesByVirtualAddress.Values}.SelectMany(t => t);
 
         // List of all methods ordered by their MethodDefinitionIndex
         public MethodBase[] MethodsByDefinitionIndex { get; }
@@ -41,7 +41,7 @@ namespace Il2CppInspector.Reflection
         public Il2CppModel(Il2CppInspector package) {
             Package = package;
             TypesByDefinitionIndex = new TypeInfo[package.TypeDefinitions.Length];
-            TypesByUsageIndex = new TypeInfo[package.TypeUsages.Count];
+            TypeReferences = new TypeInfo[package.TypeReferences.Count];
             MethodsByDefinitionIndex = new MethodBase[package.Methods.Length];
 
             // Create Assembly objects from Il2Cpp package
@@ -87,13 +87,13 @@ namespace Il2CppInspector.Reflection
         public TypeInfo GetTypeFromUsage(int typeUsageIndex, MemberTypes memberType = MemberTypes.All) {
 
             // Already generated type previously?
-            if (TypesByUsageIndex[typeUsageIndex] != null)
-                return TypesByUsageIndex[typeUsageIndex];
+            if (TypeReferences[typeUsageIndex] != null)
+                return TypeReferences[typeUsageIndex];
 
-            var usage = Package.TypeUsages[typeUsageIndex];
+            var usage = Package.TypeReferences[typeUsageIndex];
             var newUsage = getNewTypeUsage(usage, memberType);
 
-            TypesByUsageIndex[typeUsageIndex] = newUsage;
+            TypeReferences[typeUsageIndex] = newUsage;
             return newUsage;
         }
 

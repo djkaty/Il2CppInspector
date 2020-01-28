@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -70,7 +70,7 @@ namespace Il2CppInspector.Reflection
 
             Position = paramIndex - declaringMethod.Definition.parameterStart;
             paramTypeUsage = Definition.typeIndex;
-            var paramType = pkg.TypeUsages[paramTypeUsage];
+            var paramType = pkg.TypeReferences[paramTypeUsage];
 
             if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_HAS_DEFAULT) != 0)
                 Attributes |= ParameterAttributes.HasDefault;
