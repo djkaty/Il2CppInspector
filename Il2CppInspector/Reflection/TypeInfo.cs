@@ -586,9 +586,6 @@ namespace Il2CppInspector.Reflection {
                 var generic = image.ReadMappedObject<Il2CppGenericClass>(pType.datapoint); // Il2CppGenericClass *
                 var genericTypeDef = model.TypesByDefinitionIndex[generic.typeDefinitionIndex];
 
-                Definition = model.Package.TypeDefinitions[generic.typeDefinitionIndex];
-                Index = (int) generic.typeDefinitionIndex;
-
                 Assembly = genericTypeDef.Assembly;
                 Namespace = genericTypeDef.Namespace;
                 Name = genericTypeDef.BaseName;
@@ -631,8 +628,6 @@ namespace Il2CppInspector.Reflection {
                 ElementType = model.GetTypeFromVirtualAddress(descriptor.etype);
 
                 Assembly = ElementType.Assembly;
-                Definition = ElementType.Definition;
-                Index = ElementType.Index;
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
                 ContainsGenericParameters = ElementType.ContainsGenericParameters;
@@ -646,8 +641,6 @@ namespace Il2CppInspector.Reflection {
                 ElementType = model.GetTypeFromVirtualAddress(pType.datapoint);
 
                 Assembly = ElementType.Assembly;
-                Definition = ElementType.Definition;
-                Index = ElementType.Index;
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
                 ContainsGenericParameters = ElementType.ContainsGenericParameters;
