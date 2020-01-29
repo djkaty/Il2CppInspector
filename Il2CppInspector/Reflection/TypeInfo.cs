@@ -47,11 +47,9 @@ namespace Il2CppInspector.Reflection {
                 var n = (i != -1 ? Il2CppConstants.CSharpTypeString[i] : base.Name);
                 if (n?.IndexOf("`", StringComparison.Ordinal) != -1)
                     n = n?.Remove(n.IndexOf("`", StringComparison.Ordinal));
-                var g = (GenericTypeParameters != null ? "<" + string.Join(", ", GenericTypeParameters.Select(x => x.CSharpName)) + ">" : "");
-                g = (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => x.CSharpName)) + ">" : g);
-                n += g;
-                if (s == "System.Nullable`1" && GenericTypeArguments.Any())
-                    n = GenericTypeArguments[0].CSharpName + "?";
+                n += (GetGenericArguments().Any()? "<" + string.Join(", ", GetGenericArguments().Select(x => x.CSharpName)) + ">" : "");
+                if (s == "System.Nullable`1" && GetGenericArguments().Any())
+                    n = GetGenericArguments()[0].CSharpName + "?";
                 if (HasElementType)
                     n = ElementType.CSharpName;
                 if ((GenericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant)
@@ -67,7 +65,7 @@ namespace Il2CppInspector.Reflection {
         // C# name as it would be written in a type declaration
         public string CSharpTypeDeclarationName {
             get {
-                var gtp = IsNested? GenericTypeParameters?.Where(p => DeclaringType.GenericTypeParameters?.All(dp => dp.Name != p.Name) ?? true) : GenericTypeParameters;
+                var ga = IsNested ? GetGenericArguments().Where(p => DeclaringType.GetGenericArguments().All(dp => dp.Name != p.Name)) : GetGenericArguments();
 
                 return (IsByRef ? "ref " : "")
                     + (HasElementType
@@ -75,8 +73,7 @@ namespace Il2CppInspector.Reflection {
                         : ((GenericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant ? "in " : "")
                           + ((GenericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant ? "out " : "")
                           + (base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
-                          + (gtp?.Any() ?? false? "<" + string.Join(", ", gtp.Select(x => x.CSharpTypeDeclarationName)) + ">" : "")
-                          + (GenericTypeArguments != null ? "<" + string.Join(", ", GenericTypeArguments.Select(x => (!x.IsGenericTypeParameter ? x.Namespace + "." : "") + x.CSharpTypeDeclarationName)) + ">" : ""))
+                          + (ga.Any()? "<" + string.Join(", ", ga.Select(x => (!x.IsGenericTypeParameter ? x.Namespace + "." : "") + x.CSharpTypeDeclarationName)) + ">" : ""))
                     + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
                     + (IsPointer ? "*" : "");
             }
@@ -148,6 +145,7 @@ namespace Il2CppInspector.Reflection {
         public TypeInfo ElementType { get; }
 
         // Type name including namespace
+        // Fully qualified generic type names from the C# compiler use backtick and arity rather than a list of generic arguments
         public string FullName =>
             IsGenericParameter? null :
             HasElementType && ElementType.IsGenericParameter? null :
@@ -312,8 +310,8 @@ namespace Il2CppInspector.Reflection {
                 n += "<" + g + ">";
 
             // Nullable types
-            if (s == "System.Nullable`1" && GenericTypeArguments.Any())
-                n = GenericTypeArguments[0].GetScopedCSharpName(usingScope) + "?";
+            if (s == "System.Nullable`1" && GetGenericArguments().Any())
+                n = GetGenericArguments()[0].GetScopedCSharpName(usingScope) + "?";
 
             // Arrays, pointers, references
             if (HasElementType)
@@ -325,12 +323,11 @@ namespace Il2CppInspector.Reflection {
         // Get the generic type parameters for a specific usage of this type based on its scope,
         // or all generic type parameters if no scope specified
         private IEnumerable<TypeInfo> getGenericTypeParameters(Scope scope = null) {
-            // Merge generic type parameters and generic type arguments
-            var gp = (GenericTypeParameters ?? new List<TypeInfo>()).Concat(GenericTypeArguments ?? new List<TypeInfo>());
+            var ga = GetGenericArguments();
 
             // If no scope or empty scope specified, or no type parameters, stop here
-            if (scope?.Current == null || !gp.Any())
-                return gp;
+            if (scope?.Current == null || !ga.Any())
+                return ga;
 
             // In order to elide generic type parameters, the using scope must be a parent of the declaring scope
             // Determine if the using scope is a parent of the declaring scope (always a child if using scope is empty)
@@ -340,14 +337,14 @@ namespace Il2CppInspector.Reflection {
                     usingScopeIsParent = true;
 
             if (!usingScopeIsParent)
-                return gp;
+                return ga;
 
             // Get the generic type parameters available in the using scope
             // (no need to recurse because every nested type inherits all of the generic type parameters of all of its ancestors)
-            var gpsInScope = (scope.Current.GenericTypeParameters ?? new List<TypeInfo>()).Concat(scope.Current.GenericTypeArguments ?? new List<TypeInfo>());
+            var gasInScope = scope.Current.GetGenericArguments();
 
             // Return all of the generic type parameters this type uses minus those already in scope
-            return gp.Where(p => gpsInScope.All(pp => pp.Name != p.Name));
+            return ga.Where(p => gasInScope.All(pp => pp.Name != p.Name));
         }
 
         public GenericParameterAttributes GenericParameterAttributes { get; }
@@ -360,9 +357,17 @@ namespace Il2CppInspector.Reflection {
             private set => genericParameterPosition = value;
         }
 
-        public List<TypeInfo> GenericTypeParameters { get; }
+        // For a generic type definition: the list of generic type parameters
+        // For an open generic type: a mix of generic type parameters and generic type arguments
+        // For a closed generic type: the list of generic type arguments
+        private readonly List<TypeInfo> genericArguments = new List<TypeInfo>();
 
-        public List<TypeInfo> GenericTypeArguments { get; }
+        public List<TypeInfo> GenericTypeParameters => IsGenericTypeDefinition ? genericArguments : new List<TypeInfo>();
+
+        public List<TypeInfo> GenericTypeArguments => !IsGenericTypeDefinition ? genericArguments : new List<TypeInfo>();
+
+        // See: https://docs.microsoft.com/en-us/dotnet/api/system.type.getgenericarguments?view=netframework-4.8
+        public List<TypeInfo> GetGenericArguments() => genericArguments;
 
         // True if an array, pointer or reference, otherwise false
         // See: https://docs.microsoft.com/en-us/dotnet/api/system.type.haselementtype?view=netframework-4.8
@@ -378,7 +383,7 @@ namespace Il2CppInspector.Reflection {
         public bool IsEnum => enumUnderlyingTypeUsage != -1;
         public bool IsGenericParameter { get; }
         public bool IsGenericType { get; }
-        public bool IsGenericTypeDefinition { get; }
+        public bool IsGenericTypeDefinition => genericArguments.Any() && genericArguments.All(a => a.IsGenericTypeParameter);
         public bool IsImport => (Attributes & TypeAttributes.Import) == TypeAttributes.Import;
         public bool IsInterface => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Interface;
         public bool IsNested => (MemberType & MemberTypes.NestedType) == MemberTypes.NestedType;
@@ -454,13 +459,12 @@ namespace Il2CppInspector.Reflection {
             if (Definition.genericContainerIndex >= 0) {
                 IsGenericType = true;
                 IsGenericParameter = false;
-                IsGenericTypeDefinition = true; // All of our generic type parameters are unresolved
                 ContainsGenericParameters = true;
 
                 // Store the generic type parameters for later instantiation
                 var container = pkg.GenericContainers[Definition.genericContainerIndex];
 
-                GenericTypeParameters = pkg.GenericParameters.Skip((int) container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToList();
+                genericArguments = pkg.GenericParameters.Skip((int) container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToList();
             }
 
             // Add to global type definition list
@@ -572,12 +576,12 @@ namespace Il2CppInspector.Reflection {
                 DeclaredEvents.Add(new EventInfo(pkg, e, this));
         }
 
-        // Initialize type from binary usage
+        // Initialize type from type reference
         // Much of the following is adapted from il2cpp::vm::Class::FromIl2CppType
         public TypeInfo(Il2CppModel model, Il2CppType pType, MemberTypes memberType) {
             var image = model.Package.BinaryImage;
 
-            // Generic type unresolved and concrete instance types
+            // Open and closed generic types
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST) {
                 var generic = image.ReadMappedObject<Il2CppGenericClass>(pType.datapoint); // Il2CppGenericClass *
                 var genericTypeDef = model.TypesByDefinitionIndex[generic.typeDefinitionIndex];
@@ -602,7 +606,6 @@ namespace Il2CppInspector.Reflection {
 
                 IsGenericType = true;
                 IsGenericParameter = false;
-                IsGenericTypeDefinition = false; // This is a use of a generic type definition
                 ContainsGenericParameters = true;
 
                 // Get the instantiation
@@ -614,13 +617,9 @@ namespace Il2CppInspector.Reflection {
                 // Get list of pointers to type parameters (both unresolved and concrete)
                 var genericTypeArguments = image.ReadMappedWordArray(genericInstance.type_argv, (int)genericInstance.type_argc);
 
-                GenericTypeArguments = new List<TypeInfo>();
-
                 foreach (var pArg in genericTypeArguments) {
                     var argType = model.GetTypeFromVirtualAddress((ulong) pArg);
-                    // TODO: Detect whether unresolved or concrete (add concrete to GenericTypeArguments instead)
-                    // TODO: Assembly etc.
-                    GenericTypeArguments.Add(argType); // TODO: Fix MemberType here
+                    genericArguments.Add(argType);
                 }
             }
 
@@ -693,7 +692,6 @@ namespace Il2CppInspector.Reflection {
                 IsGenericParameter = true;
                 ContainsGenericParameters = true;
                 IsGenericType = false;
-                IsGenericTypeDefinition = false;
             }
         }
 
@@ -725,7 +723,6 @@ namespace Il2CppInspector.Reflection {
 
             IsGenericParameter = true;
             IsGenericType = false;
-            IsGenericTypeDefinition = false;
             ContainsGenericParameters = true;
         }
 
@@ -809,15 +806,11 @@ namespace Il2CppInspector.Reflection {
                 refs.Add(GetEnumUnderlyingType());
 
             // Generic type parameters and constraints
-            if (GenericTypeParameters != null)
-                refs.UnionWith(GenericTypeParameters);
-            if (GenericTypeArguments != null)
-                refs.UnionWith(GenericTypeArguments);
+            refs.UnionWith(GetGenericArguments());
             refs.UnionWith(GetGenericParameterConstraints());
 
             // Generic type constraints of type parameters in generic type definition
-            if (GenericTypeParameters != null)
-                refs.UnionWith(GenericTypeParameters.SelectMany(p => p.GetGenericParameterConstraints()));
+            refs.UnionWith(GenericTypeParameters.SelectMany(p => p.GetGenericParameterConstraints()));
 
             // Implemented interfaces
             refs.UnionWith(ImplementedInterfaces);
@@ -829,7 +822,7 @@ namespace Il2CppInspector.Reflection {
             // Type arguments in generic types that may have been a field, method parameter etc.
             IEnumerable<TypeInfo> genericArguments = refs.ToList();
             do {
-                genericArguments = genericArguments.Where(r => r.GenericTypeArguments != null).SelectMany(r => r.GenericTypeArguments);
+                genericArguments = genericArguments.SelectMany(r => r.GetGenericArguments());
                 refs.UnionWith(genericArguments);
             } while (genericArguments.Any());
 
@@ -852,8 +845,7 @@ namespace Il2CppInspector.Reflection {
             (HasElementType? ElementType.Name :
                 (DeclaringType != null ? DeclaringType.Name + "+" : "")
                 + base.Name
-                + (GenericTypeParameters != null ? "[" + string.Join(",", GenericTypeParameters.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.Name)) + "]" : "")
-                + (GenericTypeArguments != null ? "[" + string.Join(",", GenericTypeArguments.Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.Name)) + "]" : ""))
+                + (GetGenericArguments().Any()? "[" + string.Join(",", GetGenericArguments().Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.Name)) + "]" : ""))
             + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
             + (IsByRef ? "&" : "")
             + (IsPointer ? "*" : "");
@@ -905,7 +897,7 @@ namespace Il2CppInspector.Reflection {
 
             // Check if we are in a nested type, and if so, exclude ourselves if we are a generic type parameter from the outer type
             // All constraints are inherited automatically by all nested types so we only have to look at the immediate outer type
-            if (DeclaringMethod == null && DeclaringType.IsNested && (DeclaringType.DeclaringType.GenericTypeParameters?.Any(p => p.Name == Name) ?? false))
+            if (DeclaringMethod == null && DeclaringType.IsNested && DeclaringType.DeclaringType.GetGenericArguments().Any(p => p.Name == Name))
                 return string.Empty;
 
             // Check if we are in an overriding method, and if so, exclude ourselves if we are a generic type parameter from the base method

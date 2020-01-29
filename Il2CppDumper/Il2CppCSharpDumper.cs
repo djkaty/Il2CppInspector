@@ -555,12 +555,11 @@ namespace Il2CppInspector
                 sb.Append($" // TypeDefIndex: {type.Index}");
             sb.Append("\n");
 
-            if (type.GenericTypeParameters != null)
-                foreach (var gp in type.GenericTypeParameters) {
-                    var constraint = gp.GetTypeConstraintsString(scope);
-                    if (constraint != string.Empty)
-                        sb.Append($"{prefix}\t{constraint}\n");
-                }
+            foreach (var gp in type.GetGenericArguments()) {
+                var constraint = gp.GetTypeConstraintsString(scope);
+                if (constraint != string.Empty)
+                    sb.Append($"{prefix}\t{constraint}\n");
+            }
 
             sb.Append(prefix + "{\n");
 
