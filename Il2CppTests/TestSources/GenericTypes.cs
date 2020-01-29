@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -45,6 +45,8 @@ namespace Il2CppTests.TestSources
             Type tF = tDerived.GetField("F").FieldType;
             Type tNested = typeof(Derived<>.Nested);
         }
+
+        private void forceTypeReferenceToDerivedIntArray(Derived<int> typeRef) {}
     }
 
     // Constraints on type definitions

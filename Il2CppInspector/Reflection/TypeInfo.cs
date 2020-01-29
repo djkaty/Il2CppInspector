@@ -352,7 +352,13 @@ namespace Il2CppInspector.Reflection {
 
         public GenericParameterAttributes GenericParameterAttributes { get; }
 
-        public int GenericParameterPosition { get; }
+        // Generic parameter position in list of non-concrete type parameters
+        // See: https://docs.microsoft.com/en-us/dotnet/api/system.type.genericparameterposition?view=netframework-4.8
+        private int genericParameterPosition;
+        public int GenericParameterPosition {
+            get => IsGenericParameter ? genericParameterPosition : throw new InvalidOperationException("The current type does not represent a type parameter");
+            private set => genericParameterPosition = value;
+        }
 
         public List<TypeInfo> GenericTypeParameters { get; }
 
@@ -613,7 +619,6 @@ namespace Il2CppInspector.Reflection {
                 foreach (var pArg in genericTypeArguments) {
                     var argType = model.GetTypeFromVirtualAddress((ulong) pArg);
                     // TODO: Detect whether unresolved or concrete (add concrete to GenericTypeArguments instead)
-                    // TODO: GenericParameterPosition etc. in types we generate here
                     // TODO: Assembly etc.
                     GenericTypeArguments.Add(argType); // TODO: Fix MemberType here
                 }
@@ -681,6 +686,9 @@ namespace Il2CppInspector.Reflection {
                 // All generic method type parameters have a declared method
                 if (container.is_method == 1)
                     DeclaringMethod = model.MethodsByDefinitionIndex[container.ownerIndex];
+
+                // Set position in argument list
+                GenericParameterPosition = paramType.num;
 
                 IsGenericParameter = true;
                 ContainsGenericParameters = true;

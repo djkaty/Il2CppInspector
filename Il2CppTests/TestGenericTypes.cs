@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2019-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -29,31 +29,37 @@ namespace Il2CppInspector
             var asm = model.GetAssembly("GenericTypes.dll");
 
             // Act
+            TypeInfo tBase = asm.GetType("Il2CppTests.TestSources.Base`2");
             TypeInfo tDerived = asm.GetType("Il2CppTests.TestSources.Derived`1");
             TypeInfo tDerivedBase = tDerived.BaseType;
 
             // TODO: array of Derived<int>
             // TypeInfo tDerivedArray
 
-            TypeInfo tT = asm.GetType("Il2CppTests.TestSources.Base`2").GenericTypeParameters[0];
+            TypeInfo tT = tBase.GenericTypeParameters[0];
+            TypeInfo tU = tBase.GenericTypeParameters[1];
             TypeInfo tF = tDerived.GetField("F").FieldType;
             TypeInfo tNested = asm.GetType("Il2CppTests.TestSources.Derived`1+Nested");
 
+            DisplayGenericType(tBase, "Generic type definition Base<T, U>");
             DisplayGenericType(tDerived, "Derived<V>");
             DisplayGenericType(tDerivedBase, "Base type of Derived<V>");
             //DisplayGenericType(tDerivedArray, "Array of Derived<int>");
-            DisplayGenericType(tT, "Type parameter T from Base<T>");
+            DisplayGenericType(tT, "Type parameter T from Base<T,U>");
+            DisplayGenericType(tU, "Type parameter U from Base<T,U>");
             DisplayGenericType(tF, "Field type, G<Derived<V>>");
             DisplayGenericType(tNested, "Nested type in Derived<V>");
 
             // Assert
             var checks = new[] {
-                (tDerived, "Derived`1[V]", true, true, true, false),
-                (tDerivedBase, "Base`2[System.String,V]", true, false, true, false),
-                //(tDerivedArray, "Derived`1[System.Int32][]", false, false, false, false),
-                (tT, "T", false, false, true, true),
-                (tF, "G`1[Derived`1[V]]", true, false, true, false),
-                (tNested, "Derived`1[V]+Nested[V]", true, true, true, false)
+                (tBase, "Base`2[T,U]", true, true, true, false, -1),
+                (tDerived, "Derived`1[V]", true, true, true, false, -1),
+                (tDerivedBase, "Base`2[System.String,V]", true, false, true, false, -1),
+                //(tDerivedArray, "Derived`1[System.Int32][]", false, false, false, false, -1),
+                (tT, "T", false, false, true, true, 0),
+                (tU, "U", false, false, true, true, 1),
+                (tF, "G`1[Derived`1[V]]", true, false, true, false, -1),
+                (tNested, "Derived`1[V]+Nested[V]", true, true, true, false, -1)
             };
 
             foreach (var check in checks) {
@@ -75,6 +81,9 @@ namespace Il2CppInspector
             Console.WriteLine("\t  IsGenericTypeDefinition: {0}", t.IsGenericTypeDefinition);
             Console.WriteLine("\tContainsGenericParameters: {0}", t.ContainsGenericParameters);
             Console.WriteLine("\t       IsGenericParameter: {0}", t.IsGenericParameter);
+
+            if (t.IsGenericParameter)
+                Console.WriteLine("\t GenericParameterPosition: {0}", t.GenericParameterPosition);
         }
     }
 }
