@@ -32,7 +32,7 @@ namespace Il2CppInspector.Reflection {
                 : null;
 
         // True if the type contains unresolved generic type parameters
-        public bool ContainsGenericParameters { get; }
+        public bool ContainsGenericParameters => IsGenericParameter || genericArguments.Any(ga => ga.ContainsGenericParameters);
 
         public string BaseName => base.Name;
 
@@ -459,7 +459,6 @@ namespace Il2CppInspector.Reflection {
             if (Definition.genericContainerIndex >= 0) {
                 IsGenericType = true;
                 IsGenericParameter = false;
-                ContainsGenericParameters = true;
 
                 // Store the generic type parameters for later instantiation
                 var container = pkg.GenericContainers[Definition.genericContainerIndex];
@@ -603,7 +602,6 @@ namespace Il2CppInspector.Reflection {
 
                 IsGenericType = true;
                 IsGenericParameter = false;
-                ContainsGenericParameters = true;
 
                 // Get the instantiation
                 var genericInstance = image.ReadMappedObject<Il2CppGenericInst>(generic.context.class_inst);
@@ -630,7 +628,6 @@ namespace Il2CppInspector.Reflection {
                 Assembly = ElementType.Assembly;
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
-                ContainsGenericParameters = ElementType.ContainsGenericParameters;
 
                 IsArray = true;
                 arrayRank = descriptor.rank;
@@ -643,7 +640,6 @@ namespace Il2CppInspector.Reflection {
                 Assembly = ElementType.Assembly;
                 Namespace = ElementType.Namespace;
                 Name = ElementType.Name;
-                ContainsGenericParameters = ElementType.ContainsGenericParameters;
 
                 IsPointer = (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_PTR);
                 IsArray = !IsPointer;
@@ -683,7 +679,6 @@ namespace Il2CppInspector.Reflection {
                 GenericParameterPosition = paramType.num;
 
                 IsGenericParameter = true;
-                ContainsGenericParameters = true;
                 IsGenericType = false;
             }
         }
@@ -716,7 +711,6 @@ namespace Il2CppInspector.Reflection {
 
             IsGenericParameter = true;
             IsGenericType = false;
-            ContainsGenericParameters = true;
         }
 
         // Initialize a type that is a generic parameter of a generic method
