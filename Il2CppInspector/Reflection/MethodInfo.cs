@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -17,8 +17,8 @@ namespace Il2CppInspector.Reflection
         public ParameterInfo ReturnParameter { get; }
 
         // Return type of the method
-        private readonly int returnTypeUsage;
-        public TypeInfo ReturnType => Assembly.Model.GetTypeFromUsage(returnTypeUsage, MemberTypes.TypeInfo);
+        private readonly int returnTypeReference;
+        public TypeInfo ReturnType => Assembly.Model.TypesByReferenceIndex[returnTypeReference];
 
         public override bool RequiresUnsafeContext => base.RequiresUnsafeContext || ReturnType.RequiresUnsafeContext;
 
@@ -26,7 +26,7 @@ namespace Il2CppInspector.Reflection
 
         public MethodInfo(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) : base(pkg, methodIndex, declaringType) {
             // Add return parameter
-            returnTypeUsage = Definition.returnType;
+            returnTypeReference = Definition.returnType;
             ReturnParameter = new ParameterInfo(pkg, -1, this);
         }
 

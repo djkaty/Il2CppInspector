@@ -43,8 +43,8 @@ namespace Il2CppInspector.Reflection
         public string CSharpSafeName => Constants.Keywords.Contains(Name) ? "@" + Name : Name;
 
         // Type of this parameter
-        private readonly int paramTypeUsage;
-        public TypeInfo ParameterType => DeclaringMethod.Assembly.Model.GetTypeFromUsage(paramTypeUsage, MemberTypes.TypeInfo);
+        private readonly int paramTypeReference;
+        public TypeInfo ParameterType => DeclaringMethod.Assembly.Model.TypesByReferenceIndex[paramTypeReference];
 
         // Zero-indexed position of the parameter in parameter list
         public int Position { get; }
@@ -56,7 +56,7 @@ namespace Il2CppInspector.Reflection
 
             if (paramIndex == -1) {
                 Position = -1;
-                paramTypeUsage = declaringMethod.Definition.returnType;
+                paramTypeReference = declaringMethod.Definition.returnType;
                 Attributes |= ParameterAttributes.Retval;
                 return;
             }
@@ -69,8 +69,8 @@ namespace Il2CppInspector.Reflection
                 Name = string.Format($"param_{Index:x8}");
 
             Position = paramIndex - declaringMethod.Definition.parameterStart;
-            paramTypeUsage = Definition.typeIndex;
-            var paramType = pkg.TypeReferences[paramTypeUsage];
+            paramTypeReference = Definition.typeIndex;
+            var paramType = pkg.TypeReferences[paramTypeReference];
 
             if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_HAS_DEFAULT) != 0)
                 Attributes |= ParameterAttributes.HasDefault;

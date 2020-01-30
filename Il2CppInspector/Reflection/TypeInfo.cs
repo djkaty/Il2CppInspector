@@ -22,11 +22,11 @@ namespace Il2CppInspector.Reflection {
         public TypeAttributes Attributes { get; }
 
         // Type that this type inherits from
-        private readonly int baseTypeUsage = -1;
+        private readonly int baseTypeReference = -1;
 
         public TypeInfo BaseType => IsPointer? null :
-            baseTypeUsage != -1?
-                Assembly.Model.GetTypeFromUsage(baseTypeUsage, MemberTypes.TypeInfo)
+            baseTypeReference != -1?
+                Assembly.Model.TypesByReferenceIndex[baseTypeReference]
                 : IsArray? Assembly.Model.TypesByFullName["System.Array"]
                 : Namespace != "System" || BaseName != "Object" ? Assembly.Model.TypesByFullName["System.Object"]
                 : null;
@@ -109,7 +109,7 @@ namespace Il2CppInspector.Reflection {
         public TypeInfo[] GetGenericParameterConstraints() {
             var types = new TypeInfo[genericConstraintCount];
             for (int c = 0; c < genericConstraintCount; c++)
-                types[c] = Assembly.Model.GetTypeFromUsage(Assembly.Model.Package.GenericConstraintIndices[genericConstraintIndex + c], MemberTypes.TypeInfo);
+                types[c] = Assembly.Model.TypesByReferenceIndex[Assembly.Model.Package.GenericConstraintIndices[genericConstraintIndex + c]];
             return types;
         }
 
@@ -373,14 +373,14 @@ namespace Il2CppInspector.Reflection {
         // See: https://docs.microsoft.com/en-us/dotnet/api/system.type.haselementtype?view=netframework-4.8
         public bool HasElementType => ElementType != null;
 
-        private readonly int[] implementedInterfaceUsages;
-        public IEnumerable<TypeInfo> ImplementedInterfaces => implementedInterfaceUsages.Select(x => Assembly.Model.GetTypeFromUsage(x, MemberTypes.TypeInfo));
+        private readonly int[] implementedInterfaceReferences;
+        public IEnumerable<TypeInfo> ImplementedInterfaces => implementedInterfaceReferences.Select(x => Assembly.Model.TypesByReferenceIndex[x]);
 
         public bool IsAbstract => (Attributes & TypeAttributes.Abstract) == TypeAttributes.Abstract;
         public bool IsArray { get; }
         public bool IsByRef { get; }
         public bool IsClass => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Class;
-        public bool IsEnum => enumUnderlyingTypeUsage != -1;
+        public bool IsEnum => enumUnderlyingTypeReference != -1;
         public bool IsGenericParameter { get; }
         public bool IsGenericType { get; }
         public bool IsGenericTypeDefinition => genericArguments.Any() && genericArguments.All(a => a.IsGenericTypeParameter);
@@ -422,21 +422,19 @@ namespace Il2CppInspector.Reflection {
         public string[] GetEnumNames() => IsEnum? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.Name).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
 
         // The underlying type of an enumeration (int by default)
-        private readonly int enumUnderlyingTypeUsage = -1;
+        private readonly int enumUnderlyingTypeReference = -1;
         private TypeInfo enumUnderlyingType;
 
         public TypeInfo GetEnumUnderlyingType() {
             if (!IsEnum)
                 return null;
-            enumUnderlyingType ??= Assembly.Model.GetTypeFromUsage(enumUnderlyingTypeUsage, MemberTypes.TypeInfo);
+            enumUnderlyingType ??= Assembly.Model.TypesByReferenceIndex[enumUnderlyingTypeReference];
             return enumUnderlyingType;
         }
 
         public Array GetEnumValues() => IsEnum? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.DefaultValue).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
 
-        // Initialize from specified type index in metadata
-
-        // Top-level types
+        // Initialize type from TypeDef using specified index in metadata
         public TypeInfo(int typeIndex, Assembly owner) : base(owner) {
             var pkg = Assembly.Model.Package;
 
@@ -447,7 +445,7 @@ namespace Il2CppInspector.Reflection {
 
             // Derived type?
             if (Definition.parentIndex >= 0)
-                baseTypeUsage = Definition.parentIndex;
+                baseTypeReference = Definition.parentIndex;
 
             // Nested type?
             if (Definition.declaringTypeIndex >= 0) {
@@ -501,18 +499,18 @@ namespace Il2CppInspector.Reflection {
             if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_INTERFACE) != 0)
                 Attributes |= TypeAttributes.Interface;
 
-            // Enumerations - bit 1 of bitfield indicates this (also the baseTypeUsage will be System.Enum)
+            // Enumerations - bit 1 of bitfield indicates this (also the baseTypeReference will be System.Enum)
             if (((Definition.bitfield >> 1) & 1) == 1)
-                enumUnderlyingTypeUsage = Definition.elementTypeIndex;
+                enumUnderlyingTypeReference = Definition.elementTypeIndex;
 
             // Pass-by-reference type
             // NOTE: This should actually always evaluate to false in the current implementation
             IsByRef = Index == Definition.byrefTypeIndex;
 
             // Add all implemented interfaces
-            implementedInterfaceUsages = new int[Definition.interfaces_count];
+            implementedInterfaceReferences = new int[Definition.interfaces_count];
             for (var i = 0; i < Definition.interfaces_count; i++)
-                implementedInterfaceUsages[i] = pkg.InterfaceUsageIndices[Definition.interfacesStart + i];
+                implementedInterfaceReferences[i] = pkg.InterfaceUsageIndices[Definition.interfacesStart + i];
 
             // Add all nested types
             declaredNestedTypes = new int[Definition.nested_type_count];
@@ -575,14 +573,20 @@ namespace Il2CppInspector.Reflection {
                 DeclaredEvents.Add(new EventInfo(pkg, e, this));
         }
 
-        // Initialize type from type reference
+        // Initialize type from type reference (TypeRef)
         // Much of the following is adapted from il2cpp::vm::Class::FromIl2CppType
-        public TypeInfo(Il2CppModel model, Il2CppType pType, MemberTypes memberType) {
+        public TypeInfo(Il2CppModel model, Il2CppType pType) {
             var image = model.Package.BinaryImage;
 
             // Open and closed generic types
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST) {
                 var generic = image.ReadMappedObject<Il2CppGenericClass>(pType.datapoint); // Il2CppGenericClass *
+
+                // We have seen one test case where the TypeRef can point to no generic instance
+                // This is going to leave the TypeInfo in an undefined state
+                if (generic.typeDefinitionIndex == 0x0000_0000_ffff_ffff)
+                    return;
+
                 var genericTypeDef = model.TypesByDefinitionIndex[generic.typeDefinitionIndex];
 
                 Assembly = genericTypeDef.Assembly;
@@ -592,12 +596,12 @@ namespace Il2CppInspector.Reflection {
 
                 // Derived type?
                 if (genericTypeDef.Definition.parentIndex >= 0)
-                    baseTypeUsage = genericTypeDef.Definition.parentIndex;
+                    baseTypeReference = genericTypeDef.Definition.parentIndex;
 
                 // Nested type?
                 if (genericTypeDef.Definition.declaringTypeIndex >= 0) {
                     declaringTypeDefinitionIndex = (int)model.Package.TypeReferences[genericTypeDef.Definition.declaringTypeIndex].datapoint;
-                    MemberType = memberType | MemberTypes.NestedType;
+                    MemberType |= MemberTypes.NestedType;
                 }
 
                 IsGenericType = true;
@@ -665,11 +669,11 @@ namespace Il2CppInspector.Reflection {
 
                 // Derived type?
                 if (ownerType.Definition.parentIndex >= 0)
-                    baseTypeUsage = ownerType.Definition.parentIndex;
+                    baseTypeReference = ownerType.Definition.parentIndex;
 
                 // Nested type always - sets DeclaringType used below
                 declaringTypeDefinitionIndex = ownerType.Index;
-                MemberType = memberType | MemberTypes.NestedType;
+                MemberType |= MemberTypes.NestedType;
 
                 // All generic method type parameters have a declared method
                 if (container.is_method == 1)

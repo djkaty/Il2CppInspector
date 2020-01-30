@@ -47,7 +47,7 @@ namespace Il2CppInspector.Reflection
                     continue;
                 }
 
-                attribute = new CustomAttributeData { Index = customAttributeIndex, AttributeType = asm.Model.GetTypeFromUsage(typeIndex) };
+                attribute = new CustomAttributeData { Index = customAttributeIndex, AttributeType = asm.Model.TypesByReferenceIndex[typeIndex] };
 
                 asm.Model.AttributesByIndices.TryAdd(i, attribute);
                 yield return attribute;
