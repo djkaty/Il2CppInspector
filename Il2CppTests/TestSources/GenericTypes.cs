@@ -45,8 +45,6 @@ namespace Il2CppTests.TestSources
             Type tF = tDerived.GetField("F").FieldType;
             Type tNested = typeof(Derived<>.Nested);
         }
-
-        private void forceTypeReferenceToDerivedIntArray(Derived<int> typeRef) {}
     }
 
     // Constraints on type definitions

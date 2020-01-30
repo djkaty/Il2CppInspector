@@ -6,6 +6,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using Il2CppInspector.Reflection;
 using NUnit.Framework;
 
@@ -32,9 +33,8 @@ namespace Il2CppInspector
             TypeInfo tBase = asm.GetType("Il2CppTests.TestSources.Base`2");
             TypeInfo tDerived = asm.GetType("Il2CppTests.TestSources.Derived`1");
             TypeInfo tDerivedBase = tDerived.BaseType;
-
-            // TODO: array of Derived<int>
-            // TypeInfo tDerivedArray
+            // TODO: Use a model GetType() once implemented
+            TypeInfo tDerivedArray = model.Types.First(t => t.Namespace == "Il2CppTests.TestSources" && t.Name == "Derived`1[System.Int32][]");
 
             TypeInfo tT = tBase.GenericTypeParameters[0];
             TypeInfo tU = tBase.GenericTypeParameters[1];
@@ -44,7 +44,7 @@ namespace Il2CppInspector
             DisplayGenericType(tBase, "Generic type definition Base<T, U>");
             DisplayGenericType(tDerived, "Derived<V>");
             DisplayGenericType(tDerivedBase, "Base type of Derived<V>");
-            //DisplayGenericType(tDerivedArray, "Array of Derived<int>");
+            DisplayGenericType(tDerivedArray, "Array of Derived<int>");
             DisplayGenericType(tT, "Type parameter T from Base<T,U>");
             DisplayGenericType(tU, "Type parameter U from Base<T,U>");
             DisplayGenericType(tF, "Field type, G<Derived<V>>");
@@ -55,7 +55,7 @@ namespace Il2CppInspector
                 (tBase, "Base`2[T,U]", true, true, true, false, -1),
                 (tDerived, "Derived`1[V]", true, true, true, false, -1),
                 (tDerivedBase, "Base`2[System.String,V]", true, false, true, false, -1),
-                //(tDerivedArray, "Derived`1[System.Int32][]", false, false, false, false, -1),
+                (tDerivedArray, "Derived`1[System.Int32][]", false, false, false, false, -1),
                 (tT, "T", false, false, true, true, 0),
                 (tU, "U", false, false, true, true, 1),
                 (tF, "G`1[Derived`1[V]]", true, false, true, false, -1),

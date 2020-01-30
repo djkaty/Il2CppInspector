@@ -11,32 +11,32 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
-// [assembly: AssemblyCompany] // 0x1000ED70-0x1000EF80
-// [assembly: AssemblyCopyright] // 0x1000ED70-0x1000EF80
-// [assembly: AssemblyDefaultAlias] // 0x1000ED70-0x1000EF80
-// [assembly: AssemblyDelaySign] // 0x1000ED70-0x1000EF80
-// [assembly: AssemblyDescription] // 0x1000ED70-0x1000EF80
-// [assembly: AssemblyFileVersion] // 0x1000ED70-0x1000EF80
-// [assembly: AssemblyInformationalVersion] // 0x1000ED70-0x1000EF80
-// [assembly: AssemblyKeyFile] // 0x1000ED70-0x1000EF80
-// [assembly: AssemblyProduct] // 0x1000ED70-0x1000EF80
-// [assembly: AssemblyTitle] // 0x1000ED70-0x1000EF80
-// [assembly: CLSCompliant] // 0x1000ED70-0x1000EF80
-// [assembly: CompilationRelaxations] // 0x1000ED70-0x1000EF80
-// [assembly: ComVisible] // 0x1000ED70-0x1000EF80
-// [assembly: Debuggable] // 0x1000ED70-0x1000EF80
-// [assembly: DefaultDependency] // 0x1000ED70-0x1000EF80
-// [assembly: Guid] // 0x1000ED70-0x1000EF80
-// [assembly: NeutralResourcesLanguage] // 0x1000ED70-0x1000EF80
-[assembly: RuntimeCompatibility] // 0x1000ED70-0x1000EF80
-// [assembly: SatelliteContractVersion] // 0x1000ED70-0x1000EF80
-[assembly: StringFreezing] // 0x1000ED70-0x1000EF80
-// [assembly: TypeLibVersion] // 0x1000ED70-0x1000EF80
+// [assembly: AssemblyCompany] // 0x1000F350-0x1000F560
+// [assembly: AssemblyCopyright] // 0x1000F350-0x1000F560
+// [assembly: AssemblyDefaultAlias] // 0x1000F350-0x1000F560
+// [assembly: AssemblyDelaySign] // 0x1000F350-0x1000F560
+// [assembly: AssemblyDescription] // 0x1000F350-0x1000F560
+// [assembly: AssemblyFileVersion] // 0x1000F350-0x1000F560
+// [assembly: AssemblyInformationalVersion] // 0x1000F350-0x1000F560
+// [assembly: AssemblyKeyFile] // 0x1000F350-0x1000F560
+// [assembly: AssemblyProduct] // 0x1000F350-0x1000F560
+// [assembly: AssemblyTitle] // 0x1000F350-0x1000F560
+// [assembly: CLSCompliant] // 0x1000F350-0x1000F560
+// [assembly: CompilationRelaxations] // 0x1000F350-0x1000F560
+// [assembly: ComVisible] // 0x1000F350-0x1000F560
+// [assembly: Debuggable] // 0x1000F350-0x1000F560
+// [assembly: DefaultDependency] // 0x1000F350-0x1000F560
+// [assembly: Guid] // 0x1000F350-0x1000F560
+// [assembly: NeutralResourcesLanguage] // 0x1000F350-0x1000F560
+[assembly: RuntimeCompatibility] // 0x1000F350-0x1000F560
+// [assembly: SatelliteContractVersion] // 0x1000F350-0x1000F560
+[assembly: StringFreezing] // 0x1000F350-0x1000F560
+// [assembly: TypeLibVersion] // 0x1000F350-0x1000F560
 
 // Image 1: GenericTypes.dll - Assembly: GenericTypes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1832
-// [assembly: CompilationRelaxations] // 0x1000D210-0x1000D260
-// [assembly: Debuggable] // 0x1000D210-0x1000D260
-[assembly: RuntimeCompatibility] // 0x1000D210-0x1000D260
+// [assembly: CompilationRelaxations] // 0x1000D800-0x1000D850
+// [assembly: Debuggable] // 0x1000D800-0x1000D850
+[assembly: RuntimeCompatibility] // 0x1000D800-0x1000D850
 
 internal static class Consts // TypeDefIndex: 100
 {
@@ -75,11 +75,11 @@ internal static class Consts // TypeDefIndex: 100
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x100C0000-0x100C0010
+	private Locale() {} // 0x100C3000-0x100C3010
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x100F8810-0x100F8820
-	public static string GetText(string fmt, params /* 0x10009B80-0x10009BA0 */ object[] args) => default; // 0x10261620-0x10261670
+	public static string GetText(string msg) => default; // 0x100FD9C0-0x100FD9D0
+	public static string GetText(string fmt, params /* 0x10009C70-0x10009C90 */ object[] args) => default; // 0x10270000-0x10270050
 }
 
 namespace Il2CppTests.TestSources
@@ -115,10 +115,10 @@ namespace Il2CppTests.TestSources
 	internal class Test // TypeDefIndex: 1819
 	{
 		// Constructors
-		public Test() {} // 0x100C0000-0x100C0010
+		public Test() {} // 0x100C3000-0x100C3010
 	
 		// Methods
-		public void GenericTypesTest() {} // 0x103584B0-0x103584B0
+		public void GenericTypesTest() {} // 0x1036D450-0x1036D450
 	}
 
 	internal class ConstrainedValueType<V> // TypeDefIndex: 1820
@@ -169,7 +169,7 @@ namespace Il2CppTests.TestSources
 		public ConstrainedRefType() {}
 	
 		// Methods
-		// [NullableContext] // 0x10009B00-0x10009B20
+		// [NullableContext] // 0x10009C10-0x10009C30
 		public void ConstrainedMethodNotNull<N>(N notnullArgument, R bar) {}
 		public void ConstrainedUnmanaged<U>(U unmanagedArgument)
 			where U : struct {}
