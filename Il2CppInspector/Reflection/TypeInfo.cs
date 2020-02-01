@@ -773,8 +773,8 @@ namespace Il2CppInspector.Reflection {
             refs.UnionWith(DeclaredMethods.SelectMany(m => m.DeclaredParameters).Select(p => p.ParameterType));
 
             // Method generic type parameters and constraints
-            refs.UnionWith(DeclaredMethods.SelectMany(m => m.GenericTypeParameters ?? new List<TypeInfo>()));
-            refs.UnionWith(DeclaredMethods.SelectMany(m => m.GenericTypeParameters ?? new List<TypeInfo>())
+            refs.UnionWith(DeclaredMethods.SelectMany(m => m.GetGenericArguments()));
+            refs.UnionWith(DeclaredMethods.SelectMany(m => m.GetGenericArguments())
                 .SelectMany(p => p.GetGenericParameterConstraints()));
 
             // Type declaration attributes
@@ -898,7 +898,7 @@ namespace Il2CppInspector.Reflection {
                 // Find nearest ancestor base method which has us as a generic type parameter
                 var sig = DeclaringMethod.GetSignatureString();
                 var method = DeclaringMethod.DeclaringType.BaseType.GetAllMethods()
-                    .FirstOrDefault(m => m.IsHideBySig && m.IsVirtual && m.GetSignatureString() == sig && (m.GenericTypeParameters?.Any(p => p.Name == Name) ?? false));
+                    .FirstOrDefault(m => m.IsHideBySig && m.IsVirtual && m.GetSignatureString() == sig && m.GetGenericArguments().Any(p => p.Name == Name));
 
                 // Stop if we are inherited from a base method
                 if (method != null)

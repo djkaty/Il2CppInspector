@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Il2CppInspector.Reflection
 {
@@ -23,13 +22,9 @@ namespace Il2CppInspector.Reflection
         // Information/flags about the method
         public MethodAttributes Attributes { get; protected set; }
 
-        // True if the method contains unresolved generic type parameters
-        public bool ContainsGenericParameters { get; }
-
         // Custom attributes for this member
         public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
-        
-        public List<TypeInfo> GenericTypeParameters { get; } // System.Reflection.MethodInfo.GetGenericArguments()
+
         public List<ParameterInfo> DeclaredParameters { get; } = new List<ParameterInfo>();
 
         public bool IsAbstract => (Attributes & MethodAttributes.Abstract) == MethodAttributes.Abstract;
@@ -39,8 +34,6 @@ namespace Il2CppInspector.Reflection
         public bool IsFamilyAndAssembly => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.FamANDAssem;
         public bool IsFamilyOrAssembly => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.FamORAssem;
         public bool IsFinal => (Attributes & MethodAttributes.Final) == MethodAttributes.Final;
-        public bool IsGenericMethod { get; }
-        public bool IsGenericMethodDefinition { get; }
         public bool IsHideBySig => (Attributes & MethodAttributes.HideBySig) == MethodAttributes.HideBySig;
         public bool IsPrivate => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Private;
         public bool IsPublic => (Attributes & MethodAttributes.MemberAccessMask) == MethodAttributes.Public;
@@ -50,6 +43,25 @@ namespace Il2CppInspector.Reflection
 
         public virtual bool RequiresUnsafeContext => DeclaredParameters.Any(p => p.ParameterType.RequiresUnsafeContext);
 
+        // True if the method contains unresolved generic type parameters, or if it is a non-generic method in an open ganeric type
+        // See: https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.containsgenericparameters?view=netframework-4.8
+        public bool ContainsGenericParameters => DeclaringType.ContainsGenericParameters || genericArguments.Any(ga => ga.ContainsGenericParameters);
+
+        // For a generic method definition: the list of generic type parameters
+        // For an open generic method: a mix of generic type parameters and generic type arguments
+        // For a closed generic method: the list of generic type arguments
+        private readonly List<TypeInfo> genericArguments = new List<TypeInfo>();
+
+        // See: https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.getgenericarguments?view=netframework-4.8
+        public List<TypeInfo> GetGenericArguments() => genericArguments;
+
+        // This was added in .NET Core 2.1 and isn't properly documented yet
+        public bool IsConstructedGenericMethod => genericArguments.All(ga => !ga.ContainsGenericParameters);
+
+        // See: https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.isgenericmethod?view=netframework-4.8
+        public bool IsGenericMethod { get; }
+        public bool IsGenericMethodDefinition => genericArguments.Any() && genericArguments.All(a => a.IsGenericTypeParameter);
+        
         // TODO: GetMethodBody()
 
         public string CSharpName =>
@@ -85,13 +97,11 @@ namespace Il2CppInspector.Reflection
             // Generic method definition?
             if (Definition.genericContainerIndex >= 0) {
                 IsGenericMethod = true;
-                IsGenericMethodDefinition = true;
-                ContainsGenericParameters = true;
 
                 // Store the generic type parameters for later instantiation
                 var container = pkg.GenericContainers[Definition.genericContainerIndex];
 
-                GenericTypeParameters = pkg.GenericParameters.Skip((int)container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToList();
+                genericArguments = pkg.GenericParameters.Skip((int)container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToList();
             }
 
             // Set method attributes
@@ -191,11 +201,11 @@ namespace Il2CppInspector.Reflection
         public string GetParametersString(Scope usingScope, bool emitPointer = false, bool commentAttributes = false)
             => string.Join(", ", DeclaredParameters.Select(p => p.GetParameterString(usingScope, emitPointer, commentAttributes)));
 
-        public string GetTypeParametersString(Scope usingScope) => GenericTypeParameters == null? "" :
-            "<" + string.Join(", ", GenericTypeParameters.Select(p => p.GetScopedCSharpName(usingScope))) + ">";
+        public string GetTypeParametersString(Scope usingScope) => !GetGenericArguments().Any()? "" :
+            "<" + string.Join(", ", GetGenericArguments().Select(p => p.GetScopedCSharpName(usingScope))) + ">";
 
-        public string GetFullTypeParametersString() => GenericTypeParameters == null? "" :
-            "[" + string.Join(",", GenericTypeParameters.Select(p => p.FullName ?? p.Name)) + "]";
+        public string GetFullTypeParametersString() => !GetGenericArguments().Any()? "" :
+            "[" + string.Join(",", GetGenericArguments().Select(p => p.FullName ?? p.Name)) + "]";
 
         public abstract string GetSignatureString();
 

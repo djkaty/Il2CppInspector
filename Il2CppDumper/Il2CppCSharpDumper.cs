@@ -607,12 +607,11 @@ namespace Il2CppInspector
             writer.Append("(" + method.GetParametersString(scope, !SuppressMetadata) + ")");
 
             // Generic type constraints
-            if (method.GenericTypeParameters != null)
-                foreach (var gp in method.GenericTypeParameters) {
-                    var constraint = gp.GetTypeConstraintsString(scope);
-                    if (constraint != string.Empty)
-                        writer.Append($"\n{prefix}\t\t{constraint}");
-                }
+            foreach (var gp in method.GetGenericArguments()) {
+                var constraint = gp.GetTypeConstraintsString(scope);
+                if (constraint != string.Empty)
+                    writer.Append($"\n{prefix}\t\t{constraint}");
+            }
 
             // Body
             var methodBody = method switch {
