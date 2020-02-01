@@ -30,8 +30,7 @@ namespace Il2CppInspector.Reflection
             ReturnParameter = new ParameterInfo(pkg, -1, this);
         }
 
-        // TODO: Generic arguments (and on ConstructorInfo)
-        public override string ToString() => ReturnType.Name + " " + Name + "(" + string.Join(", ", 
+        public override string ToString() => ReturnType.Name + " " + Name + GetFullTypeParametersString() + "(" + string.Join(", ", 
                             DeclaredParameters.Select(x => x.ParameterType.IsByRef? x.ParameterType.Name.TrimEnd('&') + " ByRef" : x.ParameterType.Name)) + ")";
 
         public override string GetSignatureString() => ReturnParameter.GetSignatureString() + " " + Name + GetFullTypeParametersString()
