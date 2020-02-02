@@ -1,6 +1,6 @@
 ﻿/*
     Copyright 2017 Perfare - https://github.com/Perfare/Il2CppDumper
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -215,5 +215,17 @@ namespace Il2CppInspector
         public int methodDefinitionIndex;
         public int classIndexIndex;
         public int methodIndexIndex;
+    }
+
+    public class Il2CppGenericMethodFunctionsDefinitions
+    {
+        public int genericMethodIndex;
+        public Il2CppGenericMethodIndices indices;
+    }
+
+    public class Il2CppGenericMethodIndices
+    {
+        public int methodIndex;
+        public int invokerIndex;
     }
 }

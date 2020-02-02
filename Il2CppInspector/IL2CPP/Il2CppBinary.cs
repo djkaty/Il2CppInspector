@@ -1,6 +1,6 @@
 ﻿/*
     Copyright 2017 Perfare - https://github.com/Perfare/Il2CppDumper
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -45,6 +45,9 @@ namespace Il2CppInspector
 
         // List of run-time concrete generic class and method signatures
         public List<Il2CppGenericInst> GenericInstances { get; private set; }
+
+        // List of constructed generic method function pointers corresponding to each possible method instantiation
+        public Dictionary<Il2CppMethodSpec, ulong> GenericMethodPointers { get; } = new Dictionary<Il2CppMethodSpec, ulong>();
 
         // Every defined type
         public List<Il2CppType> TypeReferences { get; private set; }
@@ -200,6 +203,14 @@ namespace Il2CppInspector
 
             // Concrete generic class and method signatures
             GenericInstances = image.ReadMappedObjectPointerArray<Il2CppGenericInst>(MetadataRegistration.genericInsts, (int) MetadataRegistration.genericInstsCount);
+
+            // Concrete generic method pointers
+            // TODO: Invoker pointers in tableEntry.indices.invokerIndex
+            var genericMethodPointers = image.ReadMappedArray<ulong>(CodeRegistration.genericMethodPointers, (int) CodeRegistration.genericMethodPointersCount);
+            var genericMethodTable = image.ReadMappedArray<Il2CppGenericMethodFunctionsDefinitions>(MetadataRegistration.genericMethodTable, (int) MetadataRegistration.genericMethodTableCount);
+            foreach (var tableEntry in genericMethodTable) {
+                GenericMethodPointers.Add(MethodSpecs[tableEntry.genericMethodIndex], genericMethodPointers[tableEntry.indices.methodIndex]);
+            }
         }
     }
 }
