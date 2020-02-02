@@ -56,6 +56,7 @@ namespace Il2CppInspector
         public Dictionary<int, (ulong, object)> ParameterDefaultValue { get; } = new Dictionary<int, (ulong, object)>();
         public List<long> FieldOffsets { get; }
         public List<Il2CppType> TypeReferences => Binary.TypeReferences;
+        public Dictionary<ulong, int> TypeReferenceIndicesByAddress => Binary.TypeReferenceIndicesByAddress;
         public List<Il2CppGenericInst> GenericInstances => Binary.GenericInstances;
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
         public ulong[] CustomAttributeGenerators => Binary.CustomAttributeGenerators;

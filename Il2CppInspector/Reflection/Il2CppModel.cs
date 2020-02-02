@@ -8,7 +8,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Il2CppInspector.Reflection
 {
@@ -32,12 +31,8 @@ namespace Il2CppInspector.Reflection
         // List of all type definitions by fully qualified name (TypeDefs only)
         public Dictionary<string, TypeInfo> TypesByFullName { get; } = new Dictionary<string, TypeInfo>();
 
-        // List of type references that are initialized via pointers in the image
-        public ConcurrentDictionary<ulong, TypeInfo> TypesByVirtualAddress { get; } = new ConcurrentDictionary<ulong, TypeInfo>();
-
         // Every type
-        public IEnumerable<TypeInfo> Types => new IEnumerable<TypeInfo>[]
-                {TypesByDefinitionIndex, TypesByReferenceIndex, TypesByMethodSpecClassIndex.Values, TypesByVirtualAddress.Values}
+        public IEnumerable<TypeInfo> Types => new IEnumerable<TypeInfo>[] {TypesByDefinitionIndex, TypesByReferenceIndex, TypesByMethodSpecClassIndex.Values}
                 .SelectMany(t => t).Distinct();
 
         // List of all methods ordered by their MethodDefinitionIndex
@@ -103,7 +98,7 @@ namespace Il2CppInspector.Reflection
 
             // Get list of pointers to type parameters (both unresolved and concrete)
             var genericTypeArguments = Package.BinaryImage.ReadMappedWordArray(inst.type_argv, (int)inst.type_argc);
-
+            
             return genericTypeArguments.Select(a => GetTypeFromVirtualAddress((ulong) a)).ToList();
         }
 
@@ -149,17 +144,18 @@ namespace Il2CppInspector.Reflection
             return TypesByFullName[fqn];
         }
 
-        // Type from a virtual address pointer
+        // Get a TypeRef by its virtual address
         // These are always nested types from references within another TypeRef
-        // TODO: Eliminate GetTypeFromVirtualAddress() - use base and offset from MetadataRegistration.ptypes (Package.TypeReferences) instead
         public TypeInfo GetTypeFromVirtualAddress(ulong ptr) {
-            if (TypesByVirtualAddress.ContainsKey(ptr))
-                return TypesByVirtualAddress[ptr];
+            var typeRefIndex = Package.TypeReferenceIndicesByAddress[ptr];
 
-            var type = Package.BinaryImage.ReadMappedObject<Il2CppType>(ptr);
+            if (TypesByReferenceIndex[typeRefIndex] != null)
+                return TypesByReferenceIndex[typeRefIndex];
+
+            var type = Package.TypeReferences[typeRefIndex];
             var referencedType = resolveTypeReference(type);
 
-            TypesByVirtualAddress.TryAdd(ptr, referencedType);
+            TypesByReferenceIndex[typeRefIndex] = referencedType;
             return referencedType;
         }
 

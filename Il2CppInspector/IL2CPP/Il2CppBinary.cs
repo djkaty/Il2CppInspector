@@ -49,8 +49,11 @@ namespace Il2CppInspector
         // List of constructed generic method function pointers corresponding to each possible method instantiation
         public Dictionary<Il2CppMethodSpec, ulong> GenericMethodPointers { get; } = new Dictionary<Il2CppMethodSpec, ulong>();
 
-        // Every defined type
+        // Every type reference (TypeRef) sorted by index
         public List<Il2CppType> TypeReferences { get; private set; }
+
+        // Every type reference index sorted by virtual address
+        public Dictionary<ulong, int> TypeReferenceIndicesByAddress { get; private set; }
 
         // From v24.2 onwards, this structure is stored for each module (image)
         // One assembly may contain multiple modules
@@ -193,6 +196,8 @@ namespace Il2CppInspector
                 FieldOffsetPointers = image.ReadMappedWordArray(MetadataRegistration.pfieldOffsets, (int)MetadataRegistration.fieldOffsetsCount);
 
             // Type references (pointer array)
+            var typeRefPointers = image.ReadMappedArray<ulong>(MetadataRegistration.ptypes, (int) MetadataRegistration.typesCount);
+            TypeReferenceIndicesByAddress = typeRefPointers.Zip(Enumerable.Range(0, typeRefPointers.Length), (a, i) => new { a, i }).ToDictionary(x => x.a, x => x.i);
             TypeReferences = image.ReadMappedObjectPointerArray<Il2CppType>(MetadataRegistration.ptypes, (int) MetadataRegistration.typesCount);
 
             // Custom attribute constructors (function pointers)

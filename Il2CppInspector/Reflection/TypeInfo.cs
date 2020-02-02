@@ -580,6 +580,8 @@ namespace Il2CppInspector.Reflection {
 
             // Open and closed generic types
             if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST) {
+
+                // TODO: Replace with array load from Il2CppMetadataRegistration.genericClasses
                 var generic = image.ReadMappedObject<Il2CppGenericClass>(pType.datapoint); // Il2CppGenericClass *
 
                 // We have seen one test case where the TypeRef can point to no generic instance
@@ -608,6 +610,7 @@ namespace Il2CppInspector.Reflection {
                 IsGenericParameter = false;
 
                 // Get the instantiation
+                // TODO: Replace with array load from Il2CppMetadataRegistration.genericInsts
                 var genericInstance = image.ReadMappedObject<Il2CppGenericInst>(generic.context.class_inst);
 
                 if (generic.context.method_inst != 0)
