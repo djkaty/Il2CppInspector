@@ -69,30 +69,44 @@ def SetName(addr, name):
             }
 
             foreach (var method in model.GenericMethods.Values.Where(m => m.VirtualAddress.HasValue)) {
-                writeLines($"SetName({method.VirtualAddress.Value.Start.ToAddressString()}," +
-                           $"'{method.DeclaringType.Name}$${method.Name}{method.GetFullTypeParametersString()}')");
+                var address = method.VirtualAddress.Value.Start.ToAddressString();
+                writeLines($"SetName({address}, '{method.DeclaringType.Name}$${method.Name}{method.GetFullTypeParametersString()}')");
+                writeLines($"idc.set_cmt({address}, r'{method}', 1)");
             }
 
             foreach (var method in model.AttributesByIndices.Values.Where(m => m.VirtualAddress.HasValue)) {
-                writeLines($"SetName({method.VirtualAddress.Value.Start.ToAddressString()}," +
-                           $"'CustomAttributesGenerator${method.AttributeType.FullName}')");
+                var address = method.VirtualAddress.Value.Start.ToAddressString();
+                writeLines($"SetName({address}, 'CustomAttributesGenerator${method.AttributeType.FullName}')");
+                writeLines($"idc.set_cmt({address}, r'{method}', 1)");
             }
         }
 
         private void writeMethods(string typeName, IEnumerable<MethodBase> methods) {
             foreach (var method in methods.Where(m => m.VirtualAddress.HasValue)) {
-                writeLines($"SetName({method.VirtualAddress.Value.Start.ToAddressString()}, '{typeName}$${method.Name}')");
+                var address = method.VirtualAddress.Value.Start.ToAddressString();
+                writeLines($"SetName({address}, '{typeName}$${method.Name}')");
+                writeLines($"idc.set_cmt({address}, r'{method}', 1)");
             }
         }
 
         private void writeUsages() {
             foreach (var usage in model.Package.MetadataUsages) {
+                var address = usage.VirtualAddress.ToAddressString();
                 var escapedName = model.GetMetadataUsageName(usage).ToEscapedString();
 
                 if (usage.Type != MetadataUsageType.StringLiteral)
-                    writeLines($"SetName({usage.VirtualAddress.ToAddressString()}, '{usagePrefixes[usage.Type]}${escapedName}')");
+                    writeLines($"SetName({address}, '{usagePrefixes[usage.Type]}${escapedName}')");
                 else
-                    writeLines($"SetString({usage.VirtualAddress.ToAddressString()}, r'{escapedName}')");
+                    writeLines($"SetString({address}, r'{escapedName}')");
+
+                if (usage.Type == MetadataUsageType.MethodDef || usage.Type == MetadataUsageType.MethodRef) {
+                    var method = model.GetMetadataUsageMethod(usage);
+                    writeLines($"idc.set_cmt({address}, r'{method}', 1)");
+                }
+                else if (usage.Type != MetadataUsageType.StringLiteral) {
+                    var type = model.GetMetadataUsageType(usage);
+                    writeLines($"idc.set_cmt({address}, r'{type}', 1)");
+                }
             }
         }
 
