@@ -693,6 +693,9 @@ namespace Il2CppInspector.Reflection {
             // Same visibility attributes as generic type definition
             Attributes = genericTypeDefinition.Attributes;
 
+            // Even though this isn't a TypeDef, we have to set this so that DeclaringType works in later references
+            Index = genericTypeDefinition.Index;
+
             // Same name as generic type definition
             Assembly = genericTypeDefinition.Assembly;
             Namespace = genericTypeDefinition.Namespace;
