@@ -27,7 +27,7 @@ namespace Il2CppInspector.Reflection
         public Dictionary<int, TypeInfo> TypesByMethodSpecClassIndex { get; } = new Dictionary<int, TypeInfo>();
 
         // List of all methods from MethodSpecs (closed generic methods that can be called; does not need to be in a generic class)
-        public Dictionary<TypeInfo, List<MethodInfo>> GenericMethods { get; } = new Dictionary<TypeInfo, List<MethodInfo>>();
+        public Dictionary<TypeInfo, List<MethodBase>> GenericMethods { get; } = new Dictionary<TypeInfo, List<MethodBase>>();
 
         // List of all type definitions by fully qualified name (TypeDefs only)
         public Dictionary<string, TypeInfo> TypesByFullName { get; } = new Dictionary<string, TypeInfo>();
@@ -90,9 +90,14 @@ namespace Il2CppInspector.Reflection
 
                     // First generic method declaration in this class?
                     if (!GenericMethods.ContainsKey(declaringType))
-                        GenericMethods.Add(declaringType, new List<MethodInfo>());
+                        GenericMethods.Add(declaringType, new List<MethodBase>());
 
-                    GenericMethods[declaringType].Add(new MethodInfo(this, spec, declaringType));
+                    // Method or constructor
+                    var concreteMethod = new MethodInfo(this, spec, declaringType);
+                    if (concreteMethod.Name == ConstructorInfo.ConstructorName || concreteMethod.Name == ConstructorInfo.TypeConstructorName)
+                        GenericMethods[declaringType].Add(new ConstructorInfo(this, spec, declaringType));
+                    else
+                        GenericMethods[declaringType].Add(concreteMethod);
                 }
             }
         }

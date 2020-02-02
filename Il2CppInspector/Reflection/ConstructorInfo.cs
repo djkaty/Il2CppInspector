@@ -20,6 +20,8 @@ namespace Il2CppInspector.Reflection
 
         public ConstructorInfo(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) : base(pkg, methodIndex, declaringType) { }
 
+        public ConstructorInfo(Il2CppModel model, Il2CppMethodSpec spec, TypeInfo declaringType) : base(model, spec, declaringType) { }
+
         public override string ToString() => DeclaringType.Name + GetFullTypeParametersString() 
                                                        + "(" + string.Join(", ", DeclaredParameters.Select(x => x.ParameterType.Name)) + ")";
 
