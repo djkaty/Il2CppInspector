@@ -11,32 +11,32 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
-// [assembly: AssemblyCompany] // 0x1000F760-0x1000F970
-// [assembly: AssemblyCopyright] // 0x1000F760-0x1000F970
-// [assembly: AssemblyDefaultAlias] // 0x1000F760-0x1000F970
-// [assembly: AssemblyDelaySign] // 0x1000F760-0x1000F970
-// [assembly: AssemblyDescription] // 0x1000F760-0x1000F970
-// [assembly: AssemblyFileVersion] // 0x1000F760-0x1000F970
-// [assembly: AssemblyInformationalVersion] // 0x1000F760-0x1000F970
-// [assembly: AssemblyKeyFile] // 0x1000F760-0x1000F970
-// [assembly: AssemblyProduct] // 0x1000F760-0x1000F970
-// [assembly: AssemblyTitle] // 0x1000F760-0x1000F970
-// [assembly: CLSCompliant] // 0x1000F760-0x1000F970
-// [assembly: CompilationRelaxations] // 0x1000F760-0x1000F970
-// [assembly: ComVisible] // 0x1000F760-0x1000F970
-// [assembly: Debuggable] // 0x1000F760-0x1000F970
-// [assembly: DefaultDependency] // 0x1000F760-0x1000F970
-// [assembly: Guid] // 0x1000F760-0x1000F970
-// [assembly: NeutralResourcesLanguage] // 0x1000F760-0x1000F970
-[assembly: RuntimeCompatibility] // 0x1000F760-0x1000F970
-// [assembly: SatelliteContractVersion] // 0x1000F760-0x1000F970
-[assembly: StringFreezing] // 0x1000F760-0x1000F970
-// [assembly: TypeLibVersion] // 0x1000F760-0x1000F970
+// [assembly: AssemblyCompany] // 0x1000FC60-0x1000FE70
+// [assembly: AssemblyCopyright] // 0x1000FC60-0x1000FE70
+// [assembly: AssemblyDefaultAlias] // 0x1000FC60-0x1000FE70
+// [assembly: AssemblyDelaySign] // 0x1000FC60-0x1000FE70
+// [assembly: AssemblyDescription] // 0x1000FC60-0x1000FE70
+// [assembly: AssemblyFileVersion] // 0x1000FC60-0x1000FE70
+// [assembly: AssemblyInformationalVersion] // 0x1000FC60-0x1000FE70
+// [assembly: AssemblyKeyFile] // 0x1000FC60-0x1000FE70
+// [assembly: AssemblyProduct] // 0x1000FC60-0x1000FE70
+// [assembly: AssemblyTitle] // 0x1000FC60-0x1000FE70
+// [assembly: CLSCompliant] // 0x1000FC60-0x1000FE70
+// [assembly: CompilationRelaxations] // 0x1000FC60-0x1000FE70
+// [assembly: ComVisible] // 0x1000FC60-0x1000FE70
+// [assembly: Debuggable] // 0x1000FC60-0x1000FE70
+// [assembly: DefaultDependency] // 0x1000FC60-0x1000FE70
+// [assembly: Guid] // 0x1000FC60-0x1000FE70
+// [assembly: NeutralResourcesLanguage] // 0x1000FC60-0x1000FE70
+[assembly: RuntimeCompatibility] // 0x1000FC60-0x1000FE70
+// [assembly: SatelliteContractVersion] // 0x1000FC60-0x1000FE70
+[assembly: StringFreezing] // 0x1000FC60-0x1000FE70
+// [assembly: TypeLibVersion] // 0x1000FC60-0x1000FE70
 
 // Image 1: Methods.dll - Assembly: Methods, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1822
-// [assembly: CompilationRelaxations] // 0x1000DC90-0x1000DCE0
-// [assembly: Debuggable] // 0x1000DC90-0x1000DCE0
-[assembly: RuntimeCompatibility] // 0x1000DC90-0x1000DCE0
+// [assembly: CompilationRelaxations] // 0x1000E190-0x1000E1E0
+// [assembly: Debuggable] // 0x1000E190-0x1000E1E0
+[assembly: RuntimeCompatibility] // 0x1000E190-0x1000E1E0
 
 internal static class Consts // TypeDefIndex: 100
 {
@@ -75,11 +75,11 @@ internal static class Consts // TypeDefIndex: 100
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x100BF000-0x100BF010
+	private Locale() {} // 0x100C2000-0x100C2010
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x100F7810-0x100F7820
-	public static string GetText(string fmt, params /* 0x1000A660-0x1000A680 */ object[] args) => default; // 0x10261460-0x102614B0
+	public static string GetText(string msg) => default; // 0x100FC9C0-0x100FC9D0
+	public static string GetText(string fmt, params /* 0x1000A7D0-0x1000A7F0 */ object[] args) => default; // 0x1026FEA0-0x1026FF10
 }
 
 namespace Il2CppTests.TestSources
@@ -87,24 +87,24 @@ namespace Il2CppTests.TestSources
 	internal class Test // TypeDefIndex: 1811
 	{
 		// Constructors
-		public Test() {} // 0x100BF000-0x100BF010
+		public Test() {} // 0x100C2000-0x100C2010
 	
 		// Methods
-		public virtual void VirtualMethod() {} // 0x100C5530-0x100C5540
-		public double ValueTypeReturnMethod() => default; // 0x1034DAD0-0x1034DAD0
-		public StringBuilder ReferenceTypeReturnMethod() => default; // 0x1034DA90-0x1034DAD0
+		public virtual void VirtualMethod() {} // 0x100C97A0-0x100C97B0
+		public double ValueTypeReturnMethod() => default; // 0x10362BF0-0x10362BF0
+		public StringBuilder ReferenceTypeReturnMethod() => default; // 0x10362BB0-0x10362BF0
 	}
 
 	public static class TestExtension // TypeDefIndex: 1812
 	{
 		// Methods
-		public static double DivideByXExtension(int a, float x) => default; // 0x1034DA60-0x1034DA90
+		public static double DivideByXExtension(int a, float x) => default; // 0x10362B80-0x10362BB0
 	}
 
 	internal abstract class TestAbstract // TypeDefIndex: 1813
 	{
 		// Constructors
-		protected TestAbstract() {} // 0x100BF000-0x100BF010
+		protected TestAbstract() {} // 0x100C2000-0x100C2010
 	
 		// Methods
 		public abstract void AbstractMethod();
@@ -113,70 +113,70 @@ namespace Il2CppTests.TestSources
 	internal class TestOverride : Test // TypeDefIndex: 1814
 	{
 		// Constructors
-		public TestOverride() {} // 0x100BF000-0x100BF010
+		public TestOverride() {} // 0x100C2000-0x100C2010
 	
 		// Methods
-		public override void VirtualMethod() {} // 0x100C5530-0x100C5540
+		public override void VirtualMethod() {} // 0x100C97A0-0x100C97B0
 	}
 
 	internal class TestHideVirtual : Test // TypeDefIndex: 1815
 	{
 		// Constructors
-		public TestHideVirtual() {} // 0x100BF000-0x100BF010
+		public TestHideVirtual() {} // 0x100C2000-0x100C2010
 	
 		// Methods
-		public new void VirtualMethod() {} // 0x100C5530-0x100C5540
+		public new void VirtualMethod() {} // 0x100C97A0-0x100C97B0
 	}
 
 	internal class TestHideOverride : TestOverride // TypeDefIndex: 1816
 	{
 		// Constructors
-		public TestHideOverride() {} // 0x100BF000-0x100BF010
+		public TestHideOverride() {} // 0x100C2000-0x100C2010
 	
 		// Methods
-		public new void VirtualMethod() {} // 0x100C5530-0x100C5540
+		public new void VirtualMethod() {} // 0x100C97A0-0x100C97B0
 	}
 
 	internal class TestOverrideAbstract : TestAbstract // TypeDefIndex: 1817
 	{
 		// Constructors
-		public TestOverrideAbstract() {} // 0x100BF000-0x100BF010
+		public TestOverrideAbstract() {} // 0x100C2000-0x100C2010
 	
 		// Methods
-		public override void AbstractMethod() {} // 0x100C5530-0x100C5540
+		public override void AbstractMethod() {} // 0x100C97A0-0x100C97B0
 	}
 
 	internal class TestHideAbstractOverride : TestOverrideAbstract // TypeDefIndex: 1818
 	{
 		// Constructors
-		public TestHideAbstractOverride() {} // 0x100BF000-0x100BF010
+		public TestHideAbstractOverride() {} // 0x100C2000-0x100C2010
 	
 		// Methods
-		public new void AbstractMethod() {} // 0x100C5530-0x100C5540
+		public new void AbstractMethod() {} // 0x100C97A0-0x100C97B0
 	}
 
 	internal class TestHideVirtualAndNewVirtual : Test // TypeDefIndex: 1819
 	{
 		// Constructors
-		public TestHideVirtualAndNewVirtual() {} // 0x100BF000-0x100BF010
+		public TestHideVirtualAndNewVirtual() {} // 0x100C2000-0x100C2010
 	
 		// Methods
-		public virtual new void VirtualMethod() {} // 0x100C5530-0x100C5540
+		public virtual new void VirtualMethod() {} // 0x100C97A0-0x100C97B0
 	}
 
 	internal class TestHideOverrideAndNewVirtual : TestOverride // TypeDefIndex: 1820
 	{
 		// Constructors
-		public TestHideOverrideAndNewVirtual() {} // 0x100BF000-0x100BF010
+		public TestHideOverrideAndNewVirtual() {} // 0x100C2000-0x100C2010
 	
 		// Methods
-		public virtual new void VirtualMethod() {} // 0x100C5530-0x100C5540
+		public virtual new void VirtualMethod() {} // 0x100C97A0-0x100C97B0
 	}
 
 	internal abstract class TestAbstractNew : TestOverride // TypeDefIndex: 1821
 	{
 		// Constructors
-		protected TestAbstractNew() {} // 0x100BF000-0x100BF010
+		protected TestAbstractNew() {} // 0x100C2000-0x100C2010
 	
 		// Methods
 		public abstract new void VirtualMethod();
@@ -185,9 +185,9 @@ namespace Il2CppTests.TestSources
 	internal class TestNewNonVirtualMethod : Test // TypeDefIndex: 1822
 	{
 		// Constructors
-		public TestNewNonVirtualMethod() {} // 0x100BF000-0x100BF010
+		public TestNewNonVirtualMethod() {} // 0x100C2000-0x100C2010
 	
 		// Methods
-		public int ValueTypeReturnMethod() => default; // 0x100EF660-0x100EF670
+		public int ValueTypeReturnMethod() => default; // 0x100F4720-0x100F4730
 	}
 }

@@ -34,9 +34,9 @@ using System.Runtime.InteropServices;
 // [assembly: TypeLibVersion] // 0x000A5100-0x000A53F4
 
 // Image 1: ExplicitInterfaces.dll - Assembly: ExplicitInterfaces, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1820
-// [assembly: CompilationRelaxations] // 0x000A545C-0x000A6588
-// [assembly: Debuggable] // 0x000A545C-0x000A6588
-[assembly: RuntimeCompatibility] // 0x000A545C-0x000A6588
+// [assembly: CompilationRelaxations] // 0x000A545C-0x000A54E4
+// [assembly: Debuggable] // 0x000A545C-0x000A54E4
+[assembly: RuntimeCompatibility] // 0x000A545C-0x000A54E4
 
 internal static class Consts // TypeDefIndex: 100
 {

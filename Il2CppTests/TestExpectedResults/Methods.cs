@@ -34,9 +34,9 @@ using System.Text;
 // [assembly: TypeLibVersion] // 0x000A5098-0x000A538C
 
 // Image 1: Methods.dll - Assembly: Methods, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1822
-// [assembly: CompilationRelaxations] // 0x000A538C-0x000A64B8
-// [assembly: Debuggable] // 0x000A538C-0x000A64B8
-[assembly: RuntimeCompatibility] // 0x000A538C-0x000A64B8
+// [assembly: CompilationRelaxations] // 0x000A538C-0x000A5414
+// [assembly: Debuggable] // 0x000A538C-0x000A5414
+[assembly: RuntimeCompatibility] // 0x000A538C-0x000A5414
 
 internal static class Consts // TypeDefIndex: 100
 {

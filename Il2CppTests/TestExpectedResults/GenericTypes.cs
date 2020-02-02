@@ -11,32 +11,32 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-1809
-// [assembly: AssemblyCompany] // 0x000A7AE4-0x000A7DD8
-// [assembly: AssemblyCopyright] // 0x000A7AE4-0x000A7DD8
-// [assembly: AssemblyDefaultAlias] // 0x000A7AE4-0x000A7DD8
-// [assembly: AssemblyDelaySign] // 0x000A7AE4-0x000A7DD8
-// [assembly: AssemblyDescription] // 0x000A7AE4-0x000A7DD8
-// [assembly: AssemblyFileVersion] // 0x000A7AE4-0x000A7DD8
-// [assembly: AssemblyInformationalVersion] // 0x000A7AE4-0x000A7DD8
-// [assembly: AssemblyKeyFile] // 0x000A7AE4-0x000A7DD8
-// [assembly: AssemblyProduct] // 0x000A7AE4-0x000A7DD8
-// [assembly: AssemblyTitle] // 0x000A7AE4-0x000A7DD8
-// [assembly: CLSCompliant] // 0x000A7AE4-0x000A7DD8
-// [assembly: CompilationRelaxations] // 0x000A7AE4-0x000A7DD8
-// [assembly: ComVisible] // 0x000A7AE4-0x000A7DD8
-// [assembly: Debuggable] // 0x000A7AE4-0x000A7DD8
-// [assembly: DefaultDependency] // 0x000A7AE4-0x000A7DD8
-// [assembly: Guid] // 0x000A7AE4-0x000A7DD8
-// [assembly: NeutralResourcesLanguage] // 0x000A7AE4-0x000A7DD8
-[assembly: RuntimeCompatibility] // 0x000A7AE4-0x000A7DD8
-// [assembly: SatelliteContractVersion] // 0x000A7AE4-0x000A7DD8
-[assembly: StringFreezing] // 0x000A7AE4-0x000A7DD8
-// [assembly: TypeLibVersion] // 0x000A7AE4-0x000A7DD8
+// [assembly: AssemblyCompany] // 0x000A7AFC-0x000A7DF0
+// [assembly: AssemblyCopyright] // 0x000A7AFC-0x000A7DF0
+// [assembly: AssemblyDefaultAlias] // 0x000A7AFC-0x000A7DF0
+// [assembly: AssemblyDelaySign] // 0x000A7AFC-0x000A7DF0
+// [assembly: AssemblyDescription] // 0x000A7AFC-0x000A7DF0
+// [assembly: AssemblyFileVersion] // 0x000A7AFC-0x000A7DF0
+// [assembly: AssemblyInformationalVersion] // 0x000A7AFC-0x000A7DF0
+// [assembly: AssemblyKeyFile] // 0x000A7AFC-0x000A7DF0
+// [assembly: AssemblyProduct] // 0x000A7AFC-0x000A7DF0
+// [assembly: AssemblyTitle] // 0x000A7AFC-0x000A7DF0
+// [assembly: CLSCompliant] // 0x000A7AFC-0x000A7DF0
+// [assembly: CompilationRelaxations] // 0x000A7AFC-0x000A7DF0
+// [assembly: ComVisible] // 0x000A7AFC-0x000A7DF0
+// [assembly: Debuggable] // 0x000A7AFC-0x000A7DF0
+// [assembly: DefaultDependency] // 0x000A7AFC-0x000A7DF0
+// [assembly: Guid] // 0x000A7AFC-0x000A7DF0
+// [assembly: NeutralResourcesLanguage] // 0x000A7AFC-0x000A7DF0
+[assembly: RuntimeCompatibility] // 0x000A7AFC-0x000A7DF0
+// [assembly: SatelliteContractVersion] // 0x000A7AFC-0x000A7DF0
+[assembly: StringFreezing] // 0x000A7AFC-0x000A7DF0
+// [assembly: TypeLibVersion] // 0x000A7AFC-0x000A7DF0
 
 // Image 1: GenericTypes.dll - Assembly: GenericTypes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 1810-1835
-// [assembly: CompilationRelaxations] // 0x000A7EEC-0x000A7F40
-// [assembly: Debuggable] // 0x000A7EEC-0x000A7F40
-[assembly: RuntimeCompatibility] // 0x000A7EEC-0x000A7F40
+// [assembly: CompilationRelaxations] // 0x000A7F04-0x000A7F58
+// [assembly: Debuggable] // 0x000A7F04-0x000A7F58
+[assembly: RuntimeCompatibility] // 0x000A7F04-0x000A7F58
 
 internal static class Consts // TypeDefIndex: 100
 {
@@ -75,11 +75,11 @@ internal static class Consts // TypeDefIndex: 100
 internal sealed class Locale // TypeDefIndex: 101
 {
 	// Constructors
-	private Locale() {} // 0x003EDAF8-0x003EDB00
+	private Locale() {} // 0x003EDB10-0x003EDB18
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x003EDB00-0x003EDB04
-	public static string GetText(string fmt, params /* 0x000A6310-0x000A6320 */ object[] args) => default; // 0x003EDB04-0x003EDB90
+	public static string GetText(string msg) => default; // 0x003EDB18-0x003EDB1C
+	public static string GetText(string fmt, params /* 0x000A6328-0x000A6338 */ object[] args) => default; // 0x003EDB1C-0x003EDBA8
 }
 
 namespace Il2CppTests.TestSources
@@ -115,10 +115,10 @@ namespace Il2CppTests.TestSources
 	internal class Test // TypeDefIndex: 1819
 	{
 		// Constructors
-		public Test() {} // 0x0057B30C-0x0057B314
+		public Test() {} // 0x0057B348-0x0057B350
 	
 		// Methods
-		public void GenericTypesTest() {} // 0x0057B150-0x0057B30C
+		public void GenericTypesTest() {} // 0x0057B18C-0x0057B348
 	}
 
 	internal class ConstrainedValueType<V> // TypeDefIndex: 1820
@@ -169,7 +169,7 @@ namespace Il2CppTests.TestSources
 		public ConstrainedRefType() {}
 	
 		// Methods
-		// [NullableContext] // 0x000A7ED8-0x000A7EEC
+		// [NullableContext] // 0x000A7EF0-0x000A7F04
 		public void ConstrainedMethodNotNull<N>(N notnullArgument, R bar) {}
 		public void ConstrainedUnmanaged<U>(U unmanagedArgument)
 			where U : struct {}
@@ -232,10 +232,10 @@ namespace Il2CppTests.TestSources
 	public class NonGeneric // TypeDefIndex: 1833
 	{
 		// Constructors
-		public NonGeneric() {} // 0x0057B148-0x0057B150
+		public NonGeneric() {} // 0x0057B184-0x0057B18C
 	
 		// Methods
-		public void GenericMethodDefinitionInNonGenericClass<T>(T a) {}
+		public static void GenericMethodDefinitionInNonGenericClass<T>(T a) {}
 	}
 
 	public class GenericClassWithMethods<T> // TypeDefIndex: 1834
@@ -253,9 +253,9 @@ namespace Il2CppTests.TestSources
 	public class CallGenericMethods : GenericClassWithMethods<int> // TypeDefIndex: 1835
 	{
 		// Constructors
-		public CallGenericMethods() {} // 0x0057B0E4-0x0057B148
+		public CallGenericMethods() {} // 0x0057B120-0x0057B184
 	
 		// Methods
-		public void CallMethods() {} // 0x0057B01C-0x0057B0E4
+		public void CallMethods() {} // 0x0057B03C-0x0057B120
 	}
 }

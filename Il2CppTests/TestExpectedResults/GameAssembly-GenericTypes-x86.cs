@@ -118,7 +118,7 @@ namespace Il2CppTests.TestSources
 		public Test() {} // 0x100C3000-0x100C3010
 	
 		// Methods
-		public void GenericTypesTest() {} // 0x1036D4F0-0x1036D4F0
+		public void GenericTypesTest() {} // 0x1036D500-0x1036D500
 	}
 
 	internal class ConstrainedValueType<V> // TypeDefIndex: 1820
@@ -235,7 +235,7 @@ namespace Il2CppTests.TestSources
 		public NonGeneric() {} // 0x100C3000-0x100C3010
 	
 		// Methods
-		public void GenericMethodDefinitionInNonGenericClass<T>(T a) {}
+		public static void GenericMethodDefinitionInNonGenericClass<T>(T a) {}
 	}
 
 	public class GenericClassWithMethods<T> // TypeDefIndex: 1834
@@ -253,9 +253,9 @@ namespace Il2CppTests.TestSources
 	public class CallGenericMethods : GenericClassWithMethods<int> // TypeDefIndex: 1835
 	{
 		// Constructors
-		public CallGenericMethods() {} // 0x1036D440-0x1036D480
+		public CallGenericMethods() {} // 0x1036D450-0x1036D490
 	
 		// Methods
-		public void CallMethods() {} // 0x1036D3D0-0x1036D440
+		public void CallMethods() {} // 0x1036D3D0-0x1036D450
 	}
 }
