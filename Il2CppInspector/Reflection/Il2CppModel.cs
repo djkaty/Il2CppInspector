@@ -27,7 +27,7 @@ namespace Il2CppInspector.Reflection
         public Dictionary<int, TypeInfo> TypesByMethodSpecClassIndex { get; } = new Dictionary<int, TypeInfo>();
 
         // List of all methods from MethodSpecs (closed generic methods that can be called; does not need to be in a generic class)
-        public Dictionary<TypeInfo, List<MethodBase>> GenericMethods { get; } = new Dictionary<TypeInfo, List<MethodBase>>();
+        public Dictionary<Il2CppMethodSpec, MethodBase> GenericMethods { get; } = new Dictionary<Il2CppMethodSpec, MethodBase>();
 
         // List of all type definitions by fully qualified name (TypeDefs only)
         public Dictionary<string, TypeInfo> TypesByFullName { get; } = new Dictionary<string, TypeInfo>();
@@ -87,17 +87,12 @@ namespace Il2CppInspector.Reflection
 
                 // Concrete instance of a generic method
                 if (spec.methodIndexIndex != -1) {
-
-                    // First generic method declaration in this class?
-                    if (!GenericMethods.ContainsKey(declaringType))
-                        GenericMethods.Add(declaringType, new List<MethodBase>());
-
                     // Method or constructor
                     var concreteMethod = new MethodInfo(this, spec, declaringType);
                     if (concreteMethod.Name == ConstructorInfo.ConstructorName || concreteMethod.Name == ConstructorInfo.TypeConstructorName)
-                        GenericMethods[declaringType].Add(new ConstructorInfo(this, spec, declaringType));
+                        GenericMethods.Add(spec, new ConstructorInfo(this, spec, declaringType));
                     else
-                        GenericMethods[declaringType].Add(concreteMethod);
+                        GenericMethods.Add(spec, concreteMethod);
                 }
             }
         }
@@ -203,8 +198,17 @@ namespace Il2CppInspector.Reflection
 
                 case MetadataUsageType.MethodRef:
                 var methodSpec = Package.MethodSpecs[usage.SourceIndex];
-                method = MethodsByDefinitionIndex[methodSpec.methodDefinitionIndex];
-                type = method.DeclaringType;
+
+                if (methodSpec.classIndexIndex != -1)
+                    type = TypesByMethodSpecClassIndex[methodSpec.classIndexIndex];
+                else
+                    type = MethodsByDefinitionIndex[methodSpec.methodDefinitionIndex].DeclaringType;
+
+                if (methodSpec.methodIndexIndex != -1)
+                    method = GenericMethods[methodSpec];
+                else
+                    method = MethodsByDefinitionIndex[methodSpec.methodDefinitionIndex];
+                
                 return $"{type.Name}.{method.Name}";
             }
             throw new NotImplementedException("Unknown metadata usage type: " + usage.Type);
