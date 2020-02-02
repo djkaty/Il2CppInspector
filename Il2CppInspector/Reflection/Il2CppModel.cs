@@ -91,10 +91,7 @@ namespace Il2CppInspector.Reflection
                     if (!GenericMethods.ContainsKey(declaringType))
                         GenericMethods.Add(declaringType, new List<MethodInfo>());
 
-                    // TODO: Add generic method resolver here
-
-                    // Get list of pointers to type parameters (both unresolved and concrete)
-                    var genericTypeArguments = ResolveGenericArguments(spec.methodIndexIndex);
+                    GenericMethods[declaringType].Add(new MethodInfo(this, spec, declaringType));
                 }
             }
         }

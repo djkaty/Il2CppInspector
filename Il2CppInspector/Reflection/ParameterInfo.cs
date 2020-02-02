@@ -95,6 +95,11 @@ namespace Il2CppInspector.Reflection
             }
         }
 
+        // Create a concrete type parameter from a generic type parameter
+        public ParameterInfo(Il2CppModel model, ParameterInfo generic, TypeInfo concrete) {
+            // TODO: Implement generic parameter substitution
+        }
+
         // ref will be handled as part of the type name
         public string GetModifierString() =>
               (IsIn ? "in " : "")

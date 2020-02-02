@@ -83,6 +83,7 @@ namespace Il2CppInspector.Reflection
             // Regular method
             : Name;
 
+        // Initialize a method from a method definition (MethodDef)
         protected MethodBase(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) : base(declaringType) {
             Definition = pkg.Methods[methodIndex];
             Index = methodIndex;
@@ -139,6 +140,20 @@ namespace Il2CppInspector.Reflection
             // Add arguments
             for (var p = Definition.parameterStart; p < Definition.parameterStart + Definition.parameterCount; p++)
                 DeclaredParameters.Add(new ParameterInfo(pkg, p, this));
+        }
+
+        // Initialize a method from a concrete generic method (MethodSpec)
+        protected MethodBase(Il2CppModel model, Il2CppMethodSpec spec, TypeInfo declaringType) : base(declaringType) {
+            var methodDef = model.MethodsByDefinitionIndex[spec.methodDefinitionIndex];
+
+            Name = methodDef.Name;
+            Attributes = methodDef.Attributes;
+
+            IsGenericMethod = true;
+            genericArguments = model.ResolveGenericArguments(spec.methodIndexIndex);
+
+            // TODO: Substitute generic type arguments for concrete type arguments
+            // TODO: Populate VirtualAddress via Il2CppGenericMethodFunctionsDefinitions
         }
 
         public string GetAccessModifierString() => this switch {

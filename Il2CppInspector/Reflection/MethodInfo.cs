@@ -30,6 +30,14 @@ namespace Il2CppInspector.Reflection
             ReturnParameter = new ParameterInfo(pkg, -1, this);
         }
 
+        public MethodInfo(Il2CppModel model, Il2CppMethodSpec spec, TypeInfo declaringType) : base(model, spec, declaringType) {
+            var methodDef = model.MethodsByDefinitionIndex[spec.methodDefinitionIndex];
+
+            // Add return parameter
+            returnTypeReference = methodDef.Definition.returnType;
+            ReturnParameter = ((MethodInfo) methodDef).ReturnParameter;
+        }
+
         public override string ToString() => ReturnType.Name + " " + Name + GetFullTypeParametersString() + "(" + string.Join(", ", 
                             DeclaredParameters.Select(x => x.ParameterType.IsByRef? x.ParameterType.Name.TrimEnd('&') + " ByRef" : x.ParameterType.Name)) + ")";
 
