@@ -63,7 +63,7 @@ def SetName(addr, name):
         }
 
         private void writeMethods() {
-            foreach (var type in model.Types.Where(t => t != null)) {
+            foreach (var type in model.Types) {
                 writeMethods(type.Name, type.DeclaredConstructors);
                 writeMethods(type.Name, type.DeclaredMethods);
             }

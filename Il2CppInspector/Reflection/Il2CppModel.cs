@@ -36,8 +36,9 @@ namespace Il2CppInspector.Reflection
         public ConcurrentDictionary<ulong, TypeInfo> TypesByVirtualAddress { get; } = new ConcurrentDictionary<ulong, TypeInfo>();
 
         // Every type
-        public IEnumerable<TypeInfo> Types => new IEnumerable<TypeInfo>[] {TypesByDefinitionIndex, TypesByReferenceIndex, TypesByVirtualAddress.Values}
-            .SelectMany(t => t).Where(t => t != null).Distinct();
+        public IEnumerable<TypeInfo> Types => new IEnumerable<TypeInfo>[]
+                {TypesByDefinitionIndex, TypesByReferenceIndex, TypesByMethodSpecClassIndex.Values, TypesByVirtualAddress.Values}
+                .SelectMany(t => t).Distinct();
 
         // List of all methods ordered by their MethodDefinitionIndex
         public MethodBase[] MethodsByDefinitionIndex { get; }
