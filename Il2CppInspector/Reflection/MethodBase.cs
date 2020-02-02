@@ -226,9 +226,8 @@ namespace Il2CppInspector.Reflection
         public string GetTypeParametersString(Scope usingScope) => !GetGenericArguments().Any()? "" :
             "<" + string.Join(", ", GetGenericArguments().Select(p => p.GetScopedCSharpName(usingScope))) + ">";
 
-        // TODO: The scope output for some System types does not match the real .NET output here
         public string GetFullTypeParametersString() => !GetGenericArguments().Any()? "" :
-            "[" + string.Join(",", GetGenericArguments().Select(p => p.FullName ?? p.Name)) + "]";
+            "[" + string.Join(",", GetGenericArguments().Select(p => p.Name)) + "]";
 
         public abstract string GetSignatureString();
 
