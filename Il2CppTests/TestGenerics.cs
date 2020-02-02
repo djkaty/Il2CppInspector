@@ -33,8 +33,7 @@ namespace Il2CppInspector
             TypeInfo tBase = asm.GetType("Il2CppTests.TestSources.Base`2");
             TypeInfo tDerived = asm.GetType("Il2CppTests.TestSources.Derived`1");
             TypeInfo tDerivedBase = tDerived.BaseType;
-            // TODO: Use a model GetType() once implemented
-            TypeInfo tDerivedArray = model.Types.First(t => t.Namespace == "Il2CppTests.TestSources" && t.Name == "Derived`1[System.Int32][]");
+            TypeInfo tDerivedArray = model.GetType("Il2CppTests.TestSources.Derived`1[System.Int32][]");
 
             TypeInfo tT = tBase.GenericTypeParameters[0];
             TypeInfo tU = tBase.GenericTypeParameters[1];
@@ -50,7 +49,12 @@ namespace Il2CppInspector
             MethodInfo mGMDIGC = tGCWM.GetMethod("GenericMethodDefinitionInGenericClass");
             MethodInfo mGMDIGC2 = tGCWM.GetMethod("GenericMethodDefinitionInGenericClass2");
 
-            // TODO: Test the methods in CallGenericMethodds.CallMethods (requires MethodSpec implementation)
+            MethodBase mGMDINGC_closed = model.GetGenericMethod(
+                "Il2CppTests.TestSources.NonGeneric.GenericMethodDefinitionInNonGenericClass", model.GetType("System.Single"));
+            MethodBase mGMDIGC_closed = model.GetGenericMethod(
+                "Il2CppTests.TestSources.GenericClassWithMethods`1.GenericMethodDefinitionInGenericClass", model.GetType("System.Int32"));
+            MethodBase mGMDIGC2_closed = model.GetGenericMethod(
+                "Il2CppTests.TestSources.GenericClassWithMethods`1.GenericMethodDefinitionInGenericClass2", model.GetType("System.String"));
 
             DisplayGenericType(tBase, "Generic type definition Base<T, U>");
             DisplayGenericType(tDerived, "Derived<V>");
@@ -78,14 +82,16 @@ namespace Il2CppInspector
                 (mNGMIGC,  "Void NonGenericMethodInGenericClass(T)", false, true, false, false),
                 (mNGMIGC2, "Void NonGenericMethodInGenericClass2()", false, true, false, false),
                 (mGMDIGC,  "Void GenericMethodDefinitionInGenericClass[U](U)", true, true, true, false),
-                (mGMDIGC2, "Void GenericMethodDefinitionInGenericClass2[U](T, U)", true, true, true, false)
+                (mGMDIGC2, "Void GenericMethodDefinitionInGenericClass2[U](T, U)", true, true, true, false),
+
+                (mGMDINGC_closed, "Void GenericMethodDefinitionInNonGenericClass[Single](Single)", true, false, false, true),
+                // TODO: We can't test non-generic methods in a generic class until we've implemented parameter substitution in TypeInfo constructor
                 /*
-                (mGMDINGC_closed, "Void GenericMethodDefinitionInNonGenericClass[Single](Single)", true, false, false, false),
                 (mNGMIGC_closed,  "Void NonGenericMethodInGenericClass(Int32)", false, false, false, false),
                 (mNGMIGC2_closed, "Void NonGenericMethodInGenericClass()", false, false, false, false),
-                (mGMDIGC_closed,  "Void GenericMethodDefinitioninGenericClass[Int32](Int32)", true, true, false, true),
-                (mGMDIGC2_closed, "Void GenericMethodDefinitionInGenericClass2[String](T, System.String)", true, true, false, true)
                 */
+                (mGMDIGC_closed,  "Void GenericMethodDefinitionInGenericClass[Int32](Int32)", true, true, false, true),
+                (mGMDIGC2_closed, "Void GenericMethodDefinitionInGenericClass2[String](T, String)", true, true, false, true) // It's actually System.String in .NET
             };
 
             foreach (var check in typeChecks) {
