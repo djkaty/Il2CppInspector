@@ -41,6 +41,17 @@ namespace Il2CppInspector
             TypeInfo tF = tDerived.GetField("F").FieldType;
             TypeInfo tNested = asm.GetType("Il2CppTests.TestSources.Derived`1+Nested");
 
+            TypeInfo tNG = asm.GetType("Il2CppTests.TestSources.NonGeneric");
+            TypeInfo tGCWM = asm.GetType("Il2CppTests.TestSources.GenericClassWithMethods`1");
+            TypeInfo tCGM = asm.GetType("Il2CppTests.TestSources.CallGenericMethods");
+            MethodInfo mGMDINGC = tNG.GetMethod("GenericMethodDefinitionInNonGenericClass");
+            MethodInfo mNGMIGC = tGCWM.GetMethod("NonGenericMethodInGenericClass");
+            MethodInfo mNGMIGC2 = tGCWM.GetMethod("NonGenericMethodInGenericClass2");
+            MethodInfo mGMDIGC = tGCWM.GetMethod("GenericMethodDefinitionInGenericClass");
+            MethodInfo mGMDIGC2 = tGCWM.GetMethod("GenericMethodDefinitionInGenericClass2");
+
+            // TODO: Test the methods in CallGenericMethodds.CallMethods (requires MethodSpec implementation)
+
             DisplayGenericType(tBase, "Generic type definition Base<T, U>");
             DisplayGenericType(tDerived, "Derived<V>");
             DisplayGenericType(tDerivedBase, "Base type of Derived<V>");
@@ -51,7 +62,7 @@ namespace Il2CppInspector
             DisplayGenericType(tNested, "Nested type in Derived<V>");
 
             // Assert
-            var checks = new[] {
+            var typeChecks = new[] {
                 (tBase, "Base`2[T,U]", true, true, true, false, -1),
                 (tDerived, "Derived`1[V]", true, true, true, false, -1),
                 (tDerivedBase, "Base`2[System.String,V]", true, false, true, false, -1),
@@ -62,7 +73,22 @@ namespace Il2CppInspector
                 (tNested, "Derived`1[V]+Nested[V]", true, true, true, false, -1)
             };
 
-            foreach (var check in checks) {
+            var methodChecks = new[] {
+                (mGMDINGC, "Void GenericMethodDefinitionInNonGenericClass[T](T)", true, true, true, false),
+                (mNGMIGC,  "Void NonGenericMethodInGenericClass(T)", false, true, false, false),
+                (mNGMIGC2, "Void NonGenericMethodInGenericClass2()", false, true, false, false),
+                (mGMDIGC,  "Void GenericMethodDefinitionInGenericClass[U](U)", true, true, true, false),
+                (mGMDIGC2, "Void GenericMethodDefinitionInGenericClass2[U](T, U)", true, true, true, false)
+                /*
+                (mGMDINGC_closed, "Void GenericMethodDefinitionInNonGenericClass[Single](Single)", true, false, false, false),
+                (mNGMIGC_closed,  "Void NonGenericMethodInGenericClass(Int32)", false, false, false, false),
+                (mNGMIGC2_closed, "Void NonGenericMethodInGenericClass()", false, false, false, false),
+                (mGMDIGC_closed,  "Void GenericMethodDefinitioninGenericClass[Int32](Int32)", true, true, false, true),
+                (mGMDIGC2_closed, "Void GenericMethodDefinitionInGenericClass2[String](T, System.String)", true, true, false, true)
+                */
+            };
+
+            foreach (var check in typeChecks) {
                 var t = check.Item1;
 
                 Assert.That(t.ToString(), Is.EqualTo(check.Item2));
@@ -70,6 +96,16 @@ namespace Il2CppInspector
                 Assert.That(t.IsGenericTypeDefinition, Is.EqualTo(check.Item4));
                 Assert.That(t.ContainsGenericParameters, Is.EqualTo(check.Item5));
                 Assert.That(t.IsGenericParameter, Is.EqualTo(check.Item6));
+            }
+
+            foreach (var check in methodChecks) {
+                var m = check.Item1;
+
+                Assert.That(m.ToString(), Is.EqualTo(check.Item2));
+                Assert.That(m.IsGenericMethod, Is.EqualTo(check.Item3));
+                Assert.That(m.ContainsGenericParameters, Is.EqualTo(check.Item4));
+                Assert.That(m.IsGenericMethodDefinition, Is.EqualTo(check.Item5));
+                Assert.That(m.IsConstructedGenericMethod, Is.EqualTo(check.Item6));
             }
         }
 

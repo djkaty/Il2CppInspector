@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using Il2CppInspector;
 
 namespace Il2CppTests.TestSources
 {
@@ -110,5 +111,33 @@ namespace Il2CppTests.TestSources
 
         public InnerGeneric2.SubInnerGeneric2 fieldOfSubInnerGeneric2;
         public InnerGeneric2.SubInnerGeneric3<string> fieldOfSubInnerGeneric3;
+    }
+
+    // Method tests
+    public class NonGeneric
+    {
+        public static void GenericMethodDefinitionInNonGenericClass<T>(T a) {} // IsGenericMethod = true, ContainsGenericParameters = true, IGMD = true, ICGM = false
+    }
+
+    public class GenericClassWithMethods<T>
+    {
+        public void NonGenericMethodInGenericClass(T a) { } // IsGenericMethod = false, ContainsGenericParameters = true, IGMD = false, ICGM = false
+
+        public void NonGenericMethodInGenericClass2() { } // IsGenericMethod = false, ContainsGenericParameters = true, IGMD = false, ICGM = false
+
+        public void GenericMethodDefinitionInGenericClass<U>(U a) { } // IsGenericMethod = true, ContainsGenericParameters = true, IGMD = true, ICGM = false
+
+        public void GenericMethodDefinitionInGenericClass2<U>(T a, U b) { } // IsGenericMethod = true, ContainsGenericParameters = true, IGMD = true, ICGM = false
+    }
+
+    public class CallGenericMethods : GenericClassWithMethods<int>
+    {
+        public void CallMethods() {
+            NonGeneric.GenericMethodDefinitionInNonGenericClass<float>(1.23f); // IsGenericMethod = true, ContainsGenericParameters = false, IGMD = false, ICGM = true
+            NonGenericMethodInGenericClass(123); // IsGenericMethod = false, ContainsGenericParameters = false, IGMD = false, ICGM = false
+            NonGenericMethodInGenericClass2(); // IsGenericMethod = false, ContainsGenericParameters = false, IGMD = false, ICGM = false
+            GenericMethodDefinitionInGenericClass<int>(456); // IsGenericMethod = true, ContainsGenericParameters = true, IGMD = false, ICGM = true
+            GenericMethodDefinitionInGenericClass2<string>(789, "abc"); // IsGenericMethod = true, ContainsGenericParameters = true, IGMD = false, ICGM = true
+        }
     }
 }
