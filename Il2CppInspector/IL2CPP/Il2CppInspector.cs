@@ -27,7 +27,6 @@ namespace Il2CppInspector
 
         // Merged list of all metadata usage references
         public List<MetadataUsage> MetadataUsages { get; }
-        public ulong[] BinaryMetadataUsages { get; } // TODO: Make private
 
         // Shortcuts
         public double Version => Metadata.Version;
@@ -143,6 +142,14 @@ namespace Il2CppInspector
                     usages.TryAdd(destinationIndex, new MetadataUsage(usageType, (int)sourceIndex, (int)destinationIndex));
                 }
             }
+            
+            // Metadata usages (addresses)
+            // Unfortunately the value supplied in MetadataRegistration.matadataUsagesCount seems to be incorrect,
+            // so we have to calculate the correct number of usages above before reading the usage address list from the binary
+            var addresses = Binary.Image.ReadMappedArray<ulong>(Binary.MetadataRegistration.metadataUsages, usages.Count);
+            foreach (var usage in usages.Values)
+                usage.SetAddress(addresses[usage.DestinationIndex]);
+
             return usages.Values.ToList();
         }
 
@@ -221,14 +228,8 @@ namespace Il2CppInspector
             }
 
             // Merge all metadata usage references into a single distinct list
-            if (Version >= 19) {
+            if (Version >= 19)
                 MetadataUsages = buildMetadataUsages();
-
-                // Metadata usages (addresses)
-                // Unfortunately the value supplied in MetadataRegistration.matadataUsagesCount seems to be incorrect,
-                // so we have to calculate the correct number of usages above before reading the usage address list from the binary
-                BinaryMetadataUsages = Binary.Image.ReadMappedArray<ulong>(Binary.MetadataRegistration.metadataUsages, MetadataUsages.Count);
-            }
         }
 
         // Get a method pointer if available

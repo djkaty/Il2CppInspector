@@ -22,11 +22,14 @@ namespace Il2CppInspector
         public MetadataUsageType Type { get; }
         public int SourceIndex { get; }
         public int DestinationIndex { get; }
+        public ulong VirtualAddress { get; private set; }
 
         public MetadataUsage(MetadataUsageType type, int sourceIndex, int destinationIndex) {
             Type = type;
             SourceIndex = sourceIndex;
             DestinationIndex = destinationIndex;
         }
+
+        public void SetAddress(ulong virtualAddress) => VirtualAddress = virtualAddress;
     }
 }

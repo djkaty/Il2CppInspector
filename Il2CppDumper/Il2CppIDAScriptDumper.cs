@@ -78,12 +78,11 @@ def SetName(addr, name):
         private void writeUsages() {
             foreach (var usage in model.Package.MetadataUsages) {
                 var escapedName = model.GetMetadataUsageName(usage).ToEscapedString();
-                var address = model.Package.BinaryMetadataUsages[usage.DestinationIndex];
 
                 if (usage.Type != MetadataUsageType.StringLiteral)
-                    writeLines($"SetName({address.ToAddressString()}, '{usagePrefixes[usage.Type]}${escapedName}')");
+                    writeLines($"SetName({usage.VirtualAddress.ToAddressString()}, '{usagePrefixes[usage.Type]}${escapedName}')");
                 else
-                    writeLines($"SetString({address.ToAddressString()}, r'{escapedName}')");
+                    writeLines($"SetString({usage.VirtualAddress.ToAddressString()}, r'{escapedName}')");
             }
         }
 
