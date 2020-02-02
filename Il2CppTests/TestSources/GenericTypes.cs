@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using Il2CppInspector;
 
 namespace Il2CppTests.TestSources
 {

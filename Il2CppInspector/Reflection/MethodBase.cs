@@ -152,7 +152,14 @@ namespace Il2CppInspector.Reflection
             IsGenericMethod = true;
             genericArguments = model.ResolveGenericArguments(spec.methodIndexIndex);
 
-            // TODO: Substitute generic type arguments for concrete type arguments
+            // Substitute matching generic type parameters with concrete type arguments
+            foreach (var p in methodDef.DeclaredParameters) {
+                if (!p.ParameterType.IsGenericMethodParameter)
+                    DeclaredParameters.Add(p);
+                else
+                    DeclaredParameters.Add(new ParameterInfo(model, p, genericArguments[p.ParameterType.GenericParameterPosition]));
+            }
+
             // TODO: Populate VirtualAddress via Il2CppGenericMethodFunctionsDefinitions
         }
 
@@ -219,6 +226,7 @@ namespace Il2CppInspector.Reflection
         public string GetTypeParametersString(Scope usingScope) => !GetGenericArguments().Any()? "" :
             "<" + string.Join(", ", GetGenericArguments().Select(p => p.GetScopedCSharpName(usingScope))) + ">";
 
+        // TODO: The scope output for some System types does not match the real .NET output here
         public string GetFullTypeParametersString() => !GetGenericArguments().Any()? "" :
             "[" + string.Join(",", GetGenericArguments().Select(p => p.FullName ?? p.Name)) + "]";
 

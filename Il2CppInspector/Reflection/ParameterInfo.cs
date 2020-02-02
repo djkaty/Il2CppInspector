@@ -97,7 +97,17 @@ namespace Il2CppInspector.Reflection
 
         // Create a concrete type parameter from a generic type parameter
         public ParameterInfo(Il2CppModel model, ParameterInfo generic, TypeInfo concrete) {
-            // TODO: Implement generic parameter substitution
+
+            DeclaringMethod = generic.DeclaringMethod;
+            Name = generic.Name;
+            Position = generic.Position;
+            Attributes = generic.Attributes;
+
+            // TODO: Duplicate instances of 'concrete' may cause this search to fail. Replace with a straight lookup after eliminating GetTypeFromVirtualAddress
+            paramTypeReference = Array.IndexOf(model.TypesByReferenceIndex, concrete);
+
+            DefaultValue = generic.DefaultValue;
+            DefaultValueMetadataAddress = generic.DefaultValueMetadataAddress;
         }
 
         // ref will be handled as part of the type name
