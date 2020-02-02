@@ -67,6 +67,11 @@ def SetName(addr, name):
                 writeMethods(type.Name, type.DeclaredConstructors);
                 writeMethods(type.Name, type.DeclaredMethods);
             }
+
+            foreach (var method in model.GenericMethods.Values.Where(m => m.VirtualAddress.HasValue)) {
+                writeLines($"SetName({method.VirtualAddress.Value.Start.ToAddressString()}," +
+                           $"'{method.DeclaringType.Name}$${method.Name}{method.GetFullTypeParametersString()}')");
+            }
         }
 
         private void writeMethods(string typeName, IEnumerable<MethodBase> methods) {
