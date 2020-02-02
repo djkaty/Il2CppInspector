@@ -104,7 +104,9 @@ namespace Il2CppInspector.Reflection
             Attributes = generic.Attributes;
 
             // TODO: Duplicate instances of 'concrete' may cause this search to fail. Replace with a straight lookup after eliminating GetTypeFromVirtualAddress
-            paramTypeReference = Array.IndexOf(model.TypesByReferenceIndex, concrete);
+            //paramTypeReference = Array.IndexOf(model.TypesByReferenceIndex, concrete);
+            // TODO: Get rid of this slow and filthy hack to force finding the correct type reference
+            paramTypeReference = model.TypesByReferenceIndex.Select((v, i) => new {i, v}).First(t => t.v.ToString() == concrete.ToString()).i;
 
             DefaultValue = generic.DefaultValue;
             DefaultValueMetadataAddress = generic.DefaultValueMetadataAddress;
