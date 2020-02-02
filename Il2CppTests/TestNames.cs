@@ -45,8 +45,7 @@ namespace Il2CppInspector
                 (p2[2], "Int32&")
             };
 
-            // TODO: Add [T] before parameters after fixing TODO in MethodInfo.cs:33
-            Assert.That(m1.ToString() == "Test& MethodWithGenericAndClassRefs" /* [T] */ + "(T ByRef, Int32 ByRef, Test ByRef)");
+            Assert.That(m1.ToString() == "Test& MethodWithGenericAndClassRefs[T](T ByRef, Int32 ByRef, Test ByRef)");
             Assert.That(m2.ToString() == "Void MethodWithInRefOut(Int32 ByRef, Int32 ByRef, Int32 ByRef)");
 
             foreach (var check in checks) {
