@@ -56,11 +56,11 @@ namespace Il2CppInspector.Reflection
         public List<TypeInfo> GetGenericArguments() => genericArguments;
 
         // This was added in .NET Core 2.1 and isn't properly documented yet
-        public bool IsConstructedGenericMethod => genericArguments.All(ga => !ga.ContainsGenericParameters);
+        public bool IsConstructedGenericMethod => IsGenericMethod && genericArguments.All(ga => !ga.ContainsGenericParameters);
 
         // See: https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.isgenericmethod?view=netframework-4.8
         public bool IsGenericMethod { get; }
-        public bool IsGenericMethodDefinition => genericArguments.Any() && genericArguments.All(a => a.IsGenericTypeParameter);
+        public bool IsGenericMethodDefinition => genericArguments.Any() && genericArguments.All(a => a.IsGenericMethodParameter);
         
         // TODO: GetMethodBody()
 
