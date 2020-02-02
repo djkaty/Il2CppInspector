@@ -230,6 +230,7 @@ namespace Il2CppInspector
             }
         }
 
+        // Get a method pointer if available
         public (ulong Start, ulong End)? GetMethodPointer(Il2CppCodeGenModule module, Il2CppMethodDefinition methodDef) {
             // Find method pointer
             if (methodDef.methodIndex < 0)
@@ -266,6 +267,14 @@ namespace Il2CppInspector
             // Consider the end of the method to be the start of the next method (or zero)
             // The last method end will be wrong but there is no way to calculate it
             return (start & 0xffff_ffff_ffff_fffe, FunctionAddresses[start]);
+        }
+
+        // Get a concrete generic method pointer if available
+        public (ulong Start, ulong End)? GetGenericMethodPointer(Il2CppMethodSpec spec) {
+            if (GenericMethodPointers.TryGetValue(spec, out var start)) {
+                return (start & 0xffff_ffff_ffff_fffe, FunctionAddresses[start]);
+            }
+            return null;
         }
 
         public static List<Il2CppInspector> LoadFromFile(string codeFile, string metadataFile) {

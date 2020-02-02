@@ -160,7 +160,7 @@ namespace Il2CppInspector.Reflection
                     DeclaredParameters.Add(new ParameterInfo(model, p, genericArguments[p.ParameterType.GenericParameterPosition]));
             }
 
-            // TODO: Populate VirtualAddress via Il2CppGenericMethodFunctionsDefinitions
+            VirtualAddress = model.Package.GetGenericMethodPointer(spec);
         }
 
         public string GetAccessModifierString() => this switch {
