@@ -20,8 +20,14 @@ namespace Il2CppInspector.Reflection
         // List of all types from TypeDefs ordered by their TypeDefinitionIndex
         public TypeInfo[] TypesByDefinitionIndex { get; }
 
-        // List of all types from TypeRefs ordered by index
+        // List of all types from TypeRefs ordered by instanceIndex
         public TypeInfo[] TypesByReferenceIndex { get; }
+
+        // List of all types from MethodSpecs (closed generic types that can be instantiated)
+        public Dictionary<int, TypeInfo> TypesByMethodSpecClassIndex { get; } = new Dictionary<int, TypeInfo>();
+
+        // List of all methods from MethodSpecs (closed generic methods that can be called; does not need to be in a generic class)
+        public Dictionary<TypeInfo, List<MethodInfo>> GenericMethods { get; } = new Dictionary<TypeInfo, List<MethodInfo>>();
 
         // List of all type definitions by fully qualified name (TypeDefs only)
         public Dictionary<string, TypeInfo> TypesByFullName { get; } = new Dictionary<string, TypeInfo>();
@@ -36,7 +42,7 @@ namespace Il2CppInspector.Reflection
         // List of all methods ordered by their MethodDefinitionIndex
         public MethodBase[] MethodsByDefinitionIndex { get; }
 
-        // List of all generated CustomAttributeData objects by their index into AttributeTypeIndices
+        // List of all generated CustomAttributeData objects by their instanceIndex into AttributeTypeIndices
         public ConcurrentDictionary<int, CustomAttributeData> AttributesByIndices { get; } = new ConcurrentDictionary<int, CustomAttributeData>();
 
         // Get an assembly by its image name
@@ -62,6 +68,45 @@ namespace Il2CppInspector.Reflection
 
                 TypesByReferenceIndex[typeRefIndex] = referencedType;
             }
+
+            // Create types and methods from MethodSpec (which incorporates TypeSpec in IL2CPP)
+            foreach (var spec in Package.MethodSpecs) {
+                TypeInfo declaringType;
+
+                // Concrete instance of a generic class
+                // If the class index is not specified, we will later create a generic method in a non-generic class
+                if (spec.classIndexIndex != -1) {
+                    if (!TypesByMethodSpecClassIndex.ContainsKey(spec.classIndexIndex))
+                        TypesByMethodSpecClassIndex.Add(spec.classIndexIndex, new TypeInfo(this, spec));
+
+                    declaringType = TypesByMethodSpecClassIndex[spec.classIndexIndex];
+                }
+                else
+                    declaringType = MethodsByDefinitionIndex[spec.methodDefinitionIndex].DeclaringType;
+
+                // Concrete instance of a generic method
+                if (spec.methodIndexIndex != -1) {
+
+                    // First generic method declaration in this class?
+                    if (!GenericMethods.ContainsKey(declaringType))
+                        GenericMethods.Add(declaringType, new List<MethodInfo>());
+
+                    // TODO: Add generic method resolver here
+
+                    // Get list of pointers to type parameters (both unresolved and concrete)
+                    var genericTypeArguments = ResolveGenericArguments(spec.methodIndexIndex);
+                }
+            }
+        }
+
+        // Get generic arguments from either a type or method instanceIndex from a MethodSpec
+        public List<TypeInfo> ResolveGenericArguments(int instanceIndex) => ResolveGenericArguments(Package.GenericInstances[instanceIndex]);
+        public List<TypeInfo> ResolveGenericArguments(Il2CppGenericInst inst) {
+
+            // Get list of pointers to type parameters (both unresolved and concrete)
+            var genericTypeArguments = Package.BinaryImage.ReadMappedWordArray(inst.type_argv, (int)inst.type_argc);
+
+            return genericTypeArguments.Select(a => GetTypeFromVirtualAddress((ulong) a)).ToList();
         }
 
         private TypeInfo resolveTypeReference(Il2CppType typeRef) {

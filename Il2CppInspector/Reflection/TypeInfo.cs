@@ -613,13 +613,9 @@ namespace Il2CppInspector.Reflection {
                 if (generic.context.method_inst != 0)
                     throw new InvalidOperationException("Generic method instance cannot be non-null when processing a generic class instance");
 
-                // Get list of pointers to type parameters (both unresolved and concrete)
-                var genericTypeArguments = image.ReadMappedWordArray(genericInstance.type_argv, (int)genericInstance.type_argc);
-
-                foreach (var pArg in genericTypeArguments) {
-                    var argType = model.GetTypeFromVirtualAddress((ulong) pArg);
-                    genericArguments.Add(argType);
-                }
+                // Find all the type parameters (both unresolved and concrete)
+                // This will cause new types to be generated with the VAR and MVAR types below
+                genericArguments = model.ResolveGenericArguments(genericInstance);
             }
 
             // TODO: Set DeclaringType for the two below
@@ -685,6 +681,30 @@ namespace Il2CppInspector.Reflection {
                 IsGenericParameter = true;
                 IsGenericType = false;
             }
+        }
+
+        // Initialize a type from a concrete generic instance (TypeSpec)
+        public TypeInfo(Il2CppModel model, Il2CppMethodSpec spec) {
+            var genericTypeDefinition = model.MethodsByDefinitionIndex[spec.methodDefinitionIndex].DeclaringType;
+
+            // Same visibility attributes as generic type definition
+            Attributes = genericTypeDefinition.Attributes;
+
+            // Same name as generic type definition
+            Assembly = genericTypeDefinition.Assembly;
+            Namespace = genericTypeDefinition.Namespace;
+            Name = genericTypeDefinition.BaseName; // use BaseName to exclude the type parameters so we can supply our own
+
+            IsGenericParameter = false;
+            IsGenericType = true;
+
+            // Resolve type arguments
+            genericArguments = model.ResolveGenericArguments(spec.classIndexIndex);
+
+            /* TODO: This is a bare definition at the moment. We need to iterate over all the members of genericTypeDefinition
+             * and replace the matching generic type parameters with our concrete type parameters,
+             * as well as setting the various TypeInfo properties here
+             */
         }
 
         // Initialize a type that is a generic parameter of a generic type
