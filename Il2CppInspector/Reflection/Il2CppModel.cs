@@ -186,38 +186,49 @@ namespace Il2CppInspector.Reflection
             switch (usage.Type) {
                 case MetadataUsageType.TypeInfo:
                 case MetadataUsageType.Type:
-                var type = TypesByReferenceIndex[usage.SourceIndex];
-                return type.Name;
+                    return GetMetadataUsageType(usage).Name;
 
                 case MetadataUsageType.MethodDef:
-                var method = MethodsByDefinitionIndex[usage.SourceIndex];
-                return $"{method.DeclaringType.Name}.{method.Name}";
+                    var method = GetMetadataUsageMethod(usage);
+                    return $"{method.DeclaringType.Name}.{method.Name}";
 
                 case MetadataUsageType.FieldInfo: 
-                var fieldRef = Package.FieldRefs[usage.SourceIndex];
-                type = TypesByReferenceIndex[fieldRef.typeIndex];
-                var field = type.DeclaredFields.First(f => f.Index == type.Definition.fieldStart + fieldRef.fieldIndex);
-                return $"{type.Name}.{field.Name}";
+                    var fieldRef = Package.FieldRefs[usage.SourceIndex];
+                    var type = GetMetadataUsageType(usage);
+                    var field = type.DeclaredFields.First(f => f.Index == type.Definition.fieldStart + fieldRef.fieldIndex);
+                    return $"{type.Name}.{field.Name}";
 
                 case MetadataUsageType.StringLiteral:
-                return Package.StringLiterals[usage.SourceIndex];
+                    return Package.StringLiterals[usage.SourceIndex];
 
                 case MetadataUsageType.MethodRef:
-                var methodSpec = Package.MethodSpecs[usage.SourceIndex];
-
-                if (methodSpec.classIndexIndex != -1)
-                    type = TypesByMethodSpecClassIndex[methodSpec.classIndexIndex];
-                else
-                    type = MethodsByDefinitionIndex[methodSpec.methodDefinitionIndex].DeclaringType;
-
-                if (methodSpec.methodIndexIndex != -1)
-                    method = GenericMethods[methodSpec];
-                else
-                    method = MethodsByDefinitionIndex[methodSpec.methodDefinitionIndex];
-                
-                return $"{type.Name}.{method.Name}";
+                    type = GetMetadataUsageType(usage);
+                    method = GetMetadataUsageMethod(usage);
+                    return $"{type.Name}.{method.Name}";
             }
             throw new NotImplementedException("Unknown metadata usage type: " + usage.Type);
         }
+
+        // Get the type used in a metadata usage
+        public TypeInfo GetMetadataUsageType(MetadataUsage usage) => usage.Type switch {
+            MetadataUsageType.Type => TypesByReferenceIndex[usage.SourceIndex],
+            MetadataUsageType.TypeInfo => TypesByReferenceIndex[usage.SourceIndex],
+            MetadataUsageType.MethodDef => GetMetadataUsageMethod(usage).DeclaringType,
+            MetadataUsageType.FieldInfo => TypesByReferenceIndex[Package.FieldRefs[usage.SourceIndex].typeIndex],
+            MetadataUsageType.MethodRef => Package.MethodSpecs[usage.SourceIndex].classIndexIndex != -1?
+                TypesByMethodSpecClassIndex[Package.MethodSpecs[usage.SourceIndex].classIndexIndex] :
+                GetMetadataUsageMethod(usage).DeclaringType,
+
+            _ => throw new InvalidOperationException("Incorrect metadata usage type to retrieve referenced type")
+        };
+
+        // Get the method used in a metadata usage
+        public MethodBase GetMetadataUsageMethod(MetadataUsage usage) => usage.Type switch {
+            MetadataUsageType.MethodDef => MethodsByDefinitionIndex[usage.SourceIndex],
+            MetadataUsageType.MethodRef => Package.MethodSpecs[usage.SourceIndex].methodIndexIndex != -1?
+                GenericMethods[Package.MethodSpecs[usage.SourceIndex]] :
+                MethodsByDefinitionIndex[Package.MethodSpecs[usage.SourceIndex].methodDefinitionIndex],
+            _ => throw new InvalidOperationException("Incorrect metadata usage type to retrieve referenced type")
+        };
     }
 }
