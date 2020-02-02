@@ -194,6 +194,7 @@ namespace Il2CppInspector
                 Binary.ModuleMethodPointers.SelectMany(module => module.Value).ToList();
 
             sortedFunctionPointers.AddRange(CustomAttributeGenerators);
+            sortedFunctionPointers.AddRange(GenericMethodPointers.Values);
             sortedFunctionPointers.Sort();
             sortedFunctionPointers = sortedFunctionPointers.Distinct().ToList();
 
