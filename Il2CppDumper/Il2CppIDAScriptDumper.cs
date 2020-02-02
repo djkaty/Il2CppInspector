@@ -72,6 +72,11 @@ def SetName(addr, name):
                 writeLines($"SetName({method.VirtualAddress.Value.Start.ToAddressString()}," +
                            $"'{method.DeclaringType.Name}$${method.Name}{method.GetFullTypeParametersString()}')");
             }
+
+            foreach (var method in model.AttributesByIndices.Values.Where(m => m.VirtualAddress.HasValue)) {
+                writeLines($"SetName({method.VirtualAddress.Value.Start.ToAddressString()}," +
+                           $"'CustomAttributesGenerator${method.AttributeType.FullName}')");
+            }
         }
 
         private void writeMethods(string typeName, IEnumerable<MethodBase> methods) {
