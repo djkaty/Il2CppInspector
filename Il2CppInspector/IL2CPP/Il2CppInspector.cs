@@ -59,6 +59,7 @@ namespace Il2CppInspector
         public List<Il2CppGenericInst> GenericInstances => Binary.GenericInstances;
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
         public ulong[] CustomAttributeGenerators => Binary.CustomAttributeGenerators;
+        public ulong[] MethodInvokePointers => Binary.MethodInvokePointers;
         public Il2CppMethodSpec[] MethodSpecs => Binary.MethodSpecs;
         public Dictionary<Il2CppMethodSpec, ulong> GenericMethodPointers => Binary.GenericMethodPointers;
 
@@ -202,6 +203,7 @@ namespace Il2CppInspector
                 Binary.ModuleMethodPointers.SelectMany(module => module.Value).ToList();
 
             sortedFunctionPointers.AddRange(CustomAttributeGenerators);
+            sortedFunctionPointers.AddRange(MethodInvokePointers);
             sortedFunctionPointers.AddRange(GenericMethodPointers.Values);
             sortedFunctionPointers.Sort();
             sortedFunctionPointers = sortedFunctionPointers.Distinct().ToList();
@@ -277,6 +279,17 @@ namespace Il2CppInspector
                 return (start & 0xffff_ffff_ffff_fffe, FunctionAddresses[start]);
             }
             return null;
+        }
+
+        // Get a method invoker index from a method definition
+        public int GetInvokerIndex(Il2CppCodeGenModule module, Il2CppMethodDefinition methodDef) {
+            if (Version <= 24.1) {
+                return methodDef.invokerIndex;
+            }
+
+            // Version >= 24.2
+            var methodInModule = (methodDef.token & 0xffffff);
+            return Binary.MethodInvokerIndices[module][methodInModule - 1];
         }
 
         public static List<Il2CppInspector> LoadFromFile(string codeFile, string metadataFile) {

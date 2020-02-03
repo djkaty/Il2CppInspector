@@ -26,6 +26,9 @@ namespace Il2CppInspector
         // Only for >=v24.2
         public Dictionary<Il2CppCodeGenModule, ulong[]> ModuleMethodPointers { get; set; } = new Dictionary<Il2CppCodeGenModule, ulong[]>();
 
+        // Only for >=v24.2. In earlier versions, invoker indices are stored in Il2CppMethodDefinition in the metadata file
+        public Dictionary<Il2CppCodeGenModule, int[]> MethodInvokerIndices { get; set; } = new Dictionary<Il2CppCodeGenModule, int[]>();
+
         // NOTE: In versions <21 and earlier releases of v21, use FieldOffsets:
         // global field index => field offset
         // In versions >=22 and later releases of v21, use FieldOffsetPointers:
@@ -39,6 +42,10 @@ namespace Il2CppInspector
 
         // Generated functions which call constructors on custom attributes
         public ulong[] CustomAttributeGenerators { get; private set; }
+
+        // IL2CPP-generated functions which implement MethodBase.Invoke with a unique signature per invoker, defined in Il2CppInvokerTable.cpp
+        // One invoker specifies a return type and argument list. Multiple methods with the same signature can be invoked with the same invoker
+        public ulong[] MethodInvokePointers { get; private set; }
 
         // Generic method specs for vtables
         public Il2CppMethodSpec[] MethodSpecs { get; private set; }
@@ -171,6 +178,9 @@ namespace Il2CppInspector
 
                     // Read method pointers
                     ModuleMethodPointers.Add(module, image.ReadMappedArray<ulong>(module.methodPointers, (int) module.methodPointerCount));
+
+                    // Read method invoker pointer indices - one per method
+                    MethodInvokerIndices.Add(module, image.ReadMappedArray<int>(module.invokerIndices, (int) module.methodPointerCount));
                 }
             }
 
@@ -202,6 +212,16 @@ namespace Il2CppInspector
 
             // Custom attribute constructors (function pointers)
             CustomAttributeGenerators = image.ReadMappedArray<ulong>(CodeRegistration.customAttributeGenerators, (int) CodeRegistration.customAttributeCount);
+            
+            // Method.Invoke function pointers
+            MethodInvokePointers = image.ReadMappedArray<ulong>(CodeRegistration.invokerPointers, (int) CodeRegistration.invokerPointersCount);
+
+            // TODO: Function pointers as shown below
+            // reversePInvokeWrappers
+            // <=22: delegateWrappersFromManagedToNative, marshalingFunctions;
+            // >=21 <=22: ccwMarhsalingFunctions
+            // >=22: unresolvedVirtualCallPointers
+            // >=23: interopData
 
             // Generic type and method specs (open and closed constructed types)
             MethodSpecs = image.ReadMappedArray<Il2CppMethodSpec>(MetadataRegistration.methodSpecs, (int) MetadataRegistration.methodSpecsCount);
