@@ -19,6 +19,9 @@ namespace Il2CppInspector.Reflection
         public int Index { get; }
         public (ulong Start, ulong End)? VirtualAddress { get; }
 
+        // Method.Invoke implementation
+        public MethodInvoker Invoker { get; set; }
+
         // Information/flags about the method
         public MethodAttributes Attributes { get; protected set; }
 

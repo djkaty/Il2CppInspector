@@ -38,6 +38,9 @@ namespace Il2CppInspector.Reflection
         // List of all methods ordered by their MethodDefinitionIndex
         public MethodBase[] MethodsByDefinitionIndex { get; }
 
+        // List of all Method.Invoke functions by invoker index
+        public MethodInvoker[] MethodInvokers { get; }
+
         // List of all generated CustomAttributeData objects by their instanceIndex into AttributeTypeIndices
         public ConcurrentDictionary<int, CustomAttributeData> AttributesByIndices { get; } = new ConcurrentDictionary<int, CustomAttributeData>();
 
@@ -60,6 +63,7 @@ namespace Il2CppInspector.Reflection
             TypesByDefinitionIndex = new TypeInfo[package.TypeDefinitions.Length];
             TypesByReferenceIndex = new TypeInfo[package.TypeReferences.Count];
             MethodsByDefinitionIndex = new MethodBase[package.Methods.Length];
+            MethodInvokers = new MethodInvoker[package.MethodInvokePointers.Length];
 
             // Recursively create hierarchy of assemblies and types from TypeDefs
             // No code that executes here can access any type through a TypeRef (ie. via TypesByReferenceIndex)
@@ -98,6 +102,17 @@ namespace Il2CppInspector.Reflection
                         GenericMethods.Add(spec, new ConstructorInfo(this, spec, declaringType));
                     else
                         GenericMethods.Add(spec, concreteMethod);
+                }
+            }
+
+            // Create method invokers (one per signature, in invoker index order)
+            foreach (var method in MethodsByDefinitionIndex) {
+                var index = package.GetInvokerIndex(method.DeclaringType.Assembly.ModuleDefinition, method.Definition);
+                if (index != -1) {
+                    if (MethodInvokers[index] == null)
+                        MethodInvokers[index] = new MethodInvoker(method);
+
+                    method.Invoker = MethodInvokers[index];
                 }
             }
         }
