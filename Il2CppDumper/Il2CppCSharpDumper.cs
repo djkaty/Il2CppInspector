@@ -491,8 +491,9 @@ namespace Il2CppInspector
                     // Struct construvctors must initialize all fields in the struct
                     if (fields.Any()) {
                         var paramNames = method.DeclaredParameters.Select(p => p.Name);
-                        sb.Append(" {\n" + string.Join("\n",
-                                    fields.Select(f => $"{prefix}\t\t{(paramNames.Contains(f.Name) ? "this." : "")}{f.Name} = default;"))
+                        sb.Append(" {\n" + string.Join("\n", fields
+                                        .Where(f => !f.IsStatic && !f.IsLiteral)
+                                        .Select(f => $"{prefix}\t\t{(paramNames.Contains(f.Name) ? "this." : "")}{f.Name} = default;"))
                                     + $"\n{prefix}\t}}");
                     } else
                         sb.Append(" {}");
