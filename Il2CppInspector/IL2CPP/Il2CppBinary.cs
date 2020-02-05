@@ -56,6 +56,9 @@ namespace Il2CppInspector
         // List of constructed generic method function pointers corresponding to each possible method instantiation
         public Dictionary<Il2CppMethodSpec, ulong> GenericMethodPointers { get; } = new Dictionary<Il2CppMethodSpec, ulong>();
 
+        // List of invoker pointers for concrete generic methods from MethodSpecs (as above)
+        public Dictionary<Il2CppMethodSpec, int> GenericMethodInvokerIndices { get; } = new Dictionary<Il2CppMethodSpec, int>();
+
         // Every type reference (TypeRef) sorted by index
         public List<Il2CppType> TypeReferences { get; private set; }
 
@@ -235,6 +238,7 @@ namespace Il2CppInspector
             var genericMethodTable = image.ReadMappedArray<Il2CppGenericMethodFunctionsDefinitions>(MetadataRegistration.genericMethodTable, (int) MetadataRegistration.genericMethodTableCount);
             foreach (var tableEntry in genericMethodTable) {
                 GenericMethodPointers.Add(MethodSpecs[tableEntry.genericMethodIndex], genericMethodPointers[tableEntry.indices.methodIndex]);
+                GenericMethodInvokerIndices.Add(MethodSpecs[tableEntry.genericMethodIndex], tableEntry.indices.invokerIndex);
             }
         }
     }

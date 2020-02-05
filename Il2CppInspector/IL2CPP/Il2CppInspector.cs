@@ -62,6 +62,7 @@ namespace Il2CppInspector
         public ulong[] MethodInvokePointers => Binary.MethodInvokePointers;
         public Il2CppMethodSpec[] MethodSpecs => Binary.MethodSpecs;
         public Dictionary<Il2CppMethodSpec, ulong> GenericMethodPointers => Binary.GenericMethodPointers;
+        public Dictionary<Il2CppMethodSpec, int> GenericMethodInvokerIndices => Binary.GenericMethodInvokerIndices;
 
         // TODO: Finish all file access in the constructor and eliminate the need for this
         public IFileFormatReader BinaryImage => Binary.Image;

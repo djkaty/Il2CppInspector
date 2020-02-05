@@ -110,9 +110,20 @@ namespace Il2CppInspector.Reflection
                 var index = package.GetInvokerIndex(method.DeclaringType.Assembly.ModuleDefinition, method.Definition);
                 if (index != -1) {
                     if (MethodInvokers[index] == null)
-                        MethodInvokers[index] = new MethodInvoker(method);
+                        MethodInvokers[index] = new MethodInvoker(method, index);
 
                     method.Invoker = MethodInvokers[index];
+                }
+            }
+
+            // TODO: Some invokers are not initialized or missing, need to find out why
+            // Create method invokers sourced from generic method invoker indices
+            foreach (var spec in GenericMethods.Keys) {
+                if (package.GenericMethodInvokerIndices.TryGetValue(spec, out var index)) {
+                    if (MethodInvokers[index] == null)
+                        MethodInvokers[index] = new MethodInvoker(GenericMethods[spec], index);
+
+                    GenericMethods[spec].Invoker = MethodInvokers[index];
                 }
             }
         }

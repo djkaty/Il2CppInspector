@@ -33,11 +33,11 @@ namespace Il2CppInspector.Reflection
         public TypeInfo[] ParameterTypes { get; }
 
         // Find the correct method invoker for a method with a specific signature
-        public MethodInvoker(MethodBase exampleMethod) {
+        public MethodInvoker(MethodBase exampleMethod, int index) {
             var model = exampleMethod.Assembly.Model;
             var package = exampleMethod.Assembly.Model.Package;
 
-            Index = package.GetInvokerIndex(exampleMethod.DeclaringType.Assembly.ModuleDefinition, exampleMethod.Definition);
+            Index = index;
             IsStatic = exampleMethod.IsStatic;
             
             ReturnType = exampleMethod.IsConstructor ? model.TypesByFullName["System.Void"] : mapParameterType(model, ((MethodInfo) exampleMethod).ReturnType);
