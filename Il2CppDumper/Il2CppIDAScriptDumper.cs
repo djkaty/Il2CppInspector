@@ -23,6 +23,7 @@ namespace Il2CppInspector
             writer = new StreamWriter(fs, Encoding.UTF8);
 
             writeLine("# Generated script file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty");
+            writeLine("print('Generated script file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty')");
 
             writeSectionHeader("Preamble");
             writePreamble();
@@ -38,6 +39,7 @@ namespace Il2CppInspector
             writeSectionHeader("IL2CPP Metadata");
             writeMetadata();
 
+            writeLine("print('Script execution complete.')");
             writer.Close();
         }
 
@@ -154,6 +156,8 @@ def MakeFunction(start, end):
             writeLine("");
             writeLine($"# SECTION: {sectionName}"); 
             writeLine($"# -----------------------------");
+            writeLine($"print('Processing {sectionName}')");
+            writeLine("");
         }
 
         private void writeName(ulong address, string name) {
