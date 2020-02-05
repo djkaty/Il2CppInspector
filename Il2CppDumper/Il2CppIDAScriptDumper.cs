@@ -79,6 +79,12 @@ def SetName(addr, name):
                 writeLines($"SetName({address}, 'CustomAttributesGenerator${method.AttributeType.FullName}')");
                 writeLines($"idc.set_cmt({address}, r'{method}', 1)");
             }
+
+            foreach (var method in model.MethodInvokers.Where(m => m != null)) {
+                var address = method.VirtualAddress.Start.ToAddressString();
+                writeLines($"SetName({address}, '{method.Name}')");
+                writeLines($"idc.set_cmt({address}, r'{method}', 1)");
+            }
         }
 
         private void writeMethods(string typeName, IEnumerable<MethodBase> methods) {
