@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -631,11 +632,19 @@ namespace Il2CppInspector
                 // No return type
                 { ReturnType: var retType } when retType.FullName == "System.Void" => " {}",
 
-                // Return type
+                // Ref return type
+                { ReturnType: var retType } when retType.IsByRef => " => ref _refReturnTypeFor" + method.CSharpName + ";",
+
+                // Regular return type
                 _ => " => default;"
             };
 
             writer.Append(methodBody + (!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
+
+            // Ref return type requires us to invent a field
+            if (method.ReturnType.IsByRef)
+                writer.Append($"{prefix}\tprivate {method.ReturnType.GetScopedCSharpName(scope)} _refReturnTypeFor{method.CSharpName};\n");
+
             return writer.ToString();
         }
     }
