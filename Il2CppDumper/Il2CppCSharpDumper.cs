@@ -476,29 +476,32 @@ namespace Il2CppInspector
                 sb.Append($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString(scope)}");
                 sb.Append($"({method.GetParametersString(scope, !SuppressMetadata)})");
 
-                // Class constructor
-                if (method.IsAbstract)
-                    sb.Append(";");
-                else if (!type.IsValueType)
-                    sb.Append(" {}");
-
-                // Struct constructor
-                else {
-                    // Parameterized struct constructors must call the parameterless constructor to create the object
-                    // if the object has any auto-implemented properties
-                    if (type.DeclaredProperties.Any() && method.DeclaredParameters.Any())
-                        sb.Append(" : this()");
-
-                    // Struct construvctors must initialize all fields in the struct
-                    if (fields.Any()) {
-                        var paramNames = method.DeclaredParameters.Select(p => p.Name);
-                        sb.Append(" {\n" + string.Join("\n", fields
-                                        .Where(f => !f.IsStatic && !f.IsLiteral)
-                                        .Select(f => $"{prefix}\t\t{(paramNames.Contains(f.Name) ? "this." : "")}{f.Name} = default;"))
-                                    + $"\n{prefix}\t}}");
-                    } else
+                if (MustCompile) {
+                    // Class constructor
+                    if (method.IsAbstract)
+                        sb.Append(";");
+                    else if (!type.IsValueType)
                         sb.Append(" {}");
-                }
+
+                    // Struct constructor
+                    else {
+                        // Parameterized struct constructors must call the parameterless constructor to create the object
+                        // if the object has any auto-implemented properties
+                        if (type.DeclaredProperties.Any() && method.DeclaredParameters.Any())
+                            sb.Append(" : this()");
+
+                        // Struct construvctors must initialize all fields in the struct
+                        if (fields.Any()) {
+                            var paramNames = method.DeclaredParameters.Select(p => p.Name);
+                            sb.Append(" {\n" + string.Join("\n", fields
+                                            .Where(f => !f.IsStatic && !f.IsLiteral)
+                                            .Select(f => $"{prefix}\t\t{(paramNames.Contains(f.Name) ? "this." : "")}{f.Name} = default;"))
+                                        + $"\n{prefix}\t}}");
+                        } else
+                            sb.Append(" {}");
+                    }
+                } else
+                    sb.Append(";");
 
                 sb.Append((!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
             }
@@ -616,33 +619,36 @@ namespace Il2CppInspector
             }
 
             // Body
-            var methodBody = method switch {
-                // Abstract method
-                { IsAbstract: true } => ";",
+            var methodBody = MustCompile? method switch {
+                    // Abstract method
+                    { IsAbstract: true } => ";",
 
-                // Extern method
-                { Attributes: var a } when (a & MethodAttributes.PinvokeImpl) == MethodAttributes.PinvokeImpl => ";",
+                    // Extern method
+                    { Attributes: var a } when (a & MethodAttributes.PinvokeImpl) == MethodAttributes.PinvokeImpl => ";",
 
-                // Method with out parameters
-                { DeclaredParameters: var d } when d.Any(p => p.IsOut) =>
-                    " {\n" + string.Join("\n", d.Where(p => p.IsOut).Select(p => $"{prefix}\t\t{p.Name} = default;"))
-                    + (method.ReturnType.FullName != "System.Void"? $"\n{prefix}\t\treturn default;" : "")
-                    + $"\n{prefix}\t}}",
+                    // Method with out parameters
+                    { DeclaredParameters: var d } when d.Any(p => p.IsOut) =>
+                        " {\n" + string.Join("\n", d.Where(p => p.IsOut).Select(p => $"{prefix}\t\t{p.Name} = default;"))
+                        + (method.ReturnType.FullName != "System.Void"? $"\n{prefix}\t\treturn default;" : "")
+                        + $"\n{prefix}\t}}",
 
-                // No return type
-                { ReturnType: var retType } when retType.FullName == "System.Void" => " {}",
+                    // No return type
+                    { ReturnType: var retType } when retType.FullName == "System.Void" => " {}",
 
-                // Ref return type
-                { ReturnType: var retType } when retType.IsByRef => " => ref _refReturnTypeFor" + method.CSharpName + ";",
+                    // Ref return type
+                    { ReturnType: var retType } when retType.IsByRef => " => ref _refReturnTypeFor" + method.CSharpName + ";",
 
-                // Regular return type
-                _ => " => default;"
-            };
+                    // Regular return type
+                    _ => " => default;"
+                }
+
+                // Only make a method body if we are trying to compile the output
+                : ";";
 
             writer.Append(methodBody + (!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
 
             // Ref return type requires us to invent a field
-            if (method.ReturnType.IsByRef)
+            if (MustCompile && method.ReturnType.IsByRef)
                 writer.Append($"{prefix}\tprivate {method.ReturnType.GetScopedCSharpName(scope)} _refReturnTypeFor{method.CSharpName};\n");
 
             return writer.ToString();
