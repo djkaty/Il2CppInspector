@@ -13,15 +13,6 @@ namespace Il2CppInspector
 {
     public class Il2CppIDAScriptDumper
     {
-        private readonly Dictionary<MetadataUsageType, string> usagePrefixes = new Dictionary<MetadataUsageType, string> {
-            [MetadataUsageType.TypeInfo] = "Class",
-            [MetadataUsageType.Type] = "Class",
-            [MetadataUsageType.MethodDef] = "Method",
-            [MetadataUsageType.FieldInfo] = "Field",
-            [MetadataUsageType.StringLiteral] = "String",
-            [MetadataUsageType.MethodRef] = "Method"
-        };
-
         private readonly Il2CppModel model;
         private StreamWriter writer;
 
@@ -31,22 +22,25 @@ namespace Il2CppInspector
             using var fs = new FileStream(outputFile, FileMode.Create);
             writer = new StreamWriter(fs, Encoding.UTF8);
 
+            writeLine("# Generated script file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty");
+
             writeSectionHeader("Preamble");
             writePreamble();
 
-            writeSectionHeader("Methods");
             writeMethods();
 
-            writeSectionHeader("Usages");
+            writeSectionHeader("Metadata Usages");
             writeUsages();
+
+            writeSectionHeader("IL2CPP Metadata");
+            writeMetadata();
 
             writer.Close();
         }
 
         private void writePreamble() {
-            writeLines(
-@"#encoding: utf-8
-import idaapi
+            writeLine(
+@"import idaapi
 
 def SetString(addr, comm):
   name = 'StringLiteral_' + str(addr)
@@ -57,76 +51,105 @@ def SetName(addr, name):
   ret = idc.set_name(addr, name, SN_NOWARN | SN_NOCHECK)
   if ret == 0:
     new_name = name + '_' + str(addr)
-    ret = idc.set_name(addr, new_name, SN_NOWARN | SN_NOCHECK)
-"
+    ret = idc.set_name(addr, new_name, SN_NOWARN | SN_NOCHECK)"
             );
         }
 
         private void writeMethods() {
+            writeSectionHeader("Method definitions");
             foreach (var type in model.Types) {
                 writeMethods(type.Name, type.DeclaredConstructors);
                 writeMethods(type.Name, type.DeclaredMethods);
             }
 
+            writeSectionHeader("Constructed generic methods");
             foreach (var method in model.GenericMethods.Values.Where(m => m.VirtualAddress.HasValue)) {
-                var address = method.VirtualAddress.Value.Start.ToAddressString();
-                writeLines($"SetName({address}, '{method.DeclaringType.Name}$${method.Name}{method.GetFullTypeParametersString()}')");
-                writeLines($"idc.set_cmt({address}, r'{method}', 1)");
+                var address = method.VirtualAddress.Value.Start;
+                writeName(address, $"{method.DeclaringType.Name}_{method.Name}{method.GetFullTypeParametersString()}");
+                writeComment(address, method);
             }
 
+            writeSectionHeader("Custom attributes generators");
             foreach (var method in model.AttributesByIndices.Values.Where(m => m.VirtualAddress.HasValue)) {
-                var address = method.VirtualAddress.Value.Start.ToAddressString();
-                writeLines($"SetName({address}, 'CustomAttributesGenerator${method.AttributeType.FullName}')");
-                writeLines($"idc.set_cmt({address}, r'{method}', 1)");
+                var address = method.VirtualAddress.Value.Start;
+                writeName(address, $"{method.AttributeType.Name}_CustomAttributesCacheGenerator");
+                writeComment(address, $"{method.AttributeType.Name}_CustomAttributesCacheGenerator(CustomAttributesCache *)");
             }
 
+            writeSectionHeader("Method.Invoke thunks");
             foreach (var method in model.MethodInvokers.Where(m => m != null)) {
-                var address = method.VirtualAddress.Start.ToAddressString();
-                writeLines($"SetName({address}, '{method.Name}')");
-                writeLines($"idc.set_cmt({address}, r'{method}', 1)");
+                var address = method.VirtualAddress.Start;
+                writeName(address, method.Name);
+                writeComment(address, method);
             }
         }
 
         private void writeMethods(string typeName, IEnumerable<MethodBase> methods) {
             foreach (var method in methods.Where(m => m.VirtualAddress.HasValue)) {
-                var address = method.VirtualAddress.Value.Start.ToAddressString();
-                writeLines($"SetName({address}, '{typeName}$${method.Name}')");
-                writeLines($"idc.set_cmt({address}, r'{method}', 1)");
+                var address = method.VirtualAddress.Value.Start;
+                writeName(address, $"{typeName}_{method.Name}");
+                writeComment(address, method);
             }
         }
 
         private void writeUsages() {
             foreach (var usage in model.Package.MetadataUsages) {
-                var address = usage.VirtualAddress.ToAddressString();
-                var escapedName = model.GetMetadataUsageName(usage).ToEscapedString();
+                var address = usage.VirtualAddress;
+                var name = model.GetMetadataUsageName(usage);
 
                 if (usage.Type != MetadataUsageType.StringLiteral)
-                    writeLines($"SetName({address}, '{usagePrefixes[usage.Type]}${escapedName}')");
+                    writeName(address, $"{name}_{usage.Type}");
                 else
-                    writeLines($"SetString({address}, r'{escapedName}')");
+                    writeString(address, name);
 
                 if (usage.Type == MetadataUsageType.MethodDef || usage.Type == MetadataUsageType.MethodRef) {
                     var method = model.GetMetadataUsageMethod(usage);
-                    writeLines($"idc.set_cmt({address}, r'{method}', 1)");
+                    writeComment(address, method);
                 }
                 else if (usage.Type != MetadataUsageType.StringLiteral) {
                     var type = model.GetMetadataUsageType(usage);
-                    writeLines($"idc.set_cmt({address}, r'{type}', 1)");
+                    writeComment(address, type);
                 }
             }
         }
 
-        private void writeSectionHeader(string sectionName) {
-            writeLines(
-                $"# SECTION: {sectionName}",
-                $"# -----------------------------"
-            );
+        private void writeMetadata() {
+            var binary = model.Package.Binary;
+
+            // TODO: In the future, add struct definitions/fields, data ranges and the entire IL2CPP metadata tree
+
+            writeName(binary.CodeRegistrationPointer, "g_CodeRegistration");
+            writeName(binary.MetadataRegistrationPointer, "g_MetadataRegistration");
+
+            if (model.Package.Version >= 24.2)
+                writeName(binary.CodeRegistration.pcodeGenModules, "g_CodeGenModules");
+
+            foreach (var ptr in binary.CodeGenModulePointers)
+                writeName(ptr.Value, $"g_{ptr.Key.Replace(".dll", "")}CodeGenModule");
+            
+            // This will be zero if we found the structs from the symbol table
+            if (binary.RegistrationFunctionPointer != 0)
+                writeName(binary.RegistrationFunctionPointer, "__GLOBAL__sub_I_Il2CppCodeRegistration.cpp");
         }
 
-        private void writeLines(params string[] lines) {
-            foreach (var line in lines) {
-                writer.WriteLine(line);
-            }
+        private void writeSectionHeader(string sectionName) {
+            writeLine("");
+            writeLine($"# SECTION: {sectionName}"); 
+            writeLine($"# -----------------------------");
         }
+
+        private void writeName(ulong address, string name) {
+            writeLine($"SetName({address.ToAddressString()}, r'{name.ToEscapedString()}')");
+        }
+
+        private void writeString(ulong address, string str) {
+            writeLine($"SetString({address.ToAddressString()}, r'{str.ToEscapedString()}')");
+        }
+
+        private void writeComment(ulong address, object comment) {
+            writeLine($"idc.set_cmt({address.ToAddressString()}, r'{comment.ToString().ToEscapedString()}', 1)");
+        }
+
+        private void writeLine(string line) => writer.WriteLine(line);
     }
 }
