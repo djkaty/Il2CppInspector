@@ -16,8 +16,8 @@ namespace Il2CppInspector
     // Il2CppInspector ties together the binary and metadata files into a congruent API surface
     public class Il2CppInspector
     {
-        private Il2CppBinary Binary { get; }
-        private Metadata Metadata { get; }
+        public Il2CppBinary Binary { get; }
+        public Metadata Metadata { get; }
 
         // All function pointers including attribute initialization functions etc. (start => end)
         public Dictionary<ulong, ulong> FunctionAddresses { get; }

@@ -20,6 +20,12 @@ namespace Il2CppInspector
         public Il2CppCodeRegistration CodeRegistration { get; protected set; }
         public Il2CppMetadataRegistration MetadataRegistration { get; protected set; }
 
+        // Information for disassembly reverse engineering
+        public ulong CodeRegistrationPointer { get; private set; }
+        public ulong MetadataRegistrationPointer { get; private set; }
+        public ulong RegistrationFunctionPointer { get; private set; }
+        public ulong[] CodeGenModulePointers { get; private set; }
+
         // Only for <=v24.1
         public ulong[] GlobalMethodPointers { get; set; }
 
@@ -139,7 +145,8 @@ namespace Il2CppInspector
                 if (loc != 0) {
                     var (code, metadata) = ConsiderCode(subImage, loc);
                     if (code != 0) {
-                        Console.WriteLine("Required structures acquired from code heuristics. Initialization function: 0x{0:X16}", loc + subImage.GlobalOffset);
+                        RegistrationFunctionPointer = loc + subImage.GlobalOffset;
+                        Console.WriteLine("Required structures acquired from code heuristics. Initialization function: 0x{0:X16}", RegistrationFunctionPointer);
                         Configure(subImage, code, metadata); 
                         return true;
                     }
@@ -150,7 +157,10 @@ namespace Il2CppInspector
         }
 
         private void Configure(IFileFormatReader image, ulong codeRegistration, ulong metadataRegistration) {
-            // Output locations
+            // Store locations
+            CodeRegistrationPointer = codeRegistration;
+            MetadataRegistrationPointer = metadataRegistration;
+
             Console.WriteLine("CodeRegistration struct found at 0x{0:X16} (file offset 0x{1:X8})", image.Bits == 32 ? codeRegistration & 0xffff_ffff : codeRegistration, image.MapVATR(codeRegistration));
             Console.WriteLine("MetadataRegistration struct found at 0x{0:X16} (file offset 0x{1:X8})", image.Bits == 32 ? metadataRegistration & 0xffff_ffff : metadataRegistration, image.MapVATR(metadataRegistration));
 
@@ -173,6 +183,7 @@ namespace Il2CppInspector
                 Modules = new Dictionary<string, Il2CppCodeGenModule>();
 
                 // Array of pointers to Il2CppCodeGenModule
+                CodeGenModulePointers = image.ReadMappedArray<ulong>(CodeRegistration.pcodeGenModules, (int) CodeRegistration.codeGenModulesCount);
                 var modules = image.ReadMappedObjectPointerArray<Il2CppCodeGenModule>(CodeRegistration.pcodeGenModules, (int) CodeRegistration.codeGenModulesCount);
 
                 foreach (var module in modules) {
@@ -233,7 +244,6 @@ namespace Il2CppInspector
             GenericInstances = image.ReadMappedObjectPointerArray<Il2CppGenericInst>(MetadataRegistration.genericInsts, (int) MetadataRegistration.genericInstsCount);
 
             // Concrete generic method pointers
-            // TODO: Invoker pointers in tableEntry.indices.invokerIndex
             var genericMethodPointers = image.ReadMappedArray<ulong>(CodeRegistration.genericMethodPointers, (int) CodeRegistration.genericMethodPointersCount);
             var genericMethodTable = image.ReadMappedArray<Il2CppGenericMethodFunctionsDefinitions>(MetadataRegistration.genericMethodTable, (int) MetadataRegistration.genericMethodTableCount);
             foreach (var tableEntry in genericMethodTable) {
