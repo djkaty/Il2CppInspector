@@ -32,6 +32,9 @@ namespace Il2CppInspector
             writeSectionHeader("Metadata Usages");
             writeUsages();
 
+            writeSectionHeader("Function boundaries");
+            writeFunctions();
+
             writeSectionHeader("IL2CPP Metadata");
             writeMetadata();
 
@@ -51,7 +54,16 @@ def SetName(addr, name):
   ret = idc.set_name(addr, name, SN_NOWARN | SN_NOCHECK)
   if ret == 0:
     new_name = name + '_' + str(addr)
-    ret = idc.set_name(addr, new_name, SN_NOWARN | SN_NOCHECK)"
+    ret = idc.set_name(addr, new_name, SN_NOWARN | SN_NOCHECK)
+
+def MakeFunction(start, end):
+  next_func = idc.get_next_func(start)
+  if next_func < end:
+    end = next_func
+  current_func = idaapi.get_func(start)
+  if current_func is not None and current_func.startEA == start:
+    ida_funcs.del_func(start)
+  ida_funcs.add_func(start, end)"
             );
         }
 
@@ -111,6 +123,12 @@ def SetName(addr, name):
                     writeComment(address, type);
                 }
             }
+        }
+
+        private void writeFunctions() {
+            foreach (var func in model.Package.FunctionAddresses)
+                if (func.Key != func.Value)
+                    writeLine($"MakeFunction({func.Key.ToAddressString()}, {func.Value.ToAddressString()})");
         }
 
         private void writeMetadata() {
