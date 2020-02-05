@@ -468,6 +468,12 @@ namespace Il2CppInspector
             var fields = type.DeclaredFields.Where(f => !f.GetCustomAttributes(CGAttribute).Any());
 
             sb.Clear();
+
+            // Crete a parameterless constructor for every relevant type when making code that compiles to mitigate CS1729 and CS7036
+            if (MustCompile && !type.IsInterface && !(type.IsAbstract && type.IsSealed) && !type.IsValueType
+                && type.DeclaredConstructors.All(c => c.IsStatic || c.DeclaredParameters.Any()))
+                sb.Append($"{prefix}\t{(type.IsAbstract? "protected" : "public")} {type.UnmangledBaseName}() {{}} // Dummy constructor\n");
+
             foreach (var method in type.DeclaredConstructors) {
                 // Attributes
                 sb.Append(method.CustomAttributes.OrderBy(a => a.AttributeType.Name)
@@ -649,7 +655,7 @@ namespace Il2CppInspector
 
             // Ref return type requires us to invent a field
             if (MustCompile && method.ReturnType.IsByRef)
-                writer.Append($"{prefix}\tprivate {method.ReturnType.GetScopedCSharpName(scope)} _refReturnTypeFor{method.CSharpName};\n");
+                writer.Append($"{prefix}\tprivate {method.ReturnType.GetScopedCSharpName(scope)} _refReturnTypeFor{method.CSharpName}; // Dummy field\n");
 
             return writer.ToString();
         }
