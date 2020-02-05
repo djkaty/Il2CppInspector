@@ -24,7 +24,7 @@ namespace Il2CppInspector
         public ulong CodeRegistrationPointer { get; private set; }
         public ulong MetadataRegistrationPointer { get; private set; }
         public ulong RegistrationFunctionPointer { get; private set; }
-        public ulong[] CodeGenModulePointers { get; private set; }
+        public Dictionary<string, ulong> CodeGenModulePointers { get; } = new Dictionary<string, ulong>();
 
         // Only for <=v24.1
         public ulong[] GlobalMethodPointers { get; set; }
@@ -183,12 +183,15 @@ namespace Il2CppInspector
                 Modules = new Dictionary<string, Il2CppCodeGenModule>();
 
                 // Array of pointers to Il2CppCodeGenModule
-                CodeGenModulePointers = image.ReadMappedArray<ulong>(CodeRegistration.pcodeGenModules, (int) CodeRegistration.codeGenModulesCount);
+                var codeGenModulePointers = image.ReadMappedArray<ulong>(CodeRegistration.pcodeGenModules, (int) CodeRegistration.codeGenModulesCount);
                 var modules = image.ReadMappedObjectPointerArray<Il2CppCodeGenModule>(CodeRegistration.pcodeGenModules, (int) CodeRegistration.codeGenModulesCount);
 
-                foreach (var module in modules) {
+                foreach (var mp in modules.Zip(codeGenModulePointers, (m, p) => new { Module = m, Pointer = p })) {
+                    var module = mp.Module;
+
                     var name = image.ReadMappedNullTerminatedString(module.moduleName);
                     Modules.Add(name, module);
+                    CodeGenModulePointers.Add(name, mp.Pointer);
 
                     // Read method pointers
                     ModuleMethodPointers.Add(module, image.ReadMappedArray<ulong>(module.methodPointers, (int) module.methodPointerCount));
