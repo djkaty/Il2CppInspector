@@ -1,21 +1,33 @@
 # Il2CppInspector
-Easily extract types and metadata from IL2CPP binaries.
 
-* **No manual reverse-engineering required; all data is calculated automatically!**
+Il2CppInspector helps you to reverse engineer IL2CPP applications.
+
+Main features:
+
+* Output IL2CPP metadata and method pointers as C# stub code
+* Create Visual Studio solutions directly from IL2CPP files
+* Create IDA Python scripts to populate symbol and function information
+* **No manual reverse-engineering required; all data is calculated automatically**
+
+File format and architecture support:
+
 * Supports ELF (Android .so), PE (Windows .exe), Mach-O (Apple iOS/Mac) and Universal Binary (Fat Mach-O) file formats
 * 32-bit and 64-bit support for all file formats
 * Supports ARMv7, Thumb-2, ARMv8 (A64), x86 and x64 architectures regardless of file format
 * Supports applications created with Unity 5.3.0 onwards (full IL2CPP version table below)
+
+Nice to have:
+
 * Support for assemblies, classes, methods, constructors, fields, properties, enumerations, events, interfaces, structs, pointers, references, attributes, nested types, generic types, generic methods, generic constraints, default field values and default method parameter values
 * C# syntactic sugar for CTS value types, compiler-generated types, delegates, extension methods, operator overloading, indexers, user-defined conversion operators, explicit interface instantiations, finalizers, nullable types, unsafe contexts, fixed-size arrays, variable length argument lists, method hiding and escaped strings
 * Partition C# code output by namespace, assembly, class, full tree or single file; sort by index or type name; output flat or nested folder hierarchy. Each file includes the necessary `using` directives. Scope and type name conflicts are resolved automatically to produce code that compiles.
-* **NEW!** Create Visual Studio solutions directly from IL2CPP files
-* **NEW!** Create IDA Python scripts to populate symbol and function information
-* Static symbol table scanning for ELF and Mach-O binaries if present
-* Dynamic symbol table scanning for ELF binaries if present
-* Symbol relocation handling for ELF binaries
-* **Il2CppInspector** re-usable class library for low-level access to IL2CPP binaries and metadata
-* **Il2CppModel** re-usable class library for high-level .NET Reflection-style access to IL2CPP types and data as a tree model
+* Static and dynamic symbol table scanning and relocation processing for ELF binaries 
+* Static symbol table scanning for Mach-O binaries
+
+Reusable class libraries:
+
+* **Il2CppInspector** for low-level access to IL2CPP binaries and metadata
+* **Il2CppModel** for high-level .NET Reflection-style access to IL2CPP types and data as a tree model
 * Test chassis for automated integration testing of IL2CPP binaries
 
 Class library targets .NET Standard 2.1. Application targets .NET Core 3.0. Built with Visual Studio 2019.
@@ -60,6 +72,7 @@ Defaults if not specified:
 - _bin_ - `libil2cpp.so`
 - _metadata_ - `global-metadata.dat`
 - _cs-out_ - `types.cs`
+- _py-out_ - `ida.py`
 
 To exclude types from certain namespaces from being generated in the C# source file output, provide a comma-separated list of case-sensitive namespaces in `--exclude-namespaces`. The following namespaces will be excluded if no argument is specified:
 
@@ -77,9 +90,23 @@ JetBrains.Annotations
 
 Providing an argument to `--exclude-namespaces` will override the default list. To output all namespaces, use `--exclude-namespaces=none`.
 
-By default, types and fields declared with the `System.Runtime.CompilerServices.CompilerGeneratedAttribute` attribute will be suppresssed from the C# code output. The attribute itself will be suppressed from property getters and setters. This is useful if you would like to be able to compile the output code. To include these constructs in the output, use `--no-suppress-cg`.
-
 For Apple Universal Binaries, multiple output files will be generated, with each filename besides the first suffixed by the index of the image in the Universal Binary. Unsupported images will be skipped.
+
+### Adding metadata to your IDA workflow
+
+Simply run Il2CppInspector with the `-p` switch to choose the IDA script output file. Load your binary file into IDA, press Alt+F7 and select the generated script. Observe the Output Window while IDA analyzes the file - this may take a long time.
+
+Il2CppInspector generates the following data for IDA projects:
+
+- Names for all regular .NET methods
+- Names for all constructed generic methods
+- Names for all IL2CPP custom attributes generator functions
+- Names, .NET argument type lists and C++ signatures for all IL2CPP runtime invoker functions for both regular and constructed generic methods (per-signature Method.Invoke endpoints)
+- Function boundaries for all of the above
+- Comments at each function entry point with .NET method signatures for all of the above
+- Names for all of the following IL metadata references: Type, TypeInfo, MethodDef, FieldInfo, StringLiteral, MethodRef (this includes all generic class and method instantiation metadata)
+- Comments for all IL string literal metadata pointers containing the value of the string
+- Names for some IL2CPP-specific data structures and functions
 
 ### Creating a Visual Studio solution
 
@@ -128,7 +155,9 @@ Unity version | IL2CPP version | Support
 
 ### Problems
 
-If you have files that don't work or are in an unsupported format, please open a new issue on GitHub and attach a sample with details on the file format, and I'll try to add support.
+If you have files that don't work or are in an unsupported format, please open a new issue on GitHub and attach a sample with details on the file format, and I'll try to add support. Include both the IL2CPP binary and `global-metadata.dat` in your submission.
+
+Please check the binary file in a disassembler to ensure that it is a plain IL2CPP binary before filing an issue. Il2CppInspector is not intended to handle packed, encrypted or obfuscated IL2CPP files.
 
 ### Acknowledgements
 
