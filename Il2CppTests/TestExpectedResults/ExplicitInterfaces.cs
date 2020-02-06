@@ -96,7 +96,7 @@ namespace Il2CppTests.TestSources
 		void Paint();
 	}
 
-	internal class Test : IControl, ISurface // TypeDefIndex: 1813
+	internal class Test : Il2CppTests.TestSources.IControl, Il2CppTests.TestSources.ISurface // TypeDefIndex: 1813
 	{
 		// Constructors
 		public Test() {} // 0x00561674-0x00561674
@@ -118,7 +118,7 @@ namespace Il2CppTests.TestSources
 		int P();
 	}
 
-	internal class Middle : ILeft, IRight // TypeDefIndex: 1816
+	internal class Middle : Il2CppTests.TestSources.ILeft, Il2CppTests.TestSources.IRight // TypeDefIndex: 1816
 	{
 		// Properties
 		int ILeft.P { get => default; } // 0x0056165C-0x00561664 
@@ -136,7 +136,7 @@ namespace Il2CppTests.TestSources
 		void GenericMethod(T t);
 	}
 
-	internal class ImplementsGenericInterface : IGeneric<KeyValuePair<int, double>> // TypeDefIndex: 1818
+	internal class ImplementsGenericInterface : Il2CppTests.TestSources.IGeneric<KeyValuePair<int, double>> // TypeDefIndex: 1818
 	{
 		// Constructors
 		public ImplementsGenericInterface() {} // 0x00561634-0x0056163C
@@ -151,7 +151,7 @@ namespace Il2CppTests.TestSources
 		bool this[int i] { get => default; }
 	}
 
-	internal class ImplementsIndexer : IIndexer // TypeDefIndex: 1820
+	internal class ImplementsIndexer : Il2CppTests.TestSources.IIndexer // TypeDefIndex: 1820
 	{
 		// Properties
 		public bool this[int i] { get => default; } // 0x0056163C-0x00561644 

@@ -122,6 +122,7 @@ namespace Il2CppTests.TestSources
 		}
 	
 		// Constructors
+		public Test() {} // Dummy constructor
 		public unsafe Test(int* u) {} // 0x00562E78-0x00562EEC
 	
 		// Methods

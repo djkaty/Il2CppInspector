@@ -97,8 +97,10 @@ namespace Il2CppTests.TestSources
 		public void MethodWithInRefOut(in int a, ref int b, out int c) {
 			c = default;
 		} // 0x005610EC-0x005610F8
-		public ref float MethodWithRefReturnType() => default; // 0x005610F8-0x00561100
-		public ref Test MethodWithGenericAndClassRefs<T>(ref T argGeneric, ref int argValueType, ref Test argClass) => default;
+		public ref float MethodWithRefReturnType() => ref _refReturnTypeForMethodWithRefReturnType; // 0x005610F8-0x00561100
+		private ref float _refReturnTypeForMethodWithRefReturnType; // Dummy field
+		public ref Test MethodWithGenericAndClassRefs<T>(ref T argGeneric, ref int argValueType, ref Test argClass) => ref _refReturnTypeForMethodWithGenericAndClassRefs;
+		private ref Test _refReturnTypeForMethodWithGenericAndClassRefs; // Dummy field
 	}
 
 	[Obsolete] // 0x000A524C-0x000A5284

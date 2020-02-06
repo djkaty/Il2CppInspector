@@ -90,7 +90,7 @@ namespace Il2CppTests.TestSources
 		public Base() {}
 	}
 
-	public class Derived<V> : Base<string, V> // TypeDefIndex: 1816
+	public class Derived<V> : Il2CppTests.TestSources.Base<string, V> // TypeDefIndex: 1816
 	{
 		// Fields
 		public G<Derived<V>> F; // 0x00
@@ -250,7 +250,7 @@ namespace Il2CppTests.TestSources
 		public void GenericMethodDefinitionInGenericClass2<U>(T a, U b) {}
 	}
 
-	public class CallGenericMethods : GenericClassWithMethods<int> // TypeDefIndex: 1835
+	public class CallGenericMethods : Il2CppTests.TestSources.GenericClassWithMethods<int> // TypeDefIndex: 1835
 	{
 		// Constructors
 		public CallGenericMethods() {} // 0x0000000180408880-0x00000001804088C0

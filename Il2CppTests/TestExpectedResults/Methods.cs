@@ -110,7 +110,7 @@ namespace Il2CppTests.TestSources
 		public abstract void AbstractMethod();
 	}
 
-	internal class TestOverride : Test // TypeDefIndex: 1814
+	internal class TestOverride : Il2CppTests.TestSources.Test // TypeDefIndex: 1814
 	{
 		// Constructors
 		public TestOverride() {} // 0x00561238-0x00561240
@@ -119,7 +119,7 @@ namespace Il2CppTests.TestSources
 		public override void VirtualMethod() {} // 0x00561294-0x00561298
 	}
 
-	internal class TestHideVirtual : Test // TypeDefIndex: 1815
+	internal class TestHideVirtual : Il2CppTests.TestSources.Test // TypeDefIndex: 1815
 	{
 		// Constructors
 		public TestHideVirtual() {} // 0x00561270-0x00561278
@@ -128,7 +128,7 @@ namespace Il2CppTests.TestSources
 		public new void VirtualMethod() {} // 0x0056126C-0x00561270
 	}
 
-	internal class TestHideOverride : TestOverride // TypeDefIndex: 1816
+	internal class TestHideOverride : Il2CppTests.TestSources.TestOverride // TypeDefIndex: 1816
 	{
 		// Constructors
 		public TestHideOverride() {} // 0x00561258-0x00561260
@@ -137,7 +137,7 @@ namespace Il2CppTests.TestSources
 		public new void VirtualMethod() {} // 0x00561254-0x00561258
 	}
 
-	internal class TestOverrideAbstract : TestAbstract // TypeDefIndex: 1817
+	internal class TestOverrideAbstract : Il2CppTests.TestSources.TestAbstract // TypeDefIndex: 1817
 	{
 		// Constructors
 		public TestOverrideAbstract() {} // 0x0056124C-0x00561254
@@ -146,7 +146,7 @@ namespace Il2CppTests.TestSources
 		public override void AbstractMethod() {} // 0x00561298-0x00561298
 	}
 
-	internal class TestHideAbstractOverride : TestOverrideAbstract // TypeDefIndex: 1818
+	internal class TestHideAbstractOverride : Il2CppTests.TestSources.TestOverrideAbstract // TypeDefIndex: 1818
 	{
 		// Constructors
 		public TestHideAbstractOverride() {} // 0x00561244-0x0056124C
@@ -155,7 +155,7 @@ namespace Il2CppTests.TestSources
 		public new void AbstractMethod() {} // 0x00561240-0x00561244
 	}
 
-	internal class TestHideVirtualAndNewVirtual : Test // TypeDefIndex: 1819
+	internal class TestHideVirtualAndNewVirtual : Il2CppTests.TestSources.Test // TypeDefIndex: 1819
 	{
 		// Constructors
 		public TestHideVirtualAndNewVirtual() {} // 0x0056127C-0x00561284
@@ -164,7 +164,7 @@ namespace Il2CppTests.TestSources
 		public virtual new void VirtualMethod() {} // 0x00561278-0x0056127C
 	}
 
-	internal class TestHideOverrideAndNewVirtual : TestOverride // TypeDefIndex: 1820
+	internal class TestHideOverrideAndNewVirtual : Il2CppTests.TestSources.TestOverride // TypeDefIndex: 1820
 	{
 		// Constructors
 		public TestHideOverrideAndNewVirtual() {} // 0x00561264-0x0056126C
@@ -173,7 +173,7 @@ namespace Il2CppTests.TestSources
 		public virtual new void VirtualMethod() {} // 0x00561260-0x00561264
 	}
 
-	internal abstract class TestAbstractNew : TestOverride // TypeDefIndex: 1821
+	internal abstract class TestAbstractNew : Il2CppTests.TestSources.TestOverride // TypeDefIndex: 1821
 	{
 		// Constructors
 		protected TestAbstractNew() {} // 0x00561230-0x00561238
@@ -182,7 +182,7 @@ namespace Il2CppTests.TestSources
 		public abstract new void VirtualMethod();
 	}
 
-	internal class TestNewNonVirtualMethod : Test // TypeDefIndex: 1822
+	internal class TestNewNonVirtualMethod : Il2CppTests.TestSources.Test // TypeDefIndex: 1822
 	{
 		// Constructors
 		public TestNewNonVirtualMethod() {} // 0x0056128C-0x00561294
