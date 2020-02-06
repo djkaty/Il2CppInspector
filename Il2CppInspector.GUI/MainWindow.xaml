@@ -5,8 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Il2CppInspector.GUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Il2CppInspector" Height="450" Width="800" Background="LightGray">
     <Grid>
-
+        <Grid>
+            <TextBlock>foo</TextBlock>
+        </Grid>
+        <DockPanel>
+            <Border BorderThickness="4" BorderBrush="Black" CornerRadius="10" Margin="100" Opacity="0.7" Background="LightSteelBlue" Visibility="Visible">
+                <Button Name="btnSelectMetadataFile" Click="BtnSelectMetadataFile_OnClick" BorderThickness="0" Background="Transparent"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="24">Click to select an IL2CPP metadata file</Button>
+            </Border>
+        </DockPanel>
     </Grid>
 </Window>

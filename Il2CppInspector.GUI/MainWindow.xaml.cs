@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace Il2CppInspector.GUI
 {
@@ -22,6 +23,17 @@ namespace Il2CppInspector.GUI
     {
         public MainWindow() {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Select global metadata file
+        /// </summary>
+        private void BtnSelectMetadataFile_OnClick(object sender, RoutedEventArgs e) {
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "IL2CPP global metadata file|global-metadata.dat|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true) {
+                // openFileDialog.FileName
+            }
         }
     }
 }
