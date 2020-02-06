@@ -294,6 +294,10 @@ namespace Il2CppInspector.Reflection {
             if (usingScope == null)
                 return CSharpName;
 
+            // Generic parameters don't have a scope
+            if (IsGenericParameter)
+                return CSharpName;
+
             var s = Namespace + "." + base.Name;
 
             // Built-in keyword type names do not require a scope

@@ -554,11 +554,15 @@ namespace Il2CppInspector
 
             sb.Append(prefix + type.GetModifierString());
 
-            var @base = type.ImplementedInterfaces.Select(x => x.GetScopedCSharpName(scope)).ToList();
+            // Inheriting from a base class or implementing an interface using a generic type which contains a nested type parameter
+            // inside the declared class must be referenced from outside the scope of the type being defined
+            var outerScope = new Scope {Current = scope.Current.DeclaringType, Namespaces = scope.Namespaces};
+
+            var @base = type.ImplementedInterfaces.Select(x => x.GetScopedCSharpName(outerScope)).ToList();
             if (type.BaseType != null && type.BaseType.FullName != "System.Object" && type.BaseType.FullName != "System.ValueType" && !type.IsEnum)
-                @base.Insert(0, type.BaseType.GetScopedCSharpName(scope));
+                @base.Insert(0, type.BaseType.GetScopedCSharpName(outerScope));
             if (type.IsEnum && type.GetEnumUnderlyingType().FullName != "System.Int32") // enums derive from int by default
-                @base.Insert(0, type.GetEnumUnderlyingType().GetScopedCSharpName(scope));
+                @base.Insert(0, type.GetEnumUnderlyingType().GetScopedCSharpName(outerScope));
             var baseText = @base.Count > 0 ? " : " + string.Join(", ", @base) : string.Empty;
 
             sb.Append($"{type.CSharpTypeDeclarationName}{baseText}");
