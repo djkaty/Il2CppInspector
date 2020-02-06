@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Il2CppInspector.Reflection;
+using Il2CppInspector.Outputs;
 using NUnit.Framework;
 
 namespace Il2CppInspector
@@ -57,7 +58,7 @@ namespace Il2CppInspector
             // Dump each image in the binary separately
             int i = 0;
             foreach (var il2cpp in inspectors)
-                new Il2CppCSharpDumper(new Il2CppModel(il2cpp)) {
+                new CSharpCodeStubs(new Il2CppModel(il2cpp)) {
                         ExcludedNamespaces = excludedNamespaces,
                         SuppressMetadata = false,
                         MustCompile = true

@@ -9,8 +9,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using CommandLine;
 using Il2CppInspector.Reflection;
+using Il2CppInspector.Outputs;
 
-namespace Il2CppInspector
+namespace Il2CppInspector.CLI
 {
     public class App
     {
@@ -163,7 +164,7 @@ namespace Il2CppInspector
 
                 // C# signatures output
                 using (var signaturesDumperTimer = new Benchmark("Generate C# code")) {
-                    var writer = new Il2CppCSharpDumper(model) {
+                    var writer = new CSharpCodeStubs(model) {
                         ExcludedNamespaces = options.ExcludedNamespaces.ToList(),
                         SuppressMetadata = options.SuppressMetadata,
                         MustCompile = options.MustCompile
@@ -215,7 +216,7 @@ namespace Il2CppInspector
 
                 // IDA Python script output
                 using (var scriptDumperTimer = new Benchmark("IDA Python Script Dumper")) {
-                    var idaWriter = new Il2CppIDAScriptDumper(model);
+                    var idaWriter = new IDAPythonScript(model);
                     idaWriter.WriteScriptToFile(options.PythonOutFile);
                 }
             }

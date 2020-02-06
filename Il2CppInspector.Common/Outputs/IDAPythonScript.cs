@@ -9,14 +9,14 @@ using System.IO;
 using System.Text;
 using Il2CppInspector.Reflection;
 
-namespace Il2CppInspector
+namespace Il2CppInspector.Outputs
 {
-    public class Il2CppIDAScriptDumper
+    public class IDAPythonScript
     {
         private readonly Il2CppModel model;
         private StreamWriter writer;
 
-        public Il2CppIDAScriptDumper(Il2CppModel model) => this.model = model;
+        public IDAPythonScript(Il2CppModel model) => this.model = model;
 
         public void WriteScriptToFile(string outputFile) {
             using var fs = new FileStream(outputFile, FileMode.Create);

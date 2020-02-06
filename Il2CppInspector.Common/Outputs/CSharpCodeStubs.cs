@@ -3,25 +3,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Il2CppDumper.Properties;
+using Il2CppInspector.Properties;
 using Il2CppInspector.Reflection;
 using Assembly = Il2CppInspector.Reflection.Assembly;
 using CustomAttributeData = Il2CppInspector.Reflection.CustomAttributeData;
 using MethodInfo = Il2CppInspector.Reflection.MethodInfo;
 using TypeInfo = Il2CppInspector.Reflection.TypeInfo;
 
-namespace Il2CppInspector
+namespace Il2CppInspector.Outputs
 {
-    public class Il2CppCSharpDumper
+    public class CSharpCodeStubs
     {
         private readonly Il2CppModel model;
 
@@ -43,7 +40,7 @@ namespace Il2CppInspector
         private HashSet<CustomAttributeData> usedAssemblyAttributes = new HashSet<CustomAttributeData>();
         private readonly object usedAssemblyAttributesLock = new object();
 
-        public Il2CppCSharpDumper(Il2CppModel model) => this.model = model;
+        public CSharpCodeStubs(Il2CppModel model) => this.model = model;
 
         public void WriteSingleFile(string outFile) => WriteSingleFile(outFile, t => t.Index);
 

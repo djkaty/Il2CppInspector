@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Il2CppDumper.Properties {
+namespace Il2CppInspector.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Il2CppDumper.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Il2CppDumper.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Il2CppInspector.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -69,10 +69,10 @@ namespace Il2CppDumper.Properties {
         ///  &lt;PropertyGroup&gt;
         ///    &lt;Configuration Condition=&quot; &apos;$(Configuration)&apos; == &apos;&apos; &quot;&gt;Debug&lt;/Configuration&gt;
         ///    &lt;Platform Condition=&quot; &apos;$(Platform)&apos; == &apos;&apos; &quot;&gt;AnyCPU&lt;/Platform&gt;
-        ///    &lt;ProjectGuid&gt;%PROJECTGUID%&lt;/ProjectGuid&gt;
+        ///    &lt;ProjectGuid&gt;{%PROJECTGUID%}&lt;/ProjectGuid&gt;
         ///    &lt;!--&lt;ProductVersion/&gt;--&gt;
         ///    &lt;!--&lt;SchemaVersion/&gt;--&gt;
-        ///    &lt;Outp [rest of string was truncated]&quot;;.
+        ///    &lt;OutputType&gt;Li [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CsProjTemplate {
             get {

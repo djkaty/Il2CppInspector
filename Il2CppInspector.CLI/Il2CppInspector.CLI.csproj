@@ -12,12 +12,12 @@
     <Company>Noisy Cow Studios</Company>
     <Product>Il2CppInspector Command-Line Edition</Product>
     <Copyright>(c) 2017-2020 Katy Coe - www.djkaty.com - www.github.com/djkaty</Copyright>
-    <PackageId>Il2CppDumper</PackageId>
+    <PackageId>Il2CppInspector.CLI</PackageId>
     <Authors>Katy Coe</Authors>
+    <AssemblyName>Il2CppInspector</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Il2CppInspector\Il2CppInspector.csproj" />
     <DotNetCliToolReference Include="Microsoft.NETCore.Runtime.CoreCLR" Version="2.0.0" />
     <DotNetCliToolReference Include="Microsoft.NETCore.DotNetHostPolicy" Version="2.0.0" />
   </ItemGroup>
@@ -27,18 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <ProjectReference Include="..\Il2CppInspector.Common\Il2CppInspector.csproj" />
   </ItemGroup>
 
 </Project>

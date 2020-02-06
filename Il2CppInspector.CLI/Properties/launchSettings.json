@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Il2CppDumper": {
+      "commandName": "Project",
+      "commandLineArgs": "--bin f:\\source\\repos\\il2cppinspector\\il2cpptests\\testbinaries\\hearthstone-ios-15.6.35747\\hearthstone-ios-15.6.35747 --metadata f:\\source\\repos\\il2cppinspector\\il2cpptests\\testbinaries\\hearthstone-ios-15.6.35747\\global-metadata.dat -c f:\\source\\repos\\il2cppinspector\\il2cpptests\\testbinaries\\hearthstone-ios-15.6.35747\\project -p f:\\source\\repos\\il2cppinspector\\il2cpptests\\testbinaries\\Hearthstone-ios-15.6.35747\\ida.py -j -n"
+    }
+  }
+}

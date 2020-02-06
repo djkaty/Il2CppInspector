@@ -78,7 +78,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Il2CppDumper\Il2CppDumper.csproj" />
+    <ProjectReference Include="..\Il2CppInspector.Common\Il2CppInspector.csproj" />
   </ItemGroup>
 
 </Project>
