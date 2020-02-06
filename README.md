@@ -42,11 +42,11 @@ dotnet publish -c Release
 
 This will build Il2CppInspector for Windows 64-bit. For MacOS and Linux, add  `-r xxx` to the final command where `xxx` is a RID from https://docs.microsoft.com/en-us/dotnet/articles/core/rid-catalog
 
-The output binary is placed in `Il2CppInspector/Il2CppDumper/bin/Release/netcoreapp3.0/win-x64/publish`.
+The output binary is placed in `Il2CppInspector/Il2CppInspector.CLI/bin/Release/netcoreapp3.0/win-x64/publish`.
 
 ### Usage
 
-Run `Il2CppDumper.exe` at the command prompt.
+Run `Il2CppInspector.exe` at the command prompt.
 
 File format and architecture are automatically detected.
 
@@ -55,7 +55,7 @@ File format and architecture are automatically detected.
   -m, --metadata              Required. (Default: global-metadata.dat) IL2CPP metadata file input
   -c, --cs-out                (Default: types.cs) C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)
   -p, --py-out                (Default: ida.py) IDA Python script output file
-  -e, --exclude-namespaces    (Default: System Unity UnityEngine UnityEngineInternal Mono Microsoft.Win32) Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces
+  -e, --exclude-namespaces    (Default: System Unity UnityEngine UnityEngineInternal Mono Microsoft.Win32 AOT JetBrains.Annotations) Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces
   -l, --layout                (Default: single) Partitioning of C# output ('single' = single file, 'namespace' = one file per namespace in folders, 'assembly' = one file per assembly, 'class' = one file per class in namespace folders, 'tree' = one file per class in assembly and namespace folders)
   -s, --sort                  (Default: index) Sort order of type definitions in C# output ('index' = by type definition index, 'name' = by type name). No effect when using file-per-class or tree layout
   -f, --flatten               Flatten the namespace hierarchy into a single folder rather than using per-namespace subfolders. Only used when layout is per-namespace or per-class. Ignored for tree layout
@@ -128,6 +128,12 @@ Replace *x*, *y* and *z* with your Unity version number. Replace *\<name-of-temp
 
 NOTE: You can use the asterisk wildcard (*) one or more times when specifying these paths. Il2CppInspector will select the last matching folder in alphanumeric order. This is useful if you have multiple side-by-side Unity installs and wish to always select the latest version or template.
 
+In the event that the assembly references are not correctly resolved the first time you load a solution, simply close and re-open the solution to force them to be resolved.
+
+### Class library
+
+To utilize Il2CppInspector in your own programs, add a reference to `Il2CppInspector.Common.dll` and add a using statement for the namespace `Il2CppInspector.Reflection`. See the source code for further details.
+
 ### Running tests
 
 Two Powershell scripts are provided to enable easy testing and debugging:
@@ -171,7 +177,12 @@ Thanks to the following individuals whose code and research helped me develop th
 - ARMConverter - http://armconverter.com
 - Defuse - https://defuse.ca/online-x86-assembler.htm
 
-This tool uses Perfare's Il2CppDumper code as a base.
+The following books were also very helpful:
+
+- [Practical Reverse Engineering](https://www.amazon.com/Practical-Reverse-Engineering-Reversing-Obfuscation/dp/1118787315/ref=sr_1_1?keywords=practical+reverse+engineering&qid=1580952619&sr=8-1) by Bruce Dang
+- [Expert .NET 2.0 IL Assembler](https://www.amazon.com/Expert-NET-Assembler-Serge-Lidin/dp/1590596463/ref=sr_1_6?keywords=expert+il+2.0&qid=1580952700&sr=8-6) by Serge Lidin
+- [The IDA Pro Book, 2nd Edition](https://www.amazon.com/IDA-Pro-Book-Unofficial-Disassembler/dp/1593272898/ref=sr_1_1?keywords=ida+pro+book&qid=1580952729&sr=8-1) by Chris Eagle
+- [The Beginner's Guide to IDAPython](https://leanpub.com/IDAPython-Book) by Alexander Hanel
 
 ### License
 
