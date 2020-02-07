@@ -46,12 +46,54 @@ namespace Il2CppInspectorGUI
                 if (await app.LoadMetadataAsync(openFileDialog.FileName)) {
                     // Metadata loaded successfully
                     lblMetadataVersion.DataContext = app.CurrentMetadata;
+                    btnSelectBinaryFile.Visibility = Visibility.Visible;
+                    btnBack.Visibility = Visibility.Visible;
                 }
                 else {
                     MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     btnSelectMetadataFile.Visibility = Visibility.Visible;
                 }
             }
+            else {
+                btnSelectMetadataFile.Visibility = Visibility.Visible;
+            }
+        }
+
+        /// <summary>
+        /// Select binary file
+        /// </summary>
+        private async void BtnSelectBinaryFile_OnClick(object sender, RoutedEventArgs e) {
+            var app = (App) Application.Current;
+
+            var openFileDialog = new OpenFileDialog {
+                Filter = "Binary executable file (*.exe;*.dll;*.so)|*.exe;*.dll;*.so|All files (*.*)|*.*",
+                CheckFileExists = true
+            };
+
+            btnSelectBinaryFile.Visibility = Visibility.Hidden;
+            btnBack.IsEnabled = false;
+
+            if (openFileDialog.ShowDialog() == true) {
+                // Load the binary file
+            }
+            else {
+                btnSelectBinaryFile.Visibility = Visibility.Visible;
+                btnBack.IsEnabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Reset binary and metadata files and start again
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnBack_OnClick(object sender, RoutedEventArgs e) {
+            var app = (App) Application.Current;
+
+            lblMetadataVersion.DataContext = null;
+            btnSelectBinaryFile.Visibility = Visibility.Hidden;
+            btnBack.Visibility = Visibility.Hidden;
+            btnSelectMetadataFile.Visibility = Visibility.Visible;
         }
     }
 }

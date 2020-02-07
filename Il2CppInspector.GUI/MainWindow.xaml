@@ -39,7 +39,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border x:Name="border" Background="White" BorderThickness="2" CornerRadius="2" BorderBrush="{TemplateBinding BorderBrush}" Margin="100" SnapsToDevicePixels="true">
+                        <Border x:Name="border" Background="White" BorderThickness="2" CornerRadius="2" BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="true">
                             <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                         </Border>
                         <ControlTemplate.Triggers>
@@ -90,6 +90,8 @@
 
         <!-- Light boxes -->
         <Rectangle Name="rectModalLightBoxBackground" Fill="Black" Opacity="0.4"></Rectangle>
-        <Button Name="btnSelectMetadataFile" Style="{StaticResource LightBoxButton}" Click="BtnSelectMetadataFile_OnClick">Select an IL2CPP metadata file</Button>
+        <Button Name="btnSelectMetadataFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectMetadataFile_OnClick">Select an IL2CPP metadata file</Button>
+        <Button Name="btnSelectBinaryFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectBinaryFile_OnClick" Visibility="Hidden">Select an IL2CPP binary file</Button>
+        <Button Name="btnBack" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Style="{StaticResource LightBoxButton}" Margin="100,0,550,20" FontSize="18" Click="BtnBack_OnClick" Visibility="Hidden">&lt;&lt; Back</Button>
     </Grid>
 </Window>
