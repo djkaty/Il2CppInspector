@@ -45,7 +45,6 @@ namespace Il2CppInspectorGUI
                 // Load the metadata file
                 if (await app.LoadMetadataAsync(openFileDialog.FileName)) {
                     // Metadata loaded successfully
-                    lblMetadataVersion.DataContext = app.CurrentMetadata;
                     btnSelectBinaryFile.Visibility = Visibility.Visible;
                     btnBack.Visibility = Visibility.Visible;
                 }
@@ -75,11 +74,22 @@ namespace Il2CppInspectorGUI
 
             if (openFileDialog.ShowDialog() == true) {
                 // Load the binary file
+                if (await app.LoadBinaryAsync(openFileDialog.FileName)) {
+                    // Binary loaded successfully
+                    // TODO: Set DataContext
+                    // TODO: Format, Endianness, Bits, Arch, GlobalOffset, symbol table size, relocations size, CodeReg, MetaReg
+                    rectModalLightBoxBackground.Visibility = Visibility.Hidden;
+                }
+                else {
+                    MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    btnSelectBinaryFile.Visibility = Visibility.Visible;
+                }
             }
             else {
                 btnSelectBinaryFile.Visibility = Visibility.Visible;
-                btnBack.IsEnabled = true;
             }
+
+            btnBack.IsEnabled = true;
         }
 
         /// <summary>
@@ -90,7 +100,8 @@ namespace Il2CppInspectorGUI
         private void BtnBack_OnClick(object sender, RoutedEventArgs e) {
             var app = (App) Application.Current;
 
-            lblMetadataVersion.DataContext = null;
+            rectModalLightBoxBackground.Visibility = Visibility.Visible;
+            gridImageDetails.DataContext = null;
             btnSelectBinaryFile.Visibility = Visibility.Hidden;
             btnBack.Visibility = Visibility.Hidden;
             btnSelectMetadataFile.Visibility = Visibility.Visible;

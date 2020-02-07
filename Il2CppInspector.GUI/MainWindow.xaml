@@ -71,7 +71,7 @@
         <!-- Main content -->
         <Grid>
             <!-- Information about the loaded metadata and binary -->
-            <Grid>
+            <Grid Name="gridImageDetails">
                 <Grid.RowDefinitions>
                     <RowDefinition Height ="Auto" />
                     <RowDefinition Height ="Auto" />
@@ -84,7 +84,7 @@
                     <ColumnDefinition Width="25*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" Content="IL2CPP Metadata version"></Label>
-                <Label Name="lblMetadataVersion" Grid.Row="0" Grid.Column="1" Content="{Binding Path=Version}"></Label>
+                <Label Grid.Row="0" Grid.Column="1" Content="{Binding Path=Version}"></Label>
             </Grid>
         </Grid>
 
@@ -92,6 +92,6 @@
         <Rectangle Name="rectModalLightBoxBackground" Fill="Black" Opacity="0.4"></Rectangle>
         <Button Name="btnSelectMetadataFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectMetadataFile_OnClick">Select an IL2CPP metadata file</Button>
         <Button Name="btnSelectBinaryFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectBinaryFile_OnClick" Visibility="Hidden">Select an IL2CPP binary file</Button>
-        <Button Name="btnBack" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Style="{StaticResource LightBoxButton}" Margin="100,0,550,20" FontSize="18" Click="BtnBack_OnClick" Visibility="Hidden">&lt;&lt; Back</Button>
+        <Button Name="btnBack" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Style="{StaticResource LightBoxButton}" Margin="20,0,630,20" FontSize="18" Click="BtnBack_OnClick" Visibility="Hidden">&lt;&lt; Back</Button>
     </Grid>
 </Window>
