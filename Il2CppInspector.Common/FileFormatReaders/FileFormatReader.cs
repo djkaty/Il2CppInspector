@@ -49,7 +49,7 @@ namespace Il2CppInspector
         List<U> ReadMappedObjectPointerArray<U>(ulong uiAddr, int count) where U : new();
     }
 
-    internal class FileFormatReader
+    public class FileFormatReader
     {
         // Helper method to try all defined file formats when the contents of the binary is unknown
         public static IFileFormatReader Load(string filename) => Load(new FileStream(filename, FileMode.Open, FileAccess.Read));
@@ -68,7 +68,7 @@ namespace Il2CppInspector
         }
     }
 
-    internal class FileFormatReader<T> : BinaryObjectReader, IFileFormatReader where T : FileFormatReader<T>
+    public class FileFormatReader<T> : BinaryObjectReader, IFileFormatReader where T : FileFormatReader<T>
     {
         public FileFormatReader(Stream stream) : base(stream) { }
 
