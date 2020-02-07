@@ -3,10 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Il2CppInspectorGUI"
+        xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
         mc:Ignorable="d"
         Title="Il2CppInspector" Height="450" Width="800" Background="White">
     <Window.Resources>
+        <!-- Our favourite colours -->
+        <SolidColorBrush x:Key="MicrosoftBlue" Color="#00A2ED"/>
+        <SolidColorBrush x:Key="WindowsBlue" Color="#357EC7"/>
+
         <!-- Light box button -->
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -30,7 +34,7 @@
             <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
             <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
             <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
-            <Setter Property="Foreground" Value="#00A2ED"/>
+            <Setter Property="Foreground" Value="{StaticResource MicrosoftBlue}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -93,5 +97,13 @@
         <Button Name="btnSelectMetadataFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectMetadataFile_OnClick">Select an IL2CPP metadata file</Button>
         <Button Name="btnSelectBinaryFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectBinaryFile_OnClick" Visibility="Hidden">Select an IL2CPP binary file</Button>
         <Button Name="btnBack" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Style="{StaticResource LightBoxButton}" Margin="20,0,630,20" FontSize="18" Click="BtnBack_OnClick" Visibility="Hidden">&lt;&lt; Back</Button>
+
+        <!-- Busy indicator -->
+        <Border Name="areaBusyIndicator" BorderThickness="1" CornerRadius="2" BorderBrush="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#F8F8F8" SnapsToDevicePixels="True" Visibility="Hidden">
+            <StackPanel Margin="60,40,60,40">
+                <TextBlock Foreground="{StaticResource WindowsBlue}" FontSize="24">Getting things ready...</TextBlock>
+                <Image gif:AnimationBehavior.SourceUri="Resources/pizza.gif" Width="100" Margin="0,20,0,0" RenderOptions.BitmapScalingMode="Fant" />
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

@@ -42,13 +42,17 @@ namespace Il2CppInspectorGUI
             btnSelectMetadataFile.Visibility = Visibility.Hidden;
 
             if (openFileDialog.ShowDialog() == true) {
+                areaBusyIndicator.Visibility = Visibility.Visible;
+
                 // Load the metadata file
                 if (await app.LoadMetadataAsync(openFileDialog.FileName)) {
                     // Metadata loaded successfully
                     btnSelectBinaryFile.Visibility = Visibility.Visible;
                     btnBack.Visibility = Visibility.Visible;
+                    areaBusyIndicator.Visibility = Visibility.Hidden;
                 }
                 else {
+                    areaBusyIndicator.Visibility = Visibility.Hidden;
                     MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     btnSelectMetadataFile.Visibility = Visibility.Visible;
                 }
@@ -73,14 +77,18 @@ namespace Il2CppInspectorGUI
             btnBack.IsEnabled = false;
 
             if (openFileDialog.ShowDialog() == true) {
+                areaBusyIndicator.Visibility = Visibility.Visible;
+
                 // Load the binary file
                 if (await app.LoadBinaryAsync(openFileDialog.FileName)) {
                     // Binary loaded successfully
                     // TODO: Set DataContext
                     // TODO: Format, Endianness, Bits, Arch, GlobalOffset, symbol table size, relocations size, CodeReg, MetaReg
+                    areaBusyIndicator.Visibility = Visibility.Hidden;
                     rectModalLightBoxBackground.Visibility = Visibility.Hidden;
                 }
                 else {
+                    areaBusyIndicator.Visibility = Visibility.Hidden;
                     MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     btnSelectBinaryFile.Visibility = Visibility.Visible;
                 }
