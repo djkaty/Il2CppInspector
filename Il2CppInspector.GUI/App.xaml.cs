@@ -61,7 +61,7 @@ namespace Il2CppInspectorGUI
                         catch (NotImplementedException) { }
                     }
                     if (!Il2CppImages.Any()) {
-                        throw new InvalidOperationException("Could not auto-detect any IL2CPP binary images in the file");
+                        throw new InvalidOperationException("Could not auto-detect any IL2CPP binary images in the file. This may mean the binary file is packed, encrypted or obfuscated, that the file is not an IL2CPP image or that Il2CppInspector was not able to automatically find the required data. Please check the binary file in a disassembler to ensure that it is an unencrypted IL2CPP binary before submitting a bug report!");
                     }
                     return true;
                 }
