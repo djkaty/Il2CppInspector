@@ -1,9 +1,9 @@
-﻿<Window x:Class="Il2CppInspector.GUI.MainWindow"
+﻿<Window x:Class="Il2CppInspectorGUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Il2CppInspector.GUI"
+        xmlns:local="clr-namespace:Il2CppInspectorGUI"
         mc:Ignorable="d"
         Title="Il2CppInspector" Height="450" Width="800" Background="White">
     <Window.Resources>
@@ -70,13 +70,26 @@
     <Grid>
         <!-- Main content -->
         <Grid>
-            <TextBlock>Content of window</TextBlock>
+            <!-- Information about the loaded metadata and binary -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height ="Auto" />
+                    <RowDefinition Height ="Auto" />
+                    <RowDefinition Height ="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="25*"></ColumnDefinition>
+                    <ColumnDefinition Width="25*"></ColumnDefinition>
+                    <ColumnDefinition Width="25*"></ColumnDefinition>
+                    <ColumnDefinition Width="25*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Content="IL2CPP Metadata version"></Label>
+                <Label Name="lblMetadataVersion" Grid.Row="0" Grid.Column="1" Content="{Binding Path=Version}"></Label>
+            </Grid>
         </Grid>
 
         <!-- Light boxes -->
-        <Grid Name="areaLoadMetadata">
-            <Rectangle Name="rectModalLightBoxBackground" Fill="Black" Opacity="0.4"></Rectangle>
-            <Button Name="btnSelectMetadataFile" Style="{StaticResource LightBoxButton}" Click="BtnSelectMetadataFile_OnClick">Select an IL2CPP metadata file</Button>
-        </Grid>
+        <Rectangle Name="rectModalLightBoxBackground" Fill="Black" Opacity="0.4"></Rectangle>
+        <Button Name="btnSelectMetadataFile" Style="{StaticResource LightBoxButton}" Click="BtnSelectMetadataFile_OnClick">Select an IL2CPP metadata file</Button>
     </Grid>
 </Window>
