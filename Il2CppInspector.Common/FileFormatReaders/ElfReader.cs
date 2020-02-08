@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Il2CppInspector
 {
@@ -108,6 +109,7 @@ namespace Il2CppInspector
         private elf_shdr<TWord>[] section_header_table;
         private elf_dynamic<TWord>[] dynamic_table;
         private elf_header<TWord> elf_header;
+        private Dictionary<string, elf_shdr<TWord>> sectionByName = new Dictionary<string, elf_shdr<TWord>>();
 
         public ElfReader(Stream stream) : base(stream) { }
 
@@ -139,13 +141,22 @@ namespace Il2CppInspector
             if ((Elf) elf_header.m_dwFormat != Elf.ELFMAG)
                 return false;
 
-            // 64-bit not supported
+            // Ensure supported architecture
             if ((Elf) elf_header.m_arch != ArchClass)
                 return false;
 
+            // Get PHT and SHT
             program_header_table = ReadArray<TPHdr>(conv.Long(elf_header.e_phoff), elf_header.e_phnum);
             section_header_table = ReadArray<elf_shdr<TWord>>(conv.Long(elf_header.e_shoff), elf_header.e_shnum);
 
+            // Get section name mappings
+            var pStrtab = section_header_table[elf_header.e_shtrndx].sh_offset;
+            foreach (var section in section_header_table) {
+                var name = ReadNullTerminatedString(conv.Long(pStrtab) + section.sh_name);
+                sectionByName.Add(name, section);
+            }
+
+            // Get dynamic table if it exists
             if (getProgramHeader(Elf.PT_DYNAMIC) is TPHdr PT_DYNAMIC)
                 dynamic_table = ReadArray<elf_dynamic<TWord>>(conv.Long(PT_DYNAMIC.p_offset), (int) (conv.Long(PT_DYNAMIC.p_filesz) / Sizeof(typeof(elf_dynamic<TWord>))));
 
@@ -187,7 +198,7 @@ namespace Il2CppInspector
             if (BaseStream is FileStream)
                 throw new InvalidOperationException("Input stream to ElfReader is a file. Please supply a mutable stream source.");
 
-            var writer = new BinaryWriter(BaseStream);
+            using var writer = new BinaryWriter(BaseStream, Encoding.Default, true);
             var relsz = Sizeof(typeof(TSym));
 
             foreach (var rel in rels) {
@@ -236,7 +247,34 @@ namespace Il2CppInspector
             }
             Console.WriteLine($"Processed {rels.Count} relocations");
 
+            // Detect and defeat trivial XOR encryption
+            if (dynamic_table.Any(d => (Elf) conv.Int(d.d_tag) == Elf.DT_INIT)) {
+                var rodataFirstBytes = ReadArray<byte>(conv.Long(sectionByName[".rodata"].sh_offset), 256);
+                var xorKey = rodataFirstBytes.GroupBy(b => b).OrderByDescending(f => f.Count()).First().Key;
+
+                if (xorKey != 0x00) {
+                    Console.WriteLine($"Performing trivial XOR decryption (key: 0x{xorKey:X2})");
+
+                    xorSection(".text", xorKey);
+                    xorSection(".rodata", xorKey);
+                }
+            }
+
             return true;
+        }
+
+        private void xorRange(int offset, int length, byte xorValue) {
+            using var writer = new BinaryWriter(BaseStream, Encoding.Default, true);
+
+            var bytes = ReadArray<byte>(offset, length);
+            bytes = bytes.Select(b => (byte) (b ^ xorValue)).ToArray();
+            writer.Seek(offset, SeekOrigin.Begin);
+            writer.Write(bytes);
+        }
+
+        private void xorSection(string sectionName, byte xorValue) {
+            var section = sectionByName[sectionName];
+            xorRange(conv.Int(section.sh_offset), conv.Int(section.sh_size), xorValue);
         }
 
         public override Dictionary<string, ulong> GetSymbolTable() {
