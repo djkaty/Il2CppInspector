@@ -23,6 +23,7 @@ Nice to have:
 * Partition C# code output by namespace, assembly, class, full tree or single file; sort by index or type name; output flat or nested folder hierarchy. Each file includes the necessary `using` directives. Scope and type name conflicts are resolved automatically to produce code that compiles.
 * Static and dynamic symbol table scanning and relocation processing for ELF binaries 
 * Static symbol table scanning for Mach-O binaries
+* Automatically defeats certain basic obfuscation methods
 
 Reusable class libraries:
 
