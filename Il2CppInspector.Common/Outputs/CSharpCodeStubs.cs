@@ -263,6 +263,10 @@ namespace Il2CppInspector.Outputs
             if (!string.IsNullOrEmpty(Path.GetDirectoryName(outFile)))
                 Directory.CreateDirectory(Path.GetDirectoryName(outFile));
 
+            // Sanitize leafname (might be class name with invalid characters)
+            var leafname = Regex.Replace(Path.GetFileName(outFile), @"[<>:""\|\?\*]", "_");
+            outFile = Path.GetDirectoryName(outFile) + Path.DirectorySeparatorChar + leafname;
+
             // Create output file
             bool fileWritten = false;
             do {
