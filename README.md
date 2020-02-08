@@ -51,8 +51,8 @@ Run `Il2CppInspector.exe` at the command prompt.
 File format and architecture are automatically detected.
 
 ```
-  -i, --bin                   Required. (Default: libil2cpp.so) IL2CPP binary file input
-  -m, --metadata              Required. (Default: global-metadata.dat) IL2CPP metadata file input
+  -i, --bin                   (Default: libil2cpp.so) IL2CPP binary file input
+  -m, --metadata              (Default: global-metadata.dat) IL2CPP metadata file input
   -c, --cs-out                (Default: types.cs) C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)
   -p, --py-out                (Default: ida.py) IDA Python script output file
   -e, --exclude-namespaces    (Default: System Unity UnityEngine UnityEngineInternal Mono Microsoft.Win32 AOT JetBrains.Annotations) Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces

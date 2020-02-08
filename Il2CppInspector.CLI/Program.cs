@@ -17,10 +17,10 @@ namespace Il2CppInspector.CLI
     {
         private class Options
         {
-            [Option('i', "bin", Required = true, HelpText = "IL2CPP binary file input", Default = "libil2cpp.so")]
+            [Option('i', "bin", Required = false, HelpText = "IL2CPP binary file input", Default = "libil2cpp.so")]
             public string BinaryFile { get; set; }
 
-            [Option('m', "metadata", Required = true, HelpText = "IL2CPP metadata file input", Default = "global-metadata.dat")]
+            [Option('m', "metadata", Required = false, HelpText = "IL2CPP metadata file input", Default = "global-metadata.dat")]
             public string MetadataFile { get; set; }
 
             [Option('c', "cs-out", Required = false, HelpText = "C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)", Default = "types.cs")]
