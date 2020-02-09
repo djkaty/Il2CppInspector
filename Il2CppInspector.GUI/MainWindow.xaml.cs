@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -159,6 +160,13 @@ namespace Il2CppInspectorGUI
             return rootAndChildren.Select(i => new CheckboxNode {Name = i.Key, IsChecked = true, Children = deconstructNamespaces(
                 i.Where(s => s.IndexOf(".") != -1).Select(s => s.Substring(s.IndexOf(".") + 1))
                 )}).ToList();
+        }
+
+        /// <summary>
+        /// User clicked on a link
+        /// </summary>
+        private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e) {
+            Process.Start(new ProcessStartInfo {FileName = e.Uri.ToString(), UseShellExecute = true});
         }
     }
 

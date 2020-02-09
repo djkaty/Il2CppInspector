@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Il2CppInspectorGUI"
         xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
         mc:Ignorable="d"
-        Title="Il2CppInspector" Height="590" Width="970" Background="White">
+        Title="Il2CppInspector" Height="630" Width="970" Background="White">
     <Window.Resources>
         <!-- Our favourite colours -->
         <SolidColorBrush x:Key="MicrosoftBlue" Color="#00A2ED"/>
@@ -108,6 +108,17 @@
                 <Label DockPanel.Dock="Top" Foreground="{StaticResource WindowsBlue}" FontSize="18">Select image</Label>
 
                 <ListBox DockPanel.Dock="Top" Name="lstImages" ItemTemplate="{StaticResource ImageListTemplate}" Height="80" SelectionChanged="LstImages_OnSelectionChanged"/>
+
+                <!-- Footer text -->
+                <TextBlock DockPanel.Dock="Bottom" TextWrapping="WrapWithOverflow" Margin="5">
+                    If you find this tool useful, please donate to help support its continued development!<LineBreak/>
+                    Donate via <Hyperlink NavigateUri="http://paypal.me/djkaty" RequestNavigate="Hyperlink_OnRequestNavigate">PayPal</Hyperlink><LineBreak/>
+                    Donate with bitcoin:<LineBreak/><TextBox IsReadOnly="True">3FoRUqUXgYj8NY8sMQfhX6vv9LqR3e2kzz</TextBox><LineBreak/>
+                    <LineBreak/>
+                    <Hyperlink NavigateUri="https://github.com/djkaty/Il2CppInspector" RequestNavigate="Hyperlink_OnRequestNavigate">Il2CppInspector on GitHub</Hyperlink><LineBreak/>
+                    <Hyperlink NavigateUri="http://www.djkaty.com" RequestNavigate="Hyperlink_OnRequestNavigate">www.djkaty.com</Hyperlink><LineBreak/>
+                    &#169; Katy Coe 2017-2020
+                </TextBlock>
 
                 <!-- Image details view -->
                 <Label DockPanel.Dock="Top" Foreground="{StaticResource WindowsBlue}" FontSize="18">Image information</Label>
