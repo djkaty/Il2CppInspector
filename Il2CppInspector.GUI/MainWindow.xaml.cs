@@ -1,8 +1,14 @@
-﻿using System;
+﻿// Copyright (c) 2020 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
+// All rights reserved
+
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -126,6 +132,19 @@ namespace Il2CppInspectorGUI
             // Break namespaces down into a tree
             var namespaceTree = deconstructNamespaces(namespaces);
 
+            // Uncheck the default exclusions
+            foreach (var exclusion in Constants.DefaultExcludedNamespaces) {
+                var parts = exclusion.Split('.');
+                CheckboxNode node = null;
+                foreach (var part in parts) {
+                    node = (node?.Children ?? namespaceTree).FirstOrDefault(c => c.Name == part);
+                    if (node == null)
+                        break;
+                }
+                if (node != null)
+                    node.IsChecked = false;
+            }
+
             // Populate TreeView with namespace hierarchy
             trvNamespaces.ItemsSource = namespaceTree;
         }
@@ -144,10 +163,57 @@ namespace Il2CppInspectorGUI
     }
 
     // Replacement for TreeViewItem that includes checkbox state
-    internal class CheckboxNode
+    internal class CheckboxNode : INotifyPropertyChanged
     {
-        public string Name { get; set; }
-        public bool IsChecked { get; set; }
-        public IEnumerable<CheckboxNode> Children { get; set; }
+        private bool? isChecked;
+        private string name;
+        private IEnumerable<CheckboxNode> children;
+        private CheckboxNode parent; // Only needed for ancestor checkbox validation
+
+        public string Name {
+            get => name;
+            set {
+                if (value == name) return;
+                name = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public IEnumerable<CheckboxNode> Children {
+            get => children;
+            set {
+                if (Equals(value, children)) return;
+                children = value;
+
+                // Set parent for each child
+                foreach (var child in children)
+                    child.parent = this;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool? IsChecked {
+            get => isChecked;
+            set {
+                if (isChecked == value) return;
+                isChecked = value;
+                OnPropertyChanged();
+
+                // Uncheck all children if needed
+                if (isChecked == false && Children != null)
+                    foreach (var child in Children)
+                        child.IsChecked = false;
+
+                // Process ancestors
+                if (isChecked == true && parent != null && parent.isChecked != true)
+                    parent.IsChecked = true;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
