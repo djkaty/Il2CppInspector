@@ -41,25 +41,11 @@ namespace Il2CppInspector
             if (inspectors.Count == 0)
                 throw new Exception("Could not find any images in the IL2CPP binary");
 
-            // Exclusions
-            
-            var excludedNamespaces = new List<string> {
-                "System",
-                "Mono",
-                "Microsoft.Win32",
-                "Unity",
-                "UnityEditor",
-                "UnityEngine",
-                "UnityEngineInternal",
-                "AOT",
-                "JetBrains.Annotations"
-            };
-            
             // Dump each image in the binary separately
             int i = 0;
             foreach (var il2cpp in inspectors)
                 new CSharpCodeStubs(new Il2CppModel(il2cpp)) {
-                        ExcludedNamespaces = excludedNamespaces,
+                        ExcludedNamespaces = Constants.DefaultExcludedNamespaces,
                         SuppressMetadata = false,
                         MustCompile = true
                 }.WriteSingleFile(testPath + @"\test-result" + (i++ > 0 ? "-" + (i - 1) : "") + ".cs");

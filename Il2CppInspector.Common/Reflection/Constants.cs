@@ -36,5 +36,18 @@ namespace Il2CppInspector.Reflection
             "using", /* "using static", */ "virtual", "void",
             "volatile", "while"
         };
+
+        // Default namespaces to exclude
+        public static readonly List<string> DefaultExcludedNamespaces = new List<string> {
+            "System",
+            "Mono",
+            "Microsoft.Win32",
+            "Unity",
+            "UnityEditor",
+            "UnityEngine",
+            "UnityEngineInternal",
+            "AOT",
+            "JetBrains.Annotations"
+        };
     }
 }
