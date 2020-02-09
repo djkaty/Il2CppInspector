@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Il2CppInspectorGUI"
         xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
         mc:Ignorable="d"
-        Title="Il2CppInspector" Height="570" Width="900" Background="White">
+        Title="Il2CppInspector" Height="590" Width="970" Background="White">
     <Window.Resources>
         <!-- Our favourite colours -->
         <SolidColorBrush x:Key="MicrosoftBlue" Color="#00A2ED"/>
@@ -82,6 +83,11 @@
                 </TextBlock.Text>
             </TextBlock>
         </DataTemplate>
+
+        <!-- Namespace checkbox tree items -->
+        <HierarchicalDataTemplate x:Key="NamespaceTreeItemTemplate" DataType="{x:Type local:CheckboxNode}" ItemsSource="{Binding Children}">
+            <CheckBox Focusable="False" IsChecked="{Binding IsChecked}" VerticalAlignment="Center" Content="{Binding Name}"/>
+        </HierarchicalDataTemplate>
     </Window.Resources>
 
     <!-- Window content -->
@@ -101,7 +107,7 @@
                 <!-- List of images in the binary file -->
                 <Label DockPanel.Dock="Top" Foreground="{StaticResource WindowsBlue}" FontSize="18">Select image</Label>
 
-                <ListBox DockPanel.Dock="Top" Name="lstImages" ItemTemplate="{StaticResource ImageListTemplate}" Height="80"/>
+                <ListBox DockPanel.Dock="Top" Name="lstImages" ItemTemplate="{StaticResource ImageListTemplate}" Height="80" SelectionChanged="LstImages_OnSelectionChanged"/>
 
                 <!-- Image details view -->
                 <Label DockPanel.Dock="Top" Foreground="{StaticResource WindowsBlue}" FontSize="18">Image information</Label>
@@ -182,10 +188,10 @@
 
                 <DockPanel DockPanel.Dock="Top">
                     <!-- List of namespaces to export -->
-                    <StackPanel DockPanel.Dock="Right">
-                        <Label Foreground="{StaticResource WindowsBlue}" FontSize="18">Namespaces</Label>
-                        <TreeView DockPanel.Dock="Right" Width="200" Margin="5" MinHeight="60"></TreeView>
-                    </StackPanel>
+                    <DockPanel DockPanel.Dock="Right">
+                        <Label DockPanel.Dock="Top" Foreground="{StaticResource WindowsBlue}" FontSize="18">Namespaces</Label>
+                        <TreeView DockPanel.Dock="Bottom" Name="trvNamespaces" ItemTemplate="{StaticResource NamespaceTreeItemTemplate}" Width="220" Margin="5"></TreeView>
+                    </DockPanel>
 
                     <!-- Settings -->
                     <StackPanel DockPanel.Dock="Left">
@@ -209,7 +215,7 @@
                             </StackPanel>
                         </GroupBox>
                         <CheckBox Margin="2">Suppress pointer, offset and index metadata comments</CheckBox>
-                        <CheckBox Margin="2">Attempt to generate output that compiles</CheckBox>
+                        <CheckBox Margin="2">Attempt to generate code that compiles</CheckBox>
                         <CheckBox IsChecked="True" Margin="2">Place assembly-level attributes in separate files</CheckBox>
                         <Separator Margin="5"/>
                         <RadioButton GroupName="grpOutputType" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">Visual Studio solution</RadioButton>
@@ -226,6 +232,7 @@
                         </DockPanel>
                         <Separator Margin="5"/>
                         <RadioButton GroupName="grpOutputType" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">IDAPython script</RadioButton>
+                        <TextBlock TextWrapping="WrapWithOverflow">No configuration required for IDA script output</TextBlock>
                     </StackPanel>
                 </DockPanel>
             </DockPanel>

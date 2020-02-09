@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using Il2CppInspector;
+using Il2CppInspector.Reflection;
 
 namespace Il2CppInspectorGUI
 {
@@ -86,6 +87,7 @@ namespace Il2CppInspectorGUI
                     rectModalLightBoxBackground.Visibility = Visibility.Hidden;
 
                     lstImages.ItemsSource = app.Il2CppModels;
+                    lstImages.SelectedIndex = 0;
                 }
                 else {
                     areaBusyIndicator.Visibility = Visibility.Hidden;
@@ -98,13 +100,54 @@ namespace Il2CppInspectorGUI
         /// <summary>
         /// Reset binary and metadata files and start again
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void BtnBack_OnClick(object sender, RoutedEventArgs e) {
             rectModalLightBoxBackground.Visibility = Visibility.Visible;
             lstImages.ItemsSource = null;
             btnSelectBinaryFile.Visibility = Visibility.Hidden;
             btnSelectMetadataFile.Visibility = Visibility.Visible;
         }
+
+        /// <summary>
+        /// User has selected an image
+        /// </summary>
+        private void LstImages_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
+            // Selection has been removed?
+            if (((ListBox) sender).SelectedItem == null) {
+                trvNamespaces.ItemsSource = null;
+                return;
+            }
+
+            // Get selected image
+            var model = (Il2CppModel) ((ListBox) sender).SelectedItem;
+
+            // Get namespaces
+            var namespaces = model.Assemblies.SelectMany(x => x.DefinedTypes).GroupBy(t => t.Namespace).Select(n => n.Key);
+
+            // Break namespaces down into a tree
+            var namespaceTree = deconstructNamespaces(namespaces);
+
+            // Populate TreeView with namespace hierarchy
+            trvNamespaces.ItemsSource = namespaceTree;
+        }
+
+        private IEnumerable<CheckboxNode> deconstructNamespaces(IEnumerable<string> input) {
+            if (!input.Any())
+                return null;
+
+            var rootAndChildren = input.Select(s => string.IsNullOrEmpty(s)? "<global namespace>" : s)
+                                    .GroupBy(n => n.IndexOf(".") != -1 ? n.Substring(0, n.IndexOf(".")) : n).OrderBy(g => g.Key);
+
+            return rootAndChildren.Select(i => new CheckboxNode {Name = i.Key, IsChecked = true, Children = deconstructNamespaces(
+                i.Where(s => s.IndexOf(".") != -1).Select(s => s.Substring(s.IndexOf(".") + 1))
+                )}).ToList();
+        }
+    }
+
+    // Replacement for TreeViewItem that includes checkbox state
+    internal class CheckboxNode
+    {
+        public string Name { get; set; }
+        public bool IsChecked { get; set; }
+        public IEnumerable<CheckboxNode> Children { get; set; }
     }
 }
