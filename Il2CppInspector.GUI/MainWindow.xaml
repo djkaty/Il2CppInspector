@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
         mc:Ignorable="d"
-        Title="Il2CppInspector" Height="450" Width="800" Background="White">
+        Title="Il2CppInspector" Height="500" Width="900" Background="White">
     <Window.Resources>
         <!-- Our favourite colours -->
         <SolidColorBrush x:Key="MicrosoftBlue" Color="#00A2ED"/>
@@ -68,35 +68,88 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Image list -->
+        <DataTemplate x:Key="ImageListTemplate">
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{2}-bit {1} ({0})">
+                        <Binding Path="BinaryImage.Format"></Binding>
+                        <Binding Path="BinaryImage.Arch"></Binding>
+                        <Binding Path="BinaryImage.Bits"></Binding>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </DataTemplate>
     </Window.Resources>
 
     <!-- Window content -->
     <Grid>
         <!-- Main content -->
-        <Grid>
-            <!-- Information about the loaded metadata and binary -->
-            <Grid Name="gridImageDetails">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height ="Auto" />
-                    <RowDefinition Height ="Auto" />
-                    <RowDefinition Height ="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="25*"></ColumnDefinition>
-                    <ColumnDefinition Width="25*"></ColumnDefinition>
-                    <ColumnDefinition Width="25*"></ColumnDefinition>
-                    <ColumnDefinition Width="25*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Content="IL2CPP Metadata version"></Label>
-                <Label Grid.Row="0" Grid.Column="1" Content="{Binding Path=Version}"></Label>
-            </Grid>
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height ="100*" />
+                <RowDefinition Height ="40" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"></ColumnDefinition>
+                <ColumnDefinition Width="15"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <DockPanel DockPanel.Dock="Left">
+                <Label DockPanel.Dock="Top" Foreground="{StaticResource WindowsBlue}" FontSize="18">Select image</Label>
+                <ListBox DockPanel.Dock="Top" Name="lstImages" ItemTemplate="{StaticResource ImageListTemplate}" Height="80"/>
+                <Label DockPanel.Dock="Top" Foreground="{StaticResource WindowsBlue}" FontSize="18">Image information</Label>
+                <Grid DockPanel.Dock="Top" Name="gridImageDetails" DataContext="{Binding ElementName=lstImages, Path=SelectedItem}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="70*"></ColumnDefinition>
+                        <ColumnDefinition Width="30*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="IL2CPP Metadata version"></Label>
+                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding Path=Version}"></Label>
+                    <Label Grid.Row="1" Grid.Column="0" Content="Container format"></Label>
+                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding Path=BinaryImage.Format}"></Label>
+                    <Label Grid.Row="2" Grid.Column="0" Content="Container endianness"></Label>
+                    <Label Grid.Row="2" Grid.Column="1" Content="{Binding Path=BinaryImage.Endianness}"></Label>
+                    <Label Grid.Row="3" Grid.Column="0" Content="Architecture"></Label>
+                    <Label Grid.Row="3" Grid.Column="1" Content="{Binding Path=BinaryImage.Arch}"></Label>
+                    <Label Grid.Row="4" Grid.Column="0" Content="Architecture word size"></Label>
+                    <Label Grid.Row="4" Grid.Column="1" Content="{Binding Path=BinaryImage.Bits}" ContentStringFormat="{}{0}-bit"></Label>
+                    <Label Grid.Row="5" Grid.Column="0" Content="Code image-to-VA positive offset"></Label>
+                    <Label Grid.Row="5" Grid.Column="1" Content="{Binding Path=BinaryImage.GlobalOffset}" ContentStringFormat="0x{0:x8}"></Label>
+                    <Label Grid.Row="6" Grid.Column="0" Content="MetadataRegistration address"></Label>
+                    <Label Grid.Row="6" Grid.Column="1" Content="{Binding Path=Binary.MetadataRegistrationPointer}" ContentStringFormat="0x{0:x8}"></Label>
+                    <Label Grid.Row="7" Grid.Column="0" Content="CodeRegistration address"></Label>
+                    <Label Grid.Row="7" Grid.Column="1" Content="{Binding Path=Binary.CodeRegistrationPointer}" ContentStringFormat="0x{0:x8}"></Label>
+                    <Label Grid.Row="8" Grid.Column="0" Content="Il2CppCodeRegistration function"></Label>
+                    <Label Grid.Row="8" Grid.Column="1" Content="{Binding Path=Binary.RegistrationFunctionPointer}" ContentStringFormat="0x{0:x8}"></Label>
+                </Grid>
+            </DockPanel>
+            <Separator Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Margin="5">
+                <Separator.LayoutTransform>
+                    <RotateTransform Angle="90"></RotateTransform>
+                </Separator.LayoutTransform>
+            </Separator>
+            <Label Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Foreground="{StaticResource WindowsBlue}" FontSize="24"
+                   HorizontalAlignment="Center" VerticalAlignment="Center">Select an image on the left</Label>
         </Grid>
 
         <!-- Light boxes -->
         <Rectangle Name="rectModalLightBoxBackground" Fill="Black" Opacity="0.4"></Rectangle>
         <Button Name="btnSelectMetadataFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectMetadataFile_OnClick">Select an IL2CPP metadata file</Button>
         <Button Name="btnSelectBinaryFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectBinaryFile_OnClick" Visibility="Hidden">Select an IL2CPP binary file</Button>
-        <Button Name="btnBack" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Style="{StaticResource LightBoxButton}" Margin="20,0,630,20" FontSize="18" Click="BtnBack_OnClick" Visibility="Hidden">&lt;&lt; Back</Button>
+        <Button Name="btnBack" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{StaticResource LightBoxButton}" FontSize="18" Width="120" Click="BtnBack_OnClick" Visibility="Hidden">&lt;&lt; Back</Button>
 
         <!-- Busy indicator -->
         <Border Name="areaBusyIndicator" BorderThickness="1" CornerRadius="2" BorderBrush="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#F8F8F8" SnapsToDevicePixels="True" Visibility="Hidden">
