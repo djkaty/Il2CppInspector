@@ -14,6 +14,11 @@
     <Product>Il2CppInspector Windows Edition</Product>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <NoWarn>1701;1702;NU1701</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Resources\baby-spinner.gif" />
     <None Remove="Resources\chemical-loading-spinner.gif" />
