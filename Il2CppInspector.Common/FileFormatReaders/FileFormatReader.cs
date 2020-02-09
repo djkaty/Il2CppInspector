@@ -47,28 +47,29 @@ namespace Il2CppInspector
         U ReadObject<U>() where U : new();
         string ReadMappedNullTerminatedString(ulong uiAddr);
         List<U> ReadMappedObjectPointerArray<U>(ulong uiAddr, int count) where U : new();
+        event EventHandler<string> OnStatusUpdate;
     }
 
     public class FileFormatReader
     {
         // Helper method to try all defined file formats when the contents of the binary is unknown
-        public static IFileFormatReader Load(string filename) => Load(new FileStream(filename, FileMode.Open, FileAccess.Read));
+        public static IFileFormatReader Load(string filename, EventHandler<string> statusCallback = null) => Load(new FileStream(filename, FileMode.Open, FileAccess.Read), statusCallback);
 
-        public static IFileFormatReader Load(Stream stream) {
+        public static IFileFormatReader Load(Stream stream, EventHandler<string> statusCallback = null) {
             var types = Assembly.GetExecutingAssembly().DefinedTypes
                         .Where(x => x.ImplementedInterfaces.Contains(typeof(IFileFormatReader)) && !x.IsGenericTypeDefinition);
 
             foreach (var type in types) {
                 if (type.GetMethod("Load", BindingFlags.FlattenHierarchy | BindingFlags.Static | BindingFlags.Public,
-                        null, new [] {typeof(Stream)}, null)
-                    .Invoke(null, new object[] { stream }) is IFileFormatReader loaded)
+                        null, new [] {typeof(Stream), typeof(EventHandler<string>)}, null)
+                    .Invoke(null, new object[] { stream, statusCallback }) is IFileFormatReader loaded)
                     return loaded;
             }
             return null;
         }
     }
 
-    public class FileFormatReader<T> : BinaryObjectReader, IFileFormatReader where T : FileFormatReader<T>
+    public abstract class FileFormatReader<T> : BinaryObjectReader, IFileFormatReader where T : FileFormatReader<T>
     {
         public FileFormatReader(Stream stream) : base(stream) { }
 
@@ -86,6 +87,10 @@ namespace Il2CppInspector
 
         public virtual int Bits => throw new NotImplementedException();
 
+        public event EventHandler<string> OnStatusUpdate;
+
+        protected void StatusUpdate(string status) => OnStatusUpdate?.Invoke(this, status);
+
         public IEnumerable<IFileFormatReader> Images {
             get {
                 for (uint i = 0; i < NumImages; i++)
@@ -93,12 +98,12 @@ namespace Il2CppInspector
             }
         }
 
-        public static T Load(string filename) {
+        public static T Load(string filename, EventHandler<string> statusCallback = null) {
             using var stream = new FileStream(filename, FileMode.Open, FileAccess.Read);
-            return Load(stream);
+            return Load(stream, statusCallback);
         }
 
-        public static T Load(Stream stream) {
+        public static T Load(Stream stream, EventHandler<string> statusCallback = null) {
             // Copy the original stream in case we modify it
             var ms = new MemoryStream();
             stream.Position = 0;
@@ -106,7 +111,12 @@ namespace Il2CppInspector
             
             ms.Position = 0;
             var pe = (T) Activator.CreateInstance(typeof(T), ms);
-            return pe.Init() ? pe : null;
+            return pe.InitImpl(statusCallback) ? pe : null;
+        }
+
+        private bool InitImpl(EventHandler<string> statusCallback = null) {
+            OnStatusUpdate += statusCallback;
+            return Init();
         }
 
         // Confirm file is valid and set up RVA mappings

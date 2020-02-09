@@ -152,9 +152,9 @@
         <Button Name="btnBack" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{StaticResource LightBoxButton}" FontSize="18" Width="120" Click="BtnBack_OnClick" Visibility="Hidden">&lt;&lt; Back</Button>
 
         <!-- Busy indicator -->
-        <Border Name="areaBusyIndicator" BorderThickness="1" CornerRadius="2" BorderBrush="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#F8F8F8" SnapsToDevicePixels="True" Visibility="Hidden">
+        <Border Name="areaBusyIndicator" Width="400" BorderThickness="1" CornerRadius="2" BorderBrush="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" SnapsToDevicePixels="True" Visibility="Hidden">
             <StackPanel Margin="60,40,60,40">
-                <TextBlock Name="txtBusyStatus" Foreground="{StaticResource WindowsBlue}" FontSize="24">Getting things ready...</TextBlock>
+                <TextBlock Name="txtBusyStatus" Foreground="{StaticResource WindowsBlue}" FontSize="24" HorizontalAlignment="Center">Getting things ready...</TextBlock>
                 <Image gif:AnimationBehavior.SourceUri="Resources/pizza.gif" Width="100" Margin="0,20,0,0" RenderOptions.BitmapScalingMode="Fant" />
             </StackPanel>
         </Border>

@@ -26,7 +26,12 @@ namespace Il2CppInspectorGUI
     {
         public MainWindow() {
             InitializeComponent();
+
+            // Subscribe to status update events
+            ((App) Application.Current).OnStatusUpdate += OnStatusUpdate;
         }
+
+        private void OnStatusUpdate(object sender, string e) => txtBusyStatus.Dispatcher.Invoke(() => txtBusyStatus.Text = e + "...");
 
         /// <summary>
         /// Select global metadata file

@@ -21,6 +21,11 @@ namespace Il2CppInspectorGUI
 
         public Exception LastException { get; private set; }
 
+        // Event to indicate current work status
+        public event EventHandler<string> OnStatusUpdate;
+
+        private void StatusUpdate(object sender, string status) => OnStatusUpdate?.Invoke(sender, status);
+
         // Attempt to load an IL2CPP metadata file
         public Task<bool> LoadMetadataAsync(string metadataFile) =>
             Task.Run(() => {
@@ -38,7 +43,7 @@ namespace Il2CppInspectorGUI
             Task.Run(() => {
                 try {
                     // This may throw other exceptions from the individual loaders as well
-                    IFileFormatReader stream = FileFormatReader.Load(binaryFile);
+                    IFileFormatReader stream = FileFormatReader.Load(binaryFile, StatusUpdate);
                     if (stream == null) {
                         throw new InvalidOperationException("Could not determine the binary file format");
                     }
@@ -49,6 +54,8 @@ namespace Il2CppInspectorGUI
                     // Multi-image binaries may contain more than one Il2Cpp image
                     Il2CppModels.Clear();
                     foreach (var image in stream.Images) {
+                        OnStatusUpdate?.Invoke(this, "Analyzing IL2CPP data");
+
                         // Architecture-agnostic load attempt
                         try {
                             // If we can't load the IL2CPP data here, it's probably packed or obfuscated; ignore it
@@ -56,6 +63,7 @@ namespace Il2CppInspectorGUI
                                 var inspector = new Inspector(binary, metadata);
 
                                 // Build type model
+                                OnStatusUpdate?.Invoke(this, "Building type model");
                                 Il2CppModels.Add(new Il2CppModel(inspector));
                             }
                         }

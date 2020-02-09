@@ -125,6 +125,8 @@ namespace Il2CppInspector
 
         public override int Bits => (elf_header.m_arch == (uint) Elf.ELFCLASS64) ? 64 : 32;
 
+        //public override event EventHandler<string> OnStatusUpdate;
+
         private elf_shdr<TWord> getSection(Elf sectionIndex) => section_header_table.FirstOrDefault(x => x.sh_type == (uint) sectionIndex);
         private IEnumerable<elf_shdr<TWord>> getSections(Elf sectionIndex) => section_header_table.Where(x => x.sh_type == (uint) sectionIndex);
         private TPHdr getProgramHeader(Elf programIndex) => program_header_table.FirstOrDefault(x => x.p_type == (uint) programIndex);
@@ -166,6 +168,8 @@ namespace Il2CppInspector
 
             // Find all relocations; target address => (rela header (rels are converted to rela), symbol table base address, is rela?)
             var rels = new HashSet<ElfReloc>();
+
+            StatusUpdate("Processing relocations");
 
             // Two types: add value from offset in image, and add value from specified addend
             foreach (var relSection in getSections(Elf.SHT_REL))
@@ -253,6 +257,7 @@ namespace Il2CppInspector
                 var xorKey = rodataFirstBytes.GroupBy(b => b).OrderByDescending(f => f.Count()).First().Key;
 
                 if (xorKey != 0x00) {
+                    StatusUpdate("Decrypting");
                     Console.WriteLine($"Performing trivial XOR decryption (key: 0x{xorKey:X2})");
 
                     xorSection(".text", xorKey);
