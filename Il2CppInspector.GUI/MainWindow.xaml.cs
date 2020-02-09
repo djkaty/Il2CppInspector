@@ -40,6 +40,7 @@ namespace Il2CppInspectorGUI
             };
 
             if (openFileDialog.ShowDialog() == true) {
+                txtBusyStatus.Text = "Processing metadata...";
                 areaBusyIndicator.Visibility = Visibility.Visible;
                 btnSelectMetadataFile.Visibility = Visibility.Hidden;
 
@@ -72,6 +73,7 @@ namespace Il2CppInspectorGUI
             btnBack.IsEnabled = false;
 
             if (openFileDialog.ShowDialog() == true) {
+                txtBusyStatus.Text = "Processing binary...";
                 areaBusyIndicator.Visibility = Visibility.Visible;
                 btnSelectBinaryFile.Visibility = Visibility.Hidden;
 
@@ -81,12 +83,12 @@ namespace Il2CppInspectorGUI
                     areaBusyIndicator.Visibility = Visibility.Hidden;
                     rectModalLightBoxBackground.Visibility = Visibility.Hidden;
 
-                    lstImages.ItemsSource = app.Il2CppImages;
+                    lstImages.ItemsSource = app.Il2CppModels;
                 }
                 else {
                     areaBusyIndicator.Visibility = Visibility.Hidden;
                     btnSelectBinaryFile.Visibility = Visibility.Visible;
-                    MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(this, "Something went wrong! " + app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
 

@@ -74,9 +74,9 @@
             <TextBlock>
                 <TextBlock.Text>
                     <MultiBinding StringFormat="{}{2}-bit {1} ({0})">
-                        <Binding Path="BinaryImage.Format"></Binding>
-                        <Binding Path="BinaryImage.Arch"></Binding>
-                        <Binding Path="BinaryImage.Bits"></Binding>
+                        <Binding Path="Package.BinaryImage.Format"></Binding>
+                        <Binding Path="Package.BinaryImage.Arch"></Binding>
+                        <Binding Path="Package.BinaryImage.Bits"></Binding>
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>
@@ -100,7 +100,7 @@
                 <Label DockPanel.Dock="Top" Foreground="{StaticResource WindowsBlue}" FontSize="18">Select image</Label>
                 <ListBox DockPanel.Dock="Top" Name="lstImages" ItemTemplate="{StaticResource ImageListTemplate}" Height="80"/>
                 <Label DockPanel.Dock="Top" Foreground="{StaticResource WindowsBlue}" FontSize="18">Image information</Label>
-                <Grid DockPanel.Dock="Top" Name="gridImageDetails" DataContext="{Binding ElementName=lstImages, Path=SelectedItem}">
+                <Grid DockPanel.Dock="Top" Name="gridImageDetails" DataContext="{Binding ElementName=lstImages, Path=SelectedItem.Package}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
@@ -154,7 +154,7 @@
         <!-- Busy indicator -->
         <Border Name="areaBusyIndicator" BorderThickness="1" CornerRadius="2" BorderBrush="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#F8F8F8" SnapsToDevicePixels="True" Visibility="Hidden">
             <StackPanel Margin="60,40,60,40">
-                <TextBlock Foreground="{StaticResource WindowsBlue}" FontSize="24">Getting things ready...</TextBlock>
+                <TextBlock Name="txtBusyStatus" Foreground="{StaticResource WindowsBlue}" FontSize="24">Getting things ready...</TextBlock>
                 <Image gif:AnimationBehavior.SourceUri="Resources/pizza.gif" Width="100" Margin="0,20,0,0" RenderOptions.BitmapScalingMode="Fant" />
             </StackPanel>
         </Border>

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Il2CppInspector;
+using Il2CppInspector.Reflection;
 using Inspector = Il2CppInspector.Il2CppInspector;
 
 namespace Il2CppInspectorGUI
@@ -18,7 +17,7 @@ namespace Il2CppInspectorGUI
     {
         private Metadata metadata;
 
-        public List<Inspector> Il2CppImages { get; } = new List<Inspector>();
+        public List<Il2CppModel> Il2CppModels { get; } = new List<Il2CppModel>();
 
         public Exception LastException { get; private set; }
 
@@ -48,19 +47,22 @@ namespace Il2CppInspectorGUI
                     }
 
                     // Multi-image binaries may contain more than one Il2Cpp image
-                    Il2CppImages.Clear();
+                    Il2CppModels.Clear();
                     foreach (var image in stream.Images) {
                         // Architecture-agnostic load attempt
                         try {
                             // If we can't load the IL2CPP data here, it's probably packed or obfuscated; ignore it
                             if (Il2CppBinary.Load(image, metadata.Version) is Il2CppBinary binary) {
-                                Il2CppImages.Add(new Inspector(binary, metadata));
+                                var inspector = new Inspector(binary, metadata);
+
+                                // Build type model
+                                Il2CppModels.Add(new Il2CppModel(inspector));
                             }
                         }
                         // Unsupported architecture; ignore it
                         catch (NotImplementedException) { }
                     }
-                    if (!Il2CppImages.Any()) {
+                    if (!Il2CppModels.Any()) {
                         throw new InvalidOperationException("Could not auto-detect any IL2CPP binary images in the file. This may mean the binary file is packed, encrypted or obfuscated, that the file is not an IL2CPP image or that Il2CppInspector was not able to automatically find the required data. Please check the binary file in a disassembler to ensure that it is an unencrypted IL2CPP binary before submitting a bug report!");
                     }
                     return true;
