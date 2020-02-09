@@ -5,10 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
         mc:Ignorable="d"
-        Title="Il2CppInspector" Height="500" Width="900" Background="White">
+        Title="Il2CppInspector" Height="570" Width="900" Background="White">
     <Window.Resources>
         <!-- Our favourite colours -->
         <SolidColorBrush x:Key="MicrosoftBlue" Color="#00A2ED"/>
+        <SolidColorBrush x:Key="MicrosoftGreen" Color="#7DB700"/>
         <SolidColorBrush x:Key="WindowsBlue" Color="#357EC7"/>
 
         <!-- Light box button -->
@@ -97,9 +98,14 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <DockPanel DockPanel.Dock="Left">
+                <!-- List of images in the binary file -->
                 <Label DockPanel.Dock="Top" Foreground="{StaticResource WindowsBlue}" FontSize="18">Select image</Label>
+
                 <ListBox DockPanel.Dock="Top" Name="lstImages" ItemTemplate="{StaticResource ImageListTemplate}" Height="80"/>
+
+                <!-- Image details view -->
                 <Label DockPanel.Dock="Top" Foreground="{StaticResource WindowsBlue}" FontSize="18">Image information</Label>
+
                 <Grid DockPanel.Dock="Top" Name="gridImageDetails" DataContext="{Binding ElementName=lstImages, Path=SelectedItem.Package}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"></RowDefinition>
@@ -141,15 +147,111 @@
                     <RotateTransform Angle="90"></RotateTransform>
                 </Separator.LayoutTransform>
             </Separator>
-            <Label Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Foreground="{StaticResource WindowsBlue}" FontSize="24"
-                   HorizontalAlignment="Center" VerticalAlignment="Center">Select an image on the left</Label>
+
+            <!-- Image selection prompt that automatically disappears when an image is selected -->
+            <Label Name="lblChooseImagePrompt" Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Foreground="{StaticResource WindowsBlue}" FontSize="24"
+                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label.Content>Select an image on the left</Label.Content>
+                <Label.Style>
+                    <Style>
+                        <Setter Property="Label.Visibility" Value="Hidden"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=lstImages, Path=SelectedItem}" Value="{x:Null}">
+                                <Setter Property="Label.Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
+
+            <!-- Output configuration -->
+            <DockPanel Name="pnlOutputSettings" Grid.Row="0" Grid.Column="2" Grid.RowSpan="2">
+                <DockPanel.Style>
+                    <Style>
+                        <Setter Property="DockPanel.Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=lstImages, Path=SelectedItem}" Value="{x:Null}">
+                                <Setter Property="DockPanel.Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
+
+                <!-- Export button -->
+                <Button Name="btnExport" DockPanel.Dock="Bottom" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource LightBoxButton}" FontSize="18" Width="120">Export</Button>
+
+                <DockPanel DockPanel.Dock="Top">
+                    <!-- List of namespaces to export -->
+                    <StackPanel DockPanel.Dock="Right">
+                        <Label Foreground="{StaticResource WindowsBlue}" FontSize="18">Namespaces</Label>
+                        <TreeView DockPanel.Dock="Right" Width="200" Margin="5" MinHeight="60"></TreeView>
+                    </StackPanel>
+
+                    <!-- Settings -->
+                    <StackPanel DockPanel.Dock="Left">
+                        <Label Foreground="{StaticResource WindowsBlue}" FontSize="18">Configure output</Label>
+
+                        <RadioButton GroupName="grpOutputType" IsChecked="True" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">C# prototypes</RadioButton>
+                        <GroupBox Header="Layout" Margin="5" Padding="5">
+                            <StackPanel>
+                                <RadioButton IsChecked="True">Single file</RadioButton>
+                                <RadioButton>File per namespace</RadioButton>
+                                <RadioButton>File per assembly</RadioButton>
+                                <RadioButton>File per class</RadioButton>
+                                <RadioButton>Tree layout</RadioButton>
+                            </StackPanel>
+                        </GroupBox>
+                        <CheckBox Margin="2">Don't nest folders (flatten hierarchy)</CheckBox>
+                        <GroupBox Header="Type sorting" Margin="5" Padding="5">
+                            <StackPanel>
+                                <RadioButton IsChecked="True">Alphabetical</RadioButton>
+                                <RadioButton>Type definition index</RadioButton>
+                            </StackPanel>
+                        </GroupBox>
+                        <CheckBox Margin="2">Suppress pointer, offset and index metadata comments</CheckBox>
+                        <CheckBox Margin="2">Attempt to generate output that compiles</CheckBox>
+                        <CheckBox IsChecked="True" Margin="2">Place assembly-level attributes in separate files</CheckBox>
+                        <Separator Margin="5"/>
+                        <RadioButton GroupName="grpOutputType" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">Visual Studio solution</RadioButton>
+                        <TextBlock TextWrapping="WrapWithOverflow">Uses the settings above but forces tree layout, compilable output and separate assembly attributes</TextBlock>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Width="70" Margin="2">Browse</Button>
+                            <Label DockPanel.Dock="Left" Width="160">Unity editor path:</Label>
+                            <Label DockPanel.Dock="Left">&lt;not set></Label>
+                        </DockPanel>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Width="70" Margin="2">Browse</Button>
+                            <Label DockPanel.Dock="Left" Width="160">Unity script assemblies path:</Label>
+                            <Label DockPanel.Dock="Left">&lt;not set></Label>
+                        </DockPanel>
+                        <Separator Margin="5"/>
+                        <RadioButton GroupName="grpOutputType" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">IDAPython script</RadioButton>
+                    </StackPanel>
+                </DockPanel>
+            </DockPanel>
         </Grid>
 
         <!-- Light boxes -->
-        <Rectangle Name="rectModalLightBoxBackground" Fill="Black" Opacity="0.4"></Rectangle>
-        <Button Name="btnSelectMetadataFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectMetadataFile_OnClick">Select an IL2CPP metadata file</Button>
+        <Rectangle Name="rectModalLightBoxBackground" Fill="Black" Opacity="0.4" Visibility="Visible"></Rectangle>
+        <Button Name="btnSelectMetadataFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectMetadataFile_OnClick" Visibility="Visible">Select an IL2CPP metadata file</Button>
         <Button Name="btnSelectBinaryFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectBinaryFile_OnClick" Visibility="Hidden">Select an IL2CPP binary file</Button>
-        <Button Name="btnBack" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{StaticResource LightBoxButton}" FontSize="18" Width="120" Click="BtnBack_OnClick" Visibility="Hidden">&lt;&lt; Back</Button>
+
+        <!-- Back button -->
+        <Button Name="btnBack" Margin="7" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="18" Width="120" Click="BtnBack_OnClick" Content="&lt;&lt; Back">
+            <Button.Style>
+                <Style BasedOn="{StaticResource LightBoxButton}" TargetType="{x:Type Button}">
+                    <Setter Property="Visibility" Value="Hidden"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=btnSelectMetadataFile, Path=Visibility}" Value="Hidden">
+                            <Setter Property="Button.Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=areaBusyIndicator, Path=Visibility}" Value="Visible">
+                            <Setter Property="Button.IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
 
         <!-- Busy indicator -->
         <Border Name="areaBusyIndicator" Width="400" BorderThickness="1" CornerRadius="2" BorderBrush="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" SnapsToDevicePixels="True" Visibility="Hidden">

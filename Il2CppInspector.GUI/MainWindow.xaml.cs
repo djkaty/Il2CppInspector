@@ -53,7 +53,6 @@ namespace Il2CppInspectorGUI
                 if (await app.LoadMetadataAsync(openFileDialog.FileName)) {
                     // Metadata loaded successfully
                     btnSelectBinaryFile.Visibility = Visibility.Visible;
-                    btnBack.Visibility = Visibility.Visible;
                     areaBusyIndicator.Visibility = Visibility.Hidden;
                 }
                 else {
@@ -75,8 +74,6 @@ namespace Il2CppInspectorGUI
                 CheckFileExists = true
             };
 
-            btnBack.IsEnabled = false;
-
             if (openFileDialog.ShowDialog() == true) {
                 txtBusyStatus.Text = "Processing binary...";
                 areaBusyIndicator.Visibility = Visibility.Visible;
@@ -96,8 +93,6 @@ namespace Il2CppInspectorGUI
                     MessageBox.Show(this, "Something went wrong! " + app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-
-            btnBack.IsEnabled = true;
         }
 
         /// <summary>
@@ -109,7 +104,6 @@ namespace Il2CppInspectorGUI
             rectModalLightBoxBackground.Visibility = Visibility.Visible;
             lstImages.ItemsSource = null;
             btnSelectBinaryFile.Visibility = Visibility.Hidden;
-            btnBack.Visibility = Visibility.Hidden;
             btnSelectMetadataFile.Visibility = Visibility.Visible;
         }
     }
