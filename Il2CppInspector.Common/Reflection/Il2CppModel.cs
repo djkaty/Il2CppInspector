@@ -105,6 +105,15 @@ namespace Il2CppInspector.Reflection
                 }
             }
 
+            // Find all custom attribute generators (populate AttributesByIndices) (use ToList() to force evaluation)
+            var allAssemblyAttributes = Assemblies.Select(a => a.CustomAttributes).ToList();
+            var allTypeAttributes = TypesByDefinitionIndex.Select(t => t.CustomAttributes).ToList();
+            var allEventAttributes = TypesByDefinitionIndex.SelectMany(t => t.DeclaredEvents).Select(e => e.CustomAttributes).ToList();
+            var allFieldAttributes = TypesByDefinitionIndex.SelectMany(t => t.DeclaredFields).Select(f => f.CustomAttributes).ToList();
+            var allPropertyAttributes = TypesByDefinitionIndex.SelectMany(t => t.DeclaredProperties).Select(p => p.CustomAttributes).ToList();
+            var allMethodAttributes = MethodsByDefinitionIndex.Select(m => m.CustomAttributes).ToList();
+            var allParameterAttributes = MethodsByDefinitionIndex.SelectMany(m => m.DeclaredParameters).Select(p => p.CustomAttributes).ToList();
+
             // Create method invokers (one per signature, in invoker index order)
             foreach (var method in MethodsByDefinitionIndex) {
                 var index = package.GetInvokerIndex(method.DeclaringType.Assembly.ModuleDefinition, method.Definition);
