@@ -122,8 +122,8 @@ namespace Il2CppInspector.CLI
             var unityAssembliesPath = string.Empty;
 
             if (options.CreateSolution) {
-                unityPath = FindPath(options.UnityPath);
-                unityAssembliesPath = FindPath(options.UnityAssembliesPath);
+                unityPath = Utils.FindPath(options.UnityPath);
+                unityAssembliesPath = Utils.FindPath(options.UnityAssembliesPath);
 
                 if (!Directory.Exists(unityPath)) {
                     Console.Error.WriteLine($"Unity path {unityPath} does not exist");
@@ -223,35 +223,6 @@ namespace Il2CppInspector.CLI
 
             // Success exit code
             return 0;
-        }
-
-        private static string FindPath(string pathWithWildcards) {
-            var absolutePath = Path.GetFullPath(pathWithWildcards);
-
-            if (absolutePath.IndexOf("*", StringComparison.Ordinal) == -1)
-                return absolutePath;
-
-            Regex sections = new Regex(@"((?:[^*]*)\\)((?:.*?)\*.*?)(?:$|\\)");
-            var matches = sections.Matches(absolutePath);
-
-            var pathLength = 0;
-            var path = "";
-            foreach (Match match in matches) {
-                path += match.Groups[1].Value;
-                var search = match.Groups[2].Value;
-
-                var dir = Directory.GetDirectories(path, search, SearchOption.TopDirectoryOnly)
-                    .OrderByDescending(x => x)
-                    .FirstOrDefault();
-
-                path = dir + @"\";
-                pathLength += match.Groups[1].Value.Length + match.Groups[2].Value.Length + 1;
-            }
-
-            if (pathLength < absolutePath.Length)
-                path += absolutePath.Substring(pathLength);
-
-            return path;
         }
     }
 }
