@@ -89,7 +89,9 @@ namespace Il2CppInspector.Outputs
                         used.Add(type.Assembly);
                     return used;
                 },
-                usedPartition => usedAssemblies.UnionWith(usedPartition)
+                usedPartition => {
+                    lock (usedAssemblies) usedAssemblies.UnionWith(usedPartition);
+                }
             );
 
             if (separateAttributes && usedAssemblies.Any())
