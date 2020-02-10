@@ -20,16 +20,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\baby-spinner.gif" />
-    <None Remove="Resources\chemical-loading-spinner.gif" />
-    <None Remove="Resources\childs-drawing.gif" />
-    <None Remove="Resources\ConventionalOblongFairybluebird-small.gif" />
-    <None Remove="Resources\green-google-material-spinner.gif" />
-    <None Remove="Resources\pizza.gif" />
-    <None Remove="Resources\preview.gif" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Include="..\Il2CppInspector.CLI\Utils.cs" Link="Utils.cs" />
   </ItemGroup>
 
