@@ -183,6 +183,8 @@
 
             <!-- Output configuration -->
             <DockPanel Name="pnlOutputSettings" Grid.Row="0" Grid.Column="2" Grid.RowSpan="2">
+
+                <!-- Show preferences only when an image is selected -->
                 <DockPanel.Style>
                     <Style>
                         <Setter Property="DockPanel.Visibility" Value="Visible"/>
@@ -195,7 +197,17 @@
                 </DockPanel.Style>
 
                 <!-- Export button -->
-                <Button Name="btnExport" DockPanel.Dock="Bottom" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource LightBoxButton}" FontSize="18" Width="120">Export</Button>
+                <Button Name="btnExport" Click="BtnExport_OnClick" DockPanel.Dock="Bottom" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="18" Width="120" Content="Export">
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource LightBoxButton}" TargetType="{x:Type Button}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=areaBusyIndicator, Path=Visibility}" Value="Visible">
+                                    <Setter Property="Button.IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
 
                 <DockPanel DockPanel.Dock="Top">
                     <!-- List of namespaces to export -->
@@ -240,7 +252,7 @@
                             </StackPanel>
                         </GroupBox>
 
-                        <CheckBox Margin="2" Content="Don't nest folders (flatten hierarchy)">
+                        <CheckBox Name="cbFlattenHierarchy" Margin="2" Content="Don't nest folders (flatten hierarchy)">
                             <CheckBox.Style>
                                 <Style>
                                     <Style.Triggers>
@@ -274,13 +286,13 @@
                                 </Style>
                             </GroupBox.Style>
                             <StackPanel>
-                                <RadioButton IsChecked="True">Alphabetical</RadioButton>
-                                <RadioButton>Type definition index</RadioButton>
+                                <RadioButton Name="rdoSortName" IsChecked="True">Alphabetical</RadioButton>
+                                <RadioButton Name="rdoSortIndex">Type definition index</RadioButton>
                             </StackPanel>
                         </GroupBox>
 
-                        <CheckBox Margin="2">Suppress pointer, offset and index metadata comments</CheckBox>
-                        <CheckBox Margin="2" Content="Attempt to generate output that compiles">
+                        <CheckBox Name="cbSuppressMetadata" Margin="2">Suppress pointer, offset and index metadata comments</CheckBox>
+                        <CheckBox Name="cbMustCompile" Margin="2" Content="Attempt to generate output that compiles">
                             <CheckBox.Style>
                                 <Style>
                                     <Style.Triggers>
@@ -293,7 +305,7 @@
                             </CheckBox.Style>
                         </CheckBox>
 
-                        <CheckBox Margin="2" Content="Place assembly-level attributes in separate files">
+                        <CheckBox Name="cbSeparateAttributes" Margin="2" Content="Place assembly-level attributes in separate files">
                             <CheckBox.Style>
                                 <Style>
                                     <Setter Property="CheckBox.IsChecked" Value="True"/>

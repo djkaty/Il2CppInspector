@@ -23,6 +23,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using Il2CppInspector;
+using Il2CppInspector.Outputs;
 using Il2CppInspector.Reflection;
 using Ookii.Dialogs.Wpf;
 using Path = System.IO.Path;
@@ -194,9 +195,7 @@ namespace Il2CppInspectorGUI
             openFolderDialog.UseDescriptionForTitle = true;
 
             while (openFolderDialog.ShowDialog() == true) {
-                if (!File.Exists(openFolderDialog.SelectedPath + @"\Editor\Data\Managed\UnityEditor.dll"))
-                    MessageBox.Show(this, "Could not find Unity installation in this folder. Ensure the 'Editor' folder is a child of the selected folder and try again.", "Unity installation not found", MessageBoxButton.OK, MessageBoxImage.Error);
-                else {
+                if (ValidateUnityPath(openFolderDialog.SelectedPath)) {
                     txtUnityPath.Text = openFolderDialog.SelectedPath;
                     break;
                 }
@@ -215,13 +214,159 @@ namespace Il2CppInspectorGUI
             openFolderDialog.UseDescriptionForTitle = true;
 
             while (openFolderDialog.ShowDialog() == true) {
-                if (!File.Exists(openFolderDialog.SelectedPath + @"\UnityEngine.UI.dll"))
-                    MessageBox.Show(this, "Could not find Unity assemblies in this folder. Ensure the selected folder contains UnityEngine.UI.dll and try again.", "Unity assemblies not found", MessageBoxButton.OK, MessageBoxImage.Error);
-                else {
+                if (ValidateUnityAssembliesPath(openFolderDialog.SelectedPath)) {
                     txtUnityScriptPath.Text = openFolderDialog.SelectedPath;
                     break;
                 }
             }
+        }
+
+        private bool ValidateUnityPath(string path) {
+            if (File.Exists(path + @"\Editor\Data\Managed\UnityEditor.dll"))
+                return true;
+            MessageBox.Show(this, "Could not find Unity installation in this folder. Ensure the 'Editor' folder is a child of the selected folder and try again.", "Unity installation not found", MessageBoxButton.OK, MessageBoxImage.Error);
+            return false;
+        }
+
+        private bool ValidateUnityAssembliesPath(string path) {
+            if (File.Exists(path + @"\UnityEngine.UI.dll"))
+                return true;
+            MessageBox.Show(this, "Could not find Unity assemblies in this folder. Ensure the selected folder contains UnityEngine.UI.dll and try again.", "Unity assemblies not found", MessageBoxButton.OK, MessageBoxImage.Error);
+            return false;
+        }
+
+        /// <summary>
+        /// Perform export
+        /// </summary>
+        private void BtnExport_OnClick(object sender, RoutedEventArgs e) {
+            var app = (App) Application.Current;
+            var model = (Il2CppModel) lstImages.SelectedItem;
+
+            var unityPath = txtUnityPath.Text;
+            var unityAssembliesPath = txtUnityScriptPath.Text;
+
+            var sortOrder = rdoSortIndex.IsChecked == true ? "index" :
+                            rdoSortName.IsChecked == true ? "name" :
+                            "unknown";
+            var layout =    rdoLayoutSingle.IsChecked == true? "single" :
+                            rdoLayoutAssembly.IsChecked == true? "assembly" :
+                            rdoLayoutNamespace.IsChecked == true? "namespace" :
+                            rdoLayoutClass.IsChecked == true? "class" :
+                            rdoLayoutTree.IsChecked == true? "tree" :
+                            "unknown";
+
+            switch (this) {
+                // C# prototypes and Visual Studio solution
+                case { rdoOutputCSharp: var r, rdoOutputSolution: var s } when r.IsChecked == true || s.IsChecked == true:
+
+                    var createSolution = rdoOutputSolution.IsChecked == true;
+
+                    if (createSolution) {
+                        if (!ValidateUnityPath(unityPath))
+                            return;
+                        if (!ValidateUnityAssembliesPath(unityAssembliesPath))
+                            return;
+                    }
+
+                    // Get options
+                    var excludedNamespaces = constructExcludedNamespaces((IEnumerable<CheckboxNode>) trvNamespaces.ItemsSource);
+
+                    var writer = new CSharpCodeStubs(model) {
+                        ExcludedNamespaces = excludedNamespaces.ToList(),
+                        SuppressMetadata = cbSuppressMetadata.IsChecked == true,
+                        MustCompile = cbMustCompile.IsChecked == true
+                    };
+
+                    var flattenHierarchy = cbFlattenHierarchy.IsChecked == true;
+                    var separateAssemblyAttributesFiles = cbSeparateAttributes.IsChecked == true;
+
+                    // Determine if we need a filename or a folder - file for single file, folder for everything else
+                    var needsFolder = rdoOutputCSharp.IsChecked == false || rdoLayoutSingle.IsChecked == false;
+
+                    var saveFolderDialog = new VistaFolderBrowserDialog {
+                        Description = "Select save location",
+                        UseDescriptionForTitle = true
+                    };
+                    var saveFileDialog = new SaveFileDialog {
+                        Filter = "C# source files (*.cs)|*.cs|All files (*.*)|*.*",
+                        CheckFileExists = false,
+                        OverwritePrompt = true
+                    };
+
+                    if (needsFolder && saveFolderDialog.ShowDialog() == false)
+                        return;
+                    if (!needsFolder && saveFileDialog.ShowDialog() == false)
+                        return;
+
+                    var outPath = needsFolder ? saveFolderDialog.SelectedPath : saveFileDialog.FileName;
+
+                    if (createSolution)
+                        writer.WriteSolution(outPath, unityPath, unityAssembliesPath);
+
+                    else
+                        switch (layout, sortOrder) {
+                            case ("single", "index"):
+                                writer.WriteSingleFile(outPath, t => t.Index);
+                                break;
+                            case ("single", "name"):
+                                writer.WriteSingleFile(outPath, t => t.Name);
+                                break;
+
+                            case ("namespace", "index"):
+                                writer.WriteFilesByNamespace(outPath, t => t.Index, flattenHierarchy);
+                                break;
+                            case ("namespace", "name"):
+                                writer.WriteFilesByNamespace(outPath, t => t.Name, flattenHierarchy);
+                                break;
+
+                            case ("assembly", "index"):
+                                writer.WriteFilesByAssembly(outPath, t => t.Index, separateAssemblyAttributesFiles);
+                                break;
+                            case ("assembly", "name"):
+                                writer.WriteFilesByAssembly(outPath, t => t.Name, separateAssemblyAttributesFiles);
+                                break;
+
+                            case ("class", _):
+                                writer.WriteFilesByClass(outPath, flattenHierarchy);
+                                break;
+
+                            case ("tree", _):
+                                writer.WriteFilesByClassTree(outPath, separateAssemblyAttributesFiles);
+                                break;
+                        }
+                    break;
+
+                // IDA Python script
+                case { rdoOutputIDA: var r } when r.IsChecked == true:
+
+                    var scriptSaveFileDialog = new SaveFileDialog {
+                        Filter = "Python scripts (*.py)|*.py|All files (*.*)|*.*",
+                        CheckFileExists = false,
+                        OverwritePrompt = true
+                    };
+
+                    if (scriptSaveFileDialog.ShowDialog() == false)
+                        return;
+
+                    var outFile = scriptSaveFileDialog.FileName;
+
+                    var idaWriter = new IDAPythonScript(model);
+                    idaWriter.WriteScriptToFile(outFile);
+                    break;
+            }
+        }
+
+        private IEnumerable<string> constructExcludedNamespaces(IEnumerable<CheckboxNode> nodes) {
+            var ns = new List<string>();
+
+            foreach (var node in nodes) {
+                if (node.IsChecked == false)
+                    ns.Add(node.FullName);
+
+                else if (node.Children != null)
+                    ns.AddRange(constructExcludedNamespaces(node.Children));
+            }
+            return ns;
         }
     }
 
@@ -241,6 +386,8 @@ namespace Il2CppInspectorGUI
                 OnPropertyChanged();
             }
         }
+
+        public string FullName => (parent != null ? parent.FullName + "." : "") + Name;
 
         public IEnumerable<CheckboxNode> Children {
             get => children;
