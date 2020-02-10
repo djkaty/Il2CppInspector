@@ -179,6 +179,14 @@ If you have files that don't work or are in an unsupported format, please open a
 
 Please check the binary file in a disassembler to ensure that it is a plain IL2CPP binary before filing an issue. Il2CppInspector is not intended to handle packed, encrypted or obfuscated IL2CPP files.
 
+### Support
+
+If you found Il2CppInspector useful, you can really help support the project by making a small donation at http://paypal.me/djkaty!
+
+You can also donate with bitcoin: 3FoRUqUXgYj8NY8sMQfhX6vv9LqR3e2kzz
+
+Much love! - Katy
+
 ### Acknowledgements
 
 Thanks to the following individuals whose code and research helped me develop this tool:
