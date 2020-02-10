@@ -226,7 +226,8 @@ namespace Il2CppInspector
                         var token = AttributeTypeRanges[index].token;
                         attsByToken.Add(token, index);
                     }
-                    AttributeIndicesByToken.Add(image.customAttributeStart, attsByToken);
+                    if (image.customAttributeCount > 0)
+                        AttributeIndicesByToken.Add(image.customAttributeStart, attsByToken);
                 }
             }
 
