@@ -209,47 +209,131 @@
                         <Label Foreground="{StaticResource WindowsBlue}" FontSize="18">Configure output</Label>
 
                         <!-- C# code stubs output -->
-                        <RadioButton GroupName="grpOutputType" IsChecked="True" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">C# prototypes</RadioButton>
+                        <RadioButton GroupName="grpOutputType" Name="rdoOutputCSharp" IsChecked="True" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">C# prototypes</RadioButton>
                         <GroupBox Header="Layout" Margin="5" Padding="5">
                             <StackPanel>
-                                <RadioButton IsChecked="True">Single file</RadioButton>
-                                <RadioButton>File per namespace</RadioButton>
-                                <RadioButton>File per assembly</RadioButton>
-                                <RadioButton>File per class</RadioButton>
-                                <RadioButton>Tree layout</RadioButton>
+                                <StackPanel.Style>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=rdoOutputSolution, Path=IsChecked}" Value="True">
+                                                <Setter Property="Control.IsEnabled" Value="False"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+
+                                <RadioButton Name="rdoLayoutSingle" IsChecked="True">Single file</RadioButton>
+                                <RadioButton Name="rdoLayoutNamespace">File per namespace</RadioButton>
+                                <RadioButton Name="rdoLayoutAssembly">File per assembly</RadioButton>
+                                <RadioButton Name="rdoLayoutClass">File per class</RadioButton>
+                                <RadioButton Name="rdoLayoutTree" Content="Tree layout">
+                                    <RadioButton.Style>
+                                        <Style>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=rdoOutputSolution, Path=IsChecked}" Value="True">
+                                                    <Setter Property="RadioButton.IsChecked" Value="True"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </RadioButton.Style>
+                                </RadioButton>
                             </StackPanel>
                         </GroupBox>
-                        <CheckBox Margin="2">Don't nest folders (flatten hierarchy)</CheckBox>
-                        <GroupBox Header="Type sorting" Margin="5" Padding="5">
+
+                        <CheckBox Margin="2" Content="Don't nest folders (flatten hierarchy)">
+                            <CheckBox.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=rdoLayoutSingle, Path=IsChecked}" Value="True">
+                                            <Setter Property="Control.IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=rdoLayoutAssembly, Path=IsChecked}" Value="True">
+                                            <Setter Property="Control.IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
+
+                        <!-- Sorting (only available with single file, namespace and assembly output -->
+                        <GroupBox Margin="5" Padding="5">
+                            <!-- Replace TextBlock with Label in header template so that it greys out when the GroupBox is disabled -->
+                            <GroupBox.Header>
+                                <Label Content="Type sorting" Padding="0"/>
+                            </GroupBox.Header>
+                            <GroupBox.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=rdoLayoutClass, Path=IsChecked}" Value="True">
+                                            <Setter Property="Control.IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=rdoLayoutTree, Path=IsChecked}" Value="True">
+                                            <Setter Property="Control.IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </GroupBox.Style>
                             <StackPanel>
                                 <RadioButton IsChecked="True">Alphabetical</RadioButton>
                                 <RadioButton>Type definition index</RadioButton>
                             </StackPanel>
                         </GroupBox>
+
                         <CheckBox Margin="2">Suppress pointer, offset and index metadata comments</CheckBox>
-                        <CheckBox Margin="2">Attempt to generate output that compiles</CheckBox>
-                        <CheckBox IsChecked="True" Margin="2">Place assembly-level attributes in separate files</CheckBox>
+                        <CheckBox Margin="2" Content="Attempt to generate output that compiles">
+                            <CheckBox.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=rdoOutputSolution, Path=IsChecked}" Value="True">
+                                            <Setter Property="CheckBox.IsChecked" Value="True"/>
+                                            <Setter Property="Control.IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
+
+                        <CheckBox Margin="2" Content="Place assembly-level attributes in separate files">
+                            <CheckBox.Style>
+                                <Style>
+                                    <Setter Property="CheckBox.IsChecked" Value="True"/>
+                                    <Setter Property="Control.IsEnabled" Value="False"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=rdoLayoutAssembly, Path=IsChecked}" Value="True">
+                                            <Setter Property="Control.IsEnabled" Value="True"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=rdoLayoutTree, Path=IsChecked}" Value="True">
+                                            <Setter Property="Control.IsEnabled" Value="True"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=rdoOutputSolution, Path=IsChecked}" Value="True">
+                                            <Setter Property="CheckBox.IsChecked" Value="True"/>
+                                            <Setter Property="Control.IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
 
                         <Separator Margin="5,15,5,15"/>
 
                         <!-- Visual Studio solution -->
-                        <RadioButton GroupName="grpOutputType" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">Visual Studio solution</RadioButton>
+                        <RadioButton GroupName="grpOutputType" Name="rdoOutputSolution" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">Visual Studio solution</RadioButton>
                         <TextBlock TextWrapping="WrapWithOverflow">Uses the settings above but forces tree layout, compilable output and separate assembly attributes</TextBlock>
                         <DockPanel>
                             <Button Name="btnUnityPath" DockPanel.Dock="Right" Width="70" Margin="4" Click="BtnUnityPath_OnClick">Browse</Button>
-                            <Label DockPanel.Dock="Left" Width="170">Unity editor path:</Label>
+                            <Label DockPanel.Dock="Left" Width="170" VerticalAlignment="Center">Unity editor path:</Label>
                             <TextBlock Name="txtUnityPath" DockPanel.Dock="Left" VerticalAlignment="Center" FlowDirection="RightToLeft" HorizontalAlignment="Right" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
                         </DockPanel>
                         <DockPanel>
                             <Button Name="btnUnityScriptPath" DockPanel.Dock="Right" Width="70" Margin="4" Click="BtnUnityScriptPath_OnClick">Browse</Button>
-                            <Label DockPanel.Dock="Left" Width="170">Unity script assemblies path:</Label>
+                            <Label DockPanel.Dock="Left" Width="170" VerticalAlignment="Center">Unity script assemblies path:</Label>
                             <TextBlock Name="txtUnityScriptPath" DockPanel.Dock="Left" VerticalAlignment="Center" FlowDirection="RightToLeft" HorizontalAlignment="Right" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
                         </DockPanel>
 
                         <Separator Margin="5,15,5,15"/>
 
                         <!-- IDAPython script -->
-                        <RadioButton GroupName="grpOutputType" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">IDAPython script</RadioButton>
+                        <RadioButton GroupName="grpOutputType" Name="rdoOutputIDA" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">IDAPython script</RadioButton>
                         <TextBlock TextWrapping="WrapWithOverflow">No configuration required for IDA script output</TextBlock>
                     </StackPanel>
                 </DockPanel>
