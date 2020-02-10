@@ -109,7 +109,6 @@ namespace Il2CppInspectorGUI
                 if (await app.LoadBinaryAsync(openFileDialog.FileName)) {
                     // Binary loaded successfully
                     areaBusyIndicator.Visibility = Visibility.Hidden;
-                    rectModalLightBoxBackground.Visibility = Visibility.Hidden;
 
                     lstImages.ItemsSource = app.Il2CppModels;
                     lstImages.SelectedIndex = 0;
@@ -126,7 +125,6 @@ namespace Il2CppInspectorGUI
         /// Reset binary and metadata files and start again
         /// </summary>
         private void BtnBack_OnClick(object sender, RoutedEventArgs e) {
-            rectModalLightBoxBackground.Visibility = Visibility.Visible;
             lstImages.ItemsSource = null;
             btnSelectBinaryFile.Visibility = Visibility.Hidden;
             btnSelectMetadataFile.Visibility = Visibility.Visible;
@@ -238,8 +236,7 @@ namespace Il2CppInspectorGUI
         /// <summary>
         /// Perform export
         /// </summary>
-        private void BtnExport_OnClick(object sender, RoutedEventArgs e) {
-            var app = (App) Application.Current;
+        private async void BtnExport_OnClick(object sender, RoutedEventArgs e) {
             var model = (Il2CppModel) lstImages.SelectedItem;
 
             var unityPath = txtUnityPath.Text;
@@ -298,42 +295,47 @@ namespace Il2CppInspectorGUI
                     if (!needsFolder && saveFileDialog.ShowDialog() == false)
                         return;
 
+
+                    txtBusyStatus.Text = createSolution ? "Creating Visual Studio solution..." : "Exporting C# type definitions...";
+                    areaBusyIndicator.Visibility = Visibility.Visible;
+
                     var outPath = needsFolder ? saveFolderDialog.SelectedPath : saveFileDialog.FileName;
 
-                    if (createSolution)
-                        writer.WriteSolution(outPath, unityPath, unityAssembliesPath);
+                    await Task.Run(() => {
+                        if (createSolution)
+                            writer.WriteSolution(outPath, unityPath, unityAssembliesPath);
+                        else
+                            switch (layout, sortOrder) {
+                                case ("single", "index"):
+                                    writer.WriteSingleFile(outPath, t => t.Index);
+                                    break;
+                                case ("single", "name"):
+                                    writer.WriteSingleFile(outPath, t => t.Name);
+                                    break;
 
-                    else
-                        switch (layout, sortOrder) {
-                            case ("single", "index"):
-                                writer.WriteSingleFile(outPath, t => t.Index);
-                                break;
-                            case ("single", "name"):
-                                writer.WriteSingleFile(outPath, t => t.Name);
-                                break;
+                                case ("namespace", "index"):
+                                    writer.WriteFilesByNamespace(outPath, t => t.Index, flattenHierarchy);
+                                    break;
+                                case ("namespace", "name"):
+                                    writer.WriteFilesByNamespace(outPath, t => t.Name, flattenHierarchy);
+                                    break;
 
-                            case ("namespace", "index"):
-                                writer.WriteFilesByNamespace(outPath, t => t.Index, flattenHierarchy);
-                                break;
-                            case ("namespace", "name"):
-                                writer.WriteFilesByNamespace(outPath, t => t.Name, flattenHierarchy);
-                                break;
+                                case ("assembly", "index"):
+                                    writer.WriteFilesByAssembly(outPath, t => t.Index, separateAssemblyAttributesFiles);
+                                    break;
+                                case ("assembly", "name"):
+                                    writer.WriteFilesByAssembly(outPath, t => t.Name, separateAssemblyAttributesFiles);
+                                    break;
 
-                            case ("assembly", "index"):
-                                writer.WriteFilesByAssembly(outPath, t => t.Index, separateAssemblyAttributesFiles);
-                                break;
-                            case ("assembly", "name"):
-                                writer.WriteFilesByAssembly(outPath, t => t.Name, separateAssemblyAttributesFiles);
-                                break;
+                                case ("class", _):
+                                    writer.WriteFilesByClass(outPath, flattenHierarchy);
+                                    break;
 
-                            case ("class", _):
-                                writer.WriteFilesByClass(outPath, flattenHierarchy);
-                                break;
-
-                            case ("tree", _):
-                                writer.WriteFilesByClassTree(outPath, separateAssemblyAttributesFiles);
-                                break;
-                        }
+                                case ("tree", _):
+                                    writer.WriteFilesByClassTree(outPath, separateAssemblyAttributesFiles);
+                                    break;
+                            }
+                    });
                     break;
 
                 // IDA Python script
@@ -350,10 +352,17 @@ namespace Il2CppInspectorGUI
 
                     var outFile = scriptSaveFileDialog.FileName;
 
-                    var idaWriter = new IDAPythonScript(model);
-                    idaWriter.WriteScriptToFile(outFile);
+                    txtBusyStatus.Text = "Generating IDAPython script...";
+                    areaBusyIndicator.Visibility = Visibility.Visible;
+
+                    await Task.Run(() => {
+                        var idaWriter = new IDAPythonScript(model);
+                        idaWriter.WriteScriptToFile(outFile);
+                    });
                     break;
             }
+
+            areaBusyIndicator.Visibility = Visibility.Hidden;
         }
 
         private IEnumerable<string> constructExcludedNamespaces(IEnumerable<CheckboxNode> nodes) {

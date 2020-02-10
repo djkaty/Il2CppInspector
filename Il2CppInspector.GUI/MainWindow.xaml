@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Il2CppInspectorGUI"
         xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
         mc:Ignorable="d"
-        Title="Il2CppInspector" Height="630" Width="990" Background="White">
+        Title="Il2CppInspector" Height="630" Width="990" Background="White"
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <!-- Our favourite colours -->
         <SolidColorBrush x:Key="MicrosoftBlue" Color="#00A2ED"/>
@@ -352,8 +353,27 @@
             </DockPanel>
         </Grid>
 
+        <!-- Background dimmer -->
+        <Rectangle Name="rectModalLightBoxBackground" Fill="Black" Opacity="0.4">
+            <Rectangle.Style>
+                <Style>
+                    <Setter Property="Rectangle.Visibility" Value="Hidden"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=btnSelectMetadataFile, Path=Visibility}" Value="Visible">
+                            <Setter Property="Rectangle.Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=btnSelectBinaryFile, Path=Visibility}" Value="Visible">
+                            <Setter Property="Rectangle.Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=areaBusyIndicator, Path=Visibility}" Value="Visible">
+                            <Setter Property="Rectangle.Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Rectangle.Style>
+        </Rectangle>
+
         <!-- Light boxes -->
-        <Rectangle Name="rectModalLightBoxBackground" Fill="Black" Opacity="0.4" Visibility="Visible"></Rectangle>
         <Button Name="btnSelectMetadataFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectMetadataFile_OnClick" Visibility="Visible">Select an IL2CPP metadata file</Button>
         <Button Name="btnSelectBinaryFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectBinaryFile_OnClick" Visibility="Hidden">Select an IL2CPP binary file</Button>
 
@@ -375,7 +395,7 @@
         </Button>
 
         <!-- Busy indicator -->
-        <Border Name="areaBusyIndicator" Width="400" BorderThickness="1" CornerRadius="2" BorderBrush="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" SnapsToDevicePixels="True" Visibility="Hidden">
+        <Border Name="areaBusyIndicator" Width="500" BorderThickness="1" CornerRadius="2" BorderBrush="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" SnapsToDevicePixels="True" Visibility="Hidden">
             <StackPanel Margin="60,40,60,40">
                 <TextBlock Name="txtBusyStatus" Foreground="{StaticResource WindowsBlue}" FontSize="24" HorizontalAlignment="Center">Getting things ready...</TextBlock>
                 <Image gif:AnimationBehavior.SourceUri="Resources/pizza.gif" Width="100" Margin="0,20,0,0" RenderOptions.BitmapScalingMode="Fant" />
