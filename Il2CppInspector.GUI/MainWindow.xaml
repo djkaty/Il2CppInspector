@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Il2CppInspectorGUI"
         xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
         mc:Ignorable="d"
-        Title="Il2CppInspector" Height="630" Width="970" Background="White">
+        Title="Il2CppInspector" Height="630" Width="990" Background="White">
     <Window.Resources>
         <!-- Our favourite colours -->
         <SolidColorBrush x:Key="MicrosoftBlue" Color="#00A2ED"/>
@@ -100,7 +100,7 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300"></ColumnDefinition>
-                <ColumnDefinition Width="15"></ColumnDefinition>
+                <ColumnDefinition Width="25"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <DockPanel DockPanel.Dock="Left">
@@ -159,7 +159,7 @@
                     <Label Grid.Row="8" Grid.Column="1" Content="{Binding Path=Binary.RegistrationFunctionPointer}" ContentStringFormat="0x{0:x8}"></Label>
                 </Grid>
             </DockPanel>
-            <Separator Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Margin="5">
+            <Separator Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Margin="5,5,10,5">
                 <Separator.LayoutTransform>
                     <RotateTransform Angle="90"></RotateTransform>
                 </Separator.LayoutTransform>
@@ -201,13 +201,14 @@
                     <!-- List of namespaces to export -->
                     <DockPanel DockPanel.Dock="Right">
                         <Label DockPanel.Dock="Top" Foreground="{StaticResource WindowsBlue}" FontSize="18">Namespaces</Label>
-                        <TreeView DockPanel.Dock="Bottom" Name="trvNamespaces" ItemTemplate="{StaticResource NamespaceTreeItemTemplate}" Width="220" Margin="5"></TreeView>
+                        <TreeView DockPanel.Dock="Bottom" Name="trvNamespaces" ItemTemplate="{StaticResource NamespaceTreeItemTemplate}" Width="220" Margin="10,5,5,5"></TreeView>
                     </DockPanel>
 
                     <!-- Settings -->
                     <StackPanel DockPanel.Dock="Left">
                         <Label Foreground="{StaticResource WindowsBlue}" FontSize="18">Configure output</Label>
 
+                        <!-- C# code stubs output -->
                         <RadioButton GroupName="grpOutputType" IsChecked="True" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">C# prototypes</RadioButton>
                         <GroupBox Header="Layout" Margin="5" Padding="5">
                             <StackPanel>
@@ -226,22 +227,28 @@
                             </StackPanel>
                         </GroupBox>
                         <CheckBox Margin="2">Suppress pointer, offset and index metadata comments</CheckBox>
-                        <CheckBox Margin="2">Attempt to generate code that compiles</CheckBox>
+                        <CheckBox Margin="2">Attempt to generate output that compiles</CheckBox>
                         <CheckBox IsChecked="True" Margin="2">Place assembly-level attributes in separate files</CheckBox>
-                        <Separator Margin="5"/>
+
+                        <Separator Margin="5,15,5,15"/>
+
+                        <!-- Visual Studio solution -->
                         <RadioButton GroupName="grpOutputType" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">Visual Studio solution</RadioButton>
                         <TextBlock TextWrapping="WrapWithOverflow">Uses the settings above but forces tree layout, compilable output and separate assembly attributes</TextBlock>
                         <DockPanel>
-                            <Button DockPanel.Dock="Right" Width="70" Margin="2">Browse</Button>
-                            <Label DockPanel.Dock="Left" Width="160">Unity editor path:</Label>
-                            <Label DockPanel.Dock="Left">&lt;not set></Label>
+                            <Button Name="btnUnityPath" DockPanel.Dock="Right" Width="70" Margin="4" Click="BtnUnityPath_OnClick">Browse</Button>
+                            <Label DockPanel.Dock="Left" Width="170">Unity editor path:</Label>
+                            <TextBlock Name="txtUnityPath" DockPanel.Dock="Left" VerticalAlignment="Center" FlowDirection="RightToLeft" HorizontalAlignment="Right" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
                         </DockPanel>
                         <DockPanel>
-                            <Button DockPanel.Dock="Right" Width="70" Margin="2">Browse</Button>
-                            <Label DockPanel.Dock="Left" Width="160">Unity script assemblies path:</Label>
-                            <Label DockPanel.Dock="Left">&lt;not set></Label>
+                            <Button Name="btnUnityScriptPath" DockPanel.Dock="Right" Width="70" Margin="4" Click="BtnUnityScriptPath_OnClick">Browse</Button>
+                            <Label DockPanel.Dock="Left" Width="170">Unity script assemblies path:</Label>
+                            <TextBlock Name="txtUnityScriptPath" DockPanel.Dock="Left" VerticalAlignment="Center" FlowDirection="RightToLeft" HorizontalAlignment="Right" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
                         </DockPanel>
-                        <Separator Margin="5"/>
+
+                        <Separator Margin="5,15,5,15"/>
+
+                        <!-- IDAPython script -->
                         <RadioButton GroupName="grpOutputType" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">IDAPython script</RadioButton>
                         <TextBlock TextWrapping="WrapWithOverflow">No configuration required for IDA script output</TextBlock>
                     </StackPanel>

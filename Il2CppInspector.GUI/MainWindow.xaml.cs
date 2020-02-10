@@ -24,6 +24,8 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using Il2CppInspector;
 using Il2CppInspector.Reflection;
+using Ookii.Dialogs.Wpf;
+using Path = System.IO.Path;
 
 namespace Il2CppInspectorGUI
 {
@@ -37,9 +39,24 @@ namespace Il2CppInspectorGUI
 
             // Subscribe to status update events
             ((App) Application.Current).OnStatusUpdate += OnStatusUpdate;
+
+            // Find Unity paths
+            var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            txtUnityPath.Text = Utils.FindPath($@"{programFiles}\Unity\Hub\Editor\*") ?? "<not set>";
+            txtUnityScriptPath.Text = Utils.FindPath($@"{programFiles}\Unity\Hub\Editor\*\Editor\Data\Resources\PackageManager\ProjectTemplates\libcache\com.unity.template.3d-*\ScriptAssemblies") ?? "<not set>";
         }
 
+        /// <summary>
+        /// Update the busy indicator message
+        /// </summary>
         private void OnStatusUpdate(object sender, string e) => txtBusyStatus.Dispatcher.Invoke(() => txtBusyStatus.Text = e + "...");
+
+        /// <summary>
+        /// User clicked on a link
+        /// </summary>
+        private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e) {
+            Process.Start(new ProcessStartInfo {FileName = e.Uri.ToString(), UseShellExecute = true});
+        }
 
         /// <summary>
         /// Select global metadata file
@@ -163,10 +180,48 @@ namespace Il2CppInspectorGUI
         }
 
         /// <summary>
-        /// User clicked on a link
+        /// Select Unity editor path
         /// </summary>
-        private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e) {
-            Process.Start(new ProcessStartInfo {FileName = e.Uri.ToString(), UseShellExecute = true});
+        private void BtnUnityPath_OnClick(object sender, RoutedEventArgs e) {
+            var openFolderDialog = new VistaFolderBrowserDialog();
+            if (txtUnityPath.Text != "<not set>")
+                openFolderDialog.SelectedPath = txtUnityPath.Text;
+            else {
+                openFolderDialog.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            }
+
+            openFolderDialog.Description = "Select Unity editor path";
+            openFolderDialog.UseDescriptionForTitle = true;
+
+            while (openFolderDialog.ShowDialog() == true) {
+                if (!File.Exists(openFolderDialog.SelectedPath + @"\Editor\Data\Managed\UnityEditor.dll"))
+                    MessageBox.Show(this, "Could not find Unity installation in this folder. Ensure the 'Editor' folder is a child of the selected folder and try again.", "Unity installation not found", MessageBoxButton.OK, MessageBoxImage.Error);
+                else {
+                    txtUnityPath.Text = openFolderDialog.SelectedPath;
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Select Unity script assemblies path
+        /// </summary>
+        private void BtnUnityScriptPath_OnClick(object sender, RoutedEventArgs e) {
+            var openFolderDialog = new VistaFolderBrowserDialog();
+            if (txtUnityScriptPath.Text != "<not set>")
+                openFolderDialog.SelectedPath = txtUnityScriptPath.Text;
+
+            openFolderDialog.Description = "Select Unity script assemblies path";
+            openFolderDialog.UseDescriptionForTitle = true;
+
+            while (openFolderDialog.ShowDialog() == true) {
+                if (!File.Exists(openFolderDialog.SelectedPath + @"\UnityEngine.UI.dll"))
+                    MessageBox.Show(this, "Could not find Unity assemblies in this folder. Ensure the selected folder contains UnityEngine.UI.dll and try again.", "Unity assemblies not found", MessageBoxButton.OK, MessageBoxImage.Error);
+                else {
+                    txtUnityScriptPath.Text = openFolderDialog.SelectedPath;
+                    break;
+                }
+            }
         }
     }
 
