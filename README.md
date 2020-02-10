@@ -1,13 +1,24 @@
 # Il2CppInspector
 
-Il2CppInspector helps you to reverse engineer IL2CPP applications.
+Il2CppInspector helps you to reverse engineer IL2CPP applications in Windows or from the Windows, MacOS X or Linux command line.
+
+**No manual reverse-engineering is required; all data is calculated automatically.**
+
+![Il2CppInspector GUI](docs/GUI_Preview.png)
 
 Main features:
 
 * Output IL2CPP metadata and method pointers as C# stub code
+
+![Il2CppInspector Auto-generated Visual Studio solution](docs/VisualStudio_Preview.png)
+
 * Create Visual Studio solutions directly from IL2CPP files
+
+![Il2CppInspector Auto-generated csproj file](docs/CSProj_Preview.png)
+
 * Create IDA Python scripts to populate symbol and function information
-* **No manual reverse-engineering required; all data is calculated automatically**
+
+![Il2CppInspector annotated IDA project](docs/IDA_Preview.png)
 
 File format and architecture support:
 
@@ -43,9 +54,11 @@ dotnet publish -c Release
 
 This will build Il2CppInspector for Windows 64-bit. For MacOS and Linux, add  `-r xxx` to the final command where `xxx` is a RID from https://docs.microsoft.com/en-us/dotnet/articles/core/rid-catalog
 
-The output binary is placed in `Il2CppInspector/Il2CppInspector.CLI/bin/Release/netcoreapp3.0/win-x64/publish`.
+The output binary for command-line usage is placed in `Il2CppInspector/Il2CppInspector.CLI/bin/Release/netcoreapp3.0/win-x64/publish/Il2CppInspector.exe`.
 
-### Usage
+The output binary for Windows GUI is places in `Il2CppInspector/Il2CppInspector.GUI/bin/Release/netcoreapp3.1/win-x64/publish/Il2CppInspector.exe`.
+
+### Command-line Usage
 
 Run `Il2CppInspector.exe` at the command prompt.
 

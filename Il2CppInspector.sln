@@ -19,10 +19,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Il2CppTests", "Il2CppTests\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{46226B08-22BA-455E-8B99-F496E90EDCBC}"
 	ProjectSection(SolutionItems) = preProject
+		docs\CSProj_Preview.png = docs\CSProj_Preview.png
+		docs\GUI_Preview.png = docs\GUI_Preview.png
+		docs\IDA_Preview.png = docs\IDA_Preview.png
 		README.md = README.md
+		docs\VisualStudio_Preview.png = docs\VisualStudio_Preview.png
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Il2CppInspector.GUI", "Il2CppInspector.GUI\Il2CppInspector.GUI.csproj", "{A24D77DA-8A64-4AD3-956A-677A96F20373}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Il2CppInspector.GUI", "Il2CppInspector.GUI\Il2CppInspector.GUI.csproj", "{A24D77DA-8A64-4AD3-956A-677A96F20373}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
