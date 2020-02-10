@@ -365,6 +365,7 @@ namespace Il2CppInspectorGUI
             }
 
             areaBusyIndicator.Visibility = Visibility.Hidden;
+            MessageBox.Show(this, "Export completed successfully", "Export complete", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private IEnumerable<string> constructExcludedNamespaces(IEnumerable<CheckboxNode> nodes) {
