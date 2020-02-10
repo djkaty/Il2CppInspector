@@ -286,6 +286,7 @@ namespace Il2CppInspectorGUI
                     };
                     var saveFileDialog = new SaveFileDialog {
                         Filter = "C# source files (*.cs)|*.cs|All files (*.*)|*.*",
+                        FileName = "types.cs",
                         CheckFileExists = false,
                         OverwritePrompt = true
                     };
@@ -343,6 +344,7 @@ namespace Il2CppInspectorGUI
 
                     var scriptSaveFileDialog = new SaveFileDialog {
                         Filter = "Python scripts (*.py)|*.py|All files (*.*)|*.*",
+                        FileName = "ida.py",
                         CheckFileExists = false,
                         OverwritePrompt = true
                     };
