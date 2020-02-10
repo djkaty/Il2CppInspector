@@ -370,7 +370,7 @@ namespace Il2CppInspectorGUI
 
             foreach (var node in nodes) {
                 if (node.IsChecked == false)
-                    ns.Add(node.FullName);
+                    ns.Add(node.FullName == "<global namespace>" ? "" : node.FullName);
 
                 else if (node.Children != null)
                     ns.AddRange(constructExcludedNamespaces(node.Children));
