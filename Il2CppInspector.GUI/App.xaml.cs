@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) 2020 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
+// All rights reserved
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
