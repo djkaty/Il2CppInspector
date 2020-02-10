@@ -210,4 +210,4 @@ Pizza spinner animation in the GUI made by Chris Gannon - https://gannon.tv/
 
 ### License
 
-All rights reserved. Unauthorized use, re-use or the creation of derivative works of this code for commercial purposes whether directly or indirectly is strictly prohibited. Use, re-use or the creation of derivative works for non-commercial purposes is expressly permitted.
+This software is licensed under AGPLv3.
