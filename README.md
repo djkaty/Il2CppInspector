@@ -44,6 +44,8 @@ Reusable class libraries:
 
 Class library targets .NET Standard 2.1. Application targets .NET Core 3.0. Built with Visual Studio 2019.
 
+NOTE: **Il2CppInspector is not a decompiler!** It cannot take an executable file and regenerate all of the source code for you. The output includes function pointers to each method so that you can quickly locate the methods of interest in a disassembler.
+
 ### Build instructions
 
 ```
