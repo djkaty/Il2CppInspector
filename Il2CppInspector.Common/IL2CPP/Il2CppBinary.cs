@@ -141,16 +141,15 @@ namespace Il2CppInspector
             Debug.WriteLine("Function table:");
             Debug.WriteLine(string.Join(", ", from a in addrs select string.Format($"0x{a:X8}")));
 
-            foreach (var loc in addrs)
-                if (loc != 0) {
-                    var (code, metadata) = ConsiderCode(subImage, loc);
-                    if (code != 0) {
-                        RegistrationFunctionPointer = loc + subImage.GlobalOffset;
-                        Console.WriteLine("Required structures acquired from code heuristics. Initialization function: 0x{0:X16}", RegistrationFunctionPointer);
-                        Configure(subImage, code, metadata); 
-                        return true;
-                    }
+            foreach (var loc in addrs) {
+                var (code, metadata) = ConsiderCode(subImage, loc);
+                if (code != 0) {
+                    RegistrationFunctionPointer = loc + subImage.GlobalOffset;
+                    Console.WriteLine("Required structures acquired from code heuristics. Initialization function: 0x{0:X16}", RegistrationFunctionPointer);
+                    Configure(subImage, code, metadata); 
+                    return true;
                 }
+            }
 
             Console.WriteLine("No matches via code heuristics");
             return false;
