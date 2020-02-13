@@ -125,8 +125,6 @@ namespace Il2CppInspector
 
         public override int Bits => (elf_header.m_arch == (uint) Elf.ELFCLASS64) ? 64 : 32;
 
-        //public override event EventHandler<string> OnStatusUpdate;
-
         private elf_shdr<TWord> getSection(Elf sectionIndex) => section_header_table.FirstOrDefault(x => x.sh_type == (uint) sectionIndex);
         private IEnumerable<elf_shdr<TWord>> getSections(Elf sectionIndex) => section_header_table.Where(x => x.sh_type == (uint) sectionIndex);
         private TPHdr getProgramHeader(Elf programIndex) => program_header_table.FirstOrDefault(x => x.p_type == (uint) programIndex);
@@ -151,11 +149,13 @@ namespace Il2CppInspector
             program_header_table = ReadArray<TPHdr>(conv.Long(elf_header.e_phoff), elf_header.e_phnum);
             section_header_table = ReadArray<elf_shdr<TWord>>(conv.Long(elf_header.e_shoff), elf_header.e_shnum);
 
-            // Get section name mappings
-            var pStrtab = section_header_table[elf_header.e_shtrndx].sh_offset;
-            foreach (var section in section_header_table) {
-                var name = ReadNullTerminatedString(conv.Long(pStrtab) + section.sh_name);
-                sectionByName.Add(name, section);
+            // Get section name mappings if there are any
+            if (elf_header.e_shtrndx < section_header_table.Length) {
+                var pStrtab = section_header_table[elf_header.e_shtrndx].sh_offset;
+                foreach (var section in section_header_table) {
+                    var name = ReadNullTerminatedString(conv.Long(pStrtab) + section.sh_name);
+                    sectionByName.Add(name, section);
+                }
             }
 
             // Get dynamic table if it exists
