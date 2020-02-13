@@ -341,7 +341,13 @@ namespace Il2CppInspector
             var init = MapVATR(conv.ULong(getDynamic(Elf.DT_INIT_ARRAY).d_un));
             var size = getDynamic(Elf.DT_INIT_ARRAYSZ).d_un;
 
-            return conv.UIntArray(ReadArray<TWord>(init, conv.Int(size) / (Bits / 8))).Select(x => MapVATR(x)).ToArray();
+            var init_array = conv.UIntArray(ReadArray<TWord>(init, conv.Int(size) / (Bits / 8))).Select(x => MapVATR(x));
+
+            // Additionally, check if there is an old-style DT_INIT function and include it in the list if so
+            if (getDynamic(Elf.DT_INIT) != null)
+                init_array = init_array.Concat(conv.UIntArray(new[] {getDynamic(Elf.DT_INIT).d_un}));
+
+            return init_array.ToArray();
         }
 
         // Map a virtual address to an offset into the image file. Throws an exception if the virtual address is not mapped into the file.
