@@ -105,24 +105,25 @@ namespace Il2CppInspector
                 if (isPushR32(buff, 0)) {
                     // Linear sweep for LEA
                     var leaInlined = findLea(buff, 2, 0x1E); // 0x20 - 2
-                    if (leaInlined == null)
-                        return (0, 0);
+
                     // LEA is 7 bytes long
-                    pCgr = image.GlobalOffset + loc + (uint) leaInlined.Value.foundOffset + 7 + leaInlined.Value.operand;
+                    if (leaInlined != null)
+                        pCgr = image.GlobalOffset + loc + (uint) leaInlined.Value.foundOffset + 7 + leaInlined.Value.operand;
                 }
             }
 
-            if (pCgr == 0)
-                return (0, 0);
+            var okToContinue = pCgr != 0;
 
             // Assume we've found the pointer to Il2CppCodegenRegistration(void) and jump there
-            try {
-                Image.Position = Image.MapVATR(pCgr);
-            }
+            if (okToContinue) {
+                try {
+                    Image.Position = Image.MapVATR(pCgr);
+                }
 
-            // Couldn't map virtual address to data in file, so it's not this function
-            catch (InvalidOperationException) {
-                return (0, 0);
+                // Couldn't map virtual address to data in file, so it's not this function
+                catch (InvalidOperationException) {
+                    okToContinue = false;
+                }
             }
 
             // Find the first 2 LEAs which we'll hope contain pointers to CodeRegistration and MetadataRegistration
@@ -134,28 +135,38 @@ namespace Il2CppInspector
             // By ignoring the REX R flag (bit 2 of the instruction prefix) which specifies an extension bit to the register operand,
             // we skip over "lea r8". This will leave us with two LEAs containing our desired pointers.
 
-            buff = image.ReadBytes(0x40);
+            if (okToContinue) {
+                buff = image.ReadBytes(0x40);
 
-            // LEA is 7 bytes long
-            var lea1 = findLea(buff, 0, 0x40 - 7);
-            if (lea1 == null)
-                return (0, 0);
+                // LEA is 7 bytes long
+                var lea1 = findLea(buff, 0, 0x40 - 7);
+                if (lea1 != null) {
 
-            var lea2 = findLea(buff, lea1.Value.foundOffset + 7, 0x40 - lea1.Value.foundOffset - 7);
-            if (lea2 == null)
-                return (0, 0);
+                    var lea2 = findLea(buff, lea1.Value.foundOffset + 7, 0x40 - lea1.Value.foundOffset - 7);
+                    if (lea2 != null) {
 
-            // Use the original pointer found, not the file location + GlobalOffset because the data may be in a different section
-            var ptr1 = pCgr + (uint) lea1.Value.foundOffset + 7 + lea1.Value.operand;
-            var ptr2 = pCgr + (uint) lea2.Value.foundOffset + 7 + lea2.Value.operand;
+                        // Use the original pointer found, not the file location + GlobalOffset because the data may be in a different section
+                        var ptr1 = pCgr + (uint) lea1.Value.foundOffset + 7 + lea1.Value.operand;
+                        var ptr2 = pCgr + (uint) lea2.Value.foundOffset + 7 + lea2.Value.operand;
 
-            // RCX and RDX argument passing?
-            if (lea1.Value.reg == 2 /* RDX */ && lea2.Value.reg == 1 /* RCX */)
-                return (ptr2, ptr1);
+                        // RCX and RDX argument passing?
+                        if (lea1.Value.reg == 2 /* RDX */ && lea2.Value.reg == 1 /* RCX */)
+                            return (ptr2, ptr1);
 
-            // RAX sequential loading?
-            if (lea1.Value.reg == 0 /* RAX */ && lea2.Value.reg == 0 /* RAX */)
-                return (ptr1, ptr2);
+                        // RAX sequential loading?
+                        if (lea1.Value.reg == 0 /* RAX */ && lea2.Value.reg == 0 /* RAX */)
+                            return (ptr1, ptr2);
+                    }
+                }
+            }
+
+            // If no initializer is found, we may be looking at a DT_INIT function which calls its own function table manually
+            // In the sample we have seen (PlayStation 4), this function runs through two function tables:
+            // 1. Start address of table loaded into rbx, pointer past end of table in r12 (lea rbx; lea r12)
+            // 2. Pointer to final address of 2nd table loaded into rbx (lea rbx), runs backwards (8 bytes per entry) until finding 0xFFFFFFFF_FFFFFFFF
+            // The strategy: find these LEAs, acquire and merge the two function tables, then call ourselves in a loop to check each function address
+
+            // TODO: Implement DT_INIT analysis
 
             return (0, 0);
         }
