@@ -252,7 +252,7 @@ namespace Il2CppInspector
             Console.WriteLine($"Processed {rels.Count} relocations");
 
             // Detect and defeat trivial XOR encryption
-            if (dynamic_table.Any(d => (Elf) conv.Int(d.d_tag) == Elf.DT_INIT)) {
+            if (getDynamic(Elf.DT_INIT) != null && sectionByName.ContainsKey(".rodata")) {
                 var rodataFirstBytes = ReadArray<byte>(conv.Long(sectionByName[".rodata"].sh_offset), 256);
                 var xorKey = rodataFirstBytes.GroupBy(b => b).OrderByDescending(f => f.Count()).First().Key;
 
