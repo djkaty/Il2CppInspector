@@ -67,13 +67,23 @@ namespace Il2CppInspector
         // mov rbp, rsp is a 3-byte instruction encoded as 0x48 0x89 0xE5
         private bool isPrologue(byte[] buff, int offset) => buff[offset] == 0x55 && buff[offset + 1] == 0x48 && buff[offset + 2] == 0x89 && buff[offset + 3] == 0xE5;
 
-        // 0b0100_0X0Y to set 64-bit mode, 0x33 for XOR, 0b11_XXX_YYY for register numbers
-        // Volume 2C, page 5-278
+        // 0b0100_0X0Y to set 64-bit mode, 0x31 or 0x33 for XOR, 0b11_XXX_YYY for register numbers
+        // Volume 2C, page 5-612
         private (int reg_op1, int reg_op2)? getXorR64R64(byte[] buff, int offset) {
-            if ((buff[offset] & 0b1111_1010) != 0b_0100_0000 || buff[offset + 1] != 0x33 || (buff[offset + 2] & 0b1100_0000) != 0b1100_0000)
+            if ((buff[offset] & 0b1111_1010) != 0b_0100_0000 ||
+                (buff[offset + 1] != 0x31 && buff[offset + 1] != 0x33) ||
+                (buff[offset + 2] & 0b1100_0000) != 0b1100_0000)
                 return null;
             return (((buff[offset] & 0b0000_0100) << 1) + ((buff[offset + 2] & 0b0011_1000) >> 3),
                     ((buff[offset] & 0b0000_0001) << 3) + (buff[offset + 2] & 0b0000_0111));
+        }
+
+        // 0x31 or 0x33 for XOR, 0b11_XXX_YYY for register numbers
+        // Volume 2C, page 5-612
+        private (int reg_op1, int reg_op2)? getXorR32R32(byte[] buff, int offset) {
+            if ((buff[offset] != 0x31 && buff[offset] != 0x33) || (buff[offset + 1] & 0b1100_0000) != 0b1100_0000)
+                return null;
+            return ((buff[offset + 1] & 0b0011_1000) >> 3, buff[offset + 1] & 0b0000_0111);
         }
 
         protected override (ulong, ulong) ConsiderCode(IFileFormatReader image, uint loc) {
@@ -81,7 +91,8 @@ namespace Il2CppInspector
             // Setup
             var buffSize = 0x66; // minimum number of bytes to process the longest expected function
             var leaSize = 7; // the length of an LEA instruction with a 64-bit register operand and a 32-bit memory operand
-            var xorSize = 3; // the length of a XOR instruction of two 64-bit registers
+            var xor64Size = 3; // the length of a XOR instruction of two 64-bit registers
+            var xor32Size = 2; // the length of a XOR instruction of two 32-bit registers
             var pushSize = 2; // the length of a PUSH instruction with a 64-bit register
 
             int RAX = 0, RBX = 3, RCX = 1, RDX = 2, R8 = 8;
@@ -96,21 +107,50 @@ namespace Il2CppInspector
             // 2. Inlined version with il2cpp::utils::RegisterRuntimeInitializeAndCleanup(CallbackFunction, CallbackFunction, order)
 
             // Version 1 passes "this" in rcx and the arguments in rdx (our wanted pointer), r8d (always zero) and r9d (always zero)
+            //           or "this" in rdi, and the arguments in rsi (our wanted pointer), edx (always zero) and ecx (always zero)
             // Version 2 has a standard prologue and loads the wanted pointer into rax (lea rax)
 
             (int reg, uint operand)? lea;
 
             // Check for regular version
-            var xor = getXorR64R64(buff, 0);
-            if (xor != null && xor.Value.reg_op1 == xor.Value.reg_op2) {
-                lea = getLea(buff, xorSize);
+            // Generalize it as follows:
+            // - each instruction must be lea r64, imm32 or xor r32, r32
+            // - xors must always have the same register for both operands
+            // - lea that can't be mapped into the file is the pointer to 'this', otherwise it's the pointer to the init function
+            // - the last instruction should always be jmp (not currently enforced)
+            // - function length should not be longer than 5 instructions (two leas, two xors and one jmp)
 
-                if (lea != null) {
-                    xor = getXorR64R64(buff, xorSize + leaSize);
-                    if (xor != null && xor.Value.reg_op1 == xor.Value.reg_op2) {
-                        // We found Il2CppCodegenRegistration(void)
-                        pCgr = image.GlobalOffset + loc + (ulong) (xorSize + leaSize) + lea.Value.operand;
+            for (int offset = 0, instructions = 0; instructions < 4; instructions++) {
+                // All allowed instruction types
+                var xor32 = getXorR32R32(buff, offset);
+                var xor64 = getXorR64R64(buff, offset);
+                lea =       getLea(buff, offset);
+
+                if (xor32 != null && xor32.Value.reg_op1 == xor32.Value.reg_op2) {
+                    offset += xor32Size;
+                }
+                else if (xor64 != null && xor64.Value.reg_op1 == xor64.Value.reg_op2) {
+                    offset += xor64Size;
+                }
+                else if (lea != null) {
+                    offset += leaSize;
+
+                    if (pCgr == 0) {
+                        try {
+                            // We may have found Il2CppCodegenRegistration(void)
+                            pCgr = image.GlobalOffset + loc + (ulong) offset + lea.Value.operand;
+                            var newLoc = image.MapVATR(pCgr);
+                        }
+                        catch (InvalidOperationException) {
+                            // this pointer
+                            pCgr = 0;
+                        }
                     }
+                }
+                else {
+                    // not lea or xor
+                    pCgr = 0;
+                    break;
                 }
             }
 
