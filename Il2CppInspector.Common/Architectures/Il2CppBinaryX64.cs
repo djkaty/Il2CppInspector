@@ -5,7 +5,8 @@
 */
 
 using System;
-using System.ComponentModel.Design;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 
 namespace Il2CppInspector
@@ -95,7 +96,7 @@ namespace Il2CppInspector
             var xor32Size = 2; // the length of a XOR instruction of two 32-bit registers
             var pushSize = 2; // the length of a PUSH instruction with a 64-bit register
 
-            int RAX = 0, RBX = 3, RCX = 1, RDX = 2, R8 = 8;
+            int RAX = 0, RBX = 3, RCX = 1, RDX = 2, RSI = 6, RDI = 7, R8 = 8;
 
             ulong pCgr = 0; // the point to the code registration function
 
@@ -180,43 +181,45 @@ namespace Il2CppInspector
             // Find the first 2 LEAs which we'll hope contain pointers to CodeRegistration and MetadataRegistration
 
             // There are two options here:
-            // 1. il2cpp::vm::MetadataCache::Register is called directly with arguments in rcx, rdx and r8 (lea, lea, lea, jmp)
+            // 1. il2cpp::vm::MetadataCache::Register is called directly with arguments in rcx, rdx, r8 or rdi, rsi, rdx (lea, lea, lea, jmp)
             // 2. The two functions being inlined. The arguments are loaded sequentially into rax after the prologue
 
             if (pCgr != 0) {
-                var buff2Size = 0x40;
+                var buff2Size = 0x50;
                 var buff2 = image.ReadBytes(buffSize);
                 var offset = 0;
 
-                (int foundOffset, int reg, uint operand)? lea1 = null, lea2 = null;
+                var leas = new Dictionary<(int index, ulong address), int>();
 
-                // We skip over "lea r8". This will leave us with two LEAs containing our desired pointers.
-                while (offset + leaSize < buff2Size && (!lea1.HasValue || lea1.Value.reg == R8)) {
-                    lea1 = findLea(buff2, offset, buff2Size - (offset + leaSize));
-                    offset = lea1?.foundOffset + leaSize ?? buff2Size;
+                // Find the first three LEAs in the function
+                while (offset + leaSize < buff2Size && leas.Count < 3) {
+                    var nextLea = findLea(buff2, offset, buff2Size - (offset + leaSize));
+
+                    // Use the original pointer found, not the file location + GlobalOffset because the data may be in a different section
+                    if (nextLea != null)
+                        leas.Add((leas.Count, pCgr + (uint) nextLea.Value.foundOffset + (uint) leaSize + nextLea.Value.operand), nextLea.Value.reg);
+                    
+                    offset = nextLea?.foundOffset + leaSize ?? buff2Size;
                 }
 
-                if (lea1 != null) {
+                if (leas.Count == 3) {
+                    // Register-based argument passing?
+                    var leaRSI = leas.FirstOrDefault(l => l.Value == RSI).Key.address;
+                    var leaRDI = leas.FirstOrDefault(l => l.Value == RDI).Key.address;
 
-                    while (offset + leaSize < buff2Size && (!lea2.HasValue || lea2.Value.reg == R8)) {
-                        lea2 = findLea(buff2, offset, buff2Size - (offset + leaSize));
-                        offset = lea2?.foundOffset + leaSize ?? buff2Size;
-                    }
+                    if (leaRSI != 0 && leaRDI != 0)
+                        return (leaRDI, leaRSI);
 
-                    if (lea2 != null) {
+                    var leaRCX = leas.FirstOrDefault(l => l.Value == RCX).Key.address;
+                    var leaRDX = leas.FirstOrDefault(l => l.Value == RDX).Key.address;
 
-                        // Use the original pointer found, not the file location + GlobalOffset because the data may be in a different section
-                        var ptr1 = pCgr + (uint) lea1.Value.foundOffset + (uint) leaSize + lea1.Value.operand;
-                        var ptr2 = pCgr + (uint) lea2.Value.foundOffset + (uint) leaSize + lea2.Value.operand;
+                    if (leaRCX != 0 && leaRDX != 0)
+                        return (leaRCX, leaRDX);
 
-                        // RCX and RDX argument passing?
-                        if (lea1.Value.reg == RDX && lea2.Value.reg == RCX)
-                            return (ptr2, ptr1);
-
-                        // RAX sequential loading?
-                        if (lea1.Value.reg == RAX && lea2.Value.reg == RAX)
-                            return (ptr1, ptr2);
-                    }
+                    // RAX sequential loading? If so, take the first two arguments
+                    var leasRAX = leas.Where(l => l.Value == RAX).OrderBy(l => l.Key.index).Select(l => l.Key.address).ToArray();
+                    if (leasRAX.Length > 1)
+                        return (leasRAX[0], leasRAX[1]);
                 }
             }
 
