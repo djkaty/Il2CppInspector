@@ -41,7 +41,9 @@ namespace Il2CppInspector.Reflection
         public static readonly List<string> DefaultExcludedNamespaces = new List<string> {
             "System",
             "Mono",
+            "Microsoft.Reflection",
             "Microsoft.Win32",
+            "Internal.Runtime",
             "Unity",
             "UnityEditor",
             "UnityEngine",

@@ -71,7 +71,7 @@ File format and architecture are automatically detected.
   -m, --metadata              (Default: global-metadata.dat) IL2CPP metadata file input
   -c, --cs-out                (Default: types.cs) C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)
   -p, --py-out                (Default: ida.py) IDA Python script output file
-  -e, --exclude-namespaces    (Default: System Unity UnityEngine UnityEngineInternal Mono Microsoft.Win32 AOT JetBrains.Annotations) Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces
+  -e, --exclude-namespaces    (Default: System Unity UnityEngine UnityEngineInternal Mono Microsoft.Reflection Microsoft.Win32 Internal.Runtime AOT JetBrains.Annotations) Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces
   -l, --layout                (Default: single) Partitioning of C# output ('single' = single file, 'namespace' = one file per namespace in folders, 'assembly' = one file per assembly, 'class' = one file per class in namespace folders, 'tree' = one file per class in assembly and namespace folders)
   -s, --sort                  (Default: index) Sort order of type definitions in C# output ('index' = by type definition index, 'name' = by type name). No effect when using file-per-class or tree layout
   -f, --flatten               Flatten the namespace hierarchy into a single folder rather than using per-namespace subfolders. Only used when layout is per-namespace or per-class. Ignored for tree layout
@@ -95,7 +95,9 @@ To exclude types from certain namespaces from being generated in the C# source f
 ```
 System
 Mono
+Microsoft.Reflection
 Microsoft.Win32
+Internal.Runtime
 Unity
 UnityEditor
 UnityEngine

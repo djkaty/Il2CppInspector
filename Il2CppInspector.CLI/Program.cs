@@ -33,7 +33,9 @@ namespace Il2CppInspector.CLI
                 Default = new [] {
                     "System",
                     "Mono",
+                    "Microsoft.Reflection",
                     "Microsoft.Win32",
+                    "Internal.Runtime",
                     "Unity",
                     "UnityEditor",
                     "UnityEngine",
