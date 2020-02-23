@@ -1,6 +1,6 @@
 ﻿/*
     Copyright 2017 Perfare - https://github.com/Perfare/Il2CppDumper
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -17,7 +17,53 @@ namespace Il2CppInspector
 
         public Il2CppBinaryARM(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) : base(stream, codeRegistration, metadataRegistration) { }
 
+        // ARMv7-A Architecture Reference Manual: https://static.docs.arm.com/ddi0406/c/DDI0406C_C_arm_architecture_reference_manual.pdf
+
+        // Section A8.8.7, page A8-312 (ADD encoding A1)
+        private (uint reg_d, uint reg_n, uint reg_m)? getAddReg(uint inst) {
+            if (inst.Bits(21, 11) != 0b_1110_0000_100)
+                return null;
+
+            var reg_d = inst.Bits(12, 4);
+            var reg_n = inst.Bits(16, 4);
+            var reg_m = inst.Bits(0, 4);
+            return (reg_d, reg_n, reg_m);
+        }
+
+        // Section A8.8.64, page A8-410 (LDR encoding A1)
+        private (uint reg_t, ushort imm)? getLdrLit(uint inst) {
+            if (inst.Bits(16, 16) != 0b_1110_0101_1001_1111)
+                return null;
+
+            var reg_t = inst.Bits(12, 4);
+            var imm12 = inst.Bits(0, 12);
+            return (reg_t, (ushort) imm12);
+        }
+
+        // Section A8.8.66, page A8-414 (LDR encoding A1)
+        // Specifically LDR Rx, [Ry, Rz]
+        private (uint reg_t, uint reg_n, uint reg_m)? getLdrReg(uint inst) {
+            if (inst.Bits(20, 12) != 0b_1110_0111_1001)
+                return null;
+
+            var reg_n = inst.Bits(16, 4);
+            var reg_t = inst.Bits(12, 4);
+            var reg_m = inst.Bits(0, 4);
+            return (reg_t, reg_n, reg_m);
+        }
+
+        // Section A8.8.18, page A8-334 (B encoding A1)
+        private bool isB(uint inst) => inst.Bits(24, 8) == 0b_1110_1010;
+
         // Thumb 2 Supplement Reference Manual: http://class.ece.iastate.edu/cpre288/resources/docs/Thumb-2SupplementReferenceManual.pdf
+
+        // Page 4-166 (MOVS encoding T1, MOVW encoding T3), Page 4-171 (MOVT)
+        // In Thumb, an 8-byte MOV instruction is MOVW followed by MOVT
+        private enum Thumb : uint
+        {
+            MovW = 0b100100,
+            MovT = 0b101100
+        }
 
         // Section 3.1
         private uint getNextThumbInstruction(IFileFormatReader image) {
@@ -32,15 +78,7 @@ namespace Il2CppInspector
             return inst;
         }
 
-        // Page 4-166 (MOVS encoding T1, MOVW encoding T3), Page 4-171 (MOVT)
-        // In Thumb, an 8-byte MOV instruction is MOVW followed by MOVT
-        private enum Thumb : uint
-        {
-            MovW = 0b100100,
-            MovT = 0b101100
-        }
-
-        private (uint reg_d, ushort imm)? getMovImm(uint inst, Thumb movType) {
+        private (uint reg_d, ushort imm)? getThumbMovImm(uint inst, Thumb movType) {
             uint reg_d, imm;
 
             // Encoding T1
@@ -60,7 +98,7 @@ namespace Il2CppInspector
         }
 
         // Section 4.6.4 (ADD encoding T2)
-        private (uint reg_dn, uint reg_m)? getAddReg(uint inst) {
+        private (uint reg_dn, uint reg_m)? getThumbAddReg(uint inst) {
             if (inst.Bits(8, 8) != 0b_0100_0100)
                 return null;
 
@@ -70,7 +108,7 @@ namespace Il2CppInspector
         }
 
         // Section 4.6.43 (LDR encoding T1)
-        private (uint reg_n, uint reg_t, ushort imm)? getLdrImm(uint inst) {
+        private (uint reg_n, uint reg_t, ushort imm)? getThumbLdrImm(uint inst) {
             if (inst.Bits(11, 5) != 0b_01101)
                 return null;
 
@@ -99,7 +137,7 @@ namespace Il2CppInspector
                 var accepted = false;
 
                 // Is it a MOVW?
-                if (getMovImm(inst, Thumb.MovW) is (uint movw_reg_d, ushort movw_imm)) {
+                if (getThumbMovImm(inst, Thumb.MovW) is (uint movw_reg_d, ushort movw_imm)) {
                     if (regs.ContainsKey(movw_reg_d))
                         regs[movw_reg_d] = movw_imm; // Clears top 16 bits
                     else
@@ -109,7 +147,7 @@ namespace Il2CppInspector
                 }
 
                 // Is it a MOVT?
-                if (getMovImm(inst, Thumb.MovT) is (uint movt_reg_d, ushort movt_imm)) {
+                if (getThumbMovImm(inst, Thumb.MovT) is (uint movt_reg_d, ushort movt_imm)) {
                     if (regs.ContainsKey(movt_reg_d))
                         regs[movt_reg_d] |= (uint) movt_imm << 16;
                     else
@@ -119,7 +157,7 @@ namespace Il2CppInspector
                 }
 
                 // Is it a pointer de-reference (LDR Rt, [Rn, #imm])?
-                if (getLdrImm(inst) is (uint ldr_reg_n, uint ldr_reg_t, ushort ldr_imm)) {
+                if (getThumbLdrImm(inst) is (uint ldr_reg_n, uint ldr_reg_t, ushort ldr_imm)) {
                     // The code below works in the generic case for all Rt, Rn and #imm,
                     // but for our scan we want to restrict it such that Rt == Rn and #imm == 0
                     // otherwise we might pick up functions we don't want
@@ -138,7 +176,7 @@ namespace Il2CppInspector
                 }
 
                 // Is it an ADD Rdn, Rm?
-                if (getAddReg(inst) is (uint add_reg_dn, uint add_reg_m)) {
+                if (getThumbAddReg(inst) is (uint add_reg_dn, uint add_reg_m)) {
                     if (regs.ContainsKey(add_reg_dn) && regs.ContainsKey(add_reg_m)) {
                         regs[add_reg_dn] += regs[add_reg_m];
 
@@ -205,8 +243,8 @@ namespace Il2CppInspector
             // ARMv7
             // Il2CppCodeRegistration.cpp initializer
             image.Position = loc;
-
             buff = image.ReadBytes(0x18);
+
             // Check for ADD R0, PC, R0; ADD R1, PC, R1 near the end of the function
             if (new byte[] {0x00, 0x00, 0x8F, 0xE0, 0x01, 0x10, 0x8F, 0xE0}.SequenceEqual(buff.Skip(0x10))
 
@@ -219,14 +257,47 @@ namespace Il2CppInspector
                 pCgr = image.ReadUInt32() + loc + 0x1c;
 
                 // void Il2CppCodegenRegistration()
-                // Read pointer table at end of function
-                image.Position = pCgr + 0x1C;
-                var pMetadata = image.ReadUInt32() + pCgr + 0x14;
-                codeRegistration = image.ReadUInt32() + pCgr + 0x18;
+                // This function must take the form:
+                // - three LDR of R0-R2, to pointers at the end of the function
+                // - three ADD/LDR, either ADD Rx, PC, Rx or LDR Rx, [PC, Rx] for pointer to pointer
+                // - B
+                // R0 = CodeRegistration, R1 = MetadataRegistration, R2 = Il2CppCodeGenOptions
 
-                image.Position = image.MapVATR(pMetadata);
-                metadataRegistration = image.ReadUInt32();
-                return (codeRegistration, metadataRegistration);
+                var insts = image.Stream.ReadArray<uint>(pCgr, 10); // 7 instructions + 3 pointers
+                var ldrOffsets = new uint[3];
+                var pointers = new uint[3];
+
+                // Confirm the 7th final instruction is an unconditional branch
+                var okToContinue = isB(insts[6]);
+                
+                // Fetch the LDR values for R0-R2 as the first three instructions
+                // PC points to 8 bytes after the current instruction
+                for (var i = 0; i <= 2 && okToContinue; i++) {
+                    var ldr = getLdrLit(insts[i]);
+                    if (ldr != null && ldr.Value.reg_t <= 2)
+                        ldrOffsets[ldr.Value.reg_t] = (uint) i*4 + ldr.Value.imm + 8;
+                    else
+                        okToContinue = false;
+                }
+
+                // Fetch the ADDs or LDRs to determine which are pointers
+                // and which are pointers to pointers
+                for (var i = 3; i <= 5 && okToContinue; i++) {
+                    var add = getAddReg(insts[i]);
+                    var ldr = getLdrReg(insts[i]);
+                    if (add != null && add.Value.reg_n == 15 && add.Value.reg_d == add.Value.reg_m && add.Value.reg_d <= 2) {
+                        pointers[add.Value.reg_d] = pCgr + (uint) i*4 + insts[ldrOffsets[add.Value.reg_d] / 4] + 8;
+                    }
+                    else if (ldr != null && ldr.Value.reg_n == 15 && ldr.Value.reg_t == ldr.Value.reg_m && ldr.Value.reg_t <= 2) {
+                        var p = pCgr + (uint) i * 4 + insts[ldrOffsets[ldr.Value.reg_t] / 4] + 8;
+                        pointers[ldr.Value.reg_t] = image.ReadUInt32(image.MapVATR(p));
+                    }
+                    else
+                        okToContinue = false;
+                }
+
+                if (okToContinue)
+                    return (pointers[0], pointers[1]);
             }
 
             // Thumb-2
