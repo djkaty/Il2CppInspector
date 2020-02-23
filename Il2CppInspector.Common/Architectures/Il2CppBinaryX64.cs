@@ -57,20 +57,25 @@ namespace Il2CppInspector
             return (reg, operand);
         }
 
-        // REX 0x40 to set 64-bit mode with 32-bit register size, 0x50+rd to push specified register number
-        // Volume 2B, page 4-511
-        private bool isPushR32(byte[] buff, int offset) => buff[offset] == 0x40 && buff[offset + 1] >= 0x50 && buff[offset + 1] < 0x58;
+        // REX.W + 0x89 - for a 5-byte mov r/m64,r64
+        // Volume 2B, page 4-35
+        private bool isMovRM64R64(byte[] buff, int offset = 0) => buff[offset] == 0x48 && buff[offset + 1] == 0x89;
 
         // REX 0x40 to set 64-bit mode with 64-bit register size, register bit 3 in REX bit 0; bottom 3 bits of opcode are register bits 0-2
-        private bool isPushR64(byte[] buff, int offset) => (buff[offset] == 0x40 || buff[offset] == 0x41) && buff[offset + 1] >= 0x50 && buff[offset + 1] <= 0x57;
+        // or the same thing without REX prefix
+        // Volume 2B, page 4-511
+        private bool isPushR64(byte[] buff, int offset = 0) =>
+            ((buff[offset] == 0x40 || buff[offset] == 0x41) && buff[offset + 1] >= 0x50 && buff[offset + 1] <= 0x57)
+            || (buff[offset] >= 0x50 && buff[offset] <= 0x57);
 
         // push rbp is a one-byte instruction encoded as 0x55
         // mov rbp, rsp is a 3-byte instruction encoded as 0x48 0x89 0xE5
-        private bool isPrologue(byte[] buff, int offset) => buff[offset] == 0x55 && buff[offset + 1] == 0x48 && buff[offset + 2] == 0x89 && buff[offset + 3] == 0xE5;
+        private bool isPrologue(byte[] buff, int offset = 0) =>
+            isPushR64(buff) && buff[offset + 1] == 0x48 && buff[offset + 2] == 0x89 && buff[offset + 3] == 0xE5;
 
         // 0b0100_0X0Y to set 64-bit mode, 0x31 or 0x33 for XOR, 0b11_XXX_YYY for register numbers
         // Volume 2C, page 5-612
-        private (int reg_op1, int reg_op2)? getXorR64R64(byte[] buff, int offset) {
+        private (int reg_op1, int reg_op2)? getXorR64R64(byte[] buff, int offset = 0) {
             if ((buff[offset] & 0b1111_1010) != 0b_0100_0000 ||
                 (buff[offset + 1] != 0x31 && buff[offset + 1] != 0x33) ||
                 (buff[offset + 2] & 0b1100_0000) != 0b1100_0000)
@@ -81,7 +86,7 @@ namespace Il2CppInspector
 
         // 0x31 or 0x33 for XOR, 0b11_XXX_YYY for register numbers
         // Volume 2C, page 5-612
-        private (int reg_op1, int reg_op2)? getXorR32R32(byte[] buff, int offset) {
+        private (int reg_op1, int reg_op2)? getXorR32R32(byte[] buff, int offset = 0) {
             if ((buff[offset] != 0x31 && buff[offset] != 0x33) || (buff[offset + 1] & 0b1100_0000) != 0b1100_0000)
                 return null;
             return ((buff[offset + 1] & 0b0011_1000) >> 3, buff[offset + 1] & 0b0000_0111);
@@ -90,11 +95,12 @@ namespace Il2CppInspector
         protected override (ulong, ulong) ConsiderCode(IFileFormatReader image, uint loc) {
 
             // Setup
-            var buffSize = 0x66; // minimum number of bytes to process the longest expected function
+            var buffSize = 0x76; // minimum number of bytes to process the longest expected function
             var leaSize = 7; // the length of an LEA instruction with a 64-bit register operand and a 32-bit memory operand
             var xor64Size = 3; // the length of a XOR instruction of two 64-bit registers
             var xor32Size = 2; // the length of a XOR instruction of two 32-bit registers
             var pushSize = 2; // the length of a PUSH instruction with a 64-bit register
+            var offset = 0;
 
             int RAX = 0, RBX = 3, RCX = 1, RDX = 2, RSI = 6, RDI = 7, R8 = 8;
 
@@ -109,7 +115,7 @@ namespace Il2CppInspector
 
             // Version 1 passes "this" in rcx and the arguments in rdx (our wanted pointer), r8d (always zero) and r9d (always zero)
             //           or "this" in rdi, and the arguments in rsi (our wanted pointer), edx (always zero) and ecx (always zero)
-            // Version 2 has a standard prologue and loads the wanted pointer into rax (lea rax)
+            // Version 2 has a standard prologue and loads the wanted pointer into rax or rbp (lea rax/rbp)
 
             (int reg, uint operand)? lea;
 
@@ -121,7 +127,8 @@ namespace Il2CppInspector
             // - the last instruction should always be jmp (not currently enforced)
             // - function length should not be longer than 5 instructions (two leas, two xors and one jmp)
 
-            for (int offset = 0, instructions = 0; instructions < 4; instructions++) {
+            offset = 0;
+            for (var instructions = 0; instructions < 4; instructions++) {
                 // All allowed instruction types
                 var xor32 = getXorR32R32(buff, offset);
                 var xor64 = getXorR64R64(buff, offset);
@@ -158,7 +165,12 @@ namespace Il2CppInspector
             // Check for inlined version
             if (pCgr == 0) {
                 // Check for prologue
-                if (isPushR32(buff, 0)) {
+                // - A sequence of 0 or more mov [rsp+argX], rXX followed by 1 or more push rXX
+                offset = 0;
+                while (isMovRM64R64(buff, offset))
+                    offset += 5;
+
+                if (isPushR64(buff, offset)) {
                     // Linear sweep for LEA
                     var leaInlined = findLea(buff, pushSize, buffSize - pushSize);
                     if (leaInlined != null)
@@ -187,7 +199,7 @@ namespace Il2CppInspector
             if (pCgr != 0) {
                 var buff2Size = 0x50;
                 var buff2 = image.ReadBytes(buffSize);
-                var offset = 0;
+                offset = 0;
 
                 var leas = new Dictionary<(int index, ulong address), int>();
 
@@ -230,7 +242,7 @@ namespace Il2CppInspector
             // The strategy: find these LEAs, acquire and merge the two function tables, then call ourselves in a loop to check each function address
 
             // Expect function prologue and at least 3 64-bit register pushes (there are probably more)
-            if (!isPrologue(buff, 0) || !isPushR64(buff, 4) || !isPushR64(buff, 6) || !isPushR64(buff, 8))
+            if (!isPrologue(buff) || !isPushR64(buff, 4) || !isPushR64(buff, 6) || !isPushR64(buff, 8))
                 return (0, 0);
 
             // Find the start and end addresses of the first function table
