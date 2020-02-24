@@ -2,6 +2,8 @@
 
 Il2CppInspector helps you to reverse engineer IL2CPP applications in Windows or from the Windows, MacOS X or Linux command line.
 
+**NOTE**: Il2CppInspector is not a decompiler. It can provide you with the structure of an application and function addresses for every method so that you can easily jump straight to methods of interest in your disassembler. It does not attempt to recover the entire source code of the application.
+
 **No manual reverse-engineering is required; all data is calculated automatically.**
 
 ![Il2CppInspector GUI](docs/GUI_Preview.png)
