@@ -289,7 +289,7 @@ namespace Il2CppInspector.Reflection {
         }
 
         // C#-friendly type name as it should be used in the scope of a given type
-        public string GetScopedCSharpName(Scope usingScope = null, bool omitRef = false) {
+        public string GetScopedCSharpName(Scope usingScope = null, bool omitRef = false, bool isPartOfTypeDeclaration = false) {
             // Unscoped name if no using scope specified
             if (usingScope == null)
                 return CSharpName;
@@ -309,7 +309,13 @@ namespace Il2CppInspector.Reflection {
                 n = n?.Remove(n.IndexOf("`", StringComparison.Ordinal));
 
             // Generic type parameters and type arguments
-            var g = string.Join(", ", getGenericTypeParameters(usingScope).Select(x => x.GetScopedCSharpName(usingScope)));
+            // Inheriting from a base class or implementing an interface use the type's declaring scope, not the type's scope itself
+            // for generic type parameters
+            var outerScope = usingScope;
+            if (isPartOfTypeDeclaration)
+                outerScope = new Scope {Current = usingScope.Current?.DeclaringType, Namespaces = usingScope.Namespaces};
+
+            var g = string.Join(", ", getGenericTypeParameters(usingScope).Select(x => x.GetScopedCSharpName(outerScope)));
             if (!string.IsNullOrEmpty(g))
                 n += "<" + g + ">";
 
