@@ -2,12 +2,13 @@
 // Copyright (c) 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 // All rights reserved
 
+using Il2CppInspector.Reflection;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using System.Text;
-using Il2CppInspector.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Il2CppInspector.Outputs
 {
@@ -38,6 +39,9 @@ namespace Il2CppInspector.Outputs
 
             writeSectionHeader("IL2CPP Metadata");
             writeMetadata();
+
+            writeSectionHeader("Object Types");
+            writeObjectTypes();
 
             writeLine("print('Script execution complete.')");
             writer.Close();
@@ -150,6 +154,431 @@ def MakeFunction(start, end):
             // This will be zero if we found the structs from the symbol table
             if (binary.RegistrationFunctionPointer != 0)
                 writeName(binary.RegistrationFunctionPointer, "__GLOBAL__sub_I_Il2CppCodeRegistration.cpp");
+        }
+
+        /// <summary>
+        /// A utility class for automatically resolving name clashes.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        class UniqueRenamer<T> {
+            private Dictionary<T, string> names = new Dictionary<T, string>();
+            private Dictionary<string, int> renameCount = new Dictionary<string, int>();
+            public delegate string KeyFunc(T t);
+            private KeyFunc keyFunc;
+
+            public UniqueRenamer(KeyFunc keyFunc) {
+                this.keyFunc = keyFunc;
+            }
+
+            public string GetName(T t) {
+                string name;
+                if (names.TryGetValue(t, out name))
+                    return name;
+                name = keyFunc(t);
+                // This approach avoids linear scan (quadratic blowup) if there are a lot of similarly-named objects.
+                if(renameCount.ContainsKey(name)) {
+                    int v = renameCount[name] + 1;
+                    while (renameCount.ContainsKey(name + "_" + v))
+                        v++;
+                    renameCount[name] = v;
+                    name = name + "_" + v;
+                } else {
+                    renameCount[name] = 0;
+                }
+                names[t] = name;
+                return name;
+            }
+        }
+
+        private UniqueRenamer<TypeInfo> TypeNamer = new UniqueRenamer<TypeInfo>((ti) => Regex.Replace(ti.Name, "[^a-zA-Z0-9_]", "_"));
+        private HashSet<TypeInfo> GeneratedTypes = new HashSet<TypeInfo>();
+        private Dictionary<TypeInfo, TypeInfo> ConcreteImplementations = new Dictionary<TypeInfo, TypeInfo>();
+        private HashSet<TypeInfo> EmptyTypes = new HashSet<TypeInfo>();
+
+        /// <summary>
+        /// VTables for abstract types have "null" in place of abstract functions.
+        /// This function searches for concrete implementations so that we can properly
+        /// populate the abstract class VTables.
+        /// </summary>
+        private void populateConcreteImplementations() {
+            foreach(var ti in model.Types) {
+                if (ti.HasElementType || ti.IsAbstract)
+                    continue;
+                var baseType = ti.BaseType;
+                while(baseType != null) {
+                    if (baseType.IsAbstract && !ConcreteImplementations.ContainsKey(baseType))
+                        ConcreteImplementations[baseType] = ti;
+                    baseType = baseType.BaseType;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Obtain the vtables for a given type.
+        /// </summary>
+        /// <param name="ti"></param>
+        /// <returns></returns>
+        private MethodBase[] getVTable(TypeInfo ti) {
+            MethodBase[] res = new MethodBase[ti.Definition.vtable_count];
+            MethodBase[] impl = null;
+            if(ti.IsAbstract && ConcreteImplementations.ContainsKey(ti)) {
+                impl = getVTable(ConcreteImplementations[ti]);
+            }
+            for (int i = 0; i < ti.Definition.vtable_count; i++) {
+                // XXX TODO: Resolve generic methods if parameters are known
+                var encodedIndex = model.Package.VTableMethodIndices[ti.Definition.vtableStart + i];
+                var encodedType = encodedIndex & 0xE0000000;
+                var usageType = (MetadataUsageType)(encodedType >> 29);
+                var index = encodedIndex & 0x1FFFFFFF;
+                if (index == 0) {
+                    if (impl != null)
+                        res[i] = impl[i];
+                    else
+                        res[i] = null;
+                } else if (usageType == MetadataUsageType.MethodRef) {
+                    res[i] = model.MethodsByDefinitionIndex[model.Package.MethodSpecs[index].methodDefinitionIndex];
+                } else {
+                    res[i] = model.MethodsByDefinitionIndex[index];
+                }
+            }
+            return res;
+        }
+
+        private string convertPrimitiveType(TypeInfo ti) {
+            switch(ti.Name) {
+                case "Boolean": return "bool";
+                case "Byte": return "uint8_t";
+                case "SByte": return "int8_t";
+                case "Int16": return "int16_t";
+                case "UInt16": return "uint16_t";
+                case "Int32": return "int32_t";
+                case "UInt32": return "uint32_t";
+                case "Int64": return "int64_t";
+                case "UInt64": return "uint64_t";
+                case "IntPtr": return "void *";
+                case "UIntPtr": return "void *";
+                case "Char": return "uint16_t";
+                case "Decimal": return "__int128";
+                case "Double": return "double";
+                case "Single": return "float";
+            }
+            return null;
+        }
+
+        private void generateStructsForType(StringBuilder csrc, TypeInfo ti) {
+            if (GeneratedTypes.Contains(ti))
+                return;
+
+            if (ti.HasElementType) {
+                throw new ArgumentException("Cannot generate structs for type " + ti.Name);
+            }
+
+            GeneratedTypes.Add(ti);
+            if (ti.IsPrimitive) {
+                csrc.Append($"typedef {convertPrimitiveType(ti)} {TypeNamer.GetName(ti)};\n");
+                return;
+            }
+
+            /* Gather dependent types and generate them first. We only worry about value types because only they affect object sizes. */
+            if (ti.BaseType != null)
+                generateStructsForType(csrc, ti.BaseType);
+            foreach (var field in ti.DeclaredFields) {
+                var fti = field.FieldType;
+                if (!fti.ContainsGenericParameters && !fti.HasElementType && fti.IsValueType)
+                    generateStructsForType(csrc, fti);
+            }
+
+            /* Walk the fields twice and generate field definitions */
+            string cName = TypeNamer.GetName(ti);
+            for (int i = 0; i < 2; i++) {
+                bool isStatic = (i == 1);
+                var fieldNamer = new UniqueRenamer<FieldInfo>((field) => Regex.Replace(field.Name, "[^a-zA-Z0-9_]", "_"));
+                if (isStatic)
+                    csrc.Append($"struct {cName}__StaticFields {{\n");
+                else
+                    csrc.Append($"struct {cName}__Fields {{\n");
+
+                bool empty = true;
+                foreach (var field in ti.DeclaredFields.Where((x) => (x.IsStatic == isStatic)).OrderBy((x) => x.Offset)) {
+                    string name = fieldNamer.GetName(field);
+                    var fti = field.FieldType;
+                    if (fti.ContainsGenericParameters) {
+                        /* TODO: Handle generic parameters properly! */
+                        csrc.Append($"  void *{name};\n");
+                    } else if (fti.IsPrimitive) {
+                        csrc.Append($"  {convertPrimitiveType(fti)} {name};\n");
+                    } else if (!fti.HasElementType && fti.IsValueType) {
+                        csrc.Append($"  struct {TypeNamer.GetName(fti)}__Fields {name};\n");
+                    } else if (fti.IsArray) {
+                        /* TODO: Handle arrays properly */
+                        csrc.Append($"  void *{name};\n");
+                    } else if(fti.HasElementType) {
+                        if(fti.ElementType.IsPrimitive) {
+                            csrc.Append($"  {convertPrimitiveType(fti.ElementType)} *{name};\n");
+                        } else {
+                            csrc.Append($"  struct {TypeNamer.GetName(fti.ElementType)} *{name};\n");
+                        }
+                    } else {
+                        csrc.Append($"  struct {TypeNamer.GetName(fti)} *{name};\n");
+                    }
+                    empty = false;
+                }
+                if (empty && !isStatic)
+                    EmptyTypes.Add(ti);
+
+                csrc.Append("};\n");
+            }
+
+            csrc.Append($"struct {cName}__VTable {{\n");
+            if (ti.IsInterface) {
+                /* Interface vtables are just all of the interface methods.
+                   You might have to type a local variable manually as an
+                   interface pointer during an interface call, but the result
+                   should display the correct method name (with a computed
+                   InterfaceOffset added).
+                */
+                var funcNamer = new UniqueRenamer<MethodInfo>((mi) => Regex.Replace(mi.Name, "[^a-zA-Z0-9_]", "_"));
+                foreach (var mi in ti.DeclaredMethods) {
+                    csrc.Append($"  __VirtualInvokeData {funcNamer.GetName(mi)};\n");
+                }
+            } else {
+                var vtable = getVTable(ti);
+                var funcNamer = new UniqueRenamer<int>((i) => Regex.Replace(vtable[i].Name, "[^a-zA-Z0-9_]", "_"));
+                for (int i = 0; i < vtable.Length; i++) {
+                    var mi = vtable[i];
+                    /* TODO type the functions correctly */
+                    if (mi == null)
+                        csrc.Append($"  __VirtualInvokeData __unknown_{i};\n");
+                    else
+                        csrc.Append($"  __VirtualInvokeData {funcNamer.GetName(i)};\n");
+                }
+            }
+            csrc.Append($"}};\n");
+
+            csrc.Append($"struct {cName}__Class {{\n" +
+                $"  struct __Il2CppClass_1 _1;\n" +
+                $"  struct {cName}__StaticFields *static_fields;\n" +
+                $"  struct __Il2CppClass_2 _2;\n" +
+                $"  struct {cName}__VTable vtable;\n" +
+                $"}};\n" +
+                $"struct {cName} {{\n" +
+                $"  struct {cName}__Class *klass;\n" +
+                $"  void *monitor;\n" +
+                ((ti.BaseType == null || EmptyTypes.Contains(ti.BaseType)) ? "" : $"  struct {TypeNamer.GetName(ti.BaseType)}__Fields base;\n") +
+                (EmptyTypes.Contains(ti) ? "" : $"  struct {cName}__Fields fields;\n") +
+                $"}};\n");
+        }
+
+        private void writeObjectTypes() {
+            // Compatibility (in a separate decl block in case these are already defined)
+            writeLine(@"idc.parse_decls('''
+typedef unsigned __int8 uint8_t;
+typedef unsigned __int16 uint16_t;
+typedef unsigned __int32 uint32_t;
+typedef unsigned __int64 uint64_t;
+typedef __int8 int8_t;
+typedef __int16 int16_t;
+typedef __int32 int32_t;
+typedef __int64 int64_t;
+''')");
+
+            // TODO: Add support for the class structures for more versions
+            if (model.Package.Version == 24.0) {
+                writeLine(@"idc.parse_decls('''
+struct __VirtualInvokeData {
+    void *methodPtr;
+    const void *method;
+};
+
+struct __Il2CppRuntimeInterfaceOffsetPair {
+    struct __Il2CppClass* interfaceType;
+    int32_t offset;
+};
+
+struct __Il2CppClass_1 {
+  const struct __Il2CppImage *image;
+  void *gc_desc;
+  const char *name;
+  const char *namespaze;
+  struct __Il2CppType *byval_arg;
+  struct __Il2CppType *this_arg;
+  struct __Il2CppClass *element_class;
+  struct __Il2CppClass *castClass;
+  struct __Il2CppClass *declaringType;
+  struct __Il2CppClass *parent;
+  struct __Il2CppGenericClass *generic_class;
+  const struct __Il2CppTypeDefinition *typeDefinition;
+  const struct __Il2CppInteropData *interopData;
+  struct __FieldInfo *fields;
+  const struct __EventInfo *events;
+  const struct __PropertyInfo *properties;
+  const struct __MethodInfo **methods;
+  struct __Il2CppClass **nestedTypes;
+  struct __Il2CppClass **implementedInterfaces;
+  struct __Il2CppRuntimeInterfaceOffsetPair *interfaceOffsets;
+};
+  /* static_fields */
+struct __Il2CppClass_2 {
+  const struct __Il2CppRGCTXData *rgctx_data;
+  struct __Il2CppClass **typeHierarchy;
+  uint32_t cctor_started;
+  uint32_t cctor_finished;
+  /* 8-byte-aligned 4-byte field, requiring 4 bytes of padding on 32-bit */
+  uint32_t cctor_thread_lo;
+  uint32_t cctor_thread_hi;
+  int genericContainerIndex;
+  int customAttributeIndex;
+  uint32_t instance_size;
+  uint32_t actualSize;
+  uint32_t element_size;
+  int32_t native_size;
+  uint32_t static_fields_size;
+  uint32_t thread_static_fields_size;
+  int32_t thread_static_fields_offset;
+  uint32_t flags;
+  uint32_t token;
+  uint16_t method_count;
+  uint16_t property_count;
+  uint16_t field_count;
+  uint16_t event_count;
+  uint16_t nested_type_count;
+  uint16_t vtable_count;
+  uint16_t interfaces_count;
+  uint16_t interface_offsets_count;
+  uint8_t typeHierarchyDepth;
+  uint8_t genericRecursionDepth;
+  uint8_t rank;
+  uint8_t minimumAlignment;
+  uint8_t packingSize;
+  uint8_t __bitflags1;
+  uint8_t __bitflags2;
+};
+/* vtable */
+
+/* generic class structure */
+struct __Il2CppClass {
+    struct __Il2CppClass_1 _1;
+    void *static_fields;
+    struct __Il2CppClass_2 _2;
+};
+''')");
+            } else if(model.Package.Version == 24.2) {
+                writeLine(@"idc.parse_decls('''
+struct __VirtualInvokeData {
+    void *methodPtr;
+    const void *method;
+};
+
+struct __Il2CppRuntimeInterfaceOffsetPair {
+    struct __Il2CppClass* interfaceType;
+    int32_t offset;
+};
+
+struct __Il2CppType {
+  void *data;
+  uint32_t flags;
+};
+
+struct __Il2CppClass_1 {
+  const struct __Il2CppImage* image;
+  void* gc_desc;
+  const char* name;
+  const char* namespaze;
+  struct __Il2CppType byval_arg;
+  struct __Il2CppType this_arg;
+  struct __Il2CppClass* element_class;
+  struct __Il2CppClass* castClass;
+  struct __Il2CppClass* declaringType;
+  struct __Il2CppClass* parent;
+  struct __Il2CppGenericClass *generic_class;
+  const struct __Il2CppTypeDefinition* typeDefinition;
+  const struct __Il2CppInteropData* interopData;
+  struct __Il2CppClass* klass;
+
+  struct __FieldInfo* fields;
+  const struct __EventInfo* events;
+  const struct __PropertyInfo* properties;
+  const struct __MethodInfo** methods;
+  struct __Il2CppClass** nestedTypes;
+  struct __Il2CppClass** implementedInterfaces;
+  struct __Il2CppRuntimeInterfaceOffsetPair* interfaceOffsets;
+};
+/* static_fields */
+struct __Il2CppClass_2 {
+  const struct __Il2CppRGCTXData* rgctx_data;
+  struct __Il2CppClass** typeHierarchy;
+
+  void *unity_user_data;
+  uint32_t initializationExceptionGCHandle;
+
+  uint32_t cctor_started;
+  uint32_t cctor_finished;
+  /* 8-byte-aligned 4-byte field, but no padding required on 32-bit due to positioning */
+  size_t cctor_thread;
+
+  int32_t genericContainerIndex;
+  uint32_t instance_size;
+  uint32_t actualSize;
+  uint32_t element_size;
+  int32_t native_size;
+  uint32_t static_fields_size;
+  uint32_t thread_static_fields_size;
+  int32_t thread_static_fields_offset;
+  uint32_t flags;
+  uint32_t token;
+
+  uint16_t method_count;
+  uint16_t property_count;
+  uint16_t field_count;
+  uint16_t event_count;
+  uint16_t nested_type_count;
+  uint16_t vtable_count;
+  uint16_t interfaces_count;
+  uint16_t interface_offsets_count;
+
+  uint8_t typeHierarchyDepth;
+  uint8_t genericRecursionDepth;
+  uint8_t rank;
+  uint8_t minimumAlignment;
+  uint8_t naturalAligment;
+  uint8_t packingSize;
+
+  uint8_t __bitflags1;
+  uint8_t __bitflags2;
+};
+/* vtable */
+
+/* generic class structure */
+struct __Il2CppClass {
+    struct __Il2CppClass_1 _1;
+    void *static_fields;
+    struct __Il2CppClass_2 _2;
+};
+''')");
+            } else {
+                throw new Exception("don't know struct layout for metadata version " + model.Package.Version);
+            }
+
+            /* Find concrete implementations of abstract classes so that vtables can be filled out properly */
+            populateConcreteImplementations();
+
+            /* Set the type of all TypeInfo structures, thus resolving static field references */
+            foreach (var usage in model.Package.MetadataUsages) {
+                if (usage.Type != MetadataUsageType.TypeInfo && usage.Type != MetadataUsageType.Type)
+                    continue;
+                var ti = model.GetMetadataUsageType(usage);
+                if (ti.HasElementType)
+                    continue;
+                var csrc = new StringBuilder();
+                generateStructsForType(csrc, ti);
+                if(csrc.Length != 0) {
+                    writeLine("idc.parse_decls('''" + csrc.ToString() + "''')");
+                }
+                var address = usage.VirtualAddress;
+                writeLine($"SetType({address.ToAddressString()}, '{TypeNamer.GetName(ti)}__Class *')");
+            }
+
+            /* TODO: Function types */
         }
 
         private void writeSectionHeader(string sectionName) {

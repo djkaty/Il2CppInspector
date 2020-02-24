@@ -601,6 +601,7 @@ namespace Il2CppInspector.Reflection {
 
                 var genericTypeDef = model.TypesByDefinitionIndex[generic.typeDefinitionIndex];
 
+                Definition = genericTypeDef.Definition;
                 Assembly = genericTypeDef.Assembly;
                 Namespace = genericTypeDef.Namespace;
                 Name = genericTypeDef.BaseName;
@@ -671,6 +672,7 @@ namespace Il2CppInspector.Reflection {
                         ? model.Package.Methods[container.ownerIndex].declaringType
                         : container.ownerIndex];
 
+                Definition = ownerType.Definition;
                 Assembly = ownerType.Assembly;
                 Namespace = "";
                 Name = model.Package.Strings[paramType.nameIndex];
@@ -699,7 +701,8 @@ namespace Il2CppInspector.Reflection {
         // Initialize a type from a concrete generic instance (TypeSpec)
         public TypeInfo(Il2CppModel model, Il2CppMethodSpec spec) {
             var genericTypeDefinition = model.MethodsByDefinitionIndex[spec.methodDefinitionIndex].DeclaringType;
-
+            
+            Definition = genericTypeDefinition.Definition;
             // Same visibility attributes as generic type definition
             Attributes = genericTypeDefinition.Attributes;
 
@@ -728,6 +731,8 @@ namespace Il2CppInspector.Reflection {
         public TypeInfo(TypeInfo declaringType, Il2CppGenericParameter param) : base(declaringType) {
             // Same visibility attributes as declaring type
             Attributes = declaringType.Attributes;
+
+            Definition = declaringType.Definition;
 
             // Same namespace as declaring type
             Namespace = declaringType.Namespace;
