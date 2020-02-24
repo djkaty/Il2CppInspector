@@ -503,7 +503,7 @@ namespace Il2CppInspector.Outputs
                         if (fields.Any()) {
                             var paramNames = method.DeclaredParameters.Select(p => p.Name);
                             sb.Append(" {\n" + string.Join("\n", fields
-                                            .Where(f => !f.IsStatic && !f.IsLiteral)
+                                            .Where(f => !f.IsLiteral && f.IsStatic == method.IsStatic)
                                             .Select(f => $"{prefix}\t\t{(paramNames.Contains(f.Name) ? "this." : "")}{f.Name} = default;"))
                                         + $"\n{prefix}\t}}");
                         } else
