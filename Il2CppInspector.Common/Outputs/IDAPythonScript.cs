@@ -244,47 +244,66 @@ def MakeFunction(start, end):
             return res;
         }
 
-        private string convertPrimitiveType(TypeInfo ti) {
-            switch(ti.Name) {
-                case "Boolean": return "bool";
-                case "Byte": return "uint8_t";
-                case "SByte": return "int8_t";
-                case "Int16": return "int16_t";
-                case "UInt16": return "uint16_t";
-                case "Int32": return "int32_t";
-                case "UInt32": return "uint32_t";
-                case "Int64": return "int64_t";
-                case "UInt64": return "uint64_t";
-                case "IntPtr": return "void *";
-                case "UIntPtr": return "void *";
-                case "Char": return "uint16_t";
-                case "Decimal": return "__int128";
-                case "Double": return "double";
-                case "Single": return "float";
+        private string getCType(TypeInfo ti) {
+            if (ti.IsArray) {
+                return $"struct {TypeNamer.GetName(ti.ElementType)}__Array *";
+            } else if (ti.IsByRef || ti.IsPointer) {
+                return $"{getCType(ti.ElementType)} *";
             }
-            return null;
+            if (ti.IsValueType) {
+                if (ti.IsPrimitive) {
+                    switch (ti.Name) {
+                        case "Boolean": return "bool";
+                        case "Byte": return "uint8_t";
+                        case "SByte": return "int8_t";
+                        case "Int16": return "int16_t";
+                        case "UInt16": return "uint16_t";
+                        case "Int32": return "int32_t";
+                        case "UInt32": return "uint32_t";
+                        case "Int64": return "int64_t";
+                        case "UInt64": return "uint64_t";
+                        case "IntPtr": return "void *";
+                        case "UIntPtr": return "void *";
+                        case "Char": return "uint16_t";
+                        case "Decimal": return "__int128";
+                        case "Double": return "double";
+                        case "Single": return "float";
+                    }
+                }
+                return $"struct {TypeNamer.GetName(ti)}";
+            }
+            return $"struct {TypeNamer.GetName(ti)} *";
         }
 
         private void generateStructsForType(StringBuilder csrc, TypeInfo ti) {
             if (GeneratedTypes.Contains(ti))
                 return;
 
-            if (ti.HasElementType) {
-                throw new ArgumentException("Cannot generate structs for type " + ti.Name);
-            }
-
             GeneratedTypes.Add(ti);
-            if (ti.IsPrimitive) {
-                csrc.Append($"typedef {convertPrimitiveType(ti)} {TypeNamer.GetName(ti)};\n");
+
+            if (ti.IsArray) {
+                generateStructsForType(csrc, ti.ElementType);
+                generateStructsForType(csrc, ti.BaseType);
+                csrc.Append($"struct {TypeNamer.GetName(ti.ElementType)}__Array {{\n" +
+                    $"  struct {TypeNamer.GetName(ti.BaseType)}__Class *klass;\n" +
+                    $"  void *monitor;\n" +
+                    $"  struct __Il2CppArrayBounds *bounds;\n" +
+                    $"  size_t max_length;\n" +
+                    $"  {getCType(ti.ElementType)} elems[1];\n" +
+                    $"}};\n");
+                return;
+            } else if (ti.IsByRef || ti.IsPointer) {
                 return;
             }
 
-            /* Gather dependent types and generate them first. We only worry about value types because only they affect object sizes. */
+            /* Generate any dependent types */
             if (ti.BaseType != null)
                 generateStructsForType(csrc, ti.BaseType);
+
             foreach (var field in ti.DeclaredFields) {
                 var fti = field.FieldType;
-                if (!fti.ContainsGenericParameters && !fti.HasElementType && fti.IsValueType)
+                // TODO: handle generics properly
+                if (!fti.ContainsGenericParameters)
                     generateStructsForType(csrc, fti);
             }
 
@@ -295,6 +314,8 @@ def MakeFunction(start, end):
                 var fieldNamer = new UniqueRenamer<FieldInfo>((field) => Regex.Replace(field.Name, "[^a-zA-Z0-9_]", "_"));
                 if (isStatic)
                     csrc.Append($"struct {cName}__StaticFields {{\n");
+                else if (ti.IsValueType)
+                    csrc.Append($"struct {cName} {{\n");
                 else
                     csrc.Append($"struct {cName}__Fields {{\n");
 
@@ -305,21 +326,8 @@ def MakeFunction(start, end):
                     if (fti.ContainsGenericParameters) {
                         /* TODO: Handle generic parameters properly! */
                         csrc.Append($"  void *{name};\n");
-                    } else if (fti.IsPrimitive) {
-                        csrc.Append($"  {convertPrimitiveType(fti)} {name};\n");
-                    } else if (!fti.HasElementType && fti.IsValueType) {
-                        csrc.Append($"  struct {TypeNamer.GetName(fti)}__Fields {name};\n");
-                    } else if (fti.IsArray) {
-                        /* TODO: Handle arrays properly */
-                        csrc.Append($"  void *{name};\n");
-                    } else if(fti.HasElementType) {
-                        if(fti.ElementType.IsPrimitive) {
-                            csrc.Append($"  {convertPrimitiveType(fti.ElementType)} *{name};\n");
-                        } else {
-                            csrc.Append($"  struct {TypeNamer.GetName(fti.ElementType)} *{name};\n");
-                        }
                     } else {
-                        csrc.Append($"  struct {TypeNamer.GetName(fti)} *{name};\n");
+                        csrc.Append($"  {getCType(fti)} {name};\n");
                     }
                     empty = false;
                 }
@@ -360,13 +368,14 @@ def MakeFunction(start, end):
                 $"  struct {cName}__StaticFields *static_fields;\n" +
                 $"  struct __Il2CppClass_2 _2;\n" +
                 $"  struct {cName}__VTable vtable;\n" +
-                $"}};\n" +
-                $"struct {cName} {{\n" +
-                $"  struct {cName}__Class *klass;\n" +
-                $"  void *monitor;\n" +
-                ((ti.BaseType == null || EmptyTypes.Contains(ti.BaseType)) ? "" : $"  struct {TypeNamer.GetName(ti.BaseType)}__Fields base;\n") +
-                (EmptyTypes.Contains(ti) ? "" : $"  struct {cName}__Fields fields;\n") +
                 $"}};\n");
+            if (!ti.IsValueType)
+                csrc.Append($"struct {cName} {{\n" +
+                    $"  struct {cName}__Class *klass;\n" +
+                    $"  void *monitor;\n" +
+                    ((ti.BaseType == null || EmptyTypes.Contains(ti.BaseType)) ? "" : $"  struct {TypeNamer.GetName(ti.BaseType)}__Fields base;\n") +
+                    (EmptyTypes.Contains(ti) ? "" : $"  struct {cName}__Fields fields;\n") +
+                    $"}};\n");
         }
 
         private void writeObjectTypes() {
@@ -385,6 +394,11 @@ typedef __int64 int64_t;
             // TODO: Add support for the class structures for more versions
             if (model.Package.Version == 24.0) {
                 writeLine(@"idc.parse_decls('''
+struct __Il2CppArrayBounds {
+    size_t length;
+    int32_t lower_bound;
+};
+
 struct __VirtualInvokeData {
     void *methodPtr;
     const void *method;
@@ -464,6 +478,11 @@ struct __Il2CppClass {
 ''')");
             } else if(model.Package.Version == 24.2) {
                 writeLine(@"idc.parse_decls('''
+struct __Il2CppArrayBounds {
+    size_t length;
+    int32_t lower_bound;
+};
+
 struct __VirtualInvokeData {
     void *methodPtr;
     const void *method;
