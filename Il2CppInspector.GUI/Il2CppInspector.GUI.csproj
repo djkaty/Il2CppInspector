@@ -12,6 +12,7 @@
     <Authors>Katy Coe</Authors>
     <Company>Noisy Cow Studios</Company>
     <Product>Il2CppInspector Windows Edition</Product>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,6 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="Ookii.Dialogs.Wpf.NETCore" Version="2.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
     <PackageReference Include="XamlAnimatedGif" Version="1.2.2">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
@@ -36,6 +38,21 @@
 
   <ItemGroup>
     <Resource Include="Resources\pizza.gif" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="User.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>User.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="User.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>User.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -23,6 +23,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using Il2CppInspector;
+using Il2CppInspector.GUI;
 using Il2CppInspector.Outputs;
 using Il2CppInspector.Reflection;
 using Ookii.Dialogs.Wpf;
@@ -379,6 +380,27 @@ namespace Il2CppInspectorGUI
                     ns.AddRange(constructExcludedNamespaces(node.Children));
             }
             return ns;
+        }
+
+        /// <summary>
+        /// Display startup information dialog
+        /// </summary>
+        private void MainWindow_OnContentRendered(object sender, EventArgs e) {
+            if (User.Default.ShowDecompilerWarning) {
+                var taskDialog = new TaskDialog {
+                    WindowTitle = "Information",
+                    MainInstruction = "Welcome to Il2CppInspector",
+                    Content = "NOTE: Il2CppInspector is not a decompiler. It can provide you with the structure of an application and function addresses for every method so that you can easily jump straight to methods of interest in your disassembler. It does not attempt to recover the entire source code of the application.",
+                    VerificationText = "Don't show this message again"
+                };
+                taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Close));
+                taskDialog.ShowDialog(this);
+
+                if (taskDialog.IsVerificationChecked) {
+                    User.Default.ShowDecompilerWarning = false;
+                    User.Default.Save();
+                }
+            }
         }
     }
 
