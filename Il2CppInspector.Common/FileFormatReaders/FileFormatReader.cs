@@ -60,10 +60,15 @@ namespace Il2CppInspector
                         .Where(x => x.ImplementedInterfaces.Contains(typeof(IFileFormatReader)) && !x.IsGenericTypeDefinition);
 
             foreach (var type in types) {
-                if (type.GetMethod("Load", BindingFlags.FlattenHierarchy | BindingFlags.Static | BindingFlags.Public,
-                        null, new [] {typeof(Stream), typeof(EventHandler<string>)}, null)
-                    .Invoke(null, new object[] { stream, statusCallback }) is IFileFormatReader loaded)
-                    return loaded;
+                try {
+                    if (type.GetMethod("Load", BindingFlags.FlattenHierarchy | BindingFlags.Static | BindingFlags.Public,
+                            null, new[] {typeof(Stream), typeof(EventHandler<string>)}, null)
+                        .Invoke(null, new object[] {stream, statusCallback}) is IFileFormatReader loaded)
+                        return loaded;
+                }
+                catch (TargetInvocationException ex) {
+                    throw ex.InnerException;
+                }
             }
             return null;
         }
