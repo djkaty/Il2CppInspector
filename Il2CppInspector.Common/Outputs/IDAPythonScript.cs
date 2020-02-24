@@ -12,6 +12,41 @@ using System.Text.RegularExpressions;
 
 namespace Il2CppInspector.Outputs
 {
+    /// <summary>
+    /// A utility class for automatically resolving name clashes.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    class UniqueRenamer<T>
+    {
+        private Dictionary<T, string> names = new Dictionary<T, string>();
+        private Dictionary<string, int> renameCount = new Dictionary<string, int>();
+        public delegate string KeyFunc(T t);
+        private KeyFunc keyFunc;
+
+        public UniqueRenamer(KeyFunc keyFunc) {
+            this.keyFunc = keyFunc;
+        }
+
+        public string GetName(T t) {
+            string name;
+            if (names.TryGetValue(t, out name))
+                return name;
+            name = keyFunc(t);
+            // This approach avoids linear scan (quadratic blowup) if there are a lot of similarly-named objects.
+            if (renameCount.ContainsKey(name)) {
+                int v = renameCount[name] + 1;
+                while (renameCount.ContainsKey(name + "_" + v))
+                    v++;
+                renameCount[name] = v;
+                name = name + "_" + v;
+            } else {
+                renameCount[name] = 0;
+            }
+            names[t] = name;
+            return name;
+        }
+    }
+
     public class IDAPythonScript
     {
         private readonly Il2CppModel model;
@@ -102,6 +137,10 @@ def MakeFunction(start, end):
             }
         }
 
+        private static string sanitizeIdentifier(string id) {
+            return Regex.Replace(id, "[^a-zA-Z0-9_]", "_");
+        }
+
         private void writeMethods(string typeName, IEnumerable<MethodBase> methods) {
             foreach (var method in methods.Where(m => m.VirtualAddress.HasValue)) {
                 var address = method.VirtualAddress.Value.Start;
@@ -111,12 +150,13 @@ def MakeFunction(start, end):
         }
 
         private void writeUsages() {
+            var usageNamer = new UniqueRenamer<MetadataUsage>((usage) => sanitizeIdentifier($"{model.GetMetadataUsageName(usage)}"));
             foreach (var usage in model.Package.MetadataUsages) {
                 var address = usage.VirtualAddress;
                 var name = model.GetMetadataUsageName(usage);
 
                 if (usage.Type != MetadataUsageType.StringLiteral)
-                    writeName(address, $"{name}_{usage.Type}");
+                    writeName(address, usageNamer.GetName(usage) + "_" + usage.Type);
                 else
                     writeString(address, name);
 
@@ -156,41 +196,7 @@ def MakeFunction(start, end):
                 writeName(binary.RegistrationFunctionPointer, "__GLOBAL__sub_I_Il2CppCodeRegistration.cpp");
         }
 
-        /// <summary>
-        /// A utility class for automatically resolving name clashes.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        class UniqueRenamer<T> {
-            private Dictionary<T, string> names = new Dictionary<T, string>();
-            private Dictionary<string, int> renameCount = new Dictionary<string, int>();
-            public delegate string KeyFunc(T t);
-            private KeyFunc keyFunc;
-
-            public UniqueRenamer(KeyFunc keyFunc) {
-                this.keyFunc = keyFunc;
-            }
-
-            public string GetName(T t) {
-                string name;
-                if (names.TryGetValue(t, out name))
-                    return name;
-                name = keyFunc(t);
-                // This approach avoids linear scan (quadratic blowup) if there are a lot of similarly-named objects.
-                if(renameCount.ContainsKey(name)) {
-                    int v = renameCount[name] + 1;
-                    while (renameCount.ContainsKey(name + "_" + v))
-                        v++;
-                    renameCount[name] = v;
-                    name = name + "_" + v;
-                } else {
-                    renameCount[name] = 0;
-                }
-                names[t] = name;
-                return name;
-            }
-        }
-
-        private UniqueRenamer<TypeInfo> TypeNamer = new UniqueRenamer<TypeInfo>((ti) => Regex.Replace(ti.Name, "[^a-zA-Z0-9_]", "_"));
+        private UniqueRenamer<TypeInfo> TypeNamer = new UniqueRenamer<TypeInfo>((ti) => sanitizeIdentifier(ti.Name));
         private HashSet<TypeInfo> GeneratedTypes = new HashSet<TypeInfo>();
         private Dictionary<TypeInfo, TypeInfo> ConcreteImplementations = new Dictionary<TypeInfo, TypeInfo>();
         private HashSet<TypeInfo> EmptyTypes = new HashSet<TypeInfo>();
@@ -296,22 +302,22 @@ def MakeFunction(start, end):
                 return;
             }
 
-            /* Generate any dependent types */
             if (ti.BaseType != null)
                 generateStructsForType(csrc, ti.BaseType);
-
-            foreach (var field in ti.DeclaredFields) {
-                var fti = field.FieldType;
-                // TODO: handle generics properly
-                if (!fti.ContainsGenericParameters)
-                    generateStructsForType(csrc, fti);
-            }
 
             /* Walk the fields twice and generate field definitions */
             string cName = TypeNamer.GetName(ti);
             for (int i = 0; i < 2; i++) {
                 bool isStatic = (i == 1);
-                var fieldNamer = new UniqueRenamer<FieldInfo>((field) => Regex.Replace(field.Name, "[^a-zA-Z0-9_]", "_"));
+                /* Generate any dependent types */
+                foreach (var field in ti.DeclaredFields.Where((x) => (x.IsStatic == isStatic))) {
+                    var fti = field.FieldType;
+                    // TODO: handle generics properly
+                    if (!fti.ContainsGenericParameters)
+                        generateStructsForType(csrc, fti);
+                }
+
+                var fieldNamer = new UniqueRenamer<FieldInfo>((field) => sanitizeIdentifier(field.Name));
                 if (isStatic)
                     csrc.Append($"struct {cName}__StaticFields {{\n");
                 else if (ti.IsValueType)
@@ -345,13 +351,13 @@ def MakeFunction(start, end):
                    should display the correct method name (with a computed
                    InterfaceOffset added).
                 */
-                var funcNamer = new UniqueRenamer<MethodInfo>((mi) => Regex.Replace(mi.Name, "[^a-zA-Z0-9_]", "_"));
+                var funcNamer = new UniqueRenamer<MethodInfo>((mi) => sanitizeIdentifier(mi.Name));
                 foreach (var mi in ti.DeclaredMethods) {
                     csrc.Append($"  __VirtualInvokeData {funcNamer.GetName(mi)};\n");
                 }
             } else {
                 var vtable = getVTable(ti);
-                var funcNamer = new UniqueRenamer<int>((i) => Regex.Replace(vtable[i].Name, "[^a-zA-Z0-9_]", "_"));
+                var funcNamer = new UniqueRenamer<int>((i) => sanitizeIdentifier(vtable[i].Name));
                 for (int i = 0; i < vtable.Length; i++) {
                     var mi = vtable[i];
                     /* TODO type the functions correctly */
@@ -369,18 +375,42 @@ def MakeFunction(start, end):
                 $"  struct __Il2CppClass_2 _2;\n" +
                 $"  struct {cName}__VTable vtable;\n" +
                 $"}};\n");
-            if (!ti.IsValueType)
-                csrc.Append($"struct {cName} {{\n" +
-                    $"  struct {cName}__Class *klass;\n" +
-                    $"  void *monitor;\n" +
-                    ((ti.BaseType == null || EmptyTypes.Contains(ti.BaseType)) ? "" : $"  struct {TypeNamer.GetName(ti.BaseType)}__Fields base;\n") +
-                    (EmptyTypes.Contains(ti) ? "" : $"  struct {cName}__Fields fields;\n") +
-                    $"}};\n");
+
+            /* For value types, __Object is rarely used. It seems to only be used
+             * when a struct is passed via this to an instance method.
+             * Hence, we use __Object instead of the plain name, since the plain
+             * name will be used for the (much more common) fields instead. */
+            if (ti.IsValueType) {
+                csrc.Append($"struct {cName}__Object {{\n");
+            } else {
+                csrc.Append($"struct {cName} {{\n");
+            }
+            csrc.Append(
+                $"  struct {cName}__Class *klass;\n" +
+                $"  void *monitor;\n");
+            addBaseClassFields(ti.BaseType, csrc);
+            if (!EmptyTypes.Contains(ti)) {
+                if(ti.IsValueType) {
+                    csrc.Append($"  struct {cName} fields;\n");
+                } else {
+                    csrc.Append($"  struct {cName}__Fields fields;\n");
+                }
+            }
+            csrc.Append($"}};\n");
+        }
+
+        private int addBaseClassFields(TypeInfo ti, StringBuilder csrc) {
+            if (ti == null)
+                return 0;
+            int res = addBaseClassFields(ti.BaseType, csrc);
+            if (!EmptyTypes.Contains(ti))
+                csrc.Append($"  struct {TypeNamer.GetName(ti)}__Fields base{res};\n");
+            return res + 1;
         }
 
         private void writeObjectTypes() {
             // Compatibility (in a separate decl block in case these are already defined)
-            writeLine(@"idc.parse_decls('''
+            writeDecls(@"
 typedef unsigned __int8 uint8_t;
 typedef unsigned __int16 uint16_t;
 typedef unsigned __int32 uint32_t;
@@ -389,11 +419,11 @@ typedef __int8 int8_t;
 typedef __int16 int16_t;
 typedef __int32 int32_t;
 typedef __int64 int64_t;
-''')");
+");
 
             // TODO: Add support for the class structures for more versions
             if (model.Package.Version == 24.0) {
-                writeLine(@"idc.parse_decls('''
+                writeDecls(@"
 struct __Il2CppArrayBounds {
     size_t length;
     int32_t lower_bound;
@@ -475,9 +505,9 @@ struct __Il2CppClass {
     void *static_fields;
     struct __Il2CppClass_2 _2;
 };
-''')");
+");
             } else if(model.Package.Version == 24.2) {
-                writeLine(@"idc.parse_decls('''
+                writeDecls(@"
 struct __Il2CppArrayBounds {
     size_t length;
     int32_t lower_bound;
@@ -573,7 +603,7 @@ struct __Il2CppClass {
     void *static_fields;
     struct __Il2CppClass_2 _2;
 };
-''')");
+");
             } else {
                 throw new Exception("don't know struct layout for metadata version " + model.Package.Version);
             }
@@ -590,15 +620,60 @@ struct __Il2CppClass {
                     continue;
                 var csrc = new StringBuilder();
                 generateStructsForType(csrc, ti);
-                if(csrc.Length != 0) {
-                    writeLine("idc.parse_decls('''" + csrc.ToString() + "''')");
-                }
+                if (csrc.Length > 0)
+                    writeDecls(csrc.ToString());
                 var address = usage.VirtualAddress;
-                writeLine($"SetType({address.ToAddressString()}, '{TypeNamer.GetName(ti)}__Class *')");
+                writeType(address, $"{TypeNamer.GetName(ti)}__Class *");
+                // Rename to match the type name exactly
+                writeName(address, $"{TypeNamer.GetName(ti)}_TypeInfo");
             }
 
-            /* TODO: Function types */
+            writeSectionHeader("Function types");
+            foreach (var ti in model.Types) {
+                writeMethodTypes(ti, ti.DeclaredConstructors);
+                writeMethodTypes(ti, ti.DeclaredMethods);
+            }
         }
+
+        private void writeMethodTypes(TypeInfo ti, IEnumerable<MethodBase> methods) {
+            var typeName = TypeNamer.GetName(ti);
+            var funcNamer = new UniqueRenamer<MethodBase>((method) => $"{typeName}_{sanitizeIdentifier(method.Name)}");
+            foreach (var method in methods.Where(m => m.VirtualAddress.HasValue && !m.ContainsGenericParameters)) {
+                var address = method.VirtualAddress.Value.Start;
+                writeName(address, funcNamer.GetName(method));
+
+                var csrc = new StringBuilder();
+                MethodInfo mi = method as MethodInfo;
+                string retType;
+                if (mi == null || mi.ReturnType.FullName == "System.Void") {
+                    retType = "void";
+                } else {
+                    generateStructsForType(csrc, mi.ReturnType);
+                    retType = getCType(mi.ReturnType);
+                }
+
+                var paramNamer = new UniqueRenamer<ParameterInfo>((param) => (param.Name == "" || param.Name == "this") ? "arg" : sanitizeIdentifier(param.Name));
+                var parms = new List<string>();
+                if(!method.IsStatic) {
+                    generateStructsForType(csrc, ti);
+                    if(ti.IsValueType && !ti.HasElementType) {
+                        parms.Add($"{getCType(ti)}__Object * this");
+                    } else {
+                        parms.Add($"{getCType(ti)} this");
+                    }
+                }
+
+                foreach(var param in method.DeclaredParameters) {
+                    generateStructsForType(csrc, param.ParameterType);
+                    parms.Add($"{getCType(param.ParameterType)} {paramNamer.GetName(param)}");
+                }
+
+                if (csrc.Length > 0)
+                    writeDecls(csrc.ToString());
+                writeType(address, $"{retType} f({string.Join(", ", parms)})");
+            }
+        }
+
 
         private void writeSectionHeader(string sectionName) {
             writeLine("");
@@ -606,6 +681,16 @@ struct __Il2CppClass {
             writeLine($"# -----------------------------");
             writeLine($"print('Processing {sectionName}')");
             writeLine("");
+        }
+
+        private void writeDecls(string decls) {
+            var lines = decls.Replace("\r", "").Split('\n');
+            var cleanLines = lines.Select((s) => s.ToEscapedString());
+            writeLine("idc.parse_decls('''" + string.Join('\n', cleanLines) + "''')");
+        }
+
+        private void writeType(ulong address, string type) {
+            writeLine($"SetType({address.ToAddressString()}, r'{type.ToEscapedString()}')");
         }
 
         private void writeName(ulong address, string name) {
