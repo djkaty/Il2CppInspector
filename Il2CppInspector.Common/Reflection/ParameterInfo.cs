@@ -112,8 +112,9 @@ namespace Il2CppInspector.Reflection
 
         // ref will be handled as part of the type name
         public string GetModifierString() =>
-              (IsIn ? "in " : "")
-            + (IsOut ? "out " : "")
+              (IsIn && !IsOut ? "in " : "")
+            + (IsOut && !IsIn ? "out " : "") 
+            + (IsIn && IsOut  ? "[In, Out] " : "")
             + (!IsIn && !IsOut && ParameterType.IsByRef ? "ref " : "");
 
         private string getCSharpSignatureString(Scope scope) => $"{GetModifierString()}{ParameterType.GetScopedCSharpName(scope, omitRef: true)}";
