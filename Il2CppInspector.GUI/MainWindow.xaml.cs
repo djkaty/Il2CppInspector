@@ -97,7 +97,7 @@ namespace Il2CppInspectorGUI
             var app = (App) Application.Current;
 
             var openFileDialog = new OpenFileDialog {
-                Filter = "Binary executable file (*.exe;*.dll;*.so)|*.exe;*.dll;*.so|All files (*.*)|*.*",
+                Filter = "Binary executable file (*.exe;*.dll;*.so;*.bin;*.prx;*.sprx)|*.exe;*.dll;*.so;*.bin;*.prx;*.sprx|All files (*.*)|*.*",
                 CheckFileExists = true
             };
 
