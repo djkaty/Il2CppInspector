@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Il2CppInspectorGUI"
         xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
         mc:Ignorable="d"
-        Title="Il2CppInspector" Height="630" Width="990" Background="White"
+        Title="Il2CppInspector" Height="700" Width="990" Background="White"
         WindowStartupLocation="CenterScreen"
         ContentRendered="MainWindow_OnContentRendered">
     <Window.Resources>
