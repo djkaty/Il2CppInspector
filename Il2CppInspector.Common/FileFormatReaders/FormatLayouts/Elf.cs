@@ -26,6 +26,9 @@ namespace Il2CppInspector
         ELFCLASS32 = 1,
         ELFCLASS64 = 2,
 
+        // elf_header.e_Type
+        ET_EXEC = 2,
+
         // PHTs
         PT_DYNAMIC = 2,
         DT_PLTGOT = 3,
