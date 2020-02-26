@@ -1,30 +1,30 @@
 # Il2CppInspector
 
-Il2CppInspector helps you to reverse engineer IL2CPP applications in Windows or from the Windows, MacOS X or Linux command line.
-
-**NOTE**: Il2CppInspector is not a decompiler. It can provide you with the structure of an application and function addresses for every method so that you can easily jump straight to methods of interest in your disassembler. It does not attempt to recover the entire source code of the application.
-
-**No manual reverse-engineering is required; all data is calculated automatically.**
-
-![Il2CppInspector GUI](docs/GUI_Preview.png)
+Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the most complete analysis available from any public IL2CPP tooling.
 
 Main features:
 
-* Output IL2CPP metadata and method pointers as C# stub code
-
-![Il2CppInspector Auto-generated Visual Studio solution](docs/VisualStudio_Preview.png)
+* Output IL2CPP type definitions, metadata and method pointers as C# stub code
 
 * Create Visual Studio solutions directly from IL2CPP files
 
-![Il2CppInspector Auto-generated csproj file](docs/CSProj_Preview.png)
-
 * Create IDA Python scripts to populate symbol and function information
+
+* .NET Reflection-style API to allow you to query the IL2CPP type model, easily create new output modules and integrate Il2CppInspector with your own applications
+
+* Works on Windows, MacOS X and Linux. Integrated GUI for Windows users
+
+**NOTE**: Il2CppInspector is not a decompiler. It can provide you with the structure of an application and function addresses for every method so that you can easily jump straight to methods of interest in your disassembler. It does not attempt to recover the entire source code of the application.
+
+![Il2CppInspector GUI](docs/GUI_Preview.png)
+
+![Il2CppInspector Auto-generated Visual Studio solution](docs/VisualStudio_Preview.png)
 
 ![Il2CppInspector annotated IDA project](docs/IDA_Preview.png)
 
 File format and architecture support:
 
-* Supports ELF (Android .so), PE (Windows .exe), Mach-O (Apple iOS/Mac) and Universal Binary (Fat Mach-O) file formats
+* Supports ELF (Android .so), PE (Windows .exe), Mach-O (Apple iOS/Mac), Universal Binary (Fat Mach-O) and FSELF (PlayStation 4 .prx/.sprx) file formats
 * 32-bit and 64-bit support for all file formats
 * Supports ARMv7, Thumb-2, ARMv8 (A64), x86 and x64 architectures regardless of file format
 * Supports applications created with Unity 5.3.0 onwards (full IL2CPP version table below)
@@ -45,8 +45,6 @@ Reusable class libraries:
 * Test chassis for automated integration testing of IL2CPP binaries
 
 Class library targets .NET Standard 2.1. Application targets .NET Core 3.0. Built with Visual Studio 2019.
-
-NOTE: **Il2CppInspector is not a decompiler!** It cannot take an executable file and regenerate all of the source code for you. The output includes function pointers to each method so that you can quickly locate the methods of interest in a disassembler.
 
 ### Build instructions
 
@@ -176,8 +174,9 @@ Unity version | IL2CPP version | Support
 5.5.x | 22 | Working
 5.6.x | 23 | Working
 2017.x-2018.2 | 24.0 | Working
-2018.3-2019.x | 24.1 | Working
-2019.x+ | 24.2 | Working
+2018.3-2019.1 | 24.1 | Working
+2019.2-2019.3 | 24.2 | Working
+2020.1 | 24.3 | Awaiting stable release
 
 ### Problems
 
