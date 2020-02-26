@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using NoisyCowStudios.Bin2Object;
 
@@ -90,10 +91,23 @@ namespace Il2CppInspector
             // Read extended info
             sceData = ReadObject<SElfSCEData>(startOfElf + (long) elfHeader.e_phoff + elfHeader.e_phentsize * elfHeader.e_phnum);
 
-            // TODO: Implement the rest of FSELF
-            // TODO: Set GlobalOffset
+            // Get SELF entries which point to segments defined in phdrs
+            var dataEntries = entries.Where(e => e.HasBlocks).ToList();
 
-            throw new NotImplementedException("Il2CppInspector does not have PRX support yet");
+            // Fixup the used phdr entries
+            foreach (var entry in dataEntries) {
+                pht[entry.SegmentIndex].f_p_filesz = entry.EncryptedCompressedSize;
+                pht[entry.SegmentIndex].f_p_offset = entry.FileOffset;
+                pht[entry.SegmentIndex].p_memsz = entry.MemorySize;
+            }
+
+            // Filter out unused phdr entries
+            var phdrIndices = dataEntries.Select(e => (int) e.SegmentIndex).ToList();
+            pht = pht.Where((e, i) => phdrIndices.Contains(i)).ToArray();
+
+            // Get offset of code section
+            var codeSegment = pht.First(x => ((Elf) x.p_flags & Elf.PF_X) == Elf.PF_X);
+            GlobalOffset = codeSegment.p_vaddr - codeSegment.p_offset;
 
             return true;
         }
@@ -102,7 +116,8 @@ namespace Il2CppInspector
         public override uint[] GetFunctionTable() => new [] { MapVATR(elfHeader.e_entry) };
 
         public override uint MapVATR(ulong uiAddr) {
-            throw new NotImplementedException();
+            var program_header_table = pht.First(x => uiAddr >= x.p_vaddr && uiAddr <= x.p_vaddr + x.p_filesz);
+            return (uint) (uiAddr - (program_header_table.p_vaddr - program_header_table.p_offset));
         }
     }
 }
