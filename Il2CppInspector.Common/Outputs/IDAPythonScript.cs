@@ -255,8 +255,7 @@ def MakeFunction(start, end):
                 return $"struct {TypeNamer.GetName(ti.ElementType)}__Array *";
             } else if (ti.IsByRef || ti.IsPointer) {
                 return $"{getCType(ti.ElementType)} *";
-            }
-            if (ti.IsValueType) {
+            } else if (ti.IsValueType) {
                 if (ti.IsPrimitive) {
                     switch (ti.Name) {
                         case "Boolean": return "bool";
@@ -277,37 +276,33 @@ def MakeFunction(start, end):
                     }
                 }
                 return $"struct {TypeNamer.GetName(ti)}";
+            } else if(ti.IsEnum) {
+                return $"enum {TypeNamer.GetName(ti)}";
             }
             return $"struct {TypeNamer.GetName(ti)} *";
         }
 
-        private void generateStructsForType(StringBuilder csrc, TypeInfo ti) {
-            if (GeneratedTypes.Contains(ti))
-                return;
-
-            GeneratedTypes.Add(ti);
-
-            if (ti.IsArray) {
-                generateStructsForType(csrc, ti.ElementType);
-                generateStructsForType(csrc, ti.BaseType);
-                csrc.Append($"struct {TypeNamer.GetName(ti.ElementType)}__Array {{\n" +
-                    $"  struct {TypeNamer.GetName(ti.BaseType)}__Class *klass;\n" +
-                    $"  void *monitor;\n" +
-                    $"  struct __Il2CppArrayBounds *bounds;\n" +
-                    $"  size_t max_length;\n" +
-                    $"  {getCType(ti.ElementType)} elems[1];\n" +
-                    $"}};\n");
-                return;
-            } else if (ti.IsByRef || ti.IsPointer) {
-                return;
+        private void generateFieldStructsForType(StringBuilder csrc, TypeInfo ti) {
+            string cName = TypeNamer.GetName(ti);
+            int special = 0;
+            if (ti.Namespace == "System" && ti.BaseName == "Array") {
+                /* System.Array is special - instances are Il2CppArray* */
+                csrc.Append($"struct {cName}__Fields {{\n");
+                csrc.Append($"  struct __Il2CppArrayBounds *bounds;\n" +
+                            $"  size_t max_length;\n" +
+                            $"  void *elems[1];\n");
+                csrc.Append("};\n");
+                special = 1;
+            } else if(ti.IsEnum) {
+                csrc.Append($"enum {cName} : {getCType(ti.GetEnumUnderlyingType())} {{\n");
+                csrc.Append(string.Join(",\n", ti.GetEnumNames().Zip(ti.GetEnumValues().OfType<object>(),
+                             (k, v) => new { k, v }).OrderBy(x => x.v).Select(x => $"  {cName}_{x.k} = {x.v}")) + "\n");
+                csrc.Append("};\n");
+                special = 1;
             }
 
-            if (ti.BaseType != null)
-                generateStructsForType(csrc, ti.BaseType);
-
             /* Walk the fields twice and generate field definitions */
-            string cName = TypeNamer.GetName(ti);
-            for (int i = 0; i < 2; i++) {
+            for (int i = special; i < 2; i++) {
                 bool isStatic = (i == 1);
                 /* Generate any dependent types */
                 foreach (var field in ti.DeclaredFields.Where((x) => (x.IsStatic == isStatic))) {
@@ -342,7 +337,35 @@ def MakeFunction(start, end):
 
                 csrc.Append("};\n");
             }
+        }
 
+        private void generateStructsForType(StringBuilder csrc, TypeInfo ti) {
+            if (GeneratedTypes.Contains(ti))
+                return;
+
+            GeneratedTypes.Add(ti);
+
+            if (ti.IsArray) {
+                generateStructsForType(csrc, ti.ElementType);
+                generateStructsForType(csrc, ti.BaseType);
+                csrc.Append($"struct {TypeNamer.GetName(ti.ElementType)}__Array {{\n" +
+                    $"  struct {TypeNamer.GetName(ti.BaseType)}__Class *klass;\n" +
+                    $"  void *monitor;\n" +
+                    $"  struct __Il2CppArrayBounds *bounds;\n" +
+                    $"  size_t max_length;\n" +
+                    $"  {getCType(ti.ElementType)} elems[1];\n" +
+                    $"}};\n");
+                return;
+            } else if (ti.IsByRef || ti.IsPointer) {
+                return;
+            }
+
+            if (ti.BaseType != null)
+                generateStructsForType(csrc, ti.BaseType);
+
+            generateFieldStructsForType(csrc, ti);
+
+            string cName = TypeNamer.GetName(ti);
             csrc.Append($"struct {cName}__VTable {{\n");
             if (ti.IsInterface) {
                 /* Interface vtables are just all of the interface methods.
@@ -380,7 +403,7 @@ def MakeFunction(start, end):
              * when a struct is passed via this to an instance method.
              * Hence, we use __Object instead of the plain name, since the plain
              * name will be used for the (much more common) fields instead. */
-            if (ti.IsValueType) {
+            if (ti.IsValueType || ti.IsEnum) {
                 csrc.Append($"struct {cName}__Object {{\n");
             } else {
                 csrc.Append($"struct {cName} {{\n");
@@ -390,8 +413,10 @@ def MakeFunction(start, end):
                 $"  void *monitor;\n");
             addBaseClassFields(ti.BaseType, csrc);
             if (!EmptyTypes.Contains(ti)) {
-                if(ti.IsValueType) {
+                if (ti.IsValueType) {
                     csrc.Append($"  struct {cName} fields;\n");
+                } else if (ti.IsEnum) {
+                    csrc.Append($"  enum {cName} value;\n");
                 } else {
                     csrc.Append($"  struct {cName}__Fields fields;\n");
                 }
