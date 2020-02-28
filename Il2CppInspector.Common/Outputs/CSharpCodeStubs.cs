@@ -373,7 +373,8 @@ namespace Il2CppInspector.Outputs
                         sb.Append($" = {field.DefaultValueString}");
                     sb.Append(";");
                     // Don't output field indices for const fields (they don't have any storage)
-                    if (!field.IsLiteral && !SuppressMetadata)
+                    // or open generic types (they aren't known until runtime)
+                    if (!field.IsLiteral && !SuppressMetadata && !type.ContainsGenericParameters)
                         sb.Append($" // 0x{(uint) field.Offset:X2}");
                     // Output metadata file offset for const fields
                     if (field.IsLiteral && !SuppressMetadata)
