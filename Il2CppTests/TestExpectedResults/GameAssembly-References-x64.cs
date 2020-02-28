@@ -993,6 +993,6 @@ namespace Il2CppTests.TestSources
 	public struct RefStruct // TypeDefIndex: 2874
 	{
 		// Fields
-		private int structField1; // 0x10
+		private int structField1; // 0x00
 	}
 }

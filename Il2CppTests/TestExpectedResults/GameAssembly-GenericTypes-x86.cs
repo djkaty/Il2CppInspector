@@ -978,7 +978,7 @@ namespace Il2CppTests.TestSources
 	public class Derived<V> : Base<string, V> // TypeDefIndex: 2878
 	{
 		// Fields
-		public G<Derived<V>> F; // 0x00
+		public G<Derived<V>> F;
 	
 		// Nested types
 		public class Nested // TypeDefIndex: 2879
@@ -1072,13 +1072,13 @@ namespace Il2CppTests.TestSources
 	public class OuterGeneric<T1, T2> // TypeDefIndex: 2890
 	{
 		// Fields
-		public InnerGeneric1 fieldOfInnerGeneric1; // 0x00
-		public InnerGeneric2 fieldOfInnerGeneric2; // 0x00
-		public OuterGeneric<T1, float> fieldOfOuterGenericOpen1; // 0x00
-		public OuterGeneric<int, T2> fieldOfOuterGenericOpen2; // 0x00
-		public OuterGeneric<int, float> fieldOfOuterGenericClosed; // 0x00
-		public InnerGeneric2.SubInnerGeneric2 fieldOfSubInnerGeneric2; // 0x00
-		public InnerGeneric2.SubInnerGeneric3<string> fieldOfSubInnerGeneric3; // 0x00
+		public InnerGeneric1 fieldOfInnerGeneric1;
+		public InnerGeneric2 fieldOfInnerGeneric2;
+		public OuterGeneric<T1, float> fieldOfOuterGenericOpen1;
+		public OuterGeneric<int, T2> fieldOfOuterGenericOpen2;
+		public OuterGeneric<int, float> fieldOfOuterGenericClosed;
+		public InnerGeneric2.SubInnerGeneric2 fieldOfSubInnerGeneric2;
+		public InnerGeneric2.SubInnerGeneric3<string> fieldOfSubInnerGeneric3;
 	
 		// Nested types
 		public class InnerGeneric1 : List<T1> // TypeDefIndex: 2891

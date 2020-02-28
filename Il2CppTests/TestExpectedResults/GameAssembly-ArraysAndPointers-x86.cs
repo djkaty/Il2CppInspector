@@ -990,7 +990,7 @@ namespace Il2CppTests.TestSources
 		private struct fixedSizeArrayStruct // TypeDefIndex: 2876
 		{
 			// Fields
-			private unsafe fixed /* 0x1000AE70-0x1000AEC0 */ int fixedSizeArray[0]; // 0x08
+			private unsafe fixed /* 0x1000AE70-0x1000AEC0 */ int fixedSizeArray[0]; // 0x00
 		}
 	
 		public unsafe delegate void OnUnsafe(int* ud); // TypeDefIndex: 2878; 0x105F2330-0x105F2580
