@@ -15,7 +15,14 @@ namespace Il2CppInspector.Reflection {
         // IL2CPP-specific data
         public Il2CppFieldDefinition Definition { get; }
         public int Index { get; }
-        public long Offset { get; }
+
+        // Offsets for reference types start at 0x8 or 0x10 due to Il2CppObject "header" containing 2 pointers
+        // Value types don't have this header but the offsets are still stored as starting at 0x8 or 0x10, so we have to subtract this
+        // Open generic types have offsets that aren't known until runtime
+        private readonly long rawOffset;
+        public long Offset => DeclaringType.ContainsGenericParameters? 0 :
+            rawOffset - (DeclaringType.IsValueType && !IsStatic? (Assembly.Model.Package.BinaryImage.Bits / 8) * 2 : 0);
+        
         public ulong DefaultValueMetadataAddress { get; }
 
         // Custom attributes for this member
@@ -78,8 +85,9 @@ namespace Il2CppInspector.Reflection {
             base(declaringType) {
             Definition = pkg.Fields[fieldIndex];
             Index = fieldIndex;
-            Offset = pkg.FieldOffsets[fieldIndex];
             Name = pkg.Strings[Definition.nameIndex];
+
+            rawOffset = pkg.FieldOffsets[fieldIndex];
 
             fieldTypeReference = Definition.typeIndex;
             var fieldType = pkg.TypeReferences[fieldTypeReference];
