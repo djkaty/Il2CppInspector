@@ -174,7 +174,7 @@ def MakeFunction(start, end):
         private void writeFunctions() {
             foreach (var func in model.Package.FunctionAddresses)
                 if (func.Key != func.Value)
-                    writeLine($"MakeFunction({func.Key.ToAddressString()}, {func.Value.ToAddressString()})");
+                    writeLine($"idc.MakeFunction({func.Key.ToAddressString()})");
         }
 
         private void writeMetadata() {
