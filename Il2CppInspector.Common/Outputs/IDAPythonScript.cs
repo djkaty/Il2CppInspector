@@ -116,7 +116,9 @@ def MakeFunction(start, end):
             }
 
             writeSectionHeader("Constructed generic methods");
-            foreach (var method in model.GenericMethods.Values.Where(m => m.VirtualAddress.HasValue)) {
+            foreach(var method in model.MethodsByReferenceIndex) {
+                if (!method.VirtualAddress.HasValue)
+                    continue;
                 var address = method.VirtualAddress.Value.Start;
                 writeName(address, $"{method.DeclaringType.Name}_{method.Name}{method.GetFullTypeParametersString()}");
                 writeComment(address, method);
@@ -225,14 +227,17 @@ def MakeFunction(start, end):
         /// <param name="ti"></param>
         /// <returns></returns>
         private MethodBase[] getVTable(TypeInfo ti) {
-            MethodBase[] res = new MethodBase[ti.Definition.vtable_count];
+            var definition = ti.Definition;
+            if (definition == null)
+                definition = ti.GetGenericTypeDefinition().Definition;
+
+            MethodBase[] res = new MethodBase[definition.vtable_count];
             MethodBase[] impl = null;
             if(ti.IsAbstract && ConcreteImplementations.ContainsKey(ti)) {
                 impl = getVTable(ConcreteImplementations[ti]);
             }
             for (int i = 0; i < ti.Definition.vtable_count; i++) {
-                // XXX TODO: Resolve generic methods if parameters are known
-                var encodedIndex = model.Package.VTableMethodIndices[ti.Definition.vtableStart + i];
+                var encodedIndex = model.Package.VTableMethodIndices[definition.vtableStart + i];
                 var encodedType = encodedIndex & 0xE0000000;
                 var usageType = (MetadataUsageType)(encodedType >> 29);
                 var index = encodedIndex & 0x1FFFFFFF;
@@ -242,7 +247,7 @@ def MakeFunction(start, end):
                     else
                         res[i] = null;
                 } else if (usageType == MetadataUsageType.MethodRef) {
-                    res[i] = model.MethodsByDefinitionIndex[model.Package.MethodSpecs[index].methodDefinitionIndex];
+                    res[i] = model.MethodsByReferenceIndex[index];
                 } else {
                     res[i] = model.MethodsByDefinitionIndex[index];
                 }

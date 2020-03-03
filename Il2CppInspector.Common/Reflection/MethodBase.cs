@@ -152,15 +152,28 @@ namespace Il2CppInspector.Reflection
             Name = methodDef.Name;
             Attributes = methodDef.Attributes;
 
-            IsGenericMethod = true;
-            genericArguments = model.ResolveGenericArguments(spec.methodIndexIndex);
+            if (spec.methodIndexIndex >= 0) {
+                IsGenericMethod = true;
+                genericArguments = model.ResolveGenericArguments(spec.methodIndexIndex);
+            } else {
+                IsGenericMethod = methodDef.IsGenericMethod;
+                genericArguments = methodDef.GetGenericArguments();
+            }
+
+            var genericTypeArguments = declaringType.GetGenericArguments();
 
             // Substitute matching generic type parameters with concrete type arguments
             foreach (var p in methodDef.DeclaredParameters) {
-                if (!p.ParameterType.IsGenericMethodParameter)
-                    DeclaredParameters.Add(p);
-                else
-                    DeclaredParameters.Add(new ParameterInfo(model, p, genericArguments[p.ParameterType.GenericParameterPosition]));
+                var ptype = p.ParameterType;
+                ParameterInfo newp;
+                if (ptype.IsGenericMethodParameter) {
+                    newp = new ParameterInfo(model, p, genericArguments[ptype.GenericParameterPosition]);
+                } else if (ptype.IsGenericTypeParameter) {
+                    newp = new ParameterInfo(model, p, genericTypeArguments[ptype.GenericParameterPosition]);
+                } else {
+                    newp = p;
+                }
+                DeclaredParameters.Add(newp);
             }
 
             VirtualAddress = model.Package.GetGenericMethodPointer(spec);

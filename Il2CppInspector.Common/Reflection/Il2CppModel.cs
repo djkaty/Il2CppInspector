@@ -22,17 +22,17 @@ namespace Il2CppInspector.Reflection
         // List of all types from TypeRefs ordered by instanceIndex
         public TypeInfo[] TypesByReferenceIndex { get; }
 
-        // List of all types from MethodSpecs (closed generic types that can be instantiated)
-        public Dictionary<int, TypeInfo> TypesByMethodSpecClassIndex { get; } = new Dictionary<int, TypeInfo>();
+        // List of all types by their GenericInst index (partially or fully closed generic types)
+        public Dictionary<(TypeInfo type, int instIndex), TypeInfo> TypesByGenericInstIndex { get; } = new Dictionary<(TypeInfo, int), TypeInfo>();
 
-        // List of all methods from MethodSpecs (closed generic methods that can be called; does not need to be in a generic class)
-        public Dictionary<Il2CppMethodSpec, MethodBase> GenericMethods { get; } = new Dictionary<Il2CppMethodSpec, MethodBase>();
+        // List of all methods from MethodSpecs (partially or fully closed generic methods)
+        public MethodBase[] MethodsByReferenceIndex { get; }
 
         // List of all type definitions by fully qualified name (TypeDefs only)
         public Dictionary<string, TypeInfo> TypesByFullName { get; } = new Dictionary<string, TypeInfo>();
 
         // Every type
-        public IEnumerable<TypeInfo> Types => new IEnumerable<TypeInfo>[] {TypesByDefinitionIndex, TypesByReferenceIndex, TypesByMethodSpecClassIndex.Values}
+        public IEnumerable<TypeInfo> Types => new IEnumerable<TypeInfo>[] {TypesByDefinitionIndex, TypesByReferenceIndex, TypesByGenericInstIndex.Values}
                 .SelectMany(t => t).Distinct();
 
         // List of all methods ordered by their MethodDefinitionIndex
@@ -54,7 +54,7 @@ namespace Il2CppInspector.Reflection
 
         // Get a concrete instantiation of a generic method from its fully qualified name and type arguments
         public MethodBase GetGenericMethod(string fullName, params TypeInfo[] typeArguments) =>
-            GenericMethods.Values.First(m => fullName == m.DeclaringType.Namespace + "." + m.DeclaringType.BaseName + "." + m.Name
+            MethodsByReferenceIndex.First(m => fullName == m.DeclaringType.Namespace + "." + m.DeclaringType.BaseName + "." + m.Name
             && m.GetGenericArguments().SequenceEqual(typeArguments));
 
         // Create type model
@@ -64,6 +64,7 @@ namespace Il2CppInspector.Reflection
             TypesByReferenceIndex = new TypeInfo[package.TypeReferences.Count];
             MethodsByDefinitionIndex = new MethodBase[package.Methods.Length];
             MethodInvokers = new MethodInvoker[package.MethodInvokePointers.Length];
+            MethodsByReferenceIndex = new MethodBase[Package.MethodSpecs.Length];
 
             // Recursively create hierarchy of assemblies and types from TypeDefs
             // No code that executes here can access any type through a TypeRef (ie. via TypesByReferenceIndex)
@@ -80,29 +81,24 @@ namespace Il2CppInspector.Reflection
             }
 
             // Create types and methods from MethodSpec (which incorporates TypeSpec in IL2CPP)
-            foreach (var spec in Package.MethodSpecs) {
-                TypeInfo declaringType;
+            for (int i = 0; i < Package.MethodSpecs.Length; i++) {
+                var spec = Package.MethodSpecs[i];
+
+                TypeInfo declaringType = MethodsByDefinitionIndex[spec.methodDefinitionIndex].DeclaringType;
 
                 // Concrete instance of a generic class
                 // If the class index is not specified, we will later create a generic method in a non-generic class
                 if (spec.classIndexIndex != -1) {
-                    if (!TypesByMethodSpecClassIndex.ContainsKey(spec.classIndexIndex))
-                        TypesByMethodSpecClassIndex.Add(spec.classIndexIndex, new TypeInfo(this, spec));
-
-                    declaringType = TypesByMethodSpecClassIndex[spec.classIndexIndex];
+                    declaringType = GetGenericInstType(declaringType, spec.classIndexIndex);
                 }
-                else
-                    declaringType = MethodsByDefinitionIndex[spec.methodDefinitionIndex].DeclaringType;
 
                 // Concrete instance of a generic method
-                if (spec.methodIndexIndex != -1) {
-                    // Method or constructor
-                    var concreteMethod = new MethodInfo(this, spec, declaringType);
-                    if (concreteMethod.Name == ConstructorInfo.ConstructorName || concreteMethod.Name == ConstructorInfo.TypeConstructorName)
-                        GenericMethods.Add(spec, new ConstructorInfo(this, spec, declaringType));
-                    else
-                        GenericMethods.Add(spec, concreteMethod);
-                }
+                // Method or constructor
+                var methodDef = MethodsByDefinitionIndex[spec.methodDefinitionIndex];
+                if (methodDef is MethodInfo)
+                    MethodsByReferenceIndex[i] = new MethodInfo(this, spec, declaringType);
+                else
+                    MethodsByReferenceIndex[i] = new ConstructorInfo(this, spec, declaringType);
             }
 
             // Find all custom attribute generators (populate AttributesByIndices) (use ToList() to force evaluation)
@@ -127,12 +123,13 @@ namespace Il2CppInspector.Reflection
 
             // TODO: Some invokers are not initialized or missing, need to find out why
             // Create method invokers sourced from generic method invoker indices
-            foreach (var spec in GenericMethods.Keys) {
+            for (int i = 0; i < Package.MethodSpecs.Length; i++) {
+                var spec = Package.MethodSpecs[i];
                 if (package.GenericMethodInvokerIndices.TryGetValue(spec, out var index)) {
                     if (MethodInvokers[index] == null)
-                        MethodInvokers[index] = new MethodInvoker(GenericMethods[spec], index);
+                        MethodInvokers[index] = new MethodInvoker(MethodsByReferenceIndex[i], index);
 
-                    GenericMethods[spec].Invoker = MethodInvokers[index];
+                    MethodsByReferenceIndex[i].Invoker = MethodInvokers[index];
                 }
             }
         }
@@ -158,7 +155,25 @@ namespace Il2CppInspector.Reflection
                     break;
 
                 // Constructed types
-                case Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST:
+                case Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST: {
+                        // TODO: Replace with array load from Il2CppMetadataRegistration.genericClasses
+                        var generic = Package.BinaryImage.ReadMappedObject<Il2CppGenericClass>(typeRef.datapoint); // Il2CppGenericClass *
+                        
+                        // We have seen one test case where the TypeRef can point to no generic instance
+                        // This corresponds to Type::IsEmptyType being true
+                        if (generic.typeDefinitionIndex == 0x0000_0000_ffff_ffff) {
+                            underlyingType = null;
+                            break;
+                        }
+                        
+                        var genericType = TypesByDefinitionIndex[generic.typeDefinitionIndex];
+                        var genericInstanceIndex = Package.Binary.GenericInstanceIndices[generic.context.class_inst];
+                        if (generic.context.method_inst != 0)
+                            throw new InvalidOperationException("Generic method instance cannot be non-null when processing a generic class instance");
+
+                        underlyingType = GetGenericInstType(genericType, genericInstanceIndex);
+                        break;
+                    }
                 case Il2CppTypeEnum.IL2CPP_TYPE_ARRAY:
                 case Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY:
                 case Il2CppTypeEnum.IL2CPP_TYPE_PTR:
@@ -202,6 +217,16 @@ namespace Il2CppInspector.Reflection
 
             TypesByReferenceIndex[typeRefIndex] = referencedType;
             return referencedType;
+        }
+
+        public TypeInfo GetGenericInstType(TypeInfo genericType, int genericInstIndex) {
+            TypeInfo result;
+            if (TypesByGenericInstIndex.TryGetValue((genericType, genericInstIndex), out result))
+                return result;
+
+            result = new TypeInfo(this, genericType, genericInstIndex);
+            TypesByGenericInstIndex[(genericType, genericInstIndex)] = result;
+            return result;
         }
 
         // The attribute index is an index into AttributeTypeRanges, each of which is a start-end range index into AttributeTypeIndices, each of which is a TypeIndex
@@ -248,21 +273,16 @@ namespace Il2CppInspector.Reflection
         public TypeInfo GetMetadataUsageType(MetadataUsage usage) => usage.Type switch {
             MetadataUsageType.Type => TypesByReferenceIndex[usage.SourceIndex],
             MetadataUsageType.TypeInfo => TypesByReferenceIndex[usage.SourceIndex],
-            MetadataUsageType.MethodDef => GetMetadataUsageMethod(usage).DeclaringType,
+            MetadataUsageType.MethodDef => MethodsByDefinitionIndex[usage.SourceIndex].DeclaringType,
             MetadataUsageType.FieldInfo => TypesByReferenceIndex[Package.FieldRefs[usage.SourceIndex].typeIndex],
-            MetadataUsageType.MethodRef => Package.MethodSpecs[usage.SourceIndex].classIndexIndex != -1?
-                TypesByMethodSpecClassIndex[Package.MethodSpecs[usage.SourceIndex].classIndexIndex] :
-                GetMetadataUsageMethod(usage).DeclaringType,
-
+            MetadataUsageType.MethodRef => MethodsByReferenceIndex[usage.SourceIndex].DeclaringType,
             _ => throw new InvalidOperationException("Incorrect metadata usage type to retrieve referenced type")
         };
 
         // Get the method used in a metadata usage
         public MethodBase GetMetadataUsageMethod(MetadataUsage usage) => usage.Type switch {
             MetadataUsageType.MethodDef => MethodsByDefinitionIndex[usage.SourceIndex],
-            MetadataUsageType.MethodRef => Package.MethodSpecs[usage.SourceIndex].methodIndexIndex != -1?
-                GenericMethods[Package.MethodSpecs[usage.SourceIndex]] :
-                MethodsByDefinitionIndex[Package.MethodSpecs[usage.SourceIndex].methodDefinitionIndex],
+            MetadataUsageType.MethodRef => MethodsByReferenceIndex[usage.SourceIndex],
             _ => throw new InvalidOperationException("Incorrect metadata usage type to retrieve referenced type")
         };
     }

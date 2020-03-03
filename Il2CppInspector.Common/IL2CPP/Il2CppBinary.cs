@@ -56,6 +56,9 @@ namespace Il2CppInspector
         // Generic method specs for vtables
         public Il2CppMethodSpec[] MethodSpecs { get; private set; }
 
+        // Mapping between GenericInst pointer and index in GenericInstances array
+        public Dictionary<ulong, int> GenericInstanceIndices { get; } = new Dictionary<ulong, int>();
+
         // List of run-time concrete generic class and method signatures
         public List<Il2CppGenericInst> GenericInstances { get; private set; }
 
@@ -243,7 +246,12 @@ namespace Il2CppInspector
             MethodSpecs = image.ReadMappedArray<Il2CppMethodSpec>(MetadataRegistration.methodSpecs, (int) MetadataRegistration.methodSpecsCount);
 
             // Concrete generic class and method signatures
-            GenericInstances = image.ReadMappedObjectPointerArray<Il2CppGenericInst>(MetadataRegistration.genericInsts, (int) MetadataRegistration.genericInstsCount);
+            GenericInstances = new List<Il2CppGenericInst>();
+            var genericInstancePointers = image.ReadMappedArray<ulong>(MetadataRegistration.genericInsts, (int)MetadataRegistration.genericInstsCount);
+            for (int i = 0; i < MetadataRegistration.genericInstsCount; i++) {
+                GenericInstanceIndices.Add(genericInstancePointers[i], i);
+                GenericInstances.Add(image.ReadMappedObject<Il2CppGenericInst>(genericInstancePointers[i]));
+            }
 
             // Concrete generic method pointers
             var genericMethodPointers = image.ReadMappedArray<ulong>(CodeRegistration.genericMethodPointers, (int) CodeRegistration.genericMethodPointersCount);
