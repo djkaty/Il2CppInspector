@@ -86,25 +86,11 @@ namespace Il2CppInspector.Outputs
             writeLine(
 @"import idaapi
 
-def SetString(addr, comm):
-  name = 'StringLiteral_' + str(addr)
-  ret = idc.set_name(addr, name, SN_NOWARN)
-  idc.set_cmt(addr, comm, 1)
-
 def SetName(addr, name):
   ret = idc.set_name(addr, name, SN_NOWARN | SN_NOCHECK)
   if ret == 0:
     new_name = name + '_' + str(addr)
-    ret = idc.set_name(addr, new_name, SN_NOWARN | SN_NOCHECK)
-
-def MakeFunction(start, end):
-  next_func = idc.get_next_func(start)
-  if next_func < end:
-    end = next_func
-  current_func = idaapi.get_func(start)
-  if current_func is not None and current_func.startEA == start:
-    ida_funcs.del_func(start)
-  ida_funcs.add_func(start, end)"
+    ret = idc.set_name(addr, new_name, SN_NOWARN | SN_NOCHECK)"
             );
         }
 
@@ -152,23 +138,27 @@ def MakeFunction(start, end):
         }
 
         private void writeUsages() {
-            var usageNamer = new UniqueRenamer<MetadataUsage>((usage) => sanitizeIdentifier($"{model.GetMetadataUsageName(usage)}"));
+            var usageNamer = new UniqueRenamer<MetadataUsage>((usage) => sanitizeIdentifier(model.GetMetadataUsageName(usage)));
+            var stringNamer = new UniqueRenamer<MetadataUsage>((usage) => {
+                var str = model.GetMetadataUsageName(usage);
+                return sanitizeIdentifier(str.Substring(0, Math.Min(32, str.Length)));
+            });
             foreach (var usage in model.Package.MetadataUsages) {
                 var address = usage.VirtualAddress;
-                var name = model.GetMetadataUsageName(usage);
 
-                if (usage.Type != MetadataUsageType.StringLiteral)
+                if (usage.Type == MetadataUsageType.StringLiteral) {
+                    writeName(address, "StringLiteral_" + stringNamer.GetName(usage));
+                    var str = model.GetMetadataUsageName(usage);
+                    writeComment(address, str);
+                } else {
                     writeName(address, usageNamer.GetName(usage) + "_" + usage.Type);
-                else
-                    writeString(address, name);
-
-                if (usage.Type == MetadataUsageType.MethodDef || usage.Type == MetadataUsageType.MethodRef) {
-                    var method = model.GetMetadataUsageMethod(usage);
-                    writeComment(address, method);
-                }
-                else if (usage.Type != MetadataUsageType.StringLiteral) {
-                    var type = model.GetMetadataUsageType(usage);
-                    writeComment(address, type);
+                    if (usage.Type == MetadataUsageType.MethodDef || usage.Type == MetadataUsageType.MethodRef) {
+                        var method = model.GetMetadataUsageMethod(usage);
+                        writeComment(address, method);
+                    } else {
+                        var type = model.GetMetadataUsageType(usage);
+                        writeComment(address, type);
+                    }
                 }
             }
         }
@@ -725,10 +715,6 @@ struct __Il2CppClass {
 
         private void writeName(ulong address, string name) {
             writeLine($"SetName({address.ToAddressString()}, r'{name.ToEscapedString()}')");
-        }
-
-        private void writeString(ulong address, string str) {
-            writeLine($"SetString({address.ToAddressString()}, r'{str.ToEscapedString()}')");
         }
 
         private void writeComment(ulong address, object comment) {
