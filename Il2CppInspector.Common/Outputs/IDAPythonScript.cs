@@ -316,7 +316,7 @@ def SetName(addr, name):
                     csrc.Append($"struct {cName}__Fields {{\n");
 
                 bool empty = true;
-                foreach (var field in ti.DeclaredFields.Where((x) => (x.IsStatic == isStatic)).OrderBy((x) => x.Offset)) {
+                foreach (var field in ti.DeclaredFields.Where((x) => (x.IsStatic == isStatic))) {
                     string name = fieldNamer.GetName(field);
                     var fti = field.FieldType;
                     if (fti.ContainsGenericParameters) {
