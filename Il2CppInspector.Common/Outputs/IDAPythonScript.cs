@@ -217,29 +217,19 @@ def SetName(addr, name):
         /// <param name="ti"></param>
         /// <returns></returns>
         private MethodBase[] getVTable(TypeInfo ti) {
-            var definition = ti.Definition;
-            if (definition == null)
-                definition = ti.GetGenericTypeDefinition().Definition;
-
-            MethodBase[] res = new MethodBase[definition.vtable_count];
-            MethodBase[] impl = null;
-            if(ti.IsAbstract && ConcreteImplementations.ContainsKey(ti)) {
-                impl = getVTable(ConcreteImplementations[ti]);
-            }
-            for (int i = 0; i < ti.Definition.vtable_count; i++) {
-                var encodedIndex = model.Package.VTableMethodIndices[definition.vtableStart + i];
-                var encodedType = encodedIndex & 0xE0000000;
-                var usageType = (MetadataUsageType)(encodedType >> 29);
-                var index = encodedIndex & 0x1FFFFFFF;
-                if (index == 0) {
-                    if (impl != null)
+            MethodBase[] res = model.GetVTable(ti);
+            /* An abstract type will have null in the vtable for abstract methods.
+             * In order to recover the correct method signature for such abstract
+             * methods, we replace the corresponding vtable slot with an
+             * implementation from *any* concrete subclass, as the name and signature
+             * must match.
+             */
+            if (ti.IsAbstract && ConcreteImplementations.ContainsKey(ti)) {
+                res = (MethodBase[])res.Clone();
+                MethodBase[] impl = model.GetVTable(ConcreteImplementations[ti]);
+                for (int i = 0; i < res.Length; i++) {
+                    if (res[i] == null)
                         res[i] = impl[i];
-                    else
-                        res[i] = null;
-                } else if (usageType == MetadataUsageType.MethodRef) {
-                    res[i] = model.MethodsByReferenceIndex[index];
-                } else {
-                    res[i] = model.MethodsByDefinitionIndex[index];
                 }
             }
             return res;

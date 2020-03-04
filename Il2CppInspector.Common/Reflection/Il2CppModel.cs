@@ -229,6 +229,25 @@ namespace Il2CppInspector.Reflection
             return result;
         }
 
+        public MethodBase[] GetVTable(TypeInfo ti) {
+            var definition = ti.Definition;
+            if (definition == null)
+                definition = ti.GetGenericTypeDefinition().Definition;
+
+            MetadataUsage[] vt = Package.GetVTable(definition);
+            MethodBase[] res = new MethodBase[vt.Length];
+            for (int i = 0; i < vt.Length; i++) {
+                if (vt[i].Type == MetadataUsageType.MethodRef) {
+                    res[i] = MethodsByReferenceIndex[vt[i].SourceIndex];
+                } else if (vt[i].Type == MetadataUsageType.MethodDef) {
+                    res[i] = MethodsByDefinitionIndex[vt[i].SourceIndex];
+                } else {
+                    res[i] = null;
+                }
+            }
+            return res;
+        }
+
         // The attribute index is an index into AttributeTypeRanges, each of which is a start-end range index into AttributeTypeIndices, each of which is a TypeIndex
         public int GetCustomAttributeIndex(Assembly asm, uint token, int customAttributeIndex) {
             // Prior to v24.1, Type, Field, Parameter, Method, Event, Property, Assembly definitions had their own customAttributeIndex field

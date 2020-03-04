@@ -294,6 +294,18 @@ namespace Il2CppInspector
             return Binary.MethodInvokerIndices[module][methodInModule - 1];
         }
 
+        public MetadataUsage[] GetVTable(Il2CppTypeDefinition definition) {
+            MetadataUsage[] res = new MetadataUsage[definition.vtable_count];
+            for (int i = 0; i < definition.vtable_count; i++) {
+                var encodedIndex = VTableMethodIndices[definition.vtableStart + i];
+                var encodedType = encodedIndex & 0xE0000000;
+                var usageType = (MetadataUsageType)(encodedType >> 29);
+                var index = encodedIndex & 0x1FFFFFFF;
+                res[i] = new MetadataUsage(usageType, (int)index, i);
+            }
+            return res;
+        }
+
         public static List<Il2CppInspector> LoadFromFile(string codeFile, string metadataFile) {
             // Load the metadata file
             Metadata metadata;
