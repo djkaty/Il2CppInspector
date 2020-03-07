@@ -32,7 +32,7 @@ namespace Il2CppInspector.Reflection {
                 : null;
 
         // True if the type contains unresolved generic type parameters
-        public bool ContainsGenericParameters => IsGenericParameter || genericArguments.Any(ga => ga.ContainsGenericParameters);
+        public bool ContainsGenericParameters => (HasElementType && ElementType.ContainsGenericParameters) || IsGenericParameter || genericArguments.Any(ga => ga.ContainsGenericParameters);
 
         public string BaseName => base.Name;
 
