@@ -640,7 +640,7 @@ namespace Il2CppInspector.Reflection {
                     baseTypeReference = ownerType.Definition.parentIndex;
 
                 // Nested type always - sets DeclaringType used below
-                declaringTypeDefinitionIndex = ownerType.Index;
+                declaringType = ownerType;
                 MemberType |= MemberTypes.NestedType;
 
                 // All generic method type parameters have a declared method

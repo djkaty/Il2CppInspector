@@ -21,7 +21,8 @@ namespace Il2CppInspector.Reflection {
 
         // Type that this type is declared in for nested types
         protected int declaringTypeDefinitionIndex { private get; set; } = -1;
-        public TypeInfo DeclaringType => declaringTypeDefinitionIndex != -1? Assembly.Model.TypesByDefinitionIndex[declaringTypeDefinitionIndex] : null;
+        protected TypeInfo declaringType;
+        public TypeInfo DeclaringType => declaringType ?? (declaringTypeDefinitionIndex != -1? Assembly.Model.TypesByDefinitionIndex[declaringTypeDefinitionIndex] : null);
 
         // What sort of member this is, eg. method, field etc.
         public abstract MemberTypes MemberType { get; }
@@ -39,7 +40,7 @@ namespace Il2CppInspector.Reflection {
         protected MemberInfo(TypeInfo declaringType = null) {
             if (declaringType != null) {
                 Assembly = declaringType.Assembly;
-                declaringTypeDefinitionIndex = declaringType.Index;
+                this.declaringType = declaringType;
             }
         }
 

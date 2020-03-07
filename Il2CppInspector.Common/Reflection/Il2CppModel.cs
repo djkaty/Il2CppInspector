@@ -53,9 +53,10 @@ namespace Il2CppInspector.Reflection
         public TypeInfo GetType(string fullName) => Types.FirstOrDefault(t => fullName == t.Namespace + "." + t.Name);
 
         // Get a concrete instantiation of a generic method from its fully qualified name and type arguments
-        public MethodBase GetGenericMethod(string fullName, params TypeInfo[] typeArguments) =>
+        public MethodBase GetGenericMethod(string fullName, TypeInfo[] genericTypeArguments, TypeInfo[] genericMethodArguments) =>
             MethodsByReferenceIndex.First(m => fullName == m.DeclaringType.Namespace + "." + m.DeclaringType.BaseName + "." + m.Name
-            && m.GetGenericArguments().SequenceEqual(typeArguments));
+            && m.DeclaringType.GetGenericArguments().SequenceEqual(genericTypeArguments)
+            && m.GetGenericArguments().SequenceEqual(genericMethodArguments));
 
         // Create type model
         public Il2CppModel(Il2CppInspector package) {
