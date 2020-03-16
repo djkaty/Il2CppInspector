@@ -16,7 +16,7 @@ namespace Il2CppInspector
             if (absolutePath.IndexOf("*", StringComparison.Ordinal) == -1)
                 return absolutePath;
 
-            Regex sections = new Regex(@"((?:[^*]*)\\)((?:.*?)\*.*?)(?:$|\\)");
+            Regex sections = new Regex(string.Format(@"((?:[^*]*){0})((?:.*?)\*.*?)(?:$|{0})", Path.DirectorySeparatorChar));
             var matches = sections.Matches(absolutePath);
 
             var pathLength = 0;
@@ -32,7 +32,7 @@ namespace Il2CppInspector
                     .OrderByDescending(x => x)
                     .FirstOrDefault();
 
-                path = dir + @"\";
+                path = dir + Path.DirectorySeparatorChar;
                 pathLength += match.Groups[1].Value.Length + match.Groups[2].Value.Length + 1;
             }
 
