@@ -52,7 +52,8 @@ namespace Il2CppInspector.Outputs
         public void WriteFilesByNamespace<TKey>(string outPath, Func<TypeInfo, TKey> orderBy, bool flattenHierarchy) {
             usedAssemblyAttributes.Clear();
             Parallel.ForEach(model.Assemblies.SelectMany(x => x.DefinedTypes).GroupBy(t => t.Namespace), ns => {
-                writeFile($"{outPath}\\{(!string.IsNullOrEmpty(ns.Key) ? ns.Key : "global").Replace('.', flattenHierarchy ? '.' : '\\')}.cs",
+                var relPath = !string.IsNullOrEmpty(ns.Key) ? ns.Key : "global";
+                writeFile(Path.Combine(outPath, (flattenHierarchy ? relPath : Path.Combine(relPath.Split('.'))) + ".cs"),
                     ns.OrderBy(orderBy));
             });
         }
@@ -61,9 +62,9 @@ namespace Il2CppInspector.Outputs
             usedAssemblyAttributes.Clear();
             Parallel.ForEach(model.Assemblies, asm => {
                 // Sort namespaces into alphabetical order, then sort types within the namespaces by the specified sort function
-               if (writeFile($"{outPath}\\{asm.ShortName.Replace(".dll", "")}.cs", asm.DefinedTypes.OrderBy(t => t.Namespace).ThenBy(orderBy), outputAssemblyAttributes: !separateAttributes)
+                if (writeFile(Path.Combine(outPath, Path.GetFileNameWithoutExtension(asm.ShortName) + ".cs"), asm.DefinedTypes.OrderBy(t => t.Namespace).ThenBy(orderBy), outputAssemblyAttributes: !separateAttributes)
                     && separateAttributes) {
-                    File.WriteAllText($"{outPath}\\AssemblyInfo_{asm.ShortName.Replace(".dll", "")}.cs", generateAssemblyInfo(new [] {asm}));
+                    File.WriteAllText(Path.Combine(outPath, $"AssemblyInfo_{Path.GetFileNameWithoutExtension(asm.ShortName)}.cs"), generateAssemblyInfo(new [] {asm}));
                 }
             });
         }
@@ -71,8 +72,8 @@ namespace Il2CppInspector.Outputs
         public void WriteFilesByClass(string outPath, bool flattenHierarchy) {
             usedAssemblyAttributes.Clear();
             Parallel.ForEach(model.Assemblies.SelectMany(x => x.DefinedTypes), type => {
-                writeFile($"{outPath}\\" + (type.Namespace + (type.Namespace.Length > 0 ? "." : "") + Regex.Replace(type.Name, "`[0-9]", ""))
-                          .Replace('.', flattenHierarchy ? '.' : '\\') + ".cs", new[] {type});
+                string relPath = $"{type.Namespace}{(type.Namespace.Length > 0 ? "." : "")}{Regex.Replace(type.Name, "`[0-9]", "")}";
+                writeFile(Path.Combine(outPath, flattenHierarchy ? relPath : Path.Combine(relPath.Split('.')) + ".cs"), new[] {type});
             });
         }
 
@@ -84,8 +85,8 @@ namespace Il2CppInspector.Outputs
             Parallel.ForEach(model.Assemblies.SelectMany(x => x.DefinedTypes),
                 () => new HashSet<Assembly>(),
                 (type, _, used) => {
-                    if (writeFile($"{outPath}\\{type.Assembly.ShortName.Replace(".dll", "")}\\" + (type.Namespace + (type.Namespace.Length > 0 ? "." : "") + Regex.Replace(type.Name, "`[0-9]", ""))
-                                  .Replace('.', '\\') + ".cs", new[] {type}, outputAssemblyAttributes: !separateAttributes))
+                    string relPath = Path.Combine($"{type.Namespace}{(type.Namespace.Length > 0 ? "." : "")}{Regex.Replace(type.Name, "`[0-9]", "")}".Split('.'));
+                    if (writeFile(Path.Combine(outPath, Path.GetFileNameWithoutExtension(type.Assembly.ShortName), $"{relPath}.cs"), new[] {type}, outputAssemblyAttributes: !separateAttributes))
                         used.Add(type.Assembly);
                     return used;
                 },
@@ -96,7 +97,7 @@ namespace Il2CppInspector.Outputs
 
             if (separateAttributes && usedAssemblies.Any())
                 foreach (var asm in usedAssemblies)
-                    File.WriteAllText($"{outPath}\\{asm.ShortName.Replace(".dll", "")}\\AssemblyInfo.cs", generateAssemblyInfo(new [] {asm}));
+                    File.WriteAllText(Path.Combine(outPath, Path.GetFileNameWithoutExtension(asm.ShortName), "AssemblyInfo.cs"), generateAssemblyInfo(new [] {asm}));
 
             return usedAssemblies;
         }
@@ -115,8 +116,8 @@ namespace Il2CppInspector.Outputs
 
             foreach (var asm in assemblies) {
                 var guid = Guid.NewGuid();
-                var name = asm.ShortName.Replace(".dll", "");
-                var csProjFile = $"{name}\\{name}.csproj";
+                var name = Path.GetFileNameWithoutExtension(asm.ShortName);
+                var csProjFile = Path.Combine(name, $"{name}.csproj");
 
                 var def = Resources.SlnProjectDefinition
                     .Replace("%PROJECTGUID%", guid.ToString())
@@ -152,7 +153,7 @@ namespace Il2CppInspector.Outputs
                     .Replace("%SCRIPTASSEMBLIES%", unityAssembliesPath)
                     .Replace("%PROJECTREFERENCES%", referenceXml);
 
-                File.WriteAllText($"{outPath}\\{csProjFile}", csProj);
+                File.WriteAllText(Path.Combine(outPath, csProjFile), csProj);
             }
 
             // Merge everything into .sln file
@@ -163,7 +164,7 @@ namespace Il2CppInspector.Outputs
             var filename = Path.GetFileName(outPath);
             if (filename == "")
                 filename = "Il2CppProject";
-            File.WriteAllText($"{outPath}\\{filename}.sln", sln);
+            File.WriteAllText(Path.Combine(outPath, $"{filename}.sln"), sln);
         }
 
         private bool writeFile(string outFile, IEnumerable<TypeInfo> types, bool useNamespaceSyntax = true, bool outputAssemblyAttributes = true) {
@@ -267,7 +268,7 @@ namespace Il2CppInspector.Outputs
 
             // Sanitize leafname (might be class name with invalid characters)
             var leafname = Regex.Replace(Path.GetFileName(outFile), @"[<>:""\|\?\*]", "_");
-            outFile = Path.GetDirectoryName(outFile) + Path.DirectorySeparatorChar + leafname;
+            outFile = Path.Combine(Path.GetDirectoryName(outFile), leafname);
 
             // Create output file
             bool fileWritten = false;
