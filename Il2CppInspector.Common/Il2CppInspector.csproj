@@ -10,6 +10,34 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Outputs\Data\16-5.3.0f4.i" />
+    <None Remove="Outputs\Data\19-5.3.2f1.i" />
+    <None Remove="Outputs\Data\20-5.3.3f1.i" />
+    <None Remove="Outputs\Data\21-5.3.5f1.i" />
+    <None Remove="Outputs\Data\21-5.4.0f3.i" />
+    <None Remove="Outputs\Data\22-5.5.0f3.i" />
+    <None Remove="Outputs\Data\23-5.6.2p3.i" />
+    <None Remove="Outputs\Data\24.0-2017.2f3.i" />
+    <None Remove="Outputs\Data\24.1-2018.3.0f2.i" />
+    <None Remove="Outputs\Data\24.2-2019.2.8f1.i" />
+    <None Remove="Outputs\Data\24.2-2019.3.1f1.i" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Outputs\Data\16-5.3.0f4.i" />
+    <EmbeddedResource Include="Outputs\Data\19-5.3.2f1.i" />
+    <EmbeddedResource Include="Outputs\Data\20-5.3.3f1.i" />
+    <EmbeddedResource Include="Outputs\Data\21-5.3.5f1.i" />
+    <EmbeddedResource Include="Outputs\Data\21-5.4.0f3.i" />
+    <EmbeddedResource Include="Outputs\Data\22-5.5.0f3.i" />
+    <EmbeddedResource Include="Outputs\Data\23-5.6.2p3.i" />
+    <EmbeddedResource Include="Outputs\Data\24.0-2017.2f3.i" />
+    <EmbeddedResource Include="Outputs\Data\24.1-2018.3.0f2.i" />
+    <EmbeddedResource Include="Outputs\Data\24.2-2019.2.8f1.i" />
+    <EmbeddedResource Include="Outputs\Data\24.2-2019.3.1f1.i" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 

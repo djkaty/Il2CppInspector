@@ -27,6 +27,13 @@ namespace Il2CppInspector.Outputs
             this.keyFunc = keyFunc;
         }
 
+        public void ReserveName(string name) {
+            if (renameCount.ContainsKey(name)) {
+                throw new Exception($"Can't reserve {name}: already taken!");
+            }
+            renameCount[name] = 0;
+        }
+
         public string GetName(T t) {
             string name;
             if (names.TryGetValue(t, out name))
@@ -188,7 +195,12 @@ def SetName(addr, name):
                 writeName(binary.RegistrationFunctionPointer, "__GLOBAL__sub_I_Il2CppCodeRegistration.cpp");
         }
 
-        private UniqueRenamer<TypeInfo> TypeNamer = new UniqueRenamer<TypeInfo>((ti) => sanitizeIdentifier(ti.Name));
+        private UniqueRenamer<TypeInfo> TypeNamer = new UniqueRenamer<TypeInfo>((ti) => {
+            var name = sanitizeIdentifier(ti.Name);
+            if (name.StartsWith("Il2Cpp"))
+                name = "_" + name;
+            return name;
+        });
         private HashSet<TypeInfo> GeneratedTypes = new HashSet<TypeInfo>();
         private Dictionary<TypeInfo, TypeInfo> ConcreteImplementations = new Dictionary<TypeInfo, TypeInfo>();
         private HashSet<TypeInfo> EmptyTypes = new HashSet<TypeInfo>();
@@ -273,9 +285,9 @@ def SetName(addr, name):
             if (ti.Namespace == "System" && ti.BaseName == "Array") {
                 /* System.Array is special - instances are Il2CppArray* */
                 csrc.Append($"struct {cName}__Fields {{\n");
-                csrc.Append($"  struct __Il2CppArrayBounds *bounds;\n" +
+                csrc.Append($"  struct Il2CppArrayBounds *bounds;\n" +
                             $"  size_t max_length;\n" +
-                            $"  void *elems[1];\n");
+                            $"  void *elems[32];\n");
                 csrc.Append("};\n");
                 special = 1;
             } else if(ti.IsEnum) {
@@ -296,6 +308,8 @@ def SetName(addr, name):
                     if (!fti.ContainsGenericParameters)
                         generateStructsForType(csrc, fti);
                 }
+
+                //model.Package.BinaryImage is PEReader;
 
                 var fieldNamer = new UniqueRenamer<FieldInfo>((field) => sanitizeIdentifier(field.Name));
                 if (isStatic)
@@ -336,9 +350,9 @@ def SetName(addr, name):
                 csrc.Append($"struct {TypeNamer.GetName(ti.ElementType)}__Array {{\n" +
                     $"  struct {TypeNamer.GetName(ti.BaseType)}__Class *klass;\n" +
                     $"  void *monitor;\n" +
-                    $"  struct __Il2CppArrayBounds *bounds;\n" +
+                    $"  struct Il2CppArrayBounds *bounds;\n" +
                     $"  size_t max_length;\n" +
-                    $"  {getCType(ti.ElementType)} elems[1];\n" +
+                    $"  {getCType(ti.ElementType)} elems[32];\n" +
                     $"}};\n");
                 return;
             } else if (ti.IsByRef || ti.IsPointer) {
@@ -350,6 +364,15 @@ def SetName(addr, name):
 
             generateFieldStructsForType(csrc, ti);
 
+            string vtableEntryType;
+            if(model.Package.Version < 21) {
+                vtableEntryType = "MethodInfo *";
+            } else {
+                /* TODO: Metadata version 21 might be MethodInfo * or VirtualInvokeData
+                 * depending on the exact version of Unity - we need a way to distinguish
+                 * these cases... */
+                vtableEntryType = "VirtualInvokeData";
+            }
             string cName = TypeNamer.GetName(ti);
             csrc.Append($"struct {cName}__VTable {{\n");
             if (ti.IsInterface) {
@@ -361,7 +384,7 @@ def SetName(addr, name):
                 */
                 var funcNamer = new UniqueRenamer<MethodInfo>((mi) => sanitizeIdentifier(mi.Name));
                 foreach (var mi in ti.DeclaredMethods) {
-                    csrc.Append($"  __VirtualInvokeData {funcNamer.GetName(mi)};\n");
+                    csrc.Append($"  {vtableEntryType} {funcNamer.GetName(mi)};\n");
                 }
             } else {
                 var vtable = getVTable(ti);
@@ -370,19 +393,33 @@ def SetName(addr, name):
                     var mi = vtable[i];
                     /* TODO type the functions correctly */
                     if (mi == null)
-                        csrc.Append($"  __VirtualInvokeData __unknown_{i};\n");
+                        csrc.Append($"  {vtableEntryType} __unknown_{i};\n");
                     else
-                        csrc.Append($"  __VirtualInvokeData {funcNamer.GetName(i)};\n");
+                        csrc.Append($"  {vtableEntryType} {funcNamer.GetName(i)};\n");
                 }
             }
             csrc.Append($"}};\n");
 
-            csrc.Append($"struct {cName}__Class {{\n" +
-                $"  struct __Il2CppClass_1 _1;\n" +
-                $"  struct {cName}__StaticFields *static_fields;\n" +
-                $"  struct __Il2CppClass_2 _2;\n" +
-                $"  struct {cName}__VTable vtable;\n" +
-                $"}};\n");
+            /* TODO: type the rgctx_data */
+            if(model.Package.Version < 22) {
+                csrc.Append($"struct {cName}__Class {{\n" +
+                    $"  struct Il2CppClass_0 _0;\n" +
+                    $"  struct {cName}__VTable *vtable;\n" +
+                    $"  Il2CppRuntimeInterfaceOffsetPair *interfaceOffsets;\n" +
+                    $"  struct {cName}__StaticFields *static_fields;\n" +
+                    $"  void **rgctx_data;\n" +
+                    $"  struct Il2CppClass_1 _1;\n" +
+                    $"}};\n");
+            } else {
+                csrc.Append($"struct {cName}__Class {{\n" +
+                    $"  struct Il2CppClass_0 _0;\n" +
+                    $"  Il2CppRuntimeInterfaceOffsetPair *interfaceOffsets;\n" +
+                    $"  struct {cName}__StaticFields *static_fields;\n" +
+                    $"  void **rgctx_data;\n" +
+                    $"  struct Il2CppClass_1 _1;\n" +
+                    $"  struct {cName}__VTable vtable;\n" +
+                    $"}};\n");
+            }
 
             /* For value types, __Object is rarely used. It seems to only be used
              * when a struct is passed via this to an instance method.
@@ -431,192 +468,58 @@ typedef __int32 int32_t;
 typedef __int64 int64_t;
 ");
 
-            // TODO: Add support for the class structures for more versions
-            if (model.Package.Version == 24.0) {
-                writeDecls(@"
-struct __Il2CppArrayBounds {
-    size_t length;
-    int32_t lower_bound;
-};
-
-struct __VirtualInvokeData {
-    void *methodPtr;
-    const void *method;
-};
-
-struct __Il2CppRuntimeInterfaceOffsetPair {
-    struct __Il2CppClass* interfaceType;
-    int32_t offset;
-};
-
-struct __Il2CppClass_1 {
-  const struct __Il2CppImage *image;
-  void *gc_desc;
-  const char *name;
-  const char *namespaze;
-  struct __Il2CppType *byval_arg;
-  struct __Il2CppType *this_arg;
-  struct __Il2CppClass *element_class;
-  struct __Il2CppClass *castClass;
-  struct __Il2CppClass *declaringType;
-  struct __Il2CppClass *parent;
-  struct __Il2CppGenericClass *generic_class;
-  const struct __Il2CppTypeDefinition *typeDefinition;
-  const struct __Il2CppInteropData *interopData;
-  struct __FieldInfo *fields;
-  const struct __EventInfo *events;
-  const struct __PropertyInfo *properties;
-  const struct __MethodInfo **methods;
-  struct __Il2CppClass **nestedTypes;
-  struct __Il2CppClass **implementedInterfaces;
-  struct __Il2CppRuntimeInterfaceOffsetPair *interfaceOffsets;
-};
-  /* static_fields */
-struct __Il2CppClass_2 {
-  const struct __Il2CppRGCTXData *rgctx_data;
-  struct __Il2CppClass **typeHierarchy;
-  uint32_t cctor_started;
-  uint32_t cctor_finished;
-  /* 8-byte-aligned 4-byte field, requiring 4 bytes of padding on 32-bit */
-  uint32_t cctor_thread_lo;
-  uint32_t cctor_thread_hi;
-  int genericContainerIndex;
-  int customAttributeIndex;
-  uint32_t instance_size;
-  uint32_t actualSize;
-  uint32_t element_size;
-  int32_t native_size;
-  uint32_t static_fields_size;
-  uint32_t thread_static_fields_size;
-  int32_t thread_static_fields_offset;
-  uint32_t flags;
-  uint32_t token;
-  uint16_t method_count;
-  uint16_t property_count;
-  uint16_t field_count;
-  uint16_t event_count;
-  uint16_t nested_type_count;
-  uint16_t vtable_count;
-  uint16_t interfaces_count;
-  uint16_t interface_offsets_count;
-  uint8_t typeHierarchyDepth;
-  uint8_t genericRecursionDepth;
-  uint8_t rank;
-  uint8_t minimumAlignment;
-  uint8_t packingSize;
-  uint8_t __bitflags1;
-  uint8_t __bitflags2;
-};
-/* vtable */
-
-/* generic class structure */
-struct __Il2CppClass {
-    struct __Il2CppClass_1 _1;
-    void *static_fields;
-    struct __Il2CppClass_2 _2;
-};
-");
-            } else if(model.Package.Version == 24.2) {
-                writeDecls(@"
-struct __Il2CppArrayBounds {
-    size_t length;
-    int32_t lower_bound;
-};
-
-struct __VirtualInvokeData {
-    void *methodPtr;
-    const void *method;
-};
-
-struct __Il2CppRuntimeInterfaceOffsetPair {
-    struct __Il2CppClass* interfaceType;
-    int32_t offset;
-};
-
-struct __Il2CppType {
-  void *data;
-  uint32_t flags;
-};
-
-struct __Il2CppClass_1 {
-  const struct __Il2CppImage* image;
-  void* gc_desc;
-  const char* name;
-  const char* namespaze;
-  struct __Il2CppType byval_arg;
-  struct __Il2CppType this_arg;
-  struct __Il2CppClass* element_class;
-  struct __Il2CppClass* castClass;
-  struct __Il2CppClass* declaringType;
-  struct __Il2CppClass* parent;
-  struct __Il2CppGenericClass *generic_class;
-  const struct __Il2CppTypeDefinition* typeDefinition;
-  const struct __Il2CppInteropData* interopData;
-  struct __Il2CppClass* klass;
-
-  struct __FieldInfo* fields;
-  const struct __EventInfo* events;
-  const struct __PropertyInfo* properties;
-  const struct __MethodInfo** methods;
-  struct __Il2CppClass** nestedTypes;
-  struct __Il2CppClass** implementedInterfaces;
-  struct __Il2CppRuntimeInterfaceOffsetPair* interfaceOffsets;
-};
-/* static_fields */
-struct __Il2CppClass_2 {
-  const struct __Il2CppRGCTXData* rgctx_data;
-  struct __Il2CppClass** typeHierarchy;
-
-  void *unity_user_data;
-  uint32_t initializationExceptionGCHandle;
-
-  uint32_t cctor_started;
-  uint32_t cctor_finished;
-  /* 8-byte-aligned 4-byte field, but no padding required on 32-bit due to positioning */
-  size_t cctor_thread;
-
-  int32_t genericContainerIndex;
-  uint32_t instance_size;
-  uint32_t actualSize;
-  uint32_t element_size;
-  int32_t native_size;
-  uint32_t static_fields_size;
-  uint32_t thread_static_fields_size;
-  int32_t thread_static_fields_offset;
-  uint32_t flags;
-  uint32_t token;
-
-  uint16_t method_count;
-  uint16_t property_count;
-  uint16_t field_count;
-  uint16_t event_count;
-  uint16_t nested_type_count;
-  uint16_t vtable_count;
-  uint16_t interfaces_count;
-  uint16_t interface_offsets_count;
-
-  uint8_t typeHierarchyDepth;
-  uint8_t genericRecursionDepth;
-  uint8_t rank;
-  uint8_t minimumAlignment;
-  uint8_t naturalAligment;
-  uint8_t packingSize;
-
-  uint8_t __bitflags1;
-  uint8_t __bitflags2;
-};
-/* vtable */
-
-/* generic class structure */
-struct __Il2CppClass {
-    struct __Il2CppClass_1 _1;
-    void *static_fields;
-    struct __Il2CppClass_2 _2;
-};
-");
-            } else {
-                throw new Exception("don't know struct layout for metadata version " + model.Package.Version);
+            string header = "";
+            if(model.Package.BinaryImage.Bits == 32) {
+                header += "#define IS_32BIT\n";
             }
+            if(model.Package.Version == 16) {
+                header += Data.ResourceReader.ReadFileAsString("16-5.3.0f4.i");
+            } else if(model.Package.Version == 19) {
+                header += Data.ResourceReader.ReadFileAsString("19-5.3.2f1.i");
+            } else if (model.Package.Version == 20) {
+                header += Data.ResourceReader.ReadFileAsString("20-5.3.3f1.i");
+            } else if (model.Package.Version == 21) {
+                /* XXX TODO: 5.3.5f1 and 5.4.0f3 differ in one critical respect:
+                 * the vtable in 5.3.5 is MethodInfo**, but VirtualInvokeData* in 5.4.0.
+                 * Don't know how to distinguish these two versions right now (they're both
+                 * metadata version 21).
+                 */
+                header += Data.ResourceReader.ReadFileAsString("21-5.4.0f3.i");
+            } else if (model.Package.Version == 22) {
+                header += Data.ResourceReader.ReadFileAsString("22-5.5.0f3.i");
+            } else if (model.Package.Version == 23) {
+                header += Data.ResourceReader.ReadFileAsString("23-5.6.2p3.i");
+            } else if (model.Package.Version == 24.0) {
+                header += Data.ResourceReader.ReadFileAsString("24.0-2017.2f3.i");
+            } else if (model.Package.Version == 24.1) {
+                header += Data.ResourceReader.ReadFileAsString("24.1-2018.3.0f2.i");
+            } else if (model.Package.Version == 24.2) {
+                /* no significant differences between 2019.2.8f1 and 2019.3.1f1 */
+                header += Data.ResourceReader.ReadFileAsString("24.2-2019.3.1f1.i");
+            } else {
+                writeLine($"print('Metadata version {model.Package.Version} is not fully supported! Types are not available.')");
+                return;
+            }
+            writeDecls(header);
+
+            /* Type names which may appear in the header */
+            TypeNamer.ReserveName("CustomAttributesCache");
+            TypeNamer.ReserveName("CustomAttributeTypeCache");
+            TypeNamer.ReserveName("EventInfo");
+            TypeNamer.ReserveName("FieldInfo");
+            TypeNamer.ReserveName("MethodInfo");
+            TypeNamer.ReserveName("MethodVariableKind");
+            TypeNamer.ReserveName("NativeObject");
+            TypeNamer.ReserveName("ParameterInfo");
+            TypeNamer.ReserveName("PInvokeArguments");
+            TypeNamer.ReserveName("PropertyInfo");
+            TypeNamer.ReserveName("SequencePointKind");
+            TypeNamer.ReserveName("signscale");
+            TypeNamer.ReserveName("StackFrameType");
+            TypeNamer.ReserveName("VirtualInvokeData");
+
+            /* Other type names that may be predefined in IDA (not a complete list - add an entry if IDA complains about types being defined already) */
+            TypeNamer.ReserveName("KeyCode");
 
             /* Find concrete implementations of abstract classes so that vtables can be filled out properly */
             populateConcreteImplementations();
