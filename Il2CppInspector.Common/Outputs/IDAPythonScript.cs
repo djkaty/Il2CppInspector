@@ -46,6 +46,7 @@ namespace Il2CppInspector.Outputs
                     v++;
                 renameCount[name] = v;
                 name = name + "_" + v;
+                renameCount[name] = 0;
             } else {
                 renameCount[name] = 0;
             }
@@ -145,6 +146,27 @@ def SetName(addr, name):
         }
 
         private void writeUsages() {
+            if (model.Package.MetadataUsages == null) {
+                /* Version < 19 calls `il2cpp_codegen_string_literal_from_index` to get string literals.
+                 * Unfortunately, metadata references are just loose globals in Il2CppMetadataUsage.cpp
+                 * so we can't automatically name those. Next best thing is to define an enum for the strings. */
+                var stringLiteralNamer = new UniqueRenamer<int>((index) => {
+                    string str = model.Package.StringLiterals[index];
+                    return sanitizeIdentifier(str.Substring(0, Math.Min(32, str.Length)));
+                });
+
+                var enumSrc = new StringBuilder();
+                enumSrc.Append("enum StringLiteralIndex {\n");
+                for (int i = 0; i < model.Package.StringLiterals.Length; i++) {
+                    enumSrc.Append($"  STRINGLITERAL_{stringLiteralNamer.GetName(i)},\n");
+                }
+                enumSrc.Append("};\n");
+
+                writeDecls(enumSrc.ToString());
+
+                return;
+            }
+
             var usageNamer = new UniqueRenamer<MetadataUsage>((usage) => sanitizeIdentifier(model.GetMetadataUsageName(usage)));
             var stringNamer = new UniqueRenamer<MetadataUsage>((usage) => {
                 var str = model.GetMetadataUsageName(usage);
@@ -279,6 +301,8 @@ def SetName(addr, name):
             return $"struct {TypeNamer.GetName(ti)} *";
         }
 
+        private Queue<TypeInfo> typesToGenerate = new Queue<TypeInfo>();
+
         private void generateFieldStructsForType(StringBuilder csrc, TypeInfo ti) {
             string cName = TypeNamer.GetName(ti);
             int special = 0;
@@ -306,7 +330,7 @@ def SetName(addr, name):
                     var fti = field.FieldType;
                     // TODO: handle generics properly
                     if (!fti.ContainsGenericParameters)
-                        generateStructsForType(csrc, fti);
+                        generateOrDefer(csrc, fti);
                 }
 
                 //model.Package.BinaryImage is PEReader;
@@ -336,6 +360,15 @@ def SetName(addr, name):
 
                 csrc.Append("};\n");
             }
+        }
+
+        // Generate structures for value types, and defer generating structures
+        // for reference types until later. This avoids type-referential cycles.
+        private void generateOrDefer(StringBuilder csrc, TypeInfo ti) {
+            if (ti.IsValueType || ti.IsEnum)
+                generateStructsForType(csrc, ti);
+            else if (!GeneratedTypes.Contains(ti))
+                typesToGenerate.Enqueue(ti);
         }
 
         private void generateStructsForType(StringBuilder csrc, TypeInfo ti) {
@@ -525,26 +558,54 @@ typedef __int64 int64_t;
             populateConcreteImplementations();
 
             /* Set the type of all TypeInfo structures, thus resolving static field references */
-            foreach (var usage in model.Package.MetadataUsages) {
-                if (usage.Type != MetadataUsageType.TypeInfo && usage.Type != MetadataUsageType.Type)
-                    continue;
-                var ti = model.GetMetadataUsageType(usage);
-                if (ti.HasElementType)
-                    continue;
-                var csrc = new StringBuilder();
-                generateStructsForType(csrc, ti);
-                if (csrc.Length > 0)
-                    writeDecls(csrc.ToString());
-                var address = usage.VirtualAddress;
-                writeType(address, $"{TypeNamer.GetName(ti)}__Class *");
-                // Rename to match the type name exactly
-                writeName(address, $"{TypeNamer.GetName(ti)}_TypeInfo");
+            if (model.Package.MetadataUsages == null) {
+                /* Version < 19 calls `il2cpp_codegen_type_info_from_index` to get TypeInfo references.
+                 * Unfortunately, metadata references are just loose globals in Il2CppMetadataUsage.cpp
+                 * so we can't automatically type them. Next best thing is to define an enum for the types */
+                var typeRefNamer = new UniqueRenamer<int>((index) => TypeNamer.GetName(model.TypesByReferenceIndex[index]));
+                var typeSrc = new StringBuilder();
+                var enumSrc = new StringBuilder();
+                enumSrc.Append("enum TypeInfoIndex {\n");
+                for (int i = 0; i < model.TypesByReferenceIndex.Length; i++) {
+                    var ti = model.TypesByReferenceIndex[i];
+                    if (!ti.ContainsGenericParameters)
+                        generateStructsForType(typeSrc, ti);
+                    enumSrc.Append($"  TYPEINFO_{typeRefNamer.GetName(i)},\n");
+                }
+                enumSrc.Append("};\n");
+
+                if (typeSrc.Length > 0)
+                    writeDecls(typeSrc.ToString());
+                writeDecls(enumSrc.ToString());
+            } else {
+                foreach (var usage in model.Package.MetadataUsages) {
+                    if (usage.Type != MetadataUsageType.TypeInfo && usage.Type != MetadataUsageType.Type)
+                        continue;
+                    var ti = model.GetMetadataUsageType(usage);
+                    if (ti.HasElementType)
+                        continue;
+                    var csrc = new StringBuilder();
+                    generateStructsForType(csrc, ti);
+                    if (csrc.Length > 0)
+                        writeDecls(csrc.ToString());
+                    var address = usage.VirtualAddress;
+                    writeType(address, $"{TypeNamer.GetName(ti)}__Class *");
+                    // Rename to match the type name exactly
+                    writeName(address, $"{TypeNamer.GetName(ti)}_TypeInfo");
+                }
             }
 
             writeSectionHeader("Function types");
             foreach (var ti in model.Types) {
                 writeMethodTypes(ti, ti.DeclaredConstructors);
                 writeMethodTypes(ti, ti.DeclaredMethods);
+            }
+
+            while(typesToGenerate.TryDequeue(out TypeInfo ti)) {
+                var csrc = new StringBuilder();
+                generateStructsForType(csrc, ti);
+                if (csrc.Length > 0)
+                    writeDecls(csrc.ToString());
             }
         }
 
@@ -561,14 +622,14 @@ typedef __int64 int64_t;
                 if (mi == null || mi.ReturnType.FullName == "System.Void") {
                     retType = "void";
                 } else {
-                    generateStructsForType(csrc, mi.ReturnType);
+                    generateOrDefer(csrc, mi.ReturnType);
                     retType = getCType(mi.ReturnType);
                 }
 
                 var paramNamer = new UniqueRenamer<ParameterInfo>((param) => (param.Name == "" || param.Name == "this") ? "arg" : sanitizeIdentifier(param.Name));
                 var parms = new List<string>();
                 if(!method.IsStatic) {
-                    generateStructsForType(csrc, ti);
+                    generateOrDefer(csrc, ti);
                     if(ti.IsValueType && !ti.HasElementType) {
                         parms.Add($"{getCType(ti)}__Object * this");
                     } else {
@@ -577,7 +638,7 @@ typedef __int64 int64_t;
                 }
 
                 foreach(var param in method.DeclaredParameters) {
-                    generateStructsForType(csrc, param.ParameterType);
+                    generateOrDefer(csrc, param.ParameterType);
                     parms.Add($"{getCType(param.ParameterType)} {paramNamer.GetName(param)}");
                 }
 

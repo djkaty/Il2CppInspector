@@ -298,10 +298,17 @@ namespace Il2CppInspector
             MetadataUsage[] res = new MetadataUsage[definition.vtable_count];
             for (int i = 0; i < definition.vtable_count; i++) {
                 var encodedIndex = VTableMethodIndices[definition.vtableStart + i];
-                var encodedType = encodedIndex & 0xE0000000;
-                var usageType = (MetadataUsageType)(encodedType >> 29);
-                var index = encodedIndex & 0x1FFFFFFF;
-                res[i] = new MetadataUsage(usageType, (int)index, i);
+                if (Version < 19) {
+                    var flag = encodedIndex & 0x80000000;
+                    var index = Binary.OldMethodReferences[encodedIndex & 0x7FFFFFFF];
+                    var usageType = (flag != 0) ? MetadataUsageType.MethodRef : MetadataUsageType.MethodDef;
+                    res[i] = new MetadataUsage(usageType, (int)index, i);
+                } else {
+                    var encodedType = encodedIndex & 0xE0000000;
+                    var usageType = (MetadataUsageType)(encodedType >> 29);
+                    var index = encodedIndex & 0x1FFFFFFF;
+                    res[i] = new MetadataUsage(usageType, (int)index, i);
+                }
             }
             return res;
         }

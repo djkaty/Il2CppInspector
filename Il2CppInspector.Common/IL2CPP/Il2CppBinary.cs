@@ -53,6 +53,9 @@ namespace Il2CppInspector
         // One invoker specifies a return type and argument list. Multiple methods with the same signature can be invoked with the same invoker
         public ulong[] MethodInvokePointers { get; private set; }
 
+        // Version 16 and below: method references for vtable
+        public uint[] OldMethodReferences { get; private set; }
+
         // Generic method specs for vtables
         public Il2CppMethodSpec[] MethodSpecs { get; private set; }
 
@@ -241,6 +244,10 @@ namespace Il2CppInspector
             // >=21 <=22: ccwMarhsalingFunctions
             // >=22: unresolvedVirtualCallPointers
             // >=23: interopData
+
+            if(Image.Version < 19) {
+                OldMethodReferences = image.ReadMappedArray<uint>(MetadataRegistration.methodReferences, (int)MetadataRegistration.methodReferencesCount);
+            }
 
             // Generic type and method specs (open and closed constructed types)
             MethodSpecs = image.ReadMappedArray<Il2CppMethodSpec>(MetadataRegistration.methodSpecs, (int) MetadataRegistration.methodSpecsCount);
