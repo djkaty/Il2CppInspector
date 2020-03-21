@@ -46,10 +46,8 @@ namespace Il2CppInspector.Outputs
                     v++;
                 renameCount[name] = v;
                 name = name + "_" + v;
-                renameCount[name] = 0;
-            } else {
-                renameCount[name] = 0;
             }
+            renameCount[name] = 0;
             names[t] = name;
             return name;
         }
@@ -150,15 +148,12 @@ def SetName(addr, name):
                 /* Version < 19 calls `il2cpp_codegen_string_literal_from_index` to get string literals.
                  * Unfortunately, metadata references are just loose globals in Il2CppMetadataUsage.cpp
                  * so we can't automatically name those. Next best thing is to define an enum for the strings. */
-                var stringLiteralNamer = new UniqueRenamer<int>((index) => {
-                    string str = model.Package.StringLiterals[index];
-                    return sanitizeIdentifier(str.Substring(0, Math.Min(32, str.Length)));
-                });
-
                 var enumSrc = new StringBuilder();
                 enumSrc.Append("enum StringLiteralIndex {\n");
                 for (int i = 0; i < model.Package.StringLiterals.Length; i++) {
-                    enumSrc.Append($"  STRINGLITERAL_{stringLiteralNamer.GetName(i)},\n");
+                    var str = model.Package.StringLiterals[i];
+                    str = str.Substring(0, Math.Min(32, str.Length));
+                    enumSrc.Append($"  STRINGLITERAL_{i}_{sanitizeIdentifier(str)},\n");
                 }
                 enumSrc.Append("};\n");
 
@@ -376,7 +371,6 @@ def SetName(addr, name):
                 return;
 
             GeneratedTypes.Add(ti);
-
             if (ti.IsArray) {
                 generateStructsForType(csrc, ti.ElementType);
                 generateStructsForType(csrc, ti.BaseType);
@@ -562,15 +556,14 @@ typedef __int64 int64_t;
                 /* Version < 19 calls `il2cpp_codegen_type_info_from_index` to get TypeInfo references.
                  * Unfortunately, metadata references are just loose globals in Il2CppMetadataUsage.cpp
                  * so we can't automatically type them. Next best thing is to define an enum for the types */
-                var typeRefNamer = new UniqueRenamer<int>((index) => TypeNamer.GetName(model.TypesByReferenceIndex[index]));
                 var typeSrc = new StringBuilder();
                 var enumSrc = new StringBuilder();
-                enumSrc.Append("enum TypeInfoIndex {\n");
+                enumSrc.Append("enum TypeIndex {\n");
                 for (int i = 0; i < model.TypesByReferenceIndex.Length; i++) {
                     var ti = model.TypesByReferenceIndex[i];
                     if (!ti.ContainsGenericParameters)
                         generateStructsForType(typeSrc, ti);
-                    enumSrc.Append($"  TYPEINFO_{typeRefNamer.GetName(i)},\n");
+                    enumSrc.Append($"  TYPEREF_{i}_{TypeNamer.GetName(ti)},\n");
                 }
                 enumSrc.Append("};\n");
 

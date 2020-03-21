@@ -60,7 +60,7 @@ typedef int32_t VTableIndex;
 typedef int32_t InterfaceOffsetIndex;
 typedef int32_t RGCTXIndex;
 typedef int32_t StringIndex;
-typedef int32_t StringLiteralIndex;
+//typedef int32_t StringLiteralIndex; // defined by writeUsages
 typedef int32_t GenericInstIndex;
 typedef int32_t ImageIndex;
 typedef int32_t AssemblyIndex;
