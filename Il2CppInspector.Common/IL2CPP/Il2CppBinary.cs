@@ -207,8 +207,7 @@ namespace Il2CppInspector
 
             // Some variants of 21 also use an array of pointers
             if (image.Version == 21) {
-                // Always 4-byte values even for 64-bit builds when array is NOT pointers
-                var fieldTest = image.ReadMappedArray<uint>(MetadataRegistration.pfieldOffsets, 6);
+                var fieldTest = image.ReadMappedWordArray(MetadataRegistration.pfieldOffsets, 6);
 
                 // We detect this by relying on the fact Module, Object, ValueType, Attribute, _Attribute and Int32
                 // are always the first six defined types, and that all but Int32 have no fields
