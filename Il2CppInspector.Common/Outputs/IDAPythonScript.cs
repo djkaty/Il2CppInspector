@@ -107,6 +107,11 @@ def MakeFunction(start, end):
         }
 
         private void writeUsages() {
+            if (model.Package.MetadataUsages == null) {
+                /* Version < 19 - no MetadataUsages table */
+                return;
+            }
+
             foreach (var usage in model.Package.MetadataUsages) {
                 var address = usage.VirtualAddress;
                 var name = model.GetMetadataUsageName(usage);
@@ -119,8 +124,7 @@ def MakeFunction(start, end):
                 if (usage.Type == MetadataUsageType.MethodDef || usage.Type == MetadataUsageType.MethodRef) {
                     var method = model.GetMetadataUsageMethod(usage);
                     writeComment(address, method);
-                }
-                else if (usage.Type != MetadataUsageType.StringLiteral) {
+                } else if (usage.Type != MetadataUsageType.StringLiteral) {
                     var type = model.GetMetadataUsageType(usage);
                     writeComment(address, type);
                 }
