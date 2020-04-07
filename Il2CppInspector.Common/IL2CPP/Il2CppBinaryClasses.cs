@@ -60,6 +60,11 @@ namespace Il2CppInspector
         [Version(Min = 23)]
         public ulong interopData;
 
+        [Version(Min = 24.3)]
+        public ulong windowsRuntimeFactoryCount;
+        [Version(Min = 24.3)]
+        public ulong windowsRuntimeFactoryTable;
+
         // Added in metadata v24.2 to replace methodPointers and methodPointersCount
         [Version(Min = 24.2)]
         public ulong codeGenModulesCount;

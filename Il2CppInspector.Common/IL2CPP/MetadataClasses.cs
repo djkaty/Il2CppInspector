@@ -19,12 +19,14 @@ namespace Il2CppInspector
     // Unity 5.3.5f1 -> v21
     // Unity 5.4.0f3 -> v21
     // Unity 5.5.0f3 -> v22
-    // Unity 5.6.2p3 -> v23
+    // Unity 5.6.0f3 -> v23
     // Unity 5.6.4f1 -> v23
-    // Unity 2017.2f3 -> v24
+    // Unity 2019.1.0f3 -> v24
     // Unity 2018.2.0f2 -> v24
     // Unity 2018.3.0f2 -> v24.1
+    // Unity 2019.1.0f2 -> v24.2
     // Unity 2019.2.8f1 -> v24.2
+    // Unity 2019.3.7f1 -> v24.3
     // https://unity3d.com/get-unity/download/archive
     // Metadata version is written at the end of Unity.IL2CPP.MetadataCacheWriter.WriteLibIl2CppMetadata or WriteMetadata (Unity.IL2CPP.dll)
 

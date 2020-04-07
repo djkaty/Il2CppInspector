@@ -181,6 +181,13 @@ namespace Il2CppInspector
             if (Image.Version >= 24.2) {
                 Modules = new Dictionary<string, Il2CppCodeGenModule>();
 
+                // In v24.3, windowsRuntimeFactoryTable collides with codeGenModules. So far no samples have had windowsRuntimeFactoryCount > 0;
+                // if this changes we'll have to get smarter about disambiguating these two.
+                if (CodeRegistration.codeGenModulesCount == 0) {
+                    Image.Version = 24.3;
+                    CodeRegistration = image.ReadMappedObject<Il2CppCodeRegistration>(codeRegistration);
+                }
+
                 // Array of pointers to Il2CppCodeGenModule
                 var codeGenModulePointers = image.ReadMappedArray<ulong>(CodeRegistration.pcodeGenModules, (int) CodeRegistration.codeGenModulesCount);
                 var modules = image.ReadMappedObjectPointerArray<Il2CppCodeGenModule>(CodeRegistration.pcodeGenModules, (int) CodeRegistration.codeGenModulesCount);
@@ -233,8 +240,8 @@ namespace Il2CppInspector
 
             // TODO: Function pointers as shown below
             // reversePInvokeWrappers
-            // <=22: delegateWrappersFromManagedToNative, marshalingFunctions;
-            // >=21 <=22: ccwMarhsalingFunctions
+            // <=22: delegateWrappersFromManagedToNative, marshalingFunctions
+            // >=21 <=22: ccwMarshalingFunctions
             // >=22: unresolvedVirtualCallPointers
             // >=23: interopData
 
