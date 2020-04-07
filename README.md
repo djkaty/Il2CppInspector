@@ -168,15 +168,16 @@ Unity version | IL2CPP version | Support
 4.6.1+ | First release | Unsupported
 5.2.x | 15 | Unsupported
 5.3.0-5.3.1 | 16 | Working
-5.3.2 | 19 | Untested
-5.3.3-5.3.4 | 20 | Untested
+5.3.2 | 19 | Working
+5.3.3-5.3.4 | 20 | Working
 5.3.5-5.4.x | 21 | Working
 5.5.x | 22 | Working
 5.6.x | 23 | Working
-2017.x-2018.2 | 24.0 | Working
-2018.3-2019.1 | 24.1 | Working
-2019.2-2019.3 | 24.2 | Working
-2020.1 | 24.3 | Awaiting stable release
+2017.1.x-2018.2.x | 24.0 | Working
+2018.3.x-2018.4.x | 24.1 | Working
+2019.1.x-2019.3.6 | 24.2 | Working
+2019.3.7-2019.3.x | 24.3 | Untested
+2020.1 | 24.? | Awaiting stable release
 
 ### Problems
 
