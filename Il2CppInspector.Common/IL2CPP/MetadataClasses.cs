@@ -109,9 +109,9 @@ namespace Il2CppInspector
         public int fieldRefsOffset; // Il2CppFieldRef
         [Version(Min = 19)]
         public int fieldRefsCount;
-        [Version(Min = 19)]
+        [Version(Min = 20)]
         public int referencedAssembliesOffset; // int
-        [Version(Min = 19)]
+        [Version(Min = 20)]
         public int referencedAssembliesCount;
 
         [Version(Min = 21)]
