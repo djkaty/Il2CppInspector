@@ -133,6 +133,18 @@ namespace Il2CppInspector.Reflection {
         // Get a property by its name
         public PropertyInfo GetProperty(string name) => DeclaredProperties.FirstOrDefault(p => p.Name == name);
 
+        public MethodBase[] GetVTable() {
+            var definition = Definition;
+
+            MetadataUsage[] vt = Assembly.Model.Package.GetVTable(definition);
+            MethodBase[] res = new MethodBase[vt.Length];
+            for (int i = 0; i < vt.Length; i++) {
+                if (vt[i] != null)
+                    res[i] = Assembly.Model.GetMetadataUsageMethod(vt[i]);
+            }
+            return res;
+        }
+
         // Method that the type is declared in if this is a type parameter of a generic method
         // TODO: Make a unit test from this: https://docs.microsoft.com/en-us/dotnet/api/system.type.declaringmethod?view=netframework-4.8
         public MethodBase DeclaringMethod;
