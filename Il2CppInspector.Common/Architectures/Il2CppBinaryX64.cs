@@ -214,7 +214,7 @@ namespace Il2CppInspector
                     offset = nextLea?.foundOffset + leaSize ?? buff2Size;
                 }
 
-                if (leas.Count == 3) {
+                if ((image.Version < 21 && leas.Count == 2) || (image.Version >= 21 && leas.Count == 3)) {
                     // Register-based argument passing?
                     var leaRSI = leas.FirstOrDefault(l => l.Value == RSI).Key.address;
                     var leaRDI = leas.FirstOrDefault(l => l.Value == RDI).Key.address;

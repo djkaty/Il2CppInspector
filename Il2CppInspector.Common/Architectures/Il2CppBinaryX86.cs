@@ -32,10 +32,17 @@ namespace Il2CppInspector
                     return (0, 0);
 
                 // Jump to Il2CppCodegenRegistration
-                image.Position = image.MapVATR((ulong) pCgr + 6);
-                metadata = image.ReadUInt32();
-                image.Position = image.MapVATR((ulong) pCgr + 11);
-                code = image.ReadUInt32();
+                if(image.Version < 21) {
+                    image.Position = image.MapVATR((ulong)pCgr + 1);
+                    metadata = image.ReadUInt32();
+                    image.Position = image.MapVATR((ulong)pCgr + 6);
+                    code = image.ReadUInt32();
+                } else {
+                    image.Position = image.MapVATR((ulong)pCgr + 6);
+                    metadata = image.ReadUInt32();
+                    image.Position = image.MapVATR((ulong)pCgr + 11);
+                    code = image.ReadUInt32();
+                }
                 return (code, metadata);
             }
 
