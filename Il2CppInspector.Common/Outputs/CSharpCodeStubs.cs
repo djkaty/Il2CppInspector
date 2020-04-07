@@ -450,7 +450,7 @@ namespace Il2CppInspector.Outputs
                 sb.Append($"{prefix}\t{modifiers}event {evt.EventHandlerType.GetScopedCSharpName(scope)} {evt.CSharpSafeName}");
                 
                 if (!MustCompile) {
-                    sb.Append(" {{\n");
+                    sb.Append(" {\n");
                     var m = new Dictionary<string, (ulong, ulong)?>();
                     if (evt.AddMethod != null) m.Add("add", evt.AddMethod.VirtualAddress);
                     if (evt.RemoveMethod != null) m.Add("remove", evt.RemoveMethod.VirtualAddress);
