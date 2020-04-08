@@ -13,6 +13,7 @@ using NUnit.Framework;
 
 namespace Il2CppInspector
 {
+	[Parallelizable(ParallelScope.Children)]
 	public partial class TestRunner
 	{
 "@ > $testGen
