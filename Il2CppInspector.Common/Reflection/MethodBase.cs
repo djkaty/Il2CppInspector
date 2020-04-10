@@ -153,7 +153,7 @@ namespace Il2CppInspector.Reflection
             Attributes = methodDef.Attributes;
 
             IsGenericMethod = true;
-            genericArguments = model.ResolveGenericArguments(spec.methodIndexIndex);
+            genericArguments = model.ResolveGenericArguments(model.Package.GenericInstances[spec.methodIndexIndex]);
 
             // Substitute matching generic type parameters with concrete type arguments
             foreach (var p in methodDef.DeclaredParameters) {
