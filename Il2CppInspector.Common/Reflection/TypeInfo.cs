@@ -34,51 +34,6 @@ namespace Il2CppInspector.Reflection {
         // True if the type contains unresolved generic type parameters
         public bool ContainsGenericParameters => IsGenericParameter || genericArguments.Any(ga => ga.ContainsGenericParameters);
 
-        public string BaseName => base.Name;
-
-        // Get rid of generic backticks
-        public string UnmangledBaseName => base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal));
-
-        // C# colloquial name of the type (if available)
-        public string CSharpName {
-            get {
-                var s = Namespace + "." + base.Name;
-                var i = Il2CppConstants.FullNameTypeString.IndexOf(s);
-                var n = (i != -1 ? Il2CppConstants.CSharpTypeString[i] : base.Name);
-                if (n?.IndexOf("`", StringComparison.Ordinal) != -1)
-                    n = n?.Remove(n.IndexOf("`", StringComparison.Ordinal));
-                n += (GetGenericArguments().Any()? "<" + string.Join(", ", GetGenericArguments().Select(x => x.CSharpName)) + ">" : "");
-                if (s == "System.Nullable`1" && GetGenericArguments().Any())
-                    n = GetGenericArguments()[0].CSharpName + "?";
-                if (HasElementType)
-                    n = ElementType.CSharpName;
-                if ((GenericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant)
-                    n = "out " + n;
-                if ((GenericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant)
-                    n = "in " + n;
-                if (IsByRef)
-                    n = "ref " + n;
-                return n + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "") + (IsPointer ? "*" : "");
-            }
-        }
-
-        // C# name as it would be written in a type declaration
-        public string CSharpTypeDeclarationName {
-            get {
-                var ga = IsNested ? GetGenericArguments().Where(p => DeclaringType.GetGenericArguments().All(dp => dp.Name != p.Name)) : GetGenericArguments();
-
-                return (IsByRef ? "ref " : "")
-                    + (HasElementType
-                        ? ElementType.CSharpTypeDeclarationName
-                        : ((GenericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant ? "in " : "")
-                          + ((GenericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant ? "out " : "")
-                          + (base.Name.IndexOf("`", StringComparison.Ordinal) == -1 ? base.Name : base.Name.Remove(base.Name.IndexOf("`", StringComparison.Ordinal)))
-                          + (ga.Any()? "<" + string.Join(", ", ga.Select(x => (!x.IsGenericTypeParameter ? x.Namespace + "." : "") + x.CSharpTypeDeclarationName)) + ">" : ""))
-                    + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
-                    + (IsPointer ? "*" : "");
-            }
-        }
-
         // Custom attributes for this member
         public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
 
@@ -156,17 +111,125 @@ namespace Il2CppInspector.Reflection {
         // Gets the type of the object encompassed or referred to by the current array, pointer or reference type
         public TypeInfo ElementType { get; }
 
+        #region Names
+        public string BaseName => base.Name;
+
+        private static string unmangleName(string name) {
+            var index = name.IndexOf("`", StringComparison.Ordinal);
+            if (index != -1)
+                name = name.Remove(index);
+            return name;
+        }
+
+        // Get rid of generic backticks
+        public string UnmangledBaseName => unmangleName(base.Name);
+
+        // C# colloquial name of the type (if available)
+        public string CSharpName {
+            get {
+                if (HasElementType) {
+                    var n = ElementType.CSharpName;
+                    if (IsByRef)
+                        n = "ref " + n;
+                    if (IsArray)
+                        n += "[" + new string(',', GetArrayRank() - 1) + "]";
+                    if (IsPointer)
+                        n += "*";
+                    return n;
+                } else {
+                    var s = Namespace + "." + base.Name;
+                    var i = Il2CppConstants.FullNameTypeString.IndexOf(s);
+                    var n = (i != -1 ? Il2CppConstants.CSharpTypeString[i] : base.Name);
+                    n = unmangleName(n);
+                    var ga = GetGenericArguments();
+                    if (ga.Any())
+                        n += "<" + string.Join(", ", ga.Select(x => x.CSharpName)) + ">";
+                    if (s == "System.Nullable`1" && ga.Any())
+                        n = ga[0].CSharpName + "?";
+                    return n;
+                }
+            }
+        }
+
+        // C# name as it would be written in a type declaration
+        public string GetCSharpTypeDeclarationName(bool includeVariance = false) {
+            if (HasElementType) {
+                var n = ElementType.GetCSharpTypeDeclarationName();
+                if (IsByRef)
+                    n = "ref " + n;
+                if (IsArray)
+                    n += "[" + new string(',', GetArrayRank() - 1) + "]";
+                if (IsPointer)
+                    n += "*";
+                return n;
+            } else {
+                var n = unmangleName(base.Name);
+                var ga = IsNested ? GetGenericArguments().Where(p => DeclaringType.GetGenericArguments().All(dp => dp.Name != p.Name)) : GetGenericArguments();
+                if (ga.Any())
+                    n += "<" + string.Join(", ", ga.Select(x => (!x.IsGenericTypeParameter ? x.Namespace + "." : "") + x.GetCSharpTypeDeclarationName(includeVariance: true))) + ">";
+                if (includeVariance) {
+                    if ((GenericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant)
+                        n = "out " + n;
+                    if ((GenericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant)
+                        n = "in " + n;
+                }
+                return n;
+            }
+        }
+
+        // Display name of object
+        public override string Name {
+            get {
+                if (IsGenericParameter)
+                    return base.Name;
+                if (HasElementType) {
+                    var n = ElementType.Name;
+                    if (IsArray)
+                        n += "[" + new string(',', GetArrayRank() - 1) + "]";
+                    if (IsByRef)
+                        n += "&";
+                    if (IsPointer)
+                        n += "*";
+                    return n;
+                } else {
+                    var n = base.Name;
+                    if (DeclaringType != null)
+                        n = DeclaringType.Name + "+" + n;
+                    var ga = GetGenericArguments();
+                    if (ga.Any())
+                        n += "[" + string.Join(",", ga.Select(x => x.Namespace != Namespace ? x.FullName ?? x.Name : x.Name)) + "]";
+                    return n;
+                }
+            }
+        }
+
         // Type name including namespace
         // Fully qualified generic type names from the C# compiler use backtick and arity rather than a list of generic arguments
-        public string FullName =>
-            IsGenericParameter? null :
-            HasElementType && ElementType.IsGenericParameter? null :
-                (HasElementType? ElementType.FullName : 
-                    (DeclaringType != null? DeclaringType.FullName + "+" : Namespace + (Namespace.Length > 0? "." : ""))
-                    + base.Name)
-                + (IsArray? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
-                + (IsByRef? "&" : "")
-                + (IsPointer? "*" : "");
+        public string FullName {
+            get {
+                if (IsGenericParameter)
+                    return null;
+                if (HasElementType) {
+                    var n = ElementType.FullName;
+                    if(n == null)
+                        return null;
+                    if (IsArray)
+                        n += "[" + new string(',', GetArrayRank() - 1) + "]";
+                    if (IsByRef)
+                        n += "&";
+                    if (IsPointer)
+                        n += "*";
+                    return n;
+                } else {
+                    var n = base.Name;
+                    if (DeclaringType != null)
+                        n = DeclaringType.FullName + "+" + n;
+                    else if (Namespace.Length > 0)
+                        n = Namespace + "." + n;
+                    return n;
+                }
+            }
+        }
 
         // Returns the minimally qualified type name required to refer to this type within the specified scope
         private string getScopedFullName(Scope scope) {
@@ -315,10 +378,7 @@ namespace Il2CppInspector.Reflection {
             // Built-in keyword type names do not require a scope
             var i = Il2CppConstants.FullNameTypeString.IndexOf(s);
             var n = i != -1 ? Il2CppConstants.CSharpTypeString[i] : getScopedFullName(usingScope);
-
-            // Unmangle generic type names
-            if (n?.IndexOf("`", StringComparison.Ordinal) != -1)
-                n = n?.Remove(n.IndexOf("`", StringComparison.Ordinal));
+            n = unmangleName(n);
 
             // Generic type parameters and type arguments
             // Inheriting from a base class or implementing an interface use the type's declaring scope, not the type's scope itself
@@ -341,6 +401,7 @@ namespace Il2CppInspector.Reflection {
 
             return (IsByRef && !omitRef? "ref " : "") + n + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "") + (IsPointer ? "*" : "");
         }
+        #endregion
 
         // Get the generic type parameters for a specific usage of this type based on its scope,
         // or all generic type parameters if no scope specified
@@ -859,16 +920,6 @@ namespace Il2CppInspector.Reflection {
 
             return refList.ToList();
         }
-
-        // Display name of object
-        public override string Name => IsGenericParameter ? base.Name :
-            (HasElementType? ElementType.Name :
-                (DeclaringType != null ? DeclaringType.Name + "+" : "")
-                + base.Name
-                + (GetGenericArguments().Any()? "[" + string.Join(",", GetGenericArguments().Select(x => x.Namespace != Namespace? x.FullName ?? x.Name : x.Name)) + "]" : ""))
-            + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "")
-            + (IsByRef ? "&" : "")
-            + (IsPointer ? "*" : "");
 
         public string GetAccessModifierString() => this switch {
             { IsPublic: true } => "public ",
