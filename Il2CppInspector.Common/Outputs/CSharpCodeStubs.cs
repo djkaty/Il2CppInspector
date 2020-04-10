@@ -549,7 +549,7 @@ namespace Il2CppInspector.Outputs
                 //sb.Append(del.ReturnType.CustomAttributes.ToString(prefix, "return: ", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
                 if (del.RequiresUnsafeContext)
                     sb.Append("unsafe ");
-                sb.Append($"delegate {del.ReturnType.GetScopedCSharpName(scope)} {type.CSharpTypeDeclarationName}(");
+                sb.Append($"delegate {del.ReturnType.GetScopedCSharpName(scope)} {type.GetCSharpTypeDeclarationName()}(");
                 sb.Append(del.GetParametersString(scope, !SuppressMetadata) + ");");
                 if (!SuppressMetadata)
                     sb.Append($" // TypeDefIndex: {type.Index}; {del.VirtualAddress.ToAddressString()}");
@@ -566,7 +566,7 @@ namespace Il2CppInspector.Outputs
                 @base.Insert(0, type.GetEnumUnderlyingType().GetScopedCSharpName(scope));
             var baseText = @base.Count > 0 ? " : " + string.Join(", ", @base) : string.Empty;
 
-            sb.Append($"{type.CSharpTypeDeclarationName}{baseText}");
+            sb.Append($"{type.GetCSharpTypeDeclarationName()}{baseText}");
             if (!SuppressMetadata)
                 sb.Append($" // TypeDefIndex: {type.Index}");
             sb.Append("\n");

@@ -76,7 +76,7 @@ namespace Il2CppInspector.Reflection
             ((Func<string>)(() => {
                 // This is some shenanigans because IL2CPP does not use a consistent naming scheme for explicit interface implementation method names
                 var implementingInterface = DeclaringType.ImplementedInterfaces.FirstOrDefault(i => Name.StartsWith(i.Namespace + "." + i.CSharpName + "."))
-                    ?? DeclaringType.ImplementedInterfaces.FirstOrDefault(i => Name.StartsWith(i.Namespace + "." + i.CSharpTypeDeclarationName.Replace(" ", "") + "."));
+                    ?? DeclaringType.ImplementedInterfaces.FirstOrDefault(i => Name.StartsWith(i.Namespace + "." + i.GetCSharpTypeDeclarationName().Replace(" ", "") + "."));
                 // TODO: There are some combinations we haven't dealt with so use this test as a safety valve
                 if (implementingInterface == null)
                     return Name;
