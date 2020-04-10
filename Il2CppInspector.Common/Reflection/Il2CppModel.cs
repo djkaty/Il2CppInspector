@@ -141,7 +141,6 @@ namespace Il2CppInspector.Reflection
         }
 
         // Get generic arguments from either a type or method instanceIndex from a MethodSpec
-        public List<TypeInfo> ResolveGenericArguments(int instanceIndex) => ResolveGenericArguments(Package.GenericInstances[instanceIndex]);
         public List<TypeInfo> ResolveGenericArguments(Il2CppGenericInst inst) {
 
             // Get list of pointers to type parameters (both unresolved and concrete)
