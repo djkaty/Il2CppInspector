@@ -59,7 +59,7 @@ namespace Il2CppInspector
                 expected = (from l in expected where !string.IsNullOrWhiteSpace(l) select l.Trim()).ToArray();
                 actual = (from l in actual where !string.IsNullOrWhiteSpace(l) select l.Trim()).ToArray();
 
-                Assert.IsTrue(expected.SequenceEqual(actual));
+                CollectionAssert.AreEqual(expected, actual);
             }
         }
     }
