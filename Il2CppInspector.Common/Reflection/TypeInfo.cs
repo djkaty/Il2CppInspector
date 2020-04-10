@@ -597,121 +597,85 @@ namespace Il2CppInspector.Reflection {
 
         // Initialize type from type reference (TypeRef)
         // Much of the following is adapted from il2cpp::vm::Class::FromIl2CppType
-        public TypeInfo(Il2CppModel model, Il2CppType pType) {
+        internal static TypeInfo FromTypeReference(Il2CppModel model, Il2CppType typeRef) {
             var image = model.Package.BinaryImage;
+            TypeInfo underlyingType;
 
-            // Open and closed generic types
-            if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST) {
+            switch (typeRef.type) {
+                // Classes defined in the metadata (reference to a TypeDef)
+                case Il2CppTypeEnum.IL2CPP_TYPE_CLASS:
+                case Il2CppTypeEnum.IL2CPP_TYPE_VALUETYPE:
+                    underlyingType = model.TypesByDefinitionIndex[typeRef.datapoint]; // klassIndex
+                    break;
 
-                // TODO: Replace with array load from Il2CppMetadataRegistration.genericClasses
-                var generic = image.ReadMappedObject<Il2CppGenericClass>(pType.datapoint); // Il2CppGenericClass *
+                // Constructed types
+                case Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST: 
+                    // TODO: Replace with array load from Il2CppMetadataRegistration.genericClasses
+                    var generic = image.ReadMappedObject<Il2CppGenericClass>(typeRef.datapoint); // Il2CppGenericClass *
 
-                // We have seen one test case where the TypeRef can point to no generic instance
-                // This is going to leave the TypeInfo in an undefined state
-                if (generic.typeDefinitionIndex == 0x0000_0000_ffff_ffff)
-                    return;
+                    // We have seen one test case where the TypeRef can point to no generic instance
+                    // This is going to leave the TypeInfo in an undefined state
+                    if (generic.typeDefinitionIndex == 0x0000_0000_ffff_ffff)
+                        return null;
 
-                var genericTypeDef = model.TypesByDefinitionIndex[generic.typeDefinitionIndex];
+                    var genericTypeDef = model.TypesByDefinitionIndex[generic.typeDefinitionIndex];
 
-                Assembly = genericTypeDef.Assembly;
-                Namespace = genericTypeDef.Namespace;
-                Name = genericTypeDef.BaseName;
-                Attributes |= TypeAttributes.Class;
+                    // Get the instantiation
+                    // TODO: Replace with array load from Il2CppMetadataRegistration.genericInsts
+                    var genericInstance = image.ReadMappedObject<Il2CppGenericInst>(generic.context.class_inst);
 
-                // Derived type?
-                if (genericTypeDef.Definition.parentIndex >= 0)
-                    baseTypeReference = genericTypeDef.Definition.parentIndex;
+                    underlyingType = new TypeInfo(genericTypeDef, genericInstance);
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_ARRAY:
+                    var descriptor = image.ReadMappedObject<Il2CppArrayType>(typeRef.datapoint);
+                    var elementType = model.GetTypeFromVirtualAddress(descriptor.etype);
+                    underlyingType = new TypeInfo(elementType, descriptor.rank);
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY:
+                    elementType = model.GetTypeFromVirtualAddress(typeRef.datapoint);
+                    underlyingType = new TypeInfo(elementType, 1);
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_PTR:
+                    elementType = model.GetTypeFromVirtualAddress(typeRef.datapoint);
+                    underlyingType = new TypeInfo(elementType, isPointer: true);
+                    break;
 
-                // Nested type?
-                if (genericTypeDef.Definition.declaringTypeIndex >= 0) {
-                    declaringTypeDefinitionIndex = (int)model.Package.TypeReferences[genericTypeDef.Definition.declaringTypeIndex].datapoint;
-                    MemberType |= MemberTypes.NestedType;
-                }
+                // Generic type and generic method parameters
+                case Il2CppTypeEnum.IL2CPP_TYPE_VAR:
+                case Il2CppTypeEnum.IL2CPP_TYPE_MVAR:
+                    var paramType = model.Package.GenericParameters[typeRef.datapoint]; // genericParameterIndex
+                    var container = model.Package.GenericContainers[paramType.ownerIndex];
 
-                IsGenericType = true;
-                IsGenericParameter = false;
+                    if(container.is_method == 1) {
+                        var owner = model.MethodsByDefinitionIndex[container.ownerIndex];
+                        underlyingType = new TypeInfo(owner, paramType);
+                    } else {
+                        var owner = model.TypesByDefinitionIndex[container.ownerIndex];
+                        underlyingType = new TypeInfo(owner, paramType);
+                    }
+                    break;
 
-                // Get the instantiation
-                // TODO: Replace with array load from Il2CppMetadataRegistration.genericInsts
-                var genericInstance = image.ReadMappedObject<Il2CppGenericInst>(generic.context.class_inst);
-
-                if (generic.context.method_inst != 0)
-                    throw new InvalidOperationException("Generic method instance cannot be non-null when processing a generic class instance");
-
-                // Find all the type parameters (both unresolved and concrete)
-                // This will cause new types to be generated with the VAR and MVAR types below
-                genericArguments = model.ResolveGenericArguments(genericInstance);
+                // Primitive types
+                default:
+                    underlyingType = FromTypeEnum(model, typeRef.type);
+                    break;
             }
 
-            // TODO: Set DeclaringType for the two below
-
-            // Array with known dimensions and bounds
-            if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_ARRAY) {
-                var descriptor = image.ReadMappedObject<Il2CppArrayType>(pType.datapoint);
-                ElementType = model.GetTypeFromVirtualAddress(descriptor.etype);
-
-                Assembly = ElementType.Assembly;
-                Namespace = ElementType.Namespace;
-                Name = ElementType.Name;
-
-                IsArray = true;
-                arrayRank = descriptor.rank;
-            }
-
-            // Dynamically allocated array or pointer type
-            if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY || pType.type == Il2CppTypeEnum.IL2CPP_TYPE_PTR) {
-                ElementType = model.GetTypeFromVirtualAddress(pType.datapoint);
-
-                Assembly = ElementType.Assembly;
-                Namespace = ElementType.Namespace;
-                Name = ElementType.Name;
-
-                IsPointer = (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_PTR);
-                IsArray = !IsPointer;
-
-                // Heap arrays always have one dimension
-                arrayRank = 1;
-            }
-
-            // Generic type parameter
-            if (pType.type == Il2CppTypeEnum.IL2CPP_TYPE_VAR || pType.type == Il2CppTypeEnum.IL2CPP_TYPE_MVAR) {
-                var paramType = model.Package.GenericParameters[pType.datapoint]; // genericParameterIndex
-                var container = model.Package.GenericContainers[paramType.ownerIndex];
-
-                var ownerType = model.TypesByDefinitionIndex[
-                        container.is_method == 1
-                        ? model.Package.Methods[container.ownerIndex].declaringType
-                        : container.ownerIndex];
-
-                Assembly = ownerType.Assembly;
-                Namespace = "";
-                Name = model.Package.Strings[paramType.nameIndex];
-                Attributes |= TypeAttributes.Class;
-
-                // Derived type?
-                if (ownerType.Definition.parentIndex >= 0)
-                    baseTypeReference = ownerType.Definition.parentIndex;
-
-                // Nested type always - sets DeclaringType used below
-                declaringTypeDefinitionIndex = ownerType.Index;
-                MemberType |= MemberTypes.NestedType;
-
-                // All generic method type parameters have a declared method
-                if (container.is_method == 1)
-                    DeclaringMethod = model.MethodsByDefinitionIndex[container.ownerIndex];
-
-                // Set position in argument list
-                GenericParameterPosition = paramType.num;
-
-                IsGenericParameter = true;
-                IsGenericType = false;
-            }
+            // Create a reference type if necessary
+            return typeRef.byref ? underlyingType.MakeByRefType() : underlyingType;
         }
 
-        // Initialize a type from a concrete generic instance (TypeSpec)
-        public TypeInfo(Il2CppModel model, Il2CppMethodSpec spec) {
-            var genericTypeDefinition = model.MethodsByDefinitionIndex[spec.methodDefinitionIndex].DeclaringType;
+        // Basic primitive types are specified via a flag value
+        internal static TypeInfo FromTypeEnum(Il2CppModel model, Il2CppTypeEnum t) {
+            if ((int)t >= Il2CppConstants.FullNameTypeString.Count)
+                return null;
 
+            var fqn = Il2CppConstants.FullNameTypeString[(int)t];
+            return model.TypesByFullName[fqn];
+        }
+
+        // Initialize a type from a concrete generic instance
+        public TypeInfo(TypeInfo genericTypeDefinition, Il2CppGenericInst instance) : base(genericTypeDefinition.Assembly) {
             // Same visibility attributes as generic type definition
             Attributes = genericTypeDefinition.Attributes;
 
@@ -719,15 +683,24 @@ namespace Il2CppInspector.Reflection {
             Index = genericTypeDefinition.Index;
 
             // Same name as generic type definition
-            Assembly = genericTypeDefinition.Assembly;
             Namespace = genericTypeDefinition.Namespace;
             Name = genericTypeDefinition.BaseName; // use BaseName to exclude the type parameters so we can supply our own
+
+            // Derived type?
+            if (genericTypeDefinition.Definition.parentIndex >= 0)
+                baseTypeReference = genericTypeDefinition.Definition.parentIndex;
+
+            // Nested type?
+            if (genericTypeDefinition.Definition.declaringTypeIndex >= 0) {
+                declaringTypeDefinitionIndex = (int)Assembly.Model.Package.TypeReferences[genericTypeDefinition.Definition.declaringTypeIndex].datapoint;
+                MemberType |= MemberTypes.NestedType;
+            }
 
             IsGenericParameter = false;
             IsGenericType = true;
 
             // Resolve type arguments
-            genericArguments = model.ResolveGenericArguments(spec.classIndexIndex);
+            genericArguments = Assembly.Model.ResolveGenericArguments(instance);
 
             /* TODO: This is a bare definition at the moment. We need to iterate over all the members of genericTypeDefinition
              * and replace the matching generic type parameters with our concrete type parameters,
@@ -769,22 +742,30 @@ namespace Il2CppInspector.Reflection {
         public TypeInfo(MethodBase declaringMethod, Il2CppGenericParameter param) : this(declaringMethod.DeclaringType, param)
             => DeclaringMethod = declaringMethod;
 
-        // Initialize a type that is a reference to the specified type
-        private TypeInfo(TypeInfo underlyingType) {
-            ElementType = underlyingType;
-            IsByRef = true;
+        // Initialize a type that is an array of the specified type
+        private TypeInfo(TypeInfo elementType, int rank) : base(elementType.Assembly) {
+            ElementType = elementType;
+            IsArray = true;
 
-            // No base type or declaring type for reference types
-            Assembly = ElementType.Assembly;
-            Definition = ElementType.Definition;
-            Index = ElementType.Index;
             Namespace = ElementType.Namespace;
             Name = ElementType.Name;
-
-            Attributes = ElementType.Attributes;
+            arrayRank = rank;
         }
 
-        public TypeInfo MakeByRefType() => new TypeInfo(this);
+        // Initialize a type that is a reference or pointer to the specified type
+        private TypeInfo(TypeInfo underlyingType, bool isPointer) : base(underlyingType.Assembly) {
+            ElementType = underlyingType;
+            if(isPointer) {
+                IsPointer = true;
+            } else {
+                IsByRef = true;
+            }
+
+            Namespace = ElementType.Namespace;
+            Name = ElementType.Name;
+        }
+
+        public TypeInfo MakeByRefType() => new TypeInfo(this, isPointer: false);
 
         // Get all the other types directly referenced by this type (single level depth; no recursion)
         public List<TypeInfo> GetAllTypeReferences() {
