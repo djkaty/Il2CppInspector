@@ -21,15 +21,48 @@ namespace Il2CppInspector.Reflection {
         // Undefined if the Type represents a generic type parameter
         public TypeAttributes Attributes { get; }
 
-        // Type that this type inherits from
-        private readonly int baseTypeReference = -1;
+        public TypeInfo BaseType {
+            get {
+                if (IsPointer || IsByRef)
+                    return null;
+                if (IsArray)
+                    return Assembly.Model.TypesByFullName["System.Array"];
+                if (Definition != null) {
+                    if (Definition.parentIndex >= 0)
+                        return Assembly.Model.TypesByReferenceIndex[Definition.parentIndex];
+                }
+                if (genericTypeDefinition != null) {
+                    /* TODO substitute generic arguments */
+                    return genericTypeDefinition.BaseType;
+                }
+                if (Namespace != "System" || BaseName != "Object")
+                    return Assembly.Model.TypesByFullName["System.Object"];
+                return null;
+            }
+        }
 
-        public TypeInfo BaseType => IsPointer? null :
-            baseTypeReference != -1?
-                Assembly.Model.TypesByReferenceIndex[baseTypeReference]
-                : IsArray? Assembly.Model.TypesByFullName["System.Array"]
-                : Namespace != "System" || BaseName != "Object" ? Assembly.Model.TypesByFullName["System.Object"]
-                : null;
+        public override TypeInfo DeclaringType {
+            get {
+                if (Definition != null) {
+                    /* Type definition */
+                    if (Definition.declaringTypeIndex == -1)
+                        return null;
+                    var type = Assembly.Model.TypesByReferenceIndex[Definition.declaringTypeIndex];
+                    if (type == null) {
+                        /* This might happen while initially setting up the types */
+                        var typeRef = Assembly.Model.Package.TypeReferences[Definition.declaringTypeIndex];
+                        type = Assembly.Model.TypesByDefinitionIndex[(int)typeRef.datapoint];
+                    }
+                    return type;
+                }
+                if (genericTypeDefinition != null) {
+                    /* Generic type instance */
+                    /* TODO substitute generic arguments */
+                    return genericTypeDefinition.DeclaringType;
+                }
+                return base.DeclaringType;
+            }
+        }
 
         // True if the type contains unresolved generic type parameters
         public bool ContainsGenericParameters => IsGenericParameter || genericArguments.Any(ga => ga.ContainsGenericParameters);
@@ -68,6 +101,11 @@ namespace Il2CppInspector.Reflection {
             return types;
         }
 
+        private readonly TypeInfo genericTypeDefinition;
+
+        /* https://docs.microsoft.com/en-us/dotnet/api/system.type.getgenerictypedefinition?view=netframework-4.8 */
+        public TypeInfo GetGenericTypeDefinition() => genericTypeDefinition;
+
         // Get a method by its name
         public MethodInfo GetMethod(string name) => DeclaredMethods.FirstOrDefault(m => m.Name == name);
 
@@ -102,8 +140,8 @@ namespace Il2CppInspector.Reflection {
 
         // Method that the type is declared in if this is a type parameter of a generic method
         // TODO: Make a unit test from this: https://docs.microsoft.com/en-us/dotnet/api/system.type.declaringmethod?view=netframework-4.8
-        public MethodBase DeclaringMethod;
-        
+        public MethodBase DeclaringMethod { get; }
+
         // IsGenericTypeParameter and IsGenericMethodParameter from https://github.com/dotnet/corefx/issues/23883
         public bool IsGenericTypeParameter => IsGenericParameter && DeclaringMethod == null;
         public bool IsGenericMethodParameter => IsGenericParameter && DeclaringMethod != null;
@@ -526,13 +564,8 @@ namespace Il2CppInspector.Reflection {
             Namespace = pkg.Strings[Definition.namespaceIndex];
             Name = pkg.Strings[Definition.nameIndex];
 
-            // Derived type?
-            if (Definition.parentIndex >= 0)
-                baseTypeReference = Definition.parentIndex;
-
             // Nested type?
             if (Definition.declaringTypeIndex >= 0) {
-                declaringTypeDefinitionIndex = (int) pkg.TypeReferences[Definition.declaringTypeIndex].datapoint;
                 MemberType |= MemberTypes.NestedType;
             }
 
@@ -736,7 +769,9 @@ namespace Il2CppInspector.Reflection {
         }
 
         // Initialize a type from a concrete generic instance
-        public TypeInfo(TypeInfo genericTypeDefinition, Il2CppGenericInst instance) : base(genericTypeDefinition.Assembly) {
+        public TypeInfo(TypeInfo genericTypeDef, Il2CppGenericInst instance) : base(genericTypeDef.Assembly) {
+            genericTypeDefinition = genericTypeDef;
+
             // Same visibility attributes as generic type definition
             Attributes = genericTypeDefinition.Attributes;
 
@@ -746,16 +781,7 @@ namespace Il2CppInspector.Reflection {
             // Same name as generic type definition
             Namespace = genericTypeDefinition.Namespace;
             Name = genericTypeDefinition.BaseName; // use BaseName to exclude the type parameters so we can supply our own
-
-            // Derived type?
-            if (genericTypeDefinition.Definition.parentIndex >= 0)
-                baseTypeReference = genericTypeDefinition.Definition.parentIndex;
-
-            // Nested type?
-            if (genericTypeDefinition.Definition.declaringTypeIndex >= 0) {
-                declaringTypeDefinitionIndex = (int)Assembly.Model.Package.TypeReferences[genericTypeDefinition.Definition.declaringTypeIndex].datapoint;
-                MemberType |= MemberTypes.NestedType;
-            }
+            MemberType = genericTypeDefinition.MemberType;
 
             IsGenericParameter = false;
             IsGenericType = true;
@@ -816,7 +842,7 @@ namespace Il2CppInspector.Reflection {
         // Initialize a type that is a reference or pointer to the specified type
         private TypeInfo(TypeInfo underlyingType, bool isPointer) : base(underlyingType.Assembly) {
             ElementType = underlyingType;
-            if(isPointer) {
+            if (isPointer) {
                 IsPointer = true;
             } else {
                 IsByRef = true;

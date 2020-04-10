@@ -20,8 +20,7 @@ namespace Il2CppInspector.Reflection {
         public CustomAttributeData[] GetCustomAttributes(string fullTypeName) => CustomAttributes.Where(a => a.AttributeType.FullName == fullTypeName).ToArray();
 
         // Type that this type is declared in for nested types
-        protected int declaringTypeDefinitionIndex { private get; set; } = -1;
-        public TypeInfo DeclaringType => declaringTypeDefinitionIndex != -1? Assembly.Model.TypesByDefinitionIndex[declaringTypeDefinitionIndex] : null;
+        public virtual TypeInfo DeclaringType { get; private set; }
 
         // What sort of member this is, eg. method, field etc.
         public abstract MemberTypes MemberType { get; }
@@ -36,11 +35,9 @@ namespace Il2CppInspector.Reflection {
         protected MemberInfo(Assembly asm) => Assembly = asm;
 
         // For lower level members, eg. fields, properties etc. and nested types
-        protected MemberInfo(TypeInfo declaringType = null) {
-            if (declaringType != null) {
-                Assembly = declaringType.Assembly;
-                declaringTypeDefinitionIndex = declaringType.Index;
-            }
+        protected MemberInfo(TypeInfo declaringType) {
+            Assembly = declaringType.Assembly;
+            DeclaringType = declaringType;
         }
 
         public override string ToString() => Name;
