@@ -74,7 +74,7 @@ namespace Il2CppInspector.Reflection
             // Note that you can't resolve any TypeRefs until all the TypeDefs have been processed
             for (int typeRefIndex = 0; typeRefIndex < package.TypeReferences.Count; typeRefIndex++) {
                 var typeRef = Package.TypeReferences[typeRefIndex];
-                var referencedType = resolveTypeReference(typeRef);
+                var referencedType = TypeInfo.FromTypeReference(this, typeRef);
 
                 TypesByReferenceIndex[typeRefIndex] = referencedType;
             }
@@ -86,8 +86,11 @@ namespace Il2CppInspector.Reflection
                 // Concrete instance of a generic class
                 // If the class index is not specified, we will later create a generic method in a non-generic class
                 if (spec.classIndexIndex != -1) {
-                    if (!TypesByMethodSpecClassIndex.ContainsKey(spec.classIndexIndex))
-                        TypesByMethodSpecClassIndex.Add(spec.classIndexIndex, new TypeInfo(this, spec));
+                    if (!TypesByMethodSpecClassIndex.ContainsKey(spec.classIndexIndex)) {
+                        var genericTypeDefinition = MethodsByDefinitionIndex[spec.methodDefinitionIndex].DeclaringType;
+                        var genericInstance = Package.GenericInstances[spec.classIndexIndex];
+                        TypesByMethodSpecClassIndex.Add(spec.classIndexIndex, new TypeInfo(genericTypeDefinition, genericInstance));
+                    }
 
                     declaringType = TypesByMethodSpecClassIndex[spec.classIndexIndex];
                 }
@@ -147,48 +150,6 @@ namespace Il2CppInspector.Reflection
             return genericTypeArguments.Select(a => GetTypeFromVirtualAddress((ulong) a)).ToList();
         }
 
-        private TypeInfo resolveTypeReference(Il2CppType typeRef) {
-            TypeInfo underlyingType;
-
-            switch (typeRef.type) {
-                // Classes defined in the metadata (reference to a TypeDef)
-                case Il2CppTypeEnum.IL2CPP_TYPE_CLASS:
-                case Il2CppTypeEnum.IL2CPP_TYPE_VALUETYPE:
-                    underlyingType = TypesByDefinitionIndex[typeRef.datapoint]; // klassIndex
-                    break;
-
-                // Constructed types
-                case Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST:
-                case Il2CppTypeEnum.IL2CPP_TYPE_ARRAY:
-                case Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY:
-                case Il2CppTypeEnum.IL2CPP_TYPE_PTR:
-
-                // Generic type and generic method parameters
-                case Il2CppTypeEnum.IL2CPP_TYPE_VAR:
-                case Il2CppTypeEnum.IL2CPP_TYPE_MVAR:
-
-                    underlyingType = new TypeInfo(this, typeRef);
-                    break;
-
-                // Primitive types
-                default:
-                    underlyingType = getTypeDefinitionFromTypeEnum(typeRef.type);
-                    break;
-            }
-
-            // Create a reference type if necessary
-            return typeRef.byref ? underlyingType.MakeByRefType() : underlyingType;
-        }
-
-        // Basic primitive types are specified via a flag value
-        private TypeInfo getTypeDefinitionFromTypeEnum(Il2CppTypeEnum t) {
-            if ((int) t >= Il2CppConstants.FullNameTypeString.Count)
-                return null;
-
-            var fqn = Il2CppConstants.FullNameTypeString[(int) t];
-            return TypesByFullName[fqn];
-        }
-
         // Get a TypeRef by its virtual address
         // These are always nested types from references within another TypeRef
         public TypeInfo GetTypeFromVirtualAddress(ulong ptr) {
@@ -198,7 +159,7 @@ namespace Il2CppInspector.Reflection
                 return TypesByReferenceIndex[typeRefIndex];
 
             var type = Package.TypeReferences[typeRefIndex];
-            var referencedType = resolveTypeReference(type);
+            var referencedType = TypeInfo.FromTypeReference(this, type);
 
             TypesByReferenceIndex[typeRefIndex] = referencedType;
             return referencedType;
