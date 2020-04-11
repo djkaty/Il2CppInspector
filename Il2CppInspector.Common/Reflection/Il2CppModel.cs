@@ -146,12 +146,12 @@ namespace Il2CppInspector.Reflection
         }
 
         // Get generic arguments from either a type or method instanceIndex from a MethodSpec
-        public List<TypeInfo> ResolveGenericArguments(Il2CppGenericInst inst) {
+        public TypeInfo[] ResolveGenericArguments(Il2CppGenericInst inst) {
 
             // Get list of pointers to type parameters (both unresolved and concrete)
             var genericTypeArguments = Package.BinaryImage.ReadMappedWordArray(inst.type_argv, (int)inst.type_argc);
             
-            return genericTypeArguments.Select(a => GetTypeFromVirtualAddress((ulong) a)).ToList();
+            return genericTypeArguments.Select(a => GetTypeFromVirtualAddress((ulong) a)).ToArray();
         }
 
         // Get a TypeRef by its virtual address

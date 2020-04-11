@@ -53,10 +53,10 @@ namespace Il2CppInspector.Reflection
         // For a generic method definition: the list of generic type parameters
         // For an open generic method: a mix of generic type parameters and generic type arguments
         // For a closed generic method: the list of generic type arguments
-        private readonly List<TypeInfo> genericArguments = new List<TypeInfo>();
+        private readonly TypeInfo[] genericArguments = Array.Empty<TypeInfo>();
 
         // See: https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.getgenericarguments?view=netframework-4.8
-        public List<TypeInfo> GetGenericArguments() => genericArguments;
+        public TypeInfo[] GetGenericArguments() => genericArguments;
 
         // This was added in .NET Core 2.1 and isn't properly documented yet
         public bool IsConstructedGenericMethod => IsGenericMethod && genericArguments.All(ga => !ga.ContainsGenericParameters);
@@ -105,7 +105,7 @@ namespace Il2CppInspector.Reflection
                 // Store the generic type parameters for later instantiation
                 var container = pkg.GenericContainers[Definition.genericContainerIndex];
 
-                genericArguments = pkg.GenericParameters.Skip((int)container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToList();
+                genericArguments = pkg.GenericParameters.Skip((int)container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToArray();
             }
 
             // Set method attributes
