@@ -73,6 +73,11 @@ namespace Il2CppInspector.Reflection
             // Create and reference types from TypeRefs
             // Note that you can't resolve any TypeRefs until all the TypeDefs have been processed
             for (int typeRefIndex = 0; typeRefIndex < package.TypeReferences.Count; typeRefIndex++) {
+                if(TypesByReferenceIndex[typeRefIndex] != null) {
+                    /* type already generated - probably by forward reference through GetTypeFromVirtualAddress */
+                    continue;
+                }
+
                 var typeRef = Package.TypeReferences[typeRefIndex];
                 var referencedType = TypeInfo.FromTypeReference(this, typeRef);
 
