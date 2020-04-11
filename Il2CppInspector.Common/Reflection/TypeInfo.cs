@@ -5,6 +5,7 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -16,6 +17,21 @@ namespace Il2CppInspector.Reflection {
         // IL2CPP-specific data
         public Il2CppTypeDefinition Definition { get; }
         public int Index { get; } = -1;
+
+        // This dictionary will cache all instantiated generic types out of this definition.
+        // Only valid for GenericTypeDefinition - not valid on instantiated types!
+        private Dictionary<TypeInfo[], TypeInfo> genericTypeInstances;
+        private class TypeArgumentsComparer : EqualityComparer<TypeInfo[]>
+        {
+            public override bool Equals(TypeInfo[] x, TypeInfo[] y) {
+                return ((IStructuralEquatable)x).Equals(y, StructuralComparisons.StructuralEqualityComparer);
+            }
+
+            public override int GetHashCode(TypeInfo[] obj) {
+                return ((IStructuralEquatable)obj).GetHashCode(StructuralComparisons.StructuralEqualityComparer);
+            }
+        }
+
 
         // Information/flags about the type
         // Undefined if the Type represents a generic type parameter
@@ -578,6 +594,8 @@ namespace Il2CppInspector.Reflection {
                 var container = pkg.GenericContainers[Definition.genericContainerIndex];
 
                 genericArguments = pkg.GenericParameters.Skip((int) container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToArray();
+                genericTypeInstances = new Dictionary<TypeInfo[], TypeInfo>(new TypeArgumentsComparer());
+                genericTypeInstances[genericArguments] = this;
             }
 
             // Add to global type definition list
@@ -717,8 +735,9 @@ namespace Il2CppInspector.Reflection {
                     // Get the instantiation
                     // TODO: Replace with array load from Il2CppMetadataRegistration.genericInsts
                     var genericInstance = image.ReadMappedObject<Il2CppGenericInst>(generic.context.class_inst);
+                    var genericArguments = model.ResolveGenericArguments(genericInstance);
 
-                    underlyingType = new TypeInfo(genericTypeDef, genericInstance);
+                    underlyingType = genericTypeDef.MakeGenericType(genericArguments);
                     break;
                 case Il2CppTypeEnum.IL2CPP_TYPE_ARRAY:
                     var descriptor = image.ReadMappedObject<Il2CppArrayType>(typeRef.datapoint);
@@ -769,7 +788,10 @@ namespace Il2CppInspector.Reflection {
         }
 
         // Initialize a type from a concrete generic instance
-        public TypeInfo(TypeInfo genericTypeDef, Il2CppGenericInst instance) : base(genericTypeDef.Assembly) {
+        private TypeInfo(TypeInfo genericTypeDef, TypeInfo[] genericArgs) : base(genericTypeDef.Assembly) {
+            if (!genericTypeDef.IsGenericTypeDefinition)
+                throw new InvalidOperationException(genericTypeDef.Name + " is not a generic type definition.");
+
             genericTypeDefinition = genericTypeDef;
 
             // Same visibility attributes as generic type definition
@@ -786,13 +808,24 @@ namespace Il2CppInspector.Reflection {
             IsGenericParameter = false;
             IsGenericType = true;
 
-            // Resolve type arguments
-            genericArguments = Assembly.Model.ResolveGenericArguments(instance);
+            genericArguments = genericArgs;
 
             /* TODO: This is a bare definition at the moment. We need to iterate over all the members of genericTypeDefinition
              * and replace the matching generic type parameters with our concrete type parameters,
              * as well as setting the various TypeInfo properties here
              */
+        }
+
+        // Substitutes the elements of an array of types for the type parameters of the current generic type definition
+        // and returns a TypeInfo object representing the resulting constructed type.
+        // See: https://docs.microsoft.com/en-us/dotnet/api/system.type.makegenerictype?view=netframework-4.8
+        public TypeInfo MakeGenericType(params TypeInfo[] typeArguments) {
+            TypeInfo result;
+            if (genericTypeInstances.TryGetValue(typeArguments, out result))
+                return result;
+            result = new TypeInfo(this, typeArguments);
+            genericTypeInstances[typeArguments] = result;
+            return result;
         }
 
         // Initialize a type that is a generic parameter of a generic type
