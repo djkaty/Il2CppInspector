@@ -912,6 +912,10 @@ namespace Il2CppInspector.Reflection {
             if (IsEnum)
                 refs.Add(GetEnumUnderlyingType());
 
+            // Generic type definition
+            if (genericTypeDefinition != null)
+                refs.Add(genericTypeDefinition);
+
             // Generic type parameters and constraints
             refs.UnionWith(GetGenericArguments());
             refs.UnionWith(GetGenericParameterConstraints());
