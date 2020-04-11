@@ -43,12 +43,19 @@ namespace Il2CppInspector
 
             // Dump each image in the binary separately
             int i = 0;
-            foreach (var il2cpp in inspectors)
-                new CSharpCodeStubs(new Il2CppModel(il2cpp)) {
-                        ExcludedNamespaces = Constants.DefaultExcludedNamespaces,
-                        SuppressMetadata = false,
-                        MustCompile = true
-                }.WriteSingleFile(testPath + @"\test-result" + (i++ > 0 ? "-" + (i - 1) : "") + ".cs");
+            foreach (var il2cpp in inspectors) {
+                var model = new Il2CppModel(il2cpp);
+                var nameSuffix = i++ > 0 ? "-" + (i - 1) : "";
+
+                new CSharpCodeStubs(model) {
+                    ExcludedNamespaces = Constants.DefaultExcludedNamespaces,
+                    SuppressMetadata = false,
+                    MustCompile = true
+                }.WriteSingleFile(testPath + $@"\test-result{nameSuffix}.cs");
+
+                new IDAPythonScript(model)
+                    .WriteScriptToFile(testPath + $@"\test-ida-result{nameSuffix}.py");
+            }
 
             // Compare test result with expected result
             for (i = 0; i < inspectors.Count; i++) {
