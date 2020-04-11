@@ -510,14 +510,14 @@ namespace Il2CppInspector.Reflection {
         // See: https://docs.microsoft.com/en-us/dotnet/api/system.type.haselementtype?view=netframework-4.8
         public bool HasElementType => ElementType != null;
 
-        private readonly int[] implementedInterfaceReferences;
-        public IEnumerable<TypeInfo> ImplementedInterfaces => implementedInterfaceReferences.Select(x => Assembly.Model.TypesByReferenceIndex[x]);
+        private readonly TypeRef[] implementedInterfaceReferences;
+        public IEnumerable<TypeInfo> ImplementedInterfaces => implementedInterfaceReferences.Select(x => x.Value);
 
         public bool IsAbstract => (Attributes & TypeAttributes.Abstract) == TypeAttributes.Abstract;
         public bool IsArray { get; }
         public bool IsByRef { get; }
         public bool IsClass => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Class;
-        public bool IsEnum => enumUnderlyingTypeReference != -1;
+        public bool IsEnum { get; }
         public bool IsGenericParameter { get; }
         public bool IsGenericType { get; }
         public bool IsGenericTypeDefinition => (Definition != null) && genericArguments.Any();
@@ -559,14 +559,12 @@ namespace Il2CppInspector.Reflection {
         public string[] GetEnumNames() => IsEnum? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.Name).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
 
         // The underlying type of an enumeration (int by default)
-        private readonly int enumUnderlyingTypeReference = -1;
-        private TypeInfo enumUnderlyingType;
+        private readonly TypeRef enumUnderlyingTypeReference = null;
 
         public TypeInfo GetEnumUnderlyingType() {
             if (!IsEnum)
                 return null;
-            enumUnderlyingType ??= Assembly.Model.TypesByReferenceIndex[enumUnderlyingTypeReference];
-            return enumUnderlyingType;
+            return enumUnderlyingTypeReference.Value;
         }
 
         public Array GetEnumValues() => IsEnum? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.DefaultValue).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
@@ -634,17 +632,19 @@ namespace Il2CppInspector.Reflection {
                 Attributes |= TypeAttributes.Interface;
 
             // Enumerations - bit 1 of bitfield indicates this (also the baseTypeReference will be System.Enum)
-            if (((Definition.bitfield >> 1) & 1) == 1)
-                enumUnderlyingTypeReference = Definition.elementTypeIndex;
+            if (((Definition.bitfield >> 1) & 1) == 1) {
+                IsEnum = true;
+                enumUnderlyingTypeReference = TypeRef.FromReferenceIndex(Assembly.Model, Definition.elementTypeIndex);
+            }
 
             // Pass-by-reference type
             // NOTE: This should actually always evaluate to false in the current implementation
             IsByRef = Index == Definition.byrefTypeIndex;
 
             // Add all implemented interfaces
-            implementedInterfaceReferences = new int[Definition.interfaces_count];
+            implementedInterfaceReferences = new TypeRef[Definition.interfaces_count];
             for (var i = 0; i < Definition.interfaces_count; i++)
-                implementedInterfaceReferences[i] = pkg.InterfaceUsageIndices[Definition.interfacesStart + i];
+                implementedInterfaceReferences[i] = TypeRef.FromReferenceIndex(Assembly.Model, pkg.InterfaceUsageIndices[Definition.interfacesStart + i]);
 
             // Add all nested types
             declaredNestedTypes = new int[Definition.nested_type_count];

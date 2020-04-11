@@ -43,8 +43,8 @@ namespace Il2CppInspector.Reflection
         public string CSharpSafeName => Constants.Keywords.Contains(Name) ? "@" + Name : Name;
 
         // Type of this parameter
-        private readonly int paramTypeReference;
-        public TypeInfo ParameterType => DeclaringMethod.Assembly.Model.TypesByReferenceIndex[paramTypeReference];
+        private readonly TypeRef paramTypeReference;
+        public TypeInfo ParameterType => paramTypeReference.Value;
 
         // Zero-indexed position of the parameter in parameter list
         public int Position { get; }
@@ -56,7 +56,7 @@ namespace Il2CppInspector.Reflection
 
             if (paramIndex == -1) {
                 Position = -1;
-                paramTypeReference = declaringMethod.Definition.returnType;
+                paramTypeReference = TypeRef.FromReferenceIndex(declaringMethod.Assembly.Model, declaringMethod.Definition.returnType);
                 Attributes |= ParameterAttributes.Retval;
                 return;
             }
@@ -69,8 +69,9 @@ namespace Il2CppInspector.Reflection
                 Name = string.Format($"param_{Index:x8}");
 
             Position = paramIndex - declaringMethod.Definition.parameterStart;
-            paramTypeReference = Definition.typeIndex;
-            var paramType = pkg.TypeReferences[paramTypeReference];
+            paramTypeReference = TypeRef.FromReferenceIndex(declaringMethod.Assembly.Model, Definition.typeIndex);
+
+            var paramType = pkg.TypeReferences[Definition.typeIndex];
 
             if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_HAS_DEFAULT) != 0)
                 Attributes |= ParameterAttributes.HasDefault;
@@ -103,8 +104,8 @@ namespace Il2CppInspector.Reflection
             Position = generic.Position;
             Attributes = generic.Attributes;
 
-            // Search for the concrete type's TypeRef index to store as the parameter type reference index
-            paramTypeReference = Array.IndexOf(model.TypesByReferenceIndex, concrete);
+            // TODO substitute concrete params?
+            paramTypeReference = TypeRef.FromTypeInfo(concrete);
 
             DefaultValue = generic.DefaultValue;
             DefaultValueMetadataAddress = generic.DefaultValueMetadataAddress;
