@@ -94,7 +94,8 @@ namespace Il2CppInspector.Reflection
                     if (!TypesByMethodSpecClassIndex.ContainsKey(spec.classIndexIndex)) {
                         var genericTypeDefinition = MethodsByDefinitionIndex[spec.methodDefinitionIndex].DeclaringType;
                         var genericInstance = Package.GenericInstances[spec.classIndexIndex];
-                        TypesByMethodSpecClassIndex.Add(spec.classIndexIndex, new TypeInfo(genericTypeDefinition, genericInstance));
+                        var genericArguments = ResolveGenericArguments(genericInstance);
+                        TypesByMethodSpecClassIndex.Add(spec.classIndexIndex, genericTypeDefinition.MakeGenericType(genericArguments));
                     }
 
                     declaringType = TypesByMethodSpecClassIndex[spec.classIndexIndex];
