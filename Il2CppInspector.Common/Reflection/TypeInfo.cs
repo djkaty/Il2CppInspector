@@ -481,14 +481,14 @@ namespace Il2CppInspector.Reflection {
         // For a generic type definition: the list of generic type parameters
         // For an open generic type: a mix of generic type parameters and generic type arguments
         // For a closed generic type: the list of generic type arguments
-        private readonly List<TypeInfo> genericArguments = new List<TypeInfo>();
+        private readonly TypeInfo[] genericArguments = Array.Empty<TypeInfo>();
 
-        public List<TypeInfo> GenericTypeParameters => IsGenericTypeDefinition ? genericArguments : new List<TypeInfo>();
+        public TypeInfo[] GenericTypeParameters => IsGenericTypeDefinition ? genericArguments : Array.Empty<TypeInfo>();
 
-        public List<TypeInfo> GenericTypeArguments => !IsGenericTypeDefinition ? genericArguments : new List<TypeInfo>();
+        public TypeInfo[] GenericTypeArguments => !IsGenericTypeDefinition ? genericArguments : Array.Empty<TypeInfo>();
 
         // See: https://docs.microsoft.com/en-us/dotnet/api/system.type.getgenericarguments?view=netframework-4.8
-        public List<TypeInfo> GetGenericArguments() => genericArguments;
+        public TypeInfo[] GetGenericArguments() => genericArguments;
 
         // True if an array, pointer or reference, otherwise false
         // See: https://docs.microsoft.com/en-us/dotnet/api/system.type.haselementtype?view=netframework-4.8
@@ -504,7 +504,7 @@ namespace Il2CppInspector.Reflection {
         public bool IsEnum => enumUnderlyingTypeReference != -1;
         public bool IsGenericParameter { get; }
         public bool IsGenericType { get; }
-        public bool IsGenericTypeDefinition => genericArguments.Any() && genericArguments.All(a => a.IsGenericTypeParameter);
+        public bool IsGenericTypeDefinition => (Definition != null) && genericArguments.Any();
         public bool IsImport => (Attributes & TypeAttributes.Import) == TypeAttributes.Import;
         public bool IsInterface => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Interface;
         public bool IsNested => (MemberType & MemberTypes.NestedType) == MemberTypes.NestedType;
@@ -577,7 +577,7 @@ namespace Il2CppInspector.Reflection {
                 // Store the generic type parameters for later instantiation
                 var container = pkg.GenericContainers[Definition.genericContainerIndex];
 
-                genericArguments = pkg.GenericParameters.Skip((int) container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToList();
+                genericArguments = pkg.GenericParameters.Skip((int) container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToArray();
             }
 
             // Add to global type definition list
