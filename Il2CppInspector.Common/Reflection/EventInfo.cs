@@ -28,8 +28,8 @@ namespace Il2CppInspector.Reflection
         public MethodInfo RaiseMethod { get; }
 
         // Event handler delegate type
-        private int eventTypeReference;
-        public TypeInfo EventHandlerType => Assembly.Model.TypesByReferenceIndex[eventTypeReference];
+        private readonly TypeRef eventTypeReference;
+        public TypeInfo EventHandlerType => eventTypeReference.Value;
 
         // True if the event has a special name
         public bool IsSpecialName => (Attributes & EventAttributes.SpecialName) == EventAttributes.SpecialName;
@@ -42,8 +42,8 @@ namespace Il2CppInspector.Reflection
             Index = eventIndex;
             Name = pkg.Strings[Definition.nameIndex];
 
-            eventTypeReference = Definition.typeIndex;
-            var eventType = pkg.TypeReferences[eventTypeReference];
+            eventTypeReference = TypeRef.FromReferenceIndex(Assembly.Model, Definition.typeIndex);
+            var eventType = pkg.TypeReferences[Definition.typeIndex];
 
             if ((eventType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_SPECIAL_NAME) == Il2CppConstants.FIELD_ATTRIBUTE_SPECIAL_NAME)
                 Attributes |= EventAttributes.SpecialName;
