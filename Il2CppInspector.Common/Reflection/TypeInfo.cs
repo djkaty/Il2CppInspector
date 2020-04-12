@@ -66,8 +66,7 @@ namespace Il2CppInspector.Reflection {
                         return Assembly.Model.TypesByReferenceIndex[Definition.parentIndex];
                 }
                 if (genericTypeDefinition != null) {
-                    /* TODO substitute generic arguments */
-                    return genericTypeDefinition.BaseType;
+                    return genericTypeDefinition.BaseType.SubstituteGenericArguments(genericArguments);
                 }
                 if (Namespace != "System" || BaseName != "Object")
                     return Assembly.Model.TypesByFullName["System.Object"];
@@ -90,8 +89,7 @@ namespace Il2CppInspector.Reflection {
                     return type;
                 }
                 if (genericTypeDefinition != null) {
-                    /* Generic type instance */
-                    /* TODO substitute generic arguments */
+                    // Generic parameters are *not* substituted in the DeclaringType
                     return genericTypeDefinition.DeclaringType;
                 }
                 return base.DeclaringType;
@@ -264,6 +262,9 @@ namespace Il2CppInspector.Reflection {
                         n += "*";
                     return n;
                 } else {
+                    /* XXX This is not exactly accurate to C# Type.Name:
+                     * Type.Name should be the bare name (with & * [] suffixes)
+                     * but without nested types or generic arguments */
                     var n = base.Name;
                     if (DeclaringType != null)
                         n = DeclaringType.Name + "+" + n;
@@ -832,12 +833,41 @@ namespace Il2CppInspector.Reflection {
         // and returns a TypeInfo object representing the resulting constructed type.
         // See: https://docs.microsoft.com/en-us/dotnet/api/system.type.makegenerictype?view=netframework-4.8
         public TypeInfo MakeGenericType(params TypeInfo[] typeArguments) {
+            if(typeArguments.Length != genericArguments.Length) {
+                throw new ArgumentException("The number of generic arguments provided does not match the generic type definition.");
+            }
+
             TypeInfo result;
             if (genericTypeInstances.TryGetValue(typeArguments, out result))
                 return result;
             result = new TypeInfo(this, typeArguments);
             genericTypeInstances[typeArguments] = result;
             return result;
+        }
+
+        public TypeInfo SubstituteGenericArguments(TypeInfo[] typeArguments, TypeInfo[] methodArguments = null) {
+            if (!ContainsGenericParameters)
+                return this;
+
+            if (IsGenericTypeParameter)
+                return typeArguments[GenericParameterPosition];
+            else if (IsGenericMethodParameter)
+                return methodArguments[GenericParameterPosition];
+            else if(IsGenericTypeDefinition)
+                return MakeGenericType(typeArguments);
+            else if(HasElementType) {
+                var elementType = ElementType.SubstituteGenericArguments(typeArguments, methodArguments);
+                if (IsArray)
+                    return elementType.MakeArrayType(GetArrayRank());
+                else if (IsByRef)
+                    return elementType.MakeByRefType();
+                else if (IsPointer)
+                    return elementType.MakePointerType();
+                throw new InvalidOperationException("TypeInfo element type state is invalid!");
+            } else {
+                var newGenericArguments = genericArguments.Select(x => x.SubstituteGenericArguments(typeArguments, methodArguments));
+                return genericTypeDefinition.MakeGenericType(newGenericArguments.ToArray());
+            }
         }
 
         // Initialize a type that is a generic parameter of a generic type
