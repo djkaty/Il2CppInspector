@@ -99,7 +99,7 @@ namespace Il2CppInspector.Reflection {
         }
 
         // True if the type contains unresolved generic type parameters
-        public bool ContainsGenericParameters => IsGenericParameter || genericArguments.Any(ga => ga.ContainsGenericParameters);
+        public bool ContainsGenericParameters => (HasElementType && ElementType.ContainsGenericParameters) || IsGenericParameter || genericArguments.Any(ga => ga.ContainsGenericParameters);
 
         // Custom attributes for this member
         public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
