@@ -33,6 +33,13 @@ namespace Il2CppInspector.Reflection {
         }
 
 
+        // This property exposes all types which have been generated directly from this one.
+        public IEnumerable<TypeInfo> CachedGeneratedTypes {
+            get {
+                return genericTypeInstances?.Values ?? Enumerable.Empty<TypeInfo>();
+            }
+        }
+
         // Information/flags about the type
         // Undefined if the Type represents a generic type parameter
         public TypeAttributes Attributes { get; }
