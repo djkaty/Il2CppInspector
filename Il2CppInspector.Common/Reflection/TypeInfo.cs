@@ -33,10 +33,21 @@ namespace Il2CppInspector.Reflection {
         }
 
 
+        // Cached derived types
+        private Dictionary<int, TypeInfo> generatedArrayTypes = new Dictionary<int, TypeInfo>();
+        private TypeInfo generatedByRefType;
+        private TypeInfo generatedPointerType;
         // This property exposes all types which have been generated directly from this one.
         public IEnumerable<TypeInfo> CachedGeneratedTypes {
             get {
-                return genericTypeInstances?.Values ?? Enumerable.Empty<TypeInfo>();
+                IEnumerable<TypeInfo> result = generatedArrayTypes.Values;
+                if (genericTypeInstances != null)
+                    result = result.Concat(genericTypeInstances.Values);
+                if (generatedByRefType != null)
+                    result = result.Append(generatedByRefType);
+                if (generatedPointerType != null)
+                    result = result.Append(generatedPointerType);
+                return result;
             }
         }
 
@@ -590,6 +601,9 @@ namespace Il2CppInspector.Reflection {
                 MemberType |= MemberTypes.NestedType;
             }
 
+            // Add to global type definition list
+            Assembly.Model.TypesByDefinitionIndex[Index] = this;
+
             // Generic type definition?
             if (Definition.genericContainerIndex >= 0) {
                 IsGenericType = true;
@@ -598,13 +612,13 @@ namespace Il2CppInspector.Reflection {
                 // Store the generic type parameters for later instantiation
                 var container = pkg.GenericContainers[Definition.genericContainerIndex];
 
-                genericArguments = pkg.GenericParameters.Skip((int) container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToArray();
+                genericArguments = Enumerable.Range((int)container.genericParameterStart, container.type_argc)
+                    .Select(index => Assembly.Model.GetGenericParameterType(index)).ToArray();
                 genericTypeInstances = new Dictionary<TypeInfo[], TypeInfo>(new TypeArgumentsComparer());
                 genericTypeInstances[genericArguments] = this;
             }
 
-            // Add to global type definition list
-            Assembly.Model.TypesByDefinitionIndex[Index] = this;
+            // TODO: Move this to after we've populated TypesByReferenceIndex, since FullName might touch that
             Assembly.Model.TypesByFullName[FullName] = this;
 
             if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_SERIALIZABLE) != 0)
@@ -749,30 +763,21 @@ namespace Il2CppInspector.Reflection {
                 case Il2CppTypeEnum.IL2CPP_TYPE_ARRAY:
                     var descriptor = image.ReadMappedObject<Il2CppArrayType>(typeRef.datapoint);
                     var elementType = model.GetTypeFromVirtualAddress(descriptor.etype);
-                    underlyingType = new TypeInfo(elementType, descriptor.rank);
+                    underlyingType = elementType.MakeArrayType(descriptor.rank);
                     break;
                 case Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY:
                     elementType = model.GetTypeFromVirtualAddress(typeRef.datapoint);
-                    underlyingType = new TypeInfo(elementType, 1);
+                    underlyingType = elementType.MakeArrayType(1);
                     break;
                 case Il2CppTypeEnum.IL2CPP_TYPE_PTR:
                     elementType = model.GetTypeFromVirtualAddress(typeRef.datapoint);
-                    underlyingType = new TypeInfo(elementType, isPointer: true);
+                    underlyingType = elementType.MakePointerType();
                     break;
 
                 // Generic type and generic method parameters
                 case Il2CppTypeEnum.IL2CPP_TYPE_VAR:
                 case Il2CppTypeEnum.IL2CPP_TYPE_MVAR:
-                    var paramType = model.Package.GenericParameters[typeRef.datapoint]; // genericParameterIndex
-                    var container = model.Package.GenericContainers[paramType.ownerIndex];
-
-                    if(container.is_method == 1) {
-                        var owner = model.MethodsByDefinitionIndex[container.ownerIndex];
-                        underlyingType = new TypeInfo(owner, paramType);
-                    } else {
-                        var owner = model.TypesByDefinitionIndex[container.ownerIndex];
-                        underlyingType = new TypeInfo(owner, paramType);
-                    }
+                    underlyingType = model.GetGenericParameterType((int)typeRef.datapoint);
                     break;
 
                 // Primitive types
@@ -892,7 +897,26 @@ namespace Il2CppInspector.Reflection {
             Name = ElementType.Name;
         }
 
-        public TypeInfo MakeByRefType() => new TypeInfo(this, isPointer: false);
+        public TypeInfo MakeArrayType(int rank = 1) {
+            TypeInfo type;
+            if (generatedArrayTypes.TryGetValue(rank, out type))
+                return type;
+            type = new TypeInfo(this, rank);
+            generatedArrayTypes[rank] = type;
+            return type;
+        }
+
+        public TypeInfo MakeByRefType() {
+            if (generatedByRefType == null)
+                generatedByRefType = new TypeInfo(this, isPointer: false);
+            return generatedByRefType;
+        }
+
+        public TypeInfo MakePointerType() {
+            if (generatedPointerType == null)
+                generatedPointerType = new TypeInfo(this, isPointer: true);
+            return generatedPointerType;
+        }
 
         // Get all the other types directly referenced by this type (single level depth; no recursion)
         public List<TypeInfo> GetAllTypeReferences() {
