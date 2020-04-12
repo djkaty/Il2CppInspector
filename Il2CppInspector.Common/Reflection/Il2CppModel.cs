@@ -85,7 +85,7 @@ namespace Il2CppInspector.Reflection
                 }
 
                 var typeRef = Package.TypeReferences[typeRefIndex];
-                var referencedType = TypeInfo.FromTypeReference(this, typeRef);
+                var referencedType = resolveTypeReference(typeRef);
 
                 TypesByReferenceIndex[typeRefIndex] = referencedType;
             }
@@ -151,6 +151,77 @@ namespace Il2CppInspector.Reflection
             return genericTypeArguments.Select(a => GetTypeFromVirtualAddress((ulong) a)).ToArray();
         }
 
+        // Initialize type from type reference (TypeRef)
+        // Much of the following is adapted from il2cpp::vm::Class::FromIl2CppType
+        private TypeInfo resolveTypeReference(Il2CppType typeRef) {
+            var image = Package.BinaryImage;
+            TypeInfo underlyingType;
+
+            switch (typeRef.type) {
+                // Classes defined in the metadata (reference to a TypeDef)
+                case Il2CppTypeEnum.IL2CPP_TYPE_CLASS:
+                case Il2CppTypeEnum.IL2CPP_TYPE_VALUETYPE:
+                    underlyingType = TypesByDefinitionIndex[typeRef.datapoint]; // klassIndex
+                    break;
+
+                // Constructed types
+                case Il2CppTypeEnum.IL2CPP_TYPE_GENERICINST:
+                    // TODO: Replace with array load from Il2CppMetadataRegistration.genericClasses
+                    var generic = image.ReadMappedObject<Il2CppGenericClass>(typeRef.datapoint); // Il2CppGenericClass *
+
+                    // We have seen one test case where the TypeRef can point to no generic instance
+                    // This is going to leave the TypeInfo in an undefined state
+                    if (generic.typeDefinitionIndex == 0x0000_0000_ffff_ffff)
+                        return null;
+
+                    var genericTypeDef = TypesByDefinitionIndex[generic.typeDefinitionIndex];
+
+                    // Get the instantiation
+                    // TODO: Replace with array load from Il2CppMetadataRegistration.genericInsts
+                    var genericInstance = image.ReadMappedObject<Il2CppGenericInst>(generic.context.class_inst);
+                    var genericArguments = ResolveGenericArguments(genericInstance);
+
+                    underlyingType = genericTypeDef.MakeGenericType(genericArguments);
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_ARRAY:
+                    var descriptor = image.ReadMappedObject<Il2CppArrayType>(typeRef.datapoint);
+                    var elementType = GetTypeFromVirtualAddress(descriptor.etype);
+                    underlyingType = elementType.MakeArrayType(descriptor.rank);
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY:
+                    elementType = GetTypeFromVirtualAddress(typeRef.datapoint);
+                    underlyingType = elementType.MakeArrayType(1);
+                    break;
+                case Il2CppTypeEnum.IL2CPP_TYPE_PTR:
+                    elementType = GetTypeFromVirtualAddress(typeRef.datapoint);
+                    underlyingType = elementType.MakePointerType();
+                    break;
+
+                // Generic type and generic method parameters
+                case Il2CppTypeEnum.IL2CPP_TYPE_VAR:
+                case Il2CppTypeEnum.IL2CPP_TYPE_MVAR:
+                    underlyingType = GetGenericParameterType((int)typeRef.datapoint);
+                    break;
+
+                // Primitive types
+                default:
+                    underlyingType = getTypeDefinitionFromTypeEnum(typeRef.type);
+                    break;
+            }
+
+            // Create a reference type if necessary
+            return typeRef.byref ? underlyingType.MakeByRefType() : underlyingType;
+        }
+
+        // Basic primitive types are specified via a flag value
+        private TypeInfo getTypeDefinitionFromTypeEnum(Il2CppTypeEnum t) {
+            if ((int)t >= Il2CppConstants.FullNameTypeString.Count)
+                return null;
+
+            var fqn = Il2CppConstants.FullNameTypeString[(int)t];
+            return TypesByFullName[fqn];
+        }
+
         // Get a TypeRef by its virtual address
         // These are always nested types from references within another TypeRef
         public TypeInfo GetTypeFromVirtualAddress(ulong ptr) {
@@ -160,7 +231,7 @@ namespace Il2CppInspector.Reflection
                 return TypesByReferenceIndex[typeRefIndex];
 
             var type = Package.TypeReferences[typeRefIndex];
-            var referencedType = TypeInfo.FromTypeReference(this, type);
+            var referencedType = resolveTypeReference(type);
 
             TypesByReferenceIndex[typeRefIndex] = referencedType;
             return referencedType;
