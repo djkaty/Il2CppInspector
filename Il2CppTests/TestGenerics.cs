@@ -32,8 +32,11 @@ namespace Il2CppInspector
             // Act
             TypeInfo tBase = asm.GetType("Il2CppTests.TestSources.Base`2");
             TypeInfo tDerived = asm.GetType("Il2CppTests.TestSources.Derived`1");
+            TypeInfo tDerived_closed = model.GetType("Il2CppTests.TestSources.Derived`1[System.Int32]");
             TypeInfo tDerivedBase = tDerived.BaseType;
+            TypeInfo tDerivedBase_closed = tDerived_closed.BaseType;
             TypeInfo tDerivedArray = model.GetType("Il2CppTests.TestSources.Derived`1[System.Int32][]");
+            Assert.That(tDerivedArray, Is.EqualTo(tDerived_closed.MakeArrayType()));
 
             TypeInfo tT = tBase.GenericTypeParameters[0];
             TypeInfo tU = tBase.GenericTypeParameters[1];
@@ -74,6 +77,7 @@ namespace Il2CppInspector
                 (tBase, "Base`2[T,U]", true, true, true, false, -1),
                 (tDerived, "Derived`1[V]", true, true, true, false, -1),
                 (tDerivedBase, "Base`2[System.String,V]", true, false, true, false, -1),
+                (tDerivedBase_closed, "Base`2[System.String,System.Int32]", true, false, false, false, -1),
                 (tDerivedArray, "Derived`1[System.Int32][]", false, false, false, false, -1),
                 (tT, "T", false, false, true, true, 0),
                 (tU, "U", false, false, true, true, 1),
@@ -103,6 +107,8 @@ namespace Il2CppInspector
                 Assert.That(t.IsGenericTypeDefinition, Is.EqualTo(check.Item4));
                 Assert.That(t.ContainsGenericParameters, Is.EqualTo(check.Item5));
                 Assert.That(t.IsGenericParameter, Is.EqualTo(check.Item6));
+                if (t.IsGenericParameter)
+                    Assert.That(t.GenericParameterPosition, Is.EqualTo(check.Item7));
             }
 
             foreach (var check in methodChecks) {

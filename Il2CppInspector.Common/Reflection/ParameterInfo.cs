@@ -110,14 +110,11 @@ namespace Il2CppInspector.Reflection
             DefaultValueMetadataAddress = generic.DefaultValueMetadataAddress;
         }
 
-        public ParameterInfo SubstituteGenericArguments(TypeInfo[] typeArguments, TypeInfo[] methodArguments) {
-            /* TODO: Deep substitution */
-            if (ParameterType.IsGenericTypeParameter)
-                return new ParameterInfo(this, typeArguments[ParameterType.GenericParameterPosition]);
-            else if (ParameterType.IsGenericMethodParameter)
-                return new ParameterInfo(this, methodArguments[ParameterType.GenericParameterPosition]);
-            else
+        public ParameterInfo SubstituteGenericArguments(TypeInfo[] typeArguments, TypeInfo[] methodArguments = null) {
+            TypeInfo t = ParameterType.SubstituteGenericArguments(typeArguments, methodArguments);
+            if (t == ParameterType)
                 return this;
+            return new ParameterInfo(this, t);
         }
 
         // ref will be handled as part of the type name
