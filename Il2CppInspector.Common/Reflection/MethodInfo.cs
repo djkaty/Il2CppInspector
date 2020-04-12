@@ -17,8 +17,7 @@ namespace Il2CppInspector.Reflection
         public ParameterInfo ReturnParameter { get; }
 
         // Return type of the method
-        private readonly TypeRef returnTypeReference;
-        public TypeInfo ReturnType => returnTypeReference.Value;
+        public TypeInfo ReturnType => ReturnParameter.ParameterType;
 
         public override bool RequiresUnsafeContext => base.RequiresUnsafeContext || ReturnType.RequiresUnsafeContext;
 
@@ -26,15 +25,12 @@ namespace Il2CppInspector.Reflection
 
         public MethodInfo(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) : base(pkg, methodIndex, declaringType) {
             // Add return parameter
-            returnTypeReference = TypeRef.FromReferenceIndex(Assembly.Model, Definition.returnType);
             ReturnParameter = new ParameterInfo(pkg, -1, this);
         }
 
         public MethodInfo(Il2CppModel model, Il2CppMethodSpec spec, TypeInfo declaringType) : base(model, spec, declaringType) {
             var methodDef = model.MethodsByDefinitionIndex[spec.methodDefinitionIndex];
-            // Add return parameter (TODO substitute type)
-            returnTypeReference = TypeRef.FromReferenceIndex(Assembly.Model, methodDef.Definition.returnType);
-            ReturnParameter = ((MethodInfo) methodDef).ReturnParameter;
+            ReturnParameter = ((MethodInfo)methodDef).ReturnParameter.SubstituteGenericArguments(declaringType.GetGenericArguments(), GetGenericArguments());
         }
 
         public override string ToString() => ReturnType.Name + " " + Name + GetFullTypeParametersString() + "(" + string.Join(", ", 
