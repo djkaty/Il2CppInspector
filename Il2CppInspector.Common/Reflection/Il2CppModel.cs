@@ -32,13 +32,8 @@ namespace Il2CppInspector.Reflection
         public Dictionary<string, TypeInfo> TypesByFullName { get; } = new Dictionary<string, TypeInfo>();
 
         // Every type
-        public IEnumerable<TypeInfo> Types {
-            get {
-                var result = new IEnumerable<TypeInfo>[] { TypesByDefinitionIndex, TypesByReferenceIndex }.SelectMany(t => t);
-                result = result.Concat(result.SelectMany(t => t.CachedGeneratedTypes));
-                return result.Distinct();
-            }
-        }
+        public IEnumerable<TypeInfo> Types => TypesByDefinitionIndex.Concat(TypesByReferenceIndex)
+            .Concat(GenericMethods.Values.Select(m => m.DeclaringType)).Distinct();
 
         // List of all methods ordered by their MethodDefinitionIndex
         public MethodBase[] MethodsByDefinitionIndex { get; }
