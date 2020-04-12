@@ -104,8 +104,8 @@ namespace Il2CppInspector.Reflection
 
                 // Store the generic type parameters for later instantiation
                 var container = pkg.GenericContainers[Definition.genericContainerIndex];
-
-                genericArguments = pkg.GenericParameters.Skip((int)container.genericParameterStart).Take(container.type_argc).Select(p => new TypeInfo(this, p)).ToArray();
+                genericArguments = Enumerable.Range((int)container.genericParameterStart, container.type_argc)
+                    .Select(index => Assembly.Model.GetGenericParameterType(index)).ToArray();
             }
 
             // Set method attributes

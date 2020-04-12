@@ -22,6 +22,9 @@ namespace Il2CppInspector.Reflection
         // List of all types from TypeRefs ordered by instanceIndex
         public TypeInfo[] TypesByReferenceIndex { get; }
 
+        // List of all types from GenericParameters
+        public TypeInfo[] GenericParameterTypes { get; }
+
         // List of all methods from MethodSpecs (closed generic methods that can be called; does not need to be in a generic class)
         public Dictionary<Il2CppMethodSpec, MethodBase> GenericMethods { get; } = new Dictionary<Il2CppMethodSpec, MethodBase>();
 
@@ -64,6 +67,7 @@ namespace Il2CppInspector.Reflection
             Package = package;
             TypesByDefinitionIndex = new TypeInfo[package.TypeDefinitions.Length];
             TypesByReferenceIndex = new TypeInfo[package.TypeReferences.Count];
+            GenericParameterTypes = new TypeInfo[package.GenericParameters.Length];
             MethodsByDefinitionIndex = new MethodBase[package.Methods.Length];
             MethodInvokers = new MethodInvoker[package.MethodInvokePointers.Length];
 
@@ -166,6 +170,25 @@ namespace Il2CppInspector.Reflection
 
             TypesByReferenceIndex[typeRefIndex] = referencedType;
             return referencedType;
+        }
+
+        public TypeInfo GetGenericParameterType(int index) {
+            if (GenericParameterTypes[index] != null)
+                return GenericParameterTypes[index];
+
+            var paramType = Package.GenericParameters[index]; // genericParameterIndex
+            var container = Package.GenericContainers[paramType.ownerIndex];
+            TypeInfo result;
+
+            if (container.is_method == 1) {
+                var owner = MethodsByDefinitionIndex[container.ownerIndex];
+                result = new TypeInfo(owner, paramType);
+            } else {
+                var owner = TypesByDefinitionIndex[container.ownerIndex];
+                result = new TypeInfo(owner, paramType);
+            }
+            GenericParameterTypes[index] = result;
+            return result;
         }
 
         // The attribute index is an index into AttributeTypeRanges, each of which is a start-end range index into AttributeTypeIndices, each of which is a TypeIndex
