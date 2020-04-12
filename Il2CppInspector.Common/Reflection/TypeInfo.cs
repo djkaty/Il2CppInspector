@@ -37,19 +37,6 @@ namespace Il2CppInspector.Reflection {
         private Dictionary<int, TypeInfo> generatedArrayTypes = new Dictionary<int, TypeInfo>();
         private TypeInfo generatedByRefType;
         private TypeInfo generatedPointerType;
-        // This property exposes all types which have been generated directly from this one.
-        public IEnumerable<TypeInfo> CachedGeneratedTypes {
-            get {
-                IEnumerable<TypeInfo> result = generatedArrayTypes.Values;
-                if (genericTypeInstances != null)
-                    result = result.Concat(genericTypeInstances.Values);
-                if (generatedByRefType != null)
-                    result = result.Append(generatedByRefType);
-                if (generatedPointerType != null)
-                    result = result.Append(generatedPointerType);
-                return result;
-            }
-        }
 
         // Information/flags about the type
         // Undefined if the Type represents a generic type parameter
