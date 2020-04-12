@@ -97,18 +97,27 @@ namespace Il2CppInspector.Reflection
         }
 
         // Create a concrete type parameter from a generic type parameter
-        public ParameterInfo(Il2CppModel model, ParameterInfo generic, TypeInfo concrete) {
+        public ParameterInfo(ParameterInfo generic, TypeInfo concrete) {
 
             DeclaringMethod = generic.DeclaringMethod;
             Name = generic.Name;
             Position = generic.Position;
             Attributes = generic.Attributes;
 
-            // TODO substitute concrete params?
             paramTypeReference = TypeRef.FromTypeInfo(concrete);
 
             DefaultValue = generic.DefaultValue;
             DefaultValueMetadataAddress = generic.DefaultValueMetadataAddress;
+        }
+
+        public ParameterInfo SubstituteGenericArguments(TypeInfo[] typeArguments, TypeInfo[] methodArguments) {
+            /* TODO: Deep substitution */
+            if (ParameterType.IsGenericTypeParameter)
+                return new ParameterInfo(this, typeArguments[ParameterType.GenericParameterPosition]);
+            else if (ParameterType.IsGenericMethodParameter)
+                return new ParameterInfo(this, methodArguments[ParameterType.GenericParameterPosition]);
+            else
+                return this;
         }
 
         // ref will be handled as part of the type name

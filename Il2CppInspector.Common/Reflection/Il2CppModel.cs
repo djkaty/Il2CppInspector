@@ -92,28 +92,22 @@ namespace Il2CppInspector.Reflection
 
             // Create types and methods from MethodSpec (which incorporates TypeSpec in IL2CPP)
             foreach (var spec in Package.MethodSpecs) {
-                TypeInfo declaringType;
+                var methodDefinition = MethodsByDefinitionIndex[spec.methodDefinitionIndex];
+                var declaringType = methodDefinition.DeclaringType;
 
                 // Concrete instance of a generic class
                 // If the class index is not specified, we will later create a generic method in a non-generic class
                 if (spec.classIndexIndex != -1) {
-                    var genericTypeDefinition = MethodsByDefinitionIndex[spec.methodDefinitionIndex].DeclaringType;
                     var genericInstance = Package.GenericInstances[spec.classIndexIndex];
                     var genericArguments = ResolveGenericArguments(genericInstance);
-                    declaringType = genericTypeDefinition.MakeGenericType(genericArguments);
+                    declaringType = declaringType.MakeGenericType(genericArguments);
                 }
-                else
-                    declaringType = MethodsByDefinitionIndex[spec.methodDefinitionIndex].DeclaringType;
 
                 // Concrete instance of a generic method
-                if (spec.methodIndexIndex != -1) {
-                    // Method or constructor
-                    var concreteMethod = new MethodInfo(this, spec, declaringType);
-                    if (concreteMethod.Name == ConstructorInfo.ConstructorName || concreteMethod.Name == ConstructorInfo.TypeConstructorName)
-                        GenericMethods.Add(spec, new ConstructorInfo(this, spec, declaringType));
-                    else
-                        GenericMethods.Add(spec, concreteMethod);
-                }
+                if (methodDefinition is MethodInfo)
+                    GenericMethods[spec] = new MethodInfo(this, spec, declaringType);
+                else
+                    GenericMethods[spec] = new ConstructorInfo(this, spec, declaringType);
             }
 
             // Find all custom attribute generators (populate AttributesByIndices) (use ToList() to force evaluation)
@@ -245,9 +239,7 @@ namespace Il2CppInspector.Reflection
         // Get the method used in a metadata usage
         public MethodBase GetMetadataUsageMethod(MetadataUsage usage) => usage.Type switch {
             MetadataUsageType.MethodDef => MethodsByDefinitionIndex[usage.SourceIndex],
-            MetadataUsageType.MethodRef => Package.MethodSpecs[usage.SourceIndex].methodIndexIndex != -1?
-                GenericMethods[Package.MethodSpecs[usage.SourceIndex]] :
-                MethodsByDefinitionIndex[Package.MethodSpecs[usage.SourceIndex].methodDefinitionIndex],
+            MetadataUsageType.MethodRef => GenericMethods[Package.MethodSpecs[usage.SourceIndex]],
             _ => throw new InvalidOperationException("Incorrect metadata usage type to retrieve referenced type")
         };
     }
