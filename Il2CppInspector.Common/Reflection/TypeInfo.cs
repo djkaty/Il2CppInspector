@@ -95,13 +95,26 @@ namespace Il2CppInspector.Reflection {
 
         public List<MemberInfo> DeclaredMembers => new IEnumerable<MemberInfo>[] {
             DeclaredConstructors, DeclaredEvents, DeclaredFields, DeclaredMethods,
-            DeclaredNestedTypes?.ToList() ?? new List<TypeInfo>(), DeclaredProperties
+            DeclaredNestedTypes, DeclaredProperties
         }.SelectMany(m => m).ToList();
 
         public List<MethodInfo> DeclaredMethods { get; } = new List<MethodInfo>();
 
-        private readonly int[] declaredNestedTypes;
-        public IEnumerable<TypeInfo> DeclaredNestedTypes => declaredNestedTypes.Select(x => Assembly.Model.TypesByDefinitionIndex[x]);
+        private readonly TypeRef[] declaredNestedTypes;
+        public IEnumerable<TypeInfo> DeclaredNestedTypes {
+            get {
+                if (declaredNestedTypes != null)
+                    return declaredNestedTypes.Select(x => x.Value);
+                /* Type parameters are not substituted into nested classes,
+                 * as nested classes aren't required to use the parameters
+                 * from the containing class.
+                 * This also matches the behaviour of the C# reflection API.
+                 */
+                if (genericTypeDefinition != null)
+                    return genericTypeDefinition.DeclaredNestedTypes;
+                return Enumerable.Empty<TypeInfo>();
+            }
+        }
 
         public List<PropertyInfo> DeclaredProperties { get; } = new List<PropertyInfo>();
 
@@ -656,9 +669,9 @@ namespace Il2CppInspector.Reflection {
                 implementedInterfaceReferences[i] = TypeRef.FromReferenceIndex(Assembly.Model, pkg.InterfaceUsageIndices[Definition.interfacesStart + i]);
 
             // Add all nested types
-            declaredNestedTypes = new int[Definition.nested_type_count];
+            declaredNestedTypes = new TypeRef[Definition.nested_type_count];
             for (var n = 0; n < Definition.nested_type_count; n++)
-                declaredNestedTypes[n] = pkg.NestedTypeIndices[Definition.nestedTypesStart + n];
+                declaredNestedTypes[n] = TypeRef.FromDefinitionIndex(Assembly.Model, pkg.NestedTypeIndices[Definition.nestedTypesStart + n]);
 
             // Add all fields
             for (var f = Definition.fieldStart; f < Definition.fieldStart + Definition.field_count; f++)
