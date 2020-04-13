@@ -55,6 +55,11 @@ namespace Il2CppInspector.Reflection {
                 if (genericTypeDefinition != null) {
                     return genericTypeDefinition.BaseType.SubstituteGenericArguments(genericArguments);
                 }
+                if (IsGenericParameter) {
+                    var res = GetGenericParameterConstraints().Where(t => !t.IsInterface).FirstOrDefault();
+                    if (res != null)
+                        return res;
+                }
                 if (Namespace != "System" || BaseName != "Object")
                     return Assembly.Model.TypesByFullName["System.Object"];
                 return null;
@@ -87,7 +92,7 @@ namespace Il2CppInspector.Reflection {
         public bool ContainsGenericParameters => (HasElementType && ElementType.ContainsGenericParameters) || IsGenericParameter || genericArguments.Any(ga => ga.ContainsGenericParameters);
 
         // Custom attributes for this member
-        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
+        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(genericTypeDefinition ?? this);
 
         public List<ConstructorInfo> DeclaredConstructors { get; } = new List<ConstructorInfo>();
         public List<EventInfo> DeclaredEvents { get; } = new List<EventInfo>();
@@ -121,22 +126,21 @@ namespace Il2CppInspector.Reflection {
         // Get a field by its name
         public FieldInfo GetField(string name) => DeclaredFields.FirstOrDefault(f => f.Name == name);
 
-        private readonly int genericConstraintIndex;
-
-        private readonly int genericConstraintCount;
+        private TypeRef[] genericParameterConstraints;
 
         // Get type constraints on a generic parameter
-        public TypeInfo[] GetGenericParameterConstraints() {
-            var types = new TypeInfo[genericConstraintCount];
-            for (int c = 0; c < genericConstraintCount; c++)
-                types[c] = Assembly.Model.TypesByReferenceIndex[Assembly.Model.Package.GenericConstraintIndices[genericConstraintIndex + c]];
-            return types;
-        }
+        public TypeInfo[] GetGenericParameterConstraints() => genericParameterConstraints?.Select(t => t.Value)?.ToArray() ?? Array.Empty<TypeInfo>();
 
         private readonly TypeInfo genericTypeDefinition;
 
         /* https://docs.microsoft.com/en-us/dotnet/api/system.type.getgenerictypedefinition?view=netframework-4.8 */
-        public TypeInfo GetGenericTypeDefinition() => genericTypeDefinition;
+        public TypeInfo GetGenericTypeDefinition() {
+            if (genericTypeDefinition != null)
+                return genericTypeDefinition;
+            if (IsGenericTypeDefinition)
+                return this;
+            throw new InvalidOperationException("This method can only be called on generic types");
+        }
 
         // Get a method by its name
         public MethodInfo GetMethod(string name) => DeclaredMethods.FirstOrDefault(m => m.Name == name);
@@ -530,7 +534,17 @@ namespace Il2CppInspector.Reflection {
         public bool HasElementType => ElementType != null;
 
         private readonly TypeRef[] implementedInterfaceReferences;
-        public IEnumerable<TypeInfo> ImplementedInterfaces => implementedInterfaceReferences.Select(x => x.Value);
+        public IEnumerable<TypeInfo> ImplementedInterfaces {
+            get {
+                if (Definition != null)
+                    return implementedInterfaceReferences.Select(x => x.Value);
+                if (genericTypeDefinition != null)
+                    return genericTypeDefinition.ImplementedInterfaces.Select(t => t.SubstituteGenericArguments(genericArguments));
+                if (IsGenericParameter)
+                    return GetGenericParameterConstraints().Where(t => t.IsInterface);
+                return Enumerable.Empty<TypeInfo>();
+            }
+        }
 
         public bool IsAbstract => (Attributes & TypeAttributes.Abstract) == TypeAttributes.Abstract;
         public bool IsArray { get; }
@@ -809,14 +823,14 @@ namespace Il2CppInspector.Reflection {
             Namespace = declaringType.Namespace;
 
             // Special constraints
-            GenericParameterAttributes = (GenericParameterAttributes) param.flags;
+            GenericParameterAttributes = (GenericParameterAttributes)param.flags;
 
             // Type constraints
-            genericConstraintIndex = param.constraintsStart;
-            genericConstraintCount = param.constraintsCount;
+            genericParameterConstraints = new TypeRef[param.constraintsCount];
+            for (int c = 0; c < param.constraintsCount; c++)
+                genericParameterConstraints[c] = TypeRef.FromReferenceIndex(Assembly.Model, Assembly.Model.Package.GenericConstraintIndices[param.constraintsStart + c]);
 
             // Base type of object (set by default)
-            // TODO: BaseType should be set to base type constraint
             // TODO: ImplementedInterfaces should be set to interface types constraints
 
             // Name of parameter

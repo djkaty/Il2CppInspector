@@ -52,6 +52,11 @@ namespace Il2CppInspector
             MethodInfo mGMDIGC = tGCWM.GetMethod("GenericMethodDefinitionInGenericClass");
             MethodInfo mGMDIGC2 = tGCWM.GetMethod("GenericMethodDefinitionInGenericClass2");
 
+            TypeInfo tConstrainedRefType = asm.GetType("Il2CppTests.TestSources.ConstrainedRefType`1");
+            MethodInfo mMAMCM = tConstrainedRefType.GetMethod("MultipleArgumentsMultipleConstraintsMethod");
+            TypeInfo tB = mMAMCM.GetGenericArguments()[0];
+            TypeInfo tI = mMAMCM.GetGenericArguments()[1];
+
             MethodBase mGMDINGC_closed = model.GetGenericMethod(
                 "Il2CppTests.TestSources.NonGeneric.GenericMethodDefinitionInNonGenericClass", model.GetType("System.Single"));
             MethodBase mNGMIGC_closed = model.GetGenericMethod(
@@ -82,7 +87,11 @@ namespace Il2CppInspector
                 (tT, "T", false, false, true, true, 0),
                 (tU, "U", false, false, true, true, 1),
                 (tF, "G`1[Derived`1[V]]", true, false, true, false, -1),
-                (tNested, "Derived`1[V]+Nested[V]", true, true, true, false, -1)
+                (tNested, "Derived`1[V]+Nested[V]", true, true, true, false, -1),
+                (tB, "B", false, false, true, true, 0),
+                (tB.BaseType, "Derived`1[R]", true, false, true, false, -1),
+                (tI, "I", false, false, true, true, 1),
+                (tI.ImplementedInterfaces.ElementAt(1), "IEnumerable`1[R]", true, false, true, false, -1),
             };
 
             var methodChecks = new[] {
