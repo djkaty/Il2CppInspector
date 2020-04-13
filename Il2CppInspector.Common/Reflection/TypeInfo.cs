@@ -1094,9 +1094,8 @@ namespace Il2CppInspector.Reflection {
             if (DeclaringMethod != null && DeclaringMethod.IsVirtual && !DeclaringMethod.IsAbstract && !DeclaringMethod.IsFinal
                 && (DeclaringMethod.Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.ReuseSlot) {
                 // Find nearest ancestor base method which has us as a generic type parameter
-                var sig = DeclaringMethod.GetSignatureString();
                 var method = DeclaringMethod.DeclaringType.BaseType.GetAllMethods()
-                    .FirstOrDefault(m => m.IsHideBySig && m.IsVirtual && m.GetSignatureString() == sig && m.GetGenericArguments().Any(p => p.Name == Name));
+                    .FirstOrDefault(m => m.IsHideBySig && m.IsVirtual && DeclaringMethod.SignatureEquals(m) && m.GetGenericArguments().Any(p => p.Name == Name));
 
                 // Stop if we are inherited from a base method
                 if (method != null)
