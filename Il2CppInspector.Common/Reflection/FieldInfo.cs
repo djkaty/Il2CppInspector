@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -15,6 +16,8 @@ namespace Il2CppInspector.Reflection {
         // IL2CPP-specific data
         public Il2CppFieldDefinition Definition { get; }
         public int Index { get; }
+        // Root definition: the field with Definition != null
+        protected readonly FieldInfo rootDefinition;
 
         // Offsets for reference types start at 0x8 or 0x10 due to Il2CppObject "header" containing 2 pointers
         // Value types don't have this header but the offsets are still stored as starting at 0x8 or 0x10, so we have to subtract this
@@ -26,7 +29,7 @@ namespace Il2CppInspector.Reflection {
         public ulong DefaultValueMetadataAddress { get; }
 
         // Custom attributes for this member
-        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
+        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(rootDefinition);
 
         public bool HasDefaultValue => (Attributes & FieldAttributes.HasDefault) != 0;
         public object DefaultValue { get; }
@@ -89,6 +92,8 @@ namespace Il2CppInspector.Reflection {
 
             rawOffset = pkg.FieldOffsets[fieldIndex];
 
+            rootDefinition = this;
+
             fieldTypeReference = TypeRef.FromReferenceIndex(Assembly.Model, Definition.typeIndex);
             var fieldType = pkg.TypeReferences[Definition.typeIndex];
 
@@ -124,6 +129,20 @@ namespace Il2CppInspector.Reflection {
                 DefaultValue = value.variant;
                 DefaultValueMetadataAddress = value.address;
             }
+        }
+
+        public FieldInfo(FieldInfo fieldDef, TypeInfo declaringType) : base(declaringType) {
+            if (fieldDef.Definition == null)
+                throw new ArgumentException("Argument must be a bare field definition");
+
+            rootDefinition = fieldDef;
+
+            Name = fieldDef.Name;
+            Attributes = fieldDef.Attributes;
+            fieldTypeReference = TypeRef.FromTypeInfo(fieldDef.FieldType.SubstituteGenericArguments(declaringType.GetGenericArguments()));
+
+            DefaultValue = fieldDef.DefaultValue;
+            DefaultValueMetadataAddress = fieldDef.DefaultValueMetadataAddress;
         }
 
         public string GetAccessModifierString() => this switch {

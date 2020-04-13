@@ -109,8 +109,33 @@ namespace Il2CppInspector.Reflection {
             }
         }
 
-        public List<EventInfo> DeclaredEvents { get; } = new List<EventInfo>();
-        public List<FieldInfo> DeclaredFields { get; } = new List<FieldInfo>();
+        private List<EventInfo> declaredEvents;
+        public ReadOnlyCollection<EventInfo> DeclaredEvents {
+            get {
+                if (declaredEvents != null)
+                    return declaredEvents.AsReadOnly();
+                if (genericTypeDefinition != null) {
+                    var result = genericTypeDefinition.DeclaredEvents.Select(c => new EventInfo(c, this)).ToList();
+                    declaredEvents = result;
+                    return result.AsReadOnly();
+                }
+                return new List<EventInfo>().AsReadOnly();
+            }
+        }
+
+        private List<FieldInfo> declaredFields;
+        public ReadOnlyCollection<FieldInfo> DeclaredFields {
+            get {
+                if (declaredFields != null)
+                    return declaredFields.AsReadOnly();
+                if (genericTypeDefinition != null) {
+                    var result = genericTypeDefinition.DeclaredFields.Select(c => new FieldInfo(c, this)).ToList();
+                    declaredFields = result;
+                    return result.AsReadOnly();
+                }
+                return new List<FieldInfo>().AsReadOnly();
+            }
+        }
 
         public List<MemberInfo> DeclaredMembers => new IEnumerable<MemberInfo>[] {
             DeclaredConstructors, DeclaredEvents, DeclaredFields, DeclaredMethods,
@@ -147,7 +172,19 @@ namespace Il2CppInspector.Reflection {
             }
         }
 
-        public List<PropertyInfo> DeclaredProperties { get; } = new List<PropertyInfo>();
+        private List<PropertyInfo> declaredProperties;
+        public ReadOnlyCollection<PropertyInfo> DeclaredProperties {
+            get {
+                if (declaredProperties != null)
+                    return declaredProperties.AsReadOnly();
+                if (genericTypeDefinition != null) {
+                    var result = genericTypeDefinition.DeclaredProperties.Select(c => new PropertyInfo(c, this)).ToList();
+                    declaredProperties = result;
+                    return result.AsReadOnly();
+                }
+                return new List<PropertyInfo>().AsReadOnly();
+            }
+        }
 
         // Get a field by its name
         public FieldInfo GetField(string name) => DeclaredFields.FirstOrDefault(f => f.Name == name);
@@ -737,8 +774,9 @@ namespace Il2CppInspector.Reflection {
                 declaredNestedTypes[n] = TypeRef.FromDefinitionIndex(Assembly.Model, pkg.NestedTypeIndices[Definition.nestedTypesStart + n]);
 
             // Add all fields
+            declaredFields = new List<FieldInfo>();
             for (var f = Definition.fieldStart; f < Definition.fieldStart + Definition.field_count; f++)
-                DeclaredFields.Add(new FieldInfo(pkg, f, this));
+                declaredFields.Add(new FieldInfo(pkg, f, this));
 
             // Add all methods
             declaredConstructors = new List<ConstructorInfo>();
@@ -752,8 +790,9 @@ namespace Il2CppInspector.Reflection {
             }
 
             // Add all properties
+            declaredProperties = new List<PropertyInfo>();
             for (var p = Definition.propertyStart; p < Definition.propertyStart + Definition.property_count; p++)
-                DeclaredProperties.Add(new PropertyInfo(pkg, p, this));
+                declaredProperties.Add(new PropertyInfo(pkg, p, this));
 
             // There are rare cases when explicitly implemented interface properties
             // are only given as methods in the metadata. Find these and add them as properties
@@ -787,11 +826,12 @@ namespace Il2CppInspector.Reflection {
             }
 
             foreach (var prop in pairedEip)
-                DeclaredProperties.Add(new PropertyInfo(prop.get, prop.set, this));
+                declaredProperties.Add(new PropertyInfo(prop.get, prop.set, this));
 
             // Add all events
+            declaredEvents = new List<EventInfo>();
             for (var e = Definition.eventStart; e < Definition.eventStart + Definition.event_count; e++)
-                DeclaredEvents.Add(new EventInfo(pkg, e, this));
+                declaredEvents.Add(new EventInfo(pkg, e, this));
         }
 
         // Initialize a type from a concrete generic instance
@@ -816,11 +856,6 @@ namespace Il2CppInspector.Reflection {
             IsGenericType = true;
 
             genericArguments = genericArgs;
-
-            /* TODO: This is a bare definition at the moment. We need to iterate over all the members of genericTypeDefinition
-             * and replace the matching generic type parameters with our concrete type parameters,
-             * as well as setting the various TypeInfo properties here
-             */
         }
 
         // Substitutes the elements of an array of types for the type parameters of the current generic type definition
