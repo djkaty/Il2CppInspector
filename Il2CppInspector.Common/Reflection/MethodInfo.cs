@@ -42,8 +42,5 @@ namespace Il2CppInspector.Reflection
 
         public override string ToString() => ReturnType.Name + " " + Name + GetFullTypeParametersString() + "(" + string.Join(", ", 
                             DeclaredParameters.Select(x => x.ParameterType.IsByRef? x.ParameterType.Name.TrimEnd('&') + " ByRef" : x.ParameterType.Name)) + ")";
-
-        public override string GetSignatureString() => ReturnParameter.GetSignatureString() + " " + Name + GetFullTypeParametersString()
-                                              + "(" + string.Join(",", DeclaredParameters.Select(x => x.GetSignatureString())) + ")";
     }
 }

@@ -265,7 +265,7 @@ namespace Il2CppInspector.Reflection
                 modifiers.Append("extern ");
 
             // Method hiding
-            if ((DeclaringType.BaseType?.GetAllMethods().Any(m => m.GetSignatureString() == GetSignatureString() && m.IsHideBySig) ?? false)
+            if ((DeclaringType.BaseType?.GetAllMethods().Any(m => SignatureEquals(m) && m.IsHideBySig) ?? false)
                 && (((Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.ReuseSlot && !IsVirtual)
                     || (Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot))
                 modifiers.Append("new ");
@@ -289,7 +289,23 @@ namespace Il2CppInspector.Reflection
         public string GetFullTypeParametersString() => !GetGenericArguments().Any()? "" :
             "[" + string.Join(",", GetGenericArguments().Select(p => p.Name)) + "]";
 
-        public abstract string GetSignatureString();
+        public bool SignatureEquals(MethodBase other) {
+            if (this == other)
+                return true;
+            if (Name != other.Name)
+                return false;
+            if (DeclaredParameters.Count != other.DeclaredParameters.Count)
+                return false;
+            if (genericArguments.Length != other.genericArguments.Length)
+                return false;
+            if (DeclaredParameters.All(p => !p.ParameterType.ContainsGenericParameters))
+                return Enumerable.SequenceEqual(DeclaredParameters.Select(p => p.ParameterType), other.DeclaredParameters.Select(p => p.ParameterType));
+            // We have to do something more expensive: check to see if the signatures are the same if the method type parameters are equated.
+            // We substitute generic arguments into every parameter type but use a common set of method type parameters.
+            return Enumerable.SequenceEqual(
+                rootDefinition.DeclaredParameters.Select(p => p.ParameterType.SubstituteGenericArguments(DeclaringType.GetGenericArguments(), genericArguments)),
+                other.rootDefinition.DeclaredParameters.Select(p => p.ParameterType.SubstituteGenericArguments(other.DeclaringType.GetGenericArguments(), genericArguments)));
+        }
 
         // List of operator overload metadata names
         // https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/operator-overloads

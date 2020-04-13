@@ -1073,6 +1073,6 @@ namespace Il2CppTests.TestSources
 		public TestNewNonVirtualMethod() {} // 0x0000000180123B00-0x0000000180123B10
 	
 		// Methods
-		public int ValueTypeReturnMethod() => default; // 0x00000001802586A0-0x00000001802586B0
+		public new int ValueTypeReturnMethod() => default; // 0x00000001802586A0-0x00000001802586B0
 	}
 }
