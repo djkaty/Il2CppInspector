@@ -12,7 +12,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Il2CppInspector.Reflection {
+namespace Il2CppInspector.Reflection
+{
     public class TypeInfo : MemberInfo
     {
         // IL2CPP-specific data
@@ -100,7 +101,7 @@ namespace Il2CppInspector.Reflection {
             get {
                 if (declaredConstructors != null)
                     return declaredConstructors.AsReadOnly();
-                if(genericTypeDefinition != null) {
+                if (genericTypeDefinition != null) {
                     var result = genericTypeDefinition.DeclaredConstructors.Select(c => new ConstructorInfo(c, this)).ToList();
                     declaredConstructors = result;
                     return result.AsReadOnly();
@@ -374,7 +375,7 @@ namespace Il2CppInspector.Reflection {
                     return null;
                 if (HasElementType) {
                     var n = ElementType.FullName;
-                    if(n == null)
+                    if (n == null)
                         return null;
                     if (IsArray)
                         n += "[" + new string(',', GetArrayRank() - 1) + "]";
@@ -436,11 +437,11 @@ namespace Il2CppInspector.Reflection {
 
             // Determine using directive to use
             var usingDirective =
-                
+
                 // If the scope of usage is inside the scope in which the type is declared, no additional scope is needed
                 // but we still need to check for ancestor conflicts below
-                usingScopeIsChildOfDeclaringScope? declaringScope
-                
+                usingScopeIsChildOfDeclaringScope ? declaringScope
+
                 // Check to see if there is a namespace in our using directives which brings this type into scope
                 // Sort by descending order of length to search the deepest namespaces first
                 : scope.Namespaces.OrderByDescending(n => n.Length).FirstOrDefault(n => declaringScope == n || declaringScope.StartsWith(n + "."));
@@ -453,8 +454,8 @@ namespace Il2CppInspector.Reflection {
             // The first two must be checked in this order to avoid a . at the start
             // when the mutual root scope and declaring scope are both empty
             var minimallyScopedName =
-                    declaringScope == mutualRootScope? base.Name :
-                    string.IsNullOrEmpty(mutualRootScope)? declaringScope + '.' + base.Name :
+                    declaringScope == mutualRootScope ? base.Name :
+                    string.IsNullOrEmpty(mutualRootScope) ? declaringScope + '.' + base.Name :
                     declaringScope.Substring(mutualRootScope.Length + 1) + '.' + base.Name;
 
             // Find the outermost type name if the wanted type is a nested type (if we need it below)
@@ -469,16 +470,16 @@ namespace Il2CppInspector.Reflection {
             // If the using scope is a child of the declaring scope, we can try every parent scope until we find one that doesn't hide the type
             // Otherwise, we just try the unqualified outer (least nested) type name to make sure it's accessible
             // and revert to the fully qualified name if it's hidden
-            var nsAndTypeHierarchy = usingScopeIsChildOfDeclaringScope? 
+            var nsAndTypeHierarchy = usingScopeIsChildOfDeclaringScope ?
                 usingDirective.Split('.').Append(minimallyScopedName).ToArray()
-                : new [] {outerTypeName};
+                : new[] { outerTypeName };
 
             var hidden = true;
             var foundTypeInAncestorScope = false;
             string testTypeName = "";
 
             for (var depth = nsAndTypeHierarchy.Length - 1; depth >= 0 && hidden; depth--) {
-                testTypeName = nsAndTypeHierarchy[depth] + (testTypeName.Length > 0? "." : "") + testTypeName;
+                testTypeName = nsAndTypeHierarchy[depth] + (testTypeName.Length > 0 ? "." : "") + testTypeName;
 
                 hidden = false;
                 for (var d = scope.Current; d != null && !hidden && !foundTypeInAncestorScope; d = d.DeclaringType) {
@@ -491,7 +492,7 @@ namespace Il2CppInspector.Reflection {
                 // For a child scope, use the shortest found scope
                 // Otherwise, we've confirmed the outer nested type name is not hidden so go ahead and use the nested type name without a namespace
                 if (!hidden)
-                    minimallyScopedName = usingScopeIsChildOfDeclaringScope? testTypeName : Name.Replace('+', '.');
+                    minimallyScopedName = usingScopeIsChildOfDeclaringScope ? testTypeName : Name.Replace('+', '.');
 
                 // If the wanted type is an unhidden ancestor, we don't need any additional scope at all
                 if (foundTypeInAncestorScope)
@@ -548,7 +549,7 @@ namespace Il2CppInspector.Reflection {
             // for generic type parameters
             var outerScope = usingScope;
             if (isPartOfTypeDeclaration)
-                outerScope = new Scope {Current = usingScope.Current?.DeclaringType, Namespaces = usingScope.Namespaces};
+                outerScope = new Scope { Current = usingScope.Current?.DeclaringType, Namespaces = usingScope.Namespaces };
 
             var g = string.Join(", ", getGenericTypeParameters(usingScope).Select(x => x.GetScopedCSharpName(outerScope)));
             if (!string.IsNullOrEmpty(g))
@@ -562,7 +563,7 @@ namespace Il2CppInspector.Reflection {
             if (HasElementType)
                 n = ElementType.GetScopedCSharpName(usingScope);
 
-            return (IsByRef && !omitRef? "ref " : "") + n + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "") + (IsPointer ? "*" : "");
+            return (IsByRef && !omitRef ? "ref " : "") + n + (IsArray ? "[" + new string(',', GetArrayRank() - 1) + "]" : "") + (IsPointer ? "*" : "");
         }
         #endregion
 
@@ -675,7 +676,7 @@ namespace Il2CppInspector.Reflection {
         private readonly int arrayRank;
         public int GetArrayRank() => arrayRank;
 
-        public string[] GetEnumNames() => IsEnum? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.Name).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
+        public string[] GetEnumNames() => IsEnum ? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.Name).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
 
         // The underlying type of an enumeration (int by default)
         private readonly TypeRef enumUnderlyingTypeReference = null;
@@ -686,7 +687,7 @@ namespace Il2CppInspector.Reflection {
             return enumUnderlyingTypeReference.Value;
         }
 
-        public Array GetEnumValues() => IsEnum? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.DefaultValue).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
+        public Array GetEnumValues() => IsEnum ? DeclaredFields.Where(x => x.Name != "value__").Select(x => x.DefaultValue).ToArray() : throw new InvalidOperationException("Type is not an enumeration");
 
         // Initialize type from TypeDef using specified index in metadata
         public TypeInfo(int typeIndex, Assembly owner) : base(owner) {
@@ -811,8 +812,7 @@ namespace Il2CppInspector.Reflection {
                     if (pairedEip.FirstOrDefault(pe => pe.get == null && pe.set.Name == p.Name.Replace(".get_", ".set_")) is (MethodInfo get, MethodInfo set) method) {
                         pairedEip.Remove(method);
                         pairedEip.Add((p, method.set));
-                    }
-                    else
+                    } else
                         pairedEip.Add((p, null));
 
                 // Find getter with no matching setter
@@ -820,8 +820,7 @@ namespace Il2CppInspector.Reflection {
                     if (pairedEip.FirstOrDefault(pe => pe.set == null && pe.get.Name == p.Name.Replace(".set_", ".get_")) is (MethodInfo get, MethodInfo set) method) {
                         pairedEip.Remove(method);
                         pairedEip.Add((method.get, p));
-                    }
-                    else
+                    } else
                         pairedEip.Add((null, p));
             }
 
@@ -882,9 +881,9 @@ namespace Il2CppInspector.Reflection {
                 return typeArguments[GenericParameterPosition];
             else if (IsGenericMethodParameter)
                 return methodArguments[GenericParameterPosition];
-            else if(IsGenericTypeDefinition)
+            else if (IsGenericTypeDefinition)
                 return MakeGenericType(typeArguments);
-            else if(HasElementType) {
+            else if (HasElementType) {
                 var elementType = ElementType.SubstituteGenericArguments(typeArguments, methodArguments);
                 if (IsArray)
                     return elementType.MakeArrayType(GetArrayRank());
@@ -1074,7 +1073,8 @@ namespace Il2CppInspector.Reflection {
             return refList.ToList();
         }
 
-        public string GetAccessModifierString() => this switch {
+        public string GetAccessModifierString() => this switch
+        {
             { IsPublic: true } => "public ",
             { IsNotPublic: true } => "internal ",
 
