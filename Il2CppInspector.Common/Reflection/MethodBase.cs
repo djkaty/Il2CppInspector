@@ -17,7 +17,13 @@ namespace Il2CppInspector.Reflection
         // IL2CPP-specific data
         public Il2CppMethodDefinition Definition { get; }
         public int Index { get; }
-        public (ulong Start, ulong End)? VirtualAddress { get; }
+        public (ulong Start, ulong End)? VirtualAddress { get; set; }
+        // This dictionary will cache all instantiated generic methods.
+        // Only valid for GenericMethodDefinition - not valid on instantiated types!
+        private Dictionary<TypeInfo[], MethodBase> genericMethodInstances;
+
+        // Root method definition: the method with Definition != null
+        protected readonly MethodBase rootDefinition;
 
         // Method.Invoke implementation
         public MethodInvoker Invoker { get; set; }
@@ -26,7 +32,7 @@ namespace Il2CppInspector.Reflection
         public MethodAttributes Attributes { get; protected set; }
 
         // Custom attributes for this member
-        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
+        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(rootDefinition);
 
         public List<ParameterInfo> DeclaredParameters { get; } = new List<ParameterInfo>();
 
@@ -46,7 +52,7 @@ namespace Il2CppInspector.Reflection
 
         public virtual bool RequiresUnsafeContext => DeclaredParameters.Any(p => p.ParameterType.RequiresUnsafeContext);
 
-        // True if the method contains unresolved generic type parameters, or if it is a non-generic method in an open ganeric type
+        // True if the method contains unresolved generic type parameters, or if it is a non-generic method in an open generic type
         // See: https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.containsgenericparameters?view=netframework-4.8
         public bool ContainsGenericParameters => DeclaringType.ContainsGenericParameters || genericArguments.Any(ga => ga.ContainsGenericParameters);
 
@@ -61,9 +67,19 @@ namespace Il2CppInspector.Reflection
         // This was added in .NET Core 2.1 and isn't properly documented yet
         public bool IsConstructedGenericMethod => IsGenericMethod && !IsGenericMethodDefinition;
 
+        // Generic method definition: either a method with Definition != null, or an open method of a generic type
+        private readonly MethodBase genericMethodDefinition;
+        public MethodBase GetGenericMethodDefinition() {
+            if (genericMethodDefinition != null)
+                return genericMethodDefinition;
+            if (genericArguments.Any())
+                return this;
+            throw new InvalidOperationException("This method can only be called on generic methods");
+        }
+
         // See: https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.isgenericmethod?view=netframework-4.8
         public bool IsGenericMethod { get; }
-        public bool IsGenericMethodDefinition => (Definition != null) && genericArguments.Any();
+        public bool IsGenericMethodDefinition => (genericMethodDefinition == null) && genericArguments.Any();
 
         // TODO: GetMethodBody()
 
@@ -98,6 +114,8 @@ namespace Il2CppInspector.Reflection
             // Add to global method definition list
             Assembly.Model.MethodsByDefinitionIndex[Index] = this;
 
+            rootDefinition = this;
+
             // Generic method definition?
             if (Definition.genericContainerIndex >= 0) {
                 IsGenericMethod = true;
@@ -106,6 +124,8 @@ namespace Il2CppInspector.Reflection
                 var container = pkg.GenericContainers[Definition.genericContainerIndex];
                 genericArguments = Enumerable.Range((int)container.genericParameterStart, container.type_argc)
                     .Select(index => Assembly.Model.GetGenericParameterType(index)).ToArray();
+                genericMethodInstances = new Dictionary<TypeInfo[], MethodBase>(new TypeInfo.TypeArgumentsComparer());
+                genericMethodInstances[genericArguments] = this;
             }
 
             // Set method attributes
@@ -145,29 +165,63 @@ namespace Il2CppInspector.Reflection
                 DeclaredParameters.Add(new ParameterInfo(pkg, p, this));
         }
 
-        // Initialize a method from a concrete generic method (MethodSpec)
-        protected MethodBase(Il2CppModel model, Il2CppMethodSpec spec, TypeInfo declaringType) : base(declaringType) {
-            var methodDef = model.MethodsByDefinitionIndex[spec.methodDefinitionIndex];
+        protected MethodBase(MethodBase methodDef, TypeInfo declaringType) : base(declaringType) {
+            if (methodDef.Definition == null)
+                throw new ArgumentException("Argument must be a bare method definition");
 
+            rootDefinition = methodDef;
             Name = methodDef.Name;
             Attributes = methodDef.Attributes;
+            VirtualAddress = methodDef.VirtualAddress;
 
-            if (spec.methodIndexIndex >= 0) {
-                IsGenericMethod = true;
-                genericArguments = model.ResolveGenericArguments(model.Package.GenericInstances[spec.methodIndexIndex]);
-            } else {
-                IsGenericMethod = methodDef.IsGenericMethod;
-                genericArguments = methodDef.GetGenericArguments();
-            }
+            IsGenericMethod = methodDef.IsGenericMethod;
+            genericArguments = methodDef.GetGenericArguments();
             var genericTypeArguments = declaringType.GetGenericArguments();
 
-            // Substitute matching generic type parameters with concrete type arguments
-            DeclaredParameters = methodDef.DeclaredParameters
-                .Select(p => p.SubstituteGenericArguments(genericTypeArguments, genericArguments))
-                .ToList();
+            genericMethodInstances = new Dictionary<TypeInfo[], MethodBase>(new TypeInfo.TypeArgumentsComparer());
+            genericMethodInstances[genericArguments] = this;
 
-            VirtualAddress = model.Package.GetGenericMethodPointer(spec);
+            DeclaredParameters = rootDefinition.DeclaredParameters
+                .Select(p => p.SubstituteGenericArguments(this, genericTypeArguments, genericArguments))
+                .ToList();
         }
+
+        protected MethodBase(MethodBase methodDef, TypeInfo[] typeArguments) : base(methodDef.DeclaringType) {
+            if (!methodDef.IsGenericMethodDefinition)
+                throw new InvalidOperationException(methodDef.Name + " is not a generic method definition.");
+
+            rootDefinition = methodDef.rootDefinition;
+            genericMethodDefinition = methodDef;
+            Name = methodDef.Name;
+            Attributes = methodDef.Attributes;
+            VirtualAddress = methodDef.VirtualAddress;
+
+            IsGenericMethod = true;
+            genericArguments = typeArguments;
+            var genericTypeArguments = DeclaringType.GetGenericArguments();
+
+            DeclaredParameters = rootDefinition.DeclaredParameters
+                .Select(p => p.SubstituteGenericArguments(this, genericTypeArguments, genericArguments))
+                .ToList();
+        }
+
+        // Strictly speaking, this should live in MethodInfo; constructors cannot have generic arguments.
+        // However, Il2Cpp unifies Constructor and Method to a much greater extent, so that's why this is
+        // here instead.
+        public MethodBase MakeGenericMethod(params TypeInfo[] typeArguments) {
+            if (typeArguments.Length != genericArguments.Length) {
+                throw new ArgumentException("The number of generic arguments provided does not match the generic type definition.");
+            }
+
+            MethodBase result;
+            if (genericMethodInstances.TryGetValue(typeArguments, out result))
+                return result;
+            result = MakeGenericMethodImpl(typeArguments);
+            genericMethodInstances[typeArguments] = result;
+            return result;
+        }
+
+        protected abstract MethodBase MakeGenericMethodImpl(TypeInfo[] typeArguments);
 
         public string GetAccessModifierString() => this switch {
             // Static constructors can not have an access level modifier

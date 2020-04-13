@@ -18,11 +18,14 @@ namespace Il2CppInspector.Reflection
         public int Index { get; }
         public ulong DefaultValueMetadataAddress { get; }
 
+        // Root definition: the parameter with Definition != null
+        private readonly ParameterInfo rootDefinition;
+
         // Information/flags about the parameter
         public ParameterAttributes Attributes { get; }
 
         // Custom attributes for this parameter
-        public IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
+        public IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(rootDefinition);
 
         // True if the parameter has a default value
         public bool HasDefaultValue => (Attributes & ParameterAttributes.HasDefault) != 0;
@@ -63,6 +66,7 @@ namespace Il2CppInspector.Reflection
 
             Definition = pkg.Params[Index];
             Name = pkg.Strings[Definition.nameIndex];
+            rootDefinition = this;
 
             // Handle unnamed/obfuscated parameter names
             if (string.IsNullOrEmpty(Name))
@@ -97,9 +101,10 @@ namespace Il2CppInspector.Reflection
         }
 
         // Create a concrete type parameter from a generic type parameter
-        public ParameterInfo(ParameterInfo generic, TypeInfo concrete) {
+        private ParameterInfo(ParameterInfo generic, MethodBase declaringMethod, TypeInfo concrete) {
+            rootDefinition = generic.rootDefinition;
 
-            DeclaringMethod = generic.DeclaringMethod;
+            DeclaringMethod = declaringMethod;
             Name = generic.Name;
             Position = generic.Position;
             Attributes = generic.Attributes;
@@ -110,11 +115,11 @@ namespace Il2CppInspector.Reflection
             DefaultValueMetadataAddress = generic.DefaultValueMetadataAddress;
         }
 
-        public ParameterInfo SubstituteGenericArguments(TypeInfo[] typeArguments, TypeInfo[] methodArguments = null) {
+        public ParameterInfo SubstituteGenericArguments(MethodBase declaringMethod, TypeInfo[] typeArguments, TypeInfo[] methodArguments = null) {
             TypeInfo t = ParameterType.SubstituteGenericArguments(typeArguments, methodArguments);
             if (t == ParameterType)
                 return this;
-            return new ParameterInfo(this, t);
+            return new ParameterInfo(this, declaringMethod, t);
         }
 
         // ref will be handled as part of the type name

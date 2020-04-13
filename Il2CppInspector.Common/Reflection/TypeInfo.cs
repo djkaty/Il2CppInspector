@@ -7,6 +7,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -21,7 +22,7 @@ namespace Il2CppInspector.Reflection {
         // This dictionary will cache all instantiated generic types out of this definition.
         // Only valid for GenericTypeDefinition - not valid on instantiated types!
         private Dictionary<TypeInfo[], TypeInfo> genericTypeInstances;
-        private class TypeArgumentsComparer : EqualityComparer<TypeInfo[]>
+        public class TypeArgumentsComparer : EqualityComparer<TypeInfo[]>
         {
             public override bool Equals(TypeInfo[] x, TypeInfo[] y) {
                 return ((IStructuralEquatable)x).Equals(y, StructuralComparisons.StructuralEqualityComparer);
@@ -94,7 +95,20 @@ namespace Il2CppInspector.Reflection {
         // Custom attributes for this member
         public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(genericTypeDefinition ?? this);
 
-        public List<ConstructorInfo> DeclaredConstructors { get; } = new List<ConstructorInfo>();
+        private List<ConstructorInfo> declaredConstructors;
+        public ReadOnlyCollection<ConstructorInfo> DeclaredConstructors {
+            get {
+                if (declaredConstructors != null)
+                    return declaredConstructors.AsReadOnly();
+                if(genericTypeDefinition != null) {
+                    var result = genericTypeDefinition.DeclaredConstructors.Select(c => new ConstructorInfo(c, this)).ToList();
+                    declaredConstructors = result;
+                    return result.AsReadOnly();
+                }
+                return new List<ConstructorInfo>().AsReadOnly();
+            }
+        }
+
         public List<EventInfo> DeclaredEvents { get; } = new List<EventInfo>();
         public List<FieldInfo> DeclaredFields { get; } = new List<FieldInfo>();
 
@@ -103,7 +117,19 @@ namespace Il2CppInspector.Reflection {
             DeclaredNestedTypes, DeclaredProperties
         }.SelectMany(m => m).ToList();
 
-        public List<MethodInfo> DeclaredMethods { get; } = new List<MethodInfo>();
+        private List<MethodInfo> declaredMethods;
+        public ReadOnlyCollection<MethodInfo> DeclaredMethods {
+            get {
+                if (declaredMethods != null)
+                    return declaredMethods.AsReadOnly();
+                if (genericTypeDefinition != null) {
+                    var result = genericTypeDefinition.DeclaredMethods.Select(c => new MethodInfo(c, this)).ToList();
+                    declaredMethods = result;
+                    return result.AsReadOnly();
+                }
+                return new List<MethodInfo>().AsReadOnly();
+            }
+        }
 
         private readonly TypeRef[] declaredNestedTypes;
         public IEnumerable<TypeInfo> DeclaredNestedTypes {
@@ -140,6 +166,29 @@ namespace Il2CppInspector.Reflection {
             if (IsGenericTypeDefinition)
                 return this;
             throw new InvalidOperationException("This method can only be called on generic types");
+        }
+
+        public ConstructorInfo GetConstructorByDefinition(ConstructorInfo definition) {
+            if (genericTypeDefinition != null) {
+                var collection = genericTypeDefinition.DeclaredConstructors;
+                for (int i = 0; i < collection.Count; i++) {
+                    if (collection[i] == definition)
+                        return DeclaredConstructors[i];
+                }
+            }
+            return definition;
+        }
+
+        // Get a method or constructor by the base type definition of that method
+        public MethodInfo GetMethodByDefinition(MethodInfo definition) {
+            if (genericTypeDefinition != null) {
+                var collection = genericTypeDefinition.DeclaredMethods;
+                for (int i = 0; i < collection.Count; i++) {
+                    if (collection[i] == definition)
+                        return DeclaredMethods[i];
+                }
+            }
+            return definition;
         }
 
         // Get a method by its name
@@ -692,12 +741,14 @@ namespace Il2CppInspector.Reflection {
                 DeclaredFields.Add(new FieldInfo(pkg, f, this));
 
             // Add all methods
+            declaredConstructors = new List<ConstructorInfo>();
+            declaredMethods = new List<MethodInfo>();
             for (var m = Definition.methodStart; m < Definition.methodStart + Definition.method_count; m++) {
                 var method = new MethodInfo(pkg, m, this);
                 if (method.Name == ConstructorInfo.ConstructorName || method.Name == ConstructorInfo.TypeConstructorName)
-                    DeclaredConstructors.Add(new ConstructorInfo(pkg, m, this));
+                    declaredConstructors.Add(new ConstructorInfo(pkg, m, this));
                 else
-                    DeclaredMethods.Add(method);
+                    declaredMethods.Add(method);
             }
 
             // Add all properties
@@ -776,7 +827,7 @@ namespace Il2CppInspector.Reflection {
         // and returns a TypeInfo object representing the resulting constructed type.
         // See: https://docs.microsoft.com/en-us/dotnet/api/system.type.makegenerictype?view=netframework-4.8
         public TypeInfo MakeGenericType(params TypeInfo[] typeArguments) {
-            if(typeArguments.Length != genericArguments.Length) {
+            if (typeArguments.Length != genericArguments.Length) {
                 throw new ArgumentException("The number of generic arguments provided does not match the generic type definition.");
             }
 

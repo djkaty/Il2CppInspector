@@ -98,11 +98,19 @@ namespace Il2CppInspector.Reflection
                     declaringType = declaringType.MakeGenericType(genericArguments);
                 }
 
-                // Concrete instance of a generic method
-                if (methodDefinition is MethodInfo)
-                    GenericMethods[spec] = new MethodInfo(this, spec, declaringType);
+                MethodBase method;
+                if (methodDefinition is ConstructorInfo)
+                    method = declaringType.GetConstructorByDefinition((ConstructorInfo)methodDefinition);
                 else
-                    GenericMethods[spec] = new ConstructorInfo(this, spec, declaringType);
+                    method = declaringType.GetMethodByDefinition((MethodInfo)methodDefinition);
+
+                if (spec.methodIndexIndex != -1) {
+                    var genericInstance = Package.GenericInstances[spec.methodIndexIndex];
+                    var genericArguments = ResolveGenericArguments(genericInstance);
+                    method = method.MakeGenericMethod(genericArguments);
+                }
+                method.VirtualAddress = Package.GetGenericMethodPointer(spec);
+                GenericMethods[spec] = method;
             }
 
             // Find all custom attribute generators (populate AttributesByIndices) (use ToList() to force evaluation)
