@@ -28,10 +28,17 @@ namespace Il2CppInspector.Reflection
             ReturnParameter = new ParameterInfo(pkg, -1, this);
         }
 
-        public MethodInfo(Il2CppModel model, Il2CppMethodSpec spec, TypeInfo declaringType) : base(model, spec, declaringType) {
-            var methodDef = model.MethodsByDefinitionIndex[spec.methodDefinitionIndex];
-            ReturnParameter = ((MethodInfo)methodDef).ReturnParameter.SubstituteGenericArguments(declaringType.GetGenericArguments(), GetGenericArguments());
+        public MethodInfo(MethodInfo methodDef, TypeInfo declaringType) : base(methodDef, declaringType) {
+            ReturnParameter = ((MethodInfo)rootDefinition).ReturnParameter
+                .SubstituteGenericArguments(this, DeclaringType.GetGenericArguments(), GetGenericArguments());
         }
+
+        private MethodInfo(MethodInfo methodDef, TypeInfo[] typeArguments) : base(methodDef, typeArguments) {
+            ReturnParameter = ((MethodInfo)rootDefinition).ReturnParameter
+                .SubstituteGenericArguments(this, DeclaringType.GetGenericArguments(), GetGenericArguments());
+        }
+
+        protected override MethodBase MakeGenericMethodImpl(TypeInfo[] typeArguments) => new MethodInfo(this, typeArguments);
 
         public override string ToString() => ReturnType.Name + " " + Name + GetFullTypeParametersString() + "(" + string.Join(", ", 
                             DeclaredParameters.Select(x => x.ParameterType.IsByRef? x.ParameterType.Name.TrimEnd('&') + " ByRef" : x.ParameterType.Name)) + ")";
