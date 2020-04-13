@@ -41,6 +41,7 @@ namespace Il2CppInspector
             TypeInfo tT = tBase.GenericTypeParameters[0];
             TypeInfo tU = tBase.GenericTypeParameters[1];
             TypeInfo tF = tDerived.GetField("F").FieldType;
+            TypeInfo tF_closed = tDerived_closed.GetField("F").FieldType;
             TypeInfo tNested = asm.GetType("Il2CppTests.TestSources.Derived`1+Nested");
 
             TypeInfo tNG = asm.GetType("Il2CppTests.TestSources.NonGeneric");
@@ -87,6 +88,7 @@ namespace Il2CppInspector
                 (tT, "T", false, false, true, true, 0),
                 (tU, "U", false, false, true, true, 1),
                 (tF, "G`1[Derived`1[V]]", true, false, true, false, -1),
+                (tF_closed, "G`1[Derived`1[System.Int32]]", true, false, false, false, -1),
                 (tNested, "Derived`1[V]+Nested[V]", true, true, true, false, -1),
                 (tB, "B", false, false, true, true, 0),
                 (tB.BaseType, "Derived`1[R]", true, false, true, false, -1),

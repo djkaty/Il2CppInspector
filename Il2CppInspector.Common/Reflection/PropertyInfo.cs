@@ -15,12 +15,14 @@ namespace Il2CppInspector.Reflection {
         // IL2CPP-specific data
         public Il2CppPropertyDefinition Definition { get; }
         public int Index { get; }
+        // Root definition: the property with Definition != null
+        protected readonly PropertyInfo rootDefinition;
 
         public bool CanRead => GetMethod != null;
         public bool CanWrite => SetMethod != null;
 
         // Custom attributes for this member
-        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
+        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(rootDefinition);
 
         public MethodInfo GetMethod { get; }
         public MethodInfo SetMethod { get; }
@@ -50,6 +52,7 @@ namespace Il2CppInspector.Reflection {
             Index = propIndex;
             Definition = pkg.Properties[propIndex];
             Name = pkg.Strings[Definition.nameIndex];
+            rootDefinition = this;
 
             // prop.get and prop.set are method indices from the first method of the declaring type
             if (Definition.get >= 0)
@@ -63,10 +66,19 @@ namespace Il2CppInspector.Reflection {
             base(declaringType) {
             Index = -1;
             Definition = null;
+            rootDefinition = this;
 
             Name = (getter ?? setter).Name.Replace(".get_", ".").Replace(".set_", ".");
             GetMethod = getter;
             SetMethod = setter;
+        }
+
+        public PropertyInfo(PropertyInfo propertyDef, TypeInfo declaringType) : base(declaringType) {
+            rootDefinition = propertyDef;
+
+            Name = propertyDef.Name;
+            GetMethod = declaringType.GetMethodByDefinition(propertyDef.GetMethod);
+            SetMethod = declaringType.GetMethodByDefinition(propertyDef.SetMethod);
         }
     }
 }

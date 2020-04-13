@@ -15,12 +15,14 @@ namespace Il2CppInspector.Reflection
         // IL2CPP-specific data
         public Il2CppEventDefinition Definition { get; }
         public int Index { get; }
+        // Root definition: the event with Definition != null
+        protected readonly EventInfo rootDefinition;
 
         // Information/flags about the event
         public EventAttributes Attributes { get; }
 
         // Custom attributes for this member
-        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(this);
+        public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(rootDefinition);
 
         // Methods for the event
         public MethodInfo AddMethod { get; }
@@ -41,6 +43,7 @@ namespace Il2CppInspector.Reflection
             Definition = pkg.Events[eventIndex];
             Index = eventIndex;
             Name = pkg.Strings[Definition.nameIndex];
+            rootDefinition = this;
 
             eventTypeReference = TypeRef.FromReferenceIndex(Assembly.Model, Definition.typeIndex);
             var eventType = pkg.TypeReferences[Definition.typeIndex];
@@ -56,6 +59,18 @@ namespace Il2CppInspector.Reflection
                 RemoveMethod = declaringType.DeclaredMethods.First(x => x.Index == declaringType.Definition.methodStart + Definition.remove);
             if (Definition.raise >= 0)
                 RaiseMethod = declaringType.DeclaredMethods.First(x => x.Index == declaringType.Definition.methodStart + Definition.raise);
+        }
+
+        public EventInfo(EventInfo eventDef, TypeInfo declaringType) : base(declaringType) {
+            rootDefinition = eventDef;
+
+            Name = eventDef.Name;
+            Attributes = eventDef.Attributes;
+            eventTypeReference = TypeRef.FromTypeInfo(eventDef.EventHandlerType.SubstituteGenericArguments(declaringType.GetGenericArguments()));
+
+            AddMethod = declaringType.GetMethodByDefinition(eventDef.AddMethod);
+            RemoveMethod = declaringType.GetMethodByDefinition(eventDef.RemoveMethod);
+            RaiseMethod = declaringType.GetMethodByDefinition(eventDef.RaiseMethod);
         }
     }
 }
