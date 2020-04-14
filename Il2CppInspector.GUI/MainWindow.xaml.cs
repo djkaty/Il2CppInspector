@@ -28,6 +28,7 @@ using Il2CppInspector.Outputs;
 using Il2CppInspector.Reflection;
 using Ookii.Dialogs.Wpf;
 using Path = System.IO.Path;
+using Il2CppInspector.Outputs.UnityHeaders;
 
 namespace Il2CppInspectorGUI
 {
@@ -167,13 +168,13 @@ namespace Il2CppInspectorGUI
         /// </summary>
         private void LstImages_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
             // Selection has been removed?
-            if (((ListBox) sender).SelectedItem == null) {
+            if (((ListBox)sender).SelectedItem == null) {
                 trvNamespaces.ItemsSource = null;
                 return;
             }
 
             // Get selected image
-            var model = (Il2CppModel) ((ListBox) sender).SelectedItem;
+            var model = (Il2CppModel)((ListBox)sender).SelectedItem;
 
             // Get namespaces
             var namespaces = model.Assemblies.SelectMany(x => x.DefinedTypes).GroupBy(t => t.Namespace).Select(n => n.Key);
@@ -196,6 +197,14 @@ namespace Il2CppInspectorGUI
 
             // Populate TreeView with namespace hierarchy
             trvNamespaces.ItemsSource = namespaceTree;
+
+            var prevSelection = cboUnityVersion.SelectedItem;
+            cboUnityVersion.Items.Clear();
+            foreach (var version in UnityHeader.GuessHeadersForModel(model))
+                cboUnityVersion.Items.Add(version);
+            cboUnityVersion.SelectedIndex = 0;
+            if (prevSelection != null)
+                cboUnityVersion.SelectedItem = prevSelection;
         }
 
         private IEnumerable<CheckboxNode> deconstructNamespaces(IEnumerable<string> input) {
@@ -388,9 +397,11 @@ namespace Il2CppInspectorGUI
 
                     txtBusyStatus.Text = "Generating IDAPython script...";
                     areaBusyIndicator.Visibility = Visibility.Visible;
-
+                    var selectedVersion = ((UnityHeader)cboUnityVersion.SelectedItem)?.MinVersion;
                     await Task.Run(() => {
-                        var idaWriter = new IDAPythonScript(model);
+                        var idaWriter = new IDAPythonScript(model) {
+                            UnityVersion = selectedVersion,
+                        };
                         idaWriter.WriteScriptToFile(outFile);
                     });
                     break;

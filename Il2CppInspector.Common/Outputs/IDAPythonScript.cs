@@ -8,6 +8,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using Il2CppInspector.Reflection;
+using Il2CppInspector.Outputs.UnityHeaders;
 
 namespace Il2CppInspector.Outputs
 {
@@ -15,16 +16,29 @@ namespace Il2CppInspector.Outputs
     {
         private readonly Il2CppModel model;
         private StreamWriter writer;
+        public UnityVersion UnityVersion;
+        private UnityHeader header;
 
         public IDAPythonScript(Il2CppModel model) => this.model = model;
 
         public void WriteScriptToFile(string outputFile) {
+            if (UnityVersion == null) {
+                header = UnityHeader.GuessHeadersForModel(model)[0];
+                UnityVersion = header.MinVersion;
+            } else {
+                header = UnityHeader.GetHeaderForVersion(UnityVersion);
+                if (header.MetadataVersion != model.Package.BinaryImage.Version) {
+                    /* this can only happen in the CLI frontend with a manually-supplied version number */
+                    Console.WriteLine($"Warning: selected version {UnityVersion} (metadata version {header.MetadataVersion}) does not match metadata version {model.Package.BinaryImage.Version}.");
+                }
+            }
+
             using var fs = new FileStream(outputFile, FileMode.Create);
             writer = new StreamWriter(fs, Encoding.UTF8);
 
             writeLine("# Generated script file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty");
+            writeLine("# Target Unity version: " + header);
             writeLine("print('Generated script file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty')");
-
             writeSectionHeader("Preamble");
             writePreamble();
 
@@ -67,6 +81,21 @@ def MakeFunction(start, end):
     ida_funcs.del_func(start)
   ida_funcs.add_func(start, end)"
             );
+
+            // Compatibility (in a separate decl block in case these are already defined)
+            writeDecls(@"
+typedef unsigned __int8 uint8_t;
+typedef unsigned __int16 uint16_t;
+typedef unsigned __int32 uint32_t;
+typedef unsigned __int64 uint64_t;
+typedef __int8 int8_t;
+typedef __int16 int16_t;
+typedef __int32 int32_t;
+typedef __int64 int64_t;
+");
+
+            var prefix = (model.Package.BinaryImage.Bits == 32) ? "#define IS_32BIT\n" : "";
+            writeDecls(prefix + header.GetHeaderText());
         }
 
         private void writeMethods() {
@@ -158,10 +187,18 @@ def MakeFunction(start, end):
 
         private void writeSectionHeader(string sectionName) {
             writeLine("");
-            writeLine($"# SECTION: {sectionName}"); 
+            writeLine($"# SECTION: {sectionName}");
             writeLine($"# -----------------------------");
             writeLine($"print('Processing {sectionName}')");
             writeLine("");
+        }
+
+        private void writeDecls(string decls) {
+            var lines = decls.Replace("\r", "").Split('\n');
+            var cleanLines = lines.Select((s) => s.ToEscapedString());
+            var declString = string.Join('\n', cleanLines);
+            if (declString != "")
+                writeLine("idc.parse_decls('''" + declString + "''')");
         }
 
         private void writeName(ulong address, string name) {

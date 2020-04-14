@@ -10,6 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Outputs\UnityHeaders\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Outputs\UnityHeaders\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 

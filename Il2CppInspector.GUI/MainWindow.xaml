@@ -348,7 +348,10 @@
 
                         <!-- IDAPython script -->
                         <RadioButton GroupName="grpOutputType" Name="rdoOutputIDA" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">IDAPython script</RadioButton>
-                        <TextBlock TextWrapping="WrapWithOverflow">No configuration required for IDA script output</TextBlock>
+                        <DockPanel>
+                            <ComboBox Name="cboUnityVersion" DockPanel.Dock="Right" Margin="4"></ComboBox>
+                            <Label DockPanel.Dock="Left" Width="170" VerticalAlignment="Center" HorizontalAlignment="Left">Unity version (if known):</Label>
+                        </DockPanel>
                     </StackPanel>
                 </DockPanel>
             </DockPanel>
