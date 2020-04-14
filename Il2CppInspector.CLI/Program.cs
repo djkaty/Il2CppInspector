@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using CommandLine;
 using Il2CppInspector.Reflection;
 using Il2CppInspector.Outputs;
+using Il2CppInspector.Outputs.UnityHeaders;
 
 namespace Il2CppInspector.CLI
 {
@@ -71,6 +71,9 @@ namespace Il2CppInspector.CLI
 
             [Option("unity-assemblies", Required = false, HelpText = "Path to Unity script assemblies (when using --project). Wildcards select last matching folder in alphanumeric order", Default = @"C:\Program Files\Unity\Hub\Editor\*\Editor\Data\Resources\PackageManager\ProjectTemplates\libcache\com.unity.template.3d-*\ScriptAssemblies")]
             public string UnityAssembliesPath { get; set; }
+
+            [Option("unity-version", Required = false, HelpText = "Version of Unity used to create the input files, if known. Used to enhance IDA Python script output. If not specified, a close match will be inferred automatically.", Default = null)]
+            public UnityVersion UnityVersion { get; set; }
         }
 
         // Adapted from: https://stackoverflow.com/questions/16376191/measuring-code-execution-time
@@ -233,7 +236,9 @@ namespace Il2CppInspector.CLI
 
                 // IDA Python script output
                 using (var scriptDumperTimer = new Benchmark("IDA Python Script Dumper")) {
-                    var idaWriter = new IDAPythonScript(model);
+                    var idaWriter = new IDAPythonScript(model) {
+                        UnityVersion = options.UnityVersion,
+                    };
                     idaWriter.WriteScriptToFile(options.PythonOutFile);
                 }
             }
