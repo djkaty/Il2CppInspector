@@ -72,15 +72,9 @@ def SetName(addr, name):
     new_name = name + '_' + str(addr)
     ret = idc.set_name(addr, new_name, SN_NOWARN | SN_NOCHECK)
 
-def MakeFunction(start, end):
-  next_func = idc.get_next_func(start)
-  if next_func < end:
-    end = next_func
-  current_func = idaapi.get_func(start)
-  if current_func is not None and current_func.startEA == start:
-    ida_funcs.del_func(start)
-  ida_funcs.add_func(start, end)"
-            );
+def MakeFunction(start):
+  ida_funcs.add_func(start)
+");
 
             // Compatibility (in a separate decl block in case these are already defined)
             writeDecls(@"
@@ -162,8 +156,7 @@ typedef __int64 int64_t;
 
         private void writeFunctions() {
             foreach (var func in model.Package.FunctionAddresses)
-                if (func.Key != func.Value)
-                    writeLine($"MakeFunction({func.Key.ToAddressString()}, {func.Value.ToAddressString()})");
+                writeLine($"MakeFunction({func.Key.ToAddressString()})");
         }
 
         private void writeMetadata() {
