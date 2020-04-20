@@ -210,7 +210,7 @@ namespace Il2CppInspector.Reflection
             if (genericTypeDefinition != null) {
                 var collection = genericTypeDefinition.DeclaredConstructors;
                 for (int i = 0; i < collection.Count; i++) {
-                    if (collection[i] == definition)
+                    if (collection[i].RootDefinition == definition.RootDefinition)
                         return DeclaredConstructors[i];
                 }
             }
@@ -222,7 +222,7 @@ namespace Il2CppInspector.Reflection
             if (genericTypeDefinition != null) {
                 var collection = genericTypeDefinition.DeclaredMethods;
                 for (int i = 0; i < collection.Count; i++) {
-                    if (collection[i] == definition)
+                    if (collection[i].RootDefinition == definition.RootDefinition)
                         return DeclaredMethods[i];
                 }
             }
@@ -250,15 +250,29 @@ namespace Il2CppInspector.Reflection
         public PropertyInfo GetProperty(string name) => DeclaredProperties.FirstOrDefault(p => p.Name == name);
 
         public MethodBase[] GetVTable() {
-            var definition = Definition;
-
-            MetadataUsage[] vt = Assembly.Model.Package.GetVTable(definition);
-            MethodBase[] res = new MethodBase[vt.Length];
-            for (int i = 0; i < vt.Length; i++) {
-                if (vt[i] != null)
-                    res[i] = Assembly.Model.GetMetadataUsageMethod(vt[i]);
+            if (Definition != null) {
+                MetadataUsage[] vt = Assembly.Model.Package.GetVTable(Definition);
+                MethodBase[] res = new MethodBase[vt.Length];
+                for (int i = 0; i < vt.Length; i++) {
+                    if (vt[i] != null)
+                        res[i] = Assembly.Model.GetMetadataUsageMethod(vt[i]);
+                }
+                return res;
+            } else if (genericTypeDefinition != null) {
+                MethodBase[] baseVt = genericTypeDefinition.GetVTable();
+                MethodBase[] res = new MethodBase[baseVt.Length];
+                for (int i = 0; i < baseVt.Length; i++) {
+                    if (baseVt[i] == null)
+                        continue;
+                    var declaringType = baseVt[i].DeclaringType.SubstituteGenericArguments(genericArguments);
+                    if (baseVt[i] is ConstructorInfo ci)
+                        res[i] = declaringType.GetConstructorByDefinition(ci);
+                    else
+                        res[i] = declaringType.GetMethodByDefinition((MethodInfo)baseVt[i]);
+                }
+                return res;
             }
-            return res;
+            return null;
         }
 
         // Method that the type is declared in if this is a type parameter of a generic method
