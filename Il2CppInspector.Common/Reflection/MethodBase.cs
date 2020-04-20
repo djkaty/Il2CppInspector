@@ -76,6 +76,7 @@ namespace Il2CppInspector.Reflection
                 return this;
             throw new InvalidOperationException("This method can only be called on generic methods");
         }
+        public MethodBase RootDefinition => rootDefinition;
 
         // See: https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.isgenericmethod?view=netframework-4.8
         public bool IsGenericMethod { get; }

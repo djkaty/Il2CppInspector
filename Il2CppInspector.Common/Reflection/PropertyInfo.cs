@@ -77,8 +77,10 @@ namespace Il2CppInspector.Reflection {
             rootDefinition = propertyDef;
 
             Name = propertyDef.Name;
-            GetMethod = declaringType.GetMethodByDefinition(propertyDef.GetMethod);
-            SetMethod = declaringType.GetMethodByDefinition(propertyDef.SetMethod);
+            if (propertyDef.GetMethod != null)
+                GetMethod = declaringType.GetMethodByDefinition(propertyDef.GetMethod);
+            if (propertyDef.SetMethod != null)
+                SetMethod = declaringType.GetMethodByDefinition(propertyDef.SetMethod);
         }
     }
 }
