@@ -9,6 +9,7 @@ using System.IO;
 using System.Text;
 using Il2CppInspector.Reflection;
 using Il2CppInspector.Outputs.UnityHeaders;
+using System.Text.RegularExpressions;
 
 namespace Il2CppInspector.Outputs
 {
@@ -61,11 +62,6 @@ namespace Il2CppInspector.Outputs
             writeLine(
 @"import idaapi
 
-def SetString(addr, comm):
-  name = 'StringLiteral_' + str(addr)
-  ret = idc.set_name(addr, name, SN_NOWARN)
-  idc.set_cmt(addr, comm, 1)
-
 def SetName(addr, name):
   ret = idc.set_name(addr, name, SN_NOWARN | SN_NOCHECK)
   if ret == 0:
@@ -74,6 +70,11 @@ def SetName(addr, name):
 
 def MakeFunction(start):
   ida_funcs.add_func(start)
+
+def SetType(addr, type):
+  ret = idc.SetType(addr, type)
+  if ret == 0:
+    print('SetType(0x%x, %r) failed!' % (addr, type))
 ");
 
             // Compatibility (in a separate decl block in case these are already defined)
@@ -94,17 +95,10 @@ typedef __int64 int64_t;
 
         private void writeMethods() {
             writeSectionHeader("Method definitions");
-            foreach (var type in model.Types) {
-                writeMethods(type.Name, type.DeclaredConstructors);
-                writeMethods(type.Name, type.DeclaredMethods);
-            }
+            writeMethods(model.MethodsByDefinitionIndex);
 
             writeSectionHeader("Constructed generic methods");
-            foreach (var method in model.GenericMethods.Values.Where(m => m.VirtualAddress.HasValue)) {
-                var address = method.VirtualAddress.Value.Start;
-                writeName(address, $"{method.DeclaringType.Name}_{method.Name}{method.GetFullTypeParametersString()}");
-                writeComment(address, method);
-            }
+            writeMethods(model.GenericMethods.Values);
 
             writeSectionHeader("Custom attributes generators");
             foreach (var method in model.AttributesByIndices.Values.Where(m => m.VirtualAddress.HasValue)) {
@@ -121,35 +115,68 @@ typedef __int64 int64_t;
             }
         }
 
-        private void writeMethods(string typeName, IEnumerable<MethodBase> methods) {
+        private void writeMethods(IEnumerable<MethodBase> methods) {
             foreach (var method in methods.Where(m => m.VirtualAddress.HasValue)) {
                 var address = method.VirtualAddress.Value.Start;
-                writeName(address, $"{typeName}_{method.Name}");
+                writeName(address, $"{method.DeclaringType.Name}_{method.Name}{method.GetFullTypeParametersString()}");
                 writeComment(address, method);
             }
         }
 
+        private static string sanitizeIdentifier(string str) {
+            return Regex.Replace(str, "[^a-zA-Z0-9_]", "_");
+        }
+
+        private static string stringToIdentifier(string str) {
+            str = str.Substring(0, Math.Min(32, str.Length));
+            return sanitizeIdentifier(str);
+        }
+
         private void writeUsages() {
             if (model.Package.MetadataUsages == null) {
-                /* Version < 19 - no MetadataUsages table */
+                /* Version < 19 calls `il2cpp_codegen_string_literal_from_index` to get string literals.
+                 * Unfortunately, metadata references are just loose globals in Il2CppMetadataUsage.cpp
+                 * so we can't automatically name those. Next best thing is to define an enum for the strings. */
+                var enumSrc = new StringBuilder();
+                enumSrc.Append("enum StringLiteralIndex {\n");
+                for (int i = 0; i < model.Package.StringLiterals.Length; i++) {
+                    var str = model.Package.StringLiterals[i];
+                    enumSrc.Append($"  STRINGLITERAL_{i}_{stringToIdentifier(str)},\n");
+                }
+                enumSrc.Append("};\n");
+
+                writeDecls(enumSrc.ToString());
+
                 return;
             }
 
             foreach (var usage in model.Package.MetadataUsages) {
                 var address = usage.VirtualAddress;
-                var name = model.GetMetadataUsageName(usage);
+                string name;
 
-                if (usage.Type != MetadataUsageType.StringLiteral)
-                    writeName(address, $"{name}_{usage.Type}");
-                else
-                    writeString(address, name);
-
-                if (usage.Type == MetadataUsageType.MethodDef || usage.Type == MetadataUsageType.MethodRef) {
-                    var method = model.GetMetadataUsageMethod(usage);
-                    writeComment(address, method);
-                } else if (usage.Type != MetadataUsageType.StringLiteral) {
-                    var type = model.GetMetadataUsageType(usage);
-                    writeComment(address, type);
+                switch (usage.Type) {
+                    case MetadataUsageType.StringLiteral:
+                        var str = model.GetMetadataUsageName(usage);
+                        writeName(address, $"StringLiteral_{stringToIdentifier(str)}");
+                        writeComment(address, str);
+                        break;
+                    case MetadataUsageType.Type:
+                    case MetadataUsageType.TypeInfo:
+                        var type = model.GetMetadataUsageType(usage);
+                        name = sanitizeIdentifier(type.Name);
+                        if (usage.Type == MetadataUsageType.TypeInfo)
+                            writeTypedName(address, $"struct Il2CppClass *", $"{name}__TypeInfo");
+                        else
+                            writeTypedName(address, $"struct Il2CppType *", $"{name}__TypeRef");
+                        writeComment(address, type.CSharpName);
+                        break;
+                    case MetadataUsageType.MethodDef:
+                    case MetadataUsageType.MethodRef:
+                        var method = model.GetMetadataUsageMethod(usage);
+                        name = sanitizeIdentifier(method.Name);
+                        writeTypedName(address, "struct MethodInfo *", $"{name}__MethodInfo");
+                        writeComment(address, method);
+                        break;
                 }
             }
         }
@@ -164,15 +191,16 @@ typedef __int64 int64_t;
 
             // TODO: In the future, add struct definitions/fields, data ranges and the entire IL2CPP metadata tree
 
-            writeName(binary.CodeRegistrationPointer, "g_CodeRegistration");
-            writeName(binary.MetadataRegistrationPointer, "g_MetadataRegistration");
+            writeTypedName(binary.CodeRegistrationPointer, "struct Il2CppCodeRegistration", "g_CodeRegistration");
+            writeTypedName(binary.MetadataRegistrationPointer, "struct Il2CppMetadataRegistration", "g_MetadataRegistration");
 
             if (model.Package.Version >= 24.2)
-                writeName(binary.CodeRegistration.pcodeGenModules, "g_CodeGenModules");
+                writeTypedName(binary.CodeRegistration.pcodeGenModules,
+                    $"struct Il2CppCodeGenModule *[{binary.CodeRegistration.codeGenModulesCount}]", "g_CodeGenModules");
 
             foreach (var ptr in binary.CodeGenModulePointers)
-                writeName(ptr.Value, $"g_{ptr.Key.Replace(".dll", "")}CodeGenModule");
-            
+                writeTypedName(ptr.Value, "struct Il2CppCodeGenModule", $"g_{ptr.Key.Replace(".dll", "")}CodeGenModule");
+
             // This will be zero if we found the structs from the symbol table
             if (binary.RegistrationFunctionPointer != 0)
                 writeName(binary.RegistrationFunctionPointer, "__GLOBAL__sub_I_Il2CppCodeRegistration.cpp");
@@ -198,8 +226,9 @@ typedef __int64 int64_t;
             writeLine($"SetName({address.ToAddressString()}, r'{name.ToEscapedString()}')");
         }
 
-        private void writeString(ulong address, string str) {
-            writeLine($"SetString({address.ToAddressString()}, r'{str.ToEscapedString()}')");
+        private void writeTypedName(ulong address, string type, string name) {
+            writeName(address, name);
+            writeLine($"SetType({address.ToAddressString()}, r'{type.ToEscapedString()}')");
         }
 
         private void writeComment(ulong address, object comment) {
