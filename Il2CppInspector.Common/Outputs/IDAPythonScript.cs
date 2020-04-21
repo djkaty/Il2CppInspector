@@ -18,27 +18,19 @@ namespace Il2CppInspector.Outputs
         private readonly Il2CppModel model;
         private StreamWriter writer;
         public UnityVersion UnityVersion;
-        private UnityHeader header;
+        private CppDeclarations typeGenerator;
 
         public IDAPythonScript(Il2CppModel model) => this.model = model;
 
         public void WriteScriptToFile(string outputFile) {
-            if (UnityVersion == null) {
-                header = UnityHeader.GuessHeadersForModel(model)[0];
-                UnityVersion = header.MinVersion;
-            } else {
-                header = UnityHeader.GetHeaderForVersion(UnityVersion);
-                if (header.MetadataVersion != model.Package.BinaryImage.Version) {
-                    /* this can only happen in the CLI frontend with a manually-supplied version number */
-                    Console.WriteLine($"Warning: selected version {UnityVersion} (metadata version {header.MetadataVersion}) does not match metadata version {model.Package.BinaryImage.Version}.");
-                }
-            }
+            typeGenerator = new CppDeclarations(model, UnityVersion);
+            UnityVersion = typeGenerator.UnityVersion;
 
             using var fs = new FileStream(outputFile, FileMode.Create);
             writer = new StreamWriter(fs, Encoding.UTF8);
 
             writeLine("# Generated script file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty");
-            writeLine("# Target Unity version: " + header);
+            writeLine("# Target Unity version: " + typeGenerator.UnityHeader.ToString());
             writeLine("print('Generated script file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty')");
             writeSectionHeader("Preamble");
             writePreamble();
@@ -90,7 +82,7 @@ typedef __int64 int64_t;
 ");
 
             var prefix = (model.Package.BinaryImage.Bits == 32) ? "#define IS_32BIT\n" : "";
-            writeDecls(prefix + header.GetHeaderText());
+            writeDecls(prefix + typeGenerator.UnityHeader.GetHeaderText());
         }
 
         private void writeMethods() {
@@ -117,8 +109,10 @@ typedef __int64 int64_t;
 
         private void writeMethods(IEnumerable<MethodBase> methods) {
             foreach (var method in methods.Where(m => m.VirtualAddress.HasValue)) {
+                typeGenerator.VisitMethod(method);
+                writeDecls(typeGenerator.GenerateVisitedTypes());
                 var address = method.VirtualAddress.Value.Start;
-                writeName(address, $"{method.DeclaringType.Name}_{method.Name}{method.GetFullTypeParametersString()}");
+                writeTypedName(address, typeGenerator.GenerateMethodDeclaration(method), typeGenerator.MethodNamer.GetName(method));
                 writeComment(address, method);
             }
         }
@@ -163,9 +157,12 @@ typedef __int64 int64_t;
                     case MetadataUsageType.Type:
                     case MetadataUsageType.TypeInfo:
                         var type = model.GetMetadataUsageType(usage);
-                        name = sanitizeIdentifier(type.Name);
+                        typeGenerator.VisitType(type);
+                        writeDecls(typeGenerator.GenerateVisitedTypes());
+
+                        name = typeGenerator.TypeNamer.GetName(type);
                         if (usage.Type == MetadataUsageType.TypeInfo)
-                            writeTypedName(address, $"struct Il2CppClass *", $"{name}__TypeInfo");
+                            writeTypedName(address, $"struct {name}__Class *", $"{name}__TypeInfo");
                         else
                             writeTypedName(address, $"struct Il2CppType *", $"{name}__TypeRef");
                         writeComment(address, type.CSharpName);
@@ -173,7 +170,10 @@ typedef __int64 int64_t;
                     case MetadataUsageType.MethodDef:
                     case MetadataUsageType.MethodRef:
                         var method = model.GetMetadataUsageMethod(usage);
-                        name = sanitizeIdentifier(method.Name);
+                        typeGenerator.VisitMethod(method);
+                        writeDecls(typeGenerator.GenerateVisitedTypes());
+
+                        name = typeGenerator.MethodNamer.GetName(method);
                         writeTypedName(address, "struct MethodInfo *", $"{name}__MethodInfo");
                         writeComment(address, method);
                         break;
