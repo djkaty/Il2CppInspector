@@ -65,7 +65,7 @@ def MakeFunction(start):
 
 def SetType(addr, type):
   ret = idc.SetType(addr, type)
-  if ret == 0:
+  if ret is None:
     print('SetType(0x%x, %r) failed!' % (addr, type))
 ");
 
