@@ -1,0 +1,481 @@
+﻿using Il2CppInspector.Outputs.UnityHeaders;
+using Il2CppInspector.Reflection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+
+namespace Il2CppInspector.Outputs
+{
+    public class CppDeclarations
+    {
+        private readonly Il2CppModel model;
+
+        public UnityVersion UnityVersion { get; }
+        public UnityHeader UnityHeader { get; }
+
+        // How inheritance of type structs should be represented.
+        public enum InheritanceStyleEnum
+        {
+            C,      // Inheritance structs use C syntax, and will automatically choose MSVC or GCC based on inferred compiler.
+            MSVC,   // Inheritance structs are laid out assuming the MSVC compiler, which recursively includes base classes
+            GCC,    // Inheritance structs are laid out assuming the GCC compiler, which packs members from all bases + current class together
+        }
+        public InheritanceStyleEnum InheritanceStyle;
+
+        public CppDeclarations(Il2CppModel model, UnityVersion version) {
+            this.model = model;
+            if (version == null) {
+                UnityHeader = UnityHeader.GuessHeadersForModel(model)[0];
+                UnityVersion = UnityHeader.MinVersion;
+            } else {
+                UnityVersion = version;
+                UnityHeader = UnityHeader.GetHeaderForVersion(version);
+                if (UnityHeader.MetadataVersion != model.Package.BinaryImage.Version) {
+                    /* this can only happen in the CLI frontend with a manually-supplied version number */
+                    Console.WriteLine($"Warning: selected version {UnityVersion} (metadata version {UnityHeader.MetadataVersion})" +
+                        $" does not match metadata version {model.Package.BinaryImage.Version}.");
+                }
+            }
+
+            InitializeNaming();
+            InitializeConcreteImplementations();
+        }
+
+        private void GuessInheritanceStyle() {
+            if (InheritanceStyle == InheritanceStyleEnum.C) {
+                if (model.Package.BinaryImage is PEReader)
+                    InheritanceStyle = InheritanceStyleEnum.MSVC;
+                else
+                    InheritanceStyle = InheritanceStyleEnum.GCC;
+            }
+        }
+
+        private string AsCType(TypeInfo ti) {
+            // IsArray case handled by TypeNamer.GetName
+            if (ti.IsByRef || ti.IsPointer) {
+                return $"{AsCType(ti.ElementType)} *";
+            } else if (ti.IsValueType) {
+                if (ti.IsPrimitive) {
+                    switch (ti.Name) {
+                        case "Boolean": return "bool";
+                        case "Byte": return "uint8_t";
+                        case "SByte": return "int8_t";
+                        case "Int16": return "int16_t";
+                        case "UInt16": return "uint16_t";
+                        case "Int32": return "int32_t";
+                        case "UInt32": return "uint32_t";
+                        case "Int64": return "int64_t";
+                        case "UInt64": return "uint64_t";
+                        case "IntPtr": return "void *";
+                        case "UIntPtr": return "void *";
+                        case "Char": return "uint16_t";
+                        case "Double": return "double";
+                        case "Single": return "float";
+                    }
+                }
+                return $"struct {TypeNamer.GetName(ti)}";
+            } else if (ti.IsEnum) {
+                return $"enum {TypeNamer.GetName(ti)}";
+            }
+            return $"struct {TypeNamer.GetName(ti)} *";
+        }
+
+        #region Field Struct Generation
+        private readonly HashSet<TypeInfo> VisitedFieldStructs = new HashSet<TypeInfo>();
+        private readonly List<TypeInfo> TodoFieldStructs = new List<TypeInfo>();
+
+        private void VisitFieldStructs(TypeInfo ti) {
+            if (VisitedFieldStructs.Contains(ti))
+                return;
+            if (ti.HasElementType || ti.ContainsGenericParameters)
+                return;
+            VisitedFieldStructs.Add(ti);
+
+            if (ti.BaseType != null)
+                VisitFieldStructs(ti.BaseType);
+
+            if (ti.GetEnumUnderlyingType() != null)
+                VisitFieldStructs(ti.GetEnumUnderlyingType());
+
+            foreach (var fi in ti.DeclaredFields)
+                if (!fi.IsStatic && !fi.IsLiteral && (fi.FieldType.IsEnum || fi.FieldType.IsValueType))
+                    VisitFieldStructs(fi.FieldType);
+
+            TodoFieldStructs.Add(ti);
+        }
+
+        private void GenerateObjectFields(StringBuilder csrc, TypeInfo ti) {
+            csrc.Append(
+                $"  struct {TypeNamer.GetName(ti)}__Class *klass;\n" +
+                $"  struct MonitorData *monitor;\n");
+        }
+
+        private void GenerateFieldList(StringBuilder csrc, Namespace ns, TypeInfo ti, bool isStatic) {
+            if (ti.FullName == "System.Array" && !isStatic) {
+                // System.Array is slightly special - instances are Il2CppArray*
+                // It otherwise behaves like a ref type
+                csrc.Append(
+                    $"  struct Il2CppArrayBounds *bounds;\n" +
+                    $"  il2cpp_array_size_t max_length;\n" +
+                    $"  void *vector[32];\n");
+                return;
+            }
+
+            var namer = ns.MakeNamer<FieldInfo>((field) => sanitizeIdentifier(field.Name));
+            foreach (var field in ti.DeclaredFields) {
+                if (field.IsLiteral || (field.IsStatic != isStatic))
+                    continue;
+                csrc.Append($"  {AsCType(field.FieldType)} {namer.GetName(field)};\n");
+            }
+        }
+
+        private void GenerateValueFieldStruct(StringBuilder csrc, TypeInfo ti) {
+            string name = TypeNamer.GetName(ti);
+            if (ti.IsEnum) {
+                // Enums should be represented using enum syntax
+                // They otherwise behave like value types
+                var namer = GlobalsNamespace.MakeNamer<FieldInfo>((field) => sanitizeIdentifier($"{name}_{field.Name}"));
+                csrc.Append($"enum {name} : {AsCType(ti.GetEnumUnderlyingType())} {{\n");
+                foreach (var field in ti.DeclaredFields) {
+                    if (field.Name != "value__")
+                        csrc.Append($"  {namer.GetName(field)} = {field.DefaultValue},\n");
+                }
+                csrc.Append($"}};\n");
+            } else {
+                // This structure is passed by value, so it doesn't include Il2CppObject fields.
+                csrc.Append($"struct {name} {{\n");
+                GenerateFieldList(csrc, CreateNamespace(), ti, isStatic: false);
+                csrc.Append($"}};\n");
+            }
+
+            // Also generate the boxed form of the structure which includes the Il2CppObject header.
+            csrc.Append($"struct {name}__Boxed {{\n");
+            GenerateObjectFields(csrc, ti);
+            csrc.Append($"  {AsCType(ti)} fields;\n");
+            csrc.Append($"}};\n");
+        }
+
+        private void GenerateRefFieldStruct(StringBuilder csrc, TypeInfo ti) {
+            var name = TypeNamer.GetName(ti);
+            if (InheritanceStyle == InheritanceStyleEnum.C)
+                GuessInheritanceStyle();
+
+            /* Generate a list of all base classes starting from the root */
+            List<TypeInfo> baseClasses = new List<TypeInfo>();
+            for (var bti = ti; bti != null; bti = bti.BaseType)
+                baseClasses.Add(bti);
+            baseClasses.Reverse();
+
+            var ns = CreateNamespace();
+
+            if (InheritanceStyle == InheritanceStyleEnum.MSVC) {
+                /* MSVC style: classes directly contain their base class as the first member.
+                 * This causes all classes to be aligned to the alignment of their base class. */
+                TypeInfo firstNonEmpty = null;
+                foreach (var bti in baseClasses) {
+                    if (bti.DeclaredFields.Where((field) => !field.IsStatic && !field.IsLiteral).Any()) {
+                        firstNonEmpty = bti;
+                        break;
+                    }
+                }
+                if (firstNonEmpty == null) {
+                    /* This struct is completely empty. Omit __Fields entirely. */
+                    csrc.Append($"struct {name} {{\n");
+                    GenerateObjectFields(csrc, ti);
+                    csrc.Append($"}};\n");
+                } else {
+                    if (firstNonEmpty == ti) {
+                        /* All base classes are empty, so this class forms the root of a new hierarchy.
+                         * We have to be a little careful: the rootmost class needs to have its alignment
+                         * set to that of Il2CppObject, but we can't explicitly include Il2CppObject
+                         * in the hierarchy because we want to customize the type of the klass parameter. */
+                        var align = (model.Package.BinaryImage.Bits == 32) ? 4 : 8;
+                        csrc.Append($"struct __declspec(align({align})) {name}__Fields {{\n");
+                        GenerateFieldList(csrc, ns, ti, isStatic: false);
+                        csrc.Append($"}};\n");
+                    } else {
+                        /* Include the base class fields. Alignment will be dictated by the hierarchy. */
+                        ns.ReserveName("_");
+                        csrc.Append($"struct {name}__Fields {{\n");
+                        csrc.Append($"  struct {TypeNamer.GetName(ti.BaseType)}__Fields _;\n");
+                        GenerateFieldList(csrc, ns, ti, isStatic: false);
+                        csrc.Append($"}};\n");
+                    }
+                    csrc.Append($"struct {name} {{\n");
+                    GenerateObjectFields(csrc, ti);
+                    csrc.Append($"  struct {name}__Fields fields;\n");
+                    csrc.Append($"}};\n");
+                }
+            } else if (InheritanceStyle == InheritanceStyleEnum.GCC) {
+                /* GCC style: after the base class, all fields in the hierarchy are concatenated.
+                 * This saves space (fields are "packed") but requires us to repeat fields from
+                 * base classes. */
+                ns.ReserveName("klass");
+                ns.ReserveName("monitor");
+
+                csrc.Append($"struct {name} {{\n");
+                GenerateObjectFields(csrc, ti);
+                foreach (var bti in baseClasses)
+                    GenerateFieldList(csrc, ns, bti, isStatic: false);
+                csrc.Append($"}};\n");
+            }
+        }
+
+        private void GenerateVisitedFieldStructs(StringBuilder csrc) {
+            foreach (var ti in TodoFieldStructs) {
+                if (ti.IsEnum || ti.IsValueType)
+                    GenerateValueFieldStruct(csrc, ti);
+                else
+                    GenerateRefFieldStruct(csrc, ti);
+            }
+            TodoFieldStructs.Clear();
+        }
+        #endregion
+
+        #region Class Struct Generation
+        private Dictionary<TypeInfo, TypeInfo> ConcreteImplementations = new Dictionary<TypeInfo, TypeInfo>();
+        /// <summary>
+        /// VTables for abstract types have "null" in place of abstract functions.
+        /// This function searches for concrete implementations so that we can properly
+        /// populate the abstract class VTables.
+        /// </summary>
+        private void InitializeConcreteImplementations() {
+            foreach (var ti in model.Types) {
+                if (ti.HasElementType || ti.IsAbstract || ti.IsGenericParameter)
+                    continue;
+                var baseType = ti.BaseType;
+                while (baseType != null) {
+                    if (baseType.IsAbstract && !ConcreteImplementations.ContainsKey(baseType))
+                        ConcreteImplementations[baseType] = ti;
+                    baseType = baseType.BaseType;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Obtain the vtables for a given type, with implementations of abstract methods filled in.
+        /// </summary>
+        /// <param name="ti"></param>
+        /// <returns></returns>
+        private MethodBase[] GetFilledVTable(TypeInfo ti) {
+            MethodBase[] res = ti.GetVTable();
+            /* An abstract type will have null in the vtable for abstract methods.
+             * In order to recover the correct method signature for such abstract
+             * methods, we replace the corresponding vtable slot with an
+             * implementation from a concrete subclass, as the name and signature
+             * must match.
+             * Note that, for the purposes of creating type structures, we don't
+             * care which concrete implementation we put in this table! The name
+             * and signature will always match that of the abstract type.
+             */
+            if (ti.IsAbstract && ConcreteImplementations.ContainsKey(ti)) {
+                res = (MethodBase[])res.Clone();
+                MethodBase[] impl = ConcreteImplementations[ti].GetVTable();
+                for (int i = 0; i < res.Length; i++) {
+                    if (res[i] == null)
+                        res[i] = impl[i];
+                }
+            }
+            return res;
+        }
+
+        private readonly HashSet<TypeInfo> VisitedTypes = new HashSet<TypeInfo>();
+        private readonly List<TypeInfo> TodoTypeStructs = new List<TypeInfo>();
+
+        /// <summary>
+        /// Visit a type and all types it depends on. Must call this before generating type structs.
+        /// </summary>
+        /// <param name="ti"></param>
+        public void VisitType(TypeInfo ti) {
+            if (VisitedTypes.Contains(ti))
+                return;
+            if (ti.ContainsGenericParameters)
+                return;
+            VisitedTypes.Add(ti);
+
+            if (ti.IsArray) {
+                TodoTypeStructs.Add(ti);
+                VisitType(ti.ElementType);
+                return;
+            } else if (ti.HasElementType) {
+                VisitType(ti.ElementType);
+                return;
+            }
+
+            // Visit all fields first, considering only value types,
+            // so that we can get the layout correct.
+            VisitFieldStructs(ti);
+
+            if (ti.BaseType != null)
+                VisitType(ti.BaseType);
+
+            TypeNamer.GetName(ti);
+
+            foreach (var fi in ti.DeclaredFields)
+                VisitType(fi.FieldType);
+
+            foreach (var mi in GetFilledVTable(ti))
+                if (mi != null && !mi.ContainsGenericParameters)
+                    VisitMethod(mi);
+
+            TodoTypeStructs.Add(ti);
+        }
+
+        private void GenerateTypeStruct(StringBuilder csrc, TypeInfo ti) {
+            /* TODO */
+        }
+
+        /// <summary>
+        /// Generate every type that has been visited so far. Types that have previously been generated
+        /// by this instance will not be generated again.
+        /// </summary>
+        /// <returns>A string containing C type declarations</returns>
+        public string GenerateVisitedTypes() {
+            var csrc = new StringBuilder();
+            GenerateVisitedFieldStructs(csrc);
+
+            foreach (var ti in TodoTypeStructs)
+                GenerateTypeStruct(csrc, ti);
+            TodoTypeStructs.Clear();
+
+            return csrc.ToString();
+        }
+        #endregion
+
+        #region Method Generation
+
+        /// <summary>
+        /// Visit a method and all types it takes/returns. Must call this before generating method declarations.
+        /// </summary>
+        /// <param name="mi"></param>
+        public void VisitMethod(MethodBase method, TypeInfo declaringType = null) {
+            if (!method.IsStatic)
+                VisitType(declaringType ?? method.DeclaringType);
+
+            if (method is MethodInfo mi)
+                VisitType(mi.ReturnType);
+
+            foreach (var pi in method.DeclaredParameters) {
+                VisitType(pi.ParameterType);
+            }
+        }
+
+        private string GenerateMethodDeclaration(MethodBase method, string name, TypeInfo declaringType) {
+            string retType;
+            if (method is MethodInfo mi) {
+                retType = mi.ReturnType.FullName == "System.Void" ? "void" : AsCType(mi.ReturnType);
+            } else {
+                retType = "void";
+            }
+
+            var paramNs = CreateNamespace();
+            paramNs.ReserveName("method");
+            var paramNamer = paramNs.MakeNamer<ParameterInfo>((pi) => pi.Name == "" ? "arg" : sanitizeIdentifier(pi.Name));
+
+            var paramList = new List<string>();
+            // Figure out the "this" param
+            if (method.IsStatic) {
+                // In older versions, static methods took a dummy this parameter
+                if (UnityVersion.CompareTo("2018.3.0") < 0)
+                    paramList.Add("void *this");
+            } else {
+                if (declaringType.IsValueType) {
+                    // Methods for structs take the boxed object as the this param
+                    paramList.Add($"{TypeNamer.GetName(declaringType)}__Boxed * this");
+                } else {
+                    paramList.Add($"{AsCType(declaringType)} this");
+                }
+            }
+
+            foreach (var pi in method.DeclaredParameters) {
+                paramList.Add($"{AsCType(pi.ParameterType)} {paramNamer.GetName(pi)}");
+            }
+
+            paramList.Add($"MethodInfo *method");
+
+            return $"{retType} {name}({string.Join(", ", paramList)})";
+        }
+
+        /// <summary>
+        /// Generate a declaration of the form "retType methName(argTypes argNames...)"
+        /// You must first visit the method using VisitMethod and then call
+        /// GenerateVisitedTypes in order to generate any dependent types.
+        /// </summary>
+        /// <param name="mi"></param>
+        /// <returns></returns>
+        public string GenerateMethodDeclaration(MethodBase method) {
+            return GenerateMethodDeclaration(method, MethodNamer.GetName(method), method.DeclaringType);
+        }
+
+        /// <summary>
+        /// Generate a declaration of the form "retType (*name)(argTypes...)"
+        /// You must first visit the method using VisitMethod and then call
+        /// GenerateVisitedTypes in order to generate any dependent types.
+        /// </summary>
+        /// <param name="mi">Method to generate (only the signature will be used)</param>
+        /// <param name="name">Name of the function pointer</param>
+        /// <returns></returns>
+        public string GenerateFunctionPointer(MethodBase method, string name, TypeInfo declaringType = null) {
+            return GenerateMethodDeclaration(method, $"(*{name})", declaringType ?? method.DeclaringType);
+        }
+        #endregion
+
+        #region Naming
+        // We try decently hard to avoid creating clashing names, and also sanitize any invalid names.
+        // You can customize how naming works by modifying this function.
+        private void InitializeNaming() {
+            TypeNamespace = CreateNamespace();
+            // Type names that may appear in the header
+            foreach (var typeName in new string[] { "CustomAttributesCache", "CustomAttributeTypeCache", "EventInfo", "FieldInfo", "Hash16", "MemberInfo", "MethodInfo", "MethodVariableKind", "MonitorData", "ParameterInfo", "PInvokeArguments", "PropertyInfo", "SequencePointKind", "StackFrameType", "VirtualInvokeData" }) {
+                TypeNamespace.ReserveName(typeName);
+            }
+            // Type names that may be reserved by IDA (part of its internal headers)
+            // TODO: incomplete list
+            TypeNamespace.ReserveName("KeyCode");
+            TypeNamer = TypeNamespace.MakeNamer<TypeInfo>((ti) => {
+                if (ti.IsArray)
+                    return TypeNamer.GetName(ti.ElementType) + "__Array";
+                var name = sanitizeIdentifier(ti.Name);
+                if (name.StartsWith("Il2Cpp"))
+                    name = "_" + name;
+                name = Regex.Replace(name, "__+", "_");
+                return name;
+            });
+
+            GlobalsNamespace = CreateNamespace();
+            MethodNamer = TypeNamespace.MakeNamer<MethodBase>((method) => $"{TypeNamer.GetName(method.DeclaringType)}_{sanitizeIdentifier(method.Name)}");
+        }
+
+        // Reserve C/C++ keywords and built-in names
+        private static Namespace CreateNamespace() {
+            var ns = new Namespace();
+            /* Reserve C/C++ keywords */
+            foreach (var keyword in new string[] { "_Alignas", "_Alignof", "_Atomic", "_Bool", "_Complex", "_Generic", "_Imaginary", "_Noreturn", "_Static_assert", "_Thread_local", "alignas", "alignof", "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool", "break", "case", "catch", "char", "char16_t", "char32_t", "char8_t", "class", "co_await", "co_return", "co_yield", "compl", "concept", "const", "const_cast", "consteval", "constexpr", "constinit", "continue", "decltype", "default", "delete", "do", "double", "dynamic_cast", "else", "enum", "explicit", "export", "extern", "false", "float", "for", "friend", "goto", "if", "inline", "int", "long", "mutable", "namespace", "new", "noexcept", "not", "not_eq", "nullptr", "operator", "or", "or_eq", "private", "protected", "public", "reflexpr", "register", "reinterpret_cast", "requires", "restrict", "return", "short", "signed", "sizeof", "static", "static_assert", "static_cast", "struct", "switch", "synchronized", "template", "this", "thread_local", "throw", "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq" }) {
+                ns.ReserveName(keyword);
+            }
+            /* Reserve builtin keywords in IDA */
+            foreach(var keyword in new string[] { "_BYTE", "_DWORD", "_OWORD", "_QWORD", "_UNKNOWN", "_WORD", "__cdecl", "__declspec", "__export", "__far", "__fastcall", "__huge", "__import", "__int128", "__int16", "__int32", "__int64", "__int8", "__interrupt", "__near", "__pascal", "__spoils", "__stdcall", "__thiscall", "__thread", "__unaligned", "__usercall", "__userpurge", "_cs", "_ds", "_es", "_ss", "flat" }) {
+                ns.ReserveName(keyword);
+            }
+            return ns;
+        }
+
+        private static string sanitizeIdentifier(string id) => Regex.Replace(id, "[^a-zA-Z0-9_]", "_");
+
+        /// <summary>
+        /// Namespace for all types and typedefs
+        /// </summary>
+        public Namespace TypeNamespace { get; private set; }
+
+        public Namespace.Namer<TypeInfo> TypeNamer { get; private set; }
+
+        /// <summary>
+        /// Namespace for global variables and methods
+        /// </summary>
+        public Namespace GlobalsNamespace { get; private set; }
+        public Namespace.Namer<MethodBase> MethodNamer { get; private set; }
+        #endregion
+    }
+}
