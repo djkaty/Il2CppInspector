@@ -150,11 +150,13 @@ namespace Il2CppInspector
             section_header_table = ReadArray<elf_shdr<TWord>>(conv.Long(elf_header.e_shoff), elf_header.e_shnum);
 
             // Get section name mappings if there are any
+            // This is currently only used to defeat the XOR obfuscation handled below
+            // Note: There can be more than one section with the same name, or unnamed; we take the first section with a given name
             if (elf_header.e_shtrndx < section_header_table.Length) {
                 var pStrtab = section_header_table[elf_header.e_shtrndx].sh_offset;
                 foreach (var section in section_header_table) {
                     var name = ReadNullTerminatedString(conv.Long(pStrtab) + section.sh_name);
-                    sectionByName.Add(name, section);
+                    sectionByName.TryAdd(name, section);
                 }
             }
 
