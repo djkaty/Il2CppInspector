@@ -275,6 +275,15 @@ namespace Il2CppInspector
                 }
             }
 
+            // Detect more sophisticated packing
+            // We have seen several examples (eg. #14 and #26) where most of the file is zeroed
+            // and packed data is found in the latter third. So far these files always have zeroed .rodata sections
+            if (sectionByName.ContainsKey(".rodata")) {
+                var rodataBytes = ReadArray<byte>(conv.Long(sectionByName[".rodata"].sh_offset), conv.Int(sectionByName[".rodata"].sh_size));
+                if (rodataBytes.All(b => b == 0x00))
+                    throw new InvalidOperationException("This IL2CPP binary is packed in a way not currently supported by Il2CppInspector and cannot be loaded.");
+            }
+
             return true;
         }
 
