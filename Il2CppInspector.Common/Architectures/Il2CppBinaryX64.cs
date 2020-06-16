@@ -102,7 +102,7 @@ namespace Il2CppInspector
             var pushSize = 2; // the length of a PUSH instruction with a 64-bit register
             var offset = 0;
 
-            int RAX = 0, RBX = 3, RCX = 1, RDX = 2, RSI = 6, RDI = 7, R8 = 8;
+            int RAX = 0, RBX = 3, RCX = 1, RDX = 2, RSI = 6, RDI = 7; // R8 = 8
 
             ulong pCgr = 0; // the point to the code registration function
 
