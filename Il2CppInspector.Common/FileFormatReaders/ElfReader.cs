@@ -255,10 +255,18 @@ namespace Il2CppInspector
 
             // Detect and defeat trivial XOR encryption
             if (getDynamic(Elf.DT_INIT) != null && sectionByName.ContainsKey(".rodata")) {
+                // Use the data section to determine IF the file is obfuscated
                 var rodataFirstBytes = ReadArray<byte>(conv.Long(sectionByName[".rodata"].sh_offset), 256);
-                var xorKey = rodataFirstBytes.GroupBy(b => b).OrderByDescending(f => f.Count()).First().Key;
+                var xorKeyCandidate = rodataFirstBytes.GroupBy(b => b).OrderByDescending(f => f.Count()).First().Key;
 
-                if (xorKey != 0x00) {
+                // We examine the bottom nibble of the 2nd byte and top nibble of 4th byte
+                // of the first 64 words (256 bytes) of .text. These values are expected to be primarily 0x0 and 0xE (ARM only)
+                var textFirstDWords = ReadArray<uint>(conv.Long(sectionByName[".text"].sh_offset), 64);
+                var bottom = textFirstDWords.Select(w => (w >> 8) & 0xF).GroupBy(n => n).OrderByDescending(f => f.Count()).First().Key;
+                var top = textFirstDWords.Select(w => w >> 28).GroupBy(n => n).OrderByDescending(f => f.Count()).First().Key;
+                var xorKey = (byte) (((top << 4) ^ 0xE0) | bottom);
+
+                if (xorKeyCandidate != 0x00) {
                     StatusUpdate("Decrypting");
                     Console.WriteLine($"Performing trivial XOR decryption (key: 0x{xorKey:X2})");
 
