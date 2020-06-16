@@ -16,7 +16,9 @@ namespace Il2CppInspector
             if (absolutePath.IndexOf("*", StringComparison.Ordinal) == -1)
                 return absolutePath;
 
-            Regex sections = new Regex(string.Format(@"((?:[^*]*){0})((?:.*?)\*.*?)(?:$|{0})", Path.DirectorySeparatorChar));
+            // Backslash is a special character when evaluating regexes so Windows path separator must be escaped... with a backslash
+            Regex sections = new Regex(string.Format(@"((?:[^*]*){0})((?:.*?)\*.*?)(?:$|{0})",
+                Path.DirectorySeparatorChar == '\\' ? @"\\" : Path.DirectorySeparatorChar.ToString()));
             var matches = sections.Matches(absolutePath);
 
             var pathLength = 0;
