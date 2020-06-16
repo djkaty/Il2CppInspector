@@ -52,7 +52,7 @@ namespace Il2CppInspector
         {
             // Read magic bytes
             if (ReadUInt32() != 0xFAB11BAF) {
-                throw new InvalidOperationException("ERROR: Metadata file supplied is not valid metadata file.");
+                throw new InvalidOperationException("The supplied metadata file is not valid.");
             }
 
             // Set object versioning for Bin2Object from metadata version
@@ -62,7 +62,7 @@ namespace Il2CppInspector
             Header = ReadObject<Il2CppGlobalMetadataHeader>(0);
             if (Version < 16 || Version > 24)
             {
-                throw new InvalidOperationException($"ERROR: Metadata file supplied is not a supported version ({Header.version}).");
+                throw new InvalidOperationException($"The supplied metadata file is not of a supported version ({Header.version}).");
             }
 
             // Sanity checking
@@ -84,7 +84,7 @@ namespace Il2CppInspector
             }
 
             if (realHeaderLength != Sizeof(typeof(Il2CppGlobalMetadataHeader))) {
-                throw new InvalidOperationException("ERROR: Could not verify the integrity of the metadata file or accurately identify the metadata sub-version");
+                throw new InvalidOperationException("Could not verify the integrity of the metadata file or accurately identify the metadata sub-version");
             }
             
             // Load all the relevant metadata using offsets provided in the header
@@ -103,7 +103,7 @@ namespace Il2CppInspector
                     Images = ReadArray<Il2CppImageDefinition>(Header.imagesOffset, Header.imagesCount / Sizeof(typeof(Il2CppImageDefinition)));
 
                     if (Images.Any(x => x.token != 1))
-                        throw new InvalidOperationException("ERROR: Could not verify the integrity of the metadata file image list");
+                        throw new InvalidOperationException("Could not verify the integrity of the metadata file image list");
                 }
 
             Types = ReadArray<Il2CppTypeDefinition>(Header.typeDefinitionsOffset, Header.typeDefinitionsCount / Sizeof(typeof(Il2CppTypeDefinition)));

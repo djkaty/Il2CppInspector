@@ -308,9 +308,15 @@ namespace Il2CppInspector
             Console.WriteLine("Detected metadata version " + metadata.Version);
 
             // Load the il2cpp code file (try all available file formats)
-            IFileFormatReader stream = FileFormatReader.Load(codeFile);
-            if (stream == null) {
-                Console.Error.WriteLine("Unsupported executable file format");
+            IFileFormatReader stream;
+            try {
+                stream = FileFormatReader.Load(codeFile);
+
+                if (stream == null)
+                    throw new InvalidOperationException("Unsupported executable file format");
+            }
+            catch (Exception ex) {
+                Console.Error.WriteLine(ex.Message);
                 return null;
             }
 
