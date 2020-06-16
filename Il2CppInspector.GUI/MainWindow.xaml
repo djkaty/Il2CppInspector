@@ -141,7 +141,7 @@
                         <ColumnDefinition Width="70*"></ColumnDefinition>
                         <ColumnDefinition Width="30*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" Content="IL2CPP Metadata version"></Label>
+                    <Label Grid.Row="0" Grid.Column="0" Content="IL2CPP version"></Label>
                     <Label Grid.Row="0" Grid.Column="1" Content="{Binding Path=Version}"></Label>
                     <Label Grid.Row="1" Grid.Column="0" Content="Container format"></Label>
                     <Label Grid.Row="1" Grid.Column="1" Content="{Binding Path=BinaryImage.Format}"></Label>

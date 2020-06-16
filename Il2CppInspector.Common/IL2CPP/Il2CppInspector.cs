@@ -29,7 +29,7 @@ namespace Il2CppInspector
         public List<MetadataUsage> MetadataUsages { get; }
 
         // Shortcuts
-        public double Version => Metadata.Version;
+        public double Version => Math.Max(Metadata.Version, Binary.Image.Version);
 
         public Dictionary<int, string> Strings => Metadata.Strings;
         public string[] StringLiterals => Metadata.StringLiterals;
@@ -332,6 +332,8 @@ namespace Il2CppInspector
                 // Architecture-agnostic load attempt
                 try {
                     if (Il2CppBinary.Load(image, metadata.Version) is Il2CppBinary binary) {
+                        Console.WriteLine("IL2CPP binary version " + image.Version);
+
                         processors.Add(new Il2CppInspector(binary, metadata));
                     }
                     else {
