@@ -52,7 +52,7 @@ namespace Il2CppInspector.Outputs
             }
         }
 
-        private string AsCType(TypeInfo ti) {
+        public string AsCType(TypeInfo ti) {
             // IsArray case handled by TypeNamer.GetName
             if (ti.IsByRef || ti.IsPointer) {
                 return $"{AsCType(ti.ElementType)} *";

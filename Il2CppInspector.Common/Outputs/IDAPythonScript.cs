@@ -144,6 +144,7 @@ typedef __int64 int64_t;
                 return;
             }
 
+            var stringType = typeGenerator.AsCType(model.TypesByFullName["System.String"]);
             foreach (var usage in model.Package.MetadataUsages) {
                 var address = usage.VirtualAddress;
                 string name;
@@ -151,7 +152,7 @@ typedef __int64 int64_t;
                 switch (usage.Type) {
                     case MetadataUsageType.StringLiteral:
                         var str = model.GetMetadataUsageName(usage);
-                        writeName(address, $"StringLiteral_{stringToIdentifier(str)}");
+                        writeTypedName(address, stringType, $"StringLiteral_{stringToIdentifier(str)}");
                         writeComment(address, str);
                         break;
                     case MetadataUsageType.Type:
