@@ -134,14 +134,7 @@ namespace Il2CppInspector
                 for (var i = 0; i < metadataUsageList.count; i++)
                 {
                     var metadataUsagePair = Metadata.MetadataUsagePairs[metadataUsageList.start + i];
-
-                    var encodedType = metadataUsagePair.encodedSourceIndex & 0xE0000000;
-                    var usageType = (MetadataUsageType)(encodedType >> 29);
-
-                    var sourceIndex = metadataUsagePair.encodedSourceIndex & 0x1FFFFFFF;
-                    var destinationIndex = metadataUsagePair.destinationindex;
-
-                    usages.TryAdd(destinationIndex, new MetadataUsage(usageType, (int)sourceIndex, (int)destinationIndex));
+                    usages.TryAdd(metadataUsagePair.destinationindex, MetadataUsage.FromEncodedIndex(this, metadataUsagePair.encodedSourceIndex));
                 }
             }
             
@@ -149,8 +142,8 @@ namespace Il2CppInspector
             // Unfortunately the value supplied in MetadataRegistration.matadataUsagesCount seems to be incorrect,
             // so we have to calculate the correct number of usages above before reading the usage address list from the binary
             var addresses = Binary.Image.ReadMappedArray<ulong>(Binary.MetadataRegistration.metadataUsages, usages.Count);
-            foreach (var usage in usages.Values)
-                usage.SetAddress(addresses[usage.DestinationIndex]);
+            foreach (var usage in usages)
+                usage.Value.SetAddress(addresses[usage.Key]);
 
             return usages.Values.ToList();
         }
@@ -298,19 +291,9 @@ namespace Il2CppInspector
             MetadataUsage[] res = new MetadataUsage[definition.vtable_count];
             for (int i = 0; i < definition.vtable_count; i++) {
                 var encodedIndex = VTableMethodIndices[definition.vtableStart + i];
-                uint index;
-                MetadataUsageType usageType;
-                if (Version < 19) {
-                    var flag = encodedIndex & 0x80000000;
-                    index = Binary.VTableMethodReferences[encodedIndex & 0x7FFFFFFF];
-                    usageType = (flag != 0) ? MetadataUsageType.MethodRef : MetadataUsageType.MethodDef;
-                } else {
-                    var encodedType = encodedIndex & 0xE0000000;
-                    usageType = (MetadataUsageType)(encodedType >> 29);
-                    index = encodedIndex & 0x1FFFFFFF;
-                }
-                if (index != 0)
-                    res[i] = new MetadataUsage(usageType, (int)index, i);
+                MetadataUsage usage = MetadataUsage.FromEncodedIndex(this, encodedIndex);
+                if (usage.SourceIndex != 0)
+                    res[i] = usage;
             }
             return res;
         }
