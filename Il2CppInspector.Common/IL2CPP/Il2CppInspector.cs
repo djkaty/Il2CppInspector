@@ -8,6 +8,7 @@ using NoisyCowStudios.Bin2Object;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
@@ -298,11 +299,78 @@ namespace Il2CppInspector
             return res;
         }
 
-        public static List<Il2CppInspector> LoadFromFile(string codeFile, string metadataFile) {
+        // Finds and extracts the metadata and IL2CPP binary from an APK or IPA file into MemoryStreams
+        // Returns null if package not recognized or does not contain an IL2CPP application
+        public static (MemoryStream Metadata, MemoryStream Binary)? GetStreamsFromPackage(string packageFile) {
+            try {
+                using ZipArchive zip = ZipFile.OpenRead(packageFile);
+
+                Stream metadataStream, binaryStream;
+
+                // Check for Android APK
+                var metadataFile = zip.Entries.FirstOrDefault(f => f.FullName == "assets/bin/Data/Managed/Metadata/global-metadata.dat");
+                var binaryFile = zip.Entries.FirstOrDefault(f => f.FullName.StartsWith("lib/") && f.Name == "libil2cpp.so");
+
+                // Check for iOS IPA
+                var ipaBinaryFolder = zip.Entries.FirstOrDefault(f => f.FullName.StartsWith("Payload/") && f.FullName.EndsWith(".app/") && f.FullName.Count(x => x == '/') == 2);
+
+                if (ipaBinaryFolder != null) {
+                    var ipaBinaryName = ipaBinaryFolder.FullName[8..^5];
+                    metadataFile = zip.Entries.FirstOrDefault(f => f.FullName == $"Payload/{ipaBinaryName}.app/Data/Managed/Metadata/global-metadata.dat");
+                    binaryFile = zip.Entries.FirstOrDefault(f => f.FullName == $"Payload/{ipaBinaryName}.app/{ipaBinaryName}");
+                }
+
+                // This package doesn't contain an IL2CPP application
+                if (metadataFile == null || binaryFile == null) {
+                    Console.WriteLine($"Package {packageFile} does not contain an IL2CPP application");
+                    return null;
+                }
+
+                // Extract the files to memory
+                Console.WriteLine($"Extracting metadata from {packageFile}{Path.DirectorySeparatorChar}{metadataFile.FullName}");
+                Console.WriteLine($"Extracting binary from {packageFile}{Path.DirectorySeparatorChar}{binaryFile.FullName}");
+
+                var binaryMemoryStream = new MemoryStream();
+                var metadataMemoryStream = new MemoryStream();
+
+                metadataStream = metadataFile.Open();
+                binaryStream = binaryFile.Open();
+
+                binaryStream.CopyTo(binaryMemoryStream);
+                metadataStream.CopyTo(metadataMemoryStream);
+                binaryMemoryStream.Position = 0;
+                metadataMemoryStream.Position = 0;
+
+                return (metadataMemoryStream, binaryMemoryStream);
+            }
+
+            // Not an archive
+            catch (InvalidDataException) {
+                return null;
+            }
+        }
+
+        // Load from an APK or IPA file
+        public static List<Il2CppInspector> LoadFromPackage(string packageFile) {
+            var streams = GetStreamsFromPackage(packageFile);
+            if (!streams.HasValue)
+                return null;
+            return LoadFromStream(streams.Value.Binary, streams.Value.Metadata);
+        }
+
+        // Load from a binary file and metadata file
+        public static List<Il2CppInspector> LoadFromFile(string binaryFile, string metadataFile)
+            => LoadFromStream(new FileStream(binaryFile, FileMode.Open, FileAccess.Read),
+                                new MemoryStream(File.ReadAllBytes(metadataFile)));
+
+        // Load from a binary stream and metadata stream
+        // Must be a seekable stream otherwise we catch a System.IO.NotSupportedException
+        public static List<Il2CppInspector> LoadFromStream(Stream binaryStream, Stream metadataStream) {
+
             // Load the metadata file
             Metadata metadata;
             try {
-                metadata = new Metadata(new MemoryStream(File.ReadAllBytes(metadataFile)));
+                metadata = new Metadata(metadataStream);
             }
             catch (Exception ex) {
                 Console.Error.WriteLine(ex.Message);
@@ -314,7 +382,7 @@ namespace Il2CppInspector
             // Load the il2cpp code file (try all available file formats)
             IFileFormatReader stream;
             try {
-                stream = FileFormatReader.Load(codeFile);
+                stream = FileFormatReader.Load(binaryStream);
 
                 if (stream == null)
                     throw new InvalidOperationException("Unsupported executable file format");
