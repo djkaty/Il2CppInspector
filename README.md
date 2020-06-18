@@ -198,6 +198,11 @@ Much love! - Katy
 
 ### Acknowledgements
 
+Thanks to the following major contributors!
+
+- nneonneo - https://github.com/nneonneo (huge overhaul of generics and script generation)
+- carterbush - https://github.com/carterbush (IDA script generation)
+
 Thanks to the following individuals whose code and research helped me develop this tool:
 
 - Perfare - https://github.com/Perfare/Il2CppDumper
@@ -207,13 +212,17 @@ Thanks to the following individuals whose code and research helped me develop th
 - fry - https://github.com/fry/d3
 - ARMConverter - http://armconverter.com
 - Defuse - https://defuse.ca/online-x86-assembler.htm
+- Jackson Dunstan has an awesome series of articles on IL2CPP - https://jacksondunstan.com/articles/tag/il2cpp
+- Josh Grunzweig's IDAPython primer series - https://unit42.paloaltonetworks.com/using-idapython-to-make-your-life-easier-part-1/
 
-The following books were also very helpful:
+The following books and documents were also very helpful:
 
 - [Practical Reverse Engineering](https://www.amazon.com/Practical-Reverse-Engineering-Reversing-Obfuscation/dp/1118787315/ref=sr_1_1?keywords=practical+reverse+engineering&qid=1580952619&sr=8-1) by Bruce Dang
 - [Expert .NET 2.0 IL Assembler](https://www.amazon.com/Expert-NET-Assembler-Serge-Lidin/dp/1590596463/ref=sr_1_6?keywords=expert+il+2.0&qid=1580952700&sr=8-6) by Serge Lidin
 - [The IDA Pro Book, 2nd Edition](https://www.amazon.com/IDA-Pro-Book-Unofficial-Disassembler/dp/1593272898/ref=sr_1_1?keywords=ida+pro+book&qid=1580952729&sr=8-1) by Chris Eagle
 - [The Beginner's Guide to IDAPython](https://leanpub.com/IDAPython-Book) by Alexander Hanel
+- [ARM Architecture Reference Manual ARMv8-A](https://developer.arm.com/docs/ddi0487/latest)
+- [Intel 64 and IA-32 Architectures Software Developer's Manual](https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-instruction-set-reference-manual-325383.pdf)
 
 Pizza spinner animation in the GUI made by Chris Gannon - https://gannon.tv/
 
