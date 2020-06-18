@@ -25,6 +25,7 @@ Main features:
 File format and architecture support:
 
 * Supports ELF (Android .so), PE (Windows .exe), Mach-O (Apple iOS/Mac), Universal Binary (Fat Mach-O) and FSELF (PlayStation 4 .prx/.sprx) file formats
+* Also supports APK (Android) and decrypted IPA (iOS) application package files as input
 * 32-bit and 64-bit support for all file formats
 * Supports ARMv7, Thumb-2, ARMv8 (A64), x86 and x64 architectures regardless of file format
 * Supports applications created with Unity 5.3.0 onwards (full IL2CPP version table below)
@@ -67,8 +68,8 @@ Run `Il2CppInspector.exe` at the command prompt.
 File format and architecture are automatically detected.
 
 ```
-  -i, --bin                   (Default: libil2cpp.so) IL2CPP binary file input
-  -m, --metadata              (Default: global-metadata.dat) IL2CPP metadata file input
+  -i, --bin                   (Default: libil2cpp.so) IL2CPP binary, APK or IPA input file
+  -m, --metadata              (Default: global-metadata.dat) IL2CPP metadata file input (ignored for APK/IPA)
   -c, --cs-out                (Default: types.cs) C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)
   -p, --py-out                (Default: ida.py) IDA Python script output file
   -e, --exclude-namespaces    (Default: System Unity UnityEngine UnityEngineInternal Mono Microsoft.Reflection Microsoft.Win32 Internal.Runtime AOT JetBrains.Annotations) Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces
@@ -109,6 +110,8 @@ JetBrains.Annotations
 Providing an argument to `--exclude-namespaces` will override the default list. To output all namespaces, use `--exclude-namespaces=none`.
 
 For Apple Universal Binaries, multiple output files will be generated, with each filename besides the first suffixed by the index of the image in the Universal Binary. Unsupported images will be skipped.
+
+For IPA packages, the executable must be decrypted first. Encrypted executable binaries are not supported.
 
 ### Adding metadata to your IDA workflow
 
