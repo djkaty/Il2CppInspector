@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -39,6 +39,7 @@ namespace Il2CppInspector
         protected override bool checkMagicBE(MachO magic) => magic == MachO.MH_CIGAM_64;
 
         protected override MachO lc_Segment => MachO.LC_SEGMENT_64;
+
         public override uint MapVATR(ulong uiAddr) {
             var section = sections.First(x => uiAddr >= x.Address && uiAddr <= x.Address + x.Size);
             return (uint) (uiAddr - (section.Address - section.ImageOffset));
@@ -125,6 +126,15 @@ namespace Il2CppInspector
 
                     case MachO.LC_DYSYMTAB:
                         // TODO: Implement Mach-O dynamic symbol table
+                        break;
+
+                    // Encryption check
+                    // If cryptid == 1, this binary is encrypted with FairPlay DRM
+                    case MachO.LC_ENCRYPTION_INFO:
+                    case MachO.LC_ENCRYPTION_INFO_64:
+                        var encryptionInfo = ReadObject<MachOEncryptionInfo>();
+                        if (encryptionInfo.CryptID != 0)
+                            throw new NotImplementedException("This Mach-O executable is encrypted with FairPlay DRM and cannot be processed. Please provide a decrypted version of the executable.");
                         break;
                 }
 

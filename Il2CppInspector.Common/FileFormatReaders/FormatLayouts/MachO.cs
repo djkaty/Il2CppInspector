@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
 
     All rights reserved.
 */
@@ -24,7 +24,9 @@ namespace Il2CppInspector
         LC_SYMTAB = 0x2,
         LC_DYSYMTAB = 0xb,
         LC_SEGMENT_64 = 0x19,
+        LC_ENCRYPTION_INFO = 0x21,
         LC_FUNCTION_STARTS = 0x26,
+        LC_ENCRYPTION_INFO_64 = 0x2C,
 
         CPU_TYPE_X86 = 7,
         CPU_TYPE_X86_64 = 0x01000000 + CPU_TYPE_X86,
@@ -94,6 +96,14 @@ namespace Il2CppInspector
         public uint NumSyms;
         public uint StrOffset;
         public uint StrSize;
+    }
+
+    internal class MachOEncryptionInfo
+    {
+        // MachOLoadCommand
+        public uint CryptOffset;
+        public uint CryptSize;
+        public uint CryptID;
     }
 
     internal class MachO_nlist<TWord> where TWord : struct
