@@ -17,10 +17,10 @@ namespace Il2CppInspector.CLI
     {
         private class Options
         {
-            [Option('i', "bin", Required = false, HelpText = "IL2CPP binary file input", Default = "libil2cpp.so")]
+            [Option('i', "bin", Required = false, HelpText = "IL2CPP binary, APK or IPA input file", Default = "libil2cpp.so")]
             public string BinaryFile { get; set; }
 
-            [Option('m', "metadata", Required = false, HelpText = "IL2CPP metadata file input", Default = "global-metadata.dat")]
+            [Option('m', "metadata", Required = false, HelpText = "IL2CPP metadata file input (ignored for APK/IPA)", Default = "global-metadata.dat")]
             public string MetadataFile { get; set; }
 
             [Option('c', "cs-out", Required = false, HelpText = "C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)", Default = "types.cs")]
@@ -109,16 +109,6 @@ namespace Il2CppInspector.CLI
             if (options.ExcludedNamespaces.Count() == 1 && options.ExcludedNamespaces.First().ToLower() == "none")
                 options.ExcludedNamespaces = new List<string>();
 
-            // Check files
-            if (!File.Exists(options.BinaryFile)) {
-                Console.Error.WriteLine($"File {options.BinaryFile} does not exist");
-                return 1;
-            }
-            if (!File.Exists(options.MetadataFile)) {
-                Console.Error.WriteLine($"File {options.MetadataFile} does not exist");
-                return 1;
-            }
-
             // Creating a Visual Studio solution requires Unity assembly references
             var unityPath = string.Empty;
             var unityAssembliesPath = string.Empty;
@@ -148,10 +138,32 @@ namespace Il2CppInspector.CLI
                 Console.WriteLine("Using Unity assemblies at " + unityAssembliesPath);
             }
 
-            // Analyze data
+            // Check files exist and determine whether they're archives or not
             List<Il2CppInspector> il2cppInspectors;
-            using (var il2cppTimer = new Benchmark("Analyze IL2CPP data"))
-                il2cppInspectors = Il2CppInspector.LoadFromFile(options.BinaryFile, options.MetadataFile);
+            using (var il2cppTimer = new Benchmark("Analyze IL2CPP data")) {
+
+                if (!File.Exists(options.BinaryFile)) {
+                    Console.Error.WriteLine($"File {options.BinaryFile} does not exist");
+                    return 1;
+                }
+
+                try {
+                    il2cppInspectors = Il2CppInspector.LoadFromPackage(options.BinaryFile);
+                }
+                catch (Exception ex) {
+                    Console.Error.WriteLine(ex.Message);
+                    return 1;
+                }
+
+                if (il2cppInspectors == null) {
+                    if (!File.Exists(options.MetadataFile)) {
+                        Console.Error.WriteLine($"File {options.MetadataFile} does not exist");
+                        return 1;
+                    }
+
+                    il2cppInspectors = Il2CppInspector.LoadFromFile(options.BinaryFile, options.MetadataFile);
+                }
+            }
 
             if (il2cppInspectors == null)
                 Environment.Exit(1);
