@@ -72,9 +72,8 @@ namespace Il2CppInspectorGUI
             };
 
             if (openFileDialog.ShowDialog() == true) {
-                txtBusyStatus.Text = "Processing metadata...";
                 areaBusyIndicator.Visibility = Visibility.Visible;
-                btnSelectMetadataFile.Visibility = Visibility.Hidden;
+                grdFirstPage.Visibility = Visibility.Hidden;
 
                 // Load the metadata file
                 if (await app.LoadMetadataAsync(openFileDialog.FileName)) {
@@ -84,7 +83,7 @@ namespace Il2CppInspectorGUI
                 }
                 else {
                     areaBusyIndicator.Visibility = Visibility.Hidden;
-                    btnSelectMetadataFile.Visibility = Visibility.Visible;
+                    grdFirstPage.Visibility = Visibility.Visible;
                     MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -117,7 +116,39 @@ namespace Il2CppInspectorGUI
                 else {
                     areaBusyIndicator.Visibility = Visibility.Hidden;
                     btnSelectBinaryFile.Visibility = Visibility.Visible;
-                    MessageBox.Show(this, "Something went wrong! " + app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Select APK or IPA package file
+        /// </summary>
+        private async void BtnSelectPackageFile_OnClick(object sender, RoutedEventArgs e) {
+            var app = (App) Application.Current;
+
+            var openFileDialog = new OpenFileDialog {
+                Filter = "Android/iOS Application Package (*.apk;*.ipa;*.zip)|*.apk;*.ipa;*.zip|All files (*.*)|*.*",
+                CheckFileExists = true
+            };
+
+            if (openFileDialog.ShowDialog() == true) {
+                txtBusyStatus.Text = "Extracting package...";
+                areaBusyIndicator.Visibility = Visibility.Visible;
+                grdFirstPage.Visibility = Visibility.Hidden;
+
+                // Load the package
+                if (await app.LoadPackageAsync(openFileDialog.FileName)) {
+                    // Package loaded successfully
+                    areaBusyIndicator.Visibility = Visibility.Hidden;
+
+                    lstImages.ItemsSource = app.Il2CppModels;
+                    lstImages.SelectedIndex = 0;
+                }
+                else {
+                    areaBusyIndicator.Visibility = Visibility.Hidden;
+                    grdFirstPage.Visibility = Visibility.Visible;
+                    MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -128,7 +159,7 @@ namespace Il2CppInspectorGUI
         private void BtnBack_OnClick(object sender, RoutedEventArgs e) {
             lstImages.ItemsSource = null;
             btnSelectBinaryFile.Visibility = Visibility.Hidden;
-            btnSelectMetadataFile.Visibility = Visibility.Visible;
+            grdFirstPage.Visibility = Visibility.Visible;
         }
 
         /// <summary>

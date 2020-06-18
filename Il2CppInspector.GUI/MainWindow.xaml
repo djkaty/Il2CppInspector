@@ -360,7 +360,7 @@
                 <Style>
                     <Setter Property="Rectangle.Visibility" Value="Hidden"></Setter>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=btnSelectMetadataFile, Path=Visibility}" Value="Visible">
+                        <DataTrigger Binding="{Binding ElementName=grdFirstPage, Path=Visibility}" Value="Visible">
                             <Setter Property="Rectangle.Visibility" Value="Visible" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding ElementName=btnSelectBinaryFile, Path=Visibility}" Value="Visible">
@@ -375,7 +375,29 @@
         </Rectangle>
 
         <!-- Light boxes -->
-        <Button Name="btnSelectMetadataFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectMetadataFile_OnClick" Visibility="Visible">Select an IL2CPP metadata file</Button>
+        <Grid Name="grdFirstPage">
+            <Grid.RowDefinitions>
+                <RowDefinition Height ="*" />
+                <RowDefinition Height ="*" />
+            </Grid.RowDefinitions>
+
+            <Button Grid.Row="0" Name="btnSelectMetadataFile" Style="{StaticResource LightBoxButton}" Margin="100,100,100,50" Click="BtnSelectMetadataFile_OnClick">
+                <TextBlock TextAlignment="Center">
+                    <TextBlock FontSize="22">Option 1</TextBlock>
+                    <LineBreak/>
+                    <TextBlock>Select an IL2CPP metadata file</TextBlock>
+                </TextBlock>
+            </Button>
+            <Button Grid.Row="1" Name="btnSelectPackageFile" Style="{StaticResource LightBoxButton}" Margin="100,50,100,100" Click="BtnSelectPackageFile_OnClick">
+                <TextBlock TextAlignment="Center">
+                    <TextBlock FontSize="22">Option 2</TextBlock>
+                    <LineBreak/>
+                    <TextBlock>Select an APK or IPA file</TextBlock>
+                    <LineBreak/>
+                    <TextBlock FontSize="16">Encrypted IPA files are not supported</TextBlock>
+                </TextBlock>
+            </Button>
+        </Grid>
         <Button Name="btnSelectBinaryFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectBinaryFile_OnClick" Visibility="Hidden">Select an IL2CPP binary file</Button>
 
         <!-- Back button -->
@@ -384,7 +406,7 @@
                 <Style BasedOn="{StaticResource LightBoxButton}" TargetType="{x:Type Button}">
                     <Setter Property="Visibility" Value="Hidden"></Setter>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=btnSelectMetadataFile, Path=Visibility}" Value="Hidden">
+                        <DataTrigger Binding="{Binding ElementName=grdFirstPage, Path=Visibility}" Value="Hidden">
                             <Setter Property="Button.Visibility" Value="Visible"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding ElementName=areaBusyIndicator, Path=Visibility}" Value="Visible">
