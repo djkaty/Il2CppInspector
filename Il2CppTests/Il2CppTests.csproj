@@ -52,26 +52,25 @@
     <Content Include="TestExpectedResults\GameAssembly-Methods-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-Methods-x86.cs" />
     <Content Include="TestExpectedResults\Methods.cs" />
+    <Content Include="TestExpectedResults\CSharp1.cs" />
+    <Content Include="TestExpectedResults\CSharp2.cs" />
+    <Content Include="TestExpectedResults\CSharp3.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-CSharp1-x64.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-CSharp1-x86.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-CSharp2-x64.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-CSharp2-x86.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-CSharp3-x64.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-CSharp3-x86.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-PartialGenericTypes-x64.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-PartialGenericTypes-x86.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-VTablesAndLayout-x64.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-VTablesAndLayout-x86.cs" />
+    <Content Include="TestExpectedResults\PartialGenericTypes.cs" />
+    <Content Include="TestExpectedResults\VTablesAndLayout.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="TestSources\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="TestExpectedResults\CSharp1.cs" />
-    <Compile Include="TestExpectedResults\CSharp2.cs" />
-    <Compile Include="TestExpectedResults\GameAssembly-CSharp1-x64.cs" />
-    <Compile Include="TestExpectedResults\GameAssembly-CSharp1-x86.cs" />
-    <Compile Include="TestExpectedResults\GameAssembly-CSharp2-x64.cs" />
-    <Compile Include="TestExpectedResults\GameAssembly-CSharp2-x86.cs" />
-    <Compile Include="TestExpectedResults\GameAssembly-CSharp3-x64.cs" />
-    <Compile Include="TestExpectedResults\GameAssembly-PartialGenericTypes-x64.cs" />
-    <Compile Include="TestExpectedResults\GameAssembly-PartialGenericTypes-x86.cs" />
-    <Compile Include="TestExpectedResults\GameAssembly-VTablesAndLayout-x64.cs" />
-    <Compile Include="TestExpectedResults\GameAssembly-VTablesAndLayout-x86.cs" />
-    <Compile Include="TestExpectedResults\PartialGenericTypes.cs" />
-    <Compile Include="TestExpectedResults\VTablesAndLayout.cs" />
   </ItemGroup>
 
   <ItemGroup>
