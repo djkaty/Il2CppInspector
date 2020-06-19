@@ -267,7 +267,8 @@ namespace Il2CppInspector.Reflection
             // Method hiding
             if ((DeclaringType.BaseType?.GetAllMethods().Any(m => SignatureEquals(m) && m.IsHideBySig) ?? false)
                 && (((Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.ReuseSlot && !IsVirtual)
-                    || (Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot))
+                    || (Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot)
+                && !OperatorMethodNames.ContainsKey(Name))
                 modifiers.Append("new ");
 
             if (Name == "op_Implicit")
