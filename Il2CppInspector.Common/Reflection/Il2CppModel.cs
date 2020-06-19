@@ -33,7 +33,7 @@ namespace Il2CppInspector.Reflection
 
         // Every type
         public IEnumerable<TypeInfo> Types => TypesByDefinitionIndex.Concat(TypesByReferenceIndex)
-            .Concat(GenericMethods.Values.Select(m => m.DeclaringType)).Distinct();
+            .Concat(GenericMethods.Values.Select(m => m.DeclaringType)).Distinct().Where(t => t != null);
 
         // List of all methods ordered by their MethodDefinitionIndex
         public MethodBase[] MethodsByDefinitionIndex { get; }
@@ -172,9 +172,10 @@ namespace Il2CppInspector.Reflection
                     // TODO: Replace with array load from Il2CppMetadataRegistration.genericClasses
                     var generic = image.ReadMappedObject<Il2CppGenericClass>(typeRef.datapoint); // Il2CppGenericClass *
 
-                    // We have seen one test case where the TypeRef can point to no generic instance
-                    // This is going to leave the TypeInfo in an undefined state
-                    if (generic.typeDefinitionIndex == 0x0000_0000_ffff_ffff)
+                    // It appears that TypeRef can be -1 if the generic depth recursion limit
+                    // (--maximum-recursive-generic-depth=) is reached in Il2Cpp. In this case,
+                    // no generic instance type is generated, so we just produce a null TypeInfo here.
+                    if ((generic.typeDefinitionIndex & 0xffff_ffff) == 0x0000_0000_ffff_ffff)
                         return null;
 
                     var genericTypeDef = TypesByDefinitionIndex[generic.typeDefinitionIndex];
