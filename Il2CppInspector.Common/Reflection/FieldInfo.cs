@@ -82,6 +82,9 @@ namespace Il2CppInspector.Reflection {
         // True if the field is declared as static
         public bool IsStatic => (Attributes & FieldAttributes.Static) == FieldAttributes.Static;
 
+        // Returns true if using this field requires that the using method is declared as unsafe
+        public bool RequiresUnsafeContext => FieldType.RequiresUnsafeContext || GetCustomAttributes("System.Runtime.CompilerServices.FixedBufferAttribute").Any();
+
         public override MemberTypes MemberType => MemberTypes.Field;
 
         public FieldInfo(Il2CppInspector pkg, int fieldIndex, TypeInfo declaringType) :
@@ -158,8 +161,6 @@ namespace Il2CppInspector.Reflection {
         public string GetModifierString() {
             var modifiers = new StringBuilder(GetAccessModifierString());
 
-            if (FieldType.RequiresUnsafeContext || GetCustomAttributes("System.Runtime.CompilerServices.FixedBufferAttribute").Any())
-                modifiers.Append("unsafe ");
             if (IsLiteral)
                 modifiers.Append("const ");
             // All const fields are also static by implication
@@ -167,6 +168,8 @@ namespace Il2CppInspector.Reflection {
                 modifiers.Append("static ");
             if (IsInitOnly)
                 modifiers.Append("readonly ");
+            if (RequiresUnsafeContext)
+                modifiers.Append("unsafe ");
             if (IsPinvokeImpl)
                 modifiers.Append("extern ");
             if (GetCustomAttributes("System.Runtime.CompilerServices.FixedBufferAttribute").Any())
