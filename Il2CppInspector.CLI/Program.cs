@@ -226,6 +226,9 @@ namespace Il2CppInspector.CLI
                                 writer.WriteFilesByClassTree(csOut, options.SeparateAssemblyAttributesFiles);
                                 break;
                         }
+
+                    if (writer.GetAndClearLastException() is Exception ex)
+                        Console.WriteLine("An error occurred: " + ex.Message);
                 }
 
                 // IDA Python script output

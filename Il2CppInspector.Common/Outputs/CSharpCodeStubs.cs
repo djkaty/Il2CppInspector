@@ -21,6 +21,7 @@ namespace Il2CppInspector.Outputs
     public class CSharpCodeStubs
     {
         private readonly Il2CppModel model;
+        private Exception lastException;
 
         // Namespace prefixes whose contents should be skipped
         public List<string> ExcludedNamespaces { get; set; }
@@ -41,6 +42,13 @@ namespace Il2CppInspector.Outputs
         private readonly object usedAssemblyAttributesLock = new object();
 
         public CSharpCodeStubs(Il2CppModel model) => this.model = model;
+
+        // Get the last error that occurred and clear the error state
+        public Exception GetAndClearLastException() {
+            var ex = lastException;
+            lastException = null;
+            return ex;
+        }
 
         public void WriteSingleFile(string outFile) => WriteSingleFile(outFile, t => t.Index);
 
@@ -95,7 +103,7 @@ namespace Il2CppInspector.Outputs
                 }
             );
 
-            if (separateAttributes && usedAssemblies.Any())
+            if (separateAttributes && usedAssemblies.Any() && lastException == null)
                 foreach (var asm in usedAssemblies)
                     File.WriteAllText(Path.Combine(outPath, Path.GetFileNameWithoutExtension(asm.ShortName), "AssemblyInfo.cs"), generateAssemblyInfo(new [] {asm}));
 
@@ -109,6 +117,9 @@ namespace Il2CppInspector.Outputs
 
             // Output source files in tree format with separate assembly attributes
             var assemblies = WriteFilesByClassTree(outPath, true);
+
+            if (lastException != null)
+                return;
 
             // Per-project (per-assembly) solution definition and configuration
             var slnProjectDefs = new StringBuilder();
@@ -262,13 +273,21 @@ namespace Il2CppInspector.Outputs
 
             var usings = nsRefs.OrderBy(n => (n.StartsWith("System.") || n == "System") ? "0" + n : "1" + n);
 
-            // Ensure output directory exists
-            if (!string.IsNullOrEmpty(Path.GetDirectoryName(outFile)))
-                Directory.CreateDirectory(Path.GetDirectoryName(outFile));
+            // Ensure output directory exists and is not a file
+            var dir = Path.GetDirectoryName(outFile);
+            if (!string.IsNullOrEmpty(dir)) {
+                try {
+                    Directory.CreateDirectory(dir);
+                }
+                catch (IOException ex) {
+                    lastException = ex;
+                    return false;
+                }
+            }
 
             // Sanitize leafname (might be class name with invalid characters)
             var leafname = Regex.Replace(Path.GetFileName(outFile), @"[<>:""\|\?\*]", "_");
-            outFile = Path.Combine(Path.GetDirectoryName(outFile), leafname);
+            outFile = Path.Combine(dir, leafname);
 
             // Create output file
             bool fileWritten = false;
