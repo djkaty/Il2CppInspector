@@ -16,6 +16,12 @@ namespace Il2CppInspector.Reflection
 
         public static readonly string TypeConstructorName = ".cctor";
 
+        // Struct construvctors must initialize all non-literal fields in the struct
+        // If any of them are of an unsafe type, the constructor must also be declared unsafe
+        public override bool RequiresUnsafeContext => base.RequiresUnsafeContext ||
+            (!IsAbstract && DeclaringType.IsValueType &&
+            DeclaringType.DeclaredFields.Any(f => !f.IsLiteral && f.IsStatic == IsStatic && f.RequiresUnsafeContext));
+
         public override MemberTypes MemberType => MemberTypes.Constructor;
 
         public ConstructorInfo(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) : base(pkg, methodIndex, declaringType) { }
