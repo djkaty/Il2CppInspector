@@ -249,8 +249,6 @@ namespace Il2CppInspector.Reflection
 
             var modifiers = new StringBuilder(GetAccessModifierString());
 
-            if (RequiresUnsafeContext)
-                modifiers.Append("unsafe ");
             if (IsAbstract)
                 modifiers.Append("abstract ");
             // Methods that implement interfaces are IsVirtual && IsFinal with MethodAttributes.NewSlot (don't show 'virtual sealed' for these)
@@ -261,6 +259,8 @@ namespace Il2CppInspector.Reflection
                 modifiers.Append((Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot ? "virtual " : "override ");
             if (IsStatic)
                 modifiers.Append("static ");
+            if (RequiresUnsafeContext)
+                modifiers.Append("unsafe ");
             if ((Attributes & MethodAttributes.PinvokeImpl) != 0)
                 modifiers.Append("extern ");
 
