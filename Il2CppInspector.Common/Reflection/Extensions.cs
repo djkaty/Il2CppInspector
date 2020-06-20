@@ -88,7 +88,19 @@ namespace Il2CppInspector.Reflection
             if (value is bool)
                 return (bool) value ? "true" : "false";
             if (value is float)
-                return value + "f";
+                return value switch {
+                    float.PositiveInfinity => "1F / 0F",
+                    float.NegativeInfinity => "-1F / 0F",
+                    float.NaN => "0F / 0F",
+                    _ => value + "f"
+                };
+            if (value is double)
+                return value switch {
+                    double.PositiveInfinity => "1D / 0D",
+                    double.NegativeInfinity => "-1D / 0D",
+                    double.NaN => "0D / 0D",
+                    _ => value.ToString()
+                };
             if (value is string str) {
                 return $"\"{str.ToEscapedString()}\"";
             }
