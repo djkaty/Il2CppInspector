@@ -1,4 +1,11 @@
-﻿using System.Reflection;
+﻿/*
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2020 Robert Xiao - https://robertxiao.ca
+
+    All rights reserved.
+*/
+
+using System.Reflection;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;

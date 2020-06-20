@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2020 Robert Xiao - https://robertxiao.ca
+
+    All rights reserved.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
