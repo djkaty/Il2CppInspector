@@ -15,14 +15,19 @@ using System.Text.RegularExpressions;
 
 namespace Il2CppInspector.Outputs
 {
+    // Class for generating C header declarations from Reflection objects (TypeInfo, etc.)
     public class CppDeclarations
     {
         private readonly Il2CppModel model;
 
+        // Version number and header file to generate structures for
         public UnityVersion UnityVersion { get; }
         public UnityHeader UnityHeader { get; }
 
         // How inheritance of type structs should be represented.
+        // Different C++ compilers lay out C++ class structures differently,
+        // meaning that the compiler must be known in order to generate class type structures
+        // with the correct layout.
         public enum InheritanceStyleEnum
         {
             C,      // Inheritance structs use C syntax, and will automatically choose MSVC or GCC based on inferred compiler.
@@ -59,6 +64,7 @@ namespace Il2CppInspector.Outputs
             }
         }
 
+        // C type declaration used to name variables of the given C# type
         public string AsCType(TypeInfo ti) {
             // IsArray case handled by TypeNamer.GetName
             if (ti.IsByRef || ti.IsPointer) {
@@ -90,9 +96,19 @@ namespace Il2CppInspector.Outputs
         }
 
         #region Field Struct Generation
+        /* Generating field structures (structures for the fields of a given type) occurs in two passes.
+         * In the first pass (VisitFieldStructs), we walk over a type and all of the types that the resulting structure would depend on.
+         * In the second pass (GenerateVisitedFieldStructs), we generate all type structures in the necessary order.
+         * (For example: structures for value types must precede any usage of those value types for layout reasons).
+         */
+
+        // A cache of field structures that have already been generated, to eliminate duplicate definitions
         private readonly HashSet<TypeInfo> VisitedFieldStructs = new HashSet<TypeInfo>();
+
+        // A queue of field structures that need to be generated.
         private readonly List<TypeInfo> TodoFieldStructs = new List<TypeInfo>();
 
+        // Walk over dependencies of the given type, to figure out what field structures it depends on
         private void VisitFieldStructs(TypeInfo ti) {
             if (VisitedFieldStructs.Contains(ti))
                 return;
@@ -116,12 +132,15 @@ namespace Il2CppInspector.Outputs
             TodoFieldStructs.Add(ti);
         }
 
+        // Generate the fields for the base class of all objects (Il2CppObject)
+        // The two fields are inlined so that we can specialize the klass member for each type object
         private void GenerateObjectFields(StringBuilder csrc, TypeInfo ti) {
             csrc.Append(
                 $"  struct {TypeNamer.GetName(ti)}__Class *klass;\n" +
                 $"  struct MonitorData *monitor;\n");
         }
 
+        // Generate structure fields for each field of a given type
         private void GenerateFieldList(StringBuilder csrc, Namespace ns, TypeInfo ti) {
             var namer = ns.MakeNamer<FieldInfo>((field) => sanitizeIdentifier(field.Name));
             foreach (var field in ti.DeclaredFields) {
@@ -131,6 +150,7 @@ namespace Il2CppInspector.Outputs
             }
         }
 
+        // Generate the C structure for a value type, such as an enum or struct
         private void GenerateValueFieldStruct(StringBuilder csrc, TypeInfo ti) {
             string name = TypeNamer.GetName(ti);
             if (ti.IsEnum) {
@@ -163,6 +183,7 @@ namespace Il2CppInspector.Outputs
             }
         }
 
+        // Generate the C structure for a reference type, such as a class or array
         private void GenerateRefFieldStruct(StringBuilder csrc, TypeInfo ti) {
             var name = TypeNamer.GetName(ti);
             if (ti.IsArray || ti.FullName == "System.Array") {
@@ -242,6 +263,7 @@ namespace Il2CppInspector.Outputs
             }
         }
 
+        // "Flush" the list of visited types, generating C structures for each one
         private void GenerateVisitedFieldStructs(StringBuilder csrc) {
             foreach (var ti in TodoFieldStructs) {
                 if (ti.IsEnum || ti.IsValueType)
@@ -254,7 +276,9 @@ namespace Il2CppInspector.Outputs
         #endregion
 
         #region Class Struct Generation
-        private Dictionary<TypeInfo, TypeInfo> ConcreteImplementations = new Dictionary<TypeInfo, TypeInfo>();
+
+        // Concrete implementations for abstract classes, for use in looking up VTable signatures and names
+        private readonly Dictionary<TypeInfo, TypeInfo> ConcreteImplementations = new Dictionary<TypeInfo, TypeInfo>();
         /// <summary>
         /// VTables for abstract types have "null" in place of abstract functions.
         /// This function searches for concrete implementations so that we can properly
@@ -347,6 +371,7 @@ namespace Il2CppInspector.Outputs
             TodoTypeStructs.Add(ti);
         }
 
+        // Generate the C structure for virtual function calls in a given type (the VTable)
         private void GenerateVTableStruct(StringBuilder csrc, TypeInfo ti) {
             MethodBase[] vtable;
             if (ti.IsInterface) {
@@ -380,6 +405,7 @@ namespace Il2CppInspector.Outputs
             csrc.Append($"}};\n");
         }
 
+        // Generate the overall Il2CppClass-shaped structure for the given type
         private void GenerateTypeStruct(StringBuilder csrc, TypeInfo ti) {
             var name = TypeNamer.GetName(ti);
             GenerateVTableStruct(csrc, ti);
@@ -452,6 +478,7 @@ namespace Il2CppInspector.Outputs
             }
         }
 
+        // Generate a C declaration for a method
         private string GenerateMethodDeclaration(MethodBase method, string name, TypeInfo declaringType) {
             string retType;
             if (method is MethodInfo mi) {

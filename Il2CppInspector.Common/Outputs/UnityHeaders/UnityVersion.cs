@@ -10,8 +10,10 @@ using System.Text.RegularExpressions;
 
 namespace Il2CppInspector.Outputs.UnityHeaders
 {
+    // Parsed representation of a Unity version number, such as 5.3.0f1 or 2019.3.7.
     public class UnityVersion : IComparable<UnityVersion>, IEquatable<UnityVersion>
     {
+        // A sorted enumeration of build types, in order of maturity
         public enum BuildTypeEnum
         {
             Unspecified,
@@ -44,6 +46,7 @@ namespace Il2CppInspector.Outputs.UnityHeaders
             _ => throw new ArgumentException("Unknown build type " + s),
         };
 
+        // Unity version number is of the form <Major>.<Minor>.<Update>[<BuildType><BuildNumber>]
         public int Major { get; }
         public int Minor { get; }
         public int Update { get; }
@@ -70,6 +73,7 @@ namespace Il2CppInspector.Outputs.UnityHeaders
             return res;
         }
 
+        // Compare two version numbers, intransitively (due to the Unspecified build type)
         public int CompareTo(UnityVersion other) {
             int res;
             if (0 != (res = Major.CompareTo(other.Major)))
