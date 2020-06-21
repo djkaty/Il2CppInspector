@@ -9,16 +9,22 @@ using System.Reflection;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using System;
 
 namespace Il2CppInspector.Outputs.UnityHeaders
 {
+    // Each instance of UnityHeader represents one header file which potentially covers multiple versions of Unity.
     public class UnityHeader
     {
+        // Metadata version of this header. Multiple headers may have the same metadata version
         public double MetadataVersion { get; }
+
+        // Minimum and maximum Unity version numbers corresponding to this header. Both endpoints are inclusive
         public UnityVersion MinVersion { get; }
         public UnityVersion MaxVersion { get; }
+
+        // Filename for the embedded .h resource file containing the header
         public string HeaderFilename { get; }
+
         private UnityHeader(string headerFilename) {
             HeaderFilename = headerFilename;
             var bits = headerFilename.Replace(".h", "").Split("-");
@@ -39,10 +45,10 @@ namespace Il2CppInspector.Outputs.UnityHeaders
             return res;
         }
 
-        public bool Contains(UnityVersion version) {
-            return version.CompareTo(MinVersion) >= 0 && (MaxVersion == null || version.CompareTo(MaxVersion) <= 0);
-        }
+        // Determine if this header supports the given version of Unity
+        public bool Contains(UnityVersion version) => version.CompareTo(MinVersion) >= 0 && (MaxVersion == null || version.CompareTo(MaxVersion) <= 0);
 
+        // Return the contents of this header file as a string
         public string GetHeaderText() {
             string resourceName = typeof(UnityHeader).Namespace + "." + HeaderFilename;
             Assembly assembly = Assembly.GetCallingAssembly();
@@ -55,6 +61,7 @@ namespace Il2CppInspector.Outputs.UnityHeaders
             return result;
         }
 
+        // List all header files embedded into this build of Il2Cpp
         public static IEnumerable<UnityHeader> GetAllHeaders() {
             string prefix = typeof(UnityHeader).Namespace + ".";
             Assembly assembly = Assembly.GetCallingAssembly();
@@ -63,11 +70,13 @@ namespace Il2CppInspector.Outputs.UnityHeaders
                 .Select(s => new UnityHeader(s.Substring(prefix.Length)));
         }
 
+        // Get the header file which supports the given version of Unity
         public static UnityHeader GetHeaderForVersion(string version) => GetHeaderForVersion(new UnityVersion(version));
-        public static UnityHeader GetHeaderForVersion(UnityVersion version) {
-            return GetAllHeaders().Where(v => v.Contains(version)).First();
-        }
+        public static UnityHeader GetHeaderForVersion(UnityVersion version) => GetAllHeaders().Where(v => v.Contains(version)).First();
 
+        // Guess which header file(s) correspond to the given metadata+binary.
+        // Note that this may match multiple headers due to structural changes between versions
+        // that are not reflected in the metadata version.
         public static List<UnityHeader> GuessHeadersForModel(Reflection.Il2CppModel model) {
             List<UnityHeader> result = new List<UnityHeader>();
             foreach (var v in GetAllHeaders()) {
