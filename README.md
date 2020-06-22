@@ -12,6 +12,8 @@ Main features:
 
 * .NET Reflection-style API to allow you to query the IL2CPP type model, easily create new output modules and integrate Il2CppInspector with your own applications
 
+* Supports all major file formats and processor architectures
+
 * Works on Windows, MacOS X and Linux. Integrated GUI for Windows users
 
 **NOTE**: Il2CppInspector is not a decompiler. It can provide you with the structure of an application and function addresses for every method so that you can easily jump straight to methods of interest in your disassembler. It does not attempt to recover the entire source code of the application.
@@ -181,6 +183,8 @@ Unity version | IL2CPP version | Support
 2019.1.x-2019.3.6 | 24.2 | Working
 2019.3.7-2019.3.x | 24.3 | Untested
 2020.1 | 24.? | Awaiting stable release
+
+Please refer to the separate repository https://github.com/nneonneo/Il2CppVersions if you would like to track the changes between each IL2CPP release version.
 
 ### Problems
 
