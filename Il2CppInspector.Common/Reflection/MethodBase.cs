@@ -81,7 +81,15 @@ namespace Il2CppInspector.Reflection
         public bool IsGenericMethod { get; }
         public bool IsGenericMethodDefinition => (genericMethodDefinition == null) && genericArguments.Any();
 
-        // TODO: GetMethodBody()
+        // Get the machine code of the method body
+        public byte[] GetMethodBody() {
+            if (!VirtualAddress.HasValue)
+                return null;
+
+            var image = Assembly.Model.Package.BinaryImage;
+            image.Position = image.MapVATR(VirtualAddress.Value.Start);
+            return image.ReadBytes((int) (VirtualAddress.Value.End - VirtualAddress.Value.Start));
+        }
 
         public string CSharpName =>
             // Operator overload or user-defined conversion operator
