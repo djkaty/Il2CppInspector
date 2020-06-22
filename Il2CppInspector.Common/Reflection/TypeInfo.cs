@@ -654,6 +654,9 @@ namespace Il2CppInspector.Reflection
             }
         }
 
+        // Get only interfaces not inherited from base interfaces
+        public IEnumerable<TypeInfo> NonInheritedInterfaces => ImplementedInterfaces.Except(ImplementedInterfaces.SelectMany(t => t.ImplementedInterfaces));
+
         public bool IsAbstract => (Attributes & TypeAttributes.Abstract) == TypeAttributes.Abstract;
         public bool IsArray { get; }
         public bool IsByRef { get; }
