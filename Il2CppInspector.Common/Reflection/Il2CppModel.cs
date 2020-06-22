@@ -16,6 +16,9 @@ namespace Il2CppInspector.Reflection
         public Il2CppInspector Package { get; }
         public List<Assembly> Assemblies { get; } = new List<Assembly>();
 
+        // List of all namespaces defined by the application
+        public List<string> Namespaces { get; }
+
         // List of all types from TypeDefs ordered by their TypeDefinitionIndex
         public TypeInfo[] TypesByDefinitionIndex { get; }
 
@@ -112,6 +115,9 @@ namespace Il2CppInspector.Reflection
                 method.VirtualAddress = Package.GetGenericMethodPointer(spec);
                 GenericMethods[spec] = method;
             }
+
+            // Generate a list of all namespaces used
+            Namespaces = Assemblies.SelectMany(x => x.DefinedTypes).GroupBy(t => t.Namespace).Select(n => n.Key).Distinct().ToList();
 
             // Find all custom attribute generators (populate AttributesByIndices) (use ToList() to force evaluation)
             var allAssemblyAttributes = Assemblies.Select(a => a.CustomAttributes).ToList();

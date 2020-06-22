@@ -524,6 +524,27 @@ namespace Il2CppInspector.Reflection
                 if (matchingNamespaces.Count == 0 && !hidden && string.IsNullOrEmpty(mutualRootScope) && usingDirective == null)
                     minimallyScopedName = usedType;
             }
+
+            // Finally, check if the selected name has ambiguity with any available namespaces in the current scope
+            // If so, use the full name with the mutual root scope cut off from the start
+            var checkNamespaces = scope.Namespaces.Select(ns => (!string.IsNullOrEmpty(ns)? ns + "." : "") + minimallyScopedName).ToList();
+
+            if (Assembly.Model.Namespaces.Intersect(checkNamespaces).Any())
+                minimallyScopedName = mutualRootScope.Length > 0 ? usedType.Substring(mutualRootScope.Length + 1) : usedType;
+
+            // Check current namespace and all ancestors too
+            else {
+                checkNamespaces.Clear();
+                var ancestorUsingScope = "." + usingScope;
+                while (ancestorUsingScope.IndexOf(".", StringComparison.Ordinal) != -1) {
+                    ancestorUsingScope = ancestorUsingScope.Substring(0, ancestorUsingScope.LastIndexOf(".", StringComparison.Ordinal));
+                    checkNamespaces.Add((ancestorUsingScope.Length > 0 ? ancestorUsingScope.Substring(1) + "." : "") + minimallyScopedName);
+                }
+
+                if (Assembly.Model.Namespaces.Intersect(checkNamespaces).Any())
+                    minimallyScopedName = mutualRootScope.Length > 0 ? usedType.Substring(mutualRootScope.Length + 1) : "global::" + usedType;
+            }
+
             return minimallyScopedName;
         }
 
