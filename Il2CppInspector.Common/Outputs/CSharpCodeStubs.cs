@@ -390,7 +390,7 @@ namespace Il2CppInspector.Outputs
                     else
                         sb.Append($"{field.FieldType.GetScopedCSharpName(scope)} {field.CSharpSafeName}");
                     if (field.HasDefaultValue)
-                        sb.Append($" = {field.DefaultValueString}");
+                        sb.Append($" = {field.GetDefaultValueString(scope)}");
                     sb.Append(";");
                     // Don't output field indices for const fields (they don't have any storage)
                     // or open generic types (they aren't known until runtime)
