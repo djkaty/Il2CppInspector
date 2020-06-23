@@ -142,7 +142,7 @@ namespace Il2CppInspector.Outputs
 
         // Generate structure fields for each field of a given type
         private void GenerateFieldList(StringBuilder csrc, Namespace ns, TypeInfo ti) {
-            var namer = ns.MakeNamer<FieldInfo>((field) => sanitizeIdentifier(field.Name));
+            var namer = ns.MakeNamer<FieldInfo>((field) => field.Name.ToCIdentifier());
             foreach (var field in ti.DeclaredFields) {
                 if (field.IsLiteral || field.IsStatic)
                     continue;
@@ -156,7 +156,7 @@ namespace Il2CppInspector.Outputs
             if (ti.IsEnum) {
                 // Enums should be represented using enum syntax
                 // They otherwise behave like value types
-                var namer = GlobalsNamespace.MakeNamer<FieldInfo>((field) => sanitizeIdentifier($"{name}_{field.Name}"));
+                var namer = GlobalsNamespace.MakeNamer<FieldInfo>((field) => $"{name}_{field.Name}".ToCIdentifier());
                 csrc.Append($"enum {name} : {AsCType(ti.GetEnumUnderlyingType())} {{\n");
                 foreach (var field in ti.DeclaredFields) {
                     if (field.Name != "value__")
@@ -386,7 +386,7 @@ namespace Il2CppInspector.Outputs
                 vtable = ti.GetVTable();
             }
             var name = TypeNamer.GetName(ti);
-            var namer = CreateNamespace().MakeNamer<int>((i) => sanitizeIdentifier(vtable[i]?.Name ?? "__unknown"));
+            var namer = CreateNamespace().MakeNamer<int>((i) => vtable[i]?.Name?.ToCIdentifier() ?? "__unknown");
 
             // Il2Cpp switched to `VirtualInvokeData *vtable` in Unity 5.3.6.
             // Previous versions used `MethodInfo **vtable`.
@@ -411,7 +411,7 @@ namespace Il2CppInspector.Outputs
             GenerateVTableStruct(csrc, ti);
 
             csrc.Append($"struct {name}__StaticFields {{\n");
-            var namer = CreateNamespace().MakeNamer<FieldInfo>((field) => sanitizeIdentifier(field.Name));
+            var namer = CreateNamespace().MakeNamer<FieldInfo>((field) => field.Name.ToCIdentifier());
             foreach (var field in ti.DeclaredFields) {
                 if (field.IsLiteral || !field.IsStatic)
                     continue;
@@ -489,7 +489,7 @@ namespace Il2CppInspector.Outputs
 
             var paramNs = CreateNamespace();
             paramNs.ReserveName("method");
-            var paramNamer = paramNs.MakeNamer<ParameterInfo>((pi) => pi.Name == "" ? "arg" : sanitizeIdentifier(pi.Name));
+            var paramNamer = paramNs.MakeNamer<ParameterInfo>((pi) => pi.Name == "" ? "arg" : pi.Name.ToCIdentifier());
 
             var paramList = new List<string>();
             // Figure out the "this" param
@@ -551,7 +551,7 @@ namespace Il2CppInspector.Outputs
             TypeNamer = TypeNamespace.MakeNamer<TypeInfo>((ti) => {
                 if (ti.IsArray)
                     return TypeNamer.GetName(ti.ElementType) + "__Array";
-                var name = sanitizeIdentifier(ti.Name);
+                var name = ti.Name.ToCIdentifier();
                 if (name.StartsWith("Il2Cpp"))
                     name = "_" + name;
                 name = Regex.Replace(name, "__+", "_");
@@ -563,7 +563,7 @@ namespace Il2CppInspector.Outputs
             });
 
             GlobalsNamespace = CreateNamespace();
-            MethodNamer = TypeNamespace.MakeNamer<MethodBase>((method) => $"{TypeNamer.GetName(method.DeclaringType)}_{sanitizeIdentifier(method.Name)}");
+            MethodNamer = TypeNamespace.MakeNamer<MethodBase>((method) => $"{TypeNamer.GetName(method.DeclaringType)}_{method.Name.ToCIdentifier()}");
         }
 
         // Reserve C/C++ keywords and built-in names
@@ -579,8 +579,6 @@ namespace Il2CppInspector.Outputs
             }
             return ns;
         }
-
-        private static string sanitizeIdentifier(string id) => Regex.Replace(id, "[^a-zA-Z0-9_]", "_");
 
         /// <summary>
         /// Namespace for all types and typedefs
