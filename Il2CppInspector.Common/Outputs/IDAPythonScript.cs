@@ -10,7 +10,6 @@ using System.IO;
 using System.Text;
 using Il2CppInspector.Reflection;
 using Il2CppInspector.Outputs.UnityHeaders;
-using System.Text.RegularExpressions;
 
 namespace Il2CppInspector.Outputs
 {
@@ -118,13 +117,9 @@ typedef __int64 int64_t;
             }
         }
 
-        private static string sanitizeIdentifier(string str) {
-            return Regex.Replace(str, "[^a-zA-Z0-9_]", "_");
-        }
-
         private static string stringToIdentifier(string str) {
             str = str.Substring(0, Math.Min(32, str.Length));
-            return sanitizeIdentifier(str);
+            return str.ToCIdentifier();
         }
 
         private void writeUsages() {

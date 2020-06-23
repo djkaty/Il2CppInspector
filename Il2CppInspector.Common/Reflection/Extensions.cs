@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Il2CppInspector.Reflection
 {
@@ -81,6 +82,15 @@ namespace Il2CppInspector.Reflection
                     : str[i] < 32 || str[i] > 126 ? @"\u" + $"{(int) str[i]:X4}"
                     : str[i].ToString());
             return s.ToString();
+        }
+
+        public static string ToCIdentifier(this string str) {
+            // replace illegal characters
+            str = Regex.Replace(str, "[^a-zA-Z0-9_]", "_");
+            // ensure identifier starts with a letter or _ (and is non-empty)
+            if (!Regex.IsMatch(str, "^[a-zA-Z_]"))
+                str = "_" + str;
+            return str;
         }
 
         // Output a value in C#-friendly syntax
