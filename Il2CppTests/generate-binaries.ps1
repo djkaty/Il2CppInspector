@@ -87,6 +87,7 @@ echo "Using Android NDK at '$AndroidNDK'"
 # Workspace paths
 $src = "$PSScriptRoot/TestSources"
 $asm = "$PSScriptRoot/TestAssemblies"
+$cpp = "$PSScriptRoot/TestCpp"
 $bin = "$PSScriptRoot/TestBinaries"
 
 # We try to make the arguments as close as possible to a real Unity build
@@ -121,7 +122,8 @@ gci $asm -filter $assemblies | % {
 	md $bin/$name 2>&1 >$null
 	& $il2cpp $arg '--platform=WindowsDesktop', '--architecture=x86', `
 				"--assembly=$asm/$_,$mscorlib", `
-				"--outputpath=$bin/$name/$name.dll"
+				"--outputpath=$bin/$name/$name.dll", `
+				"--generatedcppdir=$cpp/$name"
 	if ($LastExitCode -ne 0) {
 		Write-Error "IL2CPP error - aborting"
 		Exit
@@ -136,7 +138,8 @@ gci $asm -filter $assemblies | % {
 	md $bin/$name 2>&1 >$null
 	& $il2cpp $arg '--platform=WindowsDesktop', '--architecture=x64', `
 				"--assembly=$asm/$_,$mscorlib", `
-				"--outputpath=$bin/$name/$name.dll"
+				"--outputpath=$bin/$name/$name.dll", `
+				"--generatedcppdir=$cpp/$name"
 	if ($LastExitCode -ne 0) {
 		Write-Error "IL2CPP error - aborting"
 		Exit
@@ -151,6 +154,7 @@ gci $asm -filter $assemblies | % {
 	& $il2cpp $arg '--platform=Android', '--architecture=ARMv7', `
 				"--assembly=$asm/$_,$mscorlib", `
 				"--outputpath=$bin/$name/$name.so", `
+				"--generatedcppdir=$cpp/$name", `
 				"--additional-include-directories=$AndroidPlayer/Tools/bdwgc/include" `
 				"--additional-include-directories=$AndroidPlayer/Tools/libil2cpp/include" `
 				"--tool-chain-path=$AndroidNDK"
@@ -168,6 +172,7 @@ gci $asm -filter $assemblies | % {
 	& $il2cpp $arg '--platform=Android', '--architecture=ARM64', `
 				"--assembly=$asm/$_,$mscorlib", `
 				"--outputpath=$bin/$name/$name.so", `
+				"--generatedcppdir=$cpp/$name", `
 				"--additional-include-directories=$AndroidPlayer/Tools/bdwgc/include" `
 				"--additional-include-directories=$AndroidPlayer/Tools/libil2cpp/include" `
 				"--tool-chain-path=$AndroidNDK"
