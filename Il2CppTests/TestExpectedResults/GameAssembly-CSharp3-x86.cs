@@ -21,140 +21,140 @@ using System.Xml.XPath;
 using System.Xml.Xsl;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-2871
-[assembly: AllowPartiallyTrustedCallers] // 0x1000E960-0x1000EC30
-// [assembly: AssemblyCompany] // 0x1000E960-0x1000EC30
-// [assembly: AssemblyCopyright] // 0x1000E960-0x1000EC30
-// [assembly: AssemblyDefaultAlias] // 0x1000E960-0x1000EC30
-// [assembly: AssemblyDelaySign] // 0x1000E960-0x1000EC30
-// [assembly: AssemblyDescription] // 0x1000E960-0x1000EC30
-// [assembly: AssemblyFileVersion] // 0x1000E960-0x1000EC30
-// [assembly: AssemblyInformationalVersion] // 0x1000E960-0x1000EC30
-// [assembly: AssemblyKeyFile] // 0x1000E960-0x1000EC30
-// [assembly: AssemblyProduct] // 0x1000E960-0x1000EC30
-// [assembly: AssemblyTitle] // 0x1000E960-0x1000EC30
-// [assembly: CLSCompliant] // 0x1000E960-0x1000EC30
-// [assembly: ComCompatibleVersion] // 0x1000E960-0x1000EC30
-// [assembly: CompilationRelaxations] // 0x1000E960-0x1000EC30
-// [assembly: ComVisible] // 0x1000E960-0x1000EC30
-// [assembly: Debuggable] // 0x1000E960-0x1000EC30
-// [assembly: DefaultDependency] // 0x1000E960-0x1000EC30
-// [assembly: Guid] // 0x1000E960-0x1000EC30
-// [assembly: InternalsVisibleTo] // 0x1000E960-0x1000EC30
-// [assembly: InternalsVisibleTo] // 0x1000E960-0x1000EC30
-// [assembly: InternalsVisibleTo] // 0x1000E960-0x1000EC30
-// [assembly: InternalsVisibleTo] // 0x1000E960-0x1000EC30
-// [assembly: InternalsVisibleTo] // 0x1000E960-0x1000EC30
-// [assembly: NeutralResourcesLanguage] // 0x1000E960-0x1000EC30
-[assembly: RuntimeCompatibility] // 0x1000E960-0x1000EC30
-// [assembly: SatelliteContractVersion] // 0x1000E960-0x1000EC30
-[assembly: StringFreezing] // 0x1000E960-0x1000EC30
+[assembly: AllowPartiallyTrustedCallers] // 0x1000EE00-0x1000F0D0
+// [assembly: AssemblyCompany] // 0x1000EE00-0x1000F0D0
+// [assembly: AssemblyCopyright] // 0x1000EE00-0x1000F0D0
+// [assembly: AssemblyDefaultAlias] // 0x1000EE00-0x1000F0D0
+// [assembly: AssemblyDelaySign] // 0x1000EE00-0x1000F0D0
+// [assembly: AssemblyDescription] // 0x1000EE00-0x1000F0D0
+// [assembly: AssemblyFileVersion] // 0x1000EE00-0x1000F0D0
+// [assembly: AssemblyInformationalVersion] // 0x1000EE00-0x1000F0D0
+// [assembly: AssemblyKeyFile] // 0x1000EE00-0x1000F0D0
+// [assembly: AssemblyProduct] // 0x1000EE00-0x1000F0D0
+// [assembly: AssemblyTitle] // 0x1000EE00-0x1000F0D0
+// [assembly: CLSCompliant] // 0x1000EE00-0x1000F0D0
+// [assembly: ComCompatibleVersion] // 0x1000EE00-0x1000F0D0
+// [assembly: CompilationRelaxations] // 0x1000EE00-0x1000F0D0
+// [assembly: ComVisible] // 0x1000EE00-0x1000F0D0
+// [assembly: Debuggable] // 0x1000EE00-0x1000F0D0
+// [assembly: DefaultDependency] // 0x1000EE00-0x1000F0D0
+// [assembly: Guid] // 0x1000EE00-0x1000F0D0
+// [assembly: InternalsVisibleTo] // 0x1000EE00-0x1000F0D0
+// [assembly: InternalsVisibleTo] // 0x1000EE00-0x1000F0D0
+// [assembly: InternalsVisibleTo] // 0x1000EE00-0x1000F0D0
+// [assembly: InternalsVisibleTo] // 0x1000EE00-0x1000F0D0
+// [assembly: InternalsVisibleTo] // 0x1000EE00-0x1000F0D0
+// [assembly: NeutralResourcesLanguage] // 0x1000EE00-0x1000F0D0
+[assembly: RuntimeCompatibility] // 0x1000EE00-0x1000F0D0
+// [assembly: SatelliteContractVersion] // 0x1000EE00-0x1000F0D0
+[assembly: StringFreezing] // 0x1000EE00-0x1000F0D0
 
 // Image 1: System.Xml.dll - Assembly: System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e - Types 2872-4269
-// [assembly: AssemblyCompany] // 0x10007850-0x10007AC0
-// [assembly: AssemblyCopyright] // 0x10007850-0x10007AC0
-// [assembly: AssemblyDefaultAlias] // 0x10007850-0x10007AC0
-// [assembly: AssemblyDelaySign] // 0x10007850-0x10007AC0
-// [assembly: AssemblyDescription] // 0x10007850-0x10007AC0
-// [assembly: AssemblyFileVersion] // 0x10007850-0x10007AC0
-// [assembly: AssemblyInformationalVersion] // 0x10007850-0x10007AC0
-// [assembly: AssemblyKeyFile] // 0x10007850-0x10007AC0
-// [assembly: AssemblyProduct] // 0x10007850-0x10007AC0
-// [assembly: AssemblyTitle] // 0x10007850-0x10007AC0
-// [assembly: CLSCompliant] // 0x10007850-0x10007AC0
-// [assembly: CompilationRelaxations] // 0x10007850-0x10007AC0
-// [assembly: ComVisible] // 0x10007850-0x10007AC0
-// [assembly: Debuggable] // 0x10007850-0x10007AC0
-// [assembly: InternalsVisibleTo] // 0x10007850-0x10007AC0
-// [assembly: InternalsVisibleTo] // 0x10007850-0x10007AC0
-// [assembly: InternalsVisibleTo] // 0x10007850-0x10007AC0
-// [assembly: InternalsVisibleTo] // 0x10007850-0x10007AC0
-// [assembly: InternalsVisibleTo] // 0x10007850-0x10007AC0
-// [assembly: NeutralResourcesLanguage] // 0x10007850-0x10007AC0
-[assembly: RuntimeCompatibility] // 0x10007850-0x10007AC0
-// [assembly: SatelliteContractVersion] // 0x10007850-0x10007AC0
+// [assembly: AssemblyCompany] // 0x10007CF0-0x10007F60
+// [assembly: AssemblyCopyright] // 0x10007CF0-0x10007F60
+// [assembly: AssemblyDefaultAlias] // 0x10007CF0-0x10007F60
+// [assembly: AssemblyDelaySign] // 0x10007CF0-0x10007F60
+// [assembly: AssemblyDescription] // 0x10007CF0-0x10007F60
+// [assembly: AssemblyFileVersion] // 0x10007CF0-0x10007F60
+// [assembly: AssemblyInformationalVersion] // 0x10007CF0-0x10007F60
+// [assembly: AssemblyKeyFile] // 0x10007CF0-0x10007F60
+// [assembly: AssemblyProduct] // 0x10007CF0-0x10007F60
+// [assembly: AssemblyTitle] // 0x10007CF0-0x10007F60
+// [assembly: CLSCompliant] // 0x10007CF0-0x10007F60
+// [assembly: CompilationRelaxations] // 0x10007CF0-0x10007F60
+// [assembly: ComVisible] // 0x10007CF0-0x10007F60
+// [assembly: Debuggable] // 0x10007CF0-0x10007F60
+// [assembly: InternalsVisibleTo] // 0x10007CF0-0x10007F60
+// [assembly: InternalsVisibleTo] // 0x10007CF0-0x10007F60
+// [assembly: InternalsVisibleTo] // 0x10007CF0-0x10007F60
+// [assembly: InternalsVisibleTo] // 0x10007CF0-0x10007F60
+// [assembly: InternalsVisibleTo] // 0x10007CF0-0x10007F60
+// [assembly: NeutralResourcesLanguage] // 0x10007CF0-0x10007F60
+[assembly: RuntimeCompatibility] // 0x10007CF0-0x10007F60
+// [assembly: SatelliteContractVersion] // 0x10007CF0-0x10007F60
 
 // Image 2: Mono.Security.dll - Assembly: Mono.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756 - Types 4270-4519
-// [assembly: AssemblyCompany] // 0x1000A210-0x1000A360
-// [assembly: AssemblyCopyright] // 0x1000A210-0x1000A360
-// [assembly: AssemblyDelaySign] // 0x1000A210-0x1000A360
-// [assembly: AssemblyDescription] // 0x1000A210-0x1000A360
-// [assembly: AssemblyProduct] // 0x1000A210-0x1000A360
-// [assembly: AssemblyTitle] // 0x1000A210-0x1000A360
-// [assembly: CLSCompliant] // 0x1000A210-0x1000A360
-// [assembly: CompilationRelaxations] // 0x1000A210-0x1000A360
-// [assembly: ComVisible] // 0x1000A210-0x1000A360
-// [assembly: Debuggable] // 0x1000A210-0x1000A360
-// [assembly: InternalsVisibleTo] // 0x1000A210-0x1000A360
-// [assembly: NeutralResourcesLanguage] // 0x1000A210-0x1000A360
-[assembly: RuntimeCompatibility] // 0x1000A210-0x1000A360
+// [assembly: AssemblyCompany] // 0x1000A6A0-0x1000A7F0
+// [assembly: AssemblyCopyright] // 0x1000A6A0-0x1000A7F0
+// [assembly: AssemblyDelaySign] // 0x1000A6A0-0x1000A7F0
+// [assembly: AssemblyDescription] // 0x1000A6A0-0x1000A7F0
+// [assembly: AssemblyProduct] // 0x1000A6A0-0x1000A7F0
+// [assembly: AssemblyTitle] // 0x1000A6A0-0x1000A7F0
+// [assembly: CLSCompliant] // 0x1000A6A0-0x1000A7F0
+// [assembly: CompilationRelaxations] // 0x1000A6A0-0x1000A7F0
+// [assembly: ComVisible] // 0x1000A6A0-0x1000A7F0
+// [assembly: Debuggable] // 0x1000A6A0-0x1000A7F0
+// [assembly: InternalsVisibleTo] // 0x1000A6A0-0x1000A7F0
+// [assembly: NeutralResourcesLanguage] // 0x1000A6A0-0x1000A7F0
+[assembly: RuntimeCompatibility] // 0x1000A6A0-0x1000A7F0
 
 // Image 3: System.dll - Assembly: System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e - Types 4520-6315
-// [assembly: AssemblyCompany] // 0x1000C160-0x1000C3B0
-// [assembly: AssemblyCopyright] // 0x1000C160-0x1000C3B0
-// [assembly: AssemblyDefaultAlias] // 0x1000C160-0x1000C3B0
-// [assembly: AssemblyDelaySign] // 0x1000C160-0x1000C3B0
-// [assembly: AssemblyDescription] // 0x1000C160-0x1000C3B0
-// [assembly: AssemblyFileVersion] // 0x1000C160-0x1000C3B0
-// [assembly: AssemblyInformationalVersion] // 0x1000C160-0x1000C3B0
-// [assembly: AssemblyKeyFile] // 0x1000C160-0x1000C3B0
-// [assembly: AssemblyProduct] // 0x1000C160-0x1000C3B0
-// [assembly: AssemblyTitle] // 0x1000C160-0x1000C3B0
-// [assembly: CLSCompliant] // 0x1000C160-0x1000C3B0
-// [assembly: CompilationRelaxations] // 0x1000C160-0x1000C3B0
-// [assembly: ComVisible] // 0x1000C160-0x1000C3B0
-// [assembly: Debuggable] // 0x1000C160-0x1000C3B0
-// [assembly: InternalsVisibleTo] // 0x1000C160-0x1000C3B0
-// [assembly: InternalsVisibleTo] // 0x1000C160-0x1000C3B0
-// [assembly: InternalsVisibleTo] // 0x1000C160-0x1000C3B0
-// [assembly: InternalsVisibleTo] // 0x1000C160-0x1000C3B0
-// [assembly: NeutralResourcesLanguage] // 0x1000C160-0x1000C3B0
-[assembly: RuntimeCompatibility] // 0x1000C160-0x1000C3B0
-// [assembly: SatelliteContractVersion] // 0x1000C160-0x1000C3B0
+// [assembly: AssemblyCompany] // 0x1000C5F0-0x1000C840
+// [assembly: AssemblyCopyright] // 0x1000C5F0-0x1000C840
+// [assembly: AssemblyDefaultAlias] // 0x1000C5F0-0x1000C840
+// [assembly: AssemblyDelaySign] // 0x1000C5F0-0x1000C840
+// [assembly: AssemblyDescription] // 0x1000C5F0-0x1000C840
+// [assembly: AssemblyFileVersion] // 0x1000C5F0-0x1000C840
+// [assembly: AssemblyInformationalVersion] // 0x1000C5F0-0x1000C840
+// [assembly: AssemblyKeyFile] // 0x1000C5F0-0x1000C840
+// [assembly: AssemblyProduct] // 0x1000C5F0-0x1000C840
+// [assembly: AssemblyTitle] // 0x1000C5F0-0x1000C840
+// [assembly: CLSCompliant] // 0x1000C5F0-0x1000C840
+// [assembly: CompilationRelaxations] // 0x1000C5F0-0x1000C840
+// [assembly: ComVisible] // 0x1000C5F0-0x1000C840
+// [assembly: Debuggable] // 0x1000C5F0-0x1000C840
+// [assembly: InternalsVisibleTo] // 0x1000C5F0-0x1000C840
+// [assembly: InternalsVisibleTo] // 0x1000C5F0-0x1000C840
+// [assembly: InternalsVisibleTo] // 0x1000C5F0-0x1000C840
+// [assembly: InternalsVisibleTo] // 0x1000C5F0-0x1000C840
+// [assembly: NeutralResourcesLanguage] // 0x1000C5F0-0x1000C840
+[assembly: RuntimeCompatibility] // 0x1000C5F0-0x1000C840
+// [assembly: SatelliteContractVersion] // 0x1000C5F0-0x1000C840
 
 // Image 4: System.Configuration.dll - Assembly: System.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a - Types 6316-6426
-[assembly: AllowPartiallyTrustedCallers] // 0x10012690-0x10012870
-// [assembly: AssemblyCompany] // 0x10012690-0x10012870
-// [assembly: AssemblyCopyright] // 0x10012690-0x10012870
-// [assembly: AssemblyDefaultAlias] // 0x10012690-0x10012870
-// [assembly: AssemblyDescription] // 0x10012690-0x10012870
-// [assembly: AssemblyFileVersion] // 0x10012690-0x10012870
-// [assembly: AssemblyInformationalVersion] // 0x10012690-0x10012870
-// [assembly: AssemblyProduct] // 0x10012690-0x10012870
-// [assembly: AssemblyTitle] // 0x10012690-0x10012870
-// [assembly: CLSCompliant] // 0x10012690-0x10012870
-// [assembly: ComCompatibleVersion] // 0x10012690-0x10012870
-// [assembly: CompilationRelaxations] // 0x10012690-0x10012870
-// [assembly: ComVisible] // 0x10012690-0x10012870
-// [assembly: Debuggable] // 0x10012690-0x10012870
-// [assembly: DefaultDllImportSearchPaths] // 0x10012690-0x10012870
-// [assembly: NeutralResourcesLanguage] // 0x10012690-0x10012870
-[assembly: RuntimeCompatibility] // 0x10012690-0x10012870
-// [assembly: SatelliteContractVersion] // 0x10012690-0x10012870
-// [assembly: SecurityRules] // 0x10012690-0x10012870
+[assembly: AllowPartiallyTrustedCallers] // 0x10012B20-0x10012D00
+// [assembly: AssemblyCompany] // 0x10012B20-0x10012D00
+// [assembly: AssemblyCopyright] // 0x10012B20-0x10012D00
+// [assembly: AssemblyDefaultAlias] // 0x10012B20-0x10012D00
+// [assembly: AssemblyDescription] // 0x10012B20-0x10012D00
+// [assembly: AssemblyFileVersion] // 0x10012B20-0x10012D00
+// [assembly: AssemblyInformationalVersion] // 0x10012B20-0x10012D00
+// [assembly: AssemblyProduct] // 0x10012B20-0x10012D00
+// [assembly: AssemblyTitle] // 0x10012B20-0x10012D00
+// [assembly: CLSCompliant] // 0x10012B20-0x10012D00
+// [assembly: ComCompatibleVersion] // 0x10012B20-0x10012D00
+// [assembly: CompilationRelaxations] // 0x10012B20-0x10012D00
+// [assembly: ComVisible] // 0x10012B20-0x10012D00
+// [assembly: Debuggable] // 0x10012B20-0x10012D00
+// [assembly: DefaultDllImportSearchPaths] // 0x10012B20-0x10012D00
+// [assembly: NeutralResourcesLanguage] // 0x10012B20-0x10012D00
+[assembly: RuntimeCompatibility] // 0x10012B20-0x10012D00
+// [assembly: SatelliteContractVersion] // 0x10012B20-0x10012D00
+// [assembly: SecurityRules] // 0x10012B20-0x10012D00
 
 // Image 5: System.Core.dll - Assembly: System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e - Types 6427-7682
-// [assembly: AssemblyCompany] // 0x10013E90-0x10014060
-// [assembly: AssemblyCopyright] // 0x10013E90-0x10014060
-// [assembly: AssemblyDefaultAlias] // 0x10013E90-0x10014060
-// [assembly: AssemblyDelaySign] // 0x10013E90-0x10014060
-// [assembly: AssemblyDescription] // 0x10013E90-0x10014060
-// [assembly: AssemblyFileVersion] // 0x10013E90-0x10014060
-// [assembly: AssemblyInformationalVersion] // 0x10013E90-0x10014060
-// [assembly: AssemblyKeyFile] // 0x10013E90-0x10014060
-// [assembly: AssemblyProduct] // 0x10013E90-0x10014060
-// [assembly: AssemblyTitle] // 0x10013E90-0x10014060
-// [assembly: CLSCompliant] // 0x10013E90-0x10014060
-// [assembly: CompilationRelaxations] // 0x10013E90-0x10014060
-// [assembly: ComVisible] // 0x10013E90-0x10014060
-// [assembly: Debuggable] // 0x10013E90-0x10014060
-// [assembly: NeutralResourcesLanguage] // 0x10013E90-0x10014060
-[assembly: RuntimeCompatibility] // 0x10013E90-0x10014060
-// [assembly: SatelliteContractVersion] // 0x10013E90-0x10014060
+// [assembly: AssemblyCompany] // 0x10014310-0x100144E0
+// [assembly: AssemblyCopyright] // 0x10014310-0x100144E0
+// [assembly: AssemblyDefaultAlias] // 0x10014310-0x100144E0
+// [assembly: AssemblyDelaySign] // 0x10014310-0x100144E0
+// [assembly: AssemblyDescription] // 0x10014310-0x100144E0
+// [assembly: AssemblyFileVersion] // 0x10014310-0x100144E0
+// [assembly: AssemblyInformationalVersion] // 0x10014310-0x100144E0
+// [assembly: AssemblyKeyFile] // 0x10014310-0x100144E0
+// [assembly: AssemblyProduct] // 0x10014310-0x100144E0
+// [assembly: AssemblyTitle] // 0x10014310-0x100144E0
+// [assembly: CLSCompliant] // 0x10014310-0x100144E0
+// [assembly: CompilationRelaxations] // 0x10014310-0x100144E0
+// [assembly: ComVisible] // 0x10014310-0x100144E0
+// [assembly: Debuggable] // 0x10014310-0x100144E0
+// [assembly: NeutralResourcesLanguage] // 0x10014310-0x100144E0
+[assembly: RuntimeCompatibility] // 0x10014310-0x100144E0
+// [assembly: SatelliteContractVersion] // 0x10014310-0x100144E0
 
 // Image 6: CSharp3.dll - Assembly: CSharp3, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 7683-7688
-// [assembly: CompilationRelaxations] // 0x10018760-0x100187B0
-// [assembly: Debuggable] // 0x10018760-0x100187B0
-[assembly: RuntimeCompatibility] // 0x10018760-0x100187B0
+// [assembly: CompilationRelaxations] // 0x10018BA0-0x10018BF0
+// [assembly: Debuggable] // 0x10018BA0-0x10018BF0
+[assembly: RuntimeCompatibility] // 0x10018BA0-0x10018BF0
 
 internal static class Interop // TypeDefIndex: 2
 {
@@ -237,8 +237,8 @@ internal sealed class Locale // TypeDefIndex: 6
 	private Locale() {} // 0x1015D2D0-0x1015D2E0
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x1018C2D0-0x1018C2E0
-	public static string GetText(string fmt, params /* 0x10003170-0x10003190 */ object[] args) => default; // 0x107D19B0-0x107D19C0
+	public static string GetText(string msg) => default; // 0x1018BF50-0x1018BF60
+	public static string GetText(string fmt, params /* 0x10003200-0x10003220 */ object[] args) => default; // 0x107CFE10-0x107CFE20
 }
 
 internal static class SR // TypeDefIndex: 7
@@ -1067,14 +1067,14 @@ internal static class SR // TypeDefIndex: 7
 	public const string OutstandingReferences = "Release all references before disposing this instance."; // Metadata: 0x003CDE68
 
 	// Methods
-	internal static string GetString(string name, params /* 0x10003170-0x10003190 */ object[] args) => default; // 0x10506350-0x105063B0
-	internal static string GetString(CultureInfo culture, string name, params /* 0x10003170-0x10003190 */ object[] args) => default; // 0x10462400-0x10462410
-	internal static string GetString(string name) => default; // 0x1018C2D0-0x1018C2E0
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x10462410-0x10462420
-	internal static string Format(string resourceFormat, params /* 0x10003170-0x10003190 */ object[] args) => default; // 0x10506220-0x10506290
-	internal static string Format(string resourceFormat, object p1) => default; // 0x105062F0-0x10506350
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x105061C0-0x10506220
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x10506290-0x105062F0
+	internal static string GetString(string name, params /* 0x10003200-0x10003220 */ object[] args) => default; // 0x10506BA0-0x10506C00
+	internal static string GetString(CultureInfo culture, string name, params /* 0x10003200-0x10003220 */ object[] args) => default; // 0x10463610-0x10463620
+	internal static string GetString(string name) => default; // 0x1018BF50-0x1018BF60
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x10463620-0x10463630
+	internal static string Format(string resourceFormat, params /* 0x10003200-0x10003220 */ object[] args) => default; // 0x10506A70-0x10506AE0
+	internal static string Format(string resourceFormat, object p1) => default; // 0x10506B40-0x10506BA0
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x10506A10-0x10506A70
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x10506AE0-0x10506B40
 }
 
 internal static class AssemblyRef // TypeDefIndex: 2873
@@ -1145,14 +1145,14 @@ internal static class Consts // TypeDefIndex: 2874
 internal static class SR // TypeDefIndex: 2875
 {
 	// Methods
-	internal static string GetString(string name, params /* 0x10003170-0x10003190 */ object[] args) => default; // 0x104623A0-0x10462400
-	internal static string GetString(CultureInfo culture, string name, params /* 0x10003170-0x10003190 */ object[] args) => default; // 0x10462400-0x10462410
-	internal static string GetString(string name) => default; // 0x1018C2D0-0x1018C2E0
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x10462410-0x10462420
-	internal static string Format(string resourceFormat, params /* 0x10003170-0x10003190 */ object[] args) => default; // 0x10462330-0x104623A0
-	internal static string Format(string resourceFormat, object p1) => default; // 0x10462210-0x10462270
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x10462270-0x104622D0
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x104622D0-0x10462330
+	internal static string GetString(string name, params /* 0x10003200-0x10003220 */ object[] args) => default; // 0x104635B0-0x10463610
+	internal static string GetString(CultureInfo culture, string name, params /* 0x10003200-0x10003220 */ object[] args) => default; // 0x10463610-0x10463620
+	internal static string GetString(string name) => default; // 0x1018BF50-0x1018BF60
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x10463620-0x10463630
+	internal static string Format(string resourceFormat, params /* 0x10003200-0x10003220 */ object[] args) => default; // 0x10463540-0x104635B0
+	internal static string Format(string resourceFormat, object p1) => default; // 0x10463420-0x10463480
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x10463480-0x104634E0
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x104634E0-0x10463540
 }
 
 internal static class ThisAssembly // TypeDefIndex: 2876
@@ -1169,9 +1169,9 @@ namespace Microsoft.CSharp
 		public CodeDomProvider() {} // 0x1015D2D0-0x1015D2E0
 	
 		// Methods
-		public string CreateEscapedIdentifier(string name) => default; // 0x1045E0A0-0x1045E130
-		private static bool IsKeyword(string value) => default; // 0x10183580-0x10183590
-		private static bool IsPrefixTwoUnderscore(string value) => default; // 0x1045E130-0x1045E190
+		public string CreateEscapedIdentifier(string name) => default; // 0x1045F2F0-0x1045F380
+		private static bool IsKeyword(string value) => default; // 0x101835D0-0x101835E0
+		private static bool IsPrefixTwoUnderscore(string value) => default; // 0x1045F380-0x1045F3E0
 	}
 
 	internal class CSharpCodeProvider : Microsoft.CSharp.CodeDomProvider // TypeDefIndex: 2878
@@ -1186,9 +1186,9 @@ namespace Microsoft.CSharp
 		public CodeGenerator() {} // 0x1015D2D0-0x1015D2E0
 	
 		// Methods
-		public static bool IsValidLanguageIndependentIdentifier(string value) => default; // 0x1045E220-0x1045E300
-		private static bool IsValidTypeNameOrIdentifier(string value, bool isTypeName) => default; // 0x1045E300-0x1045EA00
-		private static bool IsSpecialTypeChar(char ch, ref bool nextMustBeStartChar) => default; // 0x1045E190-0x1045E220
+		public static bool IsValidLanguageIndependentIdentifier(string value) => default; // 0x1045F470-0x1045F550
+		private static bool IsValidTypeNameOrIdentifier(string value, bool isTypeName) => default; // 0x1045F550-0x1045FC70
+		private static bool IsSpecialTypeChar(char ch, ref bool nextMustBeStartChar) => default; // 0x1045F3E0-0x1045F470
 	}
 }
 
@@ -1197,13 +1197,13 @@ namespace MS.Internal.Xml.XPath
 	internal sealed class AbsoluteQuery : ContextQuery // TypeDefIndex: 2880
 	{
 		// Constructors
-		public AbsoluteQuery() {} // 0x10BD71F0-0x10BD7210
-		private AbsoluteQuery(AbsoluteQuery other) {} // 0x10BD7210-0x10BD7240
+		public AbsoluteQuery() {} // 0x10BD5440-0x10BD5460
+		private AbsoluteQuery(AbsoluteQuery other) {} // 0x10BD5460-0x10BD5490
 	
 		// Methods
-		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BD7150-0x10BD71C0
-		public override XPathNavigator MatchNode(XPathNavigator context) => default; // 0x10BD71C0-0x10BD71F0
-		public override XPathNodeIterator Clone() => default; // 0x10BD70F0-0x10BD7150
+		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BD53A0-0x10BD5410
+		public override XPathNavigator MatchNode(XPathNavigator context) => default; // 0x10BD5410-0x10BD5440
+		public override XPathNodeIterator Clone() => default; // 0x10BD5340-0x10BD53A0
 	}
 
 	internal abstract class AstNode // TypeDefIndex: 2881
@@ -1237,14 +1237,14 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public AttributeQuery() {} // Dummy constructor
-		public AttributeQuery(Query qyParent, string Name, string Prefix, XPathNodeType Type) {} // 0x10BD74A0-0x10BD7530
-		private AttributeQuery(AttributeQuery other) {} // 0x10BD7530-0x10BD75A0
+		public AttributeQuery(Query qyParent, string Name, string Prefix, XPathNodeType Type) {} // 0x10BD56B0-0x10BD5740
+		private AttributeQuery(AttributeQuery other) {} // 0x10BD5740-0x10BD5770
 	
 		// Methods
-		public override void Reset() {} // 0x10BD7460-0x10BD74A0
-		public override XPathNavigator Advance() => default; // 0x10BD7240-0x10BD7310
-		public override XPathNavigator MatchNode(XPathNavigator context) => default; // 0x10BD73B0-0x10BD7460
-		public override XPathNodeIterator Clone() => default; // 0x10BD7310-0x10BD73B0
+		public override void Reset() {} // 0x10BD5670-0x10BD56B0
+		public override XPathNavigator Advance() => default; // 0x10BD5490-0x10BD5560
+		public override XPathNavigator MatchNode(XPathNavigator context) => default; // 0x10BD55C0-0x10BD5670
+		public override XPathNodeIterator Clone() => default; // 0x10BD5560-0x10BD55C0
 	}
 
 	internal class Axis : AstNode // TypeDefIndex: 2884
@@ -1259,15 +1259,15 @@ namespace MS.Internal.Xml.XPath
 		private string urn; // 0x20
 	
 		// Properties
-		public override AstType Type { get => default; } // 0x1019C310-0x1019C320 
-		public override XPathResultType ReturnType { get => default; } // 0x10184060-0x10184070 
-		public AstNode Input { get => default; set {} } // 0x10160960-0x10160970 0x101BB920-0x101BB930
-		public string Prefix { get => default; } // 0x1019CE70-0x1019CE80 
-		public string Name { get => default; } // 0x10181220-0x10181230 
-		public XPathNodeType NodeType { get => default; } // 0x10181150-0x10181160 
-		public AxisType TypeOfAxis { get => default; } // 0x1015D620-0x10160940 
-		public bool AbbrAxis { get => default; } // 0x10214870-0x10214880 
-		public string Urn { get => default; set {} } // 0x1019EF30-0x1019EF40 0x1019F050-0x1019F060
+		public override AstType Type { get => default; } // 0x1019C040-0x1019C050 
+		public override XPathResultType ReturnType { get => default; } // 0x101840B0-0x101840C0 
+		public AstNode Input { get => default; set {} } // 0x101609B0-0x101609C0 0x101BBE70-0x101BBE80
+		public string Prefix { get => default; } // 0x1019CB30-0x1019CB40 
+		public string Name { get => default; } // 0x10181250-0x10181260 
+		public XPathNodeType NodeType { get => default; } // 0x10181180-0x10181190 
+		public AxisType TypeOfAxis { get => default; } // 0x1015D620-0x10160990 
+		public bool AbbrAxis { get => default; } // 0x10215B80-0x10215B90 
+		public string Urn { get => default; set {} } // 0x1019EBC0-0x1019EBD0 0x1019ECE0-0x1019ECF0
 	
 		// Nested types
 		public enum AxisType // TypeDefIndex: 2885
@@ -1290,8 +1290,8 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public Axis() {} // Dummy constructor
-		public Axis(AxisType axisType, AstNode input, string prefix, string name, XPathNodeType nodetype) {} // 0x10BD75A0-0x10BD7600
-		public Axis(AxisType axisType, AstNode input) {} // 0x10BD7600-0x10BD7690
+		public Axis(AxisType axisType, AstNode input, string prefix, string name, XPathNodeType nodetype) {} // 0x10BD5770-0x10BD57D0
+		public Axis(AxisType axisType, AstNode input) {} // 0x10BD57D0-0x10BD5860
 	}
 
 	internal abstract class BaseAxisQuery : Query // TypeDefIndex: 2886
@@ -1307,28 +1307,28 @@ namespace MS.Internal.Xml.XPath
 		protected int position; // 0x28
 	
 		// Properties
-		protected string Name { get; } // 0x10181220-0x10181230 
-		protected string Prefix { get; } // 0x10181150-0x10181160 
-		protected string Namespace { get; } // 0x10181210-0x10181220 
-		protected bool NameTest { get; } // 0x101BB620-0x101BB630 
-		protected XPathNodeType TypeTest { get; } // 0x1019EF30-0x1019EF40 
-		public override int CurrentPosition { get; } // 0x1019EFC0-0x1019EFD0 
-		public override XPathNavigator Current { get; } // 0x1019EF40-0x1019EF50 
-		public override double XsltDefaultPriority { get; } // 0x10BD7980-0x10BD7A40 
-		public override XPathResultType StaticType { get; } // 0x10184060-0x10184070 
+		protected string Name { get; } // 0x10181250-0x10181260 
+		protected string Prefix { get; } // 0x10181180-0x10181190 
+		protected string Namespace { get; } // 0x10181240-0x10181250 
+		protected bool NameTest { get; } // 0x101BBBA0-0x101BBBB0 
+		protected XPathNodeType TypeTest { get; } // 0x1019EBC0-0x1019EBD0 
+		public override int CurrentPosition { get; } // 0x1019EC50-0x1019EC60 
+		public override XPathNavigator Current { get; } // 0x1019EBD0-0x1019EBE0 
+		public override double XsltDefaultPriority { get; } // 0x10BD5BC0-0x10BD5C80 
+		public override XPathResultType StaticType { get; } // 0x101840B0-0x101840C0 
 	
 		// Constructors
 		protected BaseAxisQuery() {} // Dummy constructor
-		protected BaseAxisQuery(Query qyInput) {} // 0x10BD78C0-0x10BD7920
-		protected BaseAxisQuery(Query qyInput, string name, string prefix, XPathNodeType typeTest) {} // 0x10BD74A0-0x10BD7530
-		protected BaseAxisQuery(BaseAxisQuery other) {} // 0x10BD7920-0x10BD7980
+		protected BaseAxisQuery(Query qyInput) {} // 0x10BD5A90-0x10BD5AF0
+		protected BaseAxisQuery(Query qyInput, string name, string prefix, XPathNodeType typeTest) {} // 0x10BD56B0-0x10BD5740
+		protected BaseAxisQuery(BaseAxisQuery other) {} // 0x10BD5AF0-0x10BD5BC0
 	
 		// Methods
-		public override void Reset() {} // 0x10BD7830-0x10BD7870
-		public override void SetXsltContext(XsltContext context) {} // 0x10BD7870-0x10BD78C0
-		public virtual bool matches(XPathNavigator e) => default; // 0x10BD7A40-0x10BD7B30
-		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BD7690-0x10BD76E0
-		public override void PrintQuery(XmlWriter w) {} // 0x10BD76E0-0x10BD7830
+		public override void Reset() {} // 0x10BD5A00-0x10BD5A40
+		public override void SetXsltContext(XsltContext context) {} // 0x10BD5A40-0x10BD5A90
+		public virtual bool matches(XPathNavigator e) => default; // 0x10BD5C80-0x10BD5D70
+		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BD5860-0x10BD58B0
+		public override void PrintQuery(XmlWriter w) {} // 0x10BD58B0-0x10BD5A00
 	}
 
 	internal sealed class BooleanExpr : ValueQuery // TypeDefIndex: 2887
@@ -1339,18 +1339,18 @@ namespace MS.Internal.Xml.XPath
 		private bool isOr; // 0x14
 	
 		// Properties
-		public override XPathResultType StaticType { get => default; } // 0x101E8A20-0x101E8A30 
+		public override XPathResultType StaticType { get => default; } // 0x101E9E80-0x101E9E90 
 	
 		// Constructors
 		public BooleanExpr() {} // Dummy constructor
-		public BooleanExpr(Operator.Op op, Query opnd1, Query opnd2) {} // 0x10BD7D80-0x10BD7E60
-		private BooleanExpr(BooleanExpr other) {} // 0x10BD7E60-0x10BD7EB0
+		public BooleanExpr(Operator.Op op, Query opnd1, Query opnd2) {} // 0x10BD60A0-0x10BD6180
+		private BooleanExpr(BooleanExpr other) {} // 0x10BD6180-0x10BD62B0
 	
 		// Methods
-		public override void SetXsltContext(XsltContext context) {} // 0x10466130-0x10466180
-		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BD7BB0-0x10BD7C60
-		public override XPathNodeIterator Clone() => default; // 0x10BD7B30-0x10BD7BB0
-		public override void PrintQuery(XmlWriter w) {} // 0x10BD7C60-0x10BD7D80
+		public override void SetXsltContext(XsltContext context) {} // 0x104673A0-0x104673F0
+		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BD5ED0-0x10BD5F80
+		public override XPathNodeIterator Clone() => default; // 0x10BD5D70-0x10BD5ED0
+		public override void PrintQuery(XmlWriter w) {} // 0x10BD5F80-0x10BD60A0
 	}
 
 	internal sealed class BooleanFunctions : ValueQuery // TypeDefIndex: 2888
@@ -1360,23 +1360,23 @@ namespace MS.Internal.Xml.XPath
 		private Function.FunctionType funcType; // 0x10
 	
 		// Properties
-		public override XPathResultType StaticType { get => default; } // 0x101E8A20-0x101E8A30 
+		public override XPathResultType StaticType { get => default; } // 0x101E9E80-0x101E9E90 
 	
 		// Constructors
 		public BooleanFunctions() {} // Dummy constructor
-		public BooleanFunctions(Function.FunctionType funcType, Query arg) {} // 0x10BD83D0-0x10BD8400
-		private BooleanFunctions(BooleanFunctions other) {} // 0x10BD8390-0x10BD83D0
+		public BooleanFunctions(Function.FunctionType funcType, Query arg) {} // 0x10BD69C0-0x10BD69F0
+		private BooleanFunctions(BooleanFunctions other) {} // 0x10BD6910-0x10BD69C0
 	
 		// Methods
-		public override void SetXsltContext(XsltContext context) {} // 0x10BD8360-0x10BD8390
-		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BD7F20-0x10BD8120
-		internal static bool toBoolean(double number) => default; // 0x10BD8570-0x10BD85F0
-		internal static bool toBoolean(string str) => default; // 0x10BD8550-0x10BD8570
-		internal bool toBoolean(XPathNodeIterator nodeIterator) => default; // 0x10BD8400-0x10BD8550
-		private bool Not(XPathNodeIterator nodeIterator) => default; // 0x10BD81F0-0x10BD8270
-		private bool Lang(XPathNodeIterator nodeIterator) => default; // 0x10BD8120-0x10BD81F0
-		public override XPathNodeIterator Clone() => default; // 0x10BD7EB0-0x10BD7F20
-		public override void PrintQuery(XmlWriter w) {} // 0x10BD8270-0x10BD8360
+		public override void SetXsltContext(XsltContext context) {} // 0x10BD68E0-0x10BD6910
+		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BD6390-0x10BD66A0
+		internal static bool toBoolean(double number) => default; // 0x10BD6B50-0x10BD6BD0
+		internal static bool toBoolean(string str) => default; // 0x10BD6B30-0x10BD6B50
+		internal bool toBoolean(XPathNodeIterator nodeIterator) => default; // 0x10BD69F0-0x10BD6B30
+		private bool Not(XPathNodeIterator nodeIterator) => default; // 0x10BD6770-0x10BD67F0
+		private bool Lang(XPathNodeIterator nodeIterator) => default; // 0x10BD66A0-0x10BD6770
+		public override XPathNodeIterator Clone() => default; // 0x10BD62B0-0x10BD6390
+		public override void PrintQuery(XmlWriter w) {} // 0x10BD67F0-0x10BD68E0
 	}
 
 	internal abstract class CacheAxisQuery : BaseAxisQuery // TypeDefIndex: 2889
@@ -1385,20 +1385,20 @@ namespace MS.Internal.Xml.XPath
 		protected List<XPathNavigator> outputBuffer; // 0x2C
 	
 		// Properties
-		public override XPathNavigator Current { get; } // 0x10BD88A0-0x10BD8900 
-		public override int CurrentPosition { get; } // 0x1015D620-0x10160940 
-		public override int Count { get; } // 0x10BD8860-0x10BD88A0 
-		public override QueryProps Properties { get; } // 0x10843270-0x10843280 
+		public override XPathNavigator Current { get; } // 0x10BD6E40-0x10BD6EA0 
+		public override int CurrentPosition { get; } // 0x1015D620-0x10160990 
+		public override int Count { get; } // 0x10BD6E00-0x10BD6E40 
+		public override QueryProps Properties { get; } // 0x108417A0-0x108417B0 
 	
 		// Constructors
 		protected CacheAxisQuery() {} // Dummy constructor
-		public CacheAxisQuery(Query qyInput, string name, string prefix, XPathNodeType typeTest) {} // 0x10BD86E0-0x10BD87B0
-		protected CacheAxisQuery(CacheAxisQuery other) {} // 0x10BD87B0-0x10BD8860
+		public CacheAxisQuery(Query qyInput, string name, string prefix, XPathNodeType typeTest) {} // 0x10BD6CC0-0x10BD6D90
+		protected CacheAxisQuery(CacheAxisQuery other) {} // 0x10BD6D90-0x10BD6E00
 	
 		// Methods
-		public override void Reset() {} // 0x10462920-0x10462930
-		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BD8660-0x10BD86E0
-		public override XPathNavigator Advance() => default; // 0x10BD85F0-0x10BD8660
+		public override void Reset() {} // 0x10463B30-0x10463B40
+		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BD6C40-0x10BD6CC0
+		public override XPathNavigator Advance() => default; // 0x10BD6BD0-0x10BD6C40
 	}
 
 	internal sealed class CacheChildrenQuery : ChildrenQuery // TypeDefIndex: 2890
@@ -1411,15 +1411,15 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public CacheChildrenQuery() {} // Dummy constructor
-		public CacheChildrenQuery(Query qyInput, string name, string prefix, XPathNodeType type) {} // 0x10BD8D80-0x10BD8E00
-		private CacheChildrenQuery(CacheChildrenQuery other) {} // 0x10BD8E00-0x10BD8EA0
+		public CacheChildrenQuery(Query qyInput, string name, string prefix, XPathNodeType type) {} // 0x10BD7320-0x10BD73A0
+		private CacheChildrenQuery(CacheChildrenQuery other) {} // 0x10BD73A0-0x10BD7440
 	
 		// Methods
-		public override void Reset() {} // 0x10BD8CA0-0x10BD8D80
-		public override XPathNavigator Advance() => default; // 0x10BD8900-0x10BD8A70
-		private bool DecideNextNode() => default; // 0x10BD8B40-0x10BD8C40
-		private XPathNavigator GetNextInput() => default; // 0x10BD8C40-0x10BD8CA0
-		public override XPathNodeIterator Clone() => default; // 0x10BD8A70-0x10BD8B40
+		public override void Reset() {} // 0x10BD7240-0x10BD7320
+		public override XPathNavigator Advance() => default; // 0x10BD6EA0-0x10BD7010
+		private bool DecideNextNode() => default; // 0x10BD70E0-0x10BD71E0
+		private XPathNavigator GetNextInput() => default; // 0x10BD71E0-0x10BD7240
+		public override XPathNodeIterator Clone() => default; // 0x10BD7010-0x10BD70E0
 	}
 
 	internal abstract class CacheOutputQuery : Query // TypeDefIndex: 2891
@@ -1429,23 +1429,23 @@ namespace MS.Internal.Xml.XPath
 		protected List<XPathNavigator> outputBuffer; // 0x10
 	
 		// Properties
-		public override XPathNavigator Current { get; } // 0x10BD9150-0x10BD91B0 
-		public override XPathResultType StaticType { get; } // 0x10184060-0x10184070 
-		public override int CurrentPosition { get; } // 0x1015D620-0x10160940 
-		public override int Count { get; } // 0x10BD9110-0x10BD9150 
-		public override QueryProps Properties { get; } // 0x10843270-0x10843280 
+		public override XPathNavigator Current { get; } // 0x10BD7760-0x10BD77C0 
+		public override XPathResultType StaticType { get; } // 0x101840B0-0x101840C0 
+		public override int CurrentPosition { get; } // 0x1015D620-0x10160990 
+		public override int Count { get; } // 0x10BD7720-0x10BD7760 
+		public override QueryProps Properties { get; } // 0x108417A0-0x108417B0 
 	
 		// Constructors
 		protected CacheOutputQuery() {} // Dummy constructor
-		public CacheOutputQuery(Query input) {} // 0x10BD90B0-0x10BD9110
-		protected CacheOutputQuery(CacheOutputQuery other) {} // 0x10BD9030-0x10BD90B0
+		public CacheOutputQuery(Query input) {} // 0x10BD76C0-0x10BD7720
+		protected CacheOutputQuery(CacheOutputQuery other) {} // 0x10BD75D0-0x10BD76C0
 	
 		// Methods
-		public override void Reset() {} // 0x10462920-0x10462930
-		public override void SetXsltContext(XsltContext context) {} // 0x10BD9000-0x10BD9030
-		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BD8F10-0x10BD8F80
-		public override XPathNavigator Advance() => default; // 0x10BD8EA0-0x10BD8F10
-		public override void PrintQuery(XmlWriter w) {} // 0x10BD8F80-0x10BD9000
+		public override void Reset() {} // 0x10463B30-0x10463B40
+		public override void SetXsltContext(XsltContext context) {} // 0x10BD75A0-0x10BD75D0
+		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BD74B0-0x10BD7520
+		public override XPathNavigator Advance() => default; // 0x10BD7440-0x10BD74B0
+		public override void PrintQuery(XmlWriter w) {} // 0x10BD7520-0x10BD75A0
 	}
 
 	internal class ChildrenQuery : BaseAxisQuery // TypeDefIndex: 2892
@@ -1455,14 +1455,14 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public ChildrenQuery() {} // Dummy constructor
-		public ChildrenQuery(Query qyInput, string name, string prefix, XPathNodeType type) {} // 0x10BD9520-0x10BD9600
-		protected ChildrenQuery(ChildrenQuery other) {} // 0x10BD9450-0x10BD9520
+		public ChildrenQuery(Query qyInput, string name, string prefix, XPathNodeType type) {} // 0x10BD7B00-0x10BD7BE0
+		protected ChildrenQuery(ChildrenQuery other) {} // 0x10BD7A60-0x10BD7B00
 	
 		// Methods
-		public override void Reset() {} // 0x10BD93D0-0x10BD9450
-		public override XPathNavigator Advance() => default; // 0x10BD91B0-0x10BD92D0
-		public sealed override XPathNavigator MatchNode(XPathNavigator context) => default; // 0x10BD9320-0x10BD93D0
-		public override XPathNodeIterator Clone() => default; // 0x10BD92D0-0x10BD9320
+		public override void Reset() {} // 0x10BD79E0-0x10BD7A60
+		public override XPathNavigator Advance() => default; // 0x10BD77C0-0x10BD78E0
+		public sealed override XPathNavigator MatchNode(XPathNavigator context) => default; // 0x10BD7930-0x10BD79E0
+		public override XPathNodeIterator Clone() => default; // 0x10BD78E0-0x10BD7930
 	}
 
 	internal sealed class ClonableStack<T> : List<T> // TypeDefIndex: 2893
@@ -1487,9 +1487,9 @@ namespace MS.Internal.Xml.XPath
 		private bool needContext; // 0x10
 	
 		// Properties
-		internal Query QueryTree { get => default; } // 0x10BD9A30-0x10BD9A80 
-		public override string Expression { get => default; } // 0x10160960-0x10160970 
-		public override XPathResultType ReturnType { get => default; } // 0x10183980-0x101839B0 
+		internal Query QueryTree { get => default; } // 0x10BD8020-0x10BD8070 
+		public override string Expression { get => default; } // 0x101609B0-0x101609C0 
+		public override XPathResultType ReturnType { get => default; } // 0x101839D0-0x10183A00 
 	
 		// Nested types
 		private class UndefinedXsltContext : XsltContext // TypeDefIndex: 2895
@@ -1498,32 +1498,32 @@ namespace MS.Internal.Xml.XPath
 			private IXmlNamespaceResolver nsResolver; // 0x28
 	
 			// Properties
-			public override string DefaultNamespace { get => default; } // 0x10BE5F30-0x10BE5F60 
-			public override bool Whitespace { get => default; } // 0x10183580-0x10183590 
+			public override string DefaultNamespace { get => default; } // 0x10BE49A0-0x10BE49D0 
+			public override bool Whitespace { get => default; } // 0x101835D0-0x101835E0 
 	
 			// Constructors
 			public UndefinedXsltContext() {} // Dummy constructor
-			public UndefinedXsltContext(IXmlNamespaceResolver nsResolver) {} // 0x10BE5F10-0x10BE5F30
+			public UndefinedXsltContext(IXmlNamespaceResolver nsResolver) {} // 0x10BE4980-0x10BE49A0
 	
 			// Methods
-			public override string LookupNamespace(string prefix) => default; // 0x10BE5DA0-0x10BE5E90
-			public override IXsltContextVariable ResolveVariable(string prefix, string name) => default; // 0x10BE5ED0-0x10BE5F10
-			public override IXsltContextFunction ResolveFunction(string prefix, string name, XPathResultType[] ArgTypes) => default; // 0x10BE5E90-0x10BE5ED0
-			public override bool PreserveWhitespace(XPathNavigator node) => default; // 0x10183580-0x10183590
-			public override int CompareDocument(string baseUri, string nextbaseUri) => default; // 0x10BE5D80-0x10BE5DA0
+			public override string LookupNamespace(string prefix) => default; // 0x10BE4810-0x10BE4900
+			public override IXsltContextVariable ResolveVariable(string prefix, string name) => default; // 0x10BE4940-0x10BE4980
+			public override IXsltContextFunction ResolveFunction(string prefix, string name, XPathResultType[] ArgTypes) => default; // 0x10BE4900-0x10BE4940
+			public override bool PreserveWhitespace(XPathNavigator node) => default; // 0x101835D0-0x101835E0
+			public override int CompareDocument(string baseUri, string nextbaseUri) => default; // 0x10BE47F0-0x10BE4810
 		}
 	
 		// Constructors
 		public CompiledXpathExpr() {} // Dummy constructor
-		internal CompiledXpathExpr(Query query, string expression, bool needContext) {} // 0x1020DC90-0x1020DCC0
+		internal CompiledXpathExpr(Query query, string expression, bool needContext) {} // 0x1020EFC0-0x1020EFF0
 	
 		// Methods
-		public virtual void CheckErrors() {} // 0x10164D40-0x10164D50
-		public override void AddSort(object expr, IComparer comparer) {} // 0x10BD9670-0x10BD98C0
-		public override void AddSort(object expr, XmlSortOrder order, XmlCaseOrder caseOrder, string lang, XmlDataType dataType) {} // 0x10BD9600-0x10BD9670
-		public override XPathExpression Clone() => default; // 0x10BD98C0-0x10BD9930
-		public override void SetContext(XmlNamespaceManager nsManager) {} // 0x10BD9930-0x10BD9950
-		public override void SetContext(IXmlNamespaceResolver nsResolver) {} // 0x10BD9950-0x10BD9A30
+		public virtual void CheckErrors() {} // 0x10164DE0-0x10164DF0
+		public override void AddSort(object expr, IComparer comparer) {} // 0x10BD7C50-0x10BD7E60
+		public override void AddSort(object expr, XmlSortOrder order, XmlCaseOrder caseOrder, string lang, XmlDataType dataType) {} // 0x10BD7BE0-0x10BD7C50
+		public override XPathExpression Clone() => default; // 0x10BD7E60-0x10BD7F30
+		public override void SetContext(XmlNamespaceManager nsManager) {} // 0x10BD7F30-0x10BD7F50
+		public override void SetContext(IXmlNamespaceResolver nsResolver) {} // 0x10BD7F50-0x10BD8020
 	}
 
 	internal sealed class XPathComparerHelper : IComparer // TypeDefIndex: 2896
@@ -1536,10 +1536,10 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public XPathComparerHelper() {} // Dummy constructor
-		public XPathComparerHelper(XmlSortOrder order, XmlCaseOrder caseOrder, string lang, XmlDataType dataType) {} // 0x104675B0-0x104676F0
+		public XPathComparerHelper(XmlSortOrder order, XmlCaseOrder caseOrder, string lang, XmlDataType dataType) {} // 0x10468810-0x10468950
 	
 		// Methods
-		public int Compare(object x, object y) => default; // 0x10467450-0x104675B0
+		public int Compare(object x, object y) => default; // 0x104686B0-0x10468810
 	}
 
 	internal class ContextQuery : Query // TypeDefIndex: 2897
@@ -1548,22 +1548,22 @@ namespace MS.Internal.Xml.XPath
 		protected XPathNavigator contextNode; // 0x0C
 	
 		// Properties
-		public override XPathNavigator Current { get => default; } // 0x10160960-0x10160970 
-		public override XPathResultType StaticType { get => default; } // 0x10184060-0x10184070 
-		public override int CurrentPosition { get => default; } // 0x1015D620-0x10160940 
-		public override int Count { get => default; } // 0x101E86B0-0x101E86C0 
-		public override QueryProps Properties { get => default; } // 0x10843270-0x10843280 
+		public override XPathNavigator Current { get => default; } // 0x101609B0-0x101609C0 
+		public override XPathResultType StaticType { get => default; } // 0x101840B0-0x101840C0 
+		public override int CurrentPosition { get => default; } // 0x1015D620-0x10160990 
+		public override int Count { get => default; } // 0x101E9B20-0x101E9B30 
+		public override QueryProps Properties { get => default; } // 0x108417A0-0x108417B0 
 	
 		// Constructors
-		public ContextQuery() {} // 0x10BD71F0-0x10BD7210
-		protected ContextQuery(ContextQuery other) {} // 0x10BD7210-0x10BD7240
+		public ContextQuery() {} // 0x10BD5440-0x10BD5460
+		protected ContextQuery(ContextQuery other) {} // 0x10BD5460-0x10BD5490
 	
 		// Methods
-		public override void Reset() {} // 0x10462920-0x10462930
-		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BD9B00-0x10BD9B40
-		public override XPathNavigator Advance() => default; // 0x10BD9A80-0x10BD9AA0
-		public override XPathNavigator MatchNode(XPathNavigator current) => default; // 0x10462410-0x10462420
-		public override XPathNodeIterator Clone() => default; // 0x10BD9AA0-0x10BD9B00
+		public override void Reset() {} // 0x10463B30-0x10463B40
+		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BD80F0-0x10BD8130
+		public override XPathNavigator Advance() => default; // 0x10BD8070-0x10BD8090
+		public override XPathNavigator MatchNode(XPathNavigator current) => default; // 0x10463620-0x10463630
+		public override XPathNodeIterator Clone() => default; // 0x10BD8090-0x10BD80F0
 	}
 
 	internal abstract class DescendantBaseQuery : BaseAxisQuery // TypeDefIndex: 2898
@@ -1574,12 +1574,12 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		protected DescendantBaseQuery() {} // Dummy constructor
-		public DescendantBaseQuery(Query qyParent, string Name, string Prefix, XPathNodeType Type, bool matchSelf, bool abbrAxis) {} // 0x10BD9E10-0x10BD9EA0
-		public DescendantBaseQuery(DescendantBaseQuery other) {} // 0x10BD9DA0-0x10BD9E10
+		public DescendantBaseQuery(Query qyParent, string Name, string Prefix, XPathNodeType Type, bool matchSelf, bool abbrAxis) {} // 0x10BD83D0-0x10BD8460
+		public DescendantBaseQuery(DescendantBaseQuery other) {} // 0x10BD8390-0x10BD83D0
 	
 		// Methods
-		public override XPathNavigator MatchNode(XPathNavigator context) => default; // 0x10BD9B40-0x10BD9C40
-		public override void PrintQuery(XmlWriter w) {} // 0x10BD9C40-0x10BD9DA0
+		public override XPathNavigator MatchNode(XPathNavigator context) => default; // 0x10BD8130-0x10BD8230
+		public override void PrintQuery(XmlWriter w) {} // 0x10BD8230-0x10BD8390
 	}
 
 	internal class DescendantQuery : DescendantBaseQuery // TypeDefIndex: 2899
@@ -1589,13 +1589,13 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public DescendantQuery() {} // Dummy constructor
-		internal DescendantQuery(Query qyParent, string Name, string Prefix, XPathNodeType Type, bool matchSelf, bool abbrAxis) {} // 0x10BD9E10-0x10BD9EA0
-		public DescendantQuery(DescendantQuery other) {} // 0x10BDA490-0x10BDA530
+		internal DescendantQuery(Query qyParent, string Name, string Prefix, XPathNodeType Type, bool matchSelf, bool abbrAxis) {} // 0x10BD83D0-0x10BD8460
+		public DescendantQuery(DescendantQuery other) {} // 0x10BD89A0-0x10BD8A00
 	
 		// Methods
-		public override void Reset() {} // 0x10BDA110-0x10BDA150
-		public override XPathNavigator Advance() => default; // 0x10BDA260-0x10BDA3C0
-		public override XPathNodeIterator Clone() => default; // 0x10BDA3C0-0x10BDA490
+		public override void Reset() {} // 0x10BD86A0-0x10BD86E0
+		public override XPathNavigator Advance() => default; // 0x10BD87B0-0x10BD8910
+		public override XPathNodeIterator Clone() => default; // 0x10BD8910-0x10BD89A0
 	}
 
 	internal sealed class DescendantOverDescendantQuery : DescendantBaseQuery // TypeDefIndex: 2900
@@ -1605,47 +1605,47 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public DescendantOverDescendantQuery() {} // Dummy constructor
-		public DescendantOverDescendantQuery(Query qyParent, bool matchSelf, string name, string prefix, XPathNodeType typeTest, bool abbrAxis) {} // 0x10BDA1D0-0x10BDA260
-		private DescendantOverDescendantQuery(DescendantOverDescendantQuery other) {} // 0x10BDA150-0x10BDA1D0
+		public DescendantOverDescendantQuery(Query qyParent, bool matchSelf, string name, string prefix, XPathNodeType typeTest, bool abbrAxis) {} // 0x10BD8720-0x10BD87B0
+		private DescendantOverDescendantQuery(DescendantOverDescendantQuery other) {} // 0x10BD86E0-0x10BD8720
 	
 		// Methods
-		public override void Reset() {} // 0x10BDA110-0x10BDA150
-		public override XPathNavigator Advance() => default; // 0x10BD9EA0-0x10BD9FD0
-		private bool MoveToFirstChild() => default; // 0x10BDA070-0x10BDA0B0
-		private bool MoveUpUntillNext() => default; // 0x10BDA0B0-0x10BDA110
-		public override XPathNodeIterator Clone() => default; // 0x10BD9FD0-0x10BDA070
+		public override void Reset() {} // 0x10BD86A0-0x10BD86E0
+		public override XPathNavigator Advance() => default; // 0x10BD8460-0x10BD8590
+		private bool MoveToFirstChild() => default; // 0x10BD8600-0x10BD8640
+		private bool MoveUpUntillNext() => default; // 0x10BD8640-0x10BD86A0
+		public override XPathNodeIterator Clone() => default; // 0x10BD8590-0x10BD8600
 	}
 
 	internal sealed class DocumentOrderQuery : CacheOutputQuery // TypeDefIndex: 2901
 	{
 		// Constructors
 		public DocumentOrderQuery() {} // Dummy constructor
-		public DocumentOrderQuery(Query qyParent) {} // 0x10BDA680-0x10BDA690
-		private DocumentOrderQuery(DocumentOrderQuery other) {} // 0x10BD9030-0x10BD90B0
+		public DocumentOrderQuery(Query qyParent) {} // 0x10BD8AF0-0x10BD8B00
+		private DocumentOrderQuery(DocumentOrderQuery other) {} // 0x10BD8AE0-0x10BD8AF0
 	
 		// Methods
-		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BDA5F0-0x10BDA650
-		public override XPathNavigator MatchNode(XPathNavigator context) => default; // 0x10BDA650-0x10BDA680
-		public override XPathNodeIterator Clone() => default; // 0x10BDA530-0x10BDA5F0
+		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BD8A50-0x10BD8AB0
+		public override XPathNavigator MatchNode(XPathNavigator context) => default; // 0x10BD8AB0-0x10BD8AE0
+		public override XPathNodeIterator Clone() => default; // 0x10BD8A00-0x10BD8A50
 	}
 
 	internal sealed class EmptyQuery : Query // TypeDefIndex: 2902
 	{
 		// Properties
-		public override int CurrentPosition { get => default; } // 0x1019C310-0x1019C320 
-		public override int Count { get => default; } // 0x1019C310-0x1019C320 
-		public override QueryProps Properties { get => default; } // 0x10843270-0x10843280 
-		public override XPathResultType StaticType { get => default; } // 0x10184060-0x10184070 
-		public override XPathNavigator Current { get => default; } // 0x1019C310-0x1019C320 
+		public override int CurrentPosition { get => default; } // 0x1019C040-0x1019C050 
+		public override int Count { get => default; } // 0x1019C040-0x1019C050 
+		public override QueryProps Properties { get => default; } // 0x108417A0-0x108417B0 
+		public override XPathResultType StaticType { get => default; } // 0x101840B0-0x101840C0 
+		public override XPathNavigator Current { get => default; } // 0x1019C040-0x1019C050 
 	
 		// Constructors
-		public EmptyQuery() {} // 0x10BDA690-0x10BDA6A0
+		public EmptyQuery() {} // 0x10BD8B00-0x10BD8B10
 	
 		// Methods
-		public override XPathNavigator Advance() => default; // 0x1019C310-0x1019C320
-		public override XPathNodeIterator Clone() => default; // 0x1018C2D0-0x1018C2E0
-		public override object Evaluate(XPathNodeIterator context) => default; // 0x1018C2D0-0x1018C2E0
-		public override void Reset() {} // 0x10164D40-0x10164D50
+		public override XPathNavigator Advance() => default; // 0x1019C040-0x1019C050
+		public override XPathNodeIterator Clone() => default; // 0x1018BF50-0x1018BF60
+		public override object Evaluate(XPathNodeIterator context) => default; // 0x1018BF50-0x1018BF60
+		public override void Reset() {} // 0x10164DE0-0x10164DF0
 	}
 
 	internal abstract class ExtensionQuery : Query // TypeDefIndex: 2903
@@ -1657,21 +1657,21 @@ namespace MS.Internal.Xml.XPath
 		private ResetableIterator queryIterator; // 0x18
 	
 		// Properties
-		public override XPathNavigator Current { get; } // 0x10BDACE0-0x10BDAD80 
-		public override int CurrentPosition { get; } // 0x10BDACB0-0x10BDACE0 
-		protected string QName { get; } // 0x10BDAD80-0x10BDADE0 
-		public override int Count { get; } // 0x10BDAC80-0x10BDACB0 
-		public override XPathResultType StaticType { get; } // 0x101DE660-0x101DE670 
+		public override XPathNavigator Current { get; } // 0x10BD9160-0x10BD9200 
+		public override int CurrentPosition { get; } // 0x10BD9130-0x10BD9160 
+		protected string QName { get; } // 0x10BD9200-0x10BD9260 
+		public override int Count { get; } // 0x10BD9100-0x10BD9130 
+		public override XPathResultType StaticType { get; } // 0x101DFBC0-0x101DFBD0 
 	
 		// Constructors
 		protected ExtensionQuery() {} // Dummy constructor
-		public ExtensionQuery(string prefix, string name) {} // 0x10BDAB90-0x10BDABC0
-		protected ExtensionQuery(ExtensionQuery other) {} // 0x10BDABC0-0x10BDAC80
+		public ExtensionQuery(string prefix, string name) {} // 0x10BD9020-0x10BD9050
+		protected ExtensionQuery(ExtensionQuery other) {} // 0x10BD9050-0x10BD9100
 	
 		// Methods
-		public override void Reset() {} // 0x10BDAB60-0x10BDAB90
-		public override XPathNavigator Advance() => default; // 0x10BDA6A0-0x10BDA730
-		protected object ProcessResult(object value) => default; // 0x10BDA730-0x10BDAB60
+		public override void Reset() {} // 0x10BD8FF0-0x10BD9020
+		public override XPathNavigator Advance() => default; // 0x10BD8B10-0x10BD8BA0
+		protected object ProcessResult(object value) => default; // 0x10BD8BA0-0x10BD8FF0
 	}
 
 	internal class Filter : AstNode // TypeDefIndex: 2904
@@ -1681,14 +1681,14 @@ namespace MS.Internal.Xml.XPath
 		private AstNode condition; // 0x0C
 	
 		// Properties
-		public override AstType Type { get => default; } // 0x101E8A20-0x101E8A30 
-		public override XPathResultType ReturnType { get => default; } // 0x10184060-0x10184070 
-		public AstNode Input { get => default; } // 0x1015D620-0x10160940 
-		public AstNode Condition { get => default; } // 0x10160960-0x10160970 
+		public override AstType Type { get => default; } // 0x101E9E80-0x101E9E90 
+		public override XPathResultType ReturnType { get => default; } // 0x101840B0-0x101840C0 
+		public AstNode Input { get => default; } // 0x1015D620-0x10160990 
+		public AstNode Condition { get => default; } // 0x101609B0-0x101609C0 
 	
 		// Constructors
 		public Filter() {} // Dummy constructor
-		public Filter(AstNode input, AstNode condition) {} // 0x101CE6C0-0x101CE6F0
+		public Filter(AstNode input, AstNode condition) {} // 0x101CFAD0-0x101CFB00
 	}
 
 	internal sealed class FilterQuery : BaseAxisQuery // TypeDefIndex: 2905
@@ -1699,21 +1699,21 @@ namespace MS.Internal.Xml.XPath
 	
 		// Properties
 		public Query Condition { get => default; } // 0x1015D2E0-0x1015D580 
-		public override QueryProps Properties { get => default; } // 0x10BDB770-0x10BDB7A0 
+		public override QueryProps Properties { get => default; } // 0x10BD9C50-0x10BD9C80 
 	
 		// Constructors
 		public FilterQuery() {} // Dummy constructor
-		public FilterQuery(Query qyParent, Query cond, bool noPosition) {} // 0x10BDB6C0-0x10BDB6F0
-		private FilterQuery(FilterQuery other) {} // 0x10BDB6F0-0x10BDB770
+		public FilterQuery(Query qyParent, Query cond, bool noPosition) {} // 0x10BD9B70-0x10BD9BA0
+		private FilterQuery(FilterQuery other) {} // 0x10BD9BA0-0x10BD9C50
 	
 		// Methods
-		public override void Reset() {} // 0x10BDB560-0x10BDB5C0
-		public override void SetXsltContext(XsltContext input) {} // 0x10BDB5C0-0x10BDB6C0
-		public override XPathNavigator Advance() => default; // 0x10BDADE0-0x10BDAE30
-		internal bool EvaluatePredicate() => default; // 0x10BDAED0-0x10BDB060
-		public override XPathNavigator MatchNode(XPathNavigator current) => default; // 0x10BDB060-0x10BDB480
-		public override XPathNodeIterator Clone() => default; // 0x10BDAE30-0x10BDAED0
-		public override void PrintQuery(XmlWriter w) {} // 0x10BDB480-0x10BDB560
+		public override void Reset() {} // 0x10BD9A10-0x10BD9A70
+		public override void SetXsltContext(XsltContext input) {} // 0x10BD9A70-0x10BD9B70
+		public override XPathNavigator Advance() => default; // 0x10BD9260-0x10BD92B0
+		internal bool EvaluatePredicate() => default; // 0x10BD9390-0x10BD9510
+		public override XPathNavigator MatchNode(XPathNavigator current) => default; // 0x10BD9510-0x10BD9930
+		public override XPathNodeIterator Clone() => default; // 0x10BD92B0-0x10BD9390
+		public override void PrintQuery(XmlWriter w) {} // 0x10BD9930-0x10BD9A10
 	}
 
 	internal sealed class FollowingQuery : BaseAxisQuery // TypeDefIndex: 2906
@@ -1724,13 +1724,13 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public FollowingQuery() {} // Dummy constructor
-		public FollowingQuery(Query qyInput, string name, string prefix, XPathNodeType typeTest) {} // 0x10BD74A0-0x10BD7530
-		private FollowingQuery(FollowingQuery other) {} // 0x10BDC1A0-0x10BDC250
+		public FollowingQuery(Query qyInput, string name, string prefix, XPathNodeType typeTest) {} // 0x10BD56B0-0x10BD5740
+		private FollowingQuery(FollowingQuery other) {} // 0x10BDA5C0-0x10BDA630
 	
 		// Methods
-		public override void Reset() {} // 0x10BDA110-0x10BDA150
-		public override XPathNavigator Advance() => default; // 0x10BDBE90-0x10BDC0C0
-		public override XPathNodeIterator Clone() => default; // 0x10BDC0C0-0x10BDC1A0
+		public override void Reset() {} // 0x10BD86A0-0x10BD86E0
+		public override XPathNavigator Advance() => default; // 0x10BDA2F0-0x10BDA520
+		public override XPathNodeIterator Clone() => default; // 0x10BDA520-0x10BDA5C0
 	}
 
 	internal sealed class FollSiblingQuery : BaseAxisQuery // TypeDefIndex: 2907
@@ -1742,28 +1742,28 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public FollSiblingQuery() {} // Dummy constructor
-		public FollSiblingQuery(Query qyInput, string name, string prefix, XPathNodeType type) {} // 0x10BDBDB0-0x10BDBE90
-		private FollSiblingQuery(FollSiblingQuery other) {} // 0x10BDBCC0-0x10BDBDB0
+		public FollSiblingQuery(Query qyInput, string name, string prefix, XPathNodeType type) {} // 0x10BDA210-0x10BDA2F0
+		private FollSiblingQuery(FollSiblingQuery other) {} // 0x10BDA160-0x10BDA210
 	
 		// Methods
-		public override void Reset() {} // 0x10BDBB40-0x10BDBBD0
-		private bool Visited(XPathNavigator nav) => default; // 0x10BDBBD0-0x10BDBCC0
-		private XPathNavigator FetchInput() => default; // 0x10BDBA20-0x10BDBB40
-		public override XPathNavigator Advance() => default; // 0x10BDB7A0-0x10BDB900
-		public override XPathNodeIterator Clone() => default; // 0x10BDB900-0x10BDBA20
+		public override void Reset() {} // 0x10BD9FE0-0x10BDA070
+		private bool Visited(XPathNavigator nav) => default; // 0x10BDA070-0x10BDA160
+		private XPathNavigator FetchInput() => default; // 0x10BD9EC0-0x10BD9FE0
+		public override XPathNavigator Advance() => default; // 0x10BD9C80-0x10BD9DE0
+		public override XPathNodeIterator Clone() => default; // 0x10BD9DE0-0x10BD9EC0
 	}
 
 	internal class ForwardPositionQuery : CacheOutputQuery // TypeDefIndex: 2908
 	{
 		// Constructors
 		public ForwardPositionQuery() {} // Dummy constructor
-		public ForwardPositionQuery(Query input) {} // 0x10BDA680-0x10BDA690
-		protected ForwardPositionQuery(ForwardPositionQuery other) {} // 0x10BD9030-0x10BD90B0
+		public ForwardPositionQuery(Query input) {} // 0x10BD8AF0-0x10BD8B00
+		protected ForwardPositionQuery(ForwardPositionQuery other) {} // 0x10BD8AE0-0x10BD8AF0
 	
 		// Methods
-		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BDC310-0x10BDC3B0
-		public override XPathNavigator MatchNode(XPathNavigator context) => default; // 0x10BDA650-0x10BDA680
-		public override XPathNodeIterator Clone() => default; // 0x10BDC250-0x10BDC310
+		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BDA680-0x10BDA720
+		public override XPathNavigator MatchNode(XPathNavigator context) => default; // 0x10BD8AB0-0x10BD8AE0
+		public override XPathNodeIterator Clone() => default; // 0x10BDA630-0x10BDA680
 	}
 
 	internal class Function : AstNode // TypeDefIndex: 2909
@@ -1776,12 +1776,12 @@ namespace MS.Internal.Xml.XPath
 		internal static XPathResultType[] ReturnTypes; // 0x00
 	
 		// Properties
-		public override AstType Type { get => default; } // 0x10184150-0x10184160 
-		public override XPathResultType ReturnType { get => default; } // 0x10BDD2D0-0x10BDD340 
-		public FunctionType TypeOfFunction { get => default; } // 0x1015D620-0x10160940 
-		public ArrayList ArgumentList { get => default; } // 0x10160960-0x10160970 
-		public string Prefix { get => default; } // 0x10181220-0x10181230 
-		public string Name { get => default; } // 0x1019CE70-0x1019CE80 
+		public override AstType Type { get => default; } // 0x101841A0-0x101841B0 
+		public override XPathResultType ReturnType { get => default; } // 0x10BDB600-0x10BDB670 
+		public FunctionType TypeOfFunction { get => default; } // 0x1015D620-0x10160990 
+		public ArrayList ArgumentList { get => default; } // 0x101609B0-0x101609C0 
+		public string Prefix { get => default; } // 0x10181250-0x10181260 
+		public string Name { get => default; } // 0x1019CB30-0x1019CB40 
 	
 		// Nested types
 		public enum FunctionType // TypeDefIndex: 2910
@@ -1818,11 +1818,11 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public Function() {} // Dummy constructor
-		public Function(FunctionType ftype, ArrayList argumentList) {} // 0x10BDD180-0x10BDD1E0
-		public Function(string prefix, string name, ArrayList argumentList) {} // 0x10BDD260-0x10BDD2D0
-		public Function(FunctionType ftype) {} // 0x101B7440-0x101B7460
-		public Function(FunctionType ftype, AstNode arg) {} // 0x10BDD1E0-0x10BDD260
-		static Function() {} // 0x10BDD130-0x10BDD180
+		public Function(FunctionType ftype, ArrayList argumentList) {} // 0x10BDB4B0-0x10BDB510
+		public Function(string prefix, string name, ArrayList argumentList) {} // 0x10BDB590-0x10BDB600
+		public Function(FunctionType ftype) {} // 0x101B79C0-0x101B79E0
+		public Function(FunctionType ftype, AstNode arg) {} // 0x10BDB510-0x10BDB590
+		static Function() {} // 0x10BDB460-0x10BDB4B0
 	}
 
 	internal sealed class FunctionQuery : ExtensionQuery // TypeDefIndex: 2911
@@ -1832,19 +1832,19 @@ namespace MS.Internal.Xml.XPath
 		private IXsltContextFunction function; // 0x20
 	
 		// Properties
-		public override XPathResultType StaticType { get => default; } // 0x10BDD0D0-0x10BDD130 
+		public override XPathResultType StaticType { get => default; } // 0x10BDB410-0x10BDB460 
 	
 		// Constructors
 		public FunctionQuery() {} // Dummy constructor
-		public FunctionQuery(string prefix, string name, List<Query> args) {} // 0x10BDCE20-0x10BDCE50
-		private FunctionQuery(FunctionQuery other) {} // 0x10BDCE50-0x10BDD0D0
+		public FunctionQuery(string prefix, string name, List<Query> args) {} // 0x10BDB190-0x10BDB1C0
+		private FunctionQuery(FunctionQuery other) {} // 0x10BDB1C0-0x10BDB410
 	
 		// Methods
-		public override void SetXsltContext(XsltContext context) {} // 0x10BDCAE0-0x10BDCE20
-		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BDC400-0x10BDC7C0
-		public override XPathNavigator MatchNode(XPathNavigator navigator) => default; // 0x10BDC7C0-0x10BDC8B0
-		public override XPathNodeIterator Clone() => default; // 0x10BDC3B0-0x10BDC400
-		public override void PrintQuery(XmlWriter w) {} // 0x10BDC8B0-0x10BDCAE0
+		public override void SetXsltContext(XsltContext context) {} // 0x10BDAE50-0x10BDB190
+		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BDA770-0x10BDAB30
+		public override XPathNavigator MatchNode(XPathNavigator navigator) => default; // 0x10BDAB30-0x10BDAC20
+		public override XPathNodeIterator Clone() => default; // 0x10BDA720-0x10BDA770
+		public override void PrintQuery(XmlWriter w) {} // 0x10BDAC20-0x10BDAE50
 	}
 
 	internal class Group : AstNode // TypeDefIndex: 2912
@@ -1853,44 +1853,44 @@ namespace MS.Internal.Xml.XPath
 		private AstNode groupNode; // 0x08
 	
 		// Properties
-		public override AstType Type { get => default; } // 0x101DE660-0x101DE670 
-		public override XPathResultType ReturnType { get => default; } // 0x10184060-0x10184070 
-		public AstNode GroupNode { get => default; } // 0x1015D620-0x10160940 
+		public override AstType Type { get => default; } // 0x101DFBC0-0x101DFBD0 
+		public override XPathResultType ReturnType { get => default; } // 0x101840B0-0x101840C0 
+		public AstNode GroupNode { get => default; } // 0x1015D620-0x10160990 
 	
 		// Constructors
 		public Group() {} // Dummy constructor
-		public Group(AstNode groupNode) {} // 0x101B7440-0x101B7460
+		public Group(AstNode groupNode) {} // 0x101B79C0-0x101B79E0
 	}
 
 	internal sealed class GroupQuery : BaseAxisQuery // TypeDefIndex: 2913
 	{
 		// Properties
-		public override XPathResultType StaticType { get => default; } // 0x10BDD420-0x10BDD450 
-		public override QueryProps Properties { get => default; } // 0x101E86B0-0x101E86C0 
+		public override XPathResultType StaticType { get => default; } // 0x10BDB710-0x10BDB740 
+		public override QueryProps Properties { get => default; } // 0x101E9B20-0x101E9B30 
 	
 		// Constructors
 		public GroupQuery() {} // Dummy constructor
-		public GroupQuery(Query qy) {} // 0x10BDD410-0x10BDD420
-		private GroupQuery(GroupQuery other) {} // 0x10BD7920-0x10BD7980
+		public GroupQuery(Query qy) {} // 0x10BDB700-0x10BDB710
+		private GroupQuery(GroupQuery other) {} // 0x1046D9D0-0x1046D9E0
 	
 		// Methods
-		public override XPathNavigator Advance() => default; // 0x10BDD340-0x10BDD380
-		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x101B4680-0x101B46B0
-		public override XPathNodeIterator Clone() => default; // 0x10BDD380-0x10BDD410
+		public override XPathNavigator Advance() => default; // 0x10BDB670-0x10BDB6B0
+		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x101B4C00-0x101B4C30
+		public override XPathNodeIterator Clone() => default; // 0x10BDB6B0-0x10BDB700
 	}
 
 	internal sealed class IDQuery : CacheOutputQuery // TypeDefIndex: 2914
 	{
 		// Constructors
 		public IDQuery() {} // Dummy constructor
-		public IDQuery(Query arg) {} // 0x10BDA680-0x10BDA690
-		private IDQuery(IDQuery other) {} // 0x10BD9030-0x10BD90B0
+		public IDQuery(Query arg) {} // 0x10BD8AF0-0x10BD8B00
+		private IDQuery(IDQuery other) {} // 0x10BD8AE0-0x10BD8AF0
 	
 		// Methods
-		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BDD510-0x10BDD7A0
-		private void ProcessIds(XPathNavigator contextNode, string val) {} // 0x10BDD840-0x10BDD900
-		public override XPathNavigator MatchNode(XPathNavigator context) => default; // 0x10BDD7A0-0x10BDD840
-		public override XPathNodeIterator Clone() => default; // 0x10BDD450-0x10BDD510
+		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BDB790-0x10BDB9E0
+		private void ProcessIds(XPathNavigator contextNode, string val) {} // 0x10BDBA80-0x10BDBB40
+		public override XPathNavigator MatchNode(XPathNavigator context) => default; // 0x10BDB9E0-0x10BDBA80
+		public override XPathNodeIterator Clone() => default; // 0x10BDB740-0x10BDB790
 	}
 
 	internal class IteratorFilter : XPathNodeIterator // TypeDefIndex: 2915
@@ -1901,17 +1901,17 @@ namespace MS.Internal.Xml.XPath
 		private int position; // 0x14
 	
 		// Properties
-		public override XPathNavigator Current { get => default; } // 0x101B4820-0x101B4850 
-		public override int CurrentPosition { get => default; } // 0x10181220-0x10181230 
+		public override XPathNavigator Current { get => default; } // 0x101B4DA0-0x101B4DD0 
+		public override int CurrentPosition { get => default; } // 0x10181250-0x10181260 
 	
 		// Constructors
 		public IteratorFilter() {} // Dummy constructor
-		internal IteratorFilter(XPathNodeIterator innerIterator, string name) {} // 0x10BDDA50-0x10BDDA80
-		private IteratorFilter(IteratorFilter it) {} // 0x10BDDA00-0x10BDDA50
+		internal IteratorFilter(XPathNodeIterator innerIterator, string name) {} // 0x10BDBC90-0x10BDBCC0
+		private IteratorFilter(IteratorFilter it) {} // 0x10BDBC40-0x10BDBC90
 	
 		// Methods
-		public override XPathNodeIterator Clone() => default; // 0x10BDD900-0x10BDD980
-		public override bool MoveNext() => default; // 0x10BDD980-0x10BDDA00
+		public override XPathNodeIterator Clone() => default; // 0x10BDBB40-0x10BDBBC0
+		public override bool MoveNext() => default; // 0x10BDBBC0-0x10BDBC40
 	}
 
 	internal sealed class LogicalExpr : ValueQuery // TypeDefIndex: 2916
@@ -1924,10 +1924,10 @@ namespace MS.Internal.Xml.XPath
 		private static readonly cmpXslt[][] CompXsltO; // 0x04
 	
 		// Properties
-		public override XPathResultType StaticType { get => default; } // 0x101E8A20-0x101E8A30 
+		public override XPathResultType StaticType { get => default; } // 0x101E9E80-0x101E9E90 
 	
 		// Nested types
-		private delegate bool cmpXslt(Operator.Op op, object val1, object val2); // TypeDefIndex: 2917; 0x10BEC8D0-0x10BEDA00
+		private delegate bool cmpXslt(Operator.Op op, object val1, object val2); // TypeDefIndex: 2917; 0x10BEB380-0x10BEC4C0
 	
 		private struct NodeSet // TypeDefIndex: 2918
 		{
@@ -1936,61 +1936,61 @@ namespace MS.Internal.Xml.XPath
 			private XPathNavigator current; // 0x04
 	
 			// Properties
-			public string Value { get => default; } // 0x100A9000-0x100A9050 
+			public string Value { get => default; } // 0x100A9010-0x100A9060 
 	
 			// Constructors
 			public NodeSet(object opnd) : this() {
 				this.opnd = default;
 				current = default;
-			} // 0x100A8F70-0x100A9000
+			} // 0x100A8FA0-0x100A9010
 	
 			// Methods
-			public bool MoveNext() => default; // 0x100A8F00-0x100A8F40
-			public void Reset() {} // 0x100A8F40-0x100A8F70
+			public bool MoveNext() => default; // 0x100A8F30-0x100A8F70
+			public void Reset() {} // 0x100A8F70-0x100A8FA0
 		}
 	
 		// Constructors
 		public LogicalExpr() {} // Dummy constructor
-		public LogicalExpr(Operator.Op op, Query opnd1, Query opnd2) {} // 0x10BDEEB0-0x10BDEEE0
-		private LogicalExpr(LogicalExpr other) {} // 0x10BDEE60-0x10BDEEB0
-		static LogicalExpr() {} // 0x10BDDF60-0x10BDEE60
+		public LogicalExpr(Operator.Op op, Query opnd1, Query opnd2) {} // 0x10BDD270-0x10BDD2A0
+		private LogicalExpr(LogicalExpr other) {} // 0x10BDD140-0x10BDD270
+		static LogicalExpr() {} // 0x10BDC240-0x10BDD140
 	
 		// Methods
-		public override void SetXsltContext(XsltContext context) {} // 0x10BDDF10-0x10BDDF60
-		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BDDB00-0x10BDDD50
-		private static bool cmpQueryQueryE(Operator.Op op, object val1, object val2) => default; // 0x10BDFB60-0x10BDFD20
-		private static bool cmpQueryQueryO(Operator.Op op, object val1, object val2) => default; // 0x10BDFD20-0x10BE0040
-		private static bool cmpQueryNumber(Operator.Op op, object val1, object val2) => default; // 0x10BDF9A0-0x10BDFB60
-		private static bool cmpQueryStringE(Operator.Op op, object val1, object val2) => default; // 0x10BE0040-0x10BE0170
-		private static bool cmpQueryStringO(Operator.Op op, object val1, object val2) => default; // 0x10BE0170-0x10BE0360
-		private static bool cmpRtfQueryE(Operator.Op op, object val1, object val2) => default; // 0x10BE0640-0x10BE0790
-		private static bool cmpRtfQueryO(Operator.Op op, object val1, object val2) => default; // 0x10BE0790-0x10BE0980
-		private static bool cmpQueryBoolE(Operator.Op op, object val1, object val2) => default; // 0x10BDF700-0x10BDF810
-		private static bool cmpQueryBoolO(Operator.Op op, object val1, object val2) => default; // 0x10BDF810-0x10BDF9A0
-		private static bool cmpBoolBoolE(Operator.Op op, bool n1, bool n2) => default; // 0x10BDEEE0-0x10BDEF00
-		private static bool cmpBoolBoolE(Operator.Op op, object val1, object val2) => default; // 0x10BDEF00-0x10BDEFC0
-		private static bool cmpBoolBoolO(Operator.Op op, object val1, object val2) => default; // 0x10BDEFC0-0x10BDF0F0
-		private static bool cmpBoolNumberE(Operator.Op op, object val1, object val2) => default; // 0x10BDF0F0-0x10BDF1C0
-		private static bool cmpBoolNumberO(Operator.Op op, object val1, object val2) => default; // 0x10BDF1C0-0x10BDF2F0
-		private static bool cmpBoolStringE(Operator.Op op, object val1, object val2) => default; // 0x10BDF2F0-0x10BDF3A0
-		private static bool cmpRtfBoolE(Operator.Op op, object val1, object val2) => default; // 0x10BE0360-0x10BE0400
-		private static bool cmpBoolStringO(Operator.Op op, object val1, object val2) => default; // 0x10BDF3A0-0x10BDF510
-		private static bool cmpRtfBoolO(Operator.Op op, object val1, object val2) => default; // 0x10BE0400-0x10BE0540
-		private static bool cmpNumberNumber(Operator.Op op, double n1, double n2) => default; // 0x10BDF660-0x10BDF700
-		private static bool cmpNumberNumberO(Operator.Op op, double n1, double n2) => default; // 0x10BDF510-0x10BDF580
-		private static bool cmpNumberNumber(Operator.Op op, object val1, object val2) => default; // 0x10BDF580-0x10BDF660
-		private static bool cmpStringNumber(Operator.Op op, object val1, object val2) => default; // 0x10BE0D70-0x10BE0E90
-		private static bool cmpRtfNumber(Operator.Op op, object val1, object val2) => default; // 0x10BE0540-0x10BE0640
-		private static bool cmpStringStringE(Operator.Op op, string n1, string n2) => default; // 0x10BE0E90-0x10BE0EB0
-		private static bool cmpStringStringE(Operator.Op op, object val1, object val2) => default; // 0x10BE0EB0-0x10BE0F50
-		private static bool cmpRtfStringE(Operator.Op op, object val1, object val2) => default; // 0x10BE0B60-0x10BE0BF0
-		private static bool cmpRtfRtfE(Operator.Op op, object val1, object val2) => default; // 0x10BE0980-0x10BE0A00
-		private static bool cmpStringStringO(Operator.Op op, object val1, object val2) => default; // 0x10BE0F50-0x10BE10D0
-		private static bool cmpRtfStringO(Operator.Op op, object val1, object val2) => default; // 0x10BE0BF0-0x10BE0D70
-		private static bool cmpRtfRtfO(Operator.Op op, object val1, object val2) => default; // 0x10BE0A00-0x10BE0B60
-		public override XPathNodeIterator Clone() => default; // 0x10BDDA80-0x10BDDB00
-		private static string Rtf(object o) => default; // 0x10BDDE60-0x10BDDF10
-		public override void PrintQuery(XmlWriter w) {} // 0x10BDDD50-0x10BDDE60
+		public override void SetXsltContext(XsltContext context) {} // 0x10BDC1F0-0x10BDC240
+		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BDBE20-0x10BDC070
+		private static bool cmpQueryQueryE(Operator.Op op, object val1, object val2) => default; // 0x10BDDEE0-0x10BDE080
+		private static bool cmpQueryQueryO(Operator.Op op, object val1, object val2) => default; // 0x10BDE080-0x10BDE370
+		private static bool cmpQueryNumber(Operator.Op op, object val1, object val2) => default; // 0x10BDDD30-0x10BDDEE0
+		private static bool cmpQueryStringE(Operator.Op op, object val1, object val2) => default; // 0x10BDE370-0x10BDE490
+		private static bool cmpQueryStringO(Operator.Op op, object val1, object val2) => default; // 0x10BDE490-0x10BDE670
+		private static bool cmpRtfQueryE(Operator.Op op, object val1, object val2) => default; // 0x10BDEA70-0x10BDEC10
+		private static bool cmpRtfQueryO(Operator.Op op, object val1, object val2) => default; // 0x10BDEC10-0x10BDEE50
+		private static bool cmpQueryBoolE(Operator.Op op, object val1, object val2) => default; // 0x10BDDAB0-0x10BDDBB0
+		private static bool cmpQueryBoolO(Operator.Op op, object val1, object val2) => default; // 0x10BDDBB0-0x10BDDD30
+		private static bool cmpBoolBoolE(Operator.Op op, bool n1, bool n2) => default; // 0x10BDD2A0-0x10BDD2C0
+		private static bool cmpBoolBoolE(Operator.Op op, object val1, object val2) => default; // 0x10BDD2C0-0x10BDD370
+		private static bool cmpBoolBoolO(Operator.Op op, object val1, object val2) => default; // 0x10BDD370-0x10BDD4A0
+		private static bool cmpBoolNumberE(Operator.Op op, object val1, object val2) => default; // 0x10BDD4A0-0x10BDD570
+		private static bool cmpBoolNumberO(Operator.Op op, object val1, object val2) => default; // 0x10BDD570-0x10BDD6A0
+		private static bool cmpBoolStringE(Operator.Op op, object val1, object val2) => default; // 0x10BDD6A0-0x10BDD750
+		private static bool cmpRtfBoolE(Operator.Op op, object val1, object val2) => default; // 0x10BDE670-0x10BDE770
+		private static bool cmpBoolStringO(Operator.Op op, object val1, object val2) => default; // 0x10BDD750-0x10BDD8C0
+		private static bool cmpRtfBoolO(Operator.Op op, object val1, object val2) => default; // 0x10BDE770-0x10BDE910
+		private static bool cmpNumberNumber(Operator.Op op, double n1, double n2) => default; // 0x10BDDA10-0x10BDDAB0
+		private static bool cmpNumberNumberO(Operator.Op op, double n1, double n2) => default; // 0x10BDD8C0-0x10BDD930
+		private static bool cmpNumberNumber(Operator.Op op, object val1, object val2) => default; // 0x10BDD930-0x10BDDA10
+		private static bool cmpStringNumber(Operator.Op op, object val1, object val2) => default; // 0x10BDF490-0x10BDF5B0
+		private static bool cmpRtfNumber(Operator.Op op, object val1, object val2) => default; // 0x10BDE910-0x10BDEA70
+		private static bool cmpStringStringE(Operator.Op op, string n1, string n2) => default; // 0x10BDF5B0-0x10BDF5D0
+		private static bool cmpStringStringE(Operator.Op op, object val1, object val2) => default; // 0x10BDF5D0-0x10BDF670
+		private static bool cmpRtfStringE(Operator.Op op, object val1, object val2) => default; // 0x10BDF1C0-0x10BDF2B0
+		private static bool cmpRtfRtfE(Operator.Op op, object val1, object val2) => default; // 0x10BDEE50-0x10BDEF90
+		private static bool cmpStringStringO(Operator.Op op, object val1, object val2) => default; // 0x10BDF670-0x10BDF7F0
+		private static bool cmpRtfStringO(Operator.Op op, object val1, object val2) => default; // 0x10BDF2B0-0x10BDF490
+		private static bool cmpRtfRtfO(Operator.Op op, object val1, object val2) => default; // 0x10BDEF90-0x10BDF1C0
+		public override XPathNodeIterator Clone() => default; // 0x10BDBCC0-0x10BDBE20
+		private static string Rtf(object o) => default; // 0x10BDC180-0x10BDC1F0
+		public override void PrintQuery(XmlWriter w) {} // 0x10BDC070-0x10BDC180
 	}
 
 	internal sealed class MergeFilterQuery : CacheOutputQuery // TypeDefIndex: 2919
@@ -2000,15 +2000,15 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public MergeFilterQuery() {} // Dummy constructor
-		public MergeFilterQuery(Query input, Query child) {} // 0x10BE14E0-0x10BE1500
-		private MergeFilterQuery(MergeFilterQuery other) {} // 0x10BE1450-0x10BE14E0
+		public MergeFilterQuery(Query input, Query child) {} // 0x10BDFC20-0x10BDFC40
+		private MergeFilterQuery(MergeFilterQuery other) {} // 0x10BDFB80-0x10BDFC20
 	
 		// Methods
-		public override void SetXsltContext(XsltContext xsltContext) {} // 0x10BE1400-0x10BE1450
-		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BE1190-0x10BE1230
-		public override XPathNavigator MatchNode(XPathNavigator current) => default; // 0x10BE1230-0x10BE1360
-		public override XPathNodeIterator Clone() => default; // 0x10BE10D0-0x10BE1190
-		public override void PrintQuery(XmlWriter w) {} // 0x10BE1360-0x10BE1400
+		public override void SetXsltContext(XsltContext xsltContext) {} // 0x10BDFB30-0x10BDFB80
+		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BDF8C0-0x10BDF960
+		public override XPathNavigator MatchNode(XPathNavigator current) => default; // 0x10BDF960-0x10BDFA90
+		public override XPathNodeIterator Clone() => default; // 0x10BDF7F0-0x10BDF8C0
+		public override void PrintQuery(XmlWriter w) {} // 0x10BDFA90-0x10BDFB30
 	}
 
 	internal sealed class NamespaceQuery : BaseAxisQuery // TypeDefIndex: 2920
@@ -2018,14 +2018,14 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public NamespaceQuery() {} // Dummy constructor
-		public NamespaceQuery(Query qyParent, string Name, string Prefix, XPathNodeType Type) {} // 0x10BD74A0-0x10BD7530
-		private NamespaceQuery(NamespaceQuery other) {} // 0x10BD7530-0x10BD75A0
+		public NamespaceQuery(Query qyParent, string Name, string Prefix, XPathNodeType Type) {} // 0x10BD56B0-0x10BD5740
+		private NamespaceQuery(NamespaceQuery other) {} // 0x10BD5740-0x10BD5770
 	
 		// Methods
-		public override void Reset() {} // 0x10BD7460-0x10BD74A0
-		public override XPathNavigator Advance() => default; // 0x10BE1500-0x10BE15B0
-		public override bool matches(XPathNavigator e) => default; // 0x10BE1650-0x10BE16C0
-		public override XPathNodeIterator Clone() => default; // 0x10BE15B0-0x10BE1650
+		public override void Reset() {} // 0x10BD5670-0x10BD56B0
+		public override XPathNavigator Advance() => default; // 0x10BDFC40-0x10BDFCF0
+		public override bool matches(XPathNavigator e) => default; // 0x10BDFD50-0x10BDFDC0
+		public override XPathNodeIterator Clone() => default; // 0x10BDFCF0-0x10BDFD50
 	}
 
 	internal sealed class NodeFunctions : ValueQuery // TypeDefIndex: 2921
@@ -2036,18 +2036,18 @@ namespace MS.Internal.Xml.XPath
 		private XsltContext xsltContext; // 0x14
 	
 		// Properties
-		public override XPathResultType StaticType { get => default; } // 0x10BE1B40-0x10BE1DC0 
+		public override XPathResultType StaticType { get => default; } // 0x10BE02A0-0x10BE0520 
 	
 		// Constructors
 		public NodeFunctions() {} // Dummy constructor
-		public NodeFunctions(Function.FunctionType funcType, Query arg) {} // 0x10BE1B10-0x10BE1B40
+		public NodeFunctions(Function.FunctionType funcType, Query arg) {} // 0x10BE0270-0x10BE02A0
 	
 		// Methods
-		public override void SetXsltContext(XsltContext context) {} // 0x10BE1AB0-0x10BE1B10
-		private XPathNavigator EvaluateArg(XPathNodeIterator context) => default; // 0x10BE1730-0x10BE17A0
-		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BE17A0-0x10BE19C0
-		public override XPathNodeIterator Clone() => default; // 0x10BE16C0-0x10BE1730
-		public override void PrintQuery(XmlWriter w) {} // 0x10BE19C0-0x10BE1AB0
+		public override void SetXsltContext(XsltContext context) {} // 0x10BE0210-0x10BE0270
+		private XPathNavigator EvaluateArg(XPathNodeIterator context) => default; // 0x10BDFE90-0x10BDFF00
+		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BDFF00-0x10BE0120
+		public override XPathNodeIterator Clone() => default; // 0x10BDFDC0-0x10BDFE90
+		public override void PrintQuery(XmlWriter w) {} // 0x10BE0120-0x10BE0210
 	}
 
 	internal sealed class NumberFunctions : ValueQuery // TypeDefIndex: 2922
@@ -2057,25 +2057,25 @@ namespace MS.Internal.Xml.XPath
 		private Function.FunctionType ftype; // 0x10
 	
 		// Properties
-		public override XPathResultType StaticType { get => default; } // 0x1019C310-0x1019C320 
+		public override XPathResultType StaticType { get => default; } // 0x1019C040-0x1019C050 
 	
 		// Constructors
 		public NumberFunctions() {} // Dummy constructor
-		public NumberFunctions(Function.FunctionType ftype, Query arg) {} // 0x10BD83D0-0x10BD8400
-		private NumberFunctions(NumberFunctions other) {} // 0x10BD8390-0x10BD83D0
+		public NumberFunctions(Function.FunctionType ftype, Query arg) {} // 0x10BD69C0-0x10BD69F0
+		private NumberFunctions(NumberFunctions other) {} // 0x10BD6910-0x10BD69C0
 	
 		// Methods
-		public override void SetXsltContext(XsltContext context) {} // 0x10BD8360-0x10BD8390
-		internal static double Number(bool arg) => default; // 0x10BE24C0-0x10BE24E0
-		internal static double Number(string arg) => default; // 0x10BE24E0-0x10BE2530
-		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BE1ED0-0x10BE2210
-		private double Number(XPathNodeIterator nodeIterator) => default; // 0x10BE22B0-0x10BE24C0
-		private double Sum(XPathNodeIterator nodeIterator) => default; // 0x10BE26C0-0x10BE27B0
-		private double Floor(XPathNodeIterator nodeIterator) => default; // 0x10BE2210-0x10BE22B0
-		private double Ceiling(XPathNodeIterator nodeIterator) => default; // 0x10BE1DC0-0x10BE1E60
-		private double Round(XPathNodeIterator nodeIterator) => default; // 0x10BE2620-0x10BE26C0
-		public override XPathNodeIterator Clone() => default; // 0x10BE1E60-0x10BE1ED0
-		public override void PrintQuery(XmlWriter w) {} // 0x10BE2530-0x10BE2620
+		public override void SetXsltContext(XsltContext context) {} // 0x10BD68E0-0x10BD6910
+		internal static double Number(bool arg) => default; // 0x10BE0CA0-0x10BE0CC0
+		internal static double Number(string arg) => default; // 0x10BE0CC0-0x10BE0D10
+		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BE06A0-0x10BE09E0
+		private double Number(XPathNodeIterator nodeIterator) => default; // 0x10BE0A80-0x10BE0CA0
+		private double Sum(XPathNodeIterator nodeIterator) => default; // 0x10BE0EA0-0x10BE0FB0
+		private double Floor(XPathNodeIterator nodeIterator) => default; // 0x10BE09E0-0x10BE0A80
+		private double Ceiling(XPathNodeIterator nodeIterator) => default; // 0x10BE0520-0x10BE05C0
+		private double Round(XPathNodeIterator nodeIterator) => default; // 0x10BE0E00-0x10BE0EA0
+		public override XPathNodeIterator Clone() => default; // 0x10BE05C0-0x10BE06A0
+		public override void PrintQuery(XmlWriter w) {} // 0x10BE0D10-0x10BE0E00
 	}
 
 	internal sealed class NumericExpr : ValueQuery // TypeDefIndex: 2923
@@ -2086,19 +2086,19 @@ namespace MS.Internal.Xml.XPath
 		private Query opnd2; // 0x14
 	
 		// Properties
-		public override XPathResultType StaticType { get => default; } // 0x1019C310-0x1019C320 
+		public override XPathResultType StaticType { get => default; } // 0x1019C040-0x1019C050 
 	
 		// Constructors
 		public NumericExpr() {} // Dummy constructor
-		public NumericExpr(Operator.Op op, Query opnd1, Query opnd2) {} // 0x10BE2AE0-0x10BE2BC0
-		private NumericExpr(NumericExpr other) {} // 0x10BDEE60-0x10BDEEB0
+		public NumericExpr(Operator.Op op, Query opnd1, Query opnd2) {} // 0x10BE13C0-0x10BE14A0
+		private NumericExpr(NumericExpr other) {} // 0x10BDD140-0x10BDD270
 	
 		// Methods
-		public override void SetXsltContext(XsltContext context) {} // 0x10BDDF10-0x10BDDF60
-		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BE2830-0x10BE2970
-		private static double GetValue(Operator.Op op, double n1, double n2) => default; // 0x10BE2970-0x10BE29D0
-		public override XPathNodeIterator Clone() => default; // 0x10BE27B0-0x10BE2830
-		public override void PrintQuery(XmlWriter w) {} // 0x10BE29D0-0x10BE2AE0
+		public override void SetXsltContext(XsltContext context) {} // 0x10BDC1F0-0x10BDC240
+		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10BE1110-0x10BE1250
+		private static double GetValue(Operator.Op op, double n1, double n2) => default; // 0x10BE1250-0x10BE12B0
+		public override XPathNodeIterator Clone() => default; // 0x10BE0FB0-0x10BE1110
+		public override void PrintQuery(XmlWriter w) {} // 0x10BE12B0-0x10BE13C0
 	}
 
 	internal class Operand : AstNode // TypeDefIndex: 2924
@@ -2108,15 +2108,15 @@ namespace MS.Internal.Xml.XPath
 		private object val; // 0x0C
 	
 		// Properties
-		public override AstType Type { get => default; } // 0x10184060-0x10184070 
-		public override XPathResultType ReturnType { get => default; } // 0x1015D620-0x10160940 
-		public object OperandValue { get => default; } // 0x10160960-0x10160970 
+		public override AstType Type { get => default; } // 0x101840B0-0x101840C0 
+		public override XPathResultType ReturnType { get => default; } // 0x1015D620-0x10160990 
+		public object OperandValue { get => default; } // 0x101609B0-0x101609C0 
 	
 		// Constructors
 		public Operand() {} // Dummy constructor
-		public Operand(string val) {} // 0x10BE2D50-0x10BE2D80
-		public Operand(double val) {} // 0x10BE2D80-0x10BE2DE0
-		public Operand(bool val) {} // 0x10BE2CF0-0x10BE2D50
+		public Operand(string val) {} // 0x10BE1630-0x10BE1660
+		public Operand(double val) {} // 0x10BE1660-0x10BE16C0
+		public Operand(bool val) {} // 0x10BE15D0-0x10BE1630
 	}
 
 	internal sealed class OperandQuery : ValueQuery // TypeDefIndex: 2925
@@ -2125,16 +2125,16 @@ namespace MS.Internal.Xml.XPath
 		internal object val; // 0x0C
 	
 		// Properties
-		public override XPathResultType StaticType { get => default; } // 0x10BE2CD0-0x10BE2CF0 
+		public override XPathResultType StaticType { get => default; } // 0x10BE15B0-0x10BE15D0 
 	
 		// Constructors
 		public OperandQuery() {} // Dummy constructor
-		public OperandQuery(object val) {} // 0x10BE2CB0-0x10BE2CD0
+		public OperandQuery(object val) {} // 0x10BE1590-0x10BE15B0
 	
 		// Methods
-		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10160960-0x10160970
-		public override XPathNodeIterator Clone() => default; // 0x1018C2D0-0x1018C2E0
-		public override void PrintQuery(XmlWriter w) {} // 0x10BE2BC0-0x10BE2CB0
+		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x101609B0-0x101609C0
+		public override XPathNodeIterator Clone() => default; // 0x1018BF50-0x1018BF60
+		public override void PrintQuery(XmlWriter w) {} // 0x10BE14A0-0x10BE1590
 	}
 
 	internal class Operator : AstNode // TypeDefIndex: 2926
@@ -2146,11 +2146,11 @@ namespace MS.Internal.Xml.XPath
 		private AstNode opnd2; // 0x10
 	
 		// Properties
-		public override AstType Type { get => default; } // 0x101E86B0-0x101E86C0 
-		public override XPathResultType ReturnType { get => default; } // 0x10BE2EA0-0x10BE2ED0 
-		public Op OperatorType { get => default; } // 0x1015D620-0x10160940 
-		public AstNode Operand1 { get => default; } // 0x10160960-0x10160970 
-		public AstNode Operand2 { get => default; } // 0x1019CE70-0x1019CE80 
+		public override AstType Type { get => default; } // 0x101E9B20-0x101E9B30 
+		public override XPathResultType ReturnType { get => default; } // 0x10BE1780-0x10BE17B0 
+		public Op OperatorType { get => default; } // 0x1015D620-0x10160990 
+		public AstNode Operand1 { get => default; } // 0x101609B0-0x101609C0 
+		public AstNode Operand2 { get => default; } // 0x1019CB30-0x1019CB40 
 	
 		// Nested types
 		public enum Op // TypeDefIndex: 2927
@@ -2174,23 +2174,23 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public Operator() {} // Dummy constructor
-		public Operator(Op op, AstNode opnd1, AstNode opnd2) {} // 0x1019FC10-0x1019FC40
-		static Operator() {} // 0x10BE2E50-0x10BE2EA0
+		public Operator(Op op, AstNode opnd1, AstNode opnd2) {} // 0x1019F890-0x1019F8C0
+		static Operator() {} // 0x10BE1730-0x10BE1780
 	
 		// Methods
-		public static Op InvertOperator(Op op) => default; // 0x10BE2DE0-0x10BE2E50
+		public static Op InvertOperator(Op op) => default; // 0x10BE16C0-0x10BE1730
 	}
 
 	internal sealed class ParentQuery : CacheAxisQuery // TypeDefIndex: 2928
 	{
 		// Constructors
 		public ParentQuery() {} // Dummy constructor
-		public ParentQuery(Query qyInput, string Name, string Prefix, XPathNodeType Type) {} // 0x10BE2FC0-0x10BE2FD0
-		private ParentQuery(ParentQuery other) {} // 0x10BE2FD0-0x10BE2FE0
+		public ParentQuery(Query qyInput, string Name, string Prefix, XPathNodeType Type) {} // 0x10BE1900-0x10BE1910
+		private ParentQuery(ParentQuery other) {} // 0x10BD6D90-0x10BD6E00
 	
 		// Methods
-		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BE2F20-0x10BE2FC0
-		public override XPathNodeIterator Clone() => default; // 0x10BE2ED0-0x10BE2F20
+		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BE1860-0x10BE1900
+		public override XPathNodeIterator Clone() => default; // 0x10BE17B0-0x10BE1860
 	}
 
 	internal sealed class PrecedingQuery : BaseAxisQuery // TypeDefIndex: 2929
@@ -2200,33 +2200,33 @@ namespace MS.Internal.Xml.XPath
 		private ClonableStack<XPathNavigator> ancestorStk; // 0x30
 	
 		// Properties
-		public override QueryProps Properties { get => default; } // 0x10840C00-0x10840C10 
+		public override QueryProps Properties { get => default; } // 0x1083F170-0x1083F180 
 	
 		// Constructors
 		public PrecedingQuery() {} // Dummy constructor
-		public PrecedingQuery(Query qyInput, string name, string prefix, XPathNodeType typeTest) {} // 0x10BE3760-0x10BE3820
-		private PrecedingQuery(PrecedingQuery other) {} // 0x10BE36A0-0x10BE3760
+		public PrecedingQuery(Query qyInput, string name, string prefix, XPathNodeType typeTest) {} // 0x10BE2080-0x10BE2140
+		private PrecedingQuery(PrecedingQuery other) {} // 0x10BE2000-0x10BE2080
 	
 		// Methods
-		public override void Reset() {} // 0x10BE3620-0x10BE36A0
-		public override XPathNavigator Advance() => default; // 0x10BE32E0-0x10BE3530
-		public override XPathNodeIterator Clone() => default; // 0x10BE3530-0x10BE3620
+		public override void Reset() {} // 0x10BE1F70-0x10BE2000
+		public override XPathNavigator Advance() => default; // 0x10BE1C70-0x10BE1EC0
+		public override XPathNodeIterator Clone() => default; // 0x10BE1EC0-0x10BE1F70
 	}
 
 	internal class PreSiblingQuery : CacheAxisQuery // TypeDefIndex: 2930
 	{
 		// Properties
-		public override QueryProps Properties { get => default; } // 0x108436C0-0x108436D0 
+		public override QueryProps Properties { get => default; } // 0x10841BF0-0x10841C00 
 	
 		// Constructors
 		public PreSiblingQuery() {} // Dummy constructor
-		public PreSiblingQuery(Query qyInput, string name, string prefix, XPathNodeType typeTest) {} // 0x10BE2FC0-0x10BE2FD0
-		protected PreSiblingQuery(PreSiblingQuery other) {} // 0x10BE2FD0-0x10BE2FE0
+		public PreSiblingQuery(Query qyInput, string name, string prefix, XPathNodeType typeTest) {} // 0x10BE1900-0x10BE1910
+		protected PreSiblingQuery(PreSiblingQuery other) {} // 0x10BD6D90-0x10BD6E00
 	
 		// Methods
-		private bool NotVisited(XPathNavigator nav, List<XPathNavigator> parentStk) => default; // 0x10BE3200-0x10BE32E0
-		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BE3030-0x10BE3200
-		public override XPathNodeIterator Clone() => default; // 0x10BE2FE0-0x10BE3030
+		private bool NotVisited(XPathNavigator nav, List<XPathNavigator> parentStk) => default; // 0x10BE1B90-0x10BE1C70
+		public override object Evaluate(XPathNodeIterator context) => default; // 0x10BE19C0-0x10BE1B90
+		public override XPathNodeIterator Clone() => default; // 0x10BE1910-0x10BE19C0
 	}
 
 	internal enum QueryProps // TypeDefIndex: 2931
@@ -2239,40 +2239,40 @@ namespace MS.Internal.Xml.XPath
 		Merge = 16
 	}
 
-	// [DebuggerDisplay] // 0x10007D50-0x10007D80
+	// [DebuggerDisplay] // 0x100081F0-0x10008220
 	internal abstract class Query : ResetableIterator // TypeDefIndex: 2932
 	{
 		// Fields
 		public const XPathResultType XPathResultType_Navigator = (XPathResultType) 4; // Metadata: 0x003F27F2
 	
 		// Properties
-		public override int Count { get; } // 0x10BE5BA0-0x10BE5C80 
-		public virtual double XsltDefaultPriority { get; } // 0x10BE5C80-0x10BE5D80 
+		public override int Count { get; } // 0x10BE4620-0x10BE46F0 
+		public virtual double XsltDefaultPriority { get; } // 0x10BE46F0-0x10BE47F0 
 		public abstract XPathResultType StaticType { get; }
-		public virtual QueryProps Properties { get; } // 0x10841640-0x10841650 
+		public virtual QueryProps Properties { get; } // 0x1083FBB0-0x1083FBC0 
 	
 		// Constructors
-		public Query() {} // 0x10BDA690-0x10BDA6A0
-		protected Query(Query other) {} // 0x10BE5B90-0x10BE5BA0
+		public Query() {} // 0x10BD8B00-0x10BD8B10
+		protected Query(Query other) {} // 0x10BE4610-0x10BE4620
 	
 		// Methods
-		public override bool MoveNext() => default; // 0x10BE5AF0-0x10BE5B20
-		public virtual void SetXsltContext(XsltContext context) {} // 0x10164D40-0x10164D50
+		public override bool MoveNext() => default; // 0x10BE4570-0x10BE45A0
+		public virtual void SetXsltContext(XsltContext context) {} // 0x10164DE0-0x10164DF0
 		public abstract object Evaluate(XPathNodeIterator nodeIterator);
 		public abstract XPathNavigator Advance();
-		public virtual XPathNavigator MatchNode(XPathNavigator current) => default; // 0x10BE5AB0-0x10BE5AF0
-		public static Query Clone(Query input) => default; // 0x10BE56C0-0x10BE5750
-		protected static XPathNodeIterator Clone(XPathNodeIterator input) => default; // 0x10BE5750-0x10BE5780
-		protected static XPathNavigator Clone(XPathNavigator input) => default; // 0x10BE5780-0x10BE57B0
-		public bool Insert(List<XPathNavigator> buffer, XPathNavigator nav) => default; // 0x10BE5970-0x10BE5AB0
-		private static int GetMedian(int l, int r) => default; // 0x10BE58B0-0x10BE58C0
-		public static XmlNodeOrder CompareNodes(XPathNavigator l, XPathNavigator r) => default; // 0x10BE57B0-0x10BE58B0
-		// [Conditional] // 0x10003BB0-0x10003BE0
-		private void AssertDOD(List<XPathNavigator> buffer, XPathNavigator nav, int pos) {} // 0x10BE5380-0x10BE5490
-		// [Conditional] // 0x10003BB0-0x10003BE0
-		public static void AssertQuery(Query query) {} // 0x10BE5490-0x10BE56C0
-		protected XPathResultType GetXPathType(object value) => default; // 0x10BE58C0-0x10BE5970
-		public virtual void PrintQuery(XmlWriter w) {} // 0x10BE5B20-0x10BE5B90
+		public virtual XPathNavigator MatchNode(XPathNavigator current) => default; // 0x10BE4530-0x10BE4570
+		public static Query Clone(Query input) => default; // 0x10BE4160-0x10BE41E0
+		protected static XPathNodeIterator Clone(XPathNodeIterator input) => default; // 0x10BE41E0-0x10BE4210
+		protected static XPathNavigator Clone(XPathNavigator input) => default; // 0x10BE4210-0x10BE4240
+		public bool Insert(List<XPathNavigator> buffer, XPathNavigator nav) => default; // 0x10BE43F0-0x10BE4530
+		private static int GetMedian(int l, int r) => default; // 0x10BE4340-0x10BE4350
+		public static XmlNodeOrder CompareNodes(XPathNavigator l, XPathNavigator r) => default; // 0x10BE4240-0x10BE4340
+		// [Conditional] // 0x10004100-0x10004130
+		private void AssertDOD(List<XPathNavigator> buffer, XPathNavigator nav, int pos) {} // 0x10BE3E20-0x10BE3F30
+		// [Conditional] // 0x10004100-0x10004130
+		public static void AssertQuery(Query query) {} // 0x10BE3F30-0x10BE4160
+		protected XPathResultType GetXPathType(object value) => default; // 0x10BE4350-0x10BE43F0
+		public virtual void PrintQuery(XmlWriter w) {} // 0x10BE45A0-0x10BE4610
 	}
 
 	internal sealed class QueryBuilder // TypeDefIndex: 2933
@@ -2309,44 +2309,44 @@ namespace MS.Internal.Xml.XPath
 		public QueryBuilder() {} // 0x1015D2D0-0x1015D2E0
 	
 		// Methods
-		private void Reset() {} // 0x10BE5360-0x10BE5380
+		private void Reset() {} // 0x10BE3E00-0x10BE3E20
 		private Query ProcessAxis(Axis root, Flags flags, out Props props) {
 			props = default;
 			return default;
-		} // 0x10BE3C30-0x10BE4530
-		private bool CanBeNumber(Query q) => default; // 0x10BE3AA0-0x10BE3AF0
+		} // 0x10BE2570-0x10BE2E70
+		private bool CanBeNumber(Query q) => default; // 0x10BE23C0-0x10BE2410
 		private Query ProcessFilter(Filter root, Flags flags, out Props props) {
 			props = default;
 			return default;
-		} // 0x10BE4530-0x10BE4950
+		} // 0x10BE2E70-0x10BE3290
 		private Query ProcessOperator(Operator root, out Props props) {
 			props = default;
 			return default;
-		} // 0x10BE50B0-0x10BE52D0
-		private Query ProcessVariable(Variable root) => default; // 0x10BE52D0-0x10BE5360
+		} // 0x10BE3B50-0x10BE3D70
+		private Query ProcessVariable(Variable root) => default; // 0x10BE3D70-0x10BE3E00
 		private Query ProcessFunction(Function root, out Props props) {
 			props = default;
 			return default;
-		} // 0x10BE4950-0x10BE4E00
+		} // 0x10BE3290-0x10BE3810
 		private List<Query> ProcessArguments(ArrayList args, out Props props) {
 			props = default;
 			return default;
-		} // 0x10BE3AF0-0x10BE3C30
+		} // 0x10BE2410-0x10BE2570
 		private Query ProcessNode(AstNode root, Flags flags, out Props props) {
 			props = default;
 			return default;
-		} // 0x10BE4E00-0x10BE50B0
-		private Query Build(AstNode root, string query) => default; // 0x10BE3A60-0x10BE3AA0
-		internal Query Build(string query, bool allowVar, bool allowKey) => default; // 0x10BE39D0-0x10BE3A60
+		} // 0x10BE3810-0x10BE3B50
+		private Query Build(AstNode root, string query) => default; // 0x10BE2380-0x10BE23C0
+		internal Query Build(string query, bool allowVar, bool allowKey) => default; // 0x10BE22F0-0x10BE2380
 		internal Query Build(string query, out bool needContext) {
 			needContext = default;
 			return default;
-		} // 0x10BE3940-0x10BE39D0
-		internal Query BuildPatternQuery(string query, bool allowVar, bool allowKey) => default; // 0x10BE38B0-0x10BE3940
+		} // 0x10BE2260-0x10BE22F0
+		internal Query BuildPatternQuery(string query, bool allowVar, bool allowKey) => default; // 0x10BE21D0-0x10BE2260
 		internal Query BuildPatternQuery(string query, out bool needContext) {
 			needContext = default;
 			return default;
-		} // 0x10BE3820-0x10BE38B0
+		} // 0x10BE2140-0x10BE21D0
 	}
 
 	internal abstract class ResetableIterator : XPathNodeIterator // TypeDefIndex: 2936
@@ -2355,38 +2355,38 @@ namespace MS.Internal.Xml.XPath
 		public abstract int CurrentPosition { get; }
 	
 		// Constructors
-		public ResetableIterator() {} // 0x10462110-0x10462130
-		protected ResetableIterator(ResetableIterator other) {} // 0x104620E0-0x10462110
+		public ResetableIterator() {} // 0x10463320-0x10463340
+		protected ResetableIterator(ResetableIterator other) {} // 0x104632F0-0x10463320
 	
 		// Methods
-		protected void ResetCount() {} // 0x104620D0-0x104620E0
+		protected void ResetCount() {} // 0x104632E0-0x104632F0
 		public abstract void Reset();
-		public virtual bool MoveToPosition(int pos) => default; // 0x10462060-0x104620D0
+		public virtual bool MoveToPosition(int pos) => default; // 0x10463270-0x104632E0
 	}
 
 	internal sealed class ReversePositionQuery : ForwardPositionQuery // TypeDefIndex: 2937
 	{
 		// Properties
-		public override int CurrentPosition { get => default; } // 0x104621A0-0x104621E0 
-		public override QueryProps Properties { get => default; } // 0x104621E0-0x10462200 
+		public override int CurrentPosition { get => default; } // 0x104633B0-0x104633F0 
+		public override QueryProps Properties { get => default; } // 0x104633F0-0x10463410 
 	
 		// Constructors
 		public ReversePositionQuery() {} // Dummy constructor
-		public ReversePositionQuery(Query input) {} // 0x10462190-0x104621A0
-		private ReversePositionQuery(ReversePositionQuery other) {} // 0x10462180-0x10462190
+		public ReversePositionQuery(Query input) {} // 0x104633A0-0x104633B0
+		private ReversePositionQuery(ReversePositionQuery other) {} // 0x10463390-0x104633A0
 	
 		// Methods
-		public override XPathNodeIterator Clone() => default; // 0x10462130-0x10462180
+		public override XPathNodeIterator Clone() => default; // 0x10463340-0x10463390
 	}
 
 	internal class Root : AstNode // TypeDefIndex: 2938
 	{
 		// Properties
-		public override AstType Type { get => default; } // 0x10462200-0x10462210 
-		public override XPathResultType ReturnType { get => default; } // 0x10184060-0x10184070 
+		public override AstType Type { get => default; } // 0x10463410-0x10463420 
+		public override XPathResultType ReturnType { get => default; } // 0x101840B0-0x101840C0 
 	
 		// Constructors
-		public Root() {} // 0x1019F460-0x1019F470
+		public Root() {} // 0x1019F0E0-0x1019F0F0
 	}
 
 	internal sealed class SortQuery : Query // TypeDefIndex: 2939
@@ -2397,26 +2397,26 @@ namespace MS.Internal.Xml.XPath
 		private Query qyInput; // 0x14
 	
 		// Properties
-		public override XPathNavigator Current { get => default; } // 0x10462B80-0x10462BF0 
-		public override XPathResultType StaticType { get => default; } // 0x10184060-0x10184070 
-		public override int CurrentPosition { get => default; } // 0x1015D620-0x10160940 
-		public override int Count { get => default; } // 0x10462B40-0x10462B80 
-		public override QueryProps Properties { get => default; } // 0x101E2180-0x101E2190 
+		public override XPathNavigator Current { get => default; } // 0x10463D90-0x10463E00 
+		public override XPathResultType StaticType { get => default; } // 0x101840B0-0x101840C0 
+		public override int CurrentPosition { get => default; } // 0x1015D620-0x10160990 
+		public override int Count { get => default; } // 0x10463D50-0x10463D90 
+		public override QueryProps Properties { get => default; } // 0x101E36B0-0x101E36C0 
 	
 		// Constructors
 		public SortQuery() {} // Dummy constructor
-		public SortQuery(Query qyInput) {} // 0x104629E0-0x10462AA0
-		private SortQuery(SortQuery other) {} // 0x10462AA0-0x10462B40
+		public SortQuery(Query qyInput) {} // 0x10463BF0-0x10463CB0
+		private SortQuery(SortQuery other) {} // 0x10463CB0-0x10463D50
 	
 		// Methods
-		public override void Reset() {} // 0x10462920-0x10462930
-		public override void SetXsltContext(XsltContext xsltContext) {} // 0x10462930-0x104629E0
-		private void BuildResultsList() {} // 0x104625B0-0x10462720
-		public override object Evaluate(XPathNodeIterator context) => default; // 0x104627F0-0x10462870
-		public override XPathNavigator Advance() => default; // 0x10462540-0x104625B0
-		internal void AddSort(Query evalQuery, IComparer comparer) {} // 0x10462510-0x10462540
-		public override XPathNodeIterator Clone() => default; // 0x10462720-0x104627F0
-		public override void PrintQuery(XmlWriter w) {} // 0x10462870-0x10462920
+		public override void Reset() {} // 0x10463B30-0x10463B40
+		public override void SetXsltContext(XsltContext xsltContext) {} // 0x10463B40-0x10463BF0
+		private void BuildResultsList() {} // 0x104637C0-0x10463930
+		public override object Evaluate(XPathNodeIterator context) => default; // 0x10463A00-0x10463A80
+		public override XPathNavigator Advance() => default; // 0x10463750-0x104637C0
+		internal void AddSort(Query evalQuery, IComparer comparer) {} // 0x10463720-0x10463750
+		public override XPathNodeIterator Clone() => default; // 0x10463930-0x10463A00
+		public override void PrintQuery(XmlWriter w) {} // 0x10463A80-0x10463B30
 	}
 
 	internal sealed class SortKey // TypeDefIndex: 2940
@@ -2428,14 +2428,14 @@ namespace MS.Internal.Xml.XPath
 		private XPathNavigator node; // 0x14
 	
 		// Properties
-		public object this[int index] { get => default; set {} } // 0x10462480-0x104624B0 0x104624B0-0x10462510
-		public int NumKeys { get => default; } // 0x1015D620-0x10160940 
-		public int OriginalPosition { get => default; } // 0x1019CE70-0x1019CE80 
-		public XPathNavigator Node { get => default; } // 0x10181220-0x10181230 
+		public object this[int index] { get => default; set {} } // 0x10463690-0x104636C0 0x104636C0-0x10463720
+		public int NumKeys { get => default; } // 0x1015D620-0x10160990 
+		public int OriginalPosition { get => default; } // 0x1019CB30-0x1019CB40 
+		public XPathNavigator Node { get => default; } // 0x10181250-0x10181260 
 	
 		// Constructors
 		public SortKey() {} // Dummy constructor
-		public SortKey(int numKeys, int originalPosition, XPathNavigator node) {} // 0x10462420-0x10462480
+		public SortKey(int numKeys, int originalPosition, XPathNavigator node) {} // 0x10463630-0x10463690
 	}
 
 	internal sealed class XPathSortComparer : IComparer<MS.Internal.Xml.XPath.SortKey> // TypeDefIndex: 2941
@@ -2447,17 +2447,17 @@ namespace MS.Internal.Xml.XPath
 		private int numSorts; // 0x10
 	
 		// Properties
-		public int NumSorts { get => default; } // 0x1019CE70-0x1019CE80 
+		public int NumSorts { get => default; } // 0x1019CB30-0x1019CB40 
 	
 		// Constructors
-		public XPathSortComparer(int size) {} // 0x1046CF20-0x1046CF80
-		public XPathSortComparer() {} // 0x1046CF80-0x1046CFF0
+		public XPathSortComparer(int size) {} // 0x1046E100-0x1046E160
+		public XPathSortComparer() {} // 0x1046E160-0x1046E1C0
 	
 		// Methods
-		public void AddSort(Query evalQuery, IComparer comparer) {} // 0x1046C930-0x1046CBE0
-		public Query Expression(int i) => default; // 0x101BBFE0-0x101BC010
-		int IComparer<SortKey>.Compare(MS.Internal.Xml.XPath.SortKey x, MS.Internal.Xml.XPath.SortKey y) => default; // 0x1046CDC0-0x1046CF20
-		internal XPathSortComparer Clone() => default; // 0x1046CBE0-0x1046CDC0
+		public void AddSort(Query evalQuery, IComparer comparer) {} // 0x1046DB10-0x1046DDC0
+		public Query Expression(int i) => default; // 0x101BC560-0x101BC590
+		int IComparer<SortKey>.Compare(MS.Internal.Xml.XPath.SortKey x, MS.Internal.Xml.XPath.SortKey y) => default; // 0x1046DFA0-0x1046E100
+		internal XPathSortComparer Clone() => default; // 0x1046DDC0-0x1046DFA0
 	}
 
 	internal sealed class StringFunctions : ValueQuery // TypeDefIndex: 2942
@@ -2468,31 +2468,31 @@ namespace MS.Internal.Xml.XPath
 		private static readonly CompareInfo compareInfo; // 0x00
 	
 		// Properties
-		public override XPathResultType StaticType { get => default; } // 0x10464680-0x104646B0 
+		public override XPathResultType StaticType { get => default; } // 0x10465890-0x104658C0 
 	
 		// Constructors
 		public StringFunctions() {} // Dummy constructor
-		public StringFunctions(Function.FunctionType funcType, IList<Query> argList) {} // 0x104644E0-0x10464510
-		private StringFunctions(StringFunctions other) {} // 0x10464510-0x10464680
-		static StringFunctions() {} // 0x10464470-0x104644E0
+		public StringFunctions(Function.FunctionType funcType, IList<Query> argList) {} // 0x104656F0-0x10465720
+		private StringFunctions(StringFunctions other) {} // 0x10465720-0x10465890
+		static StringFunctions() {} // 0x10465680-0x104656F0
 	
 		// Methods
-		public override void SetXsltContext(XsltContext context) {} // 0x10463940-0x10463A90
-		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10463090-0x10463520
-		internal static string toString(double num) => default; // 0x104646F0-0x10464730
-		internal static string toString(bool b) => default; // 0x104646B0-0x104646F0
-		private string toString(XPathNodeIterator nodeIterator) => default; // 0x10464730-0x10465D80
-		private string Concat(XPathNodeIterator nodeIterator) => default; // 0x10462D80-0x10462F50
-		private bool StartsWith(XPathNodeIterator nodeIterator) => default; // 0x10463A90-0x10463BA0
-		private bool Contains(XPathNodeIterator nodeIterator) => default; // 0x10462F50-0x10463090
-		private string SubstringBefore(XPathNodeIterator nodeIterator) => default; // 0x10463E30-0x10463FA0
-		private string SubstringAfter(XPathNodeIterator nodeIterator) => default; // 0x10463CC0-0x10463E30
-		private string Substring(XPathNodeIterator nodeIterator) => default; // 0x10463FA0-0x10464280
-		private double StringLength(XPathNodeIterator nodeIterator) => default; // 0x10463BA0-0x10463CC0
-		private string Normalize(XPathNodeIterator nodeIterator) => default; // 0x10463520-0x10463700
-		private string Translate(XPathNodeIterator nodeIterator) => default; // 0x10464280-0x10464470
-		public override XPathNodeIterator Clone() => default; // 0x10462BF0-0x10462D80
-		public override void PrintQuery(XmlWriter w) {} // 0x10463700-0x10463940
+		public override void SetXsltContext(XsltContext context) {} // 0x10464B50-0x10464CA0
+		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x104642A0-0x10464730
+		internal static string toString(double num) => default; // 0x10465900-0x10465940
+		internal static string toString(bool b) => default; // 0x104658C0-0x10465900
+		private string toString(XPathNodeIterator nodeIterator) => default; // 0x10465940-0x10466FF0
+		private string Concat(XPathNodeIterator nodeIterator) => default; // 0x10463F90-0x10464160
+		private bool StartsWith(XPathNodeIterator nodeIterator) => default; // 0x10464CA0-0x10464DB0
+		private bool Contains(XPathNodeIterator nodeIterator) => default; // 0x10464160-0x104642A0
+		private string SubstringBefore(XPathNodeIterator nodeIterator) => default; // 0x10465040-0x104651B0
+		private string SubstringAfter(XPathNodeIterator nodeIterator) => default; // 0x10464ED0-0x10465040
+		private string Substring(XPathNodeIterator nodeIterator) => default; // 0x104651B0-0x10465490
+		private double StringLength(XPathNodeIterator nodeIterator) => default; // 0x10464DB0-0x10464ED0
+		private string Normalize(XPathNodeIterator nodeIterator) => default; // 0x10464730-0x10464910
+		private string Translate(XPathNodeIterator nodeIterator) => default; // 0x10465490-0x10465680
+		public override XPathNodeIterator Clone() => default; // 0x10463E00-0x10463F90
+		public override void PrintQuery(XmlWriter w) {} // 0x10464910-0x10464B50
 	}
 
 	internal sealed class UnionExpr : Query // TypeDefIndex: 2943
@@ -2506,42 +2506,42 @@ namespace MS.Internal.Xml.XPath
 		private XPathNavigator nextNode; // 0x1C
 	
 		// Properties
-		public override XPathResultType StaticType { get => default; } // 0x10184060-0x10184070 
-		public override XPathNavigator Current { get => default; } // 0x10181150-0x10181160 
-		public override int CurrentPosition { get => default; } // 0x10466220-0x10466270 
+		public override XPathResultType StaticType { get => default; } // 0x101840B0-0x101840C0 
+		public override XPathNavigator Current { get => default; } // 0x10181180-0x10181190 
+		public override int CurrentPosition { get => default; } // 0x10467490-0x104674E0 
 	
 		// Constructors
 		public UnionExpr() {} // Dummy constructor
-		public UnionExpr(Query query1, Query query2) {} // 0x10466180-0x104661B0
-		private UnionExpr(UnionExpr other) {} // 0x104661B0-0x10466220
+		public UnionExpr(Query query1, Query query2) {} // 0x104673F0-0x10467420
+		private UnionExpr(UnionExpr other) {} // 0x10467420-0x10467490
 	
 		// Methods
-		public override void Reset() {} // 0x104660D0-0x10466130
-		public override void SetXsltContext(XsltContext xsltContext) {} // 0x10466130-0x10466180
-		public override object Evaluate(XPathNodeIterator context) => default; // 0x10465F00-0x10465F70
-		private XPathNavigator ProcessSamePosition(XPathNavigator result) => default; // 0x104660B0-0x104660D0
-		private XPathNavigator ProcessBeforePosition(XPathNavigator res1, XPathNavigator res2) => default; // 0x10466090-0x104660B0
-		private XPathNavigator ProcessAfterPosition(XPathNavigator res1, XPathNavigator res2) => default; // 0x10466070-0x10466090
-		public override XPathNavigator Advance() => default; // 0x10465D80-0x10465E60
-		public override XPathNavigator MatchNode(XPathNavigator xsltContext) => default; // 0x10465F70-0x10465FD0
-		public override XPathNodeIterator Clone() => default; // 0x10465E60-0x10465F00
-		public override void PrintQuery(XmlWriter w) {} // 0x10465FD0-0x10466070
+		public override void Reset() {} // 0x10467340-0x104673A0
+		public override void SetXsltContext(XsltContext xsltContext) {} // 0x104673A0-0x104673F0
+		public override object Evaluate(XPathNodeIterator context) => default; // 0x10467170-0x104671E0
+		private XPathNavigator ProcessSamePosition(XPathNavigator result) => default; // 0x10467320-0x10467340
+		private XPathNavigator ProcessBeforePosition(XPathNavigator res1, XPathNavigator res2) => default; // 0x10467300-0x10467320
+		private XPathNavigator ProcessAfterPosition(XPathNavigator res1, XPathNavigator res2) => default; // 0x104672E0-0x10467300
+		public override XPathNavigator Advance() => default; // 0x10466FF0-0x104670D0
+		public override XPathNavigator MatchNode(XPathNavigator xsltContext) => default; // 0x104671E0-0x10467240
+		public override XPathNodeIterator Clone() => default; // 0x104670D0-0x10467170
+		public override void PrintQuery(XmlWriter w) {} // 0x10467240-0x104672E0
 	}
 
 	internal abstract class ValueQuery : Query // TypeDefIndex: 2944
 	{
 		// Properties
-		public sealed override XPathNavigator Current { get; } // 0x10466350-0x10466390 
-		public sealed override int CurrentPosition { get; } // 0x10466310-0x10466350 
-		public sealed override int Count { get; } // 0x104662D0-0x10466310 
+		public sealed override XPathNavigator Current { get; } // 0x104675C0-0x10467600 
+		public sealed override int CurrentPosition { get; } // 0x10467580-0x104675C0 
+		public sealed override int Count { get; } // 0x10467540-0x10467580 
 	
 		// Constructors
-		public ValueQuery() {} // 0x104662C0-0x104662D0
-		protected ValueQuery(ValueQuery other) {} // 0x104662B0-0x104662C0
+		public ValueQuery() {} // 0x10467530-0x10467540
+		protected ValueQuery(ValueQuery other) {} // 0x10467520-0x10467530
 	
 		// Methods
-		public sealed override void Reset() {} // 0x10164D40-0x10164D50
-		public sealed override XPathNavigator Advance() => default; // 0x10466270-0x104662B0
+		public sealed override void Reset() {} // 0x10164DE0-0x10164DF0
+		public sealed override XPathNavigator Advance() => default; // 0x104674E0-0x10467520
 	}
 
 	internal class Variable : AstNode // TypeDefIndex: 2945
@@ -2551,14 +2551,14 @@ namespace MS.Internal.Xml.XPath
 		private string prefix; // 0x0C
 	
 		// Properties
-		public override AstType Type { get => default; } // 0x101E2180-0x101E2190 
-		public override XPathResultType ReturnType { get => default; } // 0x101DE660-0x101DE670 
-		public string Localname { get => default; } // 0x1015D620-0x10160940 
-		public string Prefix { get => default; } // 0x10160960-0x10160970 
+		public override AstType Type { get => default; } // 0x101E36B0-0x101E36C0 
+		public override XPathResultType ReturnType { get => default; } // 0x101DFBC0-0x101DFBD0 
+		public string Localname { get => default; } // 0x1015D620-0x10160990 
+		public string Prefix { get => default; } // 0x101609B0-0x101609C0 
 	
 		// Constructors
 		public Variable() {} // Dummy constructor
-		public Variable(string name, string prefix) {} // 0x101BC990-0x101BC9C0
+		public Variable(string name, string prefix) {} // 0x101BCED0-0x101BCF00
 	}
 
 	internal sealed class VariableQuery : ExtensionQuery // TypeDefIndex: 2946
@@ -2567,31 +2567,31 @@ namespace MS.Internal.Xml.XPath
 		private IXsltContextVariable variable; // 0x1C
 	
 		// Properties
-		public override XPathResultType StaticType { get => default; } // 0x10466670-0x104666D0 
+		public override XPathResultType StaticType { get => default; } // 0x104678E0-0x10467940 
 	
 		// Constructors
 		public VariableQuery() {} // Dummy constructor
-		public VariableQuery(string name, string prefix) {} // 0x10466620-0x10466640
-		private VariableQuery(VariableQuery other) {} // 0x10466640-0x10466670
+		public VariableQuery(string name, string prefix) {} // 0x10467890-0x104678B0
+		private VariableQuery(VariableQuery other) {} // 0x104678B0-0x104678E0
 	
 		// Methods
-		public override void SetXsltContext(XsltContext context) {} // 0x10466580-0x10466620
-		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x104663F0-0x104664C0
-		public override XPathNodeIterator Clone() => default; // 0x10466390-0x104663F0
-		public override void PrintQuery(XmlWriter w) {} // 0x104664C0-0x10466580
+		public override void SetXsltContext(XsltContext context) {} // 0x104677F0-0x10467890
+		public override object Evaluate(XPathNodeIterator nodeIterator) => default; // 0x10467660-0x10467730
+		public override XPathNodeIterator Clone() => default; // 0x10467600-0x10467660
+		public override void PrintQuery(XmlWriter w) {} // 0x10467730-0x104677F0
 	}
 
 	internal class XPathAncestorIterator : XPathAxisIterator // TypeDefIndex: 2947
 	{
 		// Constructors
 		public XPathAncestorIterator() {} // Dummy constructor
-		public XPathAncestorIterator(XPathNavigator nav, XPathNodeType type, bool matchSelf) {} // 0x10466800-0x10466830
-		public XPathAncestorIterator(XPathNavigator nav, string name, string namespaceURI, bool matchSelf) {} // 0x104668A0-0x10466940
-		public XPathAncestorIterator(XPathAncestorIterator other) {} // 0x10466830-0x104668A0
+		public XPathAncestorIterator(XPathNavigator nav, XPathNodeType type, bool matchSelf) {} // 0x10467A70-0x10467AA0
+		public XPathAncestorIterator(XPathNavigator nav, string name, string namespaceURI, bool matchSelf) {} // 0x10467B10-0x10467BB0
+		public XPathAncestorIterator(XPathAncestorIterator other) {} // 0x10467AA0-0x10467B10
 	
 		// Methods
-		public override bool MoveNext() => default; // 0x10466770-0x10466800
-		public override XPathNodeIterator Clone() => default; // 0x104666D0-0x10466770
+		public override bool MoveNext() => default; // 0x104679E0-0x10467A70
+		public override XPathNodeIterator Clone() => default; // 0x10467940-0x104679E0
 	}
 
 	internal sealed class XPathAncestorQuery : CacheAxisQuery // TypeDefIndex: 2948
@@ -2600,21 +2600,21 @@ namespace MS.Internal.Xml.XPath
 		private bool matchSelf; // 0x30
 	
 		// Properties
-		public override int CurrentPosition { get => default; } // 0x10466C50-0x10466C90 
-		public override QueryProps Properties { get => default; } // 0x104621E0-0x10462200 
+		public override int CurrentPosition { get => default; } // 0x10467EC0-0x10467F00 
+		public override QueryProps Properties { get => default; } // 0x104633F0-0x10463410 
 	
 		// Constructors
 		public XPathAncestorQuery() {} // Dummy constructor
-		public XPathAncestorQuery(Query qyInput, string name, string prefix, XPathNodeType typeTest, bool matchSelf) {} // 0x10466BF0-0x10466C20
-		private XPathAncestorQuery(XPathAncestorQuery other) {} // 0x10466C20-0x10466C50
+		public XPathAncestorQuery(Query qyInput, string name, string prefix, XPathNodeType typeTest, bool matchSelf) {} // 0x10467E60-0x10467E90
+		private XPathAncestorQuery(XPathAncestorQuery other) {} // 0x10467E90-0x10467EC0
 	
 		// Methods
-		public override object Evaluate(XPathNodeIterator context) => default; // 0x104669A0-0x10466A90
-		public override XPathNodeIterator Clone() => default; // 0x10466940-0x104669A0
-		public override void PrintQuery(XmlWriter w) {} // 0x10466A90-0x10466BF0
+		public override object Evaluate(XPathNodeIterator context) => default; // 0x10467C10-0x10467D00
+		public override XPathNodeIterator Clone() => default; // 0x10467BB0-0x10467C10
+		public override void PrintQuery(XmlWriter w) {} // 0x10467D00-0x10467E60
 	}
 
-	// [DebuggerDisplay] // 0x10007E30-0x10007E60
+	// [DebuggerDisplay] // 0x100082D0-0x10008300
 	internal class XPathArrayIterator : ResetableIterator // TypeDefIndex: 2949
 	{
 		// Fields
@@ -2622,23 +2622,23 @@ namespace MS.Internal.Xml.XPath
 		protected int index; // 0x10
 	
 		// Properties
-		public IList AsList { get => default; } // 0x10160960-0x10160970 
-		public override XPathNavigator Current { get => default; } // 0x10466FA0-0x104670C0 
-		public override int CurrentPosition { get => default; } // 0x1019CE70-0x1019CE80 
-		public override int Count { get => default; } // 0x10466F50-0x10466FA0 
-		private new object debuggerDisplayProxy { get => default; } // 0x104670C0-0x10467120 
+		public IList AsList { get => default; } // 0x101609B0-0x101609C0 
+		public override XPathNavigator Current { get => default; } // 0x10468210-0x10468320 
+		public override int CurrentPosition { get => default; } // 0x1019CB30-0x1019CB40 
+		public override int Count { get => default; } // 0x104681C0-0x10468210 
+		private new object debuggerDisplayProxy { get => default; } // 0x10468320-0x10468380 
 	
 		// Constructors
 		public XPathArrayIterator() {} // Dummy constructor
-		public XPathArrayIterator(IList list) {} // 0x10466F20-0x10466F50
-		public XPathArrayIterator(XPathArrayIterator it) {} // 0x10466DB0-0x10466DF0
-		public XPathArrayIterator(XPathNodeIterator nodeIterator) {} // 0x10466DF0-0x10466F20
+		public XPathArrayIterator(IList list) {} // 0x10468190-0x104681C0
+		public XPathArrayIterator(XPathArrayIterator it) {} // 0x10468020-0x10468060
+		public XPathArrayIterator(XPathNodeIterator nodeIterator) {} // 0x10468060-0x10468190
 	
 		// Methods
-		public override XPathNodeIterator Clone() => default; // 0x10466C90-0x10466CF0
-		public override bool MoveNext() => default; // 0x10466D40-0x10466DA0
-		public override void Reset() {} // 0x10466DA0-0x10466DB0
-		public override IEnumerator GetEnumerator() => default; // 0x10466CF0-0x10466D40
+		public override XPathNodeIterator Clone() => default; // 0x10467F00-0x10467F60
+		public override bool MoveNext() => default; // 0x10467FB0-0x10468010
+		public override void Reset() {} // 0x10468010-0x10468020
+		public override IEnumerator GetEnumerator() => default; // 0x10467F60-0x10467FB0
 	}
 
 	internal abstract class XPathAxisIterator : XPathNodeIterator // TypeDefIndex: 2950
@@ -2653,29 +2653,29 @@ namespace MS.Internal.Xml.XPath
 		internal bool first; // 0x21
 	
 		// Properties
-		public override XPathNavigator Current { get; } // 0x10160960-0x10160970 
-		public override int CurrentPosition { get; } // 0x10181210-0x10181220 
-		protected virtual bool Matches { get; } // 0x10467150-0x10467270 
+		public override XPathNavigator Current { get; } // 0x101609B0-0x101609C0 
+		public override int CurrentPosition { get; } // 0x10181240-0x10181250 
+		protected virtual bool Matches { get; } // 0x104683B0-0x104684D0 
 	
 		// Constructors
 		protected XPathAxisIterator() {} // Dummy constructor
-		public XPathAxisIterator(XPathNavigator nav, bool matchSelf) {} // 0x10467120-0x10467150
-		public XPathAxisIterator(XPathNavigator nav, XPathNodeType type, bool matchSelf) {} // 0x10466800-0x10466830
-		public XPathAxisIterator(XPathNavigator nav, string name, string namespaceURI, bool matchSelf) {} // 0x104668A0-0x10466940
-		public XPathAxisIterator(XPathAxisIterator it) {} // 0x10466830-0x104668A0
+		public XPathAxisIterator(XPathNavigator nav, bool matchSelf) {} // 0x10468380-0x104683B0
+		public XPathAxisIterator(XPathNavigator nav, XPathNodeType type, bool matchSelf) {} // 0x10467A70-0x10467AA0
+		public XPathAxisIterator(XPathNavigator nav, string name, string namespaceURI, bool matchSelf) {} // 0x10467B10-0x10467BB0
+		public XPathAxisIterator(XPathAxisIterator it) {} // 0x10467AA0-0x10467B10
 	}
 
 	internal class XPathChildIterator : XPathAxisIterator // TypeDefIndex: 2951
 	{
 		// Constructors
 		public XPathChildIterator() {} // Dummy constructor
-		public XPathChildIterator(XPathNavigator nav, XPathNodeType type) {} // 0x10467420-0x10467450
-		public XPathChildIterator(XPathNavigator nav, string name, string namespaceURI) {} // 0x10467380-0x10467420
-		public XPathChildIterator(XPathChildIterator it) {} // 0x10466830-0x104668A0
+		public XPathChildIterator(XPathNavigator nav, XPathNodeType type) {} // 0x10468680-0x104686B0
+		public XPathChildIterator(XPathNavigator nav, string name, string namespaceURI) {} // 0x104685E0-0x10468680
+		public XPathChildIterator(XPathChildIterator it) {} // 0x10467AA0-0x10467B10
 	
 		// Methods
-		public override XPathNodeIterator Clone() => default; // 0x10467270-0x10467310
-		public override bool MoveNext() => default; // 0x10467310-0x10467380
+		public override XPathNodeIterator Clone() => default; // 0x104684D0-0x10468570
+		public override bool MoveNext() => default; // 0x10468570-0x104685E0
 	}
 
 	internal class XPathDescendantIterator : XPathAxisIterator // TypeDefIndex: 2952
@@ -2685,13 +2685,13 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public XPathDescendantIterator() {} // Dummy constructor
-		public XPathDescendantIterator(XPathNavigator nav, XPathNodeType type, bool matchSelf) {} // 0x10466800-0x10466830
-		public XPathDescendantIterator(XPathNavigator nav, string name, string namespaceURI, bool matchSelf) {} // 0x104668A0-0x10466940
-		public XPathDescendantIterator(XPathDescendantIterator it) {} // 0x10467870-0x104678F0
+		public XPathDescendantIterator(XPathNavigator nav, XPathNodeType type, bool matchSelf) {} // 0x10467A70-0x10467AA0
+		public XPathDescendantIterator(XPathNavigator nav, string name, string namespaceURI, bool matchSelf) {} // 0x10467B10-0x10467BB0
+		public XPathDescendantIterator(XPathDescendantIterator it) {} // 0x10468AD0-0x10468B50
 	
 		// Methods
-		public override XPathNodeIterator Clone() => default; // 0x104676F0-0x10467790
-		public override bool MoveNext() => default; // 0x10467790-0x10467870
+		public override XPathNodeIterator Clone() => default; // 0x10468950-0x104689F0
+		public override bool MoveNext() => default; // 0x104689F0-0x10468AD0
 	}
 
 	internal sealed class XPathEmptyIterator : ResetableIterator // TypeDefIndex: 2953
@@ -2700,18 +2700,18 @@ namespace MS.Internal.Xml.XPath
 		public static XPathEmptyIterator Instance; // 0x00
 	
 		// Properties
-		public override XPathNavigator Current { get => default; } // 0x1019C310-0x1019C320 
-		public override int CurrentPosition { get => default; } // 0x1019C310-0x1019C320 
-		public override int Count { get => default; } // 0x1019C310-0x1019C320 
+		public override XPathNavigator Current { get => default; } // 0x1019C040-0x1019C050 
+		public override int CurrentPosition { get => default; } // 0x1019C040-0x1019C050 
+		public override int Count { get => default; } // 0x1019C040-0x1019C050 
 	
 		// Constructors
-		private XPathEmptyIterator() {} // 0x10462110-0x10462130
-		static XPathEmptyIterator() {} // 0x104678F0-0x10467940
+		private XPathEmptyIterator() {} // 0x10463320-0x10463340
+		static XPathEmptyIterator() {} // 0x10468B50-0x10468BA0
 	
 		// Methods
-		public override XPathNodeIterator Clone() => default; // 0x1018C2D0-0x1018C2E0
-		public override bool MoveNext() => default; // 0x10183580-0x10183590
-		public override void Reset() {} // 0x10164D40-0x10164D50
+		public override XPathNodeIterator Clone() => default; // 0x1018BF50-0x1018BF60
+		public override bool MoveNext() => default; // 0x101835D0-0x101835E0
+		public override void Reset() {} // 0x10164DE0-0x10164DF0
 	}
 
 	internal class XPathMultyIterator : ResetableIterator // TypeDefIndex: 2954
@@ -2722,21 +2722,21 @@ namespace MS.Internal.Xml.XPath
 		protected int position; // 0x14
 	
 		// Properties
-		public override XPathNavigator Current { get => default; } // 0x10468100-0x10468150 
-		public override int CurrentPosition { get => default; } // 0x10181220-0x10181230 
+		public override XPathNavigator Current { get => default; } // 0x10469350-0x104693A0 
+		public override int CurrentPosition { get => default; } // 0x10181250-0x10181260 
 	
 		// Constructors
 		public XPathMultyIterator() {} // Dummy constructor
-		public XPathMultyIterator(ArrayList inputArray) {} // 0x10467F20-0x10468100
-		public XPathMultyIterator(XPathMultyIterator it) {} // 0x10467E70-0x10467F20
+		public XPathMultyIterator(ArrayList inputArray) {} // 0x10469170-0x10469350
+		public XPathMultyIterator(XPathMultyIterator it) {} // 0x104690C0-0x10469170
 	
 		// Methods
-		private void Init() {} // 0x10467B00-0x10467B70
-		private bool Advance(int pos) => default; // 0x10467940-0x10467A30
-		private bool SiftItem(int item) => default; // 0x10467CB0-0x10467E70
-		public override void Reset() {} // 0x10467BD0-0x10467CB0
-		public override XPathNodeIterator Clone() => default; // 0x10467A30-0x10467B00
-		public override bool MoveNext() => default; // 0x10467B70-0x10467BD0
+		private void Init() {} // 0x10468D60-0x10468DC0
+		private bool Advance(int pos) => default; // 0x10468BA0-0x10468C90
+		private bool SiftItem(int item) => default; // 0x10468F00-0x104690C0
+		public override void Reset() {} // 0x10468E20-0x10468F00
+		public override XPathNodeIterator Clone() => default; // 0x10468C90-0x10468D60
+		public override bool MoveNext() => default; // 0x10468DC0-0x10468E20
 	}
 
 	internal class XPathParser // TypeDefIndex: 2955
@@ -2767,58 +2767,58 @@ namespace MS.Internal.Xml.XPath
 			private XPathResultType[] argTypes; // 0x14
 	
 			// Properties
-			public Function.FunctionType FType { get => default; } // 0x1015D620-0x10160940 
-			public int Minargs { get => default; } // 0x10160960-0x10160970 
-			public int Maxargs { get => default; } // 0x1019CE70-0x1019CE80 
-			public XPathResultType[] ArgTypes { get => default; } // 0x10181220-0x10181230 
+			public Function.FunctionType FType { get => default; } // 0x1015D620-0x10160990 
+			public int Minargs { get => default; } // 0x101609B0-0x101609C0 
+			public int Maxargs { get => default; } // 0x1019CB30-0x1019CB40 
+			public XPathResultType[] ArgTypes { get => default; } // 0x10181250-0x10181260 
 	
 			// Constructors
 			public ParamInfo() {} // Dummy constructor
-			internal ParamInfo(Function.FunctionType ftype, int minargs, int maxargs, XPathResultType[] argTypes) {} // 0x1024B860-0x1024B890
+			internal ParamInfo(Function.FunctionType ftype, int minargs, int maxargs, XPathResultType[] argTypes) {} // 0x1024C140-0x1024C170
 		}
 	
 		// Constructors
 		public XPathParser() {} // Dummy constructor
-		private XPathParser(XPathScanner scanner) {} // 0x101B7440-0x101B7460
-		static XPathParser() {} // 0x1046B730-0x1046B990
+		private XPathParser(XPathScanner scanner) {} // 0x101B79C0-0x101B79E0
+		static XPathParser() {} // 0x1046C920-0x1046CB80
 	
 		// Methods
-		public static AstNode ParseXPathExpresion(string xpathExpresion) => default; // 0x1046B4F0-0x1046B590
-		public static AstNode ParseXPathPattern(string xpathPattern) => default; // 0x1046B590-0x1046B6C0
-		private AstNode ParseExpresion(AstNode qyInput) => default; // 0x104692C0-0x10469400
-		private AstNode ParseOrExpr(AstNode qyInput) => default; // 0x1046A580-0x1046A660
-		private AstNode ParseAndExpr(AstNode qyInput) => default; // 0x10469120-0x10469200
-		private AstNode ParseEqualityExpr(AstNode qyInput) => default; // 0x10469200-0x104692C0
-		private AstNode ParseRelationalExpr(AstNode qyInput) => default; // 0x1046ABB0-0x1046AC90
-		private AstNode ParseAdditiveExpr(AstNode qyInput) => default; // 0x10469060-0x10469120
-		private AstNode ParseMultiplicativeExpr(AstNode qyInput) => default; // 0x1046A1D0-0x1046A320
-		private AstNode ParseUnaryExpr(AstNode qyInput) => default; // 0x1046B2A0-0x1046B380
-		private AstNode ParseUnionExpr(AstNode qyInput) => default; // 0x1046B380-0x1046B4F0
-		private static bool IsNodeType(XPathScanner scaner) => default; // 0x10468EC0-0x10468F70
-		private AstNode ParsePathExpr(AstNode qyInput) => default; // 0x1046A660-0x1046A8C0
-		private AstNode ParseFilterExpr(AstNode qyInput) => default; // 0x10469400-0x104695C0
-		private AstNode ParsePredicate(AstNode qyInput) => default; // 0x1046A960-0x1046A9E0
-		private AstNode ParseLocationPath(AstNode qyInput) => default; // 0x10469AE0-0x10469C00
-		private AstNode ParseRelativeLocationPath(AstNode qyInput) => default; // 0x1046AC90-0x1046AD40
-		private static bool IsStep(XPathScanner.LexKind lexKind) => default; // 0x10469000-0x10469030
-		private AstNode ParseStep(AstNode qyInput) => default; // 0x1046B030-0x1046B2A0
-		private AstNode ParseNodeTest(AstNode qyInput, Axis.AxisType axisType, XPathNodeType nodeType) => default; // 0x1046A320-0x1046A580
-		private static bool IsPrimaryExpr(XPathScanner scanner) => default; // 0x10468F70-0x10469000
-		private AstNode ParsePrimaryExpr(AstNode qyInput) => default; // 0x1046A9E0-0x1046ABB0
-		private AstNode ParseMethod(AstNode qyInput) => default; // 0x10469C00-0x1046A1D0
-		private AstNode ParsePattern(AstNode qyInput) => default; // 0x1046A8C0-0x1046A960
-		private AstNode ParseLocationPathPattern(AstNode qyInput) => default; // 0x10469980-0x10469AE0
-		private AstNode ParseIdKeyPattern(AstNode qyInput) => default; // 0x104695C0-0x10469980
-		private AstNode ParseRelativePathPattern(AstNode qyInput) => default; // 0x1046AD40-0x1046ADE0
-		private AstNode ParseStepPattern(AstNode qyInput) => default; // 0x1046ADE0-0x1046B030
-		private void CheckToken(XPathScanner.LexKind t) {} // 0x104681C0-0x10468230
-		private void PassToken(XPathScanner.LexKind t) {} // 0x1046B6C0-0x1046B6F0
-		private void NextLex() {} // 0x10469030-0x10469060
-		private bool TestOp(string op) => default; // 0x1046B6F0-0x1046B730
-		private void CheckNodeSet(XPathResultType t) {} // 0x10468150-0x104681C0
-		private static Hashtable CreateFunctionTable() => default; // 0x104684F0-0x10468DF0
-		private static Hashtable CreateAxesTable() => default; // 0x10468230-0x104684F0
-		private Axis.AxisType GetAxis(XPathScanner scaner) => default; // 0x10468DF0-0x10468EC0
+		public static AstNode ParseXPathExpresion(string xpathExpresion) => default; // 0x1046C6E0-0x1046C780
+		public static AstNode ParseXPathPattern(string xpathPattern) => default; // 0x1046C780-0x1046C8B0
+		private AstNode ParseExpresion(AstNode qyInput) => default; // 0x1046A510-0x1046A650
+		private AstNode ParseOrExpr(AstNode qyInput) => default; // 0x1046B780-0x1046B860
+		private AstNode ParseAndExpr(AstNode qyInput) => default; // 0x1046A370-0x1046A450
+		private AstNode ParseEqualityExpr(AstNode qyInput) => default; // 0x1046A450-0x1046A510
+		private AstNode ParseRelationalExpr(AstNode qyInput) => default; // 0x1046BDB0-0x1046BE90
+		private AstNode ParseAdditiveExpr(AstNode qyInput) => default; // 0x1046A2B0-0x1046A370
+		private AstNode ParseMultiplicativeExpr(AstNode qyInput) => default; // 0x1046B3D0-0x1046B520
+		private AstNode ParseUnaryExpr(AstNode qyInput) => default; // 0x1046C490-0x1046C570
+		private AstNode ParseUnionExpr(AstNode qyInput) => default; // 0x1046C570-0x1046C6E0
+		private static bool IsNodeType(XPathScanner scaner) => default; // 0x1046A110-0x1046A1C0
+		private AstNode ParsePathExpr(AstNode qyInput) => default; // 0x1046B860-0x1046BAC0
+		private AstNode ParseFilterExpr(AstNode qyInput) => default; // 0x1046A650-0x1046A810
+		private AstNode ParsePredicate(AstNode qyInput) => default; // 0x1046BB60-0x1046BBE0
+		private AstNode ParseLocationPath(AstNode qyInput) => default; // 0x1046ACF0-0x1046AE10
+		private AstNode ParseRelativeLocationPath(AstNode qyInput) => default; // 0x1046BE90-0x1046BF40
+		private static bool IsStep(XPathScanner.LexKind lexKind) => default; // 0x1046A250-0x1046A280
+		private AstNode ParseStep(AstNode qyInput) => default; // 0x1046C230-0x1046C490
+		private AstNode ParseNodeTest(AstNode qyInput, Axis.AxisType axisType, XPathNodeType nodeType) => default; // 0x1046B520-0x1046B780
+		private static bool IsPrimaryExpr(XPathScanner scanner) => default; // 0x1046A1C0-0x1046A250
+		private AstNode ParsePrimaryExpr(AstNode qyInput) => default; // 0x1046BBE0-0x1046BDB0
+		private AstNode ParseMethod(AstNode qyInput) => default; // 0x1046AE10-0x1046B3D0
+		private AstNode ParsePattern(AstNode qyInput) => default; // 0x1046BAC0-0x1046BB60
+		private AstNode ParseLocationPathPattern(AstNode qyInput) => default; // 0x1046AB90-0x1046ACF0
+		private AstNode ParseIdKeyPattern(AstNode qyInput) => default; // 0x1046A810-0x1046AB90
+		private AstNode ParseRelativePathPattern(AstNode qyInput) => default; // 0x1046BF40-0x1046BFE0
+		private AstNode ParseStepPattern(AstNode qyInput) => default; // 0x1046BFE0-0x1046C230
+		private void CheckToken(XPathScanner.LexKind t) {} // 0x10469410-0x10469480
+		private void PassToken(XPathScanner.LexKind t) {} // 0x1046C8B0-0x1046C8E0
+		private void NextLex() {} // 0x1046A280-0x1046A2B0
+		private bool TestOp(string op) => default; // 0x1046C8E0-0x1046C920
+		private void CheckNodeSet(XPathResultType t) {} // 0x104693A0-0x10469410
+		private static Hashtable CreateFunctionTable() => default; // 0x10469740-0x1046A040
+		private static Hashtable CreateAxesTable() => default; // 0x10469480-0x10469740
+		private Axis.AxisType GetAxis(XPathScanner scaner) => default; // 0x1046A040-0x1046A110
 	}
 
 	internal sealed class XPathScanner // TypeDefIndex: 2957
@@ -2836,14 +2836,14 @@ namespace MS.Internal.Xml.XPath
 		private XmlCharType xmlCharType; // 0x34
 	
 		// Properties
-		public string SourceText { get => default; } // 0x1015D620-0x10160940 
-		private char CurerntChar { get => default; } // 0x1046C3E0-0x1046C3F0 
-		public LexKind Kind { get => default; } // 0x1019CE70-0x1019CE80 
-		public string Name { get => default; } // 0x10181150-0x10181160 
-		public string Prefix { get => default; } // 0x10181210-0x10181220 
-		public string StringValue { get => default; } // 0x1019EF30-0x1019EF40 
-		public double NumberValue { get => default; } // 0x1046C3F0-0x1046C400 
-		public bool CanBeFunction { get => default; } // 0x10214880-0x10214890 
+		public string SourceText { get => default; } // 0x1015D620-0x10160990 
+		private char CurerntChar { get => default; } // 0x1046D5E0-0x1046D5F0 
+		public LexKind Kind { get => default; } // 0x1019CB30-0x1019CB40 
+		public string Name { get => default; } // 0x10181180-0x10181190 
+		public string Prefix { get => default; } // 0x10181240-0x10181250 
+		public string StringValue { get => default; } // 0x1019EBC0-0x1019EBD0 
+		public double NumberValue { get => default; } // 0x1046D5F0-0x1046D600 
+		public bool CanBeFunction { get => default; } // 0x10215B90-0x10215BA0 
 	
 		// Nested types
 		public enum LexKind // TypeDefIndex: 2958
@@ -2883,16 +2883,16 @@ namespace MS.Internal.Xml.XPath
 	
 		// Constructors
 		public XPathScanner() {} // Dummy constructor
-		public XPathScanner(string xpathExpr) {} // 0x1046C310-0x1046C3E0
+		public XPathScanner(string xpathExpr) {} // 0x1046D510-0x1046D5E0
 	
 		// Methods
-		private bool NextChar() => default; // 0x1046B990-0x1046B9E0
-		private void SkipSpace() {} // 0x1046C2A0-0x1046C310
-		public bool NextLex() => default; // 0x1046B9E0-0x1046BED0
-		private double ScanNumber() => default; // 0x1046C030-0x1046C180
-		private double ScanFraction() => default; // 0x1046BED0-0x1046BFA0
-		private string ScanString() => default; // 0x1046C180-0x1046C2A0
-		private string ScanName() => default; // 0x1046BFA0-0x1046C030
+		private bool NextChar() => default; // 0x1046CB80-0x1046CBD0
+		private void SkipSpace() {} // 0x1046D4A0-0x1046D510
+		public bool NextLex() => default; // 0x1046CBD0-0x1046D0C0
+		private double ScanNumber() => default; // 0x1046D220-0x1046D370
+		private double ScanFraction() => default; // 0x1046D0C0-0x1046D190
+		private string ScanString() => default; // 0x1046D370-0x1046D4A0
+		private string ScanName() => default; // 0x1046D190-0x1046D220
 	}
 
 	internal class XPathSelectionIterator : ResetableIterator // TypeDefIndex: 2959
@@ -2903,31 +2903,31 @@ namespace MS.Internal.Xml.XPath
 		private int position; // 0x14
 	
 		// Properties
-		public override int Count { get => default; } // 0x1046C710-0x1046C740 
-		public override XPathNavigator Current { get => default; } // 0x10160960-0x10160970 
-		public override int CurrentPosition { get => default; } // 0x10181220-0x10181230 
+		public override int Count { get => default; } // 0x1046D8F0-0x1046D920 
+		public override XPathNavigator Current { get => default; } // 0x101609B0-0x101609C0 
+		public override int CurrentPosition { get => default; } // 0x10181250-0x10181260 
 	
 		// Constructors
 		public XPathSelectionIterator() {} // Dummy constructor
-		internal XPathSelectionIterator(XPathNavigator nav, Query query) {} // 0x1046C6C0-0x1046C710
-		protected XPathSelectionIterator(XPathSelectionIterator it) {} // 0x1046C5D0-0x1046C6C0
+		internal XPathSelectionIterator(XPathNavigator nav, Query query) {} // 0x1046D8A0-0x1046D8F0
+		protected XPathSelectionIterator(XPathSelectionIterator it) {} // 0x1046D7C0-0x1046D8A0
 	
 		// Methods
-		public override void Reset() {} // 0x1046C5A0-0x1046C5D0
-		public override bool MoveNext() => default; // 0x1046C520-0x1046C5A0
-		public override XPathNodeIterator Clone() => default; // 0x1046C400-0x1046C520
+		public override void Reset() {} // 0x1046D790-0x1046D7C0
+		public override bool MoveNext() => default; // 0x1046D710-0x1046D790
+		public override XPathNodeIterator Clone() => default; // 0x1046D600-0x1046D710
 	}
 
 	internal sealed class XPathSelfQuery : BaseAxisQuery // TypeDefIndex: 2960
 	{
 		// Constructors
 		public XPathSelfQuery() {} // Dummy constructor
-		public XPathSelfQuery(Query qyInput, string Name, string Prefix, XPathNodeType Type) {} // 0x1046C800-0x1046C810
-		private XPathSelfQuery(XPathSelfQuery other) {} // 0x1046C7F0-0x1046C800
+		public XPathSelfQuery(Query qyInput, string Name, string Prefix, XPathNodeType Type) {} // 0x1046D9E0-0x1046D9F0
+		private XPathSelfQuery(XPathSelfQuery other) {} // 0x1046D9D0-0x1046D9E0
 	
 		// Methods
-		public override XPathNavigator Advance() => default; // 0x1046C740-0x1046C7A0
-		public override XPathNodeIterator Clone() => default; // 0x1046C7A0-0x1046C7F0
+		public override XPathNavigator Advance() => default; // 0x1046D920-0x1046D980
+		public override XPathNodeIterator Clone() => default; // 0x1046D980-0x1046D9D0
 	}
 
 	internal class XPathSingletonIterator : ResetableIterator // TypeDefIndex: 2961
@@ -2937,20 +2937,20 @@ namespace MS.Internal.Xml.XPath
 		private int position; // 0x10
 	
 		// Properties
-		public override XPathNavigator Current { get => default; } // 0x10160960-0x10160970 
-		public override int CurrentPosition { get => default; } // 0x1019CE70-0x1019CE80 
-		public override int Count { get => default; } // 0x101E86B0-0x101E86C0 
+		public override XPathNavigator Current { get => default; } // 0x101609B0-0x101609C0 
+		public override int CurrentPosition { get => default; } // 0x1019CB30-0x1019CB40 
+		public override int Count { get => default; } // 0x101E9B20-0x101E9B30 
 	
 		// Constructors
 		public XPathSingletonIterator() {} // Dummy constructor
-		public XPathSingletonIterator(XPathNavigator nav) {} // 0x10466F20-0x10466F50
-		public XPathSingletonIterator(XPathNavigator nav, bool moved) {} // 0x1046C8B0-0x1046C8E0
-		public XPathSingletonIterator(XPathSingletonIterator it) {} // 0x1046C8E0-0x1046C930
+		public XPathSingletonIterator(XPathNavigator nav) {} // 0x10468190-0x104681C0
+		public XPathSingletonIterator(XPathNavigator nav, bool moved) {} // 0x1046DA90-0x1046DAC0
+		public XPathSingletonIterator(XPathSingletonIterator it) {} // 0x1046DAC0-0x1046DB10
 	
 		// Methods
-		public override XPathNodeIterator Clone() => default; // 0x1046C810-0x1046C890
-		public override bool MoveNext() => default; // 0x1046C890-0x1046C8B0
-		public override void Reset() {} // 0x10466DA0-0x10466DB0
+		public override XPathNodeIterator Clone() => default; // 0x1046D9F0-0x1046DA70
+		public override bool MoveNext() => default; // 0x1046DA70-0x1046DA90
+		public override void Reset() {} // 0x10468010-0x10468020
 	}
 }
 
@@ -2998,15 +2998,15 @@ namespace MS.Internal.Xml.Cache
 			private int pageSize; // 0x08
 	
 			// Properties
-			public XPathNode[] NextNodePage { get => default; } // 0x1004DAC0-0x1004DAD0 
-			public int NextNodeIndex { get => default; } // 0x100A8EC0-0x100A8F00 
+			public XPathNode[] NextNodePage { get => default; } // 0x1004DAE0-0x1004DAF0 
+			public int NextNodeIndex { get => default; } // 0x100A8EF0-0x100A8F30 
 	
 			// Methods
-			public void Init(int initialPageSize) {} // 0x100A8EB0-0x100A8EC0
+			public void Init(int initialPageSize) {} // 0x100A8EE0-0x100A8EF0
 			public void AllocateSlot(out XPathNode[] page, out int idx) {
 				page = default;
 				idx = default;
-			} // 0x100A8EA0-0x100A8EB0
+			} // 0x100A8ED0-0x100A8EE0
 		}
 	
 		private struct TextBlockBuilder // TypeDefIndex: 2965
@@ -3019,68 +3019,68 @@ namespace MS.Internal.Xml.Cache
 			private int linePos; // 0x10
 	
 			// Properties
-			public TextBlockType TextType { get => default; } // 0x1004DDC0-0x1004DDD0 
-			public bool HasText { get => default; } // 0x100A90D0-0x100A9100 
-			public int LineNumber { get => default; } // 0x1004EA80-0x1004EA90 
-			public int LinePosition { get => default; } // 0x1004EDC0-0x1004EDD0 
+			public TextBlockType TextType { get => default; } // 0x1004DDE0-0x1004DDF0 
+			public bool HasText { get => default; } // 0x100A90E0-0x100A9110 
+			public int LineNumber { get => default; } // 0x1004EAA0-0x1004EAB0 
+			public int LinePosition { get => default; } // 0x1004EDE0-0x1004EDF0 
 	
 			// Methods
-			public void Initialize(IXmlLineInfo lineInfo) {} // 0x100A9050-0x100A9070
-			public void WriteTextBlock(string text, TextBlockType textType) {} // 0x100A90C0-0x100A90D0
-			public string ReadText() => default; // 0x100A9070-0x100A90C0
+			public void Initialize(IXmlLineInfo lineInfo) {} // 0x100A9060-0x100A9080
+			public void WriteTextBlock(string text, TextBlockType textType) {} // 0x100A90D0-0x100A90E0
+			public string ReadText() => default; // 0x100A9080-0x100A90D0
 		}
 	
 		// Constructors
 		public XPathDocumentBuilder() {} // Dummy constructor
-		public XPathDocumentBuilder(XPathDocument doc, IXmlLineInfo lineInfo, string baseUri, XPathDocument.LoadFlags flags) {} // 0x10BE7C20-0x10BE7CB0
+		public XPathDocumentBuilder(XPathDocument doc, IXmlLineInfo lineInfo, string baseUri, XPathDocument.LoadFlags flags) {} // 0x10BE6690-0x10BE6720
 	
 		// Methods
-		public void Initialize(XPathDocument doc, IXmlLineInfo lineInfo, string baseUri, XPathDocument.LoadFlags flags) {} // 0x10BE66A0-0x10BE68A0
-		public override void WriteDocType(string name, string pubid, string sysid, string subset) {} // 0x10164D40-0x10164D50
-		public override void WriteStartElement(string prefix, string localName, string ns) {} // 0x10BE7860-0x10BE78B0
-		public void WriteStartElement(string prefix, string localName, string ns, string baseUri) {} // 0x10BE78B0-0x10BE7B40
-		public override void WriteEndElement() {} // 0x10BE6E80-0x10BE6EA0
-		public override void WriteFullEndElement() {} // 0x10BE7150-0x10BE7170
-		internal override void WriteEndElement(string prefix, string localName, string namespaceName) {} // 0x10BE6E80-0x10BE6EA0
-		internal override void WriteFullEndElement(string prefix, string localName, string namespaceName) {} // 0x10BE7150-0x10BE7170
-		public void WriteEndElement(bool allowShortcutTag) {} // 0x10BE6EA0-0x10BE7100
-		public override void WriteStartAttribute(string prefix, string localName, string namespaceName) {} // 0x10BE7790-0x10BE7860
-		public override void WriteEndAttribute() {} // 0x10BE6CE0-0x10BE6E80
-		public override void WriteCData(string text) {} // 0x10BE6BA0-0x10BE6BC0
-		public override void WriteComment(string text) {} // 0x10BE6C70-0x10BE6CE0
-		public override void WriteProcessingInstruction(string name, string text) {} // 0x10BE7620-0x10BE76F0
-		public void WriteProcessingInstruction(string name, string text, string baseUri) {} // 0x10BE76F0-0x10BE7790
-		public override void WriteWhitespace(string ws) {} // 0x10BE7C00-0x10BE7C20
-		public override void WriteString(string text) {} // 0x10BE6BA0-0x10BE6BC0
-		public override void WriteChars(char[] buffer, int index, int count) {} // 0x10BE6C40-0x10BE6C70
-		public override void WriteRaw(string data) {} // 0x10BE6BA0-0x10BE6BC0
-		public override void WriteRaw(char[] buffer, int index, int count) {} // 0x10BE6C40-0x10BE6C70
-		public void WriteString(string text, TextBlockType textType) {} // 0x10BE7B40-0x10BE7B60
-		public override void WriteEntityRef(string name) {} // 0x10BE7100-0x10BE7150
-		public override void WriteCharEntity(char ch) {} // 0x10BE6BC0-0x10BE6C40
-		public override void WriteSurrogateCharEntity(char lowChar, char highChar) {} // 0x10BE7B60-0x10BE7C00
-		public override void Close() {} // 0x10BE6240-0x10BE6300
-		public override void Flush() {} // 0x10164D40-0x10164D50
-		internal override void WriteXmlDeclaration(XmlStandalone standalone) {} // 0x10164D40-0x10164D50
-		internal override void WriteXmlDeclaration(string xmldecl) {} // 0x10164D40-0x10164D50
-		internal override void StartElementContent() {} // 0x10164D40-0x10164D50
-		internal override void WriteNamespaceDeclaration(string prefix, string namespaceName) {} // 0x10BE7170-0x10BE7620
-		public void CreateIdTables(IDtdInfo dtdInfo) {} // 0x10BE63C0-0x10BE66A0
-		private XPathNodeRef LinkSimilarElements(XPathNode[] pagePrev, int idxPrev, XPathNode[] pageNext, int idxNext) => default; // 0x10BE68A0-0x10BE6930
+		public void Initialize(XPathDocument doc, IXmlLineInfo lineInfo, string baseUri, XPathDocument.LoadFlags flags) {} // 0x10BE5120-0x10BE5320
+		public override void WriteDocType(string name, string pubid, string sysid, string subset) {} // 0x10164DE0-0x10164DF0
+		public override void WriteStartElement(string prefix, string localName, string ns) {} // 0x10BE62E0-0x10BE6330
+		public void WriteStartElement(string prefix, string localName, string ns, string baseUri) {} // 0x10BE6330-0x10BE65B0
+		public override void WriteEndElement() {} // 0x10BE5900-0x10BE5920
+		public override void WriteFullEndElement() {} // 0x10BE5BD0-0x10BE5BF0
+		internal override void WriteEndElement(string prefix, string localName, string namespaceName) {} // 0x10BE5900-0x10BE5920
+		internal override void WriteFullEndElement(string prefix, string localName, string namespaceName) {} // 0x10BE5BD0-0x10BE5BF0
+		public void WriteEndElement(bool allowShortcutTag) {} // 0x10BE5920-0x10BE5B80
+		public override void WriteStartAttribute(string prefix, string localName, string namespaceName) {} // 0x10BE6210-0x10BE62E0
+		public override void WriteEndAttribute() {} // 0x10BE5760-0x10BE5900
+		public override void WriteCData(string text) {} // 0x10BE5620-0x10BE5640
+		public override void WriteComment(string text) {} // 0x10BE56F0-0x10BE5760
+		public override void WriteProcessingInstruction(string name, string text) {} // 0x10BE60A0-0x10BE6170
+		public void WriteProcessingInstruction(string name, string text, string baseUri) {} // 0x10BE6170-0x10BE6210
+		public override void WriteWhitespace(string ws) {} // 0x10BE6670-0x10BE6690
+		public override void WriteString(string text) {} // 0x10BE5620-0x10BE5640
+		public override void WriteChars(char[] buffer, int index, int count) {} // 0x10BE56C0-0x10BE56F0
+		public override void WriteRaw(string data) {} // 0x10BE5620-0x10BE5640
+		public override void WriteRaw(char[] buffer, int index, int count) {} // 0x10BE56C0-0x10BE56F0
+		public void WriteString(string text, TextBlockType textType) {} // 0x10BE65B0-0x10BE65D0
+		public override void WriteEntityRef(string name) {} // 0x10BE5B80-0x10BE5BD0
+		public override void WriteCharEntity(char ch) {} // 0x10BE5640-0x10BE56C0
+		public override void WriteSurrogateCharEntity(char lowChar, char highChar) {} // 0x10BE65D0-0x10BE6670
+		public override void Close() {} // 0x10BE4CB0-0x10BE4D70
+		public override void Flush() {} // 0x10164DE0-0x10164DF0
+		internal override void WriteXmlDeclaration(XmlStandalone standalone) {} // 0x10164DE0-0x10164DF0
+		internal override void WriteXmlDeclaration(string xmldecl) {} // 0x10164DE0-0x10164DF0
+		internal override void StartElementContent() {} // 0x10164DE0-0x10164DF0
+		internal override void WriteNamespaceDeclaration(string prefix, string namespaceName) {} // 0x10BE5BF0-0x10BE60A0
+		public void CreateIdTables(IDtdInfo dtdInfo) {} // 0x10BE4E40-0x10BE5120
+		private XPathNodeRef LinkSimilarElements(XPathNode[] pagePrev, int idxPrev, XPathNode[] pageNext, int idxNext) => default; // 0x10BE5320-0x10BE53B0
 		private int NewNamespaceNode(out XPathNode[] page, string prefix, string namespaceUri, XPathNode[] pageElem, int idxElem) {
 			page = default;
 			return default;
-		} // 0x10BE6930-0x10BE6A60
+		} // 0x10BE53B0-0x10BE54E0
 		private int NewNode(out XPathNode[] page, XPathNodeType xptyp, string localName, string namespaceUri, string prefix, string baseUri) {
 			page = default;
 			return default;
-		} // 0x10BE6A60-0x10BE6BA0
+		} // 0x10BE54E0-0x10BE5620
 		private void ComputeLineInfo(bool isTextNode, out int lineNumOffset, out int linePosOffset) {
 			lineNumOffset = default;
 			linePosOffset = default;
-		} // 0x10BE6300-0x10BE63C0
-		private void AddSibling(XPathNodeType xptyp, string localName, string namespaceUri, string prefix, string baseUri) {} // 0x10BE6070-0x10BE6190
-		private void CachedTextNode() {} // 0x10BE6190-0x10BE6240
+		} // 0x10BE4D70-0x10BE4E40
+		private void AddSibling(XPathNodeType xptyp, string localName, string namespaceUri, string prefix, string baseUri) {} // 0x10BE4AE0-0x10BE4C00
+		private void CachedTextNode() {} // 0x10BE4C00-0x10BE4CB0
 	}
 
 	internal abstract class XPathDocumentBaseIterator : XPathNodeIterator // TypeDefIndex: 2966
@@ -3090,13 +3090,13 @@ namespace MS.Internal.Xml.Cache
 		protected int pos; // 0x10
 	
 		// Properties
-		public override XPathNavigator Current { get; } // 0x10160960-0x10160970 
-		public override int CurrentPosition { get; } // 0x1019CE70-0x1019CE80 
+		public override XPathNavigator Current { get; } // 0x101609B0-0x101609C0 
+		public override int CurrentPosition { get; } // 0x1019CB30-0x1019CB40 
 	
 		// Constructors
 		protected XPathDocumentBaseIterator() {} // Dummy constructor
-		protected XPathDocumentBaseIterator(XPathDocumentNavigator ctxt) {} // 0x10BE5F60-0x10BE5FE0
-		protected XPathDocumentBaseIterator(XPathDocumentBaseIterator iter) {} // 0x10BE5FE0-0x10BE6070
+		protected XPathDocumentBaseIterator(XPathDocumentNavigator ctxt) {} // 0x10BE49D0-0x10BE4A50
+		protected XPathDocumentBaseIterator(XPathDocumentBaseIterator iter) {} // 0x10BE4A50-0x10BE4AE0
 	}
 
 	internal class XPathDocumentElementChildIterator : XPathDocumentBaseIterator // TypeDefIndex: 2967
@@ -3107,12 +3107,12 @@ namespace MS.Internal.Xml.Cache
 	
 		// Constructors
 		public XPathDocumentElementChildIterator() {} // Dummy constructor
-		public XPathDocumentElementChildIterator(XPathDocumentNavigator parent, string name, string namespaceURI) {} // 0x10BE7D80-0x10BE7E80
-		public XPathDocumentElementChildIterator(XPathDocumentElementChildIterator iter) {} // 0x10BE7E80-0x10BE7EC0
+		public XPathDocumentElementChildIterator(XPathDocumentNavigator parent, string name, string namespaceURI) {} // 0x10BE67F0-0x10BE68F0
+		public XPathDocumentElementChildIterator(XPathDocumentElementChildIterator iter) {} // 0x10BE68F0-0x10BE6930
 	
 		// Methods
-		public override XPathNodeIterator Clone() => default; // 0x10BE7CB0-0x10BE7D10
-		public override bool MoveNext() => default; // 0x10BE7D10-0x10BE7D80
+		public override XPathNodeIterator Clone() => default; // 0x10BE6720-0x10BE6780
+		public override bool MoveNext() => default; // 0x10BE6780-0x10BE67F0
 	}
 
 	internal class XPathDocumentKindChildIterator : XPathDocumentBaseIterator // TypeDefIndex: 2968
@@ -3122,12 +3122,12 @@ namespace MS.Internal.Xml.Cache
 	
 		// Constructors
 		public XPathDocumentKindChildIterator() {} // Dummy constructor
-		public XPathDocumentKindChildIterator(XPathDocumentNavigator parent, XPathNodeType typ) {} // 0x10BE8280-0x10BE8300
-		public XPathDocumentKindChildIterator(XPathDocumentKindChildIterator iter) {} // 0x10BE8300-0x10BE8330
+		public XPathDocumentKindChildIterator(XPathDocumentNavigator parent, XPathNodeType typ) {} // 0x10BE6CF0-0x10BE6D70
+		public XPathDocumentKindChildIterator(XPathDocumentKindChildIterator iter) {} // 0x10BE6D70-0x10BE6DA0
 	
 		// Methods
-		public override XPathNodeIterator Clone() => default; // 0x10BE81C0-0x10BE8220
-		public override bool MoveNext() => default; // 0x10BE8220-0x10BE8280
+		public override XPathNodeIterator Clone() => default; // 0x10BE6C30-0x10BE6C90
+		public override bool MoveNext() => default; // 0x10BE6C90-0x10BE6CF0
 	}
 
 	internal class XPathDocumentElementDescendantIterator : XPathDocumentBaseIterator // TypeDefIndex: 2969
@@ -3140,12 +3140,12 @@ namespace MS.Internal.Xml.Cache
 	
 		// Constructors
 		public XPathDocumentElementDescendantIterator() {} // Dummy constructor
-		public XPathDocumentElementDescendantIterator(XPathDocumentNavigator root, string name, string namespaceURI, bool matchSelf) {} // 0x10BE8030-0x10BE8180
-		public XPathDocumentElementDescendantIterator(XPathDocumentElementDescendantIterator iter) {} // 0x10BE8180-0x10BE81C0
+		public XPathDocumentElementDescendantIterator(XPathDocumentNavigator root, string name, string namespaceURI, bool matchSelf) {} // 0x10BE6AA0-0x10BE6BF0
+		public XPathDocumentElementDescendantIterator(XPathDocumentElementDescendantIterator iter) {} // 0x10BE6BF0-0x10BE6C30
 	
 		// Methods
-		public override XPathNodeIterator Clone() => default; // 0x10BE7EC0-0x10BE7F30
-		public override bool MoveNext() => default; // 0x10BE7F30-0x10BE8030
+		public override XPathNodeIterator Clone() => default; // 0x10BE6930-0x10BE69A0
+		public override bool MoveNext() => default; // 0x10BE69A0-0x10BE6AA0
 	}
 
 	internal class XPathDocumentKindDescendantIterator : XPathDocumentBaseIterator // TypeDefIndex: 2970
@@ -3157,12 +3157,12 @@ namespace MS.Internal.Xml.Cache
 	
 		// Constructors
 		public XPathDocumentKindDescendantIterator() {} // Dummy constructor
-		public XPathDocumentKindDescendantIterator(XPathDocumentNavigator root, XPathNodeType typ, bool matchSelf) {} // 0x10BE8480-0x10BE8570
-		public XPathDocumentKindDescendantIterator(XPathDocumentKindDescendantIterator iter) {} // 0x10BE8570-0x10BE85B0
+		public XPathDocumentKindDescendantIterator(XPathDocumentNavigator root, XPathNodeType typ, bool matchSelf) {} // 0x10BE6EF0-0x10BE6FE0
+		public XPathDocumentKindDescendantIterator(XPathDocumentKindDescendantIterator iter) {} // 0x10BE6FE0-0x10BE7020
 	
 		// Methods
-		public override XPathNodeIterator Clone() => default; // 0x10BE8330-0x10BE83A0
-		public override bool MoveNext() => default; // 0x10BE83A0-0x10BE8480
+		public override XPathNodeIterator Clone() => default; // 0x10BE6DA0-0x10BE6E10
+		public override bool MoveNext() => default; // 0x10BE6E10-0x10BE6EF0
 	}
 
 	internal sealed class XPathDocumentNavigator : XPathNavigator, IXmlLineInfo // TypeDefIndex: 2971
@@ -3175,65 +3175,65 @@ namespace MS.Internal.Xml.Cache
 		private string atomizedLocalName; // 0x18
 	
 		// Properties
-		public override string Value { get => default; } // 0x10BEA870-0x10BEAA50 
-		public override XPathNodeType NodeType { get => default; } // 0x10BEA570-0x10BEA5B0 
-		public override string LocalName { get => default; } // 0x10BEA430-0x10BEA470 
-		public override string NamespaceURI { get => default; } // 0x10BEA530-0x10BEA570 
-		public override string Name { get => default; } // 0x10BEA4B0-0x10BEA530 
-		public override string Prefix { get => default; } // 0x10BEA5B0-0x10BEA5F0 
-		public override string BaseURI { get => default; } // 0x10BEA1A0-0x10BEA250 
-		public override bool IsEmptyElement { get => default; } // 0x10BEA2D0-0x10BEA310 
-		public override XmlNameTable NameTable { get => default; } // 0x10BEA470-0x10BEA4B0 
-		public override bool HasAttributes { get => default; } // 0x10BEA250-0x10BEA290 
-		public override bool HasChildren { get => default; } // 0x10BEA290-0x10BEA2D0 
-		internal override string UniqueId { get => default; } // 0x10BEA5F0-0x10BEA870 
-		public override object UnderlyingObject { get => default; } // 0x106A7460-0x106A7480 
-		public int LineNumber { get => default; } // 0x10BEA310-0x10BEA390 
-		public int LinePosition { get => default; } // 0x10BEA390-0x10BEA430 
+		public override string Value { get => default; } // 0x10BE92F0-0x10BE94D0 
+		public override XPathNodeType NodeType { get => default; } // 0x10BE8FF0-0x10BE9030 
+		public override string LocalName { get => default; } // 0x10BE8EB0-0x10BE8EF0 
+		public override string NamespaceURI { get => default; } // 0x10BE8FB0-0x10BE8FF0 
+		public override string Name { get => default; } // 0x10BE8F30-0x10BE8FB0 
+		public override string Prefix { get => default; } // 0x10BE9030-0x10BE9070 
+		public override string BaseURI { get => default; } // 0x10BE8C20-0x10BE8CD0 
+		public override bool IsEmptyElement { get => default; } // 0x10BE8D50-0x10BE8D90 
+		public override XmlNameTable NameTable { get => default; } // 0x10BE8EF0-0x10BE8F30 
+		public override bool HasAttributes { get => default; } // 0x10BE8CD0-0x10BE8D10 
+		public override bool HasChildren { get => default; } // 0x10BE8D10-0x10BE8D50 
+		internal override string UniqueId { get => default; } // 0x10BE9070-0x10BE92F0 
+		public override object UnderlyingObject { get => default; } // 0x106A6540-0x106A6560 
+		public int LineNumber { get => default; } // 0x10BE8D90-0x10BE8E10 
+		public int LinePosition { get => default; } // 0x10BE8E10-0x10BE8EB0 
 	
 		// Constructors
 		public XPathDocumentNavigator() {} // Dummy constructor
-		public XPathDocumentNavigator(XPathNode[] pageCurrent, int idxCurrent, XPathNode[] pageParent, int idxParent) {} // 0x10BEA130-0x10BEA1A0
-		public XPathDocumentNavigator(XPathDocumentNavigator nav) {} // 0x10BEA0F0-0x10BEA130
+		public XPathDocumentNavigator(XPathNode[] pageCurrent, int idxCurrent, XPathNode[] pageParent, int idxParent) {} // 0x10BE8BB0-0x10BE8C20
+		public XPathDocumentNavigator(XPathDocumentNavigator nav) {} // 0x10BE8B70-0x10BE8BB0
 	
 		// Methods
-		public override XPathNavigator Clone() => default; // 0x10BE85B0-0x10BE8620
-		public override bool MoveToFirstAttribute() => default; // 0x10BE8E10-0x10BE8E90
-		public override bool MoveToNextAttribute() => default; // 0x10BE9670-0x10BE96F0
-		public override bool MoveToAttribute(string localName, string namespaceURI) => default; // 0x10BE8C50-0x10BE8CF0
-		public override bool MoveToFirstNamespace(XPathNamespaceScope namespaceScope) => default; // 0x10BE8FD0-0x10BE9190
-		public override bool MoveToNextNamespace(XPathNamespaceScope scope) => default; // 0x10BE96F0-0x10BE9830
-		public override bool MoveToNext() => default; // 0x10BE9910-0x10BE9980
-		public override bool MoveToPrevious() => default; // 0x10BE9B10-0x10BE9B40
-		public override bool MoveToFirstChild() => default; // 0x10BE8E90-0x10BE8FD0
-		public override bool MoveToParent() => default; // 0x10BE9A90-0x10BE9B10
-		public override bool MoveTo(XPathNavigator other) => default; // 0x10BE9BB0-0x10BE9C10
-		public override bool MoveToId(string id) => default; // 0x10BE95F0-0x10BE9670
-		public override bool IsSamePosition(XPathNavigator other) => default; // 0x10BE8BE0-0x10BE8C50
-		public override void MoveToRoot() {} // 0x10BE9B40-0x10BE9BB0
-		public override bool MoveToChild(string localName, string namespaceURI) => default; // 0x10BE8DA0-0x10BE8E10
-		public override bool MoveToNext(string localName, string namespaceURI) => default; // 0x10BE9980-0x10BE9A90
-		public override bool MoveToChild(XPathNodeType type) => default; // 0x10BE8CF0-0x10BE8DA0
-		public override bool MoveToNext(XPathNodeType type) => default; // 0x10BE9830-0x10BE9910
-		public override bool MoveToFollowing(string localName, string namespaceURI, XPathNavigator end) => default; // 0x10BE9480-0x10BE95F0
-		public override bool MoveToFollowing(XPathNodeType type, XPathNavigator end) => default; // 0x10BE9190-0x10BE9480
-		public override XPathNodeIterator SelectChildren(XPathNodeType type) => default; // 0x10BE9C10-0x10BE9CC0
-		public override XPathNodeIterator SelectChildren(string name, string namespaceURI) => default; // 0x10BE9CC0-0x10BE9E20
-		public override XPathNodeIterator SelectDescendants(XPathNodeType type, bool matchSelf) => default; // 0x10BE9E20-0x10BE9F40
-		public override XPathNodeIterator SelectDescendants(string name, string namespaceURI, bool matchSelf) => default; // 0x10BE9F40-0x10BEA0F0
-		public override XmlNodeOrder ComparePosition(XPathNavigator other) => default; // 0x10BE8620-0x10BE8730
-		public override bool IsDescendant(XPathNavigator other) => default; // 0x10BE89E0-0x10BE8AA0
-		private int GetPrimaryLocation() => default; // 0x10BE87E0-0x10BE8850
-		private int GetSecondaryLocation() => default; // 0x10BE8850-0x10BE8910
-		public bool HasLineInfo() => default; // 0x10BE8910-0x10BE8950
-		public int GetPositionHashCode() => default; // 0x10BE87D0-0x10BE87E0
-		public bool IsElementMatch(string localName, string namespaceURI) => default; // 0x10BE8AA0-0x10BE8B50
-		public bool IsContentKindMatch(XPathNodeType typ) => default; // 0x10BE8950-0x10BE89E0
-		public bool IsKindMatch(XPathNodeType typ) => default; // 0x10BE8B50-0x10BE8BE0
+		public override XPathNavigator Clone() => default; // 0x10BE7020-0x10BE7090
+		public override bool MoveToFirstAttribute() => default; // 0x10BE7880-0x10BE7900
+		public override bool MoveToNextAttribute() => default; // 0x10BE80E0-0x10BE8160
+		public override bool MoveToAttribute(string localName, string namespaceURI) => default; // 0x10BE76C0-0x10BE7760
+		public override bool MoveToFirstNamespace(XPathNamespaceScope namespaceScope) => default; // 0x10BE7A40-0x10BE7C00
+		public override bool MoveToNextNamespace(XPathNamespaceScope scope) => default; // 0x10BE8160-0x10BE82B0
+		public override bool MoveToNext() => default; // 0x10BE8390-0x10BE8400
+		public override bool MoveToPrevious() => default; // 0x10BE8590-0x10BE85C0
+		public override bool MoveToFirstChild() => default; // 0x10BE7900-0x10BE7A40
+		public override bool MoveToParent() => default; // 0x10BE8510-0x10BE8590
+		public override bool MoveTo(XPathNavigator other) => default; // 0x10BE8630-0x10BE8690
+		public override bool MoveToId(string id) => default; // 0x10BE8060-0x10BE80E0
+		public override bool IsSamePosition(XPathNavigator other) => default; // 0x10BE7650-0x10BE76C0
+		public override void MoveToRoot() {} // 0x10BE85C0-0x10BE8630
+		public override bool MoveToChild(string localName, string namespaceURI) => default; // 0x10BE7810-0x10BE7880
+		public override bool MoveToNext(string localName, string namespaceURI) => default; // 0x10BE8400-0x10BE8510
+		public override bool MoveToChild(XPathNodeType type) => default; // 0x10BE7760-0x10BE7810
+		public override bool MoveToNext(XPathNodeType type) => default; // 0x10BE82B0-0x10BE8390
+		public override bool MoveToFollowing(string localName, string namespaceURI, XPathNavigator end) => default; // 0x10BE7EF0-0x10BE8060
+		public override bool MoveToFollowing(XPathNodeType type, XPathNavigator end) => default; // 0x10BE7C00-0x10BE7EF0
+		public override XPathNodeIterator SelectChildren(XPathNodeType type) => default; // 0x10BE8690-0x10BE8740
+		public override XPathNodeIterator SelectChildren(string name, string namespaceURI) => default; // 0x10BE8740-0x10BE88A0
+		public override XPathNodeIterator SelectDescendants(XPathNodeType type, bool matchSelf) => default; // 0x10BE88A0-0x10BE89C0
+		public override XPathNodeIterator SelectDescendants(string name, string namespaceURI, bool matchSelf) => default; // 0x10BE89C0-0x10BE8B70
+		public override XmlNodeOrder ComparePosition(XPathNavigator other) => default; // 0x10BE7090-0x10BE71A0
+		public override bool IsDescendant(XPathNavigator other) => default; // 0x10BE7450-0x10BE7510
+		private int GetPrimaryLocation() => default; // 0x10BE7250-0x10BE72C0
+		private int GetSecondaryLocation() => default; // 0x10BE72C0-0x10BE7380
+		public bool HasLineInfo() => default; // 0x10BE7380-0x10BE73C0
+		public int GetPositionHashCode() => default; // 0x10BE7240-0x10BE7250
+		public bool IsElementMatch(string localName, string namespaceURI) => default; // 0x10BE7510-0x10BE75C0
+		public bool IsContentKindMatch(XPathNodeType typ) => default; // 0x10BE73C0-0x10BE7450
+		public bool IsKindMatch(XPathNodeType typ) => default; // 0x10BE75C0-0x10BE7650
 		private int GetFollowingEnd(XPathDocumentNavigator end, bool useParentOfVirtual, out XPathNode[] pageEnd) {
 			pageEnd = default;
 			return default;
-		} // 0x10BE8730-0x10BE87D0
+		} // 0x10BE71A0-0x10BE7240
 	}
 
 	internal struct XPathNode // TypeDefIndex: 2972
@@ -3261,59 +3261,59 @@ namespace MS.Internal.Xml.Cache
 		public const int MaxCollapsedPositionOffset = 255; // Metadata: 0x003F28E6
 	
 		// Properties
-		public XPathNodeType NodeType { get => default; } // 0x100A96B0-0x100A96C0 
-		public string Prefix { get => default; } // 0x100A96E0-0x100A9700 
-		public string LocalName { get => default; } // 0x10090E10-0x10090E30 
-		public string Name { get => default; } // 0x100A9680-0x100A9690 
-		public string NamespaceUri { get => default; } // 0x100A9690-0x100A96B0 
-		public XPathDocument Document { get => default; } // 0x100A94E0-0x100A9500 
-		public string BaseUri { get => default; } // 0x100A9490-0x100A94B0 
-		public int LineNumber { get => default; } // 0x100A9610-0x100A9640 
-		public int LinePosition { get => default; } // 0x100A9640-0x100A9660 
-		public int CollapsedLinePosition { get => default; } // 0x100A94B0-0x100A94E0 
-		public XPathNodePageInfo PageInfo { get => default; } // 0x100A96C0-0x100A96E0 
-		public bool IsXmlNamespaceNode { get => default; } // 0x100A9600-0x100A9610 
-		public bool HasSibling { get => default; } // 0x100A9570-0x100A9580 
-		public bool HasCollapsedText { get => default; } // 0x100A9510-0x100A9530 
-		public bool HasAttribute { get => default; } // 0x100A9500-0x100A9510 
-		public bool HasContentChild { get => default; } // 0x100A9530-0x100A9540 
-		public bool HasElementChild { get => default; } // 0x100A9540-0x100A9550 
-		public bool IsAttrNmsp { get => default; } // 0x100A9580-0x100A95A0 
-		public bool IsText { get => default; } // 0x100A95A0-0x100A9600 
-		public bool HasNamespaceDecls { get => default; set {} } // 0x100A9550-0x100A9570 0x100A9700-0x100A9940
-		public bool AllowShortcutTag { get => default; } // 0x100A9470-0x100A9490 
-		public int LocalNameHashCode { get => default; } // 0x100A9660-0x100A9680 
-		public string Value { get => default; } // 0x1004EDC0-0x1004EDD0 
+		public XPathNodeType NodeType { get => default; } // 0x100A96C0-0x100A96D0 
+		public string Prefix { get => default; } // 0x100A96F0-0x100A9710 
+		public string LocalName { get => default; } // 0x10090F60-0x10090F80 
+		public string Name { get => default; } // 0x100A9690-0x100A96A0 
+		public string NamespaceUri { get => default; } // 0x100A96A0-0x100A96C0 
+		public XPathDocument Document { get => default; } // 0x100A94F0-0x100A9510 
+		public string BaseUri { get => default; } // 0x100A94A0-0x100A94C0 
+		public int LineNumber { get => default; } // 0x100A9620-0x100A9650 
+		public int LinePosition { get => default; } // 0x100A9650-0x100A9670 
+		public int CollapsedLinePosition { get => default; } // 0x100A94C0-0x100A94F0 
+		public XPathNodePageInfo PageInfo { get => default; } // 0x100A96D0-0x100A96F0 
+		public bool IsXmlNamespaceNode { get => default; } // 0x100A9610-0x100A9620 
+		public bool HasSibling { get => default; } // 0x100A9580-0x100A9590 
+		public bool HasCollapsedText { get => default; } // 0x100A9520-0x100A9540 
+		public bool HasAttribute { get => default; } // 0x100A9510-0x100A9520 
+		public bool HasContentChild { get => default; } // 0x100A9540-0x100A9550 
+		public bool HasElementChild { get => default; } // 0x100A9550-0x100A9560 
+		public bool IsAttrNmsp { get => default; } // 0x100A9590-0x100A95B0 
+		public bool IsText { get => default; } // 0x100A95B0-0x100A9610 
+		public bool HasNamespaceDecls { get => default; set {} } // 0x100A9560-0x100A9580 0x100A9710-0x100A9950
+		public bool AllowShortcutTag { get => default; } // 0x100A9480-0x100A94A0 
+		public int LocalNameHashCode { get => default; } // 0x100A9670-0x100A9690 
+		public string Value { get => default; } // 0x1004EDE0-0x1004EDF0 
 	
 		// Methods
 		public int GetRoot(out XPathNode[] pageNode) {
 			pageNode = default;
 			return default;
-		} // 0x100A9240-0x100A9270
+		} // 0x100A9250-0x100A9280
 		public int GetParent(out XPathNode[] pageNode) {
 			pageNode = default;
 			return default;
-		} // 0x100A9220-0x100A9240
+		} // 0x100A9230-0x100A9250
 		public int GetSibling(out XPathNode[] pageNode) {
 			pageNode = default;
 			return default;
-		} // 0x100A9270-0x100A9290
+		} // 0x100A9280-0x100A92A0
 		public int GetSimilarElement(out XPathNode[] pageNode) {
 			pageNode = default;
 			return default;
-		} // 0x100A9290-0x100A92B0
-		public bool NameMatch(string localName, string namespaceName) => default; // 0x100A92B0-0x100A92E0
-		public bool ElementMatch(string localName, string namespaceName) => default; // 0x100A91E0-0x100A9220
-		public void Create(XPathNodePageInfo pageInfo) {} // 0x100A9190-0x100A91E0
-		public void Create(XPathNodeInfoAtom info, XPathNodeType xptyp, int idxParent) {} // 0x100A9170-0x100A9190
-		public void SetLineInfoOffsets(int lineNumOffset, int linePosOffset) {} // 0x100A9360-0x100A9380
-		public void SetCollapsedLineInfoOffset(int posOffset) {} // 0x100A92E0-0x100A9300
-		public void SetValue(string value) {} // 0x1004F050-0x1004F080
-		public void SetEmptyValue(bool allowShortcutTag) {} // 0x100A9320-0x100A9360
-		public void SetCollapsedValue(string value) {} // 0x100A9300-0x100A9320
-		public void SetParentProperties(XPathNodeType xptyp) {} // 0x100A9380-0x100A93B0
-		public void SetSibling(XPathNodeInfoTable infoTable, XPathNode[] pageSibling, int idxSibling) {} // 0x100A93B0-0x100A9410
-		public void SetSimilarElement(XPathNodeInfoTable infoTable, XPathNode[] pageSimilar, int idxSimilar) {} // 0x100A9410-0x100A9470
+		} // 0x100A92A0-0x100A92C0
+		public bool NameMatch(string localName, string namespaceName) => default; // 0x100A92C0-0x100A92F0
+		public bool ElementMatch(string localName, string namespaceName) => default; // 0x100A91F0-0x100A9230
+		public void Create(XPathNodePageInfo pageInfo) {} // 0x100A91A0-0x100A91F0
+		public void Create(XPathNodeInfoAtom info, XPathNodeType xptyp, int idxParent) {} // 0x100A9180-0x100A91A0
+		public void SetLineInfoOffsets(int lineNumOffset, int linePosOffset) {} // 0x100A9370-0x100A9390
+		public void SetCollapsedLineInfoOffset(int posOffset) {} // 0x100A92F0-0x100A9310
+		public void SetValue(string value) {} // 0x1004F070-0x1004F0A0
+		public void SetEmptyValue(bool allowShortcutTag) {} // 0x100A9330-0x100A9370
+		public void SetCollapsedValue(string value) {} // 0x100A9310-0x100A9330
+		public void SetParentProperties(XPathNodeType xptyp) {} // 0x100A9390-0x100A93C0
+		public void SetSibling(XPathNodeInfoTable infoTable, XPathNode[] pageSibling, int idxSibling) {} // 0x100A93C0-0x100A9420
+		public void SetSimilarElement(XPathNodeInfoTable infoTable, XPathNode[] pageSimilar, int idxSimilar) {} // 0x100A9420-0x100A9480
 	}
 
 	internal struct XPathNodeRef // TypeDefIndex: 2973
@@ -3323,19 +3323,19 @@ namespace MS.Internal.Xml.Cache
 		private int idx; // 0x04
 	
 		// Properties
-		public static XPathNodeRef Null { get => default; } // 0x108F3130-0x108F3150 
+		public static XPathNodeRef Null { get => default; } // 0x108F1050-0x108F1070 
 		public bool IsNull { get => default; } // 0x10076590-0x100765D0 
-		public XPathNode[] Page { get => default; } // 0x1004DAC0-0x1004DAD0 
-		public int Index { get => default; } // 0x1004DDC0-0x1004DDD0 
+		public XPathNode[] Page { get => default; } // 0x1004DAE0-0x1004DAF0 
+		public int Index { get => default; } // 0x1004DDE0-0x1004DDF0 
 	
 		// Constructors
 		public XPathNodeRef(XPathNode[] page, int idx) : this() {
 			this.page = default;
 			this.idx = default;
-		} // 0x1004C860-0x1004C880
+		} // 0x1004C8B0-0x1004C8D0
 	
 		// Methods
-		public override int GetHashCode() => default; // 0x100A9100-0x100A9170
+		public override int GetHashCode() => default; // 0x100A9110-0x100A9180
 	}
 
 	internal abstract class XPathNodeHelper // TypeDefIndex: 2974
@@ -3347,31 +3347,31 @@ namespace MS.Internal.Xml.Cache
 		public static int GetLocalNamespaces(XPathNode[] pageElem, int idxElem, out XPathNode[] pageNmsp) {
 			pageNmsp = default;
 			return default;
-		} // 0x10BEB6B0-0x10BEB720
+		} // 0x10BEA130-0x10BEA1A0
 		public static int GetInScopeNamespaces(XPathNode[] pageElem, int idxElem, out XPathNode[] pageNmsp) {
 			pageNmsp = default;
 			return default;
-		} // 0x10BEB5F0-0x10BEB6B0
-		public static bool GetFirstAttribute(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BEB510-0x10BEB590
-		public static bool GetNextAttribute(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BEB760-0x10BEB7E0
-		public static bool GetContentChild(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BEAD10-0x10BEADE0
-		public static bool GetContentSibling(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BEAFF0-0x10BEB060
-		public static bool GetParent(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BEB870-0x10BEB8D0
-		public static int GetLocation(XPathNode[] pageNode, int idxNode) => default; // 0x10BEB720-0x10BEB760
-		public static bool GetElementChild(ref XPathNode[] pageNode, ref int idxNode, string localName, string namespaceName) => default; // 0x10BEB060-0x10BEB190
-		public static bool GetElementSibling(ref XPathNode[] pageNode, ref int idxNode, string localName, string namespaceName) => default; // 0x10BEB450-0x10BEB510
-		public static bool GetContentChild(ref XPathNode[] pageNode, ref int idxNode, XPathNodeType typ) => default; // 0x10BEABD0-0x10BEAD10
-		public static bool GetContentSibling(ref XPathNode[] pageNode, ref int idxNode, XPathNodeType typ) => default; // 0x10BEAF10-0x10BEAFF0
-		public static bool GetPreviousContentSibling(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BEB8D0-0x10BEB9F0
-		public static bool GetPreviousElementSibling(ref XPathNode[] pageNode, ref int idxNode, string localName, string namespaceName) => default; // 0x10BEBAC0-0x10BEBB90
-		public static bool GetPreviousContentSibling(ref XPathNode[] pageNode, ref int idxNode, XPathNodeType typ) => default; // 0x10BEB9F0-0x10BEBAC0
-		public static bool GetAttribute(ref XPathNode[] pageNode, ref int idxNode, string localName, string namespaceName) => default; // 0x10BEAA50-0x10BEAB80
-		public static bool GetFollowing(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BEB590-0x10BEB5F0
-		public static bool GetElementFollowing(ref XPathNode[] pageCurrent, ref int idxCurrent, XPathNode[] pageEnd, int idxEnd, string localName, string namespaceName) => default; // 0x10BEB190-0x10BEB450
-		public static bool GetContentFollowing(ref XPathNode[] pageCurrent, ref int idxCurrent, XPathNode[] pageEnd, int idxEnd, XPathNodeType typ) => default; // 0x10BEADE0-0x10BEAF10
-		public static bool GetTextFollowing(ref XPathNode[] pageCurrent, ref int idxCurrent, XPathNode[] pageEnd, int idxEnd) => default; // 0x10BEBB90-0x10BEBD80
-		public static bool GetNonDescendant(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BEB7E0-0x10BEB870
-		private static void GetChild(ref XPathNode[] pageNode, ref int idxNode) {} // 0x10BEAB80-0x10BEABD0
+		} // 0x10BEA070-0x10BEA130
+		public static bool GetFirstAttribute(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BE9F90-0x10BEA010
+		public static bool GetNextAttribute(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BEA1E0-0x10BEA260
+		public static bool GetContentChild(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BE9790-0x10BE9860
+		public static bool GetContentSibling(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BE9A70-0x10BE9AE0
+		public static bool GetParent(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BEA2F0-0x10BEA350
+		public static int GetLocation(XPathNode[] pageNode, int idxNode) => default; // 0x10BEA1A0-0x10BEA1E0
+		public static bool GetElementChild(ref XPathNode[] pageNode, ref int idxNode, string localName, string namespaceName) => default; // 0x10BE9AE0-0x10BE9C10
+		public static bool GetElementSibling(ref XPathNode[] pageNode, ref int idxNode, string localName, string namespaceName) => default; // 0x10BE9ED0-0x10BE9F90
+		public static bool GetContentChild(ref XPathNode[] pageNode, ref int idxNode, XPathNodeType typ) => default; // 0x10BE9650-0x10BE9790
+		public static bool GetContentSibling(ref XPathNode[] pageNode, ref int idxNode, XPathNodeType typ) => default; // 0x10BE9990-0x10BE9A70
+		public static bool GetPreviousContentSibling(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BEA350-0x10BEA470
+		public static bool GetPreviousElementSibling(ref XPathNode[] pageNode, ref int idxNode, string localName, string namespaceName) => default; // 0x10BEA540-0x10BEA610
+		public static bool GetPreviousContentSibling(ref XPathNode[] pageNode, ref int idxNode, XPathNodeType typ) => default; // 0x10BEA470-0x10BEA540
+		public static bool GetAttribute(ref XPathNode[] pageNode, ref int idxNode, string localName, string namespaceName) => default; // 0x10BE94D0-0x10BE9600
+		public static bool GetFollowing(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BEA010-0x10BEA070
+		public static bool GetElementFollowing(ref XPathNode[] pageCurrent, ref int idxCurrent, XPathNode[] pageEnd, int idxEnd, string localName, string namespaceName) => default; // 0x10BE9C10-0x10BE9ED0
+		public static bool GetContentFollowing(ref XPathNode[] pageCurrent, ref int idxCurrent, XPathNode[] pageEnd, int idxEnd, XPathNodeType typ) => default; // 0x10BE9860-0x10BE9990
+		public static bool GetTextFollowing(ref XPathNode[] pageCurrent, ref int idxCurrent, XPathNode[] pageEnd, int idxEnd) => default; // 0x10BEA610-0x10BEA800
+		public static bool GetNonDescendant(ref XPathNode[] pageNode, ref int idxNode) => default; // 0x10BEA260-0x10BEA2F0
+		private static void GetChild(ref XPathNode[] pageNode, ref int idxNode) {} // 0x10BE9600-0x10BE9650
 	}
 
 	internal sealed class XPathNodePageInfo // TypeDefIndex: 2975
@@ -3383,14 +3383,14 @@ namespace MS.Internal.Xml.Cache
 		private XPathNode[] pageNext; // 0x14
 	
 		// Properties
-		public int PageNumber { get => default; } // 0x1015D620-0x10160940 
-		public int NodeCount { get => default; set {} } // 0x10160960-0x10160970 0x101BB920-0x101BB930
-		public XPathNode[] PreviousPage { get => default; } // 0x1019CE70-0x1019CE80 
-		public XPathNode[] NextPage { get => default; set {} } // 0x10181220-0x10181230 0x10210CE0-0x10210CF0
+		public int PageNumber { get => default; } // 0x1015D620-0x10160990 
+		public int NodeCount { get => default; set {} } // 0x101609B0-0x101609C0 0x101BBE70-0x101BBE80
+		public XPathNode[] PreviousPage { get => default; } // 0x1019CB30-0x1019CB40 
+		public XPathNode[] NextPage { get => default; set {} } // 0x10181250-0x10181260 0x10212010-0x10212020
 	
 		// Constructors
 		public XPathNodePageInfo() {} // Dummy constructor
-		public XPathNodePageInfo(XPathNode[] pagePrev, int pageNum) {} // 0x10BEC6B0-0x10BEC860
+		public XPathNodePageInfo(XPathNode[] pagePrev, int pageNum) {} // 0x10BEB160-0x10BEB310
 	}
 
 	internal sealed class XPathNodeInfoAtom // TypeDefIndex: 2976
@@ -3412,30 +3412,30 @@ namespace MS.Internal.Xml.Cache
 		private XPathNodePageInfo pageInfo; // 0x3C
 	
 		// Properties
-		public XPathNodePageInfo PageInfo { get => default; } // 0x1022DA50-0x1022DA60 
-		public string LocalName { get => default; } // 0x1015D620-0x10160940 
-		public string NamespaceUri { get => default; } // 0x10160960-0x10160970 
-		public string Prefix { get => default; } // 0x1019CE70-0x1019CE80 
-		public string BaseUri { get => default; } // 0x10181220-0x10181230 
-		public XPathNode[] SiblingPage { get => default; } // 0x10181210-0x10181220 
-		public XPathNode[] SimilarElementPage { get => default; } // 0x1019EF30-0x1019EF40 
-		public XPathNode[] ParentPage { get => default; } // 0x10181150-0x10181160 
-		public XPathDocument Document { get => default; } // 0x1019EF40-0x1019EF50 
-		public int LineNumberBase { get => default; } // 0x1019EFC0-0x1019EFD0 
+		public XPathNodePageInfo PageInfo { get => default; } // 0x1022ED30-0x1022ED40 
+		public string LocalName { get => default; } // 0x1015D620-0x10160990 
+		public string NamespaceUri { get => default; } // 0x101609B0-0x101609C0 
+		public string Prefix { get => default; } // 0x1019CB30-0x1019CB40 
+		public string BaseUri { get => default; } // 0x10181250-0x10181260 
+		public XPathNode[] SiblingPage { get => default; } // 0x10181240-0x10181250 
+		public XPathNode[] SimilarElementPage { get => default; } // 0x1019EBC0-0x1019EBD0 
+		public XPathNode[] ParentPage { get => default; } // 0x10181180-0x10181190 
+		public XPathDocument Document { get => default; } // 0x1019EBD0-0x1019EBE0 
+		public int LineNumberBase { get => default; } // 0x1019EC50-0x1019EC60 
 		public int LinePositionBase { get => default; } // 0x1015D2E0-0x1015D580 
-		public int LocalNameHashCode { get => default; } // 0x101BB520-0x101BB530 
-		public XPathNodeInfoAtom Next { get => default; set {} } // 0x101BB530-0x101BB540 0x1022DBD0-0x1022DBE0
+		public int LocalNameHashCode { get => default; } // 0x101BBAB0-0x101BBAC0 
+		public XPathNodeInfoAtom Next { get => default; set {} } // 0x101BBAC0-0x101BBAD0 0x1022EEB0-0x1022EEC0
 	
 		// Constructors
 		public XPathNodeInfoAtom() {} // Dummy constructor
-		public XPathNodeInfoAtom(XPathNodePageInfo pageInfo) {} // 0x105E6890-0x105E68B0
-		public XPathNodeInfoAtom(string localName, string namespaceUri, string prefix, string baseUri, XPathNode[] pageParent, XPathNode[] pageSibling, XPathNode[] pageSimilar, XPathDocument doc, int lineNumBase, int linePosBase) {} // 0x10BEC260-0x10BEC280
+		public XPathNodeInfoAtom(XPathNodePageInfo pageInfo) {} // 0x105E66A0-0x105E66C0
+		public XPathNodeInfoAtom(string localName, string namespaceUri, string prefix, string baseUri, XPathNode[] pageParent, XPathNode[] pageSibling, XPathNode[] pageSimilar, XPathDocument doc, int lineNumBase, int linePosBase) {} // 0x10BEAD00-0x10BEAD20
 	
 		// Methods
-		public void Init(string localName, string namespaceUri, string prefix, string baseUri, XPathNode[] pageParent, XPathNode[] pageSibling, XPathNode[] pageSimilar, XPathDocument doc, int lineNumBase, int linePosBase) {} // 0x10BEBF20-0x10BEBFD0
-		public override int GetHashCode() => default; // 0x10BEBE50-0x10BEBF20
-		public override bool Equals(object other) => default; // 0x10BEBD80-0x10BEBE50
-		public override string ToString() => default; // 0x10BEBFD0-0x10BEC260
+		public void Init(string localName, string namespaceUri, string prefix, string baseUri, XPathNode[] pageParent, XPathNode[] pageSibling, XPathNode[] pageSimilar, XPathDocument doc, int lineNumBase, int linePosBase) {} // 0x10BEA9C0-0x10BEAA70
+		public override int GetHashCode() => default; // 0x10BEA8F0-0x10BEA9C0
+		public override bool Equals(object other) => default; // 0x10BEA800-0x10BEA8F0
+		public override string ToString() => default; // 0x10BEAA70-0x10BEAD00
 	}
 
 	internal sealed class XPathNodeInfoTable // TypeDefIndex: 2977
@@ -3447,13 +3447,13 @@ namespace MS.Internal.Xml.Cache
 		private const int DefaultTableSize = 32; // Metadata: 0x003F28EA
 	
 		// Constructors
-		public XPathNodeInfoTable() {} // 0x10BEC660-0x10BEC6B0
+		public XPathNodeInfoTable() {} // 0x10BEB110-0x10BEB160
 	
 		// Methods
-		public XPathNodeInfoAtom Create(string localName, string namespaceUri, string prefix, string baseUri, XPathNode[] pageParent, XPathNode[] pageSibling, XPathNode[] pageSimilar, XPathDocument doc, int lineNumBase, int linePosBase) => default; // 0x10BEC470-0x10BEC500
-		private XPathNodeInfoAtom Atomize(XPathNodeInfoAtom info) => default; // 0x10BEC320-0x10BEC470
-		private void AddInfo(XPathNodeInfoAtom info) {} // 0x10BEC280-0x10BEC320
-		public override string ToString() => default; // 0x10BEC500-0x10BEC660
+		public XPathNodeInfoAtom Create(string localName, string namespaceUri, string prefix, string baseUri, XPathNode[] pageParent, XPathNode[] pageSibling, XPathNode[] pageSimilar, XPathDocument doc, int lineNumBase, int linePosBase) => default; // 0x10BEAF20-0x10BEAFB0
+		private XPathNodeInfoAtom Atomize(XPathNodeInfoAtom info) => default; // 0x10BEADC0-0x10BEAF20
+		private void AddInfo(XPathNodeInfoAtom info) {} // 0x10BEAD20-0x10BEADC0
+		public override string ToString() => default; // 0x10BEAFB0-0x10BEB110
 	}
 }
 
@@ -3528,8 +3528,8 @@ internal sealed class Locale // TypeDefIndex: 4273
 	private Locale() {} // 0x1015D2D0-0x1015D2E0
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x1018C2D0-0x1018C2E0
-	public static string GetText(string fmt, params /* 0x10003170-0x10003190 */ object[] args) => default; // 0x107D19B0-0x107D19C0
+	public static string GetText(string msg) => default; // 0x1018BF50-0x1018BF60
+	public static string GetText(string fmt, params /* 0x10003200-0x10003220 */ object[] args) => default; // 0x107CFE10-0x107CFE20
 }
 
 internal static class SR // TypeDefIndex: 4521
@@ -5229,15 +5229,15 @@ internal static class SR // TypeDefIndex: 4521
 	public const string net_WebSockets_InvalidState = "The WebSocket is in an invalid state (\'{0}\') for this operation. Valid states are: \'{1}\'"; // Metadata: 0x0042C282
 
 	// Methods
-	internal static string GetString(string name, params /* 0x10003170-0x10003190 */ object[] args) => default; // 0x10BCE5B0-0x10BCE610
-	internal static string GetString(CultureInfo culture, string name, params /* 0x10003170-0x10003190 */ object[] args) => default; // 0x10462400-0x10462410
-	internal static string GetString(string name) => default; // 0x1018C2D0-0x1018C2E0
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x10462410-0x10462420
-	internal static string Format(string resourceFormat, params /* 0x10003170-0x10003190 */ object[] args) => default; // 0x10BCE420-0x10BCE490
-	internal static string Format(string resourceFormat, object p1) => default; // 0x10BCE490-0x10BCE4F0
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x10BCE550-0x10BCE5B0
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x10BCE4F0-0x10BCE550
-	public static object GetObject(string name) => default; // 0x1018C2D0-0x1018C2E0
+	internal static string GetString(string name, params /* 0x10003200-0x10003220 */ object[] args) => default; // 0x10BCC980-0x10BCC9E0
+	internal static string GetString(CultureInfo culture, string name, params /* 0x10003200-0x10003220 */ object[] args) => default; // 0x10463610-0x10463620
+	internal static string GetString(string name) => default; // 0x1018BF50-0x1018BF60
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x10463620-0x10463630
+	internal static string Format(string resourceFormat, params /* 0x10003200-0x10003220 */ object[] args) => default; // 0x10BCC7F0-0x10BCC860
+	internal static string Format(string resourceFormat, object p1) => default; // 0x10BCC860-0x10BCC8C0
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x10BCC920-0x10BCC980
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x10BCC8C0-0x10BCC920
+	public static object GetObject(string name) => default; // 0x1018BF50-0x1018BF60
 }
 
 namespace ObjCRuntimeInternal
@@ -5251,7 +5251,7 @@ namespace ObjCRuntimeInternal
 	internal static class NativeObjectHelper // TypeDefIndex: 4652
 	{
 		// Extension methods
-		public static IntPtr GetHandle(this INativeObject self) => default; // 0x10BCE390-0x10BCE420
+		public static IntPtr GetHandle(this INativeObject self) => default; // 0x10BCC760-0x10BCC7F0
 	}
 }
 
@@ -5260,20 +5260,20 @@ namespace Microsoft.VisualBasic
 	public class VBCodeProvider : System.CodeDom.Compiler.CodeDomProvider // TypeDefIndex: 6313
 	{
 		// Properties
-		public override string FileExtension { get => default; } // 0x104D18A0-0x104D18D0 
-		public override LanguageOptions LanguageOptions { get => default; } // 0x104D18D0-0x104D1900 
+		public override string FileExtension { get => default; } // 0x104D2690-0x104D26C0 
+		public override LanguageOptions LanguageOptions { get => default; } // 0x104D26C0-0x104D26F0 
 	
 		// Constructors
-		public VBCodeProvider() {} // 0x104D1870-0x104D18A0
-		public VBCodeProvider(IDictionary<string, string> providerOptions) {} // 0x104D1840-0x104D1870
+		public VBCodeProvider() {} // 0x104D2660-0x104D2690
+		public VBCodeProvider(IDictionary<string, string> providerOptions) {} // 0x104D2630-0x104D2660
 	
 		// Methods
-		[Obsolete] // 0x10012630-0x10012660
-		public override ICodeCompiler CreateCompiler() => default; // 0x104D1780-0x104D17B0
-		[Obsolete] // 0x10012660-0x10012690
-		public override ICodeGenerator CreateGenerator() => default; // 0x104D17B0-0x104D17E0
-		public override void GenerateCodeFromMember(CodeTypeMember member, TextWriter writer, CodeGeneratorOptions options) {} // 0x104D17E0-0x104D1810
-		public override TypeConverter GetConverter(Type type) => default; // 0x104D1810-0x104D1840
+		[Obsolete] // 0x10012AC0-0x10012AF0
+		public override ICodeCompiler CreateCompiler() => default; // 0x104D2570-0x104D25A0
+		[Obsolete] // 0x10012AF0-0x10012B20
+		public override ICodeGenerator CreateGenerator() => default; // 0x104D25A0-0x104D25D0
+		public override void GenerateCodeFromMember(CodeTypeMember member, TextWriter writer, CodeGeneratorOptions options) {} // 0x104D25D0-0x104D2600
+		public override TypeConverter GetConverter(Type type) => default; // 0x104D2600-0x104D2630
 	}
 }
 
@@ -5282,19 +5282,19 @@ namespace Microsoft.CSharp
 	public class CSharpCodeProvider : System.CodeDom.Compiler.CodeDomProvider // TypeDefIndex: 6314
 	{
 		// Properties
-		public override string FileExtension { get => default; } // 0x104C49E0-0x104C4A10 
+		public override string FileExtension { get => default; } // 0x104C5850-0x104C5880 
 	
 		// Constructors
-		public CSharpCodeProvider() {} // 0x104C49B0-0x104C49E0
-		public CSharpCodeProvider(IDictionary<string, string> providerOptions) {} // 0x104C4980-0x104C49B0
+		public CSharpCodeProvider() {} // 0x104C5820-0x104C5850
+		public CSharpCodeProvider(IDictionary<string, string> providerOptions) {} // 0x104C57F0-0x104C5820
 	
 		// Methods
-		[Obsolete] // 0x10012630-0x10012660
-		public override ICodeCompiler CreateCompiler() => default; // 0x104C48C0-0x104C48F0
-		[Obsolete] // 0x10012660-0x10012690
-		public override ICodeGenerator CreateGenerator() => default; // 0x104C48F0-0x104C4920
-		public override void GenerateCodeFromMember(CodeTypeMember member, TextWriter writer, CodeGeneratorOptions options) {} // 0x104C4920-0x104C4950
-		public override TypeConverter GetConverter(Type type) => default; // 0x104C4950-0x104C4980
+		[Obsolete] // 0x10012AC0-0x10012AF0
+		public override ICodeCompiler CreateCompiler() => default; // 0x104C5730-0x104C5760
+		[Obsolete] // 0x10012AF0-0x10012B20
+		public override ICodeGenerator CreateGenerator() => default; // 0x104C5760-0x104C5790
+		public override void GenerateCodeFromMember(CodeTypeMember member, TextWriter writer, CodeGeneratorOptions options) {} // 0x104C5790-0x104C57C0
+		public override TypeConverter GetConverter(Type type) => default; // 0x104C57C0-0x104C57F0
 	}
 }
 
@@ -5758,14 +5758,14 @@ internal static class SR // TypeDefIndex: 6429
 	public const string MethodBuilderDoesNotHaveTypeBuilder = "MethodBuilder does not have a valid TypeBuilder"; // Metadata: 0x00439257
 
 	// Methods
-	internal static string GetString(string name, params /* 0x10003170-0x10003190 */ object[] args) => default; // 0x109023E0-0x10902440
-	internal static string GetString(CultureInfo culture, string name, params /* 0x10003170-0x10003190 */ object[] args) => default; // 0x10462400-0x10462410
-	internal static string GetString(string name) => default; // 0x1018C2D0-0x1018C2E0
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x10462410-0x10462420
-	internal static string Format(string resourceFormat, params /* 0x10003170-0x10003190 */ object[] args) => default; // 0x10902310-0x10902380
-	internal static string Format(string resourceFormat, object p1) => default; // 0x10902380-0x109023E0
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x10902250-0x109022B0
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x109022B0-0x10902310
+	internal static string GetString(string name, params /* 0x10003200-0x10003220 */ object[] args) => default; // 0x109002A0-0x10900300
+	internal static string GetString(CultureInfo culture, string name, params /* 0x10003200-0x10003220 */ object[] args) => default; // 0x10463610-0x10463620
+	internal static string GetString(string name) => default; // 0x1018BF50-0x1018BF60
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x10463620-0x10463630
+	internal static string Format(string resourceFormat, params /* 0x10003200-0x10003220 */ object[] args) => default; // 0x109001D0-0x10900240
+	internal static string Format(string resourceFormat, object p1) => default; // 0x10900240-0x109002A0
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x10900110-0x10900170
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x10900170-0x109001D0
 }
 
 namespace Il2CppTests.TestSources
@@ -5773,13 +5773,13 @@ namespace Il2CppTests.TestSources
 	public class FeatureTest // TypeDefIndex: 7685
 	{
 		// Properties
-		public string AutoProp { get; set; } // 0x1015D620-0x10160940 0x101BB910-0x101BB920
+		public string AutoProp { get; set; } // 0x1015D620-0x10160990 0x101BBE60-0x101BBE70
 	
 		// Constructors
 		public FeatureTest() {} // 0x1015D2D0-0x1015D2E0
 	
 		// Methods
-		public void AnonType() {} // 0x10FC4290-0x10FC4300
-		public int Linq() => default; // 0x10FC4300-0x10FC4480
+		public void AnonType() {} // 0x10FC30A0-0x10FC3110
+		public int Linq() => default; // 0x10FC3110-0x10FC3290
 	}
 }

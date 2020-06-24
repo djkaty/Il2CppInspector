@@ -13,38 +13,38 @@ using System.Runtime.InteropServices;
 using System.Security;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-2871
-[assembly: AllowPartiallyTrustedCallers] // 0x1000C370-0x1000C640
-// [assembly: AssemblyCompany] // 0x1000C370-0x1000C640
-// [assembly: AssemblyCopyright] // 0x1000C370-0x1000C640
-// [assembly: AssemblyDefaultAlias] // 0x1000C370-0x1000C640
-// [assembly: AssemblyDelaySign] // 0x1000C370-0x1000C640
-// [assembly: AssemblyDescription] // 0x1000C370-0x1000C640
-// [assembly: AssemblyFileVersion] // 0x1000C370-0x1000C640
-// [assembly: AssemblyInformationalVersion] // 0x1000C370-0x1000C640
-// [assembly: AssemblyKeyFile] // 0x1000C370-0x1000C640
-// [assembly: AssemblyProduct] // 0x1000C370-0x1000C640
-// [assembly: AssemblyTitle] // 0x1000C370-0x1000C640
-// [assembly: CLSCompliant] // 0x1000C370-0x1000C640
-// [assembly: ComCompatibleVersion] // 0x1000C370-0x1000C640
-// [assembly: CompilationRelaxations] // 0x1000C370-0x1000C640
-// [assembly: ComVisible] // 0x1000C370-0x1000C640
-// [assembly: Debuggable] // 0x1000C370-0x1000C640
-// [assembly: DefaultDependency] // 0x1000C370-0x1000C640
-// [assembly: Guid] // 0x1000C370-0x1000C640
-// [assembly: InternalsVisibleTo] // 0x1000C370-0x1000C640
-// [assembly: InternalsVisibleTo] // 0x1000C370-0x1000C640
-// [assembly: InternalsVisibleTo] // 0x1000C370-0x1000C640
-// [assembly: InternalsVisibleTo] // 0x1000C370-0x1000C640
-// [assembly: InternalsVisibleTo] // 0x1000C370-0x1000C640
-// [assembly: NeutralResourcesLanguage] // 0x1000C370-0x1000C640
-[assembly: RuntimeCompatibility] // 0x1000C370-0x1000C640
-// [assembly: SatelliteContractVersion] // 0x1000C370-0x1000C640
-[assembly: StringFreezing] // 0x1000C370-0x1000C640
+[assembly: AllowPartiallyTrustedCallers] // 0x1000C570-0x1000C840
+// [assembly: AssemblyCompany] // 0x1000C570-0x1000C840
+// [assembly: AssemblyCopyright] // 0x1000C570-0x1000C840
+// [assembly: AssemblyDefaultAlias] // 0x1000C570-0x1000C840
+// [assembly: AssemblyDelaySign] // 0x1000C570-0x1000C840
+// [assembly: AssemblyDescription] // 0x1000C570-0x1000C840
+// [assembly: AssemblyFileVersion] // 0x1000C570-0x1000C840
+// [assembly: AssemblyInformationalVersion] // 0x1000C570-0x1000C840
+// [assembly: AssemblyKeyFile] // 0x1000C570-0x1000C840
+// [assembly: AssemblyProduct] // 0x1000C570-0x1000C840
+// [assembly: AssemblyTitle] // 0x1000C570-0x1000C840
+// [assembly: CLSCompliant] // 0x1000C570-0x1000C840
+// [assembly: ComCompatibleVersion] // 0x1000C570-0x1000C840
+// [assembly: CompilationRelaxations] // 0x1000C570-0x1000C840
+// [assembly: ComVisible] // 0x1000C570-0x1000C840
+// [assembly: Debuggable] // 0x1000C570-0x1000C840
+// [assembly: DefaultDependency] // 0x1000C570-0x1000C840
+// [assembly: Guid] // 0x1000C570-0x1000C840
+// [assembly: InternalsVisibleTo] // 0x1000C570-0x1000C840
+// [assembly: InternalsVisibleTo] // 0x1000C570-0x1000C840
+// [assembly: InternalsVisibleTo] // 0x1000C570-0x1000C840
+// [assembly: InternalsVisibleTo] // 0x1000C570-0x1000C840
+// [assembly: InternalsVisibleTo] // 0x1000C570-0x1000C840
+// [assembly: NeutralResourcesLanguage] // 0x1000C570-0x1000C840
+[assembly: RuntimeCompatibility] // 0x1000C570-0x1000C840
+// [assembly: SatelliteContractVersion] // 0x1000C570-0x1000C840
+[assembly: StringFreezing] // 0x1000C570-0x1000C840
 
 // Image 1: GenericTypes.dll - Assembly: GenericTypes, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 2872-2897
-// [assembly: CompilationRelaxations] // 0x1000ACD0-0x1000AD20
-// [assembly: Debuggable] // 0x1000ACD0-0x1000AD20
-[assembly: RuntimeCompatibility] // 0x1000ACD0-0x1000AD20
+// [assembly: CompilationRelaxations] // 0x1000AED0-0x1000AF20
+// [assembly: Debuggable] // 0x1000AED0-0x1000AF20
+[assembly: RuntimeCompatibility] // 0x1000AED0-0x1000AF20
 
 internal static class Interop // TypeDefIndex: 2
 {
@@ -124,11 +124,11 @@ internal static class Consts // TypeDefIndex: 5
 internal sealed class Locale // TypeDefIndex: 6
 {
 	// Constructors
-	private Locale() {} // 0x100F5510-0x100F5520
+	private Locale() {} // 0x100F6550-0x100F6560
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x101163B0-0x101163C0
-	public static string GetText(string fmt, params /* 0x10003080-0x100030A0 */ object[] args) => default; // 0x102D24C0-0x102D24D0
+	public static string GetText(string msg) => default; // 0x10117390-0x101173A0
+	public static string GetText(string fmt, params /* 0x10003110-0x10003130 */ object[] args) => default; // 0x102D2670-0x102D2680
 }
 
 internal static class SR // TypeDefIndex: 7
@@ -957,14 +957,14 @@ internal static class SR // TypeDefIndex: 7
 	public const string OutstandingReferences = "Release all references before disposing this instance."; // Metadata: 0x0018547C
 
 	// Methods
-	internal static string GetString(string name, params /* 0x10003080-0x100030A0 */ object[] args) => default; // 0x1014FA50-0x1014FAB0
-	internal static string GetString(CultureInfo culture, string name, params /* 0x10003080-0x100030A0 */ object[] args) => default; // 0x1014FAC0-0x1014FAD0
-	internal static string GetString(string name) => default; // 0x101163B0-0x101163C0
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x1014FAB0-0x1014FAC0
-	internal static string Format(string resourceFormat, params /* 0x10003080-0x100030A0 */ object[] args) => default; // 0x1014F920-0x1014F990
-	internal static string Format(string resourceFormat, object p1) => default; // 0x1014F9F0-0x1014FA50
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x1014F8C0-0x1014F920
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x1014F990-0x1014F9F0
+	internal static string GetString(string name, params /* 0x10003110-0x10003130 */ object[] args) => default; // 0x10150660-0x101506C0
+	internal static string GetString(CultureInfo culture, string name, params /* 0x10003110-0x10003130 */ object[] args) => default; // 0x101506D0-0x101506E0
+	internal static string GetString(string name) => default; // 0x10117390-0x101173A0
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x101506C0-0x101506D0
+	internal static string Format(string resourceFormat, params /* 0x10003110-0x10003130 */ object[] args) => default; // 0x10150530-0x101505A0
+	internal static string Format(string resourceFormat, object p1) => default; // 0x10150600-0x10150660
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x101504D0-0x10150530
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x101505A0-0x10150600
 }
 
 namespace Il2CppTests.TestSources
@@ -1000,10 +1000,10 @@ namespace Il2CppTests.TestSources
 	internal class Test // TypeDefIndex: 2881
 	{
 		// Constructors
-		public Test() {} // 0x100F5510-0x100F5520
+		public Test() {} // 0x100F6550-0x100F6560
 	
 		// Methods
-		public void GenericTypesTest() {} // 0x105F9C40-0x105F9C40
+		public void GenericTypesTest() {} // 0x105F9D40-0x105F9D40
 	}
 
 	internal class ConstrainedValueType<V> // TypeDefIndex: 2882
@@ -1054,7 +1054,7 @@ namespace Il2CppTests.TestSources
 		public ConstrainedRefType() {}
 	
 		// Methods
-		// [NullableContext] // 0x10003120-0x10003140
+		// [NullableContext] // 0x10003130-0x10003150
 		public void ConstrainedMethodNotNull<N>(N notnullArgument, R bar) {}
 		public void ConstrainedUnmanaged<U>(U unmanagedArgument)
 			where U : struct {}
@@ -1117,7 +1117,7 @@ namespace Il2CppTests.TestSources
 	public class NonGeneric // TypeDefIndex: 2895
 	{
 		// Constructors
-		public NonGeneric() {} // 0x100F5510-0x100F5520
+		public NonGeneric() {} // 0x100F6550-0x100F6560
 	
 		// Methods
 		public static void GenericMethodDefinitionInNonGenericClass<T>(T a) {}
@@ -1138,9 +1138,9 @@ namespace Il2CppTests.TestSources
 	public class CallGenericMethods : GenericClassWithMethods<int> // TypeDefIndex: 2897
 	{
 		// Constructors
-		public CallGenericMethods() {} // 0x105F9B90-0x105F9BD0
+		public CallGenericMethods() {} // 0x105F9C90-0x105F9CD0
 	
 		// Methods
-		public void CallMethods() {} // 0x105F9B10-0x105F9B90
+		public void CallMethods() {} // 0x105F9C10-0x105F9C90
 	}
 }

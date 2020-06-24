@@ -12,38 +12,38 @@ using System.Runtime.InteropServices;
 using System.Security;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-2871
-[assembly: AllowPartiallyTrustedCallers] // 0x1000C300-0x1000C5D0
-// [assembly: AssemblyCompany] // 0x1000C300-0x1000C5D0
-// [assembly: AssemblyCopyright] // 0x1000C300-0x1000C5D0
-// [assembly: AssemblyDefaultAlias] // 0x1000C300-0x1000C5D0
-// [assembly: AssemblyDelaySign] // 0x1000C300-0x1000C5D0
-// [assembly: AssemblyDescription] // 0x1000C300-0x1000C5D0
-// [assembly: AssemblyFileVersion] // 0x1000C300-0x1000C5D0
-// [assembly: AssemblyInformationalVersion] // 0x1000C300-0x1000C5D0
-// [assembly: AssemblyKeyFile] // 0x1000C300-0x1000C5D0
-// [assembly: AssemblyProduct] // 0x1000C300-0x1000C5D0
-// [assembly: AssemblyTitle] // 0x1000C300-0x1000C5D0
-// [assembly: CLSCompliant] // 0x1000C300-0x1000C5D0
-// [assembly: ComCompatibleVersion] // 0x1000C300-0x1000C5D0
-// [assembly: CompilationRelaxations] // 0x1000C300-0x1000C5D0
-// [assembly: ComVisible] // 0x1000C300-0x1000C5D0
-// [assembly: Debuggable] // 0x1000C300-0x1000C5D0
-// [assembly: DefaultDependency] // 0x1000C300-0x1000C5D0
-// [assembly: Guid] // 0x1000C300-0x1000C5D0
-// [assembly: InternalsVisibleTo] // 0x1000C300-0x1000C5D0
-// [assembly: InternalsVisibleTo] // 0x1000C300-0x1000C5D0
-// [assembly: InternalsVisibleTo] // 0x1000C300-0x1000C5D0
-// [assembly: InternalsVisibleTo] // 0x1000C300-0x1000C5D0
-// [assembly: InternalsVisibleTo] // 0x1000C300-0x1000C5D0
-// [assembly: NeutralResourcesLanguage] // 0x1000C300-0x1000C5D0
-[assembly: RuntimeCompatibility] // 0x1000C300-0x1000C5D0
-// [assembly: SatelliteContractVersion] // 0x1000C300-0x1000C5D0
-[assembly: StringFreezing] // 0x1000C300-0x1000C5D0
+[assembly: AllowPartiallyTrustedCallers] // 0x1000C4F0-0x1000C7C0
+// [assembly: AssemblyCompany] // 0x1000C4F0-0x1000C7C0
+// [assembly: AssemblyCopyright] // 0x1000C4F0-0x1000C7C0
+// [assembly: AssemblyDefaultAlias] // 0x1000C4F0-0x1000C7C0
+// [assembly: AssemblyDelaySign] // 0x1000C4F0-0x1000C7C0
+// [assembly: AssemblyDescription] // 0x1000C4F0-0x1000C7C0
+// [assembly: AssemblyFileVersion] // 0x1000C4F0-0x1000C7C0
+// [assembly: AssemblyInformationalVersion] // 0x1000C4F0-0x1000C7C0
+// [assembly: AssemblyKeyFile] // 0x1000C4F0-0x1000C7C0
+// [assembly: AssemblyProduct] // 0x1000C4F0-0x1000C7C0
+// [assembly: AssemblyTitle] // 0x1000C4F0-0x1000C7C0
+// [assembly: CLSCompliant] // 0x1000C4F0-0x1000C7C0
+// [assembly: ComCompatibleVersion] // 0x1000C4F0-0x1000C7C0
+// [assembly: CompilationRelaxations] // 0x1000C4F0-0x1000C7C0
+// [assembly: ComVisible] // 0x1000C4F0-0x1000C7C0
+// [assembly: Debuggable] // 0x1000C4F0-0x1000C7C0
+// [assembly: DefaultDependency] // 0x1000C4F0-0x1000C7C0
+// [assembly: Guid] // 0x1000C4F0-0x1000C7C0
+// [assembly: InternalsVisibleTo] // 0x1000C4F0-0x1000C7C0
+// [assembly: InternalsVisibleTo] // 0x1000C4F0-0x1000C7C0
+// [assembly: InternalsVisibleTo] // 0x1000C4F0-0x1000C7C0
+// [assembly: InternalsVisibleTo] // 0x1000C4F0-0x1000C7C0
+// [assembly: InternalsVisibleTo] // 0x1000C4F0-0x1000C7C0
+// [assembly: NeutralResourcesLanguage] // 0x1000C4F0-0x1000C7C0
+[assembly: RuntimeCompatibility] // 0x1000C4F0-0x1000C7C0
+// [assembly: SatelliteContractVersion] // 0x1000C4F0-0x1000C7C0
+[assembly: StringFreezing] // 0x1000C4F0-0x1000C7C0
 
 // Image 1: CSharp2.dll - Assembly: CSharp2, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 2872-2878
-// [assembly: CompilationRelaxations] // 0x1000ACE0-0x1000AD30
-// [assembly: Debuggable] // 0x1000ACE0-0x1000AD30
-[assembly: RuntimeCompatibility] // 0x1000ACE0-0x1000AD30
+// [assembly: CompilationRelaxations] // 0x1000AED0-0x1000AF20
+// [assembly: Debuggable] // 0x1000AED0-0x1000AF20
+[assembly: RuntimeCompatibility] // 0x1000AED0-0x1000AF20
 
 internal static class Interop // TypeDefIndex: 2
 {
@@ -123,11 +123,11 @@ internal static class Consts // TypeDefIndex: 5
 internal sealed class Locale // TypeDefIndex: 6
 {
 	// Constructors
-	private Locale() {} // 0x100F5510-0x100F5520
+	private Locale() {} // 0x100F5550-0x100F5560
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x101163B0-0x101163C0
-	public static string GetText(string fmt, params /* 0x10003080-0x100030A0 */ object[] args) => default; // 0x102B0AA0-0x102B0AB0
+	public static string GetText(string msg) => default; // 0x10116390-0x101163A0
+	public static string GetText(string fmt, params /* 0x10003130-0x10003150 */ object[] args) => default; // 0x102AFCB0-0x102AFCC0
 }
 
 internal static class SR // TypeDefIndex: 7
@@ -956,14 +956,14 @@ internal static class SR // TypeDefIndex: 7
 	public const string OutstandingReferences = "Release all references before disposing this instance."; // Metadata: 0x00184DBC
 
 	// Methods
-	internal static string GetString(string name, params /* 0x10003080-0x100030A0 */ object[] args) => default; // 0x1014F960-0x1014F9C0
-	internal static string GetString(CultureInfo culture, string name, params /* 0x10003080-0x100030A0 */ object[] args) => default; // 0x1014F9D0-0x1014F9E0
-	internal static string GetString(string name) => default; // 0x101163B0-0x101163C0
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x1014F9C0-0x1014F9D0
-	internal static string Format(string resourceFormat, params /* 0x10003080-0x100030A0 */ object[] args) => default; // 0x1014F830-0x1014F8A0
-	internal static string Format(string resourceFormat, object p1) => default; // 0x1014F900-0x1014F960
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x1014F7D0-0x1014F830
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x1014F8A0-0x1014F900
+	internal static string GetString(string name, params /* 0x10003130-0x10003150 */ object[] args) => default; // 0x1014F560-0x1014F5C0
+	internal static string GetString(CultureInfo culture, string name, params /* 0x10003130-0x10003150 */ object[] args) => default; // 0x1014F5D0-0x1014F5E0
+	internal static string GetString(string name) => default; // 0x10116390-0x101163A0
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x1014F5C0-0x1014F5D0
+	internal static string Format(string resourceFormat, params /* 0x10003130-0x10003150 */ object[] args) => default; // 0x1014F430-0x1014F4A0
+	internal static string Format(string resourceFormat, object p1) => default; // 0x1014F500-0x1014F560
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x1014F3D0-0x1014F430
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x1014F4A0-0x1014F500
 }
 
 namespace Il2CppTests.TestSources
@@ -1027,9 +1027,9 @@ namespace Il2CppTests.TestSources
 	public class UseGenerics // TypeDefIndex: 2878
 	{
 		// Constructors
-		public UseGenerics() {} // 0x100F5510-0x100F5520
+		public UseGenerics() {} // 0x100F5550-0x100F5560
 	
 		// Methods
-		public static void Main(string[] args) {} // 0x105F4730-0x105F4730
+		public static void Main(string[] args) {} // 0x105F36F0-0x105F36F0
 	}
 }

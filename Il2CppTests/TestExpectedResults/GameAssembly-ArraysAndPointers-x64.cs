@@ -12,38 +12,38 @@ using System.Runtime.InteropServices;
 using System.Security;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-2871
-[assembly: AllowPartiallyTrustedCallers] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: AssemblyCompany] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: AssemblyCopyright] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: AssemblyDefaultAlias] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: AssemblyDelaySign] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: AssemblyDescription] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: AssemblyFileVersion] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: AssemblyInformationalVersion] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: AssemblyKeyFile] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: AssemblyProduct] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: AssemblyTitle] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: CLSCompliant] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: ComCompatibleVersion] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: CompilationRelaxations] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: ComVisible] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: Debuggable] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: DefaultDependency] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: Guid] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: InternalsVisibleTo] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: InternalsVisibleTo] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: InternalsVisibleTo] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: InternalsVisibleTo] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: InternalsVisibleTo] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: NeutralResourcesLanguage] // 0x000000018000AA90-0x000000018000ADF0
-[assembly: RuntimeCompatibility] // 0x000000018000AA90-0x000000018000ADF0
-// [assembly: SatelliteContractVersion] // 0x000000018000AA90-0x000000018000ADF0
-[assembly: StringFreezing] // 0x000000018000AA90-0x000000018000ADF0
+[assembly: AllowPartiallyTrustedCallers] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: AssemblyCompany] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: AssemblyCopyright] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: AssemblyDefaultAlias] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: AssemblyDelaySign] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: AssemblyDescription] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: AssemblyFileVersion] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: AssemblyInformationalVersion] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: AssemblyKeyFile] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: AssemblyProduct] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: AssemblyTitle] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: CLSCompliant] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: ComCompatibleVersion] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: CompilationRelaxations] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: ComVisible] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: Debuggable] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: DefaultDependency] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: Guid] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: InternalsVisibleTo] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: InternalsVisibleTo] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: InternalsVisibleTo] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: InternalsVisibleTo] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: InternalsVisibleTo] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: NeutralResourcesLanguage] // 0x000000018000B270-0x000000018000B5D0
+[assembly: RuntimeCompatibility] // 0x000000018000B270-0x000000018000B5D0
+// [assembly: SatelliteContractVersion] // 0x000000018000B270-0x000000018000B5D0
+[assembly: StringFreezing] // 0x000000018000B270-0x000000018000B5D0
 
 // Image 1: ArraysAndPointers.dll - Assembly: ArraysAndPointers, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 2872-2879
-// [assembly: CompilationRelaxations] // 0x00000001800090B0-0x0000000180009110
-// [assembly: Debuggable] // 0x00000001800090B0-0x0000000180009110
-[assembly: RuntimeCompatibility] // 0x00000001800090B0-0x0000000180009110
+// [assembly: CompilationRelaxations] // 0x0000000180009890-0x00000001800098F0
+// [assembly: Debuggable] // 0x0000000180009890-0x00000001800098F0
+[assembly: RuntimeCompatibility] // 0x0000000180009890-0x00000001800098F0
 
 internal static class Interop // TypeDefIndex: 2
 {
@@ -123,11 +123,11 @@ internal static class Consts // TypeDefIndex: 5
 internal sealed class Locale // TypeDefIndex: 6
 {
 	// Constructors
-	private Locale() {} // 0x0000000180123B00-0x0000000180123B10
+	private Locale() {} // 0x0000000180123B10-0x0000000180123B20
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x0000000180149E20-0x0000000180149E30
-	public static string GetText(string fmt, params /* 0x0000000180001CE0-0x0000000180001CF0 */ object[] args) => default; // 0x000000018032E780-0x000000018032E790
+	public static string GetText(string msg) => default; // 0x0000000180149C90-0x0000000180149CA0
+	public static string GetText(string fmt, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x000000018032C1F0-0x000000018032C200
 }
 
 internal static class SR // TypeDefIndex: 7
@@ -956,14 +956,14 @@ internal static class SR // TypeDefIndex: 7
 	public const string OutstandingReferences = "Release all references before disposing this instance."; // Metadata: 0x00184F3C
 
 	// Methods
-	internal static string GetString(string name, params /* 0x0000000180001CE0-0x0000000180001CF0 */ object[] args) => default; // 0x000000018019DA70-0x000000018019DAE0
-	internal static string GetString(CultureInfo culture, string name, params /* 0x0000000180001CE0-0x0000000180001CF0 */ object[] args) => default; // 0x000000018019DAF0-0x000000018019DB00
-	internal static string GetString(string name) => default; // 0x0000000180149E20-0x0000000180149E30
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x000000018019DAE0-0x000000018019DAF0
-	internal static string Format(string resourceFormat, params /* 0x0000000180001CE0-0x0000000180001CF0 */ object[] args) => default; // 0x000000018019D8E0-0x000000018019D960
-	internal static string Format(string resourceFormat, object p1) => default; // 0x000000018019DA00-0x000000018019DA70
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x000000018019D850-0x000000018019D8E0
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x000000018019D960-0x000000018019DA00
+	internal static string GetString(string name, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x000000018019D110-0x000000018019D180
+	internal static string GetString(CultureInfo culture, string name, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x000000018019D190-0x000000018019D1A0
+	internal static string GetString(string name) => default; // 0x0000000180149C90-0x0000000180149CA0
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x000000018019D180-0x000000018019D190
+	internal static string Format(string resourceFormat, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x000000018019CF80-0x000000018019D000
+	internal static string Format(string resourceFormat, object p1) => default; // 0x000000018019D0A0-0x000000018019D110
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x000000018019CEF0-0x000000018019CF80
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x000000018019D000-0x000000018019D0A0
 }
 
 namespace Il2CppTests.TestSources
@@ -981,19 +981,19 @@ namespace Il2CppTests.TestSources
 		private unsafe float*[][,,][] confusedElephant; // 0x48
 	
 		// Properties
-		public unsafe int* PointerProperty { get; set; } // 0x0000000180186560-0x0000000180186570 0x000000018020C020-0x000000018020C030
-		public unsafe int* this[int i] { get => default; } // 0x0000000180150CD0-0x0000000180150CE0 
-		public unsafe int this[int* p] { get => default; } // 0x0000000180150CD0-0x0000000180150CE0 
-		public unsafe float* this[float* fp] { get => default; } // 0x0000000180150CD0-0x0000000180150CE0 
+		public unsafe int* PointerProperty { get; set; } // 0x0000000180185D90-0x0000000180185DA0 0x000000018020B0D0-0x000000018020B0E0
+		public unsafe int* this[int i] { get => default; } // 0x0000000180150B30-0x0000000180150B40 
+		public unsafe int this[int* p] { get => default; } // 0x0000000180150B30-0x0000000180150B40 
+		public unsafe float* this[float* fp] { get => default; } // 0x0000000180150B30-0x0000000180150B40 
 	
 		// Nested types
 		private struct fixedSizeArrayStruct // TypeDefIndex: 2876
 		{
 			// Fields
-			private unsafe fixed /* 0x0000000180009280-0x00000001800092D0 */ int fixedSizeArray[0]; // 0x00
+			private unsafe fixed /* 0x0000000180009A60-0x0000000180009AB0 */ int fixedSizeArray[0]; // 0x00
 		}
 	
-		public unsafe delegate void OnUnsafe(int* ud); // TypeDefIndex: 2878; 0x0000000180721010-0x00000001807212D0
+		public unsafe delegate void OnUnsafe(int* ud); // TypeDefIndex: 2878; 0x000000018071ADF0-0x000000018071B0C0
 	
 		public class NestedUnsafe<T> // TypeDefIndex: 2879
 			where T : struct
@@ -1008,13 +1008,13 @@ namespace Il2CppTests.TestSources
 	
 		// Constructors
 		public Test() {} // Dummy constructor
-		public unsafe Test(int* u) {} // 0x0000000180721360-0x0000000180721360
+		public unsafe Test(int* u) {} // 0x000000018071B150-0x000000018071B150
 	
 		// Methods
-		public int[] FooMethod(int[][] bar) => default; // 0x0000000180721320-0x0000000180721360
-		public int[,] BarMethod(int[,,] baz) => default; // 0x00000001807212D0-0x0000000180721320
-		public unsafe void UnsafeMethod(int* unsafePointerArgument) {} // 0x00000001801252E0-0x00000001801252F0
-		public unsafe int* UnsafeReturnMethod() => default; // 0x0000000180150CD0-0x0000000180150CE0
-		public unsafe int* UnsafeMethod2(int* i) => default; // 0x000000018019DAE0-0x000000018019DAF0
+		public int[] FooMethod(int[][] bar) => default; // 0x000000018071B110-0x000000018071B150
+		public int[,] BarMethod(int[,,] baz) => default; // 0x000000018071B0C0-0x000000018071B110
+		public unsafe void UnsafeMethod(int* unsafePointerArgument) {} // 0x00000001801252F0-0x0000000180125300
+		public unsafe int* UnsafeReturnMethod() => default; // 0x0000000180150B30-0x0000000180150B40
+		public unsafe int* UnsafeMethod2(int* i) => default; // 0x000000018019D180-0x000000018019D190
 	}
 }

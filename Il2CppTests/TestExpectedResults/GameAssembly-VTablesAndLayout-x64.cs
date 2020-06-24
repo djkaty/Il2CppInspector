@@ -12,38 +12,38 @@ using System.Runtime.InteropServices;
 using System.Security;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-2871
-[assembly: AllowPartiallyTrustedCallers] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: AssemblyCompany] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: AssemblyCopyright] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: AssemblyDefaultAlias] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: AssemblyDelaySign] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: AssemblyDescription] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: AssemblyFileVersion] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: AssemblyInformationalVersion] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: AssemblyKeyFile] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: AssemblyProduct] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: AssemblyTitle] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: CLSCompliant] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: ComCompatibleVersion] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: CompilationRelaxations] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: ComVisible] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: Debuggable] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: DefaultDependency] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: Guid] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: InternalsVisibleTo] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: InternalsVisibleTo] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: InternalsVisibleTo] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: InternalsVisibleTo] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: InternalsVisibleTo] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: NeutralResourcesLanguage] // 0x000000018000A9D0-0x000000018000AD30
-[assembly: RuntimeCompatibility] // 0x000000018000A9D0-0x000000018000AD30
-// [assembly: SatelliteContractVersion] // 0x000000018000A9D0-0x000000018000AD30
-[assembly: StringFreezing] // 0x000000018000A9D0-0x000000018000AD30
+[assembly: AllowPartiallyTrustedCallers] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: AssemblyCompany] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: AssemblyCopyright] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: AssemblyDefaultAlias] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: AssemblyDelaySign] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: AssemblyDescription] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: AssemblyFileVersion] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: AssemblyInformationalVersion] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: AssemblyKeyFile] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: AssemblyProduct] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: AssemblyTitle] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: CLSCompliant] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: ComCompatibleVersion] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: CompilationRelaxations] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: ComVisible] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: Debuggable] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: DefaultDependency] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: Guid] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: InternalsVisibleTo] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: InternalsVisibleTo] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: InternalsVisibleTo] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: InternalsVisibleTo] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: InternalsVisibleTo] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: NeutralResourcesLanguage] // 0x000000018000B180-0x000000018000B4E0
+[assembly: RuntimeCompatibility] // 0x000000018000B180-0x000000018000B4E0
+// [assembly: SatelliteContractVersion] // 0x000000018000B180-0x000000018000B4E0
+[assembly: StringFreezing] // 0x000000018000B180-0x000000018000B4E0
 
 // Image 1: VTablesAndLayout.dll - Assembly: VTablesAndLayout, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 2872-2891
-// [assembly: CompilationRelaxations] // 0x0000000180009040-0x00000001800090A0
-// [assembly: Debuggable] // 0x0000000180009040-0x00000001800090A0
-[assembly: RuntimeCompatibility] // 0x0000000180009040-0x00000001800090A0
+// [assembly: CompilationRelaxations] // 0x00000001800097F0-0x0000000180009850
+// [assembly: Debuggable] // 0x00000001800097F0-0x0000000180009850
+[assembly: RuntimeCompatibility] // 0x00000001800097F0-0x0000000180009850
 
 internal static class Interop // TypeDefIndex: 2
 {
@@ -123,11 +123,11 @@ internal static class Consts // TypeDefIndex: 5
 internal sealed class Locale // TypeDefIndex: 6
 {
 	// Constructors
-	private Locale() {} // 0x0000000180123B00-0x0000000180123B10
+	private Locale() {} // 0x0000000180124B10-0x0000000180124B20
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x0000000180149E20-0x0000000180149E30
-	public static string GetText(string fmt, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x0000000180329080-0x0000000180329090
+	public static string GetText(string msg) => default; // 0x000000018014AC90-0x000000018014ACA0
+	public static string GetText(string fmt, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x0000000180327AA0-0x0000000180327AB0
 }
 
 internal static class SR // TypeDefIndex: 7
@@ -956,14 +956,14 @@ internal static class SR // TypeDefIndex: 7
 	public const string OutstandingReferences = "Release all references before disposing this instance."; // Metadata: 0x00185324
 
 	// Methods
-	internal static string GetString(string name, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x000000018018EF10-0x000000018018EF80
-	internal static string GetString(CultureInfo culture, string name, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x000000018018EF90-0x000000018018EFA0
-	internal static string GetString(string name) => default; // 0x0000000180149E20-0x0000000180149E30
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x000000018018EF80-0x000000018018EF90
-	internal static string Format(string resourceFormat, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x000000018018ED80-0x000000018018EE00
-	internal static string Format(string resourceFormat, object p1) => default; // 0x000000018018EEA0-0x000000018018EF10
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x000000018018ECF0-0x000000018018ED80
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x000000018018EE00-0x000000018018EEA0
+	internal static string GetString(string name, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x000000018018F510-0x000000018018F580
+	internal static string GetString(CultureInfo culture, string name, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x000000018018F590-0x000000018018F5A0
+	internal static string GetString(string name) => default; // 0x000000018014AC90-0x000000018014ACA0
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x000000018018F580-0x000000018018F590
+	internal static string Format(string resourceFormat, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x000000018018F380-0x000000018018F400
+	internal static string Format(string resourceFormat, object p1) => default; // 0x000000018018F4A0-0x000000018018F510
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x000000018018F2F0-0x000000018018F380
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x000000018018F400-0x000000018018F4A0
 }
 
 namespace Il2CppTests.TestSources
@@ -984,8 +984,8 @@ namespace Il2CppTests.TestSources
 		public object[] objArray; // 0x28
 	
 		// Properties
-		public int[] intProperty { get; set; } // 0x0000000180124C50-0x0000000180124C60 0x0000000180128A00-0x0000000180128A10
-		public int[] intProp2 { get => default; set {} } // 0x0000000180723350-0x0000000180723360 0x0000000180128920-0x0000000180128930
+		public int[] intProperty { get; set; } // 0x0000000180125C60-0x0000000180125C70 0x0000000180129A10-0x0000000180129A20
+		public int[] intProp2 { get => default; set {} } // 0x000000018071E150-0x000000018071E160 0x0000000180129930-0x0000000180129940
 	
 		// Nested types
 		public interface TestInterface // TypeDefIndex: 2875
@@ -1034,7 +1034,7 @@ namespace Il2CppTests.TestSources
 			public char y; // 0x18
 	
 			// Constructors
-			public WeirdLayout1() {} // 0x0000000180123B00-0x0000000180123B10
+			public WeirdLayout1() {} // 0x0000000180124B10-0x0000000180124B20
 		}
 	
 		public class WeirdLayout2 : WeirdLayout1 // TypeDefIndex: 2882
@@ -1044,7 +1044,7 @@ namespace Il2CppTests.TestSources
 			public short f; // 0x22
 	
 			// Constructors
-			public WeirdLayout2() {} // 0x0000000180123B00-0x0000000180123B10
+			public WeirdLayout2() {} // 0x0000000180124B10-0x0000000180124B20
 		}
 	
 		public struct TestStruct : TestInterface, TestInterface2, IT1, IT2 // TypeDefIndex: 2883
@@ -1053,29 +1053,29 @@ namespace Il2CppTests.TestSources
 			public int x; // 0x00
 	
 			// Methods
-			public int overrideme() => default; // 0x0000000180072DA0-0x0000000180121000
-			public int overrideme2() => default; // 0x0000000180072D90-0x0000000180072DA0
+			public int overrideme() => default; // 0x0000000180072D10-0x0000000180122000
+			public int overrideme2() => default; // 0x0000000180072D00-0x0000000180072D10
 			public void f1() {} // 0x000000018000E930-0x000000018000E940
 			public void f2() {} // 0x000000018000E930-0x000000018000E940
 			public void f3() {} // 0x000000018000E930-0x000000018000E940
 		}
 	
-		public class TestClass : TestInterface, TestInterface3, IT3, IT2, IT1 // TypeDefIndex: 2884
+		public class TestClass : TestInterface, TestInterface3, IT3 // TypeDefIndex: 2884
 		{
 			// Fields
 			public int x; // 0x10
 	
 			// Constructors
-			public TestClass() {} // 0x0000000180123B00-0x0000000180123B10
+			public TestClass() {} // 0x0000000180124B10-0x0000000180124B20
 	
 			// Methods
-			public virtual int overrideme() => default; // 0x0000000180722B40-0x0000000180722B50
-			public void normal1() {} // 0x00000001801252E0-0x00000001801252F0
-			public virtual int overrideme3() => default; // 0x0000000180722B30-0x0000000180722B40
-			public void normal2() {} // 0x00000001801252E0-0x00000001801252F0
-			public void f1() {} // 0x00000001801252E0-0x00000001801252F0
-			public void f2() {} // 0x00000001801252E0-0x00000001801252F0
-			public void f3() {} // 0x00000001801252E0-0x00000001801252F0
+			public virtual int overrideme() => default; // 0x000000018071D940-0x000000018071D950
+			public void normal1() {} // 0x00000001801262F0-0x0000000180126300
+			public virtual int overrideme3() => default; // 0x000000018071D930-0x000000018071D940
+			public void normal2() {} // 0x00000001801262F0-0x0000000180126300
+			public void f1() {} // 0x00000001801262F0-0x0000000180126300
+			public void f2() {} // 0x00000001801262F0-0x0000000180126300
+			public void f3() {} // 0x00000001801262F0-0x0000000180126300
 		}
 	
 		public class TestClass2 : TestClass // TypeDefIndex: 2885
@@ -1084,11 +1084,11 @@ namespace Il2CppTests.TestSources
 			public int y; // 0x18
 	
 			// Constructors
-			public TestClass2() {} // 0x0000000180123B00-0x0000000180123B10
+			public TestClass2() {} // 0x0000000180124B10-0x0000000180124B20
 	
 			// Methods
-			public override int overrideme() => default; // 0x0000000180722B20-0x0000000180722B30
-			public new void normal2() {} // 0x00000001801252E0-0x00000001801252F0
+			public override int overrideme() => default; // 0x000000018071D920-0x000000018071D930
+			public new void normal2() {} // 0x00000001801262F0-0x0000000180126300
 		}
 	
 		public interface ITestGeneric<T> // TypeDefIndex: 2886
@@ -1126,19 +1126,19 @@ namespace Il2CppTests.TestSources
 			public void secondGenericFunc(T1 t1, T2 t2) {}
 		}
 	
-		public delegate void callit(int x); // TypeDefIndex: 2889; 0x00000001804D4AE0-0x00000001804D4DC0
+		public delegate void callit(int x); // TypeDefIndex: 2889; 0x00000001804D2260-0x00000001804D2540
 	
 		// Constructors
-		public TestVTable() {} // 0x0000000180123B00-0x0000000180123B10
+		public TestVTable() {} // 0x0000000180124B10-0x0000000180124B20
 	
 		// Methods
-		public void overrideme(int x) {} // 0x0000000180723360-0x00000001807233B0
-		public float takestruct(Vector3 a, Vector3 b, Vector3 c) => default; // 0x00000001807233B0-0x00000001807233E0
-		public int doit(TestInterface ti, TestInterface2 ti2, TestInterface3 ti3) => default; // 0x00000001807232B0-0x0000000180723350
-		public void calltypes(ref Vector3 vin, ref Vector3 vout, ref Vector3 vref, params /* 0x0000000180001CC0-0x0000000180001CD0 */ Vector3[] vparams) {} // 0x0000000180723290-0x00000001807232B0
+		public void overrideme(int x) {} // 0x000000018071E160-0x000000018071E1B0
+		public float takestruct(Vector3 a, Vector3 b, Vector3 c) => default; // 0x000000018071E1B0-0x000000018071E1E0
+		public int doit(TestInterface ti, TestInterface2 ti2, TestInterface3 ti3) => default; // 0x000000018071E0B0-0x000000018071E150
+		public void calltypes(ref Vector3 vin, ref Vector3 vout, ref Vector3 vref, params /* 0x0000000180001CC0-0x0000000180001CD0 */ Vector3[] vparams) {} // 0x000000018071E090-0x000000018071E0B0
 		public void callgeneric<T>(ITestGeneric<T> it, T t) {}
-		public void callints(IT1 it1, IT2 it2, IT3 it3) {} // 0x00000001807231B0-0x0000000180723290
-		private void Start() {} // 0x0000000180722B50-0x0000000180723160
-		private void Update() {} // 0x0000000180723160-0x00000001807231B0
+		public void callints(IT1 it1, IT2 it2, IT3 it3) {} // 0x000000018071DFB0-0x000000018071E090
+		private void Start() {} // 0x000000018071D950-0x000000018071DF60
+		private void Update() {} // 0x000000018071DF60-0x000000018071DFB0
 	}
 }

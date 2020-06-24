@@ -13,39 +13,39 @@ using System.Security;
 using Il2CppTests.TestSources;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-2871
-[assembly: AllowPartiallyTrustedCallers] // 0x1000C7C0-0x1000CA90
-// [assembly: AssemblyCompany] // 0x1000C7C0-0x1000CA90
-// [assembly: AssemblyCopyright] // 0x1000C7C0-0x1000CA90
-// [assembly: AssemblyDefaultAlias] // 0x1000C7C0-0x1000CA90
-// [assembly: AssemblyDelaySign] // 0x1000C7C0-0x1000CA90
-// [assembly: AssemblyDescription] // 0x1000C7C0-0x1000CA90
-// [assembly: AssemblyFileVersion] // 0x1000C7C0-0x1000CA90
-// [assembly: AssemblyInformationalVersion] // 0x1000C7C0-0x1000CA90
-// [assembly: AssemblyKeyFile] // 0x1000C7C0-0x1000CA90
-// [assembly: AssemblyProduct] // 0x1000C7C0-0x1000CA90
-// [assembly: AssemblyTitle] // 0x1000C7C0-0x1000CA90
-// [assembly: CLSCompliant] // 0x1000C7C0-0x1000CA90
-// [assembly: ComCompatibleVersion] // 0x1000C7C0-0x1000CA90
-// [assembly: CompilationRelaxations] // 0x1000C7C0-0x1000CA90
-// [assembly: ComVisible] // 0x1000C7C0-0x1000CA90
-// [assembly: Debuggable] // 0x1000C7C0-0x1000CA90
-// [assembly: DefaultDependency] // 0x1000C7C0-0x1000CA90
-// [assembly: Guid] // 0x1000C7C0-0x1000CA90
-// [assembly: InternalsVisibleTo] // 0x1000C7C0-0x1000CA90
-// [assembly: InternalsVisibleTo] // 0x1000C7C0-0x1000CA90
-// [assembly: InternalsVisibleTo] // 0x1000C7C0-0x1000CA90
-// [assembly: InternalsVisibleTo] // 0x1000C7C0-0x1000CA90
-// [assembly: InternalsVisibleTo] // 0x1000C7C0-0x1000CA90
-// [assembly: NeutralResourcesLanguage] // 0x1000C7C0-0x1000CA90
-[assembly: RuntimeCompatibility] // 0x1000C7C0-0x1000CA90
-// [assembly: SatelliteContractVersion] // 0x1000C7C0-0x1000CA90
-[assembly: StringFreezing] // 0x1000C7C0-0x1000CA90
+[assembly: AllowPartiallyTrustedCallers] // 0x1000CC50-0x1000CF20
+// [assembly: AssemblyCompany] // 0x1000CC50-0x1000CF20
+// [assembly: AssemblyCopyright] // 0x1000CC50-0x1000CF20
+// [assembly: AssemblyDefaultAlias] // 0x1000CC50-0x1000CF20
+// [assembly: AssemblyDelaySign] // 0x1000CC50-0x1000CF20
+// [assembly: AssemblyDescription] // 0x1000CC50-0x1000CF20
+// [assembly: AssemblyFileVersion] // 0x1000CC50-0x1000CF20
+// [assembly: AssemblyInformationalVersion] // 0x1000CC50-0x1000CF20
+// [assembly: AssemblyKeyFile] // 0x1000CC50-0x1000CF20
+// [assembly: AssemblyProduct] // 0x1000CC50-0x1000CF20
+// [assembly: AssemblyTitle] // 0x1000CC50-0x1000CF20
+// [assembly: CLSCompliant] // 0x1000CC50-0x1000CF20
+// [assembly: ComCompatibleVersion] // 0x1000CC50-0x1000CF20
+// [assembly: CompilationRelaxations] // 0x1000CC50-0x1000CF20
+// [assembly: ComVisible] // 0x1000CC50-0x1000CF20
+// [assembly: Debuggable] // 0x1000CC50-0x1000CF20
+// [assembly: DefaultDependency] // 0x1000CC50-0x1000CF20
+// [assembly: Guid] // 0x1000CC50-0x1000CF20
+// [assembly: InternalsVisibleTo] // 0x1000CC50-0x1000CF20
+// [assembly: InternalsVisibleTo] // 0x1000CC50-0x1000CF20
+// [assembly: InternalsVisibleTo] // 0x1000CC50-0x1000CF20
+// [assembly: InternalsVisibleTo] // 0x1000CC50-0x1000CF20
+// [assembly: InternalsVisibleTo] // 0x1000CC50-0x1000CF20
+// [assembly: NeutralResourcesLanguage] // 0x1000CC50-0x1000CF20
+[assembly: RuntimeCompatibility] // 0x1000CC50-0x1000CF20
+// [assembly: SatelliteContractVersion] // 0x1000CC50-0x1000CF20
+[assembly: StringFreezing] // 0x1000CC50-0x1000CF20
 
 // Image 1: CustomAttributeData.dll - Assembly: CustomAttributeData, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 2872-2875
-// [assembly: CompilationRelaxations] // 0x1000B080-0x1000B0F0
-// [assembly: Debuggable] // 0x1000B080-0x1000B0F0
-[assembly: Example] // 0x1000B080-0x1000B0F0
-[assembly: RuntimeCompatibility] // 0x1000B080-0x1000B0F0
+// [assembly: CompilationRelaxations] // 0x1000B590-0x1000B600
+// [assembly: Debuggable] // 0x1000B590-0x1000B600
+[assembly: Example] // 0x1000B590-0x1000B600
+[assembly: RuntimeCompatibility] // 0x1000B590-0x1000B600
 
 internal static class Interop // TypeDefIndex: 2
 {
@@ -125,11 +125,11 @@ internal static class Consts // TypeDefIndex: 5
 internal sealed class Locale // TypeDefIndex: 6
 {
 	// Constructors
-	private Locale() {} // 0x100F4510-0x100F4520
+	private Locale() {} // 0x100F5550-0x100F5560
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x101153B0-0x101153C0
-	public static string GetText(string fmt, params /* 0x100030A0-0x100030C0 */ object[] args) => default; // 0x102B2AA0-0x102B2AB0
+	public static string GetText(string msg) => default; // 0x10116390-0x101163A0
+	public static string GetText(string fmt, params /* 0x10003150-0x10003170 */ object[] args) => default; // 0x102B2CB0-0x102B2CC0
 }
 
 internal static class SR // TypeDefIndex: 7
@@ -958,14 +958,14 @@ internal static class SR // TypeDefIndex: 7
 	public const string OutstandingReferences = "Release all references before disposing this instance."; // Metadata: 0x00184D30
 
 	// Methods
-	internal static string GetString(string name, params /* 0x100030A0-0x100030C0 */ object[] args) => default; // 0x10158960-0x101589C0
-	internal static string GetString(CultureInfo culture, string name, params /* 0x100030A0-0x100030C0 */ object[] args) => default; // 0x101589D0-0x101589E0
-	internal static string GetString(string name) => default; // 0x101153B0-0x101153C0
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x101589C0-0x101589D0
-	internal static string Format(string resourceFormat, params /* 0x100030A0-0x100030C0 */ object[] args) => default; // 0x10158830-0x101588A0
-	internal static string Format(string resourceFormat, object p1) => default; // 0x10158900-0x10158960
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x101587D0-0x10158830
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x101588A0-0x10158900
+	internal static string GetString(string name, params /* 0x10003150-0x10003170 */ object[] args) => default; // 0x10159660-0x101596C0
+	internal static string GetString(CultureInfo culture, string name, params /* 0x10003150-0x10003170 */ object[] args) => default; // 0x101596D0-0x101596E0
+	internal static string GetString(string name) => default; // 0x10116390-0x101163A0
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x101596C0-0x101596D0
+	internal static string Format(string resourceFormat, params /* 0x10003150-0x10003170 */ object[] args) => default; // 0x10159530-0x101595A0
+	internal static string Format(string resourceFormat, object p1) => default; // 0x10159600-0x10159660
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x101594D0-0x10159530
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x101595A0-0x10159600
 }
 
 namespace Il2CppTests.TestSources
@@ -978,7 +978,7 @@ namespace Il2CppTests.TestSources
 		FourthKind = 3
 	}
 
-	[AttributeUsage(AttributeTargets.All)] // 0x1000B170-0x1000B190
+	[AttributeUsage(AttributeTargets.All)] // 0x1000B680-0x1000B6A0
 	public class ExampleAttribute : Attribute // TypeDefIndex: 2874
 	{
 		// Fields
@@ -988,25 +988,25 @@ namespace Il2CppTests.TestSources
 		private int[] arrayNumbers; // 0x14
 	
 		// Properties
-		public ExampleKind Kind { get => default; } // 0x100F45C0-0x100F45D0 
-		public string[] Strings { get => default; } // 0x100F53D0-0x100F53E0 
-		public string Note { get => default; set {} } // 0x100F53F0-0x100F5400 0x100F86E0-0x100F86F0
-		public int[] Numbers { get => default; set {} } // 0x100F5400-0x100F5410 0x100F8550-0x100F8560
+		public ExampleKind Kind { get => default; } // 0x100F5600-0x100F5610 
+		public string[] Strings { get => default; } // 0x100F6410-0x100F6420 
+		public string Note { get => default; set {} } // 0x100F6430-0x100F6440 0x100F9730-0x100F9740
+		public int[] Numbers { get => default; set {} } // 0x100F6440-0x100F6450 0x100F95A0-0x100F95B0
 	
 		// Constructors
-		public ExampleAttribute(ExampleKind initKind, string[] initStrings) {} // 0x10111B30-0x10111B60
-		public ExampleAttribute(ExampleKind initKind) {} // 0x103E7F90-0x103E7FC0
-		public ExampleAttribute() {} // 0x105F2330-0x105F2330
+		public ExampleAttribute(ExampleKind initKind, string[] initStrings) {} // 0x10112AF0-0x10112B20
+		public ExampleAttribute(ExampleKind initKind) {} // 0x103E7FC0-0x103E7FF0
+		public ExampleAttribute() {} // 0x105F2350-0x105F2350
 	}
 
-	[Example] // 0x1000B190-0x1000B250
+	[Example] // 0x1000B6A0-0x1000B760
 	public class Test // TypeDefIndex: 2875
 	{
 		// Constructors
-		public Test() {} // 0x100F4510-0x100F4520
+		public Test() {} // 0x100F5550-0x100F5560
 	
 		// Methods
-		[Example] // 0x1000B2C0-0x1000B300
-		public void TestMethod([Example] /* 0x1000B330-0x1000B350 */ object arg) {} // 0x100F5940-0x100F5950
+		[Example] // 0x1000B7D0-0x1000B810
+		public void TestMethod([Example] /* 0x1000B840-0x1000B860 */ object arg) {} // 0x100F6980-0x100F6990
 	}
 }

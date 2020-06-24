@@ -16,45 +16,59 @@
 
   <ItemGroup>
     <Compile Remove="TestAssemblies\**" />
+    <Compile Remove="TestCpp\**" />
     <Compile Remove="TestBinaries\**" />
     <Compile Remove="TestExpectedResults\**" />
     <Compile Remove="TestSources\**" />
     <EmbeddedResource Remove="TestAssemblies\**" />
+    <EmbeddedResource Remove="TestCpp\**" />
     <EmbeddedResource Remove="TestBinaries\**" />
     <EmbeddedResource Remove="TestExpectedResults\**" />
     <None Remove="TestAssemblies\**" />
+    <None Remove="TestCpp\**" />
     <None Remove="TestBinaries\**" />
     <None Remove="TestExpectedResults\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="TestExpectedResults\ExplicitInterfaces.cs" />
+    <Content Include="TestExpectedResults\ExplicitInterfaces-ARMv7.cs" />
+    <Content Include="TestExpectedResults\ExplicitInterfaces-ARM64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-ExplicitInterfaces-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-ExplicitInterfaces-x86.cs" />
     <Content Include="TestExpectedResults\GameAssembly-Scope-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-Scope-x86.cs" />
-    <Content Include="TestExpectedResults\Scope.cs" />
+    <Content Include="TestExpectedResults\Scope-ARMv7.cs" />
+    <Content Include="TestExpectedResults\Scope-ARM64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-Properties-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-Properties-x86.cs" />
     <Content Include="TestExpectedResults\GameAssembly-References-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-References-x86.cs" />
-    <Content Include="TestExpectedResults\Properties.cs" />
-    <Content Include="TestExpectedResults\References.cs" />
-    <Content Include="TestExpectedResults\ArraysAndPointers.cs" />
-    <Content Include="TestExpectedResults\CustomAttributeData.cs" />
+    <Content Include="TestExpectedResults\Properties-ARMv7.cs" />
+    <Content Include="TestExpectedResults\Properties-ARM64.cs" />
+    <Content Include="TestExpectedResults\References-ARMv7.cs" />
+    <Content Include="TestExpectedResults\References-ARM64.cs" />
+    <Content Include="TestExpectedResults\ArraysAndPointers-ARMv7.cs" />
+    <Content Include="TestExpectedResults\ArraysAndPointers-ARM64.cs" />
+    <Content Include="TestExpectedResults\CustomAttributeData-ARMv7.cs" />
+    <Content Include="TestExpectedResults\CustomAttributeData-ARM64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-ArraysAndPointers-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-ArraysAndPointers-x86.cs" />
     <Content Include="TestExpectedResults\GameAssembly-CustomAttributeData-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-CustomAttributeData-x86.cs" />
     <Content Include="TestExpectedResults\GameAssembly-GenericTypes-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-GenericTypes-x86.cs" />
-    <Content Include="TestExpectedResults\GenericTypes.cs" />
+    <Content Include="TestExpectedResults\GenericTypes-ARMv7.cs" />
+    <Content Include="TestExpectedResults\GenericTypes-ARM64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-Methods-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-Methods-x86.cs" />
-    <Content Include="TestExpectedResults\Methods.cs" />
-    <Content Include="TestExpectedResults\CSharp1.cs" />
-    <Content Include="TestExpectedResults\CSharp2.cs" />
-    <Content Include="TestExpectedResults\CSharp3.cs" />
+    <Content Include="TestExpectedResults\Methods-ARMv7.cs" />
+    <Content Include="TestExpectedResults\Methods-ARM64.cs" />
+    <Content Include="TestExpectedResults\CSharp1-ARMv7.cs" />
+    <Content Include="TestExpectedResults\CSharp1-ARM64.cs" />
+    <Content Include="TestExpectedResults\CSharp2-ARMv7.cs" />
+    <Content Include="TestExpectedResults\CSharp2-ARM64.cs" />
+    <Content Include="TestExpectedResults\CSharp3-ARMv7.cs" />
+    <Content Include="TestExpectedResults\CSharp3-ARM64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-CSharp1-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-CSharp1-x86.cs" />
     <Content Include="TestExpectedResults\GameAssembly-CSharp2-x64.cs" />
@@ -65,8 +79,10 @@
     <Content Include="TestExpectedResults\GameAssembly-PartialGenericTypes-x86.cs" />
     <Content Include="TestExpectedResults\GameAssembly-VTablesAndLayout-x64.cs" />
     <Content Include="TestExpectedResults\GameAssembly-VTablesAndLayout-x86.cs" />
-    <Content Include="TestExpectedResults\PartialGenericTypes.cs" />
-    <Content Include="TestExpectedResults\VTablesAndLayout.cs" />
+    <Content Include="TestExpectedResults\PartialGenericTypes-ARMv7.cs" />
+    <Content Include="TestExpectedResults\PartialGenericTypes-ARM64.cs" />
+    <Content Include="TestExpectedResults\VTablesAndLayout-ARMv7.cs" />
+    <Content Include="TestExpectedResults\VTablesAndLayout-ARM64.cs" />
   </ItemGroup>
 
   <ItemGroup>
