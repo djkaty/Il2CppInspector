@@ -1,6 +1,6 @@
 # Il2CppInspector
 
-Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the most complete analysis available from any public IL2CPP tooling.
+Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the most complete analysis currently available.
 
 Main features:
 
@@ -15,6 +15,8 @@ Main features:
 * Supports all major file formats and processor architectures
 
 * Works on Windows, MacOS X and Linux. Integrated GUI for Windows users
+
+You can read more about IL2CPP in my series [IL2CPP Reverse-Engineering](https://katyscode.wordpress.com/category/reverse-engineering/il2cpp/).
 
 **NOTE**: Il2CppInspector is not a decompiler. It can provide you with the structure of an application and function addresses for every method so that you can easily jump straight to methods of interest in your disassembler. It does not attempt to recover the entire source code of the application.
 
@@ -181,7 +183,7 @@ Unity version | IL2CPP version | Support
 2017.1.x-2018.2.x | 24.0 | Working
 2018.3.x-2018.4.x | 24.1 | Working
 2019.1.x-2019.3.6 | 24.2 | Working
-2019.3.7-2019.3.x | 24.3 | Untested
+2019.3.7-2019.4.x | 24.3 | Working
 2020.1 | 24.? | Awaiting stable release
 
 Please refer to the separate repository https://github.com/nneonneo/Il2CppVersions if you would like to track the changes between each IL2CPP release version.
