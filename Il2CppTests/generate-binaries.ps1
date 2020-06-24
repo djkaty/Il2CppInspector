@@ -144,11 +144,28 @@ gci $asm -filter $assemblies | % {
 	mv -Force $bin/$name/Data/metadata/global-metadata.dat $bin/$name
 	rm -Force -Recurse $bin/$name/Data
 
-	# ARM
-	$name = "$($_.BaseName)"
+	# ARMv7
+	$name = "$($_.BaseName)-ARMv7"
 	echo "Running il2cpp for test assembly $name (Android/ARMv7)..."
 	md $bin/$name 2>&1 >$null
 	& $il2cpp $arg '--platform=Android', '--architecture=ARMv7', `
+				"--assembly=$asm/$_,$mscorlib", `
+				"--outputpath=$bin/$name/$name.so", `
+				"--additional-include-directories=$AndroidPlayer/Tools/bdwgc/include" `
+				"--additional-include-directories=$AndroidPlayer/Tools/libil2cpp/include" `
+				"--tool-chain-path=$AndroidNDK"
+	if ($LastExitCode -ne 0) {
+		Write-Error "IL2CPP error - aborting"
+		Exit
+	}
+	mv -Force $bin/$name/Data/metadata/global-metadata.dat $bin/$name
+	rm -Force -Recurse $bin/$name/Data
+
+	# ARMv8 / A64
+	$name = "$($_.BaseName)-ARM64"
+	echo "Running il2cpp for test assembly $name (Android/ARM64)..."
+	md $bin/$name 2>&1 >$null
+	& $il2cpp $arg '--platform=Android', '--architecture=ARM64', `
 				"--assembly=$asm/$_,$mscorlib", `
 				"--outputpath=$bin/$name/$name.so", `
 				"--additional-include-directories=$AndroidPlayer/Tools/bdwgc/include" `
