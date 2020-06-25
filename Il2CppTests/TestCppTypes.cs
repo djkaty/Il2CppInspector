@@ -5,6 +5,7 @@
 */
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using Il2CppInspector.Cpp;
 using Il2CppInspector.Outputs.UnityHeaders;
@@ -21,6 +22,9 @@ namespace Il2CppInspector
             // TODO: Flesh out CppTypes test
 
             var cppTypes = CppTypes.FromUnityHeaders(new UnityVersion("2019.3.1f1"));
+
+            foreach (var cppType in cppTypes.Types)
+                Debug.WriteLine(cppType.Key + ":\n" + cppType.Value + "\n");
 
             throw new NotImplementedException();
         }
