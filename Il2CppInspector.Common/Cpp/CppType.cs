@@ -30,35 +30,45 @@ namespace Il2CppInspector.Cpp
     public class CppType
     {
         // The name of the type
-        protected string name;
-
-        public virtual string Name {
-            get => name;
-            set => name = value;
-        }
+        public virtual string Name { get; set; }
 
         // The size of the C++ type in bytes
-        public virtual int Size { get; protected set; }
+        public virtual int Size { get; set; }
 
-        public CppType(string name, int size) {
+        public CppType(string name = null, int size = 0) {
             Name = name;
             Size = size;
         }
 
         // Generate pointer to this type
-        public CppPointerType AsPointer(int WordSize, string Name = null) => new CppPointerType(WordSize) {Name = Name, ElementType = this};
+        public CppPointerType AsPointer(int WordSize) => new CppPointerType(WordSize, this);
 
-        public override string ToString() => $"/* {Size:x2} */ {Name}";
+        // Generate typedef to this type
+        public CppAlias AsAlias(string Name) => new CppAlias(Name, this);
+
+        public override string ToString() => $"/* {Size:x2} - {Name} */";
     }
 
     // A pointer type
     public class CppPointerType : CppType
     {
-        public override string Name => name ?? ElementType.Name + "*";
+        public override string Name => ElementType.Name + "*";
 
-        public CppType ElementType { get; set; }
+        public CppType ElementType { get; }
 
-        public CppPointerType(int WordSize) : base(null, WordSize) {}
+        public CppPointerType(int WordSize, CppType elementType) : base(null, WordSize) => ElementType = elementType;
+    }
+
+    // A typedef alias
+    public class CppAlias : CppType
+    {
+        public CppType ElementType { get; }
+
+        public override int Size => ElementType.Size;
+
+        public CppAlias(string name, CppType elementType) : base(name) => ElementType = elementType;
+
+        public override string ToString() => $"typedef {ElementType.Name} {Name};";
     }
 
     // A struct, union or class type (type with fields)
@@ -103,7 +113,7 @@ namespace Il2CppInspector.Cpp
             foreach (var field in Fields.Values.SelectMany(f => f))
                 sb.AppendLine("  " + field);
 
-            sb.Append($"}} /* Size: 0x{Size:x2} */");
+            sb.Append($"}} /* Size: 0x{Size:x2} */;");
 
             return sb.ToString();
         }
@@ -129,7 +139,7 @@ namespace Il2CppInspector.Cpp
         // C++ representation of field (might be incorrect due to the above)
         public override string ToString() => $"/* 0x{Offset:x2} - 0x{Offset + Size - 1:x2} (0x{Size:x2}) */"
                                              // nested anonymous types
-                                             + (Type is CppComplexType && Type.Name == "" ? "\n" + Type + " " + Name :
+                                             + (Type is CppComplexType && Type.Name == "" ? "\n" + Type.ToString()[..^1] + " " + Name :
                                              // regular fields
                                              $" {Type.Name} {Name}")
                                              + ";";
@@ -181,10 +191,10 @@ namespace Il2CppInspector.Cpp
             var rgxExternDecl = new Regex(@"struct (\S+);");
             var rgxTypedefForwardDecl = new Regex(@"typedef struct (\S+) (\S+);");
             var rgxTypedefFnPtr = new Regex(@"typedef\s+(?:struct )?\S+\s*\(\s*\*(\S+)\)\s*\(.*\);");
-            var rgxTypedefPtr = new Regex(@"typedef (\S+)\s*\*\s*(\S+);");
+            var rgxTypedefPtr = new Regex(@"typedef (\S+?)\s*\*+\s*(\S+);");
             var rgxTypedef = new Regex(@"typedef (\S+) (\S+);");
             var rgxFieldFnPtr = new Regex(@"\S+\s*\(\s*\*(\S+)\)\s*\(.*\);");
-            var rgxFieldPtr = new Regex(@"^(?:struct )?(\S+)\s*\*\s*(\S+);");
+            var rgxFieldPtr = new Regex(@"^(?:struct )?(\S+?)\s*\*+\s*(\S+);");
             var rgxFieldVal = new Regex(@"^(?:struct )?(\S+)\s+(\S+);");
 
             var currentType = new Stack<CppComplexType>();
@@ -200,7 +210,6 @@ namespace Il2CppInspector.Cpp
             // TODO: #ifdef IS_32BIT
             // TODO: volatile
             // TODO: function pointer signatures
-            // TODO: multiple indirection
 
             while ((line = lines.ReadLine()) != null) {
 
@@ -210,8 +219,7 @@ namespace Il2CppInspector.Cpp
                 line = line.Replace("const*", "*");
                 if (line.StartsWith("const "))
                     line = line.Substring(6);
-                line = line.Replace("**", "*"); // we don't care about pointers to pointers
-                line = line.Replace("* *", "*"); // pointer to const pointer
+                line = line.Replace("* *", "**"); // pointer to const pointer
 
                 // External declaration
                 // struct <external-type>;
@@ -256,14 +264,20 @@ namespace Il2CppInspector.Cpp
                 }
 
                 // Pointer alias
-                // typedef <targetType>* <alias>;
+                // typedef <targetType>*+ <alias>;
                 typedef = rgxTypedefPtr.Match(line);
                 if (typedef.Success) {
                     var alias = typedef.Groups[2].Captures[0].ToString();
                     var existingType = typedef.Groups[1].Captures[0].ToString();
-                    Types.Add(alias, Types[existingType].AsPointer(WordSize, alias));
 
-                    Debug.WriteLine($"[TYPEDEF PTR  ] {line}  --  Adding pointer typedef from {existingType} to {alias}");
+                    // Potential multiple indirection
+                    var type = Types[existingType];
+                    for (int i = 0; i < line.Count(c => c == '*'); i++)
+                        type = type.AsPointer(WordSize);
+
+                    Types.Add(alias, type.AsAlias(alias));
+
+                    Debug.WriteLine($"[TYPEDEF PTR  ] {line}  --  Adding pointer typedef from {type.Name} to {alias}");
                     continue;
                 }
 
@@ -274,7 +288,7 @@ namespace Il2CppInspector.Cpp
                     var alias = typedef.Groups[2].Captures[0].ToString();
                     var existingType = typedef.Groups[1].Captures[0].ToString();
 
-                    Types.Add(alias, Types[existingType]);
+                    Types.Add(alias, Types[existingType].AsAlias(alias));
 
                     Debug.WriteLine($"[TYPEDEF ALIAS] {line}  --  Adding typedef from {existingType} to {alias}");
                     continue;
@@ -402,10 +416,15 @@ namespace Il2CppInspector.Cpp
                 if (fieldPtr.Success || fieldVal.Success) {
                     var fieldMatch = fieldPtr.Success ? fieldPtr : fieldVal;
                     var name = fieldMatch.Groups[2].Captures[0].ToString();
-                    var type = fieldMatch.Groups[1].Captures[0].ToString();
+                    var typeName = fieldMatch.Groups[1].Captures[0].ToString();
+
+                    // Potential multiple indirection
+                    var type = Types[typeName];
+                    for (int i = 0; i < line.Count(c => c == '*'); i++)
+                        type = type.AsPointer(WordSize);
 
                     var ct = currentType.Peek();
-                    ct.AddField(new CppField {Name = name, Type = fieldPtr.Success? Types[type].AsPointer(WordSize) : Types[type]});
+                    ct.AddField(new CppField {Name = name, Type = type});
 
                     Debug.WriteLine($"[FIELD {(fieldPtr.Success? "PTR":"VAL")}    ] {line}  --  {name}");
                     continue;
