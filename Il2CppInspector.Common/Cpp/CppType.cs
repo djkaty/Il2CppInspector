@@ -106,14 +106,23 @@ namespace Il2CppInspector.Cpp
         // Summarize all field names and offsets
         public override string ToString() {
             var sb = new StringBuilder();
-
+            
+            if (Name.Length > 0)
+                sb.Append("typedef ");
             sb.Append(CompoundType == CompoundType.Struct ? "struct " : "union ");
-            sb.AppendLine(Name + (Name.Length > 0? " ":"") + "{");
+            sb.Append(Name + (Name.Length > 0 ? " " : ""));
 
-            foreach (var field in Fields.Values.SelectMany(f => f))
-                sb.AppendLine("  " + field);
+            if (Fields.Any()) {
+                sb.AppendLine("{");
+                foreach (var field in Fields.Values.SelectMany(f => f))
+                    sb.AppendLine("  " + field);
 
-            sb.Append($"}} /* Size: 0x{Size:x2} */;");
+                sb.Append($"}} {Name}{(Name.Length > 0 ? " " : "")}/* Size: 0x{Size:x2} */;");
+            }
+            // Forward declaration
+            else {
+                sb.Append($"{Name};");
+            }
 
             return sb.ToString();
         }
@@ -191,11 +200,12 @@ namespace Il2CppInspector.Cpp
             var rgxExternDecl = new Regex(@"struct (\S+);");
             var rgxTypedefForwardDecl = new Regex(@"typedef struct (\S+) (\S+);");
             var rgxTypedefFnPtr = new Regex(@"typedef\s+(?:struct )?\S+\s*\(\s*\*(\S+)\)\s*\(.*\);");
-            var rgxTypedefPtr = new Regex(@"typedef (\S+?)\s*\*+\s*(\S+);");
-            var rgxTypedef = new Regex(@"typedef (\S+) (\S+);");
+            var rgxTypedef = new Regex(@"typedef (\S+?)\s*\**\s*(\S+);");
             var rgxFieldFnPtr = new Regex(@"\S+\s*\(\s*\*(\S+)\)\s*\(.*\);");
-            var rgxFieldPtr = new Regex(@"^(?:struct )?(\S+?)\s*\*+\s*(\S+);");
-            var rgxFieldVal = new Regex(@"^(?:struct )?(\S+)\s+(\S+);");
+            var rgxField = new Regex(@"^(?:struct )?(\S+?)\s*\**\s*(\S+);");
+
+            var rgxStripKeywords = new Regex(@"\b(?:const|unsigned|volatile)\b");
+            var rgxCompressPtrs = new Regex(@"\*\s+\*");
 
             var currentType = new Stack<CppComplexType>();
             bool inEnum = false;
@@ -204,22 +214,17 @@ namespace Il2CppInspector.Cpp
             // TODO: Bitfields
             // TODO: Arrays
             // TODO: Alignment directives
-            // TODO: unsigned
             // TODO: enum prefix in field (Il2CppWindowsRuntimeTypeName)
             // TODO: comma-separated fields
             // TODO: #ifdef IS_32BIT
-            // TODO: volatile
             // TODO: function pointer signatures
 
             while ((line = lines.ReadLine()) != null) {
 
                 // Sanitize
+                line = rgxStripKeywords.Replace(line, "");
+                line = rgxCompressPtrs.Replace(line, "**");
                 line = line.Trim();
-                line = line.Replace(" const ", " ");
-                line = line.Replace("const*", "*");
-                if (line.StartsWith("const "))
-                    line = line.Substring(6);
-                line = line.Replace("* *", "**"); // pointer to const pointer
 
                 // External declaration
                 // struct <external-type>;
@@ -238,15 +243,16 @@ namespace Il2CppInspector.Cpp
                 // typedef struct <struct-type> <alias>
                 var typedef = rgxTypedefForwardDecl.Match(line);
                 if (typedef.Success) {
-                    // We're lazy so we're just going to hope that the struct and alias names are the same
                     var alias = typedef.Groups[2].Captures[0].ToString();
                     var declType = typedef.Groups[1].Captures[0].ToString();
 
-                    Debug.Assert(alias == declType);
-
                     // Sometimes we might get multiple forward declarations for the same type
+                    if (!Types.ContainsKey(declType))
+                        Types.Add(declType, new CppComplexType(CompoundType.Struct) {Name = declType});
+
+                    // Sometimes the alias might be the same name as the type (this is usually the case)
                     if (!Types.ContainsKey(alias))
-                        Types.Add(alias, new CppComplexType(CompoundType.Struct) {Name = alias});
+                        Types.Add(alias, Types[declType].AsAlias(alias));
 
                     Debug.WriteLine($"[FORWARD DECL ] {line}");
                     continue;
@@ -263,34 +269,22 @@ namespace Il2CppInspector.Cpp
                     continue;
                 }
 
-                // Pointer alias
-                // typedef <targetType>*+ <alias>;
-                typedef = rgxTypedefPtr.Match(line);
+                // Alias
+                // typedef <targetType>[*..] <alias>;
+                typedef = rgxTypedef.Match(line);
                 if (typedef.Success) {
                     var alias = typedef.Groups[2].Captures[0].ToString();
                     var existingType = typedef.Groups[1].Captures[0].ToString();
 
                     // Potential multiple indirection
                     var type = Types[existingType];
-                    for (int i = 0; i < line.Count(c => c == '*'); i++)
+                    var pointers = line.Count(c => c == '*');
+                    for (int i = 0; i < pointers; i++)
                         type = type.AsPointer(WordSize);
 
                     Types.Add(alias, type.AsAlias(alias));
 
-                    Debug.WriteLine($"[TYPEDEF PTR  ] {line}  --  Adding pointer typedef from {type.Name} to {alias}");
-                    continue;
-                }
-
-                // Alias
-                // typedef <targetType> <alias>;
-                typedef = rgxTypedef.Match(line);
-                if (typedef.Success) {
-                    var alias = typedef.Groups[2].Captures[0].ToString();
-                    var existingType = typedef.Groups[1].Captures[0].ToString();
-
-                    Types.Add(alias, Types[existingType].AsAlias(alias));
-
-                    Debug.WriteLine($"[TYPEDEF ALIAS] {line}  --  Adding typedef from {existingType} to {alias}");
+                    Debug.WriteLine($"[TYPEDEF {(pointers > 0? "PTR":"VAL")}  ] {line}  --  Adding typedef from {type.Name} to {alias}");
                     continue;
                 }
 
@@ -410,23 +404,22 @@ namespace Il2CppInspector.Cpp
                 }
 
                 // Pointer or value field
-                var fieldPtr = rgxFieldPtr.Match(line);
-                var fieldVal = rgxFieldVal.Match(line);
+                var field = rgxField.Match(line);
 
-                if (fieldPtr.Success || fieldVal.Success) {
-                    var fieldMatch = fieldPtr.Success ? fieldPtr : fieldVal;
-                    var name = fieldMatch.Groups[2].Captures[0].ToString();
-                    var typeName = fieldMatch.Groups[1].Captures[0].ToString();
+                if (field.Success) {
+                    var name = field.Groups[2].Captures[0].ToString();
+                    var typeName = field.Groups[1].Captures[0].ToString();
 
                     // Potential multiple indirection
                     var type = Types[typeName];
-                    for (int i = 0; i < line.Count(c => c == '*'); i++)
+                    var pointers = line.Count(c => c == '*');
+                    for (int i = 0; i < pointers; i++)
                         type = type.AsPointer(WordSize);
 
                     var ct = currentType.Peek();
                     ct.AddField(new CppField {Name = name, Type = type});
 
-                    Debug.WriteLine($"[FIELD {(fieldPtr.Success? "PTR":"VAL")}    ] {line}  --  {name}");
+                    Debug.WriteLine($"[FIELD {(pointers > 0? "PTR":"VAL")}    ] {line}  --  {name}");
                     continue;
                 }
 
