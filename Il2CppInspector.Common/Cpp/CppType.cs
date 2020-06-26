@@ -30,7 +30,12 @@ namespace Il2CppInspector.Cpp
     public class CppType
     {
         // The name of the type
-        public string Name { get; internal set; }
+        protected string name;
+
+        public virtual string Name {
+            get => name;
+            set => name = value;
+        }
 
         // The size of the C++ type in bytes
         public virtual int Size { get; protected set; }
@@ -40,7 +45,20 @@ namespace Il2CppInspector.Cpp
             Size = size;
         }
 
-        public override string ToString() => Name + " // Size: " + Size;
+        // Generate pointer to this type
+        public CppPointerType AsPointer(int WordSize, string Name = null) => new CppPointerType(WordSize) {Name = Name, ElementType = this};
+
+        public override string ToString() => $"/* {Size:x2} */ {Name}";
+    }
+
+    // A pointer type
+    public class CppPointerType : CppType
+    {
+        public override string Name => name ?? ElementType.Name + "*";
+
+        public CppType ElementType { get; set; }
+
+        public CppPointerType(int WordSize) : base(null, WordSize) {}
     }
 
     // A struct, union or class type (type with fields)
@@ -85,7 +103,7 @@ namespace Il2CppInspector.Cpp
             foreach (var field in Fields.Values.SelectMany(f => f))
                 sb.AppendLine("  " + field);
 
-            sb.Append($"}}; // Size: 0x{Size:x2}");
+            sb.Append($"}} /* Size: 0x{Size:x2} */");
 
             return sb.ToString();
         }
@@ -94,30 +112,27 @@ namespace Il2CppInspector.Cpp
     // A field in a C++ type
     public struct CppField
     {
-        // The type collection this belongs to
-        public CppTypes CppTypes { get; set; }
-
         // The name of the field
         public string Name { get; set; }
 
         // The offset of the field into the type
         public int Offset { get; set; }
 
-        // The size of the field (this will differ from the type size if the field is a pointer)
-        public int Size => IsPointer? CppTypes.WordSize : Type.Size;
+        // The size of the field
+        public int Size => Type.Size;
 
         // The type of the field
         // This type will be wrong (by design) for function pointers, pointers to pointers etc.
         // and we only want it to calculate offsets so we hide this
         internal CppType Type { get; set; }
 
-        // True if the field is a pointer
-        internal bool IsPointer { get; set; }
-
         // C++ representation of field (might be incorrect due to the above)
-        public override string ToString() => $"/* 0x{Offset:x2} - 0x{Offset + Size - 1:x2} (0x{Size:x2}) */ " + Name +
+        public override string ToString() => $"/* 0x{Offset:x2} - 0x{Offset + Size - 1:x2} (0x{Size:x2}) */"
                                              // nested anonymous types
-                                             (Type.Name == "" ? "\n" + Type : "");
+                                             + (Type is CppComplexType && Type.Name == "" ? "\n" + Type + " " + Name :
+                                             // regular fields
+                                             $" {Type.Name} {Name}")
+                                             + ";";
     }
 
     // A collection of C++ types
@@ -146,7 +161,8 @@ namespace Il2CppInspector.Cpp
             new CppType("char", 1),
             new CppType("int", 4),
             new CppType("float", 4),
-            new CppType("double", 8)
+            new CppType("double", 8),
+            new CppType("void", 0)
         };
 
         public CppTypes(int wordSize) {
@@ -156,7 +172,6 @@ namespace Il2CppInspector.Cpp
             // This is all compiler-dependent, let's hope for the best!
             Types.Add("uintptr_t", new CppType("uintptr_t", WordSize));
             Types.Add("size_t", new CppType("size_t", WordSize));
-            Types.Add("void", new CppType("void", WordSize));
         }
 
         // Parse a block of C++ source code, adding any types found
@@ -184,6 +199,8 @@ namespace Il2CppInspector.Cpp
             // TODO: comma-separated fields
             // TODO: #ifdef IS_32BIT
             // TODO: volatile
+            // TODO: function pointer signatures
+            // TODO: multiple indirection
 
             while ((line = lines.ReadLine()) != null) {
 
@@ -243,9 +260,10 @@ namespace Il2CppInspector.Cpp
                 typedef = rgxTypedefPtr.Match(line);
                 if (typedef.Success) {
                     var alias = typedef.Groups[2].Captures[0].ToString();
-                    Types.Add(alias, Types["uintptr_t"]);
+                    var existingType = typedef.Groups[1].Captures[0].ToString();
+                    Types.Add(alias, Types[existingType].AsPointer(WordSize, alias));
 
-                    Debug.WriteLine($"[TYPEDEF PTR  ] {line}  --  Adding pointer typedef to {alias}");
+                    Debug.WriteLine($"[TYPEDEF PTR  ] {line}  --  Adding pointer typedef from {existingType} to {alias}");
                     continue;
                 }
 
@@ -358,7 +376,7 @@ namespace Il2CppInspector.Cpp
                     // Otherwise it's a field name in the current type
                     else {
                         var parent = currentType.Peek();
-                        parent.AddField(new CppField { CppTypes = this, Name = name, Type = ct });
+                        parent.AddField(new CppField { Name = name, Type = ct });
 
                         Debug.WriteLine($"[FIELD END    ] {line}  --  {ct.Name} {name}");
                     }
@@ -371,7 +389,7 @@ namespace Il2CppInspector.Cpp
                     var name = fieldFnPtr.Groups[1].Captures[0].ToString();
 
                     var ct = currentType.Peek();
-                    ct.AddField(new CppField() {CppTypes = this, Name = name, Type = Types["uintptr_t"], IsPointer = false});
+                    ct.AddField(new CppField {Name = name, Type = Types["uintptr_t"]});
 
                     Debug.WriteLine($"[FIELD FNPTR  ] {line}  --  {name}");
                     continue;
@@ -387,7 +405,7 @@ namespace Il2CppInspector.Cpp
                     var type = fieldMatch.Groups[1].Captures[0].ToString();
 
                     var ct = currentType.Peek();
-                    ct.AddField(new CppField {CppTypes = this, Name = name, Type = Types[type], IsPointer = fieldPtr.Success});
+                    ct.AddField(new CppField {Name = name, Type = fieldPtr.Success? Types[type].AsPointer(WordSize) : Types[type]});
 
                     Debug.WriteLine($"[FIELD {(fieldPtr.Success? "PTR":"VAL")}    ] {line}  --  {name}");
                     continue;
