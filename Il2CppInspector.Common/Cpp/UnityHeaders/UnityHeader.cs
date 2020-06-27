@@ -64,7 +64,7 @@ namespace Il2CppInspector.Cpp.UnityHeaders
         // List all header files embedded into this build of Il2Cpp
         public static IEnumerable<UnityHeader> GetAllHeaders() {
             string prefix = typeof(UnityHeader).Namespace + ".";
-            Assembly assembly = Assembly.GetCallingAssembly();
+            Assembly assembly = Assembly.GetExecutingAssembly();
             return assembly.GetManifestResourceNames()
                 .Where(s => s.StartsWith(prefix) && s.EndsWith(".h"))
                 .Select(s => new UnityHeader(s.Substring(prefix.Length)));
