@@ -258,7 +258,7 @@ namespace Il2CppInspector.CppUtils
             var rgxTypedefFnPtr = new Regex(@"typedef\s+(?:struct )?" + fnPtr + ";");
             var rgxTypedef = new Regex(@"typedef (\S+?)\s*\**\s*(\S+);");
             var rgxFieldFnPtr = new Regex(fnPtr + @";");
-            var rgxField = new Regex(@"^(?:struct |enum )?(\S+?)\s*\**\s*(\S+)(?:\s*:\s*([0-9]+))?;");
+            var rgxField = new Regex(@"^(?:struct |enum )?(\S+?)\s*\**\s*((?:\S|\s*,\s*)+)(?:\s*:\s*([0-9]+))?;");
 
             var rgxStripKeywords = new Regex(@"\b(?:const|unsigned|volatile)\b");
             var rgxCompressPtrs = new Regex(@"\*\s+\*");
@@ -271,7 +271,6 @@ namespace Il2CppInspector.CppUtils
             bool inEnum = false;
             string line;
 
-            // TODO: comma-separated fields
             // TODO: #ifdef IS_32BIT
             // TODO: function pointer signatures
 
@@ -471,39 +470,44 @@ namespace Il2CppInspector.CppUtils
                 var field = rgxField.Match(line);
 
                 if (field.Success) {
-                    var name = field.Groups[2].Captures[0].ToString();
+                    var names = field.Groups[2].Captures[0].ToString();
                     var typeName = field.Groups[1].Captures[0].ToString();
 
-                    // Array
-                    var array = rgxArrayField.Match(name);
-                    int arraySize = 0;
-                    if (array.Success && array.Groups[2].Captures.Count > 0) {
-                        arraySize = int.Parse(array.Groups[2].Captures[0].ToString());
-                        name = array.Groups[1].Captures[0].ToString();
+                    // Multiple fields can be separated by commas
+                    foreach (var fieldName in names.Split(',')) {
+                        string name = fieldName.Trim();
+
+                        // Array
+                        var array = rgxArrayField.Match(name);
+                        int arraySize = 0;
+                        if (array.Success && array.Groups[2].Captures.Count > 0) {
+                            arraySize = int.Parse(array.Groups[2].Captures[0].ToString());
+                            name = array.Groups[1].Captures[0].ToString();
+                        }
+
+                        // Bitfield
+                        int bitfield = 0;
+                        if (field.Groups[3].Captures.Count > 0)
+                            bitfield = int.Parse(field.Groups[3].Captures[0].ToString());
+
+                        // Potential multiple indirection
+                        var type = Types[typeName];
+                        var pointers = line.Count(c => c == '*');
+                        for (int i = 0; i < pointers; i++)
+                            type = type.AsPointer(WordSize);
+
+                        var ct = currentType.Peek();
+
+                        if (arraySize > 0)
+                            type = type.AsArray(arraySize);
+
+                        ct.AddField(new CppField {Name = name, Type = type, BitfieldSize = bitfield}, alignment);
+
+                        if (bitfield == 0)
+                            Debug.WriteLine($"[FIELD {(pointers > 0 ? "PTR" : "VAL")}    ] {line}  --  {name}");
+                        else
+                            Debug.WriteLine($"[BITFIELD     ] {line}  --  {name} : {bitfield}");
                     }
-
-                    // Bitfield
-                    int bitfield = 0;
-                    if (field.Groups[3].Captures.Count > 0)
-                        bitfield = int.Parse(field.Groups[3].Captures[0].ToString());
-
-                    // Potential multiple indirection
-                    var type = Types[typeName];
-                    var pointers = line.Count(c => c == '*');
-                    for (int i = 0; i < pointers; i++)
-                        type = type.AsPointer(WordSize);
-
-                    var ct = currentType.Peek();
-
-                    if (arraySize > 0)
-                        type = type.AsArray(arraySize);
-
-                    ct.AddField(new CppField {Name = name, Type = type, BitfieldSize = bitfield}, alignment);
-
-                    if (bitfield == 0)
-                        Debug.WriteLine($"[FIELD {(pointers > 0? "PTR":"VAL")}    ] {line}  --  {name}");
-                    else
-                        Debug.WriteLine($"[BITFIELD     ] {line}  --  {name} : {bitfield}");
                     continue;
                 }
 
