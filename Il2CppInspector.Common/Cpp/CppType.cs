@@ -258,7 +258,7 @@ namespace Il2CppInspector.CppUtils
             var rgxTypedefFnPtr = new Regex(@"typedef\s+(?:struct )?" + fnPtr + ";");
             var rgxTypedef = new Regex(@"typedef (\S+?)\s*\**\s*(\S+);");
             var rgxFieldFnPtr = new Regex(fnPtr + @";");
-            var rgxField = new Regex(@"^(?:struct )?(\S+?)\s*\**\s*(\S+)(?:\s*:\s*([0-9]+))?;");
+            var rgxField = new Regex(@"^(?:struct |enum )?(\S+?)\s*\**\s*(\S+)(?:\s*:\s*([0-9]+))?;");
 
             var rgxStripKeywords = new Regex(@"\b(?:const|unsigned|volatile)\b");
             var rgxCompressPtrs = new Regex(@"\*\s+\*");
@@ -271,7 +271,6 @@ namespace Il2CppInspector.CppUtils
             bool inEnum = false;
             string line;
 
-            // TODO: enum prefix in field (Il2CppWindowsRuntimeTypeName)
             // TODO: comma-separated fields
             // TODO: #ifdef IS_32BIT
             // TODO: function pointer signatures
