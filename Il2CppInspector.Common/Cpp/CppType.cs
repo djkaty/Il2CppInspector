@@ -10,11 +10,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using Il2CppInspector.CppUtils.UnityHeaders;
-using Il2CppInspector.Reflection;
 
 namespace Il2CppInspector.CppUtils
 {
@@ -45,6 +43,9 @@ namespace Il2CppInspector.CppUtils
         // Generate pointer to this type
         public CppPointerType AsPointer(int WordSize) => new CppPointerType(WordSize, this);
 
+        // Generate array of this type
+        public CppArrayType AsArray(int Length) => new CppArrayType(this, Length);
+
         // Generate typedef to this type
         public CppAlias AsAlias(string Name) => new CppAlias(Name, this);
 
@@ -59,6 +60,28 @@ namespace Il2CppInspector.CppUtils
         public CppType ElementType { get; }
 
         public CppPointerType(int WordSize, CppType elementType) : base(null, WordSize) => ElementType = elementType;
+    }
+
+    // An array type
+    public class CppArrayType : CppType
+    {
+        public override string Name => ElementType.Name;
+
+        public int Length { get; }
+
+        public CppType ElementType { get; }
+
+        // Even an array of 1-bit bitfirleds must use at least 1 byte each
+        public override int Size => SizeBytes * 8;
+
+        public override int SizeBytes => ElementType.SizeBytes * Length;
+
+        public CppArrayType(CppType elementType, int length) : base(null) {
+            ElementType = elementType;
+            Length = length;
+        }
+
+        public override string ToString() => ElementType + "[" + Length + "]";
     }
 
     // A typedef alias
@@ -96,7 +119,6 @@ namespace Il2CppInspector.CppUtils
 
         // Add a field to the type. Returns the offset of the field in the type
         public int AddField(CppField field) {
-            // TODO: Use InheritanceStyleEnum to determine whether the field is embedded or a pointer
             field.Offset = CompoundType == CompoundType.Struct ? Size : 0;
 
             // If we just came out of a bitfield, move to the next byte if necessary
@@ -168,13 +190,17 @@ namespace Il2CppInspector.CppUtils
         internal CppType Type { get; set; }
 
         // C++ representation of field (might be incorrect due to the above)
-        public override string ToString() => $"/* 0x{OffsetBytes:x2} - 0x{OffsetBytes + SizeBytes - 1:x2} (0x{SizeBytes:x2}) */"
-                                             // nested anonymous types
-                                             + (Type is CppComplexType && Type.Name == "" ? "\n" + Type.ToString()[..^1] + " " + Name :
-                                             // regular fields
-                                             $" {Type.Name} {Name}" + (BitfieldSize > 0? $" : {BitfieldSize}" : ""))
-                                             + ";"
-                                             + (BitfieldSize > 0? $" // bits {BitfieldLSB} - {BitfieldMSB}" : "");
+        public override string ToString() =>
+            $"/* 0x{OffsetBytes:x2} - 0x{OffsetBytes + SizeBytes - 1:x2} (0x{SizeBytes:x2}) */"
+            // nested anonymous types
+            + (Type is CppComplexType && Type.Name == "" ? "\n" + Type.ToString()[..^1] + " " + Name :
+            // regular fields
+            $" {Type.Name} {Name}" + (BitfieldSize > 0? $" : {BitfieldSize}" : ""))
+            // arrays
+            + (Type is CppArrayType? "[" + ((CppArrayType)Type).Length + "]" : "")
+            + ";"
+            // bitfields
+            + (BitfieldSize > 0? $" // bits {BitfieldLSB} - {BitfieldMSB}" : "");
     }
 
     // A collection of C++ types
@@ -231,11 +257,12 @@ namespace Il2CppInspector.CppUtils
             var rgxStripKeywords = new Regex(@"\b(?:const|unsigned|volatile)\b");
             var rgxCompressPtrs = new Regex(@"\*\s+\*");
 
+            var rgxArrayField = new Regex(@"(\S+?)\[([0-9]+)\]");
+
             var currentType = new Stack<CppComplexType>();
             bool inEnum = false;
             string line;
 
-            // TODO: Arrays
             // TODO: Alignment directives
             // TODO: enum prefix in field (Il2CppWindowsRuntimeTypeName)
             // TODO: comma-separated fields
@@ -433,6 +460,15 @@ namespace Il2CppInspector.CppUtils
                     var name = field.Groups[2].Captures[0].ToString();
                     var typeName = field.Groups[1].Captures[0].ToString();
 
+                    // Array
+                    var array = rgxArrayField.Match(name);
+                    int arraySize = 0;
+                    if (array.Success && array.Groups[2].Captures.Count > 0) {
+                        arraySize = int.Parse(array.Groups[2].Captures[0].ToString());
+                        name = array.Groups[1].Captures[0].ToString();
+                    }
+
+                    // Bitfield
                     int bitfield = 0;
                     if (field.Groups[3].Captures.Count > 0)
                         bitfield = int.Parse(field.Groups[3].Captures[0].ToString());
@@ -444,6 +480,10 @@ namespace Il2CppInspector.CppUtils
                         type = type.AsPointer(WordSize);
 
                     var ct = currentType.Peek();
+
+                    if (arraySize > 0)
+                        type = type.AsArray(arraySize);
+
                     ct.AddField(new CppField {Name = name, Type = type, BitfieldSize = bitfield});
 
                     if (bitfield == 0)
