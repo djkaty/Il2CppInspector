@@ -8,7 +8,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace Il2CppInspector.Outputs.UnityHeaders
+namespace Il2CppInspector.CppUtils.UnityHeaders
 {
     // Parsed representation of a Unity version number, such as 5.3.0f1 or 2019.3.7.
     public class UnityVersion : IComparable<UnityVersion>, IEquatable<UnityVersion>

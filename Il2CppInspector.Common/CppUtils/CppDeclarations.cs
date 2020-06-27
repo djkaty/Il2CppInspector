@@ -5,7 +5,7 @@
     All rights reserved.
 */
 
-using Il2CppInspector.Outputs.UnityHeaders;
+using Il2CppInspector.CppUtils.UnityHeaders;
 using Il2CppInspector.Reflection;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Il2CppInspector.Outputs
+namespace Il2CppInspector.CppUtils
 {
     // Class for generating C header declarations from Reflection objects (TypeInfo, etc.)
     public class CppDeclarations
@@ -231,7 +231,7 @@ namespace Il2CppInspector.Outputs
                          * We have to be a little careful: the rootmost class needs to have its alignment
                          * set to that of Il2CppObject, but we can't explicitly include Il2CppObject
                          * in the hierarchy because we want to customize the type of the klass parameter. */
-                        var align = (model.Package.BinaryImage.Bits == 32) ? 4 : 8;
+                        var align = model.Package.BinaryImage.Bits == 32 ? 4 : 8;
                         csrc.Append($"struct __declspec(align({align})) {name}__Fields {{\n");
                         GenerateFieldList(csrc, ns, ti);
                         csrc.Append($"}};\n");
@@ -346,7 +346,7 @@ namespace Il2CppInspector.Outputs
             } else if (ti.HasElementType) {
                 VisitType(ti.ElementType);
                 return;
-            } else if(ti.IsEnum) {
+            } else if (ti.IsEnum) {
                 VisitFieldStructs(ti);
                 VisitType(ti.GetEnumUnderlyingType());
                 return;
@@ -574,7 +574,7 @@ namespace Il2CppInspector.Outputs
                 ns.ReserveName(keyword);
             }
             /* Reserve builtin keywords in IDA */
-            foreach(var keyword in new string[] { "_BYTE", "_DWORD", "_OWORD", "_QWORD", "_UNKNOWN", "_WORD", "__cdecl", "__declspec", "__export", "__far", "__fastcall", "__huge", "__import", "__int128", "__int16", "__int32", "__int64", "__int8", "__interrupt", "__near", "__pascal", "__spoils", "__stdcall", "__thiscall", "__thread", "__unaligned", "__usercall", "__userpurge", "_cs", "_ds", "_es", "_ss", "flat" }) {
+            foreach (var keyword in new string[] { "_BYTE", "_DWORD", "_OWORD", "_QWORD", "_UNKNOWN", "_WORD", "__cdecl", "__declspec", "__export", "__far", "__fastcall", "__huge", "__import", "__int128", "__int16", "__int32", "__int64", "__int8", "__interrupt", "__near", "__pascal", "__spoils", "__stdcall", "__thiscall", "__thread", "__unaligned", "__usercall", "__userpurge", "_cs", "_ds", "_es", "_ss", "flat" }) {
                 ns.ReserveName(keyword);
             }
             return ns;
