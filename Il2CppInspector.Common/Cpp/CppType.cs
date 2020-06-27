@@ -240,7 +240,10 @@ namespace Il2CppInspector.CppUtils
         };
 
         public CppTypes(int wordSize) {
-            WordSize = wordSize * 8;
+            if (wordSize != 32 && wordSize != 64)
+                throw new ArgumentOutOfRangeException("Architecture word size must be 32 or 64-bit to generate C++ data");
+
+            WordSize = wordSize;
             Types = primitiveTypes.ToDictionary(t => t.Name, t => t);
 
             // This is all compiler-dependent, let's hope for the best!
@@ -266,12 +269,13 @@ namespace Il2CppInspector.CppUtils
             var rgxArrayField = new Regex(@"(\S+?)\[([0-9]+)\]");
 
             var rgxAlignment = new Regex(@"__attribute__\(\(aligned\(([0-9]+)\)\)\)");
+            var rgxIsBitDirective = new Regex(@"#ifdef\s+IS_(32|64)BIT");
 
             var currentType = new Stack<CppComplexType>();
             bool inEnum = false;
+            bool falseIfBlock = false;
             string line;
 
-            // TODO: #ifdef IS_32BIT
             // TODO: function pointer signatures
 
             while ((line = lines.ReadLine()) != null) {
@@ -288,6 +292,35 @@ namespace Il2CppInspector.CppUtils
                 }
 
                 line = line.Trim();
+
+                // Process #ifs before anything else
+                // Doesn't handle nesting but we probably don't need to (use a Stack if we do)
+                var ifdef = rgxIsBitDirective.Match(line);
+                if (ifdef.Success) {
+                    var bits = int.Parse(ifdef.Groups[1].Captures[0].ToString());
+                    if (bits != WordSize)
+                        falseIfBlock = true;
+
+                    Debug.WriteLine($"[IF           ] {line}");
+                    continue;
+                }
+                if (line == "#else") {
+                    falseIfBlock = !falseIfBlock;
+
+                    Debug.WriteLine($"[ELSE         ] {line}");
+                    continue;
+                }
+                if (line == "#endif") {
+                    falseIfBlock = false;
+
+                    Debug.WriteLine($"[ENDIF        ] {line}");
+                    continue;
+                }
+
+                if (falseIfBlock) {
+                    Debug.WriteLine($"[FALSE        ] {line}");
+                    continue;
+                }
 
                 // External declaration
                 // struct <external-type>;
@@ -516,8 +549,8 @@ namespace Il2CppInspector.CppUtils
         }
 
         // Generate a populated CppTypes object from a set of Unity headers
-        public static CppTypes FromUnityHeaders(UnityVersion version) {
-            var cppTypes = new CppTypes(8);
+        public static CppTypes FromUnityHeaders(UnityVersion version, int wordSize = 32) {
+            var cppTypes = new CppTypes(wordSize);
 
             // Process Unity headers
             var headers = UnityHeader.GetHeaderForVersion(version).GetHeaderText();
