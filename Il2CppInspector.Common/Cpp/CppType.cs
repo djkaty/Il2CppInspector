@@ -115,17 +115,23 @@ namespace Il2CppInspector.CppUtils
             CompoundType == CompoundType.Union
                 // Union size is the size of the largest element in the union
                 ? Fields.Values.SelectMany(f => f).Select(f => f.Size).Max()
-                : Fields.Values.SelectMany(f => f).Select(f => f.Size).Sum();
+                // For structs we look for the last item and add the size;
+                // adding all the sizes might fail because of alignment padding
+                : Fields.Values.Any() ? Fields.Values.SelectMany(f => f).Select(f => f.Offset + f.Size).Max() : 0;
 
         // Add a field to the type. Returns the offset of the field in the type
-        public int AddField(CppField field) {
+        public int AddField(CppField field, int alignmentBytes = 0) {
             field.Offset = CompoundType == CompoundType.Struct ? Size : 0;
 
             // If we just came out of a bitfield, move to the next byte if necessary
             if (field.BitfieldSize == 0 && field.Offset % 8 != 0)
                 field.Offset = (field.Offset / 8) * 8 + 8;
 
-            if (Fields.ContainsKey(field.Offset))
+            // Respect alignment directives
+            if (alignmentBytes > 0 && field.OffsetBytes % alignmentBytes != 0)
+                field.Offset += (alignmentBytes - field.OffsetBytes % alignmentBytes) * 8;
+
+                if (Fields.ContainsKey(field.Offset))
                 Fields[field.Offset].Add(field);
             else
                 Fields.Add(field.Offset, new List<CppField> { field });
@@ -259,11 +265,12 @@ namespace Il2CppInspector.CppUtils
 
             var rgxArrayField = new Regex(@"(\S+?)\[([0-9]+)\]");
 
+            var rgxAlignment = new Regex(@"__attribute__\(\(aligned\(([0-9]+)\)\)\)");
+
             var currentType = new Stack<CppComplexType>();
             bool inEnum = false;
             string line;
 
-            // TODO: Alignment directives
             // TODO: enum prefix in field (Il2CppWindowsRuntimeTypeName)
             // TODO: comma-separated fields
             // TODO: #ifdef IS_32BIT
@@ -274,6 +281,14 @@ namespace Il2CppInspector.CppUtils
                 // Sanitize
                 line = rgxStripKeywords.Replace(line, "");
                 line = rgxCompressPtrs.Replace(line, "**");
+
+                var alignment = 0;
+                var alignmentMatch = rgxAlignment.Match(line);
+                if (alignmentMatch.Success) {
+                    alignment = int.Parse(alignmentMatch.Groups[1].Captures[0].ToString());
+                    line = rgxAlignment.Replace(line, "");
+                }
+
                 line = line.Trim();
 
                 // External declaration
@@ -447,7 +462,7 @@ namespace Il2CppInspector.CppUtils
                     var name = fieldFnPtr.Groups[1].Captures[0].ToString();
 
                     var ct = currentType.Peek();
-                    ct.AddField(new CppField {Name = name, Type = Types["uintptr_t"]});
+                    ct.AddField(new CppField {Name = name, Type = Types["uintptr_t"]}, alignment);
 
                     Debug.WriteLine($"[FIELD FNPTR  ] {line}  --  {name}");
                     continue;
@@ -484,7 +499,7 @@ namespace Il2CppInspector.CppUtils
                     if (arraySize > 0)
                         type = type.AsArray(arraySize);
 
-                    ct.AddField(new CppField {Name = name, Type = type, BitfieldSize = bitfield});
+                    ct.AddField(new CppField {Name = name, Type = type, BitfieldSize = bitfield}, alignment);
 
                     if (bitfield == 0)
                         Debug.WriteLine($"[FIELD {(pointers > 0? "PTR":"VAL")}    ] {line}  --  {name}");
