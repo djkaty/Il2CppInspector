@@ -13,11 +13,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using Il2CppInspector.Outputs;
-using Il2CppInspector.Outputs.UnityHeaders;
+using Il2CppInspector.CppUtils.UnityHeaders;
 using Il2CppInspector.Reflection;
 
-namespace Il2CppInspector.Cpp
+namespace Il2CppInspector.CppUtils
 {
     // Compound type
     public enum CompoundType
@@ -32,8 +31,11 @@ namespace Il2CppInspector.Cpp
         // The name of the type
         public virtual string Name { get; set; }
 
-        // The size of the C++ type in bytes
+        // The size of the C++ type in bits
         public virtual int Size { get; set; }
+
+        // The size of the C++ type in bytes
+        public virtual int SizeBytes => (Size / 8) + (Size % 8 > 0 ? 1 : 0);
 
         public CppType(string name = null, int size = 0) {
             Name = name;
@@ -46,7 +48,7 @@ namespace Il2CppInspector.Cpp
         // Generate typedef to this type
         public CppAlias AsAlias(string Name) => new CppAlias(Name, this);
 
-        public override string ToString() => $"/* {Size:x2} - {Name} */";
+        public override string ToString() => $"/* {SizeBytes:x2} - {Name} */";
     }
 
     // A pointer type
@@ -65,6 +67,8 @@ namespace Il2CppInspector.Cpp
         public CppType ElementType { get; }
 
         public override int Size => ElementType.Size;
+
+        public override int SizeBytes => ElementType.SizeBytes;
 
         public CppAlias(string name, CppType elementType) : base(name) => ElementType = elementType;
 
@@ -95,6 +99,10 @@ namespace Il2CppInspector.Cpp
             // TODO: Use InheritanceStyleEnum to determine whether the field is embedded or a pointer
             field.Offset = CompoundType == CompoundType.Struct ? Size : 0;
 
+            // If we just came out of a bitfield, move to the next byte if necessary
+            if (field.BitfieldSize == 0 && field.Offset % 8 != 0)
+                field.Offset = (field.Offset / 8) * 8 + 8;
+
             if (Fields.ContainsKey(field.Offset))
                 Fields[field.Offset].Add(field);
             else
@@ -117,7 +125,7 @@ namespace Il2CppInspector.Cpp
                 foreach (var field in Fields.Values.SelectMany(f => f))
                     sb.AppendLine("  " + field);
 
-                sb.Append($"}} {Name}{(Name.Length > 0 ? " " : "")}/* Size: 0x{Size:x2} */;");
+                sb.Append($"}} {Name}{(Name.Length > 0 ? " " : "")}/* Size: 0x{SizeBytes:x2} */;");
             }
             // Forward declaration
             else {
@@ -137,8 +145,22 @@ namespace Il2CppInspector.Cpp
         // The offset of the field into the type
         public int Offset { get; set; }
 
+        // The offset of the field into the type in bytes
+        public int OffsetBytes => Offset / 8;
+
         // The size of the field
-        public int Size => Type.Size;
+        public int Size => (BitfieldSize > 0 ? BitfieldSize : Type.Size);
+
+        public int SizeBytes => (Size / 8) + (Size % 8 > 0 ? 1 : 0);
+
+        // The size of the field in bits
+        public int BitfieldSize { get; set; }
+
+        // The LSB of the bitfield
+        public int BitfieldLSB => Offset % 8;
+
+        // The MSB of the bitfield
+        public int BitfieldMSB => BitfieldLSB + Size - 1;
 
         // The type of the field
         // This type will be wrong (by design) for function pointers, pointers to pointers etc.
@@ -146,12 +168,13 @@ namespace Il2CppInspector.Cpp
         internal CppType Type { get; set; }
 
         // C++ representation of field (might be incorrect due to the above)
-        public override string ToString() => $"/* 0x{Offset:x2} - 0x{Offset + Size - 1:x2} (0x{Size:x2}) */"
+        public override string ToString() => $"/* 0x{OffsetBytes:x2} - 0x{OffsetBytes + SizeBytes - 1:x2} (0x{SizeBytes:x2}) */"
                                              // nested anonymous types
                                              + (Type is CppComplexType && Type.Name == "" ? "\n" + Type.ToString()[..^1] + " " + Name :
                                              // regular fields
-                                             $" {Type.Name} {Name}")
-                                             + ";";
+                                             $" {Type.Name} {Name}" + (BitfieldSize > 0? $" : {BitfieldSize}" : ""))
+                                             + ";"
+                                             + (BitfieldSize > 0? $" // bits {BitfieldLSB} - {BitfieldMSB}" : "");
     }
 
     // A collection of C++ types
@@ -165,27 +188,27 @@ namespace Il2CppInspector.Cpp
         public IEnumerator<CppType> GetEnumerator() => Types.Values.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        // Architecture width in bytes (4 bytes for 32-bit or 8 bytes for 64-bit, to determine pointer sizes)
+        // Architecture width in bits (32/64) - to determine pointer sizes
         public int WordSize { get; }
 
         private static readonly List<CppType> primitiveTypes = new List<CppType> {
-            new CppType("uint8_t", 1),
-            new CppType("uint16_t", 2),
-            new CppType("uint32_t", 4),
-            new CppType("uint64_t", 8),
-            new CppType("int8_t", 1),
-            new CppType("int16_t", 2),
-            new CppType("int32_t", 4),
-            new CppType("int64_t", 8),
-            new CppType("char", 1),
-            new CppType("int", 4),
-            new CppType("float", 4),
-            new CppType("double", 8),
+            new CppType("uint8_t", 8),
+            new CppType("uint16_t", 16),
+            new CppType("uint32_t", 32),
+            new CppType("uint64_t", 64),
+            new CppType("int8_t", 8),
+            new CppType("int16_t", 16),
+            new CppType("int32_t", 32),
+            new CppType("int64_t", 64),
+            new CppType("char", 8),
+            new CppType("int", 32),
+            new CppType("float", 32),
+            new CppType("double", 64),
             new CppType("void", 0)
         };
 
         public CppTypes(int wordSize) {
-            WordSize = wordSize;
+            WordSize = wordSize * 8;
             Types = primitiveTypes.ToDictionary(t => t.Name, t => t);
 
             // This is all compiler-dependent, let's hope for the best!
@@ -197,12 +220,13 @@ namespace Il2CppInspector.Cpp
         public void AddFromDeclarationText(string text) {
             using StringReader lines = new StringReader(text);
 
+            var fnPtr = @"\S+\s*\(\s*\*(\S+)\)\s*\(.*\)";
             var rgxExternDecl = new Regex(@"struct (\S+);");
             var rgxTypedefForwardDecl = new Regex(@"typedef struct (\S+) (\S+);");
-            var rgxTypedefFnPtr = new Regex(@"typedef\s+(?:struct )?\S+\s*\(\s*\*(\S+)\)\s*\(.*\);");
+            var rgxTypedefFnPtr = new Regex(@"typedef\s+(?:struct )?" + fnPtr + ";");
             var rgxTypedef = new Regex(@"typedef (\S+?)\s*\**\s*(\S+);");
-            var rgxFieldFnPtr = new Regex(@"\S+\s*\(\s*\*(\S+)\)\s*\(.*\);");
-            var rgxField = new Regex(@"^(?:struct )?(\S+?)\s*\**\s*(\S+);");
+            var rgxFieldFnPtr = new Regex(fnPtr + @";");
+            var rgxField = new Regex(@"^(?:struct )?(\S+?)\s*\**\s*(\S+)(?:\s*:\s*([0-9]+))?;");
 
             var rgxStripKeywords = new Regex(@"\b(?:const|unsigned|volatile)\b");
             var rgxCompressPtrs = new Regex(@"\*\s+\*");
@@ -211,7 +235,6 @@ namespace Il2CppInspector.Cpp
             bool inEnum = false;
             string line;
 
-            // TODO: Bitfields
             // TODO: Arrays
             // TODO: Alignment directives
             // TODO: enum prefix in field (Il2CppWindowsRuntimeTypeName)
@@ -410,6 +433,10 @@ namespace Il2CppInspector.Cpp
                     var name = field.Groups[2].Captures[0].ToString();
                     var typeName = field.Groups[1].Captures[0].ToString();
 
+                    int bitfield = 0;
+                    if (field.Groups[3].Captures.Count > 0)
+                        bitfield = int.Parse(field.Groups[3].Captures[0].ToString());
+
                     // Potential multiple indirection
                     var type = Types[typeName];
                     var pointers = line.Count(c => c == '*');
@@ -417,9 +444,12 @@ namespace Il2CppInspector.Cpp
                         type = type.AsPointer(WordSize);
 
                     var ct = currentType.Peek();
-                    ct.AddField(new CppField {Name = name, Type = type});
+                    ct.AddField(new CppField {Name = name, Type = type, BitfieldSize = bitfield});
 
-                    Debug.WriteLine($"[FIELD {(pointers > 0? "PTR":"VAL")}    ] {line}  --  {name}");
+                    if (bitfield == 0)
+                        Debug.WriteLine($"[FIELD {(pointers > 0? "PTR":"VAL")}    ] {line}  --  {name}");
+                    else
+                        Debug.WriteLine($"[BITFIELD     ] {line}  --  {name} : {bitfield}");
                     continue;
                 }
 

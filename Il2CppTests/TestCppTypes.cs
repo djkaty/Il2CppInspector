@@ -7,8 +7,8 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using Il2CppInspector.Cpp;
-using Il2CppInspector.Outputs.UnityHeaders;
+using Il2CppInspector.CppUtils;
+using Il2CppInspector.CppUtils.UnityHeaders;
 using Il2CppInspector.Reflection;
 using NUnit.Framework;
 
