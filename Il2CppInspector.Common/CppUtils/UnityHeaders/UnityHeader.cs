@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Il2CppInspector.Outputs.UnityHeaders
+namespace Il2CppInspector.CppUtils.UnityHeaders
 {
     // Each instance of UnityHeader represents one header file which potentially covers multiple versions of Unity.
     public class UnityHeader
@@ -84,8 +84,8 @@ namespace Il2CppInspector.Outputs.UnityHeaders
                     continue;
                 if (v.MetadataVersion == 21) {
                     /* Special version logic for metadata version 21 based on the Il2CppMetadataRegistration.fieldOffsets field */
-                    var headerFieldOffsetsArePointers = (v.MinVersion.CompareTo("5.3.7") >= 0 && v.MinVersion.CompareTo("5.4.0") != 0);
-                    var binaryFieldOffsetsArePointers = (model.Package.Binary.FieldOffsets == null);
+                    var headerFieldOffsetsArePointers = v.MinVersion.CompareTo("5.3.7") >= 0 && v.MinVersion.CompareTo("5.4.0") != 0;
+                    var binaryFieldOffsetsArePointers = model.Package.Binary.FieldOffsets == null;
                     if (headerFieldOffsetsArePointers != binaryFieldOffsetsArePointers)
                         continue;
                 }

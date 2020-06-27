@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Il2CppInspector.Outputs
+namespace Il2CppInspector.CppUtils
 {
     /// <summary>
     /// A utility class for managing names in a common namespace.

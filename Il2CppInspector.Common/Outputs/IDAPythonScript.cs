@@ -9,7 +9,8 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using Il2CppInspector.Reflection;
-using Il2CppInspector.Outputs.UnityHeaders;
+using Il2CppInspector.CppUtils;
+using Il2CppInspector.CppUtils.UnityHeaders;
 
 namespace Il2CppInspector.Outputs
 {
