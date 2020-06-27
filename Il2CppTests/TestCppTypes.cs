@@ -7,6 +7,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Il2CppInspector.CppUtils;
 using Il2CppInspector.CppUtils.UnityHeaders;
 using Il2CppInspector.Reflection;
@@ -19,14 +20,21 @@ namespace Il2CppInspector
     {
         [Test]
         public void TestCppTypes() {
-            // TODO: Flesh out CppTypes test
+            // NOTE: This test doesn't check for correct results, only that parsing doesn't fail!
 
-            var cppTypes = CppTypes.FromUnityHeaders(new UnityVersion("2019.3.1f1"));
+            var unityAllHeaders = UnityHeader.GetAllHeaders();
 
-            foreach (var cppType in cppTypes.Types)
-                Debug.WriteLine(cppType.Key + ":\n" + cppType.Value + "\n");
+            // Ensure we have read the embedded assembly resources
+            Assert.IsTrue(unityAllHeaders.Any());
 
-            throw new NotImplementedException();
+            // Ensure we can interpret every header from every version of Unity without errors
+            // This will throw InvalidOperationException if there is a problem
+            foreach (var unityHeader in unityAllHeaders) {
+                var cppTypes = CppTypes.FromUnityHeaders(unityHeader);
+
+                foreach (var cppType in cppTypes.Types)
+                    Debug.WriteLine("// " + cppType.Key + "\n" + cppType.Value + "\n");
+            }
         }
     }
 }

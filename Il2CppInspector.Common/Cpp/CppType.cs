@@ -151,7 +151,7 @@ namespace Il2CppInspector.CppUtils
             if (Fields.Any()) {
                 sb.AppendLine("{");
                 foreach (var field in Fields.Values.SelectMany(f => f))
-                    sb.AppendLine("  " + field);
+                    sb.AppendLine("  " + string.Join("\n  ", field.ToString().Split('\n')));
 
                 sb.Append($"}} {Name}{(Name.Length > 0 ? " " : "")}/* Size: 0x{SizeBytes:x2} */;");
             }
@@ -236,6 +236,7 @@ namespace Il2CppInspector.CppUtils
             new CppType("int", 32),
             new CppType("float", 32),
             new CppType("double", 64),
+            new CppType("bool", 8),
             new CppType("void", 0)
         };
 
@@ -270,10 +271,13 @@ namespace Il2CppInspector.CppUtils
 
             var rgxAlignment = new Regex(@"__attribute__\(\(aligned\(([0-9]+)\)\)\)");
             var rgxIsBitDirective = new Regex(@"#ifdef\s+IS_(32|64)BIT");
+            var rgxSingleLineComment = new Regex(@"/\*.*?\*/");
 
             var currentType = new Stack<CppComplexType>();
             bool inEnum = false;
             bool falseIfBlock = false;
+            bool inComment = false;
+            bool inMethod = false;
             string line;
 
             // TODO: function pointer signatures
@@ -281,9 +285,65 @@ namespace Il2CppInspector.CppUtils
             while ((line = lines.ReadLine()) != null) {
 
                 // Sanitize
+
+                // Remove comments
+                if (line.Contains("//"))
+                    line = line.Substring(0, line.IndexOf("//", StringComparison.Ordinal));
+
+                // End of multi-line comment?
+                if (line.Contains("*/") && inComment) {
+                    inComment = false;
+                    line = line.Substring(line.IndexOf("*/", StringComparison.Ordinal) + 2);
+                }
+
+                if (inComment) {
+                    Debug.WriteLine($"[COMMENT      ] {line}");
+                    continue;
+                }
+
+                // Remove all single-line comments
+                line = rgxSingleLineComment.Replace(line, "");
+
+                // Start of multi-line comment?
+                if (line.Contains("/*") && !inComment) {
+                    inComment = true;
+                    line = line.Substring(0, line.IndexOf("/*"));
+                }
+
+                // Ignore global variables
+                if (line.StartsWith("const ") && currentType.Count == 0) {
+                    Debug.WriteLine($"[GLOBAL       ] {line}");
+                    continue;
+                }
+
+                // Ignore methods
+                // Note: This is a very lazy way of processing early version IL2CPP headers
+                if (line != "}" && inMethod) {
+                    Debug.WriteLine($"[METHOD       ] {line}");
+                    continue;
+                }
+
+                if (line == "}" && inMethod) {
+                    inMethod = false;
+
+                    Debug.WriteLine($"[METHOD END   ] {line}");
+                    continue;
+                }
+
+                if (line.StartsWith("static inline ")) {
+                    inMethod = true;
+
+                    Debug.WriteLine($"[METHOD START ] {line}");
+                    continue;
+                }
+
+                // Remove keywords we don't care about
                 line = rgxStripKeywords.Replace(line, "");
+
+                // Remove whitespace in multiple indirections
                 line = rgxCompressPtrs.Replace(line, "**");
 
+                // Process __attribute((aligned(x)))
                 var alignment = 0;
                 var alignmentMatch = rgxAlignment.Match(line);
                 if (alignmentMatch.Success) {
@@ -292,6 +352,10 @@ namespace Il2CppInspector.CppUtils
                 }
 
                 line = line.Trim();
+
+                // Ignore blank lines
+                if (line.Length == 0)
+                    continue;
 
                 // Process #ifs before anything else
                 // Doesn't handle nesting but we probably don't need to (use a Stack if we do)
@@ -544,16 +608,42 @@ namespace Il2CppInspector.CppUtils
                     continue;
                 }
 
+                // Make sure we're not ignoring anything we shouldn't
                 Debug.WriteLine($"[IGNORE       ] {line}");
+
+                // Block opens
+                if (line == "{")
+                    continue;
+
+                // Enum values
+                if (inEnum)
+                    continue;
+
+                // Global variables
+                if (line.StartsWith("static"))
+                    continue;
+
+                // Pragma directives
+                if (line.StartsWith("#pragma"))
+                    continue;
+
+                // Imports
+                if (line.StartsWith("extern"))
+                    continue;
+
+                throw new InvalidOperationException("Could not understand C++ code: " + line);
             }
         }
 
         // Generate a populated CppTypes object from a set of Unity headers
-        public static CppTypes FromUnityHeaders(UnityVersion version, int wordSize = 32) {
+        public static CppTypes FromUnityVersion(UnityVersion version, int wordSize = 32)
+            => FromUnityHeaders(UnityHeader.GetHeaderForVersion(version));
+
+        public static CppTypes FromUnityHeaders(UnityHeader header, int wordSize = 32) {
             var cppTypes = new CppTypes(wordSize);
 
             // Process Unity headers
-            var headers = UnityHeader.GetHeaderForVersion(version).GetHeaderText();
+            var headers = header.GetHeaderText();
             cppTypes.AddFromDeclarationText(headers);
 
             return cppTypes;
