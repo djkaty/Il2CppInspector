@@ -71,7 +71,7 @@ namespace Il2CppInspector.CppUtils
 
         public CppType ElementType { get; }
 
-        // Even an array of 1-bit bitfirleds must use at least 1 byte each
+        // Even an array of 1-bit bitfields must use at least 1 byte each
         public override int Size => SizeBytes * 8;
 
         public override int SizeBytes => ElementType.SizeBytes * Length;
@@ -82,6 +82,22 @@ namespace Il2CppInspector.CppUtils
         }
 
         public override string ToString() => ElementType + "[" + Length + "]";
+    }
+
+    // A function pointer type
+    public class CppFnPtrType : CppType
+    {
+        // For display purposes only
+        // We could figure out the actual CppTypes for these but I'm not sure there is any advantage to it
+        public string ReturnType { get; }
+        public string Arguments { get; }
+
+        public CppFnPtrType(int WordSize, string returnType, string arguments) : base(null, WordSize) {
+            ReturnType = returnType;
+            Arguments = arguments;
+        }
+
+        public override string ToString() => $"typedef {ReturnType} (*{Name})({Arguments});";
     }
 
     // A typedef alias
@@ -151,7 +167,7 @@ namespace Il2CppInspector.CppUtils
             if (Fields.Any()) {
                 sb.AppendLine("{");
                 foreach (var field in Fields.Values.SelectMany(f => f))
-                    sb.AppendLine("  " + string.Join("\n  ", field.ToString().Split('\n')));
+                    sb.AppendLine("\t" + string.Join("\n\t", field.ToString().Split('\n')));
 
                 sb.Append($"}} {Name}{(Name.Length > 0 ? " " : "")}/* Size: 0x{SizeBytes:x2} */;");
             }
@@ -196,17 +212,32 @@ namespace Il2CppInspector.CppUtils
         internal CppType Type { get; set; }
 
         // C++ representation of field (might be incorrect due to the above)
-        public override string ToString() =>
-            $"/* 0x{OffsetBytes:x2} - 0x{OffsetBytes + SizeBytes - 1:x2} (0x{SizeBytes:x2}) */"
-            // nested anonymous types
-            + (Type is CppComplexType && Type.Name == "" ? "\n" + Type.ToString()[..^1] + " " + Name :
-            // regular fields
-            $" {Type.Name} {Name}" + (BitfieldSize > 0? $" : {BitfieldSize}" : ""))
+        public override string ToString() {
+            var offset = $"/* 0x{OffsetBytes:x2} - 0x{OffsetBytes + SizeBytes - 1:x2} (0x{SizeBytes:x2}) */";
+
+            var field = Type switch {
+                // nested anonymouse types
+                CppComplexType t when string.IsNullOrEmpty(t.Name) => "\n" + t.ToString()[..^1] + " " + Name,
+                // function pointers
+                CppFnPtrType t when string.IsNullOrEmpty(t.Name) => $" {t.ReturnType} (*{Name})({t.Arguments})",
+                // regular fields
+                _ => $" {Type.Name} {Name}" + (BitfieldSize > 0? $" : {BitfieldSize}" : "")
+            };
+
+            var suffix = "";
+
             // arrays
-            + (Type is CppArrayType? "[" + ((CppArrayType)Type).Length + "]" : "")
-            + ";"
+            if (Type is CppArrayType a)
+                suffix += "[" + a.Length + "]";
+
+            suffix += ";";
+
             // bitfields
-            + (BitfieldSize > 0? $" // bits {BitfieldLSB} - {BitfieldMSB}" : "");
+            if (BitfieldSize > 0)
+                suffix += $" // bits {BitfieldLSB} - {BitfieldMSB}";
+
+            return offset + field + suffix;
+        }
     }
 
     // A collection of C++ types
@@ -256,7 +287,7 @@ namespace Il2CppInspector.CppUtils
         public void AddFromDeclarationText(string text) {
             using StringReader lines = new StringReader(text);
 
-            var fnPtr = @"\S+\s*\(\s*\*(\S+)\)\s*\(.*\)";
+            var fnPtr = @"(\S+)\s*\(\s*\*(\S+)\s*\)\s*\(\s*(.*?)\s*\)";
             var rgxExternDecl = new Regex(@"struct (\S+);");
             var rgxTypedefForwardDecl = new Regex(@"typedef struct (\S+) (\S+);");
             var rgxTypedefFnPtr = new Regex(@"typedef\s+(?:struct )?" + fnPtr + ";");
@@ -280,11 +311,7 @@ namespace Il2CppInspector.CppUtils
             bool inMethod = false;
             string line;
 
-            // TODO: function pointer signatures
-
             while ((line = lines.ReadLine()) != null) {
-
-                // Sanitize
 
                 // Remove comments
                 if (line.Contains("//"))
@@ -422,8 +449,10 @@ namespace Il2CppInspector.CppUtils
                 // typedef <retType> (*<alias>)(<args>);
                 typedef = rgxTypedefFnPtr.Match(line);
                 if (typedef.Success) {
-                    var alias = typedef.Groups[1].Captures[0].ToString();
-                    Types.Add(alias, Types["uintptr_t"]);
+                    var returnType = typedef.Groups[1].Captures[0].ToString();
+                    var arguments = typedef.Groups[3].Captures[0].ToString();
+                    var alias = typedef.Groups[2].Captures[0].ToString();
+                    Types.Add(alias, new CppFnPtrType(WordSize, returnType, arguments) {Name = alias});
 
                     Debug.WriteLine($"[TYPEDEF FNPTR] {line}  --  Adding method pointer typedef to {alias}");
                     continue;
@@ -554,10 +583,12 @@ namespace Il2CppInspector.CppUtils
                 // Function pointer field
                 var fieldFnPtr = rgxFieldFnPtr.Match(line);
                 if (fieldFnPtr.Success) {
-                    var name = fieldFnPtr.Groups[1].Captures[0].ToString();
+                    var returnType = fieldFnPtr.Groups[1].Captures[0].ToString();
+                    var arguments = fieldFnPtr.Groups[3].Captures[0].ToString();
+                    var name = fieldFnPtr.Groups[2].Captures[0].ToString();
 
                     var ct = currentType.Peek();
-                    ct.AddField(new CppField {Name = name, Type = Types["uintptr_t"]}, alignment);
+                    ct.AddField(new CppField {Name = name, Type = new CppFnPtrType(WordSize, returnType, arguments)}, alignment);
 
                     Debug.WriteLine($"[FIELD FNPTR  ] {line}  --  {name}");
                     continue;
