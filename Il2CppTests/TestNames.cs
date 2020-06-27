@@ -19,10 +19,10 @@ namespace Il2CppInspector
 
             // Arrange
             // We're currently in IlCppTests\bin\Debug\netcoreapp3.0 or similar
-            var testPath = Path.GetFullPath(Directory.GetCurrentDirectory() + @"\..\..\..\TestBinaries\References");
+            var testPath = Path.GetFullPath(Directory.GetCurrentDirectory() + @"\..\..\..\TestBinaries\References-ARMv7");
 
             // Build model
-            var inspectors = Il2CppInspector.LoadFromFile(testPath + @"\References.so", testPath + @"\global-metadata.dat");
+            var inspectors = Il2CppInspector.LoadFromFile(testPath + @"\References-ARMv7.so", testPath + @"\global-metadata.dat");
             var model = new Il2CppModel(inspectors[0]);
 
             var asm = model.GetAssembly("References.dll");
