@@ -115,14 +115,70 @@ namespace Il2CppInspector.CppUtils
     }
 
     // A struct, union or class type (type with fields)
-    public class CppComplexType : CppType
+    public class CppComplexType : CppType, IEnumerable<CppField>
     {
+        // Various enumerators
+        public List<CppField> this[int byteOffset] => Fields[byteOffset * 8];
+
+        public CppField this[string fieldName] => Fields.Values.SelectMany(f => f).FirstOrDefault(f => f.Name == fieldName);
+
+        public IEnumerator<CppField> GetEnumerator() => Fields.Values.SelectMany(f => f).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        // Collection which flattens all nested fields, calculating their direct bit offsets from the start of the type
+        // Unions can still cause some offsets to have multiple values
+        public class FlattenedFieldsCollection : IEnumerable<CppField>
+        {
+            public SortedDictionary<int, List<CppField>> Fields;
+
+            public FlattenedFieldsCollection(CppComplexType t) => Fields = getFlattenedFields(t);
+
+            private SortedDictionary<int, List<CppField>> getFlattenedFields(CppComplexType t) {
+                var flattened = new SortedDictionary<int, List<CppField>>();
+
+                foreach (var field in t.Fields.Values.SelectMany(f => f)) {
+                    if (field.Type is CppComplexType ct) {
+                        var baseOffset = field.Offset;
+                        var fields = ct.Flattened.Fields.Select(kl => new {
+                            Key = kl.Key + baseOffset,
+                            Value = kl.Value.Select(f => new CppField { Name = f.Name, Type = f.Type, BitfieldSize = f.BitfieldSize, Offset = f.Offset + baseOffset }).ToList()
+                        }).ToDictionary(kv => kv.Key, kv => kv.Value);
+
+                        flattened = new SortedDictionary<int, List<CppField>>(flattened.Union(fields).ToDictionary(kv => kv.Key, kv => kv.Value));
+                    } else {
+                        if (flattened.ContainsKey(field.Offset))
+                            flattened[field.Offset].Add(field);
+                        else
+                            flattened.Add(field.Offset, new List<CppField> { field });
+                    }
+                }
+                return flattened;
+            }
+
+            public List<CppField> this[int byteOffset] => Fields[byteOffset * 8];
+
+            public CppField this[string fieldName] => Fields.Values.SelectMany(f => f).FirstOrDefault(f => f.Name == fieldName);
+
+            public IEnumerator<CppField> GetEnumerator() => Fields.Values.SelectMany(f => f).GetEnumerator();
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        }
+
+        private FlattenedFieldsCollection flattenedFields;
+
+        public FlattenedFieldsCollection Flattened {
+            get {
+                if (flattenedFields == null)
+                    flattenedFields = new FlattenedFieldsCollection(this);
+                return flattenedFields;
+            }
+        }
+
         // The compound type
         public CompoundType CompoundType;
 
         // Dictionary of byte offset in the type to each field
         // Unions and bitfields can have more than one field at the same offset
-        public Dictionary<int, List<CppField>> Fields { get; internal set; } = new Dictionary<int, List<CppField>>();
+        public SortedDictionary<int, List<CppField>> Fields { get; internal set; } = new SortedDictionary<int, List<CppField>>();
 
         public CppComplexType(CompoundType compoundType) : base("", 0) => CompoundType = compoundType;
 
@@ -147,7 +203,7 @@ namespace Il2CppInspector.CppUtils
             if (alignmentBytes > 0 && field.OffsetBytes % alignmentBytes != 0)
                 field.Offset += (alignmentBytes - field.OffsetBytes % alignmentBytes) * 8;
 
-                if (Fields.ContainsKey(field.Offset))
+            if (Fields.ContainsKey(field.Offset))
                 Fields[field.Offset].Add(field);
             else
                 Fields.Add(field.Offset, new List<CppField> { field });
@@ -216,7 +272,7 @@ namespace Il2CppInspector.CppUtils
             var offset = $"/* 0x{OffsetBytes:x2} - 0x{OffsetBytes + SizeBytes - 1:x2} (0x{SizeBytes:x2}) */";
 
             var field = Type switch {
-                // nested anonymouse types
+                // nested anonymous types
                 CppComplexType t when string.IsNullOrEmpty(t.Name) => "\n" + t.ToString()[..^1] + " " + Name,
                 // function pointers
                 CppFnPtrType t when string.IsNullOrEmpty(t.Name) => $" {t.ReturnType} (*{Name})({t.Arguments})",
