@@ -9,8 +9,8 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using Il2CppInspector.Reflection;
-using Il2CppInspector.CppUtils;
-using Il2CppInspector.CppUtils.UnityHeaders;
+using Il2CppInspector.Cpp;
+using Il2CppInspector.Cpp.UnityHeaders;
 
 namespace Il2CppInspector.Outputs
 {
@@ -113,7 +113,7 @@ typedef __int64 int64_t;
                 declGenerator.IncludeMethod(method);
                 writeDecls(declGenerator.GenerateRemainingTypeDeclarations());
                 var address = method.VirtualAddress.Value.Start;
-                writeTypedName(address, declGenerator.GenerateMethodDeclaration(method), declGenerator.MethodNamer.GetName(method));
+                writeTypedName(address, declGenerator.GenerateMethodDeclaration(method), declGenerator.GlobalNamer.GetName(method));
                 writeComment(address, method);
             }
         }
@@ -171,7 +171,7 @@ typedef __int64 int64_t;
                         declGenerator.IncludeMethod(method);
                         writeDecls(declGenerator.GenerateRemainingTypeDeclarations());
 
-                        name = declGenerator.MethodNamer.GetName(method);
+                        name = declGenerator.GlobalNamer.GetName(method);
                         writeTypedName(address, "struct MethodInfo *", $"{name}__MethodInfo");
                         writeComment(address, method);
                         break;

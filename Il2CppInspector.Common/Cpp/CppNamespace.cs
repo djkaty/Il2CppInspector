@@ -9,12 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Il2CppInspector.CppUtils
+namespace Il2CppInspector.Cpp
 {
     /// <summary>
     /// A utility class for managing names in a common namespace.
     /// </summary>
-    public class Namespace
+    public class CppNamespace
     {
         // The central data structure that keeps track of which names have been generated
         // The value for any given key K is the number of unique objects originally named K, minus 1.
@@ -43,7 +43,7 @@ namespace Il2CppInspector.CppUtils
         public class Namer<T>
         {
             // Parent namespace
-            private Namespace ns;
+            private CppNamespace ns;
 
             // Names given out by this Namer.
             private readonly Dictionary<T, string> names = new Dictionary<T, string>();
@@ -53,7 +53,7 @@ namespace Il2CppInspector.CppUtils
             public delegate string KeyFunc(T t);
             private readonly KeyFunc keyFunc;
 
-            public Namer(Namespace ns, KeyFunc keyFunc) {
+            public Namer(CppNamespace ns, KeyFunc keyFunc) {
                 this.ns = ns;
                 this.keyFunc = keyFunc;
             }

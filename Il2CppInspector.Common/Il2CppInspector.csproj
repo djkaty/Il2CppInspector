@@ -10,11 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="CppUtils\UnityHeaders\**" />
+    <None Remove="Cpp\UnityHeaders\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="CppUtils\UnityHeaders\**" />
+    <EmbeddedResource Include="Cpp\UnityHeaders\**" />
   </ItemGroup>
 
   <ItemGroup>

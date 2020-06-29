@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Il2CppInspector.CppUtils.UnityHeaders
+namespace Il2CppInspector.Cpp.UnityHeaders
 {
     // Each instance of UnityHeader represents one header file which potentially covers multiple versions of Unity.
     public class UnityHeader

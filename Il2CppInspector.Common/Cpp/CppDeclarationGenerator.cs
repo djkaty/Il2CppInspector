@@ -5,15 +5,15 @@
     All rights reserved.
 */
 
-using Il2CppInspector.CppUtils.UnityHeaders;
-using Il2CppInspector.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Il2CppInspector.Cpp.UnityHeaders;
+using Il2CppInspector.Reflection;
 
-namespace Il2CppInspector.CppUtils
+namespace Il2CppInspector.Cpp
 {
     // Class for generating C header declarations from Reflection objects (TypeInfo, etc.)
     public class CppDeclarationGenerator
@@ -149,7 +149,7 @@ namespace Il2CppInspector.CppUtils
         }
 
         // Generate structure fields for each field of a given type
-        private void GenerateFieldList(StringBuilder csrc, Namespace ns, TypeInfo ti) {
+        private void GenerateFieldList(StringBuilder csrc, CppNamespace ns, TypeInfo ti) {
             var namer = ns.MakeNamer<FieldInfo>((field) => field.Name.ToCIdentifier());
             foreach (var field in ti.DeclaredFields) {
                 if (field.IsLiteral || field.IsStatic)
@@ -222,7 +222,7 @@ namespace Il2CppInspector.CppUtils
                  * This causes all classes to be aligned to the alignment of their base class. */
                 TypeInfo firstNonEmpty = null;
                 foreach (var bti in baseClasses) {
-                    if (bti.DeclaredFields.Where((field) => !field.IsStatic && !field.IsLiteral).Any()) {
+                    if (bti.DeclaredFields.Any(field => !field.IsStatic && !field.IsLiteral)) {
                         firstNonEmpty = bti;
                         break;
                     }
@@ -577,8 +577,8 @@ namespace Il2CppInspector.CppUtils
         }
 
         // Reserve C/C++ keywords and built-in names
-        private static Namespace CreateNamespace() {
-            var ns = new Namespace();
+        private static CppNamespace CreateNamespace() {
+            var ns = new CppNamespace();
             /* Reserve C/C++ keywords */
             foreach (var keyword in new string[] { "_Alignas", "_Alignof", "_Atomic", "_Bool", "_Complex", "_Generic", "_Imaginary", "_Noreturn", "_Static_assert", "_Thread_local", "alignas", "alignof", "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool", "break", "case", "catch", "char", "char16_t", "char32_t", "char8_t", "class", "co_await", "co_return", "co_yield", "compl", "concept", "const", "const_cast", "consteval", "constexpr", "constinit", "continue", "decltype", "default", "delete", "do", "double", "dynamic_cast", "else", "enum", "explicit", "export", "extern", "false", "float", "for", "friend", "goto", "if", "inline", "int", "long", "mutable", "namespace", "new", "noexcept", "not", "not_eq", "nullptr", "operator", "or", "or_eq", "private", "protected", "public", "reflexpr", "register", "reinterpret_cast", "requires", "restrict", "return", "short", "signed", "sizeof", "static", "static_assert", "static_cast", "struct", "switch", "synchronized", "template", "this", "thread_local", "throw", "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq" }) {
                 ns.ReserveName(keyword);
@@ -593,16 +593,16 @@ namespace Il2CppInspector.CppUtils
         /// <summary>
         /// Namespace for all types and typedefs
         /// </summary>
-        public Namespace TypeNamespace { get; private set; }
+        public CppNamespace TypeNamespace { get; private set; }
 
-        public Namespace.Namer<TypeInfo> TypeNamer { get; private set; }
+        public CppNamespace.Namer<TypeInfo> TypeNamer { get; private set; }
 
         /// <summary>
         /// Namespace for global variables, enum values and methods
         /// </summary>
-        public Namespace GlobalsNamespace { get; private set; }
-        public Namespace.Namer<MethodBase> GlobalNamer { get; private set; }
-        public Namespace.Namer<FieldInfo> EnumNamer { get; private set; }
+        public CppNamespace GlobalsNamespace { get; private set; }
+        public CppNamespace.Namer<MethodBase> GlobalNamer { get; private set; }
+        public CppNamespace.Namer<FieldInfo> EnumNamer { get; private set; }
         #endregion
     }
 }
