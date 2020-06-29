@@ -303,6 +303,12 @@ namespace Il2CppInspector
         // Returns null if package not recognized or does not contain an IL2CPP application
         public static (MemoryStream Metadata, MemoryStream Binary)? GetStreamsFromPackage(string packageFile) {
             try {
+                // Check if it's a zip file first because ZipFile.OpenRead is extremely slow if it isn't
+                using (BinaryReader zipTest = new BinaryReader(File.Open(packageFile, FileMode.Open))) {
+                    if (zipTest.ReadUInt32() != 0x04034B50)
+                        return null;
+                }
+
                 using ZipArchive zip = ZipFile.OpenRead(packageFile);
 
                 Stream metadataStream, binaryStream;
