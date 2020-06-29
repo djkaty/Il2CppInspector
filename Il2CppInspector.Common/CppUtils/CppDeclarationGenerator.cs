@@ -95,6 +95,14 @@ namespace Il2CppInspector.CppUtils
             return $"struct {TypeNamer.GetName(ti)} *";
         }
 
+        // Resets the cache of visited types and pending types to output, but preserve any names we have already generated
+        public void Reset() {
+            VisitedFieldStructs.Clear();
+            VisitedTypes.Clear();
+            TodoFieldStructs.Clear();
+            TodoTypeStructs.Clear();
+        }
+
         #region Field Struct Generation
         /* Generating field structures (structures for the fields of a given type) occurs in two passes.
          * In the first pass (VisitFieldStructs), we walk over a type and all of the types that the resulting structure would depend on.
