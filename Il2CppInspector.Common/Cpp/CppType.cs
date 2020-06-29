@@ -668,7 +668,7 @@ namespace Il2CppInspector.CppUtils
 
         // Generate a populated CppTypes object from a set of Unity headers
         public static CppTypes FromUnityVersion(UnityVersion version, int wordSize = 32)
-            => FromUnityHeaders(UnityHeader.GetHeaderForVersion(version));
+            => FromUnityHeaders(UnityHeader.GetHeaderForVersion(version), wordSize);
 
         public static CppTypes FromUnityHeaders(UnityHeader header, int wordSize = 32) {
             var cppTypes = new CppTypes(wordSize);
