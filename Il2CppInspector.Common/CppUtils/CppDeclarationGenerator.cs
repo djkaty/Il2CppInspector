@@ -156,11 +156,10 @@ namespace Il2CppInspector.CppUtils
             if (ti.IsEnum) {
                 // Enums should be represented using enum syntax
                 // They otherwise behave like value types
-                var namer = GlobalsNamespace.MakeNamer<FieldInfo>((field) => $"{name}_{field.Name}".ToCIdentifier());
                 csrc.Append($"enum {name} : {AsCType(ti.GetEnumUnderlyingType())} {{\n");
                 foreach (var field in ti.DeclaredFields) {
                     if (field.Name != "value__")
-                        csrc.Append($"  {namer.GetName(field)} = {field.DefaultValue},\n");
+                        csrc.Append($"  {EnumNamer.GetName(field)} = {field.DefaultValue},\n");
                 }
                 csrc.Append($"}};\n");
 
@@ -525,7 +524,7 @@ namespace Il2CppInspector.CppUtils
         /// <param name="mi"></param>
         /// <returns></returns>
         public string GenerateMethodDeclaration(MethodBase method) {
-            return GenerateMethodDeclaration(method, MethodNamer.GetName(method), method.DeclaringType);
+            return GenerateMethodDeclaration(method, GlobalNamer.GetName(method), method.DeclaringType);
         }
 
         /// <summary>
@@ -565,7 +564,8 @@ namespace Il2CppInspector.CppUtils
             });
 
             GlobalsNamespace = CreateNamespace();
-            MethodNamer = TypeNamespace.MakeNamer<MethodBase>((method) => $"{TypeNamer.GetName(method.DeclaringType)}_{method.Name.ToCIdentifier()}");
+            GlobalNamer = GlobalsNamespace.MakeNamer<MethodBase>((method) => $"{TypeNamer.GetName(method.DeclaringType)}_{method.Name.ToCIdentifier()}");
+            EnumNamer = GlobalsNamespace.MakeNamer<FieldInfo>((field) => $"{TypeNamer.GetName(field.DeclaringType)}_{field.Name.ToCIdentifier()}");
         }
 
         // Reserve C/C++ keywords and built-in names
@@ -590,10 +590,11 @@ namespace Il2CppInspector.CppUtils
         public Namespace.Namer<TypeInfo> TypeNamer { get; private set; }
 
         /// <summary>
-        /// Namespace for global variables and methods
+        /// Namespace for global variables, enum values and methods
         /// </summary>
         public Namespace GlobalsNamespace { get; private set; }
-        public Namespace.Namer<MethodBase> MethodNamer { get; private set; }
+        public Namespace.Namer<MethodBase> GlobalNamer { get; private set; }
+        public Namespace.Namer<FieldInfo> EnumNamer { get; private set; }
         #endregion
     }
 }
