@@ -76,6 +76,10 @@ namespace Il2CppInspector.Outputs
         }
 
         private void writeUsages() {
+            // Not supported in il2cpp <19
+            if (model.Package.MetadataUsages == null)
+                return;
+
             foreach (var usage in model.Package.MetadataUsages) {
                 switch (usage.Type) {
                     case MetadataUsageType.Type:
