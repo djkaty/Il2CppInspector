@@ -1,4 +1,4 @@
-# Il2CppInspector
+# Il2CppInspector 2020.1
 
 Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the most complete analysis currently available.
 
@@ -6,25 +6,30 @@ Main features:
 
 * Output IL2CPP type definitions, metadata and method pointers as C# stub code
 
+* Create C++ scaffolding for all types in an IL2CPP application
+
+* Create IDA Python scripts to populate symbol, function and type information
+
 * Create Visual Studio solutions directly from IL2CPP files
 
-* Create IDA Python scripts to populate symbol and function information
+* Create IL2CPP binaries from arbitrary C# source code without a Unity project
 
 * .NET Reflection-style API to allow you to query the IL2CPP type model, easily create new output modules and integrate Il2CppInspector with your own applications
 
 * Supports all major file formats and processor architectures
 
+* Defeats certain types of basic obfuscation
+
 * Works on Windows, MacOS X and Linux. Integrated GUI for Windows users
 
-You can read more about IL2CPP in my series [IL2CPP Reverse-Engineering](https://katyscode.wordpress.com/category/reverse-engineering/il2cpp/).
+* Tested with every release of IL2CPP since Unity 5.3.0
+
+You can read more about IL2CPP in my series [IL2CPP Reverse Engineering](https://katyscode.wordpress.com/category/reverse-engineering/il2cpp/).
 
 **NOTE**: Il2CppInspector is not a decompiler. It can provide you with the structure of an application and function addresses for every method so that you can easily jump straight to methods of interest in your disassembler. It does not attempt to recover the entire source code of the application.
 
 ![Il2CppInspector GUI](docs/GUI_Preview.png)
 
-![Il2CppInspector Auto-generated Visual Studio solution](docs/VisualStudio_Preview.png)
-
-![Il2CppInspector annotated IDA project](docs/IDA_Preview.png)
 
 File format and architecture support:
 
@@ -76,24 +81,34 @@ File format and architecture are automatically detected.
   -m, --metadata              (Default: global-metadata.dat) IL2CPP metadata file input (ignored for APK/IPA)
   -c, --cs-out                (Default: types.cs) C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)
   -p, --py-out                (Default: ida.py) IDA Python script output file
-  -e, --exclude-namespaces    (Default: System Unity UnityEngine UnityEngineInternal Mono Microsoft.Reflection Microsoft.Win32 Internal.Runtime AOT JetBrains.Annotations) Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces
-  -l, --layout                (Default: single) Partitioning of C# output ('single' = single file, 'namespace' = one file per namespace in folders, 'assembly' = one file per assembly, 'class' = one file per class in namespace folders, 'tree' = one file per class in assembly and namespace folders)
+  -h, --cpp-out               (Default: il2cpp-types.h) C++ header output file
+  -e, --exclude-namespaces    (Default: System Mono Microsoft.Reflection Microsoft.Win32 Internal.Runtime Unity UnityEditor UnityEngine UnityEngineInternal AOT JetBrains.Annotations) Comma-separated list of
+                              namespaces to suppress in C# output, or 'none' to include all namespaces
+  -l, --layout                (Default: single) Partitioning of C# output ('single' = single file, 'namespace' = one file per namespace in folders, 'assembly' = one file per assembly, 'class' = one file per
+                              class in namespace folders, 'tree' = one file per class in assembly and namespace folders)
   -s, --sort                  (Default: index) Sort order of type definitions in C# output ('index' = by type definition index, 'name' = by type name). No effect when using file-per-class or tree layout
   -f, --flatten               Flatten the namespace hierarchy into a single folder rather than using per-namespace subfolders. Only used when layout is per-namespace or per-class. Ignored for tree layout
   -n, --suppress-metadata     Diff tidying: suppress method pointers, field offsets and type indices from C# output. Useful for comparing two versions of a binary for changes with a diff tool
-  -k, --must-compile          Compilation tidying: try really hard to make code that compiles. Suppress generation of code for items with CompilerGenerated attribute. Comment out attributes without parameterless constructors or all-optional constructor arguments. Don't emit add/remove/raise on events. Specify AttributeTargets.All on classes with AttributeUsage attribute. Force auto-properties to have get accessors. Force regular properties to have bodies. Suppress global::Locale classes.
-      --separate-attributes   Place assembly-level attributes in their own AssemblyInfo.cs files. Only used when layout is per-assembly or tree
+  -k, --must-compile          Compilation tidying: try really hard to make code that compiles. Suppress generation of code for items with CompilerGenerated attribute. Comment out attributes without
+                              parameterless constructors or all-optional constructor arguments. Don't emit add/remove/raise on events. Specify AttributeTargets.All on classes with AttributeUsage attribute.
+                              Force auto-properties to have get accessors. Force regular properties to have bodies. Suppress global::Locale classes. Generate dummy parameterless base constructors and ref
+                              return fields.
+  --separate-attributes       Place assembly-level attributes in their own AssemblyInfo.cs files. Only used when layout is per-assembly or tree
   -j, --project               Create a Visual Studio solution and projects. Implies --layout tree, --must-compile and --separate-attributes
-      --unity-path            (Default: C:\Program Files\Unity\Hub\Editor\*) Path to Unity editor (when using --project). Wildcards select last matching folder in alphanumeric order
-      --unity-assemblies      (Default: C:\Program Files\Unity\Hub\Editor\*\Editor\Data\Resources\PackageManager\ProjectTemplates\libcache\com.unity.template.3d-*\ScriptAssemblies) Path to Unity script assemblies (when using --project). Wildcards select last matching folder in alphanumeric order
+  --cpp-compiler              (Default: BinaryFormat) Compiler to make C++ output compatible with (MSVC or GCC); selects based on binary executable type by default
+  --unity-path                (Default: C:\Program Files\Unity\Hub\Editor\*) Path to Unity editor (when using --project). Wildcards select last matching folder in alphanumeric order
+  --unity-assemblies          (Default: C:\Program Files\Unity\Hub\Editor\*\Editor\Data\Resources\PackageManager\ProjectTemplates\libcache\com.unity.template.3d-*\ScriptAssemblies) Path to Unity script
+                              assemblies (when using --project). Wildcards select last matching folder in alphanumeric order
+  --unity-version             Version of Unity used to create the input files, if known. Used to enhance IDAPython and C++ output. If not specified, a close match will be inferred automatically.
+  --help                      Display this help screen.
+  --version                   Display version information.
 ```
 
-Defaults if not specified:
+For Apple Universal Binaries, multiple output files will be generated, with each filename besides the first suffixed by the index of the image in the Universal Binary. Unsupported images will be skipped.
 
-- _bin_ - `libil2cpp.so`
-- _metadata_ - `global-metadata.dat`
-- _cs-out_ - `types.cs`
-- _py-out_ - `ida.py`
+For IPA packages, the executable must be decrypted first. Encrypted executable binaries are not supported.
+
+### Creating C# prototypes
 
 To exclude types from certain namespaces from being generated in the C# source file output, provide a comma-separated list of case-sensitive namespaces in `--exclude-namespaces`. The following namespaces will be excluded if no argument is specified:
 
@@ -111,27 +126,51 @@ AOT
 JetBrains.Annotations
 ```
 
-Providing an argument to `--exclude-namespaces` will override the default list. To output all namespaces, use `--exclude-namespaces=none`.
-
-For Apple Universal Binaries, multiple output files will be generated, with each filename besides the first suffixed by the index of the image in the Universal Binary. Unsupported images will be skipped.
-
-For IPA packages, the executable must be decrypted first. Encrypted executable binaries are not supported.
+Providing an argument to `--exclude-namespaces` will override the default list. To output all namespaces, use `--exclude-namespaces=none`. This only applies to C# prototypes output.
 
 ### Adding metadata to your IDA workflow
 
 Simply run Il2CppInspector with the `-p` switch to choose the IDA script output file. Load your binary file into IDA, press Alt+F7 and select the generated script. Observe the Output Window while IDA analyzes the file - this may take a long time.
 
+If you know which version of Unity the binary was compiled with, you can improve the output by specifying this with `--unity-version`, for example `--unity-version 2019.3.1f1`. Otherwise Il2CppInspector will make an educated guess based on the contents of the binary.
+
 Il2CppInspector generates the following data for IDA projects:
 
+- Type declarations for all IL2CPP internal types
+- Type declarations for every type in the IL2CPP application including generic instances
+- Addresses for every known type
 - Names for all regular .NET methods
 - Names for all constructed generic methods
 - Names for all IL2CPP custom attributes generator functions
 - Names, .NET argument type lists and C++ signatures for all IL2CPP runtime invoker functions for both regular and constructed generic methods (per-signature Method.Invoke endpoints)
 - Function boundaries for all of the above
 - Comments at each function entry point with .NET method signatures for all of the above
-- Names for all of the following IL metadata references: Type, TypeInfo, MethodDef, FieldInfo, StringLiteral, MethodRef (this includes all generic class and method instantiation metadata)
+- Names and type declarations for all of the following IL metadata references: Type, TypeInfo, MethodDef, FieldInfo, StringLiteral, MethodRef (this includes all generic class and method instantiation metadata)
 - Comments for all IL string literal metadata pointers containing the value of the string
 - Names for some IL2CPP-specific data structures and functions
+
+Example IDA C++ decompilation after applying Il2CppInspector (initialization code omitted for brevity):
+
+![Il2CppInspector annotated IDA project](docs/IDA_Preview.png)
+
+### Creating C++ scaffolding
+
+Il2CppInspector generates C++ headers containing:
+
+- Type declarations for all internal IL2CPP types
+- Type declarations for every type used in the application including all enums, concrete generic type instances and inferred usages from metadata.
+- Boxed versions for types where applicable
+- VTables for every type
+
+You can use these files with a tool like `x64dbg` to analyze the memory of the application, or for accessing types via DLL injection, among other uses.
+
+If you know which version of Unity the binary was compiled with, you can improve the output by specifying this with `--unity-version`, for example `--unity-version 2019.3.1f1`. Otherwise Il2CppInspector will make an educated guess based on the contents of the binary.
+
+You can target which C++ compiler you wish to use the output files with: specify `--cpp-compiler MSVC` for Visual Studio and `--cpp-compiler GCC` for gcc. Clang is compatible with either option.
+
+Il2CppInspector performs automatic name conflict resolution to avoid the use of pre-defined symbols and keywords in C++, and to handle re-definition of same-named symbols in the application.
+
+![Il2CppInspector GUI](docs/Cpp_Preview.png)
 
 ### Creating a Visual Studio solution
 
@@ -155,18 +194,22 @@ NOTE: You can use the asterisk wildcard (*) one or more times when specifying th
 
 In the event that the assembly references are not correctly resolved the first time you load a solution, simply close and re-open the solution to force them to be resolved.
 
-### Class library
+![Il2CppInspector Auto-generated Visual Studio solution](docs/VisualStudio_Preview.png)
 
-To utilize Il2CppInspector in your own programs, add a reference to `Il2CppInspector.Common.dll` and add a using statement for the namespace `Il2CppInspector.Reflection`. See the source code for further details.
-
-### Running tests
+### Generating IL2CPP binaries without a Unity project
 
 Two Powershell scripts are provided to enable easy testing and debugging:
 
-* `generate-binaries.ps1` compiles every C# source file in `TestSources` as a separate assembly and outputs them to `TestAssemblies`. It then takes every assembly in `TestAssemblies` and compiles each one as a separate IL2CPP project twice: one for Windows x86 standalone and one for Android into the `TestBinaries`folder. It then calls `generate-tests.ps1`.
+* `generate-binaries.ps1` compiles every C# source file in `TestSources` as a separate assembly and outputs them to `TestAssemblies`. It then takes every assembly in `TestAssemblies` and compiles each one as a separate IL2CPP project for each of these architectures: Windows x86 standalone, Windows x64 standalone, Android ARMv7 (32-bit) and Android ARMv8-A (64-bit). These are placed into the `TestBinaries`folder. It then calls `generate-tests.ps1`.
 * `generate-tests.ps1` generates a file called `Tests.cs` in the `Il2CppTests` project, containing one test per IL2CPP project in `TestBinaries`. This file will be compiled by the `Il2CppTests`project. You will then be able to see one test per IL2CPP project in Visual Studio's Test Explorer.
 
 The auto-generated tests generate a file in the test IL2CPP binary's folder called `test-result.cs` and compares it (whitespace-insensitive) with the corresponding project name `cs` file in `TestExpectedResults`. In this way, you can check for files with known structure that the analysis is being performed correctly, or step through the analysis of specific binaries in the debugger without having to change the project's command-line arguments.
+
+To learn more about this feature, see the section entitled **Using Il2CppInspector to generate IL2CPP code** in [IL2CPP Reverse Engineering Part 1](https://katyscode.wordpress.com/2020/06/24/il2cpp-part-1/).
+
+### Using the class library
+
+To utilize Il2CppInspector in your own programs, add a reference to `Il2CppInspector.Common.dll` and add a using statement for the namespace `Il2CppInspector.Reflection`. See the source code for further details.
 
 ### Version support
 
