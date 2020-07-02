@@ -29,6 +29,9 @@ namespace Il2CppInspector.CLI
             [Option('p', "py-out", Required = false, HelpText = "IDA Python script output file", Default = "ida.py")]
             public string PythonOutFile { get; set; }
 
+            [Option('h', "cpp-out", Required = false, HelpText = "C++ header output file", Default = "il2cpp-types.h")]
+            public string CppOutFile { get; set; }
+
             [Option('e', "exclude-namespaces", Required = false, Separator = ',', HelpText = "Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces",
                 Default = new [] {
                     "System",
@@ -72,7 +75,7 @@ namespace Il2CppInspector.CLI
             [Option("unity-assemblies", Required = false, HelpText = "Path to Unity script assemblies (when using --project). Wildcards select last matching folder in alphanumeric order", Default = @"C:\Program Files\Unity\Hub\Editor\*\Editor\Data\Resources\PackageManager\ProjectTemplates\libcache\com.unity.template.3d-*\ScriptAssemblies")]
             public string UnityAssembliesPath { get; set; }
 
-            [Option("unity-version", Required = false, HelpText = "Version of Unity used to create the input files, if known. Used to enhance IDA Python script output. If not specified, a close match will be inferred automatically.", Default = null)]
+            [Option("unity-version", Required = false, HelpText = "Version of Unity used to create the input files, if known. Used to enhance IDAPython and C++ output. If not specified, a close match will be inferred automatically.", Default = null)]
             public UnityVersion UnityVersion { get; set; }
         }
 
@@ -143,7 +146,7 @@ namespace Il2CppInspector.CLI
 
             // Check files exist and determine whether they're archives or not
             List<Il2CppInspector> il2cppInspectors;
-            using (var il2cppTimer = new Benchmark("Analyze IL2CPP data")) {
+            using (new Benchmark("Analyze IL2CPP data")) {
 
                 if (!File.Exists(options.BinaryFile)) {
                     Console.Error.WriteLine($"File {options.BinaryFile} does not exist");
@@ -176,11 +179,11 @@ namespace Il2CppInspector.CLI
             foreach (var il2cpp in il2cppInspectors) {
                 // Create model
                 Il2CppModel model;
-                using (var modelTimer = new Benchmark("Create type model"))
+                using (new Benchmark("Create type model"))
                     model = new Il2CppModel(il2cpp);
 
                 // C# signatures output
-                using (var signaturesDumperTimer = new Benchmark("Generate C# code")) {
+                using (new Benchmark("Generate C# code")) {
                     var writer = new CSharpCodeStubs(model) {
                         ExcludedNamespaces = options.ExcludedNamespaces.ToList(),
                         SuppressMetadata = options.SuppressMetadata,
@@ -235,11 +238,19 @@ namespace Il2CppInspector.CLI
                 }
 
                 // IDA Python script output
-                using (var scriptDumperTimer = new Benchmark("IDA Python Script Dumper")) {
+                using (new Benchmark("Generate IDAPython script")) {
                     var idaWriter = new IDAPythonScript(model) {
-                        UnityVersion = options.UnityVersion,
+                        UnityVersion = options.UnityVersion
                     };
                     idaWriter.WriteScriptToFile(options.PythonOutFile);
+                }
+
+                // C++ output
+                using (new Benchmark("Generate C++ code")) {
+                    var cppWriter = new CppScaffolding(model) {
+                        UnityVersion = options.UnityVersion
+                    };
+                    cppWriter.WriteCppToFile(options.CppOutFile);
                 }
             }
 
