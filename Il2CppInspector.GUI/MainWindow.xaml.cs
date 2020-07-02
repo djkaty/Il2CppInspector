@@ -23,6 +23,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using Il2CppInspector;
+using Il2CppInspector.Cpp;
 using Il2CppInspector.GUI;
 using Il2CppInspector.Outputs;
 using Il2CppInspector.Reflection;
@@ -198,13 +199,21 @@ namespace Il2CppInspectorGUI
             // Populate TreeView with namespace hierarchy
             trvNamespaces.ItemsSource = namespaceTree;
 
+            // Populate Unity version combo boxes
             var prevSelection = cboUnityVersion.SelectedItem;
+            var prevCppSelection = cboCppUnityVersion.SelectedItem;
             cboUnityVersion.Items.Clear();
-            foreach (var version in UnityHeader.GuessHeadersForModel(model))
+            cboCppUnityVersion.Items.Clear();
+            foreach (var version in UnityHeader.GuessHeadersForModel(model)) {
                 cboUnityVersion.Items.Add(version);
+                cboCppUnityVersion.Items.Add(version);
+            }
             cboUnityVersion.SelectedIndex = 0;
-            if (prevSelection != null)
+            cboCppUnityVersion.SelectedIndex = 0;
+            if (prevSelection != null) {
                 cboUnityVersion.SelectedItem = prevSelection;
+                cboCppUnityVersion.SelectedItem = prevCppSelection;
+            }
         }
 
         private IEnumerable<CheckboxNode> deconstructNamespaces(IEnumerable<string> input) {
@@ -403,6 +412,34 @@ namespace Il2CppInspectorGUI
                             UnityVersion = selectedVersion,
                         };
                         idaWriter.WriteScriptToFile(outFile);
+                    });
+                    break;
+
+                // C++ scaffolding
+                case { rdoOutputCpp: var r } when r.IsChecked == true:
+
+                    var cppSaveFileDialog = new SaveFileDialog {
+                        Filter = "C++ header file (*.h)|*.h|All files (*.*)|*.*",
+                        FileName = "il2cpp-types.h",
+                        CheckFileExists = false,
+                        OverwritePrompt = true
+                    };
+
+                    if (cppSaveFileDialog.ShowDialog() == false)
+                        return;
+
+                    var cppOutFile = cppSaveFileDialog.FileName;
+
+                    txtBusyStatus.Text = "Generating C++ scaffolding...";
+                    areaBusyIndicator.Visibility = Visibility.Visible;
+                    var selectedCppUnityVersion = ((UnityHeader)cboCppUnityVersion.SelectedItem)?.MinVersion;
+                    var cppCompiler = (CppCompiler.Type) Enum.Parse(typeof(CppCompiler.Type), cboCppCompiler.SelectionBoxItem.ToString());
+                    await Task.Run(() => {
+                        var cppWriter = new CppScaffolding(model) {
+                            UnityVersion = selectedCppUnityVersion,
+                            Compiler = cppCompiler
+                        };
+                        cppWriter.WriteCppToFile(cppOutFile);
                     });
                     break;
             }

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Il2CppInspectorGUI"
         xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
         mc:Ignorable="d"
-        Title="Il2CppInspector" Height="700" Width="990" Background="White"
+        Title="Il2CppInspector" Height="700" Width="1050" Background="White"
         WindowStartupLocation="CenterScreen"
         ContentRendered="MainWindow_OnContentRendered">
     <Window.Resources>
@@ -213,12 +213,14 @@
 
                 <DockPanel DockPanel.Dock="Top">
                     <!-- List of namespaces to export -->
-                    <DockPanel DockPanel.Dock="Right">
+                    <DockPanel DockPanel.Dock="Right" Width="230">
                         <Label DockPanel.Dock="Top" Foreground="{StaticResource WindowsBlue}" FontSize="18">Namespaces</Label>
-                        <TreeView DockPanel.Dock="Bottom" Name="trvNamespaces" ItemTemplate="{StaticResource NamespaceTreeItemTemplate}" Width="220" Margin="10,5,5,5"></TreeView>
+                        <TextBlock DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" Margin="10,0,5,5">This only applies to C# prototypes output</TextBlock>
+                        <TreeView DockPanel.Dock="Bottom" Name="trvNamespaces" ItemTemplate="{StaticResource NamespaceTreeItemTemplate}" Width="210" Margin="10,5,5,5"></TreeView>
                     </DockPanel>
 
                     <!-- Settings -->
+                    <ScrollViewer Padding="6">
                     <StackPanel DockPanel.Dock="Left">
                         <Label Foreground="{StaticResource WindowsBlue}" FontSize="18">Configure output</Label>
 
@@ -340,7 +342,7 @@
                         </DockPanel>
                         <DockPanel>
                             <Button Name="btnUnityScriptPath" DockPanel.Dock="Right" Width="70" Margin="4" Click="BtnUnityScriptPath_OnClick">Browse</Button>
-                            <Label DockPanel.Dock="Left" Width="170" VerticalAlignment="Center">Unity script assemblies path:</Label>
+                            <Label DockPanel.Dock="Left" Width="240" VerticalAlignment="Center">Unity script assemblies path:</Label>
                             <TextBlock Name="txtUnityScriptPath" DockPanel.Dock="Left" VerticalAlignment="Center" FlowDirection="RightToLeft" HorizontalAlignment="Right" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
                         </DockPanel>
 
@@ -352,7 +354,24 @@
                             <ComboBox Name="cboUnityVersion" DockPanel.Dock="Right" Margin="4"></ComboBox>
                             <Label DockPanel.Dock="Left" Width="170" VerticalAlignment="Center" HorizontalAlignment="Left">Unity version (if known):</Label>
                         </DockPanel>
+
+                        <Separator Margin="5,15,5,15"/>
+
+                        <!-- C++ scaffolding -->
+                        <RadioButton GroupName="grpOutputType" Name="rdoOutputCpp" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">C++ headers and scaffolding</RadioButton>
+                        <DockPanel>
+                            <ComboBox Name="cboCppUnityVersion" DockPanel.Dock="Right" Margin="4"></ComboBox>
+                            <Label DockPanel.Dock="Left" Width="250" VerticalAlignment="Center" HorizontalAlignment="Left">Unity version (if known):</Label>
+                        </DockPanel>
+                        <DockPanel>
+                            <ComboBox Name="cboCppCompiler" DockPanel.Dock="Right" Margin="4" Width="80">
+                                <ComboBoxItem IsSelected="True">MSVC</ComboBoxItem>
+                                <ComboBoxItem>GCC</ComboBoxItem>
+                            </ComboBox>
+                            <Label DockPanel.Dock="Left" Width="250" VerticalAlignment="Center" HorizontalAlignment="Left">Target C++ compiler for output:</Label>
+                        </DockPanel>
                     </StackPanel>
+                    </ScrollViewer>
                 </DockPanel>
             </DockPanel>
         </Grid>
