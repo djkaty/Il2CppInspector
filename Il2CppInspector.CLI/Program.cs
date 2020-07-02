@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using CommandLine;
+using Il2CppInspector.Cpp;
 using Il2CppInspector.Reflection;
 using Il2CppInspector.Outputs;
 using Il2CppInspector.Cpp.UnityHeaders;
@@ -68,6 +69,9 @@ namespace Il2CppInspector.CLI
 
             [Option('j', "project", Required = false, HelpText = "Create a Visual Studio solution and projects. Implies --layout tree, --must-compile and --separate-attributes")]
             public bool CreateSolution { get; set; }
+
+            [Option("cpp-compiler", Required = false, HelpText = "Compiler to make C++ output compatible with (MSVC or GCC); selects based on binary executable type by default", Default = Cpp.CppCompiler.Type.BinaryFormat)]
+            public CppCompiler.Type CppCompiler { get; set; }
 
             [Option("unity-path", Required = false, HelpText = "Path to Unity editor (when using --project). Wildcards select last matching folder in alphanumeric order", Default = @"C:\Program Files\Unity\Hub\Editor\*")]
             public string UnityPath { get; set; }
@@ -248,7 +252,8 @@ namespace Il2CppInspector.CLI
                 // C++ output
                 using (new Benchmark("Generate C++ code")) {
                     var cppWriter = new CppScaffolding(model) {
-                        UnityVersion = options.UnityVersion
+                        UnityVersion = options.UnityVersion,
+                        Compiler = options.CppCompiler
                     };
                     cppWriter.WriteCppToFile(options.CppOutFile);
                 }

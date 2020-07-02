@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using Il2CppInspector.Reflection;
 using Il2CppInspector.Cpp;
 using Il2CppInspector.Cpp.UnityHeaders;
@@ -15,15 +16,23 @@ namespace Il2CppInspector.Outputs
     public class CppScaffolding
     {
         private readonly Il2CppModel model;
+        public CppCompiler.Type Compiler = CppCompiler.Type.BinaryFormat;
         private StreamWriter writer;
         public UnityVersion UnityVersion;
         private CppDeclarationGenerator declGenerator;
+
+        private readonly Regex rgxGCCalign = new Regex(@"__attribute__\s*?\(\s*?\(\s*?aligned\s*?\(\s*?([0-9]+)\s*?\)\s*?\)\s*?\)");
+        private readonly Regex rgxMSVCalign = new Regex(@"__declspec\s*?\(\s*?align\s*?\(\s*?([0-9]+)\s*?\)\s*?\)");
 
         public CppScaffolding(Il2CppModel model) => this.model = model;
 
         public void WriteCppToFile(string outputFile) {
             declGenerator = new CppDeclarationGenerator(model, UnityVersion);
             UnityVersion = declGenerator.UnityVersion;
+
+            // Can be overridden in the object initializer
+            if (Compiler == CppCompiler.Type.BinaryFormat)
+                Compiler = CppCompiler.GuessFromImage(model.Package.BinaryImage);
 
             using var fs = new FileStream(outputFile, FileMode.Create);
             writer = new StreamWriter(fs, Encoding.UTF8);
@@ -86,8 +95,10 @@ namespace Il2CppInspector.Outputs
         }
  
         private void writeCode(string text) {
-            // TODO: Remove
-            text = text.Replace("__attribute__((aligned(8)))", "__declspec(align(8))");
+            if (Compiler == CppCompiler.Type.MSVC)
+                text = rgxGCCalign.Replace(text, @"__declspec(align($1))");
+            if (Compiler == CppCompiler.Type.GCC)
+                text = rgxMSVCalign.Replace(text, @"__attribute__((aligned($1)))");
 
             var lines = text.Replace("\r", "").Split('\n');
             var cleanLines = lines.Select(s => s.ToEscapedString());
