@@ -28,13 +28,7 @@ namespace Il2CppInspector.Cpp
         // Different C++ compilers lay out C++ class structures differently,
         // meaning that the compiler must be known in order to generate class type structures
         // with the correct layout.
-        public enum InheritanceStyleEnum
-        {
-            C,      // Inheritance structs use C syntax, and will automatically choose MSVC or GCC based on inferred compiler.
-            MSVC,   // Inheritance structs are laid out assuming the MSVC compiler, which recursively includes base classes
-            GCC,    // Inheritance structs are laid out assuming the GCC compiler, which packs members from all bases + current class together
-        }
-        public InheritanceStyleEnum InheritanceStyle;
+        public CppCompiler.Type InheritanceStyle;
 
         public CppDeclarationGenerator(Il2CppModel model, UnityVersion version) {
             this.model = model;
@@ -53,17 +47,11 @@ namespace Il2CppInspector.Cpp
 
             InitializeNaming();
             InitializeConcreteImplementations();
-        }
 
-        private void GuessInheritanceStyle() {
-            if (InheritanceStyle == InheritanceStyleEnum.C) {
-                if (model.Package.BinaryImage is PEReader)
-                    InheritanceStyle = InheritanceStyleEnum.MSVC;
-                else
-                    InheritanceStyle = InheritanceStyleEnum.GCC;
-            }
+            // Configure inheritance style based on binary type; this can be overridden by setting InheritanceStyle in the object initializer
+            InheritanceStyle = CppCompiler.GuessFromImage(model.Package.BinaryImage);
         }
-
+        
         // C type declaration used to name variables of the given C# type
         public string AsCType(TypeInfo ti) {
             // IsArray case handled by TypeNamer.GetName
@@ -206,9 +194,6 @@ namespace Il2CppInspector.Cpp
                 return;
             }
 
-            if (InheritanceStyle == InheritanceStyleEnum.C)
-                GuessInheritanceStyle();
-
             /* Generate a list of all base classes starting from the root */
             List<TypeInfo> baseClasses = new List<TypeInfo>();
             for (var bti = ti; bti != null; bti = bti.BaseType)
@@ -217,7 +202,7 @@ namespace Il2CppInspector.Cpp
 
             var ns = CreateNamespace();
 
-            if (InheritanceStyle == InheritanceStyleEnum.MSVC) {
+            if (InheritanceStyle == CppCompiler.Type.MSVC) {
                 /* MSVC style: classes directly contain their base class as the first member.
                  * This causes all classes to be aligned to the alignment of their base class. */
                 TypeInfo firstNonEmpty = null;
@@ -255,7 +240,7 @@ namespace Il2CppInspector.Cpp
                     csrc.Append($"  struct {name}__Fields fields;\n");
                     csrc.Append($"}};\n");
                 }
-            } else if (InheritanceStyle == InheritanceStyleEnum.GCC) {
+            } else if (InheritanceStyle == CppCompiler.Type.GCC) {
                 /* GCC style: after the base class, all fields in the hierarchy are concatenated.
                  * This saves space (fields are "packed") but requires us to repeat fields from
                  * base classes. */
