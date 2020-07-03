@@ -144,5 +144,21 @@ namespace Il2CppInspector
         public ushort NumberOfLinenumbers;
         public uint Characteristics;
     }
+
+    // _IMAGE_EXPORT_DIRECTORY
+    internal class PEExportDirectory
+    {
+        public uint Characteristics;
+        public uint TimeDateStamp;
+        public ushort MajorVersion;
+        public ushort MinorVersion;
+        public uint Name;
+        public uint Base;
+        public uint NumberOfFunctions;
+        public uint NumberOfNames;
+        public uint AddressOfFunctions;
+        public uint AddressOfNames;
+        public uint AddressOfNameOrdinals;
+    }
 #pragma warning restore CS0649
 }

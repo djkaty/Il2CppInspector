@@ -28,6 +28,7 @@ namespace Il2CppInspector
         ulong GlobalOffset { get; }
         Dictionary<string, ulong> GetSymbolTable();
         uint[] GetFunctionTable();
+        IEnumerable<Export> GetExports();
         U ReadMappedObject<U>(ulong uiAddr) where U : new();
         U[] ReadMappedArray<U>(ulong uiAddr, int count) where U : new();
         long[] ReadMappedWordArray(ulong uiAddr, int count);
@@ -135,6 +136,9 @@ namespace Il2CppInspector
 
         // Find search locations in the machine code for Il2Cpp data
         public virtual uint[] GetFunctionTable() => throw new NotImplementedException();
+
+        // Find all symbol exports for the image
+        public virtual IEnumerable<Export> GetExports() => null;
 
         // Map an RVA to an offset into the file image
         // No mapping by default

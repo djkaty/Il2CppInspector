@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -111,6 +112,32 @@ namespace Il2CppInspector
             while ((addr = pe is PEOptHeader32? ReadUInt32() : ReadUInt64()) != 0)
                 addrs.Add(MapVATR(addr) & 0xfffffffc);
             return addrs.ToArray();
+        }
+
+        public override IEnumerable<Export> GetExports() {
+            // Get exports table
+            var ETStart = pe.DataDirectory[0].VirtualAddress + pe.ImageBase;
+
+            // Get export RVAs
+            var exportDirectoryTable = ReadObject<PEExportDirectory>(MapVATR(ETStart));
+            var exportCount = (int) exportDirectoryTable.NumberOfFunctions;
+            var exportAddresses = ReadArray<uint>(MapVATR(exportDirectoryTable.AddressOfFunctions + pe.ImageBase), exportCount);
+            var exports = exportAddresses.Select((a, i) => new Export {
+                Ordinal = (int) (exportDirectoryTable.Base + i),
+                VirtualAddress = pe.ImageBase + a
+            }).ToDictionary(x => x.Ordinal, x => x);
+
+            // Get export names
+            var nameCount = (int) exportDirectoryTable.NumberOfNames;
+            var namePointers = ReadArray<uint>(MapVATR(exportDirectoryTable.AddressOfNames + pe.ImageBase), nameCount);
+            var ordinals = ReadArray<ushort>(MapVATR(exportDirectoryTable.AddressOfNameOrdinals + pe.ImageBase), nameCount);
+            for (int i = 0; i < nameCount; i++) {
+                var name = ReadNullTerminatedString(MapVATR(namePointers[i] + pe.ImageBase));
+                var ordinal = (int) exportDirectoryTable.Base + ordinals[i];
+                exports[ordinal].Name = name;
+            }
+
+            return exports.Values;
         }
 
         public override uint MapVATR(ulong uiAddr) {
