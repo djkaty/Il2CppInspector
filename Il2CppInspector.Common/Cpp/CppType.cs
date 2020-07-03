@@ -12,9 +12,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Il2CppInspector.CppUtils.UnityHeaders;
+using Il2CppInspector.Cpp.UnityHeaders;
 
-namespace Il2CppInspector.CppUtils
+namespace Il2CppInspector.Cpp
 {
     // Compound type
     public enum CompoundType
