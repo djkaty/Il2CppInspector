@@ -20,7 +20,8 @@ namespace Il2CppInspector.Cpp
     public enum CompoundType
     {
         Struct,
-        Union
+        Union,
+        Enum
     }
 
     // A type with no fields
@@ -114,7 +115,7 @@ namespace Il2CppInspector.Cpp
         public override string ToString() => $"typedef {ElementType.Name} {Name};";
     }
 
-    // A struct, union or class type (type with fields)
+    // A struct, union, enum or class type (type with fields)
     public class CppComplexType : CppType, IEnumerable<CppField>
     {
         // Various enumerators
@@ -193,6 +194,7 @@ namespace Il2CppInspector.Cpp
 
         // Add a field to the type. Returns the offset of the field in the type
         public int AddField(CppField field, int alignmentBytes = 0) {
+            // Unions and enums always have an offset of zero
             field.Offset = CompoundType == CompoundType.Struct ? Size : 0;
 
             // If we just came out of a bitfield, move to the next byte if necessary
@@ -217,15 +219,21 @@ namespace Il2CppInspector.Cpp
             
             if (Name.Length > 0)
                 sb.Append("typedef ");
-            sb.Append(CompoundType == CompoundType.Struct ? "struct " : "union ");
+            sb.Append(CompoundType == CompoundType.Struct ? "struct " : CompoundType == CompoundType.Enum? "enum " : "union ");
             sb.Append(Name + (Name.Length > 0 ? " " : ""));
 
-            if (Fields.Any()) {
-                sb.AppendLine("{");
-                foreach (var field in Fields.Values.SelectMany(f => f))
-                    sb.AppendLine("\t" + string.Join("\n\t", field.ToString().Split('\n')));
+            var delimiter = CompoundType == CompoundType.Enum ? "," : ";";
 
-                sb.Append($"}} {Name}{(Name.Length > 0 ? " " : "")}/* Size: 0x{SizeBytes:x2} */;");
+            if (Fields.Any()) {
+                sb.Append("{");
+                foreach (var field in Fields.Values.SelectMany(f => f))
+                    sb.Append("\n\t" + string.Join("\n\t", field.ToString().Split('\n')) + delimiter);
+
+                // Chop off final comma
+                if (CompoundType == CompoundType.Enum)
+                    sb = sb.Remove(sb.Length - 1, 1);
+
+                sb.Append($"\n}} {Name}{(Name.Length > 0 ? " " : "")}/* Size: 0x{SizeBytes:x2} */;");
             }
             // Forward declaration
             else {
@@ -237,7 +245,7 @@ namespace Il2CppInspector.Cpp
     }
 
     // A field in a C++ type
-    public struct CppField
+    public class CppField
     {
         // The name of the field
         public string Name { get; set; }
@@ -286,14 +294,21 @@ namespace Il2CppInspector.Cpp
             if (Type is CppArrayType a)
                 suffix += "[" + a.Length + "]";
 
-            suffix += ";";
-
             // bitfields
             if (BitfieldSize > 0)
-                suffix += $" // bits {BitfieldLSB} - {BitfieldMSB}";
+                suffix += $" /* bits {BitfieldLSB} - {BitfieldMSB} */";
 
             return offset + field + suffix;
         }
+    }
+
+    // An enum key and value pair
+    public class CppEnumField : CppField
+    {
+        // The value of this key name
+        public ulong Value { get; set; }
+
+        public override string ToString() => Name + " = " + Value;
     }
 
     // A collection of C++ types
@@ -350,6 +365,7 @@ namespace Il2CppInspector.Cpp
             var rgxTypedef = new Regex(@"typedef (\S+?)\s*\**\s*(\S+);");
             var rgxFieldFnPtr = new Regex(fnPtr + @";");
             var rgxField = new Regex(@"^(?:struct |enum )?(\S+?)\s*\**\s*((?:\S|\s*,\s*)+)(?:\s*:\s*([0-9]+))?;");
+            var rgxEnumValue = new Regex(@"^\s*([A-Za-z0-9_]+)(?:\s*=\s*(.+?))?,?\s*$");
 
             var rgxStripKeywords = new Regex(@"\b(?:const|unsigned|volatile)\b");
             var rgxCompressPtrs = new Regex(@"\*\s+\*");
@@ -361,10 +377,10 @@ namespace Il2CppInspector.Cpp
             var rgxSingleLineComment = new Regex(@"/\*.*?\*/");
 
             var currentType = new Stack<CppComplexType>();
-            bool inEnum = false;
             bool falseIfBlock = false;
             bool inComment = false;
             bool inMethod = false;
+            var nextEnumValue = 0ul;
             string line;
 
             while ((line = lines.ReadLine()) != null) {
@@ -558,7 +574,8 @@ namespace Il2CppInspector.Cpp
                 // Start of enum
                 // typedef enum <optional-type-name>
                 if (line.StartsWith("typedef enum") && line.IndexOf(";", StringComparison.Ordinal) == -1) {
-                    inEnum = true;
+                    currentType.Push(new CppComplexType(CompoundType.Enum));
+                    nextEnumValue = 0;
 
                     Debug.WriteLine($"\n[ENUM START   ] {line}");
                     continue;
@@ -591,20 +608,12 @@ namespace Il2CppInspector.Cpp
                 // end of [typedef] struct/union/enum
                 if (line.StartsWith("}") && line.EndsWith(";")) {
                     // We need this to avoid false positives on field matches below
-                    if (currentType.Count == 0 && !inEnum) {
+                    /*if (currentType.Count == 0 && !inEnum) {
                         Debug.WriteLine($"[IGNORE       ] {line}");
                         continue;
-                    }
+                    }*/
 
                     var name = line[1..^1].Trim();
-
-                    if (inEnum) {
-                        Types.Add(name, new CppType(name, WordSize));
-                        inEnum = false;
-
-                        Debug.WriteLine($"[ENUM END     ] {line}  --  {name}\n");
-                        continue;
-                    }
 
                     var ct = currentType.Pop();
 
@@ -695,15 +704,37 @@ namespace Il2CppInspector.Cpp
                     continue;
                 }
 
+                // Enum value field
+                var enumValue = rgxEnumValue.Match(line);
+                if (enumValue.Success) {
+                    var name = enumValue.Groups[1].Captures[0].ToString();
+
+                    var value = nextEnumValue++;
+                    if (enumValue.Groups[2].Captures.Count > 0) {
+                        // Convert the text to a ulong even if it's hexadecimal with a 0x prefix
+                        var valueText = enumValue.Groups[2].Captures[0].ToString();
+
+                        var conv = new System.ComponentModel.UInt64Converter();
+
+                        // Handle bit shift operator
+                        var values = valueText.Split("<<").Select(t => (ulong) conv.ConvertFromInvariantString(t.Trim())).ToArray();
+
+                        value = values.Length == 1 ? values[0] : values[0] << (int)values[1];
+                        nextEnumValue = value + 1;
+                    }
+
+                    var ct = currentType.Peek();
+                    ct.AddField(new CppEnumField {Name = name, Type = WordSize == 32 ? Types["uint32_t"] : Types["uint64_t"], Value = value});
+
+                    Debug.WriteLine($"[ENUM VALUE   ] {line}  --  {name} = {value}");
+                    continue;
+                }
+
                 // Make sure we're not ignoring anything we shouldn't
                 Debug.WriteLine($"[IGNORE       ] {line}");
 
                 // Block opens
                 if (line == "{")
-                    continue;
-
-                // Enum values
-                if (inEnum)
                     continue;
 
                 // Global variables
