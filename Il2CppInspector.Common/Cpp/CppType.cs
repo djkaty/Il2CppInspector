@@ -88,17 +88,46 @@ namespace Il2CppInspector.Cpp
     // A function pointer type
     public class CppFnPtrType : CppType
     {
-        // For display purposes only
-        // We could figure out the actual CppTypes for these but I'm not sure there is any advantage to it
-        public string ReturnType { get; }
-        public string Arguments { get; }
+        // Function return type
+        public CppType ReturnType { get; }
 
-        public CppFnPtrType(int WordSize, string returnType, string arguments) : base(null, WordSize) {
+        // Function argument names and types by position (some may have no names)
+        public List<(string Name, CppType Type)> Arguments { get; }
+
+        // Regex which matches a function pointer
+        public const string Regex = @"(\S+)\s*\(\s*\*(\S+)\s*\)\s*\(\s*(.*?)\s*\)";
+
+        public CppFnPtrType(int WordSize, CppType returnType, List<(string Name, CppType Type)> arguments) : base(null, WordSize) {
             ReturnType = returnType;
             Arguments = arguments;
         }
 
-        public override string ToString() => $"typedef {ReturnType} (*{Name})({Arguments});";
+        // Generate a CppFnPtrType from a text signature (typedef or field)
+        public static CppFnPtrType FromSignature(CppTypes types, string text) {
+            if (text.StartsWith("typedef "))
+                text = text.Substring(8);
+
+            var typedef = System.Text.RegularExpressions.Regex.Match(text, Regex);
+
+            var returnType = types.GetType(typedef.Groups[1].Captures[0].ToString());
+            var argumentText = typedef.Groups[3].Captures[0].ToString().Split(',');
+            if (argumentText.Length == 1 && argumentText[0] == "")
+                argumentText = new string[0];
+            var argumentNames = argumentText.Select(
+                a => a.IndexOf("*") != -1 ? a.Substring(a.LastIndexOf("*") + 1).Trim() :
+                a.IndexOf(" ") != -1 ? a.Substring(a.LastIndexOf(" ") + 1) : "");
+
+            var arguments = argumentNames.Zip(argumentText, (name, argument) =>
+                    (name, types.GetType(argument.Substring(0, argument.Length - name.Length)))).ToList();
+
+            return new CppFnPtrType(types.WordSize, returnType, arguments);
+        }
+
+        // Output as a named field in a type
+        public string ToString(string name) => $"{ReturnType.Name} (*{name})({string.Join(", ", Arguments.Select(a => a.Type.Name + (a.Name.Length > 0? " " + a.Name : "")))});";
+
+        // Output as a typedef declaration
+        public override string ToString() => "typedef " + ToString(Name);
     }
 
     // A typedef alias
@@ -142,7 +171,12 @@ namespace Il2CppInspector.Cpp
                         var baseOffset = field.Offset;
                         var fields = ct.Flattened.Fields.Select(kl => new {
                             Key = kl.Key + baseOffset,
-                            Value = kl.Value.Select(f => new CppField { Name = f.Name, Type = f.Type, BitfieldSize = f.BitfieldSize, Offset = f.Offset + baseOffset }).ToList()
+                            Value = kl.Value.Select(f => new CppField {
+                                Name = f.Name,
+                                Type = f.Type,
+                                BitfieldSize = f.BitfieldSize,
+                                Offset = f.Offset + baseOffset
+                            }).ToList()
                         }).ToDictionary(kv => kv.Key, kv => kv.Value);
 
                         flattened = new SortedDictionary<int, List<CppField>>(flattened.Union(fields).ToDictionary(kv => kv.Key, kv => kv.Value));
@@ -271,11 +305,9 @@ namespace Il2CppInspector.Cpp
         public int BitfieldMSB => BitfieldLSB + Size - 1;
 
         // The type of the field
-        // This type will be wrong (by design) for function pointers, pointers to pointers etc.
-        // and we only want it to calculate offsets so we hide this
-        internal CppType Type { get; set; }
+        public CppType Type { get; set; }
 
-        // C++ representation of field (might be incorrect due to the above)
+        // C++ representation of field
         public override string ToString() {
             var offset = $"/* 0x{OffsetBytes:x2} - 0x{OffsetBytes + SizeBytes - 1:x2} (0x{SizeBytes:x2}) */";
 
@@ -283,7 +315,7 @@ namespace Il2CppInspector.Cpp
                 // nested anonymous types
                 CppComplexType t when string.IsNullOrEmpty(t.Name) => "\n" + t.ToString()[..^1] + " " + Name,
                 // function pointers
-                CppFnPtrType t when string.IsNullOrEmpty(t.Name) => $" {t.ReturnType} (*{Name})({t.Arguments})",
+                CppFnPtrType t when string.IsNullOrEmpty(t.Name) => " " + t.ToString(Name),
                 // regular fields
                 _ => $" {Type.Name} {Name}" + (BitfieldSize > 0? $" : {BitfieldSize}" : "")
             };
@@ -350,20 +382,21 @@ namespace Il2CppInspector.Cpp
             Types = primitiveTypes.ToDictionary(t => t.Name, t => t);
 
             // This is all compiler-dependent, let's hope for the best!
-            Types.Add("uintptr_t", new CppType("uintptr_t", WordSize));
-            Types.Add("size_t", new CppType("size_t", WordSize));
+            Add(new CppType("long", WordSize));
+            Add(new CppType("intptr_t", WordSize));
+            Add(new CppType("uintptr_t", WordSize));
+            Add(new CppType("size_t", WordSize));
         }
 
         // Parse a block of C++ source code, adding any types found
         public void AddFromDeclarationText(string text) {
             using StringReader lines = new StringReader(text);
 
-            var fnPtr = @"(\S+)\s*\(\s*\*(\S+)\s*\)\s*\(\s*(.*?)\s*\)";
             var rgxExternDecl = new Regex(@"struct (\S+);");
             var rgxTypedefForwardDecl = new Regex(@"typedef struct (\S+) (\S+);");
-            var rgxTypedefFnPtr = new Regex(@"typedef\s+(?:struct )?" + fnPtr + ";");
+            var rgxTypedefFnPtr = new Regex(@"typedef\s+(?:struct )?" + CppFnPtrType.Regex + ";");
             var rgxTypedef = new Regex(@"typedef (\S+?)\s*\**\s*(\S+);");
-            var rgxFieldFnPtr = new Regex(fnPtr + @";");
+            var rgxFieldFnPtr = new Regex(CppFnPtrType.Regex + @";");
             var rgxField = new Regex(@"^(?:struct |enum )?(\S+?)\s*\**\s*((?:\S|\s*,\s*)+)(?:\s*:\s*([0-9]+))?;");
             var rgxEnumValue = new Regex(@"^\s*([A-Za-z0-9_]+)(?:\s*=\s*(.+?))?,?\s*$");
 
@@ -521,10 +554,12 @@ namespace Il2CppInspector.Cpp
                 // typedef <retType> (*<alias>)(<args>);
                 typedef = rgxTypedefFnPtr.Match(line);
                 if (typedef.Success) {
-                    var returnType = typedef.Groups[1].Captures[0].ToString();
-                    var arguments = typedef.Groups[3].Captures[0].ToString();
                     var alias = typedef.Groups[2].Captures[0].ToString();
-                    Types.Add(alias, new CppFnPtrType(WordSize, returnType, arguments) {Name = alias});
+
+                    var fnPtrType = CppFnPtrType.FromSignature(this, line);
+                    fnPtrType.Name = alias;
+
+                    Types.Add(alias, fnPtrType);
 
                     Debug.WriteLine($"[TYPEDEF FNPTR] {line}  --  Adding method pointer typedef to {alias}");
                     continue;
@@ -607,14 +642,7 @@ namespace Il2CppInspector.Cpp
                 // End of complex field, complex type or enum
                 // end of [typedef] struct/union/enum
                 if (line.StartsWith("}") && line.EndsWith(";")) {
-                    // We need this to avoid false positives on field matches below
-                    /*if (currentType.Count == 0 && !inEnum) {
-                        Debug.WriteLine($"[IGNORE       ] {line}");
-                        continue;
-                    }*/
-
                     var name = line[1..^1].Trim();
-
                     var ct = currentType.Pop();
 
                     // End of top-level typedef, so it's a type name
@@ -648,12 +676,12 @@ namespace Il2CppInspector.Cpp
                 // Function pointer field
                 var fieldFnPtr = rgxFieldFnPtr.Match(line);
                 if (fieldFnPtr.Success) {
-                    var returnType = fieldFnPtr.Groups[1].Captures[0].ToString();
-                    var arguments = fieldFnPtr.Groups[3].Captures[0].ToString();
+                    var fnPtrType = CppFnPtrType.FromSignature(this, line);
+                    
                     var name = fieldFnPtr.Groups[2].Captures[0].ToString();
 
                     var ct = currentType.Peek();
-                    ct.AddField(new CppField {Name = name, Type = new CppFnPtrType(WordSize, returnType, arguments)}, alignment);
+                    ct.AddField(new CppField {Name = name, Type = fnPtrType}, alignment);
 
                     Debug.WriteLine($"[FIELD FNPTR  ] {line}  --  {name}");
                     continue;
@@ -713,12 +741,10 @@ namespace Il2CppInspector.Cpp
                     if (enumValue.Groups[2].Captures.Count > 0) {
                         // Convert the text to a ulong even if it's hexadecimal with a 0x prefix
                         var valueText = enumValue.Groups[2].Captures[0].ToString();
-
                         var conv = new System.ComponentModel.UInt64Converter();
 
                         // Handle bit shift operator
                         var values = valueText.Split("<<").Select(t => (ulong) conv.ConvertFromInvariantString(t.Trim())).ToArray();
-
                         value = values.Length == 1 ? values[0] : values[0] << (int)values[1];
                         nextEnumValue = value + 1;
                     }
@@ -753,12 +779,31 @@ namespace Il2CppInspector.Cpp
             }
         }
 
+        // Get a type from its name, handling pointer types
+        public CppType GetType(string typeName) {
+            var baseName = typeName.Replace("*", "");
+            var indirectionCount = typeName.Length - baseName.Length;
+
+            var type = Types[baseName.Trim()];
+            for (int i = 0; i < indirectionCount; i++)
+                type = type.AsPointer(WordSize);
+
+            return type;
+        }
+
+        // Add a type externally
+        public void Add(CppType type) => Types.Add(type.Name, type);
+
         // Generate a populated CppTypes object from a set of Unity headers
         public static CppTypes FromUnityVersion(UnityVersion version, int wordSize = 32)
             => FromUnityHeaders(UnityHeader.GetHeaderForVersion(version), wordSize);
 
         public static CppTypes FromUnityHeaders(UnityHeader header, int wordSize = 32) {
             var cppTypes = new CppTypes(wordSize);
+
+            // Add junk from config files we haven't included
+            cppTypes.Add(new CppType("Il2CppIManagedObjectHolder"));
+            cppTypes.Add(new CppType("Il2CppIUnknown"));
 
             // Process Unity headers
             var headers = header.GetHeaderText();
