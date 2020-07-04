@@ -50,7 +50,9 @@ namespace Il2CppInspector.Cpp
         // Generate typedef to this type
         public CppAlias AsAlias(string Name) => new CppAlias(Name, this);
 
-        public override string ToString() => $"/* {SizeBytes:x2} - {Name} */";
+        public virtual string ToString(string format = "") => format == "o" ? $"/* {SizeBytes:x2} - {Name} */" : $"/* {Name} */";
+
+        public override string ToString() => ToString();
     }
 
     // A pointer type
@@ -82,7 +84,7 @@ namespace Il2CppInspector.Cpp
             Length = length;
         }
 
-        public override string ToString() => ElementType + "[" + Length + "]";
+        public override string ToString(string format = "") => ElementType + "[" + Length + "]";
     }
 
     // A function pointer type
@@ -124,10 +126,10 @@ namespace Il2CppInspector.Cpp
         }
 
         // Output as a named field in a type
-        public string ToString(string name) => $"{ReturnType.Name} (*{name})({string.Join(", ", Arguments.Select(a => a.Type.Name + (a.Name.Length > 0? " " + a.Name : "")))});";
+        public string FieldToString(string name) => $"{ReturnType.Name} (*{name})({string.Join(", ", Arguments.Select(a => a.Type.Name + (a.Name.Length > 0? " " + a.Name : "")))})";
 
         // Output as a typedef declaration
-        public override string ToString() => "typedef " + ToString(Name);
+        public override string ToString(string format = "") => "typedef " + FieldToString(Name) + ";";
     }
 
     // A typedef alias
@@ -141,7 +143,7 @@ namespace Il2CppInspector.Cpp
 
         public CppAlias(string name, CppType elementType) : base(name) => ElementType = elementType;
 
-        public override string ToString() => $"typedef {ElementType.Name} {Name};";
+        public override string ToString(string format = "") => $"typedef {ElementType.Name} {Name};";
     }
 
     // A struct, union, enum or class type (type with fields)
@@ -248,7 +250,7 @@ namespace Il2CppInspector.Cpp
         }
 
         // Summarize all field names and offsets
-        public override string ToString() {
+        public override string ToString(string format = "") {
             var sb = new StringBuilder();
             
             if (Name.Length > 0)
@@ -261,13 +263,13 @@ namespace Il2CppInspector.Cpp
             if (Fields.Any()) {
                 sb.Append("{");
                 foreach (var field in Fields.Values.SelectMany(f => f))
-                    sb.Append("\n\t" + string.Join("\n\t", field.ToString().Split('\n')) + delimiter);
+                    sb.Append("\n\t" + string.Join("\n\t", field.ToString(format).Split('\n')) + delimiter);
 
                 // Chop off final comma
                 if (CompoundType == CompoundType.Enum)
                     sb = sb.Remove(sb.Length - 1, 1);
 
-                sb.Append($"\n}} {Name}{(Name.Length > 0 ? " " : "")}/* Size: 0x{SizeBytes:x2} */;");
+                sb.Append($"\n}}{(Name.Length > 0? " " + Name : "")}{(format == "o"? $" /* Size: 0x{SizeBytes:x2} */" : "")};");
             }
             // Forward declaration
             else {
@@ -308,16 +310,16 @@ namespace Il2CppInspector.Cpp
         public CppType Type { get; set; }
 
         // C++ representation of field
-        public override string ToString() {
-            var offset = $"/* 0x{OffsetBytes:x2} - 0x{OffsetBytes + SizeBytes - 1:x2} (0x{SizeBytes:x2}) */";
+        public virtual string ToString(string format = "") {
+            var offset = format == "o" ? $"/* 0x{OffsetBytes:x2} - 0x{OffsetBytes + SizeBytes - 1:x2} (0x{SizeBytes:x2}) */" : "";
 
             var field = Type switch {
                 // nested anonymous types
-                CppComplexType t when string.IsNullOrEmpty(t.Name) => "\n" + t.ToString()[..^1] + " " + Name,
+                CppComplexType t when string.IsNullOrEmpty(t.Name) => (format == "o"? "\n" : "") + t.ToString(format)[..^1] + (Name.Length > 0? " " + Name : ""),
                 // function pointers
-                CppFnPtrType t when string.IsNullOrEmpty(t.Name) => " " + t.ToString(Name),
+                CppFnPtrType t when string.IsNullOrEmpty(t.Name) => (format == "o"? " " : "") + t.FieldToString(Name),
                 // regular fields
-                _ => $" {Type.Name} {Name}" + (BitfieldSize > 0? $" : {BitfieldSize}" : "")
+                _ => $"{(format == "o"? " ":"")}{Type.Name} {Name}" + (BitfieldSize > 0? $" : {BitfieldSize}" : "")
             };
 
             var suffix = "";
@@ -327,11 +329,12 @@ namespace Il2CppInspector.Cpp
                 suffix += "[" + a.Length + "]";
 
             // bitfields
-            if (BitfieldSize > 0)
+            if (BitfieldSize > 0 && format == "o")
                 suffix += $" /* bits {BitfieldLSB} - {BitfieldMSB} */";
 
             return offset + field + suffix;
         }
+        public override string ToString() => ToString();
     }
 
     // An enum key and value pair
@@ -340,7 +343,7 @@ namespace Il2CppInspector.Cpp
         // The value of this key name
         public ulong Value { get; set; }
 
-        public override string ToString() => Name + " = " + Value;
+        public override string ToString(string format = "") => Name + " = " + Value;
     }
 
     // A collection of C++ types
