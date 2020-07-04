@@ -6,6 +6,7 @@
 
 namespace Il2CppInspector
 {
+    // A code file function export
     public class Export
     {
         public int Ordinal;

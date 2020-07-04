@@ -1,6 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿/*
+    Copyright 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+
+    All rights reserved.
+*/
 
 namespace Il2CppInspector.Cpp
 {
