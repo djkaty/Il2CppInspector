@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Il2CppInspector.Cpp.UnityHeaders;
@@ -40,20 +41,30 @@ namespace Il2CppInspector.Cpp
         public List<Export> Exports { get; }
         public int WordSize => ILModel.Package.BinaryImage.Bits;
 
-        public CppApplicationModel(Il2CppModel model, UnityVersion unityVersion, CppCompiler.Type compiler = CppCompiler.Type.BinaryFormat) {
+        public CppApplicationModel(Il2CppModel model, UnityVersion unityVersion = null, CppCompiler.Type compiler = CppCompiler.Type.BinaryFormat) {
             // Set key properties
             Compiler = compiler == CppCompiler.Type.BinaryFormat ? CppCompiler.GuessFromImage(model.Package.BinaryImage) : compiler;
-            UnityVersion = unityVersion;
+
+            var unityHeader = unityVersion != null ? UnityHeader.GetHeaderForVersion(unityVersion) : UnityHeader.GuessHeadersForModel(model)[0];
+
+            UnityVersion = unityVersion ?? unityHeader.MinVersion;
             ILModel = model;
 
+            // Check for matching metadata and binary versions
+            if (unityHeader.MetadataVersion != model.Package.BinaryImage.Version) {
+                Console.WriteLine($"Warning: selected version {UnityVersion} (metadata version {unityHeader.MetadataVersion})" +
+                                  $" does not match metadata version {model.Package.BinaryImage.Version}.");
+            }
+
+            // Get addresses of IL2CPP API function exports
+            Exports = model.Package.Binary.Image.GetExports().ToList();
+
             // Start creation of type model by parsing all of the Unity IL2CPP headers
-            Types = CppTypes.FromUnityVersion(unityVersion, WordSize);
+            Types = CppTypes.FromUnityHeaders(unityHeader, WordSize);
 
             // TODO: Process every type in the binary
-            var decl = new CppDeclarationGenerator(ILModel, UnityVersion);
+            //var decl = new CppDeclarationGenerator(this);
 
-            // Add addresses of IL2CPP API function exports
-            Exports = model.Package.Binary.Image.GetExports().ToList();
         }
     }
 }

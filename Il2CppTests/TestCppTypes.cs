@@ -33,7 +33,7 @@ namespace Il2CppInspector
                 var cppTypes = CppTypes.FromUnityHeaders(unityHeader);
 
                 foreach (var cppType in cppTypes.Types)
-                    Debug.WriteLine("// " + cppType.Key + "\n" + cppType.Value + "\n");
+                    Debug.WriteLine("// " + cppType.Key + "\n" + cppType.Value.ToString("o") + "\n");
             }
 
             // Do a few sanity checks taken from real applications

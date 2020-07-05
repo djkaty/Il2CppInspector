@@ -10,10 +10,16 @@ namespace Il2CppInspector.Cpp
     public class CppField
     {
         // The name of the field
-        public string Name { get; set; }
+        public string Name { get; }
+
+        // The type of the field
+        public CppType Type { get; }
 
         // The offset of the field into the type
-        public int Offset { get; set; }
+        public int Offset { get; internal set; }
+
+        // The size of the field in bits
+        public int BitfieldSize { get; }
 
         // The offset of the field into the type in bytes
         public int OffsetBytes => Offset / 8;
@@ -23,17 +29,18 @@ namespace Il2CppInspector.Cpp
 
         public int SizeBytes => (Size / 8) + (Size % 8 > 0 ? 1 : 0);
 
-        // The size of the field in bits
-        public int BitfieldSize { get; set; }
-
         // The LSB of the bitfield
         public int BitfieldLSB => Offset % 8;
 
         // The MSB of the bitfield
         public int BitfieldMSB => BitfieldLSB + Size - 1;
 
-        // The type of the field
-        public CppType Type { get; set; }
+        // Initialize field
+        public CppField(string name, CppType type, int bitfieldSize = 0) {
+            Name = name;
+            Type = type;
+            BitfieldSize = bitfieldSize;
+        }
 
         // C++ representation of field
         public virtual string ToString(string format = "") {
@@ -67,7 +74,9 @@ namespace Il2CppInspector.Cpp
     public class CppEnumField : CppField
     {
         // The value of this key name
-        public ulong Value { get; set; }
+        public ulong Value { get; }
+
+        public CppEnumField(string name, CppType type, ulong value) : base(name, type) => Value = value;
 
         public override string ToString(string format = "") => Name + " = " + Value;
     }

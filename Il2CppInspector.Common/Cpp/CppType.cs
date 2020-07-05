@@ -16,8 +16,8 @@ using Il2CppInspector.Cpp.UnityHeaders;
 
 namespace Il2CppInspector.Cpp
 {
-    // Compound type
-    public enum CompoundType
+    // Value type with fields
+    public enum ComplexValueType
     {
         Struct,
         Union,
@@ -49,6 +49,11 @@ namespace Il2CppInspector.Cpp
 
         // Generate typedef to this type
         public CppAlias AsAlias(string Name) => new CppAlias(Name, this);
+
+        // Helper factories
+        public static CppComplexType NewStruct(string name = "") => new CppComplexType(ComplexValueType.Struct) {Name = name};
+        public static CppComplexType NewUnion(string name = "") => new CppComplexType(ComplexValueType.Union) {Name = name};
+        public static CppEnumType NewEnum(CppType underlyingType, string name = "") => new CppEnumType(underlyingType) {Name = name};
 
         public virtual string ToString(string format = "") => format == "o" ? $"/* {SizeBytes:x2} - {Name} */" : $"/* {Name} */";
 
@@ -173,12 +178,7 @@ namespace Il2CppInspector.Cpp
                         var baseOffset = field.Offset;
                         var fields = ct.Flattened.Fields.Select(kl => new {
                             Key = kl.Key + baseOffset,
-                            Value = kl.Value.Select(f => new CppField {
-                                Name = f.Name,
-                                Type = f.Type,
-                                BitfieldSize = f.BitfieldSize,
-                                Offset = f.Offset + baseOffset
-                            }).ToList()
+                            Value = kl.Value.Select(f => new CppField(f.Name, f.Type, f.BitfieldSize) { Offset = f.Offset + baseOffset }).ToList()
                         }).ToDictionary(kv => kv.Key, kv => kv.Value);
 
                         flattened = new SortedDictionary<int, List<CppField>>(flattened.Union(fields).ToDictionary(kv => kv.Key, kv => kv.Value));
@@ -211,17 +211,17 @@ namespace Il2CppInspector.Cpp
         }
 
         // The compound type
-        public CompoundType CompoundType;
+        public ComplexValueType ComplexValueType;
 
         // Dictionary of byte offset in the type to each field
         // Unions and bitfields can have more than one field at the same offset
         public SortedDictionary<int, List<CppField>> Fields { get; internal set; } = new SortedDictionary<int, List<CppField>>();
 
-        public CppComplexType(CompoundType compoundType) : base("", 0) => CompoundType = compoundType;
+        public CppComplexType(ComplexValueType complexValueType) : base("", 0) => ComplexValueType = complexValueType;
 
         // Size can't be calculated lazily (as we go along adding fields) because of forward declarations
         public override int Size =>
-            CompoundType == CompoundType.Union
+            ComplexValueType == ComplexValueType.Union
                 // Union size is the size of the largest element in the union
                 ? Fields.Values.SelectMany(f => f).Select(f => f.Size).Max()
                 // For structs we look for the last item and add the size;
@@ -231,7 +231,7 @@ namespace Il2CppInspector.Cpp
         // Add a field to the type. Returns the offset of the field in the type
         public int AddField(CppField field, int alignmentBytes = 0) {
             // Unions and enums always have an offset of zero
-            field.Offset = CompoundType == CompoundType.Struct ? Size : 0;
+            field.Offset = ComplexValueType == ComplexValueType.Struct ? Size : 0;
 
             // If we just came out of a bitfield, move to the next byte if necessary
             if (field.BitfieldSize == 0 && field.Offset % 8 != 0)
@@ -249,27 +249,60 @@ namespace Il2CppInspector.Cpp
             return Size;
         }
 
+        // Add a field to the type
+        public int AddField(string name, CppType type, int alignmentBytes = 0, int bitfield = 0)
+            => AddField(new CppField(name, type, bitfield), alignmentBytes);
+
         // Summarize all field names and offsets
         public override string ToString(string format = "") {
             var sb = new StringBuilder();
             
             if (Name.Length > 0)
                 sb.Append("typedef ");
-            sb.Append(CompoundType == CompoundType.Struct ? "struct " : CompoundType == CompoundType.Enum? "enum " : "union ");
+            sb.Append(ComplexValueType == ComplexValueType.Struct ? "struct " : "union ");
             sb.Append(Name + (Name.Length > 0 ? " " : ""));
-
-            var delimiter = CompoundType == CompoundType.Enum ? "," : ";";
 
             if (Fields.Any()) {
                 sb.Append("{");
                 foreach (var field in Fields.Values.SelectMany(f => f))
-                    sb.Append("\n\t" + string.Join("\n\t", field.ToString(format).Split('\n')) + delimiter);
-
-                // Chop off final comma
-                if (CompoundType == CompoundType.Enum)
-                    sb = sb.Remove(sb.Length - 1, 1);
+                    sb.Append("\n\t" + string.Join("\n\t", field.ToString(format).Split('\n')) + ";");
 
                 sb.Append($"\n}}{(Name.Length > 0? " " + Name : "")}{(format == "o"? $" /* Size: 0x{SizeBytes:x2} */" : "")};");
+            }
+            // Forward declaration
+            else {
+                sb.Append($"{Name};");
+            }
+
+            return sb.ToString();
+        }
+    }
+
+    // Enumeration type
+    public class CppEnumType : CppComplexType
+    {
+        // The underlying type of the enum
+        public CppType UnderlyingType { get; }
+
+        public override int Size => UnderlyingType.Size;
+
+        public CppEnumType(CppType underlyingType) : base(ComplexValueType.Enum) => UnderlyingType = underlyingType;
+
+        public void AddField(string name, ulong value) => AddField(new CppEnumField(name, UnderlyingType, value));
+
+        public override string ToString(string format = "") {
+            var sb = new StringBuilder();
+            
+            sb.Append($"typedef enum {Name} : {UnderlyingType.Name}");
+
+            if (Fields.Any()) {
+                sb.Append(" {");
+                foreach (var field in Fields.Values.SelectMany(f => f))
+                    sb.Append("\n\t" + string.Join("\n\t", field.ToString(format).Split('\n')) + ",");
+
+                // Chop off final comma
+                sb = sb.Remove(sb.Length - 1, 1);
+                sb.Append($"\n}} {Name}{(format == "o"? $" /* Size: 0x{SizeBytes:x2} */" : "")};");
             }
             // Forward declaration
             else {

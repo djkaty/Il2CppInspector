@@ -198,7 +198,7 @@ namespace Il2CppInspector.Cpp
                 if (externDecl.Success) {
                     var declType = externDecl.Groups[1].Captures[0].ToString();
 
-                    Types.Add(declType, new CppComplexType(CompoundType.Struct) {Name = declType});
+                    Types.Add(declType, CppType.NewStruct(declType));
 
                     Debug.WriteLine($"[EXTERN DECL  ] {line}");
                     continue;
@@ -213,7 +213,7 @@ namespace Il2CppInspector.Cpp
 
                     // Sometimes we might get multiple forward declarations for the same type
                     if (!Types.ContainsKey(declType))
-                        Types.Add(declType, new CppComplexType(CompoundType.Struct) {Name = declType});
+                        Types.Add(declType, CppType.NewStruct(declType));
 
                     // Sometimes the alias might be the same name as the type (this is usually the case)
                     if (!Types.ContainsKey(alias))
@@ -261,7 +261,7 @@ namespace Il2CppInspector.Cpp
                 // typedef struct <optional-type-name>
                 if ((line.StartsWith("typedef struct") || line.StartsWith("struct ")) && line.IndexOf(";", StringComparison.Ordinal) == -1
                     && currentType.Count == 0) {
-                    currentType.Push(new CppComplexType(CompoundType.Struct));
+                    currentType.Push(CppType.NewStruct());
 
                     if (line.StartsWith("struct "))
                         currentType.Peek().Name = line.Split(' ')[1];
@@ -273,7 +273,7 @@ namespace Il2CppInspector.Cpp
                 // Start of union
                 // typedef union <optional-type-name>
                 if (line.StartsWith("typedef union") && line.IndexOf(";", StringComparison.Ordinal) == -1) {
-                    currentType.Push(new CppComplexType(CompoundType.Union));
+                    currentType.Push(CppType.NewUnion());
 
                     Debug.WriteLine($"\n[UNION START  ] {line}");
                     continue;
@@ -282,7 +282,7 @@ namespace Il2CppInspector.Cpp
                 // Start of enum
                 // typedef enum <optional-type-name>
                 if (line.StartsWith("typedef enum") && line.IndexOf(";", StringComparison.Ordinal) == -1) {
-                    currentType.Push(new CppComplexType(CompoundType.Enum));
+                    currentType.Push(NewDefaultEnum());
                     nextEnumValue = 0;
 
                     Debug.WriteLine($"\n[ENUM START   ] {line}");
@@ -294,7 +294,7 @@ namespace Il2CppInspector.Cpp
                 // union <optional-type-name>
                 var words = line.Split(' ');
                 if ((words[0] == "union" || words[0] == "struct") && words.Length <= 2) {
-                    currentType.Push(new CppComplexType(words[0] == "struct"? CompoundType.Struct : CompoundType.Union));
+                    currentType.Push(words[0] == "struct" ? CppType.NewStruct() : CppType.NewUnion());
 
                     Debug.WriteLine($"[FIELD START   ] {line}");
                     continue;
@@ -339,7 +339,7 @@ namespace Il2CppInspector.Cpp
                     // Otherwise it's a field name in the current type
                     else {
                         var parent = currentType.Peek();
-                        parent.AddField(new CppField { Name = name, Type = ct });
+                        parent.AddField(name, ct, alignment);
 
                         Debug.WriteLine($"[FIELD END    ] {line}  --  {ct.Name} {name}");
                     }
@@ -354,7 +354,7 @@ namespace Il2CppInspector.Cpp
                     var name = fieldFnPtr.Groups[2].Captures[0].ToString();
 
                     var ct = currentType.Peek();
-                    ct.AddField(new CppField {Name = name, Type = fnPtrType}, alignment);
+                    ct.AddField(name, fnPtrType, alignment);
 
                     Debug.WriteLine($"[FIELD FNPTR  ] {line}  --  {name}");
                     continue;
@@ -395,7 +395,7 @@ namespace Il2CppInspector.Cpp
                         if (arraySize > 0)
                             type = type.AsArray(arraySize);
 
-                        ct.AddField(new CppField {Name = name, Type = type, BitfieldSize = bitfield}, alignment);
+                        ct.AddField(name, type, alignment, bitfield);
 
                         if (bitfield == 0)
                             Debug.WriteLine($"[FIELD {(pointers > 0 ? "PTR" : "VAL")}    ] {line}  --  {name}");
@@ -423,7 +423,7 @@ namespace Il2CppInspector.Cpp
                     }
 
                     var ct = currentType.Peek();
-                    ct.AddField(new CppEnumField {Name = name, Type = WordSize == 32 ? Types["uint32_t"] : Types["uint64_t"], Value = value});
+                    ((CppEnumType) ct).AddField(name, value);
 
                     Debug.WriteLine($"[ENUM VALUE   ] {line}  --  {name} = {value}");
                     continue;
@@ -467,6 +467,14 @@ namespace Il2CppInspector.Cpp
 
         // Add a type externally
         public void Add(CppType type) => Types.Add(type.Name, type);
+
+        // Add a field to a type specifying the field type and/or declaring type name as a string
+        // Convenient when the field type is a pointer, or to avoid referencing this.Types or this.WordSize externally
+        public int AddField(CppComplexType declaringType, string fieldName, string typeName)
+            => declaringType.AddField(fieldName, GetType(typeName));
+
+        // Create an empty enum with the default underlying type for the architecture (32 or 64-bit)
+        public CppEnumType NewDefaultEnum() => CppType.NewEnum(Types["int"]);
 
         // Generate a populated CppTypes object from a set of Unity headers
         public static CppTypes FromUnityVersion(UnityVersion version, int wordSize = 32)
