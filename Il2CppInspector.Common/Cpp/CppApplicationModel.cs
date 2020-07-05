@@ -64,7 +64,6 @@ namespace Il2CppInspector.Cpp
 
             // TODO: Process every type in the binary
             //var decl = new CppDeclarationGenerator(this);
-
         }
     }
 }
