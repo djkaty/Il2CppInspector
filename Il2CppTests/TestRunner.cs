@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2019-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2019-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -60,17 +60,26 @@ namespace Il2CppInspector
                     .WriteCppToFile(testPath + $@"\test-result{nameSuffix}.h");
             }
 
-            // Compare test result with expected result
+            // Compare test results with expected results
             for (i = 0; i < inspectors.Count; i++) {
-                var expected = File.ReadAllLines(testPath + @"\..\..\TestExpectedResults\" + Path.GetFileName(testPath) + (i > 0 ? "-" + i : "") + ".cs");
-                var actual = File.ReadAllLines(testPath + @"\test-result" + (i > 0 ? "-" + i : "") + ".cs");
+                var suffix = (i > 0 ? "-" + i : "");
 
-                // Get rid of blank lines and trim the remaining lines
-                expected = (from l in expected where !string.IsNullOrWhiteSpace(l) select l.Trim()).ToArray();
-                actual = (from l in actual where !string.IsNullOrWhiteSpace(l) select l.Trim()).ToArray();
-
-                CollectionAssert.AreEqual(expected, actual);
+                compareFiles(testPath, suffix + ".cs", $"test-result{suffix}.cs");
+                compareFiles(testPath, suffix + ".py", $"test-ida-result{suffix}.py");
+                compareFiles(testPath, suffix + ".h", $"test-result{suffix}.h");
             }
+        }
+
+        // We have to pass testPath rather than storing it as a field so that tests can be parallelized
+        private void compareFiles(string testPath, string expectedFilenameSuffix, string actualFilename) {
+            var expected = File.ReadAllLines(testPath + @"\..\..\TestExpectedResults\" + Path.GetFileName(testPath) + expectedFilenameSuffix);
+            var actual = File.ReadAllLines(testPath + @"\" + actualFilename);
+
+            // Get rid of blank lines and trim the remaining lines
+            expected = (from l in expected where !string.IsNullOrWhiteSpace(l) select l.Trim()).ToArray();
+            actual = (from l in actual where !string.IsNullOrWhiteSpace(l) select l.Trim()).ToArray();
+
+            CollectionAssert.AreEqual(expected, actual);
         }
     }
 }
