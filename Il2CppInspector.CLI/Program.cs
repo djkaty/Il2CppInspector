@@ -131,7 +131,8 @@ namespace Il2CppInspector.CLI
                     Console.Error.WriteLine($"Unity path {unityPath} does not exist");
                     return 1;
                 }
-                if (!File.Exists(unityPath + @"\Editor\Data\Managed\UnityEditor.dll")) {
+                
+                if (!File.Exists(unityPath + @"/Contents/Managed/UnityEditor.dll")) {
                     Console.Error.WriteLine($"No Unity installation found at {unityPath}");
                     return 1;
                 }
@@ -139,7 +140,7 @@ namespace Il2CppInspector.CLI
                     Console.Error.WriteLine($"Unity assemblies path {unityAssembliesPath} does not exist");
                     return 1;
                 }
-                if (!File.Exists(unityAssembliesPath + @"\UnityEngine.UI.dll")) {
+                if (!File.Exists(unityAssembliesPath + @"/ScriptAssemblies/UnityEngine.UI.dll")) {
                     Console.Error.WriteLine($"No Unity assemblies found at {unityAssembliesPath}");
                     return 1;
                 }
