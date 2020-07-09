@@ -146,13 +146,10 @@ namespace Il2CppInspector.CLI
                     Console.Error.WriteLine($"Unity assemblies path {unityAssembliesPath} does not exist");
                     return 1;
                 }
-                
-                string uiDllPath = RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
-                    ? @"/ScriptAssemblies/UnityEngine.UI.dll"
-                    : @"\UnityEngine.UI.dll";
-                
-                if (!File.Exists(unityAssembliesPath + uiDllPath)) {
-                    Console.Error.WriteLine($"No Unity assemblies found at {unityAssembliesPath}");
+
+                string uiDllPath = Path.Combine(unityAssembliesPath, "UnityEngine.UI.dll");
+                if (!File.Exists(uiDllPath)) {
+                    Console.Error.WriteLine($"No UnityEngine.UI.dll assemblies found at {uiDllPath}");
                     return 1;
                 }
 
