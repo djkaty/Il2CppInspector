@@ -4,15 +4,12 @@
     All rights reserved.
 */
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using Il2CppInspector.Cpp.UnityHeaders;
+
+// NOTE: The types in this file should not be created directly. Always create types using the CppTypeCollection API!
 
 namespace Il2CppInspector.Cpp
 {
@@ -30,15 +27,23 @@ namespace Il2CppInspector.Cpp
         // The name of the type
         public virtual string Name { get; set; }
 
+        // The logical group this type is part of
+        // This is purely for querying types in related groups and has no bearing on the code
+        public string Group { get; set; }
+
         // The size of the C++ type in bits
         public virtual int Size { get; set; }
+
+        // The alignment of the type
+        public int AlignmentBytes { get; set; }
 
         // The size of the C++ type in bytes
         public virtual int SizeBytes => (Size / 8) + (Size % 8 > 0 ? 1 : 0);
 
-        public CppType(string name = null, int size = 0) {
+        public CppType(string name = null, int size = 0, int alignmentBytes = 0) {
             Name = name;
             Size = size;
+            AlignmentBytes = alignmentBytes;
         }
 
         // Generate pointer to this type
@@ -50,12 +55,10 @@ namespace Il2CppInspector.Cpp
         // Generate typedef to this type
         public CppAlias AsAlias(string Name) => new CppAlias(Name, this);
 
-        // Helper factories
-        public static CppComplexType NewStruct(string name = "") => new CppComplexType(ComplexValueType.Struct) {Name = name};
-        public static CppComplexType NewUnion(string name = "") => new CppComplexType(ComplexValueType.Union) {Name = name};
-        public static CppEnumType NewEnum(CppType underlyingType, string name = "") => new CppEnumType(underlyingType) {Name = name};
+        // Return the type as a field
+        public virtual string ToFieldString(string fieldName) => Name + " " + fieldName;
 
-        public virtual string ToString(string format = "") => format == "o" ? $"/* {SizeBytes:x2} - {Name} */" : $"/* {Name} */";
+        public virtual string ToString(string format = "") => format == "o" ? $"/* {SizeBytes:x2} - {Name} */" : "";
 
         public override string ToString() => ToString();
     }
@@ -63,11 +66,14 @@ namespace Il2CppInspector.Cpp
     // A pointer type
     public class CppPointerType : CppType
     {
-        public override string Name => ElementType.Name + "*";
+        public override string Name => ElementType.Name + " *";
 
         public CppType ElementType { get; }
 
         public CppPointerType(int WordSize, CppType elementType) : base(null, WordSize) => ElementType = elementType;
+
+        // Return the type as a field
+        public override string ToFieldString(string fieldName) => ElementType.ToFieldString("*" + fieldName);
     }
 
     // An array type
@@ -88,6 +94,9 @@ namespace Il2CppInspector.Cpp
             ElementType = elementType;
             Length = length;
         }
+
+        // Return the type as a field
+        public override string ToFieldString(string fieldName) => ElementType.ToFieldString(fieldName) + "[" + Length + "]";
 
         public override string ToString(string format = "") => ElementType + "[" + Length + "]";
     }
@@ -110,7 +119,7 @@ namespace Il2CppInspector.Cpp
         }
 
         // Generate a CppFnPtrType from a text signature (typedef or field)
-        public static CppFnPtrType FromSignature(CppTypes types, string text) {
+        public static CppFnPtrType FromSignature(CppTypeCollection types, string text) {
             if (text.StartsWith("typedef "))
                 text = text.Substring(8);
 
@@ -131,13 +140,17 @@ namespace Il2CppInspector.Cpp
         }
 
         // Output as a named field in a type
-        public string FieldToString(string name) => $"{ReturnType.Name} (*{name})({string.Join(", ", Arguments.Select(a => a.Type.Name + (a.Name.Length > 0? " " + a.Name : "")))})";
+        public override string ToFieldString(string name) => $"{ReturnType.Name} (*{name})({string.Join(", ", Arguments.Select(a => a.Type.Name + (a.Name.Length > 0? " " + a.Name : "")))})";
 
         // Output as a typedef declaration
-        public override string ToString(string format = "") => "typedef " + FieldToString(Name) + ";";
+        public override string ToString(string format = "") => "typedef " + ToFieldString(Name) + ";\n";
+
+        // Output as a function signature
+        public string ToSignatureString() => $"{ReturnType.Name} {Name}({string.Join(", ", Arguments.Select(a => a.Type.Name + (a.Name.Length > 0? " " + a.Name : "")))})";
     }
 
-    // A typedef alias
+    // A named alias for another type
+    // These are not stored in the type collection but generated on-the-fly for fields by GetType()
     public class CppAlias : CppType
     {
         public CppType ElementType { get; }
@@ -148,7 +161,7 @@ namespace Il2CppInspector.Cpp
 
         public CppAlias(string name, CppType elementType) : base(name) => ElementType = elementType;
 
-        public override string ToString(string format = "") => $"typedef {ElementType.Name} {Name};";
+        public override string ToString(string format = "") => $"typedef {ElementType.ToFieldString(Name)};";
     }
 
     // A struct, union, enum or class type (type with fields)
@@ -174,7 +187,11 @@ namespace Il2CppInspector.Cpp
                 var flattened = new SortedDictionary<int, List<CppField>>();
 
                 foreach (var field in t.Fields.Values.SelectMany(f => f)) {
-                    if (field.Type is CppComplexType ct) {
+                    var type = field.Type;
+                    while (type is CppAlias aliasType)
+                        type = aliasType.ElementType;
+
+                    if (type is CppComplexType ct) {
                         var baseOffset = field.Offset;
                         var fields = ct.Flattened.Fields.Select(kl => new {
                             Key = kl.Key + baseOffset,
@@ -219,15 +236,6 @@ namespace Il2CppInspector.Cpp
 
         public CppComplexType(ComplexValueType complexValueType) : base("", 0) => ComplexValueType = complexValueType;
 
-        // Size can't be calculated lazily (as we go along adding fields) because of forward declarations
-        public override int Size =>
-            ComplexValueType == ComplexValueType.Union
-                // Union size is the size of the largest element in the union
-                ? Fields.Values.SelectMany(f => f).Select(f => f.Size).Max()
-                // For structs we look for the last item and add the size;
-                // adding all the sizes might fail because of alignment padding
-                : Fields.Values.Any() ? Fields.Values.SelectMany(f => f).Select(f => f.Offset + f.Size).Max() : 0;
-
         // Add a field to the type. Returns the offset of the field in the type
         public int AddField(CppField field, int alignmentBytes = 0) {
             // Unions and enums always have an offset of zero
@@ -241,39 +249,52 @@ namespace Il2CppInspector.Cpp
             if (alignmentBytes > 0 && field.OffsetBytes % alignmentBytes != 0)
                 field.Offset += (alignmentBytes - field.OffsetBytes % alignmentBytes) * 8;
 
+            if (field.Type.AlignmentBytes > 0 && field.OffsetBytes % field.Type.AlignmentBytes != 0)
+                field.Offset += (field.Type.AlignmentBytes - field.OffsetBytes % field.Type.AlignmentBytes) * 8;
+
             if (Fields.ContainsKey(field.Offset))
                 Fields[field.Offset].Add(field);
             else
                 Fields.Add(field.Offset, new List<CppField> { field });
 
+            // Update type size. This lazy evaluation only works if there are no value type forward declarations in the type
+            // Union size is the size of the largest element in the union
+            if (ComplexValueType == ComplexValueType.Union)
+                if (field.Size > Size)
+                    Size = field.Size;
+
+            // For structs we look for the last item and add the size; adding the sizes without offsets might fail because of alignment padding
+            if (ComplexValueType == ComplexValueType.Struct)
+                Size = field.Offset + field.Size;
+
             return Size;
         }
 
         // Add a field to the type
-        public int AddField(string name, CppType type, int alignmentBytes = 0, int bitfield = 0)
-            => AddField(new CppField(name, type, bitfield), alignmentBytes);
+        public int AddField(string name, CppType type, int alignmentBytes = 0, int bitfield = 0, bool isConst = false)
+            => AddField(new CppField(name, type, bitfield, isConst), alignmentBytes);
+
+        // Return the type as a field
+        public override string ToFieldString(string fieldName) => (ComplexValueType == ComplexValueType.Struct ? "struct " : "union ") + Name + " " + fieldName;
 
         // Summarize all field names and offsets
         public override string ToString(string format = "") {
             var sb = new StringBuilder();
             
-            if (Name.Length > 0)
-                sb.Append("typedef ");
             sb.Append(ComplexValueType == ComplexValueType.Struct ? "struct " : "union ");
+
+            if (AlignmentBytes != 0)
+                sb.Append($"__declspec(align({AlignmentBytes})) ");
+
             sb.Append(Name + (Name.Length > 0 ? " " : ""));
 
-            if (Fields.Any()) {
-                sb.Append("{");
-                foreach (var field in Fields.Values.SelectMany(f => f))
-                    sb.Append("\n\t" + string.Join("\n\t", field.ToString(format).Split('\n')) + ";");
+            sb.Append("{");
+            foreach (var field in Fields.Values.SelectMany(f => f))
+                sb.Append("\n    " + string.Join("\n    ", field.ToString(format).Split('\n')) + ";");
 
-                sb.Append($"\n}}{(Name.Length > 0? " " + Name : "")}{(format == "o"? $" /* Size: 0x{SizeBytes:x2} */" : "")};");
-            }
-            // Forward declaration
-            else {
-                sb.Append($"{Name};");
-            }
+            sb.Append($"\n}}{(format == "o"? $" /* Size: 0x{SizeBytes:x2} */" : "")};");
 
+            sb.Append("\n");
             return sb.ToString();
         }
     }
@@ -288,27 +309,20 @@ namespace Il2CppInspector.Cpp
 
         public CppEnumType(CppType underlyingType) : base(ComplexValueType.Enum) => UnderlyingType = underlyingType;
 
-        public void AddField(string name, ulong value) => AddField(new CppEnumField(name, UnderlyingType, value));
+        public void AddField(string name, object value) => AddField(new CppEnumField(name, UnderlyingType, value));
+
+        // Return the type as a field
+        public override string ToFieldString(string fieldName) => "enum " + Name + " " + fieldName;
 
         public override string ToString(string format = "") {
             var sb = new StringBuilder();
             
-            sb.Append($"typedef enum {Name} : {UnderlyingType.Name}");
+            sb.Append($"enum {Name} : {UnderlyingType.Name} {{");
 
-            if (Fields.Any()) {
-                sb.Append(" {");
-                foreach (var field in Fields.Values.SelectMany(f => f))
-                    sb.Append("\n\t" + string.Join("\n\t", field.ToString(format).Split('\n')) + ",");
+            foreach (var field in Fields.Values.SelectMany(f => f))
+                sb.Append("\n    " + string.Join("\n    ", field.ToString(format).Split('\n')) + ",");
 
-                // Chop off final comma
-                sb = sb.Remove(sb.Length - 1, 1);
-                sb.Append($"\n}} {Name}{(format == "o"? $" /* Size: 0x{SizeBytes:x2} */" : "")};");
-            }
-            // Forward declaration
-            else {
-                sb.Append($"{Name};");
-            }
-
+            sb.AppendLine($"\n}}{(format == "o"? $" /* Size: 0x{SizeBytes:x2} */" : "")};");
             return sb.ToString();
         }
     }

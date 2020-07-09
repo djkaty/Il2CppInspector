@@ -15,6 +15,9 @@ namespace Il2CppInspector.Cpp
         // The type of the field
         public CppType Type { get; }
 
+        // Whether the field is const
+        public bool IsConst { get; }
+
         // The offset of the field into the type
         public int Offset { get; internal set; }
 
@@ -36,36 +39,36 @@ namespace Il2CppInspector.Cpp
         public int BitfieldMSB => BitfieldLSB + Size - 1;
 
         // Initialize field
-        public CppField(string name, CppType type, int bitfieldSize = 0) {
+        public CppField(string name, CppType type, int bitfieldSize = 0, bool isConst = false) {
             Name = name;
             Type = type;
             BitfieldSize = bitfieldSize;
+            IsConst = isConst;
         }
 
         // C++ representation of field
         public virtual string ToString(string format = "") {
-            var offset = format == "o" ? $"/* 0x{OffsetBytes:x2} - 0x{OffsetBytes + SizeBytes - 1:x2} (0x{SizeBytes:x2}) */" : "";
+            var offset = format == "o" ? $"/* 0x{OffsetBytes:x2} - 0x{OffsetBytes + SizeBytes - 1:x2} (0x{SizeBytes:x2}) */ " : "";
+
+            var prefix = (IsConst ? "const " : "");
 
             var field = Type switch {
-                // nested anonymous types
-                CppComplexType t when string.IsNullOrEmpty(t.Name) => (format == "o"? "\n" : "") + t.ToString(format)[..^1] + (Name.Length > 0? " " + Name : ""),
+                // nested anonymous types (trim semi-colon and newline from end)
+                CppComplexType t when string.IsNullOrEmpty(t.Name) => (format == "o"? "\n" : "") 
+                                    + t.ToString(format)[..^2] + (Name.Length > 0? " " + Name : ""),
                 // function pointers
-                CppFnPtrType t when string.IsNullOrEmpty(t.Name) => (format == "o"? " " : "") + t.FieldToString(Name),
+                CppFnPtrType t when string.IsNullOrEmpty(t.Name) => t.ToFieldString(Name),
                 // regular fields
-                _ => $"{(format == "o"? " ":"")}{Type.Name} {Name}" + (BitfieldSize > 0? $" : {BitfieldSize}" : "")
+                _ => $"{Type.ToFieldString(Name)}" + (BitfieldSize > 0? $" : {BitfieldSize}" : "")
             };
 
             var suffix = "";
-
-            // arrays
-            if (Type is CppArrayType a)
-                suffix += "[" + a.Length + "]";
 
             // bitfields
             if (BitfieldSize > 0 && format == "o")
                 suffix += $" /* bits {BitfieldLSB} - {BitfieldMSB} */";
 
-            return offset + field + suffix;
+            return offset + prefix + field + suffix;
         }
         public override string ToString() => ToString();
     }
@@ -74,9 +77,9 @@ namespace Il2CppInspector.Cpp
     public class CppEnumField : CppField
     {
         // The value of this key name
-        public ulong Value { get; }
+        public object Value { get; }
 
-        public CppEnumField(string name, CppType type, ulong value) : base(name, type) => Value = value;
+        public CppEnumField(string name, CppType type, object value) : base(name, type) => Value = value;
 
         public override string ToString(string format = "") => Name + " = " + Value;
     }

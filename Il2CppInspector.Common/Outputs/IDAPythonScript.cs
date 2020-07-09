@@ -10,28 +10,34 @@ using System.IO;
 using System.Text;
 using Il2CppInspector.Reflection;
 using Il2CppInspector.Cpp;
-using Il2CppInspector.Cpp.UnityHeaders;
+using Il2CppInspector.Model;
 
 namespace Il2CppInspector.Outputs
 {
     public class IDAPythonScript
     {
-        private readonly Il2CppModel model;
+        // TODO: Make this readonly when we've integrated with ApplicationModel
+        private AppModel model;
         private StreamWriter writer;
-        public UnityVersion UnityVersion;
+        // TODO: Remove when integrated with ApplicationModel
         private CppDeclarationGenerator declGenerator;
 
-        public IDAPythonScript(Il2CppModel model) => this.model = model;
+        public IDAPythonScript(AppModel model) => this.model = model;
 
         public void WriteScriptToFile(string outputFile) {
-            declGenerator = new CppDeclarationGenerator(model, UnityVersion);
-            UnityVersion = declGenerator.UnityVersion;
+            // TODO: Integrate with ApplicationModel - use this hack so we can use CppDeclarationGenerator without disturbing the model passed in
+            var internalModel = new AppModel(model.ILModel);
+            internalModel.UnityVersion = model.UnityVersion;
+            internalModel.UnityHeader = model.UnityHeader;
+            internalModel.TypeCollection = CppTypeCollection.FromUnityHeaders(model.UnityHeader, model.WordSize);
+            model = internalModel;
+            declGenerator = new CppDeclarationGenerator(model);
 
             using var fs = new FileStream(outputFile, FileMode.Create);
             writer = new StreamWriter(fs, Encoding.UTF8);
 
             writeLine("# Generated script file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty");
-            writeLine("# Target Unity version: " + declGenerator.UnityHeader.ToString());
+            writeLine("# Target Unity version: " + model.UnityHeader);
             writeLine("print('Generated script file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty')");
             writeSectionHeader("Preamble");
             writePreamble();
@@ -50,7 +56,7 @@ namespace Il2CppInspector.Outputs
             writeLine("print('Script execution complete.')");
             writer.Close();
         }
-
+        
         private void writePreamble() {
             writeLine(
 @"import idaapi
@@ -81,27 +87,26 @@ typedef __int16 int16_t;
 typedef __int32 int32_t;
 typedef __int64 int64_t;
 ");
-
-            var prefix = (model.Package.BinaryImage.Bits == 32) ? "#define IS_32BIT\n" : "";
-            writeDecls(prefix + declGenerator.UnityHeader.GetHeaderText());
+            // IL2CPP internal types
+            writeDecls(model.UnityHeaderText);
         }
 
         private void writeMethods() {
             writeSectionHeader("Method definitions");
-            writeMethods(model.MethodsByDefinitionIndex);
+            writeMethods(model.ILModel.MethodsByDefinitionIndex);
 
             writeSectionHeader("Constructed generic methods");
-            writeMethods(model.GenericMethods.Values);
+            writeMethods(model.ILModel.GenericMethods.Values);
 
             writeSectionHeader("Custom attributes generators");
-            foreach (var method in model.AttributesByIndices.Values.Where(m => m.VirtualAddress.HasValue)) {
+            foreach (var method in model.ILModel.AttributesByIndices.Values.Where(m => m.VirtualAddress.HasValue)) {
                 var address = method.VirtualAddress.Value.Start;
                 writeName(address, $"{method.AttributeType.Name}_CustomAttributesCacheGenerator");
                 writeComment(address, $"{method.AttributeType.Name}_CustomAttributesCacheGenerator(CustomAttributesCache *)");
             }
 
             writeSectionHeader("Method.Invoke thunks");
-            foreach (var method in model.MethodInvokers.Where(m => m != null)) {
+            foreach (var method in model.ILModel.MethodInvokers.Where(m => m != null)) {
                 var address = method.VirtualAddress.Start;
                 writeName(address, method.Name);
                 writeComment(address, method);
@@ -113,11 +118,11 @@ typedef __int64 int64_t;
                 declGenerator.IncludeMethod(method);
                 writeDecls(declGenerator.GenerateRemainingTypeDeclarations());
                 var address = method.VirtualAddress.Value.Start;
-                writeTypedName(address, declGenerator.GenerateMethodDeclaration(method), declGenerator.GlobalNamer.GetName(method));
+                writeTypedName(address, declGenerator.GenerateMethodDeclaration(method).ToSignatureString(), declGenerator.GlobalNamer.GetName(method));
                 writeComment(address, method);
             }
         }
-
+        
         private static string stringToIdentifier(string str) {
             str = str.Substring(0, Math.Min(32, str.Length));
             return str.ToCIdentifier();
@@ -140,21 +145,21 @@ typedef __int64 int64_t;
 
                 return;
             }
-
-            var stringType = declGenerator.AsCType(model.TypesByFullName["System.String"]);
+            
+            var stringType = declGenerator.AsCType(model.ILModel.TypesByFullName["System.String"]);
             foreach (var usage in model.Package.MetadataUsages) {
                 var address = usage.VirtualAddress;
                 string name;
 
                 switch (usage.Type) {
                     case MetadataUsageType.StringLiteral:
-                        var str = model.GetMetadataUsageName(usage);
-                        writeTypedName(address, stringType, $"StringLiteral_{stringToIdentifier(str)}");
+                        var str = model.ILModel.GetMetadataUsageName(usage);
+                        writeTypedName(address, stringType.ToString(), $"StringLiteral_{stringToIdentifier(str)}");
                         writeComment(address, str);
                         break;
                     case MetadataUsageType.Type:
                     case MetadataUsageType.TypeInfo:
-                        var type = model.GetMetadataUsageType(usage);
+                        var type = model.ILModel.GetMetadataUsageType(usage);
                         declGenerator.IncludeType(type);
                         writeDecls(declGenerator.GenerateRemainingTypeDeclarations());
 
@@ -167,7 +172,7 @@ typedef __int64 int64_t;
                         break;
                     case MetadataUsageType.MethodDef:
                     case MetadataUsageType.MethodRef:
-                        var method = model.GetMetadataUsageMethod(usage);
+                        var method = model.ILModel.GetMetadataUsageMethod(usage);
                         declGenerator.IncludeMethod(method);
                         writeDecls(declGenerator.GenerateRemainingTypeDeclarations());
 
@@ -219,6 +224,9 @@ typedef __int64 int64_t;
             if (declString != "")
                 writeLine("idc.parse_decls('''" + declString + "''')");
         }
+
+        // TODO: Temporary compatibility function, remove when integrated with ApplicationModel
+        private void writeDecls(List<CppType> types) => writeDecls(string.Join("\n", types.Select(t => t.ToString())));
 
         private void writeName(ulong address, string name) {
             writeLine($"SetName({address.ToAddressString()}, r'{name.ToEscapedString()}')");

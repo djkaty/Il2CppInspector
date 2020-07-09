@@ -5,11 +5,11 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Il2CppInspector.Reflection;
+using Il2CppInspector.Model;
 using Il2CppInspector.Outputs;
+using Il2CppInspector.Reflection;
 using NUnit.Framework;
 
 namespace Il2CppInspector
@@ -20,6 +20,8 @@ namespace Il2CppInspector
         private void runTest(string testPath) {
             // Android
             var testFile = testPath + @"\" + Path.GetFileName(testPath) + ".so";
+            if (!File.Exists(testFile))
+                testFile = testPath + @"\libil2cpp.so";
             // Windows
             if (!File.Exists(testFile))
                 testFile = testPath + @"\" + Path.GetFileName(testPath) + ".dll";
@@ -28,9 +30,6 @@ namespace Il2CppInspector
             // iOS
             if (!File.Exists(testFile))
                 testFile = testPath + @"\" + Path.GetFileName(testPath);
-            // Android
-            if (!File.Exists(testFile))
-                testFile = testPath + @"\libil2cpp.so";
 
             var inspectors = Il2CppInspector.LoadFromFile(testFile, testPath + @"\global-metadata.dat");
 
@@ -44,7 +43,8 @@ namespace Il2CppInspector
             // Dump each image in the binary separately
             int i = 0;
             foreach (var il2cpp in inspectors) {
-                var model = new Il2CppModel(il2cpp);
+                var model = new TypeModel(il2cpp);
+                var appModel = new AppModel(model).Build();
                 var nameSuffix = i++ > 0 ? "-" + (i - 1) : "";
 
                 new CSharpCodeStubs(model) {
@@ -53,10 +53,10 @@ namespace Il2CppInspector
                     MustCompile = true
                 }.WriteSingleFile(testPath + $@"\test-result{nameSuffix}.cs");
 
-                new IDAPythonScript(model)
+                new IDAPythonScript(appModel)
                     .WriteScriptToFile(testPath + $@"\test-ida-result{nameSuffix}.py");
 
-                new CppScaffolding(model)
+                new CppScaffolding(appModel)
                     .WriteCppToFile(testPath + $@"\test-result{nameSuffix}.h");
             }
 
@@ -65,8 +65,8 @@ namespace Il2CppInspector
                 var suffix = (i > 0 ? "-" + i : "");
 
                 compareFiles(testPath, suffix + ".cs", $"test-result{suffix}.cs");
-                compareFiles(testPath, suffix + ".py", $"test-ida-result{suffix}.py");
                 compareFiles(testPath, suffix + ".h", $"test-result{suffix}.h");
+                compareFiles(testPath, suffix + ".py", $"test-ida-result{suffix}.py");
             }
         }
 

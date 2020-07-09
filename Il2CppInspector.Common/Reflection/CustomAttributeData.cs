@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -15,7 +15,7 @@ namespace Il2CppInspector.Reflection
     public class CustomAttributeData
     {
         // IL2CPP-specific data
-        public Il2CppModel Model => AttributeType.Assembly.Model;
+        public TypeModel Model => AttributeType.Assembly.Model;
         public int Index { get; set; }
 
         // The type of the attribute

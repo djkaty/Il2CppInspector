@@ -14,7 +14,7 @@ Main features:
 
 * Create IL2CPP binaries from arbitrary C# source code without a Unity project
 
-* .NET Reflection-style API to allow you to query the IL2CPP type model, easily create new output modules and integrate Il2CppInspector with your own applications
+* Three major APIs for use in custom static analysis projects
 
 * Supports all major file formats and processor architectures
 
@@ -48,10 +48,14 @@ Nice to have:
 * Static symbol table scanning for Mach-O binaries
 * Automatically defeats certain basic obfuscation methods
 
-Reusable class libraries:
+Reusable class library APIs:
 
-* **Il2CppInspector** for low-level access to IL2CPP binaries and metadata
-* **Il2CppModel** for high-level .NET Reflection-style access to IL2CPP types and data as a tree model
+* **Il2CppInspector** - low-level access to the binary image and metadata
+* **TypeModel** - high-level .NET Reflection-like query API for all of the .NET types in the source project as a tree model
+* **ApplicationModel** - access to all of the C++ types and methods, plus the IL2CPP API exports, with detailed address and offset data and mappings to their .NET equivalents
+
+  Use these APIs to easily query IL2CPP types, create new output modules and integrate Il2CppInspector with your own static analysis applications.
+
 * Test chassis for automated integration testing of IL2CPP binaries
 
 Class library targets .NET Standard 2.1. Application targets .NET Core 3.0. Built with Visual Studio 2019.
@@ -207,9 +211,17 @@ The auto-generated tests generate a file in the test IL2CPP binary's folder call
 
 To learn more about this feature, see the section entitled **Using Il2CppInspector to generate IL2CPP code** in [IL2CPP Reverse Engineering Part 1](https://katyscode.wordpress.com/2020/06/24/il2cpp-part-1/).
 
-### Using the class library
+### Using the APIs for programmatic analysis
 
-To utilize Il2CppInspector in your own programs, add a reference to `Il2CppInspector.Common.dll` and add a using statement for the namespace `Il2CppInspector.Reflection`. See the source code for further details.
+To utilize Il2CppInspector in your own projects, add a reference to `Il2CppInspector.Common.dll`.
+
+Include the following `using` directives:
+
+* `using Il2CppInspector` to use `Il2CppInspector`.
+* `using Il2CppInspector.Reflection` to use `TypeModel`.
+* `using Il2CppInspector.Model` to use `ApplicationModel`.
+
+See the source code for further details.
 
 ### Version support
 

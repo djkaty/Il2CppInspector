@@ -20,7 +20,7 @@ namespace Il2CppInspector.Outputs
 {
     public class CSharpCodeStubs
     {
-        private readonly Il2CppModel model;
+        private readonly TypeModel model;
         private Exception lastException;
 
         // Namespace prefixes whose contents should be skipped
@@ -41,7 +41,7 @@ namespace Il2CppInspector.Outputs
         private HashSet<CustomAttributeData> usedAssemblyAttributes = new HashSet<CustomAttributeData>();
         private readonly object usedAssemblyAttributesLock = new object();
 
-        public CSharpCodeStubs(Il2CppModel model) => this.model = model;
+        public CSharpCodeStubs(TypeModel model) => this.model = model;
 
         // Get the last error that occurred and clear the error state
         public Exception GetAndClearLastException() {

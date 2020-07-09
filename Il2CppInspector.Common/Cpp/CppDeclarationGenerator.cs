@@ -8,43 +8,33 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Il2CppInspector.Cpp.UnityHeaders;
+using Il2CppInspector.Model;
 using Il2CppInspector.Reflection;
 
 namespace Il2CppInspector.Cpp
 {
     // Class for generating C header declarations from Reflection objects (TypeInfo, etc.)
-    public class CppDeclarationGenerator
+    internal class CppDeclarationGenerator
     {
-        private readonly Il2CppModel model;
+        private readonly AppModel appModel;
+
+        private TypeModel model => appModel.ILModel;
+        private CppTypeCollection types => appModel.TypeCollection;
 
         // Version number and header file to generate structures for
-        public UnityVersion UnityVersion { get; }
-        public UnityHeader UnityHeader { get; }
+        public UnityVersion UnityVersion => appModel.UnityVersion;
 
         // How inheritance of type structs should be represented.
         // Different C++ compilers lay out C++ class structures differently,
         // meaning that the compiler must be known in order to generate class type structures
         // with the correct layout.
-        public CppCompiler.Type InheritanceStyle;
+        public CppCompilerType InheritanceStyle;
 
-        public CppDeclarationGenerator(Il2CppModel model, UnityVersion version) {
-            this.model = model;
-            if (version == null) {
-                UnityHeader = UnityHeader.GuessHeadersForModel(model)[0];
-                UnityVersion = UnityHeader.MinVersion;
-            } else {
-                UnityVersion = version;
-                UnityHeader = UnityHeader.GetHeaderForVersion(version);
-                if (UnityHeader.MetadataVersion != model.Package.BinaryImage.Version) {
-                    /* this can only happen in the CLI frontend with a manually-supplied version number */
-                    Console.WriteLine($"Warning: selected version {UnityVersion} (metadata version {UnityHeader.MetadataVersion})" +
-                        $" does not match metadata version {model.Package.BinaryImage.Version}.");
-                }
-            }
-
+        public CppDeclarationGenerator(AppModel appModel) {
+            this.appModel = appModel;
+            
             InitializeNaming();
             InitializeConcreteImplementations();
 
@@ -53,34 +43,38 @@ namespace Il2CppInspector.Cpp
         }
         
         // C type declaration used to name variables of the given C# type
-        public string AsCType(TypeInfo ti) {
+        private static Dictionary<string, string> primitiveTypeMap = new Dictionary<string, string> {
+            ["Boolean"] = "bool",
+            ["Byte"] = "uint8_t",
+            ["SByte"] = "int8_t",
+            ["Int16"] = "int16_t",
+            ["UInt16"] = "uint16_t",
+            ["Int32"] = "int32_t",
+            ["UInt32"] = "uint32_t",
+            ["Int64"] = "int64_t",
+            ["UInt64"] = "uint64_t",
+            ["IntPtr"] = "void *",
+            ["UIntPtr"] = "void *",
+            ["Char"] = "uint16_t",
+            ["Double"] = "double",
+            ["Single"] = "float"
+        };
+
+        public CppType AsCType(TypeInfo ti) {
             // IsArray case handled by TypeNamer.GetName
             if (ti.IsByRef || ti.IsPointer) {
-                return $"{AsCType(ti.ElementType)} *";
-            } else if (ti.IsValueType) {
-                if (ti.IsPrimitive) {
-                    switch (ti.Name) {
-                        case "Boolean": return "bool";
-                        case "Byte": return "uint8_t";
-                        case "SByte": return "int8_t";
-                        case "Int16": return "int16_t";
-                        case "UInt16": return "uint16_t";
-                        case "Int32": return "int32_t";
-                        case "UInt32": return "uint32_t";
-                        case "Int64": return "int64_t";
-                        case "UInt64": return "uint64_t";
-                        case "IntPtr": return "void *";
-                        case "UIntPtr": return "void *";
-                        case "Char": return "uint16_t";
-                        case "Double": return "double";
-                        case "Single": return "float";
-                    }
-                }
-                return $"struct {TypeNamer.GetName(ti)}";
-            } else if (ti.IsEnum) {
-                return $"enum {TypeNamer.GetName(ti)}";
+                return AsCType(ti.ElementType).AsPointer(types.WordSize);
             }
-            return $"struct {TypeNamer.GetName(ti)} *";
+            if (ti.IsValueType) {
+                if (ti.IsPrimitive && primitiveTypeMap.ContainsKey(ti.Name)) {
+                    return types.GetType(primitiveTypeMap[ti.Name]);
+                }
+                return types.GetType(TypeNamer.GetName(ti));
+            }
+            if (ti.IsEnum) {
+                return types.GetType(TypeNamer.GetName(ti));
+            }
+            return types.GetType(TypeNamer.GetName(ti) + " *");
         }
 
         // Resets the cache of visited types and pending types to output, but preserve any names we have already generated
@@ -130,68 +124,65 @@ namespace Il2CppInspector.Cpp
 
         // Generate the fields for the base class of all objects (Il2CppObject)
         // The two fields are inlined so that we can specialize the klass member for each type object
-        private void GenerateObjectFields(StringBuilder csrc, TypeInfo ti) {
-            csrc.Append(
-                $"  struct {TypeNamer.GetName(ti)}__Class *klass;\n" +
-                $"  struct MonitorData *monitor;\n");
+        private CppComplexType GenerateObjectStruct(string name, TypeInfo ti) {
+            var type = types.Struct(name);
+            types.AddField(type, "klass", TypeNamer.GetName(ti) + "__Class *");
+            types.AddField(type, "monitor", "MonitorData *");
+            return type;
         }
 
         // Generate structure fields for each field of a given type
-        private void GenerateFieldList(StringBuilder csrc, CppNamespace ns, TypeInfo ti) {
-            var namer = ns.MakeNamer<FieldInfo>((field) => field.Name.ToCIdentifier());
+        private void GenerateFieldList(CppComplexType type, CppNamespace ns, TypeInfo ti) {
+            var namer = ns.MakeNamer<FieldInfo>(field => field.Name.ToCIdentifier());
             foreach (var field in ti.DeclaredFields) {
                 if (field.IsLiteral || field.IsStatic)
                     continue;
-                csrc.Append($"  {AsCType(field.FieldType)} {namer.GetName(field)};\n");
+                type.AddField(namer.GetName(field), AsCType(field.FieldType));
             }
         }
 
         // Generate the C structure for a value type, such as an enum or struct
-        private void GenerateValueFieldStruct(StringBuilder csrc, TypeInfo ti) {
+        private (CppComplexType valueType, CppComplexType boxedType) GenerateValueFieldStruct(TypeInfo ti) {
+            CppComplexType valueType, boxedType;
             string name = TypeNamer.GetName(ti);
+
             if (ti.IsEnum) {
                 // Enums should be represented using enum syntax
                 // They otherwise behave like value types
-                csrc.Append($"enum {name} : {AsCType(ti.GetEnumUnderlyingType())} {{\n");
+                var underlyingType = AsCType(ti.GetEnumUnderlyingType());
+                valueType = types.Enum(underlyingType, name);
                 foreach (var field in ti.DeclaredFields) {
                     if (field.Name != "value__")
-                        csrc.Append($"  {EnumNamer.GetName(field)} = {field.DefaultValue},\n");
+                        ((CppEnumType)valueType).AddField(EnumNamer.GetName(field), field.DefaultValue);
                 }
-                csrc.Append($"}};\n");
 
                 // Use System.Enum base type as klass
-                csrc.Append($"struct {name}__Boxed {{\n");
-                GenerateObjectFields(csrc, ti.BaseType);
-                csrc.Append($"  {AsCType(ti)} value;\n");
-                csrc.Append($"}};\n");
+                boxedType = GenerateObjectStruct(name + "__Boxed", ti.BaseType);
+                boxedType.AddField("value", AsCType(ti));
             } else {
                 // This structure is passed by value, so it doesn't include Il2CppObject fields.
-                csrc.Append($"struct {name} {{\n");
-                GenerateFieldList(csrc, CreateNamespace(), ti);
-                csrc.Append($"}};\n");
+                valueType = types.Struct(name);
+                GenerateFieldList(valueType, CreateNamespace(), ti);
 
                 // Also generate the boxed form of the structure which includes the Il2CppObject header.
-                csrc.Append($"struct {name}__Boxed {{\n");
-                GenerateObjectFields(csrc, ti);
-                csrc.Append($"  {AsCType(ti)} fields;\n");
-                csrc.Append($"}};\n");
+                boxedType = GenerateObjectStruct(name + "__Boxed", ti);
+                boxedType.AddField("fields", AsCType(ti));
             }
+            return (valueType, boxedType);
         }
 
         // Generate the C structure for a reference type, such as a class or array
-        private void GenerateRefFieldStruct(StringBuilder csrc, TypeInfo ti) {
+        private (CppComplexType objectOrArrayType, CppComplexType fieldsType) GenerateRefFieldStruct(TypeInfo ti) {
             var name = TypeNamer.GetName(ti);
+
             if (ti.IsArray || ti.FullName == "System.Array") {
                 var klassType = ti.IsArray ? ti : ti.BaseType;
-                var elementType = ti.IsArray ? AsCType(ti.ElementType) : "void *";
-                csrc.Append($"struct {name} {{\n");
-                GenerateObjectFields(csrc, klassType);
-                csrc.Append(
-                    $"  struct Il2CppArrayBounds *bounds;\n" +
-                    $"  il2cpp_array_size_t max_length;\n" +
-                    $"  {elementType} vector[32];\n");
-                csrc.Append($"}};\n");
-                return;
+                var elementType = ti.IsArray ? AsCType(ti.ElementType) : types.GetType("void *");
+                var type = GenerateObjectStruct(name, klassType);
+                types.AddField(type, "bounds", "Il2CppArrayBounds *");
+                types.AddField(type, "max_length", "il2cpp_array_size_t");
+                type.AddField("vector", elementType.AsArray(32));
+                return (type, null);
             }
 
             /* Generate a list of all base classes starting from the root */
@@ -202,7 +193,7 @@ namespace Il2CppInspector.Cpp
 
             var ns = CreateNamespace();
 
-            if (InheritanceStyle == CppCompiler.Type.MSVC) {
+            if (InheritanceStyle == CppCompilerType.MSVC) {
                 /* MSVC style: classes directly contain their base class as the first member.
                  * This causes all classes to be aligned to the alignment of their base class. */
                 TypeInfo firstNonEmpty = null;
@@ -214,56 +205,63 @@ namespace Il2CppInspector.Cpp
                 }
                 if (firstNonEmpty == null) {
                     /* This struct is completely empty. Omit __Fields entirely. */
-                    csrc.Append($"struct {name} {{\n");
-                    GenerateObjectFields(csrc, ti);
-                    csrc.Append($"}};\n");
+                    return (GenerateObjectStruct(name, ti), null);
                 } else {
+                    CppComplexType fieldType;
                     if (firstNonEmpty == ti) {
                         /* All base classes are empty, so this class forms the root of a new hierarchy.
-                         * We have to be a little careful: the rootmost class needs to have its alignment
+                         * We have to be a little careful: the root-most class needs to have its alignment
                          * set to that of Il2CppObject, but we can't explicitly include Il2CppObject
                          * in the hierarchy because we want to customize the type of the klass parameter. */
                         var align = model.Package.BinaryImage.Bits == 32 ? 4 : 8;
-                        csrc.Append($"struct __declspec(align({align})) {name}__Fields {{\n");
-                        GenerateFieldList(csrc, ns, ti);
-                        csrc.Append($"}};\n");
+                        fieldType = types.Struct(name + "__Fields", align);
+                        GenerateFieldList(fieldType, ns, ti);
                     } else {
                         /* Include the base class fields. Alignment will be dictated by the hierarchy. */
                         ns.ReserveName("_");
-                        csrc.Append($"struct {name}__Fields {{\n");
-                        csrc.Append($"  struct {TypeNamer.GetName(ti.BaseType)}__Fields _;\n");
-                        GenerateFieldList(csrc, ns, ti);
-                        csrc.Append($"}};\n");
+                        fieldType = types.Struct(name + "__Fields");
+                        var baseFieldType = types[TypeNamer.GetName(ti.BaseType) + "__Fields"];
+                        fieldType.AddField("_", baseFieldType);
+                        GenerateFieldList(fieldType, ns, ti);
                     }
-                    csrc.Append($"struct {name} {{\n");
-                    GenerateObjectFields(csrc, ti);
-                    csrc.Append($"  struct {name}__Fields fields;\n");
-                    csrc.Append($"}};\n");
+
+                    var type = GenerateObjectStruct(name, ti);
+                    types.AddField(type, "fields", name + "__Fields");
+                    return (type, fieldType);
                 }
-            } else if (InheritanceStyle == CppCompiler.Type.GCC) {
+            } else if (InheritanceStyle == CppCompilerType.GCC) {
                 /* GCC style: after the base class, all fields in the hierarchy are concatenated.
                  * This saves space (fields are "packed") but requires us to repeat fields from
                  * base classes. */
                 ns.ReserveName("klass");
                 ns.ReserveName("monitor");
 
-                csrc.Append($"struct {name} {{\n");
-                GenerateObjectFields(csrc, ti);
+                var type = GenerateObjectStruct(name, ti);
                 foreach (var bti in baseClasses)
-                    GenerateFieldList(csrc, ns, bti);
-                csrc.Append($"}};\n");
+                    GenerateFieldList(type, ns, bti);
+                return (type, null);
             }
+            throw new InvalidOperationException("Could not generate ref field struct");
         }
 
         // "Flush" the list of visited types, generating C structures for each one
-        private void GenerateVisitedFieldStructs(StringBuilder csrc) {
+        private List<CppType> GenerateVisitedFieldStructs() {
+            var structs = new List<CppType>(TodoTypeStructs.Count);
             foreach (var ti in TodoFieldStructs) {
-                if (ti.IsEnum || ti.IsValueType)
-                    GenerateValueFieldStruct(csrc, ti);
-                else
-                    GenerateRefFieldStruct(csrc, ti);
+                if (ti.IsEnum || ti.IsValueType) {
+                    var (valueType, boxedType) = GenerateValueFieldStruct(ti);
+                    structs.Add(valueType);
+                    structs.Add(boxedType);
+                }
+                else {
+                    var (objectOrArrayType, fieldsType) = GenerateRefFieldStruct(ti);
+                    if (fieldsType != null)
+                        structs.Add(fieldsType);
+                    structs.Add(objectOrArrayType);
+                }
             }
             TodoFieldStructs.Clear();
+            return structs;
         }
         #endregion
 
@@ -365,7 +363,7 @@ namespace Il2CppInspector.Cpp
         }
 
         // Generate the C structure for virtual function calls in a given type (the VTable)
-        private void GenerateVTableStruct(StringBuilder csrc, TypeInfo ti) {
+        private CppComplexType GenerateVTableStruct(TypeInfo ti) {
             MethodBase[] vtable;
             if (ti.IsInterface) {
                 /* Interface vtables are just all of the interface methods.
@@ -385,55 +383,51 @@ namespace Il2CppInspector.Cpp
             // Previous versions used `MethodInfo **vtable`.
             // TODO: Consider adding function types. This considerably increases the script size
             // but can significantly help with reverse-engineering certain binaries.
-            csrc.Append($"struct {name}__VTable {{\n");
+            var vtableStruct = types.Struct(name + "__VTable");
+
             if (UnityVersion.CompareTo("5.3.6") < 0) {
                 for (int i = 0; i < vtable.Length; i++) {
-                    csrc.Append($"  MethodInfo *{namer.GetName(i)};\n");
+                    types.AddField(vtableStruct, namer.GetName(i), "MethodInfo *");
                 }
             } else {
                 for (int i = 0; i < vtable.Length; i++) {
-                    csrc.Append($"  VirtualInvokeData {namer.GetName(i)};\n");
+                    types.AddField(vtableStruct, namer.GetName(i), "VirtualInvokeData");
                 }
             }
-            csrc.Append($"}};\n");
+            return vtableStruct;
         }
 
         // Generate the overall Il2CppClass-shaped structure for the given type
-        private void GenerateTypeStruct(StringBuilder csrc, TypeInfo ti) {
+        private (CppComplexType type, CppComplexType staticFields, CppComplexType vtable) GenerateTypeStruct(TypeInfo ti) {
             var name = TypeNamer.GetName(ti);
-            GenerateVTableStruct(csrc, ti);
+            var vtable = GenerateVTableStruct(ti);
 
-            csrc.Append($"struct {name}__StaticFields {{\n");
+            var statics = types.Struct(name + "__StaticFields");
             var namer = CreateNamespace().MakeNamer<FieldInfo>((field) => field.Name.ToCIdentifier());
             foreach (var field in ti.DeclaredFields) {
                 if (field.IsLiteral || !field.IsStatic)
                     continue;
-                csrc.Append($"  {AsCType(field.FieldType)} {namer.GetName(field)};\n");
+                statics.AddField(namer.GetName(field), AsCType(field.FieldType));
             }
-            csrc.Append($"}};\n");
 
             /* TODO: type the rgctx_data */
+            var cls = types.Struct(name + "__Class");
+            types.AddField(cls, "_0", "Il2CppClass_0");
+
             if (UnityVersion.CompareTo("5.5.0") < 0) {
-                csrc.Append(
-                    $"struct {name}__Class {{\n" +
-                    $"  struct Il2CppClass_0 _0;\n" +
-                    $"  struct {name}__VTable *vtable;\n" +
-                    $"  Il2CppRuntimeInterfaceOffsetPair *interfaceOffsets;\n" +
-                    $"  struct {name}__StaticFields *static_fields;\n" +
-                    $"  const Il2CppRGCTXData *rgctx_data;\n" +
-                    $"  struct Il2CppClass_1 _1;\n" +
-                    $"}};\n");
+                cls.AddField("vtable", vtable.AsPointer(types.WordSize));
+                types.AddField(cls, "interfaceOffsets", "Il2CppRuntimeInterfaceOffsetPair *");
+                cls.AddField("static_fields", statics.AsPointer(types.WordSize));
+                types.AddField(cls, "rgctx_data", "Il2CppRGCTXData *", true);
+                types.AddField(cls, "_1", "Il2CppClass_1");
             } else {
-                csrc.Append(
-                    $"struct {name}__Class {{\n" +
-                    $"  struct Il2CppClass_0 _0;\n" +
-                    $"  Il2CppRuntimeInterfaceOffsetPair *interfaceOffsets;\n" +
-                    $"  struct {name}__StaticFields *static_fields;\n" +
-                    $"  const Il2CppRGCTXData *rgctx_data;\n" +
-                    $"  struct Il2CppClass_1 _1;\n" +
-                    $"  struct {name}__VTable vtable;\n" +
-                    $"}};\n");
+                types.AddField(cls, "interfaceOffsets", "Il2CppRuntimeInterfaceOffsetPair *");
+                cls.AddField("static_fields", statics.AsPointer(types.WordSize));
+                types.AddField(cls, "rgctx_data", "Il2CppRGCTXData *", true);
+                types.AddField(cls, "_1", "Il2CppClass_1");
+                cls.AddField("vtable", vtable);
             }
+            return (cls, statics, vtable);
         }
 
         /// <summary>
@@ -441,15 +435,18 @@ namespace Il2CppInspector.Cpp
         /// Type declarations that have previously been generated by this instance of CppDeclarationGenerator will not be generated again.
         /// </summary>
         /// <returns>A string containing C type declarations</returns>
-        public string GenerateRemainingTypeDeclarations() {
-            var csrc = new StringBuilder();
-            GenerateVisitedFieldStructs(csrc);
+        public List<CppType> GenerateRemainingTypeDeclarations() {
+            var decl = GenerateVisitedFieldStructs();
 
-            foreach (var ti in TodoTypeStructs)
-                GenerateTypeStruct(csrc, ti);
+            foreach (var ti in TodoTypeStructs) {
+                var (cls, statics, vtable) = GenerateTypeStruct(ti);
+                decl.Add(vtable);
+                decl.Add(statics);
+                decl.Add(cls);
+            }
             TodoTypeStructs.Clear();
 
-            return csrc.ToString();
+            return decl;
         }
         #endregion
 
@@ -473,40 +470,40 @@ namespace Il2CppInspector.Cpp
         }
 
         // Generate a C declaration for a method
-        private string GenerateMethodDeclaration(MethodBase method, string name, TypeInfo declaringType) {
-            string retType;
+        private CppFnPtrType GenerateMethodDeclaration(MethodBase method, string name, TypeInfo declaringType) {
+            CppType retType;
             if (method is MethodInfo mi) {
-                retType = mi.ReturnType.FullName == "System.Void" ? "void" : AsCType(mi.ReturnType);
+                retType = mi.ReturnType.FullName == "System.Void" ? types["void"] : AsCType(mi.ReturnType);
             } else {
-                retType = "void";
+                retType = types["void"];
             }
 
             var paramNs = CreateNamespace();
             paramNs.ReserveName("method");
             var paramNamer = paramNs.MakeNamer<ParameterInfo>((pi) => pi.Name == "" ? "arg" : pi.Name.ToCIdentifier());
 
-            var paramList = new List<string>();
+            var paramList = new List<(string, CppType)>();
             // Figure out the "this" param
             if (method.IsStatic) {
                 // In older versions, static methods took a dummy this parameter
                 if (UnityVersion.CompareTo("2018.3.0") < 0)
-                    paramList.Add("void *this");
+                    paramList.Add(("this", types.GetType("void *")));
             } else {
                 if (declaringType.IsValueType) {
                     // Methods for structs take the boxed object as the this param
-                    paramList.Add($"struct {TypeNamer.GetName(declaringType)}__Boxed * this");
+                    paramList.Add(("this", types.GetType(TypeNamer.GetName(declaringType) + "__Boxed *")));
                 } else {
-                    paramList.Add($"{AsCType(declaringType)} this");
+                    paramList.Add(("this", AsCType(declaringType)));
                 }
             }
 
             foreach (var pi in method.DeclaredParameters) {
-                paramList.Add($"{AsCType(pi.ParameterType)} {paramNamer.GetName(pi)}");
+                paramList.Add((paramNamer.GetName(pi), AsCType(pi.ParameterType)));
             }
 
-            paramList.Add($"struct MethodInfo *method");
+            paramList.Add(("method", types.GetType("MethodInfo *")));
 
-            return $"{retType} {name}({string.Join(", ", paramList)})";
+            return new CppFnPtrType(types.WordSize, retType, paramList) {Name = name};
         }
 
         /// <summary>
@@ -516,20 +513,8 @@ namespace Il2CppInspector.Cpp
         /// </summary>
         /// <param name="mi"></param>
         /// <returns></returns>
-        public string GenerateMethodDeclaration(MethodBase method) {
+        public CppFnPtrType GenerateMethodDeclaration(MethodBase method) {
             return GenerateMethodDeclaration(method, GlobalNamer.GetName(method), method.DeclaringType);
-        }
-
-        /// <summary>
-        /// Generate a declaration of the form "retType (*name)(argTypes...)"
-        /// You must first visit the method using VisitMethod and then call
-        /// GenerateVisitedTypes in order to generate any dependent types.
-        /// </summary>
-        /// <param name="mi">Method to generate (only the signature will be used)</param>
-        /// <param name="name">Name of the function pointer</param>
-        /// <returns></returns>
-        public string GenerateFunctionPointer(MethodBase method, string name, TypeInfo declaringType = null) {
-            return GenerateMethodDeclaration(method, $"(*{name})", declaringType ?? method.DeclaringType);
         }
         #endregion
 
@@ -539,7 +524,7 @@ namespace Il2CppInspector.Cpp
         private void InitializeNaming() {
             TypeNamespace = CreateNamespace();
             // Type names that may appear in the header
-            foreach (var typeName in new string[] { "CustomAttributesCache", "CustomAttributeTypeCache", "EventInfo", "FieldInfo", "Hash16", "MemberInfo", "MethodInfo", "MethodVariableKind", "MonitorData", "ParameterInfo", "PInvokeArguments", "PropertyInfo", "SequencePointKind", "StackFrameType", "VirtualInvokeData" }) {
+            foreach (var typeName in new [] { "CustomAttributesCache", "CustomAttributeTypeCache", "EventInfo", "FieldInfo", "Hash16", "MemberInfo", "MethodInfo", "MethodVariableKind", "MonitorData", "ParameterInfo", "PInvokeArguments", "PropertyInfo", "SequencePointKind", "StackFrameType", "VirtualInvokeData" }) {
                 TypeNamespace.ReserveName(typeName);
             }
             TypeNamer = TypeNamespace.MakeNamer<TypeInfo>((ti) => {

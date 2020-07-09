@@ -1,6 +1,5 @@
 /*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
-
+    Copyright 2017-2019 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
     All rights reserved.
 */
 
@@ -12,7 +11,7 @@ namespace Il2CppInspector.Reflection {
     public class Assembly
     {
         // IL2CPP-specific data
-        public Il2CppModel Model { get; }
+        public TypeModel Model { get; }
         public Il2CppImageDefinition ImageDefinition { get; }
         public Il2CppAssemblyDefinition AssemblyDefinition { get; }
         public Il2CppCodeGenModule ModuleDefinition { get; }
@@ -37,7 +36,7 @@ namespace Il2CppInspector.Reflection {
         public TypeInfo GetType(string typeName) => DefinedTypes.FirstOrDefault(x => x.FullName == typeName);
 
         // Initialize from specified assembly index in package
-        public Assembly(Il2CppModel model, int imageIndex) {
+        public Assembly(TypeModel model, int imageIndex) {
             Model = model;
             ImageDefinition = Model.Package.Images[imageIndex];
             AssemblyDefinition = Model.Package.Assemblies[ImageDefinition.assemblyIndex];

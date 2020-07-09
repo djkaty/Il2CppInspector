@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2019 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -23,7 +23,7 @@ namespace Il2CppInspector
 
             // Build model
             var inspectors = Il2CppInspector.LoadFromFile(testPath + @"\References-ARMv7.so", testPath + @"\global-metadata.dat");
-            var model = new Il2CppModel(inspectors[0]);
+            var model = new TypeModel(inspectors[0]);
 
             var asm = model.GetAssembly("References.dll");
 

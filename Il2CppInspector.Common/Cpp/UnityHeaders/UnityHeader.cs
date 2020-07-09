@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
     Copyright 2020 Robert Xiao - https://robertxiao.ca
 
     All rights reserved.
@@ -77,7 +77,7 @@ namespace Il2CppInspector.Cpp.UnityHeaders
         // Guess which header file(s) correspond to the given metadata+binary.
         // Note that this may match multiple headers due to structural changes between versions
         // that are not reflected in the metadata version.
-        public static List<UnityHeader> GuessHeadersForModel(Reflection.Il2CppModel model) {
+        public static List<UnityHeader> GuessHeadersForModel(Reflection.TypeModel model) {
             List<UnityHeader> result = new List<UnityHeader>();
             foreach (var v in GetAllHeaders()) {
                 if (v.MetadataVersion != model.Package.BinaryImage.Version)

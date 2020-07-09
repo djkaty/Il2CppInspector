@@ -1,6 +1,5 @@
 ﻿/*
-    Copyright 2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
-
+    Copyright 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
     All rights reserved.
 */
 
@@ -48,7 +47,7 @@ namespace Il2CppInspector.Reflection
         }
 
         // The invokers use Object for all reference types, and SByte for booleans
-        private TypeInfo mapParameterType(Il2CppModel model, TypeInfo type) => type switch {
+        private TypeInfo mapParameterType(TypeModel model, TypeInfo type) => type switch {
             { IsValueType: false }              => model.TypesByFullName["System.Object"],
             { FullName: "System.Boolean" }      => model.TypesByFullName["System.SByte"],
             _                                   => type

@@ -25,6 +25,7 @@ using Microsoft.Win32;
 using Il2CppInspector;
 using Il2CppInspector.Cpp;
 using Il2CppInspector.GUI;
+using Il2CppInspector.Model;
 using Il2CppInspector.Outputs;
 using Il2CppInspector.Reflection;
 using Ookii.Dialogs.Wpf;
@@ -112,7 +113,7 @@ namespace Il2CppInspectorGUI
                     // Binary loaded successfully
                     areaBusyIndicator.Visibility = Visibility.Hidden;
 
-                    lstImages.ItemsSource = app.Il2CppModels;
+                    lstImages.ItemsSource = app.AppModels;
                     lstImages.SelectedIndex = 0;
                 }
                 else {
@@ -144,7 +145,7 @@ namespace Il2CppInspectorGUI
                     // Package loaded successfully
                     areaBusyIndicator.Visibility = Visibility.Hidden;
 
-                    lstImages.ItemsSource = app.Il2CppModels;
+                    lstImages.ItemsSource = app.AppModels;
                     lstImages.SelectedIndex = 0;
                 }
                 else {
@@ -175,10 +176,10 @@ namespace Il2CppInspectorGUI
             }
 
             // Get selected image
-            var model = (Il2CppModel)((ListBox)sender).SelectedItem;
+            var model = (AppModel)((ListBox)sender).SelectedItem;
 
             // Get namespaces
-            var namespaces = model.Assemblies.SelectMany(x => x.DefinedTypes).GroupBy(t => t.Namespace).Select(n => n.Key);
+            var namespaces = model.ILModel.Assemblies.SelectMany(x => x.DefinedTypes).GroupBy(t => t.Namespace).Select(n => n.Key);
 
             // Break namespaces down into a tree
             var namespaceTree = deconstructNamespaces(namespaces);
@@ -204,7 +205,7 @@ namespace Il2CppInspectorGUI
             var prevCppSelection = cboCppUnityVersion.SelectedItem;
             cboUnityVersion.Items.Clear();
             cboCppUnityVersion.Items.Clear();
-            foreach (var version in UnityHeader.GuessHeadersForModel(model)) {
+            foreach (var version in UnityHeader.GuessHeadersForModel(model.ILModel)) {
                 cboUnityVersion.Items.Add(version);
                 cboCppUnityVersion.Items.Add(version);
             }
@@ -287,7 +288,7 @@ namespace Il2CppInspectorGUI
         /// Perform export
         /// </summary>
         private async void BtnExport_OnClick(object sender, RoutedEventArgs e) {
-            var model = (Il2CppModel) lstImages.SelectedItem;
+            var model = (AppModel) lstImages.SelectedItem;
 
             var unityPath = txtUnityPath.Text;
             var unityAssembliesPath = txtUnityScriptPath.Text;
@@ -318,7 +319,7 @@ namespace Il2CppInspectorGUI
                     // Get options
                     var excludedNamespaces = constructExcludedNamespaces((IEnumerable<CheckboxNode>) trvNamespaces.ItemsSource);
 
-                    var writer = new CSharpCodeStubs(model) {
+                    var writer = new CSharpCodeStubs(model.ILModel) {
                         ExcludedNamespaces = excludedNamespaces.ToList(),
                         SuppressMetadata = cbSuppressMetadata.IsChecked == true,
                         MustCompile = cbMustCompile.IsChecked == true
@@ -404,14 +405,14 @@ namespace Il2CppInspectorGUI
 
                     var outFile = scriptSaveFileDialog.FileName;
 
-                    txtBusyStatus.Text = "Generating IDAPython script...";
                     areaBusyIndicator.Visibility = Visibility.Visible;
                     var selectedVersion = ((UnityHeader)cboUnityVersion.SelectedItem)?.MinVersion;
                     await Task.Run(() => {
-                        var idaWriter = new IDAPythonScript(model) {
-                            UnityVersion = selectedVersion,
-                        };
-                        idaWriter.WriteScriptToFile(outFile);
+                        OnStatusUpdate(this, "Building C++ application model");
+                        model.Build(selectedVersion, CppCompilerType.GCC);
+
+                        OnStatusUpdate(this, "Generating IDAPython script");
+                        new IDAPythonScript(model).WriteScriptToFile(outFile);
                     });
                     break;
 
@@ -430,16 +431,15 @@ namespace Il2CppInspectorGUI
 
                     var cppOutFile = cppSaveFileDialog.FileName;
 
-                    txtBusyStatus.Text = "Generating C++ scaffolding...";
                     areaBusyIndicator.Visibility = Visibility.Visible;
                     var selectedCppUnityVersion = ((UnityHeader)cboCppUnityVersion.SelectedItem)?.MinVersion;
-                    var cppCompiler = (CppCompiler.Type) Enum.Parse(typeof(CppCompiler.Type), cboCppCompiler.SelectionBoxItem.ToString());
+                    var cppCompiler = (CppCompilerType) Enum.Parse(typeof(CppCompilerType), cboCppCompiler.SelectionBoxItem.ToString());
                     await Task.Run(() => {
-                        var cppWriter = new CppScaffolding(model) {
-                            UnityVersion = selectedCppUnityVersion,
-                            Compiler = cppCompiler
-                        };
-                        cppWriter.WriteCppToFile(cppOutFile);
+                        OnStatusUpdate(this, "Building C++ application model");
+                        model.Build(selectedCppUnityVersion, cppCompiler);
+
+                        OnStatusUpdate(this, "Generating C++ scaffolding");
+                        new CppScaffolding(model).WriteCppToFile(cppOutFile);
                     });
                     break;
             }

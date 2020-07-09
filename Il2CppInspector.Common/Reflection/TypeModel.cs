@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
     Copyright 2020 Robert Xiao - https://robertxiao.ca
 
     All rights reserved.
@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Il2CppInspector.Reflection
 {
-    public class Il2CppModel
+    public class TypeModel
     {
         public Il2CppInspector Package { get; }
         public List<Assembly> Assemblies { get; } = new List<Assembly>();
@@ -62,7 +62,7 @@ namespace Il2CppInspector.Reflection
             && m.GetGenericArguments().SequenceEqual(typeArguments));
 
         // Create type model
-        public Il2CppModel(Il2CppInspector package) {
+        public TypeModel(Il2CppInspector package) {
             Package = package;
             TypesByDefinitionIndex = new TypeInfo[package.TypeDefinitions.Length];
             TypesByReferenceIndex = new TypeInfo[package.TypeReferences.Count];

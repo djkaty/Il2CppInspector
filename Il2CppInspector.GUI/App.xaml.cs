@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Il2CppInspector;
+using Il2CppInspector.Model;
 using Il2CppInspector.Reflection;
 using Inspector = Il2CppInspector.Il2CppInspector;
 
@@ -20,7 +21,7 @@ namespace Il2CppInspectorGUI
     {
         private Metadata metadata;
 
-        public List<Il2CppModel> Il2CppModels { get; } = new List<Il2CppModel>();
+        public List<AppModel> AppModels { get; } = new List<AppModel>();
 
         public Exception LastException { get; private set; }
 
@@ -82,7 +83,7 @@ namespace Il2CppInspectorGUI
                     }
 
                     // Multi-image binaries may contain more than one Il2Cpp image
-                    Il2CppModels.Clear();
+                    AppModels.Clear();
                     foreach (var image in stream.Images) {
                         OnStatusUpdate?.Invoke(this, "Analyzing IL2CPP data");
 
@@ -93,14 +94,18 @@ namespace Il2CppInspectorGUI
                                 var inspector = new Inspector(binary, metadata);
 
                                 // Build type model
-                                OnStatusUpdate?.Invoke(this, "Building type model");
-                                Il2CppModels.Add(new Il2CppModel(inspector));
+                                OnStatusUpdate?.Invoke(this, "Building .NET type model");
+                                var typeModel = new TypeModel(inspector);
+
+                                // Initialize (but don't build) application model
+                                // We will build the model after the user confirms the Unity version and target compiler
+                                AppModels.Add(new AppModel(typeModel));
                             }
                         }
                         // Unsupported architecture; ignore it
                         catch (NotImplementedException) { }
                     }
-                    if (!Il2CppModels.Any()) {
+                    if (!AppModels.Any()) {
                         throw new InvalidOperationException("Could not auto-detect any IL2CPP binary images in the file. This may mean the binary file is packed, encrypted or obfuscated, that the file is not an IL2CPP image or that Il2CppInspector was not able to automatically find the required data. Please check the binary file in a disassembler to ensure that it is an unencrypted IL2CPP binary before submitting a bug report!");
                     }
                     return true;

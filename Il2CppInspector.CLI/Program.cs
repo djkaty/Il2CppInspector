@@ -8,9 +8,10 @@ using System.IO;
 using System.Linq;
 using CommandLine;
 using Il2CppInspector.Cpp;
-using Il2CppInspector.Reflection;
-using Il2CppInspector.Outputs;
 using Il2CppInspector.Cpp.UnityHeaders;
+using Il2CppInspector.Model;
+using Il2CppInspector.Outputs;
+using Il2CppInspector.Reflection;
 
 namespace Il2CppInspector.CLI
 {
@@ -70,8 +71,8 @@ namespace Il2CppInspector.CLI
             [Option('j', "project", Required = false, HelpText = "Create a Visual Studio solution and projects. Implies --layout tree, --must-compile and --separate-attributes")]
             public bool CreateSolution { get; set; }
 
-            [Option("cpp-compiler", Required = false, HelpText = "Compiler to make C++ output compatible with (MSVC or GCC); selects based on binary executable type by default", Default = Cpp.CppCompiler.Type.BinaryFormat)]
-            public CppCompiler.Type CppCompiler { get; set; }
+            [Option("cpp-compiler", Required = false, HelpText = "Compiler to target for C++ output (MSVC or GCC); selects based on binary executable type by default", Default = CppCompilerType.BinaryFormat)]
+            public CppCompilerType CppCompiler { get; set; }
 
             [Option("unity-path", Required = false, HelpText = "Path to Unity editor (when using --project). Wildcards select last matching folder in alphanumeric order", Default = @"C:\Program Files\Unity\Hub\Editor\*")]
             public string UnityPath { get; set; }
@@ -182,9 +183,14 @@ namespace Il2CppInspector.CLI
             int i = 0;
             foreach (var il2cpp in il2cppInspectors) {
                 // Create model
-                Il2CppModel model;
-                using (new Benchmark("Create type model"))
-                    model = new Il2CppModel(il2cpp);
+                TypeModel model;
+                using (new Benchmark("Create .NET type model"))
+                    model = new TypeModel(il2cpp);
+
+                AppModel appModel;
+                using (new Benchmark("Create C++ application model")) {
+                    appModel = new AppModel(model).Build(options.UnityVersion, options.CppCompiler);
+                }
 
                 // C# signatures output
                 using (new Benchmark("Generate C# code")) {
@@ -243,19 +249,12 @@ namespace Il2CppInspector.CLI
 
                 // IDA Python script output
                 using (new Benchmark("Generate IDAPython script")) {
-                    var idaWriter = new IDAPythonScript(model) {
-                        UnityVersion = options.UnityVersion
-                    };
-                    idaWriter.WriteScriptToFile(options.PythonOutFile);
+                    new IDAPythonScript(appModel).WriteScriptToFile(options.PythonOutFile);
                 }
 
                 // C++ output
                 using (new Benchmark("Generate C++ code")) {
-                    var cppWriter = new CppScaffolding(model) {
-                        UnityVersion = options.UnityVersion,
-                        Compiler = options.CppCompiler
-                    };
-                    cppWriter.WriteCppToFile(options.CppOutFile);
+                    new CppScaffolding(appModel).WriteCppToFile(options.CppOutFile);
                 }
             }
 

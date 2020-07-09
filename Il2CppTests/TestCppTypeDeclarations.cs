@@ -19,7 +19,7 @@ namespace Il2CppInspector
     public partial class FixedTests 
     {
         [Test]
-        public void TestCppTypes() {
+        public void TestCppTypeDeclarations() {
             // NOTE: This test doesn't check for correct results, only that parsing doesn't fail!
 
             var unityAllHeaders = UnityHeader.GetAllHeaders();
@@ -30,16 +30,15 @@ namespace Il2CppInspector
             // Ensure we can interpret every header from every version of Unity without errors
             // This will throw InvalidOperationException if there is a problem
             foreach (var unityHeader in unityAllHeaders) {
-                var cppTypes = CppTypes.FromUnityHeaders(unityHeader);
-
+                var cppTypes = CppTypeCollection.FromUnityHeaders(unityHeader);
                 foreach (var cppType in cppTypes.Types)
-                    Debug.WriteLine("// " + cppType.Key + "\n" + cppType.Value.ToString("o") + "\n");
+                    Debug.WriteLine("// " + cppType.Key + "\n" + cppType.Value.ToString("o"));
             }
 
             // Do a few sanity checks taken from real applications
             // NOTE: Does not provide full code coverage!
 
-            var cppTypes2 = CppTypes.FromUnityVersion(new UnityVersion("2019.3.1f1"), 64);
+            var cppTypes2 = CppTypeCollection.FromUnityVersion(new UnityVersion("2019.3.1f1"), 64);
 
             CppComplexType ct;
             CppField field;
@@ -82,6 +81,39 @@ namespace Il2CppInspector
             field = fields["vtable"];
 
             Assert.AreEqual(field.OffsetBytes, 0x128);
+
+            // Bitfield
+            ct = (CppComplexType) cppTypes2["Il2CppType"];
+
+            field = ct.Fields[0xB * 8 + 7].First();
+
+            Assert.AreEqual(field.Name, "pinned");
+
+            // Nested fields
+            ct = (CppComplexType) cppTypes2["Il2CppWin32Decimal"];
+            fields = ct.Flattened;
+
+            field = fields[0x08].First();
+
+            Assert.AreEqual(field.Name, "lo32");
+
+            field = fields[0x08].Last();
+
+            Assert.AreEqual(field.Name, "lo64");
+
+            field = fields[0x0C].First();
+
+            Assert.AreEqual(field.Name, "mid32");
+
+            // Pointer alias
+            var alias = (CppAlias) cppTypes2.GetType("Il2CppHString");
+
+            Assert.AreEqual(alias.ElementType.GetType(), typeof(CppPointerType));
+            Assert.AreEqual(alias.ElementType.Name, "Il2CppHString__ *");
+
+            // Typedef struct with no tag
+            Assert.True(cppTypes2.Types.ContainsKey("Il2CppGenericMethodIndices"));
+            Assert.True(((CppComplexType)cppTypes2["Il2CppGenericMethodIndices"]).ComplexValueType == ComplexValueType.Struct);
         }
     }
 }
