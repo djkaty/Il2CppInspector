@@ -65,14 +65,39 @@ Class library targets .NET Standard 2.1. Application targets .NET Core 3.0. Buil
 ```
 git clone --recursive https://github.com/djkaty/Il2CppInspector
 cd Il2CppInspector
+```
+
+##### Windows
+
+Build the CLI and Windows GUI versions:
+
+```
 dotnet publish -c Release
 ```
 
-This will build Il2CppInspector for Windows 64-bit. For MacOS and Linux, add  `-r xxx` to the final command where `xxx` is a RID from https://docs.microsoft.com/en-us/dotnet/articles/core/rid-catalog
+##### Mac OS X
 
-The output binary for command-line usage is placed in `Il2CppInspector/Il2CppInspector.CLI/bin/Release/netcoreapp3.0/win-x64/publish/Il2CppInspector.exe`.
+Build the CLI version:
 
-The output binary for Windows GUI is places in `Il2CppInspector/Il2CppInspector.GUI/bin/Release/netcoreapp3.1/win-x64/publish/Il2CppInspector.exe`.
+```
+cd Il2CppInspector.CLI
+dotnet publish -r osx-x64 -c Release
+```
+
+##### Linux
+
+Build the CLI version:
+
+```
+cd Il2CppInspector.CLI
+dotnet publish -r linux-x64 -c Release
+```
+
+For other operating systems supporting .NET Core, add  `-r xxx` to the final command where `xxx` is a RID from https://docs.microsoft.com/en-us/dotnet/articles/core/rid-catalog
+
+The output binary for command-line usage is placed in `Il2CppInspector/Il2CppInspector.CLI/bin/Release/netcoreapp3.0/[win|osx|linux]-x64/publish/Il2CppInspector.exe`.
+
+The output binary for Windows GUI is placed in `Il2CppInspector/Il2CppInspector.GUI/bin/Release/netcoreapp3.1/[win|osx|linux]-x64/publish/Il2CppInspector.exe`.
 
 ### Command-line Usage
 
