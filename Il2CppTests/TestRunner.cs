@@ -75,11 +75,17 @@ namespace Il2CppInspector
             var expected = File.ReadAllLines(testPath + @"\..\..\TestExpectedResults\" + Path.GetFileName(testPath) + expectedFilenameSuffix);
             var actual = File.ReadAllLines(testPath + @"\" + actualFilename);
 
-            // Get rid of blank lines and trim the remaining lines
-            expected = (from l in expected where !string.IsNullOrWhiteSpace(l) select l.Trim()).ToArray();
-            actual = (from l in actual where !string.IsNullOrWhiteSpace(l) select l.Trim()).ToArray();
+            // We don't use Linq to strip whitespace lines or CollectionAssert to compare,
+            // as we want to be able to determine the exact line number of the first mismatch
+            for (int expLine = 0, actLine = 0; expLine < expected.Length || actLine < actual.Length; expLine++, actLine++) {
+                while (expLine < expected.Length && string.IsNullOrWhiteSpace(expected[expLine]))
+                    expLine++;
+                while (actLine < actual.Length && string.IsNullOrWhiteSpace(actual[actLine]))
+                    actLine++;
 
-            CollectionAssert.AreEqual(expected, actual);
+                if (expLine < expected.Length && actLine < actual.Length)
+                    Assert.AreEqual(expected[expLine], actual[actLine], $"Mismatch at line {expLine + 1} / {actLine + 1} in {actualFilename}");
+            }
         }
     }
 }
