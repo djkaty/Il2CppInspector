@@ -289,6 +289,8 @@ Thanks to the following major contributors!
 - nneonneo - https://github.com/nneonneo (huge overhaul of generics and script generation)
 - carterbush - https://github.com/carterbush (IDA script generation)
 
+This project uses [MultiKeyDictionary](https://www.codeproject.com/Articles/32894/C-Multi-key-Generic-Dictionary) by Aron Weiler.
+
 Thanks to the following individuals whose code and research helped me develop this tool:
 
 - Perfare - https://github.com/Perfare/Il2CppDumper

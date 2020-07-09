@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Aron.Weiler;
 using Il2CppInspector.Cpp;
 using Il2CppInspector.Cpp.UnityHeaders;
 using Il2CppInspector.Reflection;
@@ -32,22 +33,6 @@ namespace Il2CppInspector.Model
         public ulong VirtualAddress { get; internal set; }
     }
 
-    // Class that represents a composite IL/C++ method
-    public class AppMethod
-    {
-        // The corresponding C++ function pointer type
-        public CppFnPtrType CppFnPtrType { get; internal set; }
-
-        // The corresponding .NET method
-        public MethodBase ILMethod { get; internal set; }
-
-        // The VA of the MethodInfo* (VA of the pointer to the MethodInfo) object which defines this method
-        public ulong MethodInfoPtrAddress { get; internal set; } 
-
-        // The VA of the method code itself, or 0 if unknown/not compiled
-        public ulong MethodCodeAddress => ILMethod.VirtualAddress?.Start ?? 0;
-    }
-
     // Class that represents the entire structure of the IL2CPP binary realized as C++ types and code,
     // correlated with .NET types where applicable. Primarily designed to enable automated static analysis of disassembly code.
     public class AppModel : IEnumerable<CppType>
@@ -70,6 +55,9 @@ namespace Il2CppInspector.Model
         // All of the C++ types used in the application (.NET type translations only)
         // The types are ordered to enable the production of code output without forward dependencies
         public List<CppType> DependencyOrderedTypes { get; private set; }
+
+        // Composite mapping of all the .NET methods in the IL2CPP binary
+        public MultiKeyDictionary<MethodBase, CppFnPtrType, AppMethod> Methods = new MultiKeyDictionary<MethodBase, CppFnPtrType, AppMethod>();
 
         // The .NET type model for the application
         public TypeModel ILModel { get; }
@@ -143,6 +131,9 @@ namespace Il2CppInspector.Model
             foreach (var method in ILModel.MethodsByDefinitionIndex.Where(m => m.VirtualAddress.HasValue)) {
                 declarationGenerator.IncludeMethod(method);
                 DependencyOrderedTypes.AddRange(declarationGenerator.GenerateRemainingTypeDeclarations());
+
+                var fnPtr = declarationGenerator.GenerateMethodDeclaration(method);
+                Methods.Add(method, fnPtr, new AppMethod(method, fnPtr));
             }
 
             // Add generic methods to C++ type model
@@ -151,6 +142,9 @@ namespace Il2CppInspector.Model
             foreach (var method in ILModel.GenericMethods.Values.Where(m => m.VirtualAddress.HasValue)) {
                 declarationGenerator.IncludeMethod(method);
                 DependencyOrderedTypes.AddRange(declarationGenerator.GenerateRemainingTypeDeclarations());
+
+                var fnPtr = declarationGenerator.GenerateMethodDeclaration(method);
+                Methods.Add(method, fnPtr, new AppMethod(method, fnPtr));
             }
 
             // Add metadata usage types to C++ type model
@@ -159,6 +153,8 @@ namespace Il2CppInspector.Model
 
             if (Package.MetadataUsages != null)
                 foreach (var usage in Package.MetadataUsages) {
+                    var address = usage.VirtualAddress;
+
                     switch (usage.Type) {
                         case MetadataUsageType.Type:
                         case MetadataUsageType.TypeInfo:
@@ -171,6 +167,8 @@ namespace Il2CppInspector.Model
                             var method = ILModel.GetMetadataUsageMethod(usage);
                             declarationGenerator.IncludeMethod(method);
                             DependencyOrderedTypes.AddRange(declarationGenerator.GenerateRemainingTypeDeclarations());
+
+                            Methods[method].MethodInfoPtrAddress = address;
                             break;
                     }
                 }
