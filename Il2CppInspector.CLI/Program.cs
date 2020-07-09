@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using CommandLine;
 using Il2CppInspector.Cpp;
 using Il2CppInspector.Cpp.UnityHeaders;
@@ -115,7 +116,7 @@ namespace Il2CppInspector.CLI
             Console.WriteLine("Version " + asmInfo.ProductVersion);
             Console.WriteLine(asmInfo.LegalCopyright);
             Console.WriteLine("");
-
+            
             // Check excluded namespaces
             if (options.ExcludedNamespaces.Count() == 1 && options.ExcludedNamespaces.First().ToLower() == "none")
                 options.ExcludedNamespaces = new List<string>();
@@ -132,16 +133,24 @@ namespace Il2CppInspector.CLI
                     Console.Error.WriteLine($"Unity path {unityPath} does not exist");
                     return 1;
                 }
-                if (!File.Exists(unityPath + @"\Editor\Data\Managed\UnityEditor.dll")) {
+
+                string editorPathSuffix = RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+                    ? @"/Contents/Managed/UnityEditor.dll"
+                    : @"\Editor\Data\Managed\UnityEditor.dll";
+
+                if (!File.Exists(unityPath + editorPathSuffix)) {
                     Console.Error.WriteLine($"No Unity installation found at {unityPath}");
                     return 1;
                 }
+                
                 if (!Directory.Exists(unityAssembliesPath)) {
                     Console.Error.WriteLine($"Unity assemblies path {unityAssembliesPath} does not exist");
                     return 1;
                 }
-                if (!File.Exists(unityAssembliesPath + @"\UnityEngine.UI.dll")) {
-                    Console.Error.WriteLine($"No Unity assemblies found at {unityAssembliesPath}");
+
+                string uiDllPath = Path.Combine(unityAssembliesPath, "UnityEngine.UI.dll");
+                if (!File.Exists(uiDllPath)) {
+                    Console.Error.WriteLine($"No UnityEngine.UI.dll assemblies found at {uiDllPath}");
                     return 1;
                 }
 
