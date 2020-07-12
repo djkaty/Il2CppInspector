@@ -9,6 +9,7 @@ using System.Reflection;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Il2CppInspector.Cpp.UnityHeaders
 {
@@ -28,7 +29,7 @@ namespace Il2CppInspector.Cpp.UnityHeaders
         private UnityHeader(string headerFilename) {
             HeaderFilename = headerFilename;
             var bits = headerFilename.Replace(".h", "").Split("-");
-            MetadataVersion = double.Parse(bits[0]);
+            MetadataVersion = double.Parse(bits[0], NumberFormatInfo.InvariantInfo);
             MinVersion = new UnityVersion(bits[1]);
             if (bits.Length == 2)
                 MaxVersion = MinVersion;
