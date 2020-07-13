@@ -46,6 +46,11 @@ namespace Il2CppInspector.Model
         // Composite mapping of all the .NET types in the IL2CPP binary
         public MultiKeyDictionary<TypeInfo, CppComplexType, AppType> Types = new MultiKeyDictionary<TypeInfo, CppComplexType, AppType>();
 
+        // All of the string literals in the IL2CPP binary
+        // Note: Does not include string literals from global-metadata.dat
+        // Note: The virtual addresses are of String* (VAs of the pointer to String*) objects, not the strings themselves
+        public Dictionary<ulong, string> Strings = new Dictionary<ulong, string>();
+
         // The .NET type model for the application
         public TypeModel ILModel { get; }
 
@@ -143,6 +148,11 @@ namespace Il2CppInspector.Model
                     var address = usage.VirtualAddress;
 
                     switch (usage.Type) {
+                        case MetadataUsageType.StringLiteral:
+                            var str = ILModel.GetMetadataUsageName(usage);
+                            Strings.Add(address, str);
+                            break;
+
                         case MetadataUsageType.Type:
                         case MetadataUsageType.TypeInfo:
                             var type = ILModel.GetMetadataUsageType(usage);
@@ -168,8 +178,6 @@ namespace Il2CppInspector.Model
                             break;
                     }
                 }
-
-            // TODO: Build composite types
 
             // This is to allow this method to be chained after a new expression
             return this;
