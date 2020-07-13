@@ -29,7 +29,7 @@ namespace Il2CppInspector.Outputs
             var internalModel = new AppModel(model.ILModel);
             internalModel.UnityVersion = model.UnityVersion;
             internalModel.UnityHeader = model.UnityHeader;
-            internalModel.TypeCollection = CppTypeCollection.FromUnityHeaders(model.UnityHeader, model.WordSize);
+            internalModel.CppTypeCollection = CppTypeCollection.FromUnityHeaders(model.UnityHeader, model.WordSize);
             model = internalModel;
             declGenerator = new CppDeclarationGenerator(model);
 
@@ -226,7 +226,8 @@ typedef __int64 int64_t;
         }
 
         // TODO: Temporary compatibility function, remove when integrated with ApplicationModel
-        private void writeDecls(List<(TypeInfo ilType, CppType valueType, CppType referenceType, CppType fieldsType, CppType vtableType, CppType staticsType)> types)
+        private void writeDecls(List<(TypeInfo ilType, CppComplexType valueType, CppComplexType referenceType,
+            CppComplexType fieldsType, CppComplexType vtableType, CppComplexType staticsType)> types)
             => writeDecls(string.Join("\n",
                   types.SelectMany(t => new List<CppType> {t.vtableType, t.staticsType, t.fieldsType, t.valueType, t.referenceType})
                             .Where(t => t != null)

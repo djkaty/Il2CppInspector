@@ -16,22 +16,6 @@ using Il2CppInspector.Reflection;
 namespace Il2CppInspector.Model
 {
     // Class that represents a composite IL/C++ type
-    public class AppType
-    {
-        // The corresponding C++ type definition which represents an instance of the object
-        // If a .NET type, this is derived from Il2CppObject, otherwise it can be any type
-        // If the underlying .NET type is a struct (value type), this will return the boxed version
-        public CppType CppType { get; internal set; }
-
-        // For an underlying .NET type which is a struct (value type), the unboxed type, otherwise null
-        public CppType CppValueType { get; internal set; }
-
-        // The type in the model this object represents (for .NET types, otherwise null)
-        public TypeInfo ILType { get; internal set; }
-
-        // The VA of the Il2CppClass object which defines this type (for .NET types, otherwise zero)
-        public ulong VirtualAddress { get; internal set; }
-    }
 
     // Class that represents the entire structure of the IL2CPP binary realized as C++ types and code,
     // correlated with .NET types where applicable. Primarily designed to enable automated static analysis of disassembly code.
@@ -49,15 +33,18 @@ namespace Il2CppInspector.Model
 
         // All of the C++ types used in the application including Unity internal types
         // NOTE: This is for querying individual types for static analysis
-        // To generate code output, use DependencyOrderedTypes
-        public CppTypeCollection TypeCollection { get; set; } // TODO: Change to private set after integrating IDA output
+        // To generate code output, use DependencyOrderedCppTypes
+        public CppTypeCollection CppTypeCollection { get; set; } // TODO: Change to private set after integrating IDA output
 
         // All of the C++ types used in the application (.NET type translations only)
         // The types are ordered to enable the production of code output without forward dependencies
-        public List<CppType> DependencyOrderedTypes { get; private set; }
+        public List<CppType> DependencyOrderedCppTypes { get; private set; }
 
         // Composite mapping of all the .NET methods in the IL2CPP binary
         public MultiKeyDictionary<MethodBase, CppFnPtrType, AppMethod> Methods = new MultiKeyDictionary<MethodBase, CppFnPtrType, AppMethod>();
+
+        // Composite mapping of all the .NET types in the IL2CPP binary
+        public MultiKeyDictionary<TypeInfo, CppComplexType, AppType> Types = new MultiKeyDictionary<TypeInfo, CppComplexType, AppType>();
 
         // The .NET type model for the application
         public TypeModel ILModel { get; }
@@ -66,8 +53,8 @@ namespace Il2CppInspector.Model
         public List<Export> Exports { get; }
 
         // Delegated C++ types iterator
-        public IEnumerator<CppType> GetEnumerator() => TypeCollection.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable) TypeCollection).GetEnumerator();
+        public IEnumerator<CppType> GetEnumerator() => CppTypeCollection.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable) CppTypeCollection).GetEnumerator();
 
         // The C++ declaration generator for this binary
         // TODO: Make this private once IDA output integration is completed
@@ -117,16 +104,16 @@ namespace Il2CppInspector.Model
 
             // Start creation of type model by parsing all of the Unity IL2CPP headers
             // Calling declarationGenerator.GenerateRemainingTypeDeclarations() below will automatically add to this collection
-            TypeCollection = CppTypeCollection.FromUnityHeaders(UnityHeader, WordSize);
+            CppTypeCollection = CppTypeCollection.FromUnityHeaders(UnityHeader, WordSize);
 
             // Initialize declaration generator to process every type in the binary
             declarationGenerator = new CppDeclarationGenerator(this);
 
             // Initialize ordered type list for code output
-            DependencyOrderedTypes = new List<CppType>();
+            DependencyOrderedCppTypes = new List<CppType>();
 
             // Add method definitions to C++ type model
-            TypeCollection.SetGroup("type_definitions");
+            CppTypeCollection.SetGroup("type_definitions");
 
             foreach (var method in ILModel.MethodsByDefinitionIndex.Where(m => m.VirtualAddress.HasValue)) {
                 declarationGenerator.IncludeMethod(method);
@@ -137,7 +124,7 @@ namespace Il2CppInspector.Model
             }
 
             // Add generic methods to C++ type model
-            TypeCollection.SetGroup("types_from_generics");
+            CppTypeCollection.SetGroup("types_from_generics");
 
             foreach (var method in ILModel.GenericMethods.Values.Where(m => m.VirtualAddress.HasValue)) {
                 declarationGenerator.IncludeMethod(method);
@@ -149,7 +136,7 @@ namespace Il2CppInspector.Model
 
             // Add metadata usage types to C++ type model
             // Not supported in il2cpp <19
-            TypeCollection.SetGroup("types_from_usages");
+            CppTypeCollection.SetGroup("types_from_usages");
 
             if (Package.MetadataUsages != null)
                 foreach (var usage in Package.MetadataUsages) {
@@ -161,6 +148,15 @@ namespace Il2CppInspector.Model
                             var type = ILModel.GetMetadataUsageType(usage);
                             declarationGenerator.IncludeType(type);
                             AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
+
+                            if (usage.Type == MetadataUsageType.TypeInfo)
+                                Types[type].TypeClassAddress = address;
+                            else if (!Types.ContainsKey(type))
+                                // Generic type definition has no associated C++ type, therefore no dictionary subkey
+                                Types.Add(type, new AppType(type, null, cppTypeRefPtr: address));
+                            else
+                                // Regular type reference
+                                Types[type].TypeRefPtrAddress = address;
                             break;
                         case MetadataUsageType.MethodDef:
                         case MetadataUsageType.MethodRef:
@@ -179,24 +175,32 @@ namespace Il2CppInspector.Model
             return this;
         }
 
-        private void AddTypes(List<(TypeInfo ilType, CppType valueType, CppType referenceType, CppType fieldsType, CppType vtableType, CppType staticsType)> types) {
+        private void AddTypes(List<(TypeInfo ilType, CppComplexType valueType, CppComplexType referenceType, 
+            CppComplexType fieldsType, CppComplexType vtableType, CppComplexType staticsType)> types) {
+
+            // Add types to dependency-ordered list
             foreach (var type in types) {
                 if (type.vtableType != null)
-                    DependencyOrderedTypes.Add(type.vtableType);
+                    DependencyOrderedCppTypes.Add(type.vtableType);
                 if (type.staticsType != null)
-                    DependencyOrderedTypes.Add(type.staticsType);
+                    DependencyOrderedCppTypes.Add(type.staticsType);
 
                 if (type.fieldsType != null)
-                    DependencyOrderedTypes.Add(type.fieldsType);
+                    DependencyOrderedCppTypes.Add(type.fieldsType);
                 if (type.valueType != null)
-                    DependencyOrderedTypes.Add(type.valueType);
+                    DependencyOrderedCppTypes.Add(type.valueType);
 
-                DependencyOrderedTypes.Add(type.referenceType);
+                DependencyOrderedCppTypes.Add(type.referenceType);
             }
+
+            // Create composite types
+            foreach (var type in types)
+                if (!Types.ContainsKey(type.ilType))
+                    Types.Add(type.ilType, type.referenceType, new AppType(type.ilType, type.referenceType, type.valueType));
         }
 
         // Get all the types for a group
-        public IEnumerable<CppType> GetTypeGroup(string groupName) => TypeCollection.GetTypeGroup(groupName);
-        public IEnumerable<CppType> GetDependencyOrderedTypeGroup(string groupName) => DependencyOrderedTypes.Where(t => t.Group == groupName);
+        public IEnumerable<CppType> GetTypeGroup(string groupName) => CppTypeCollection.GetTypeGroup(groupName);
+        public IEnumerable<CppType> GetDependencyOrderedTypeGroup(string groupName) => DependencyOrderedCppTypes.Where(t => t.Group == groupName);
     }
 }
