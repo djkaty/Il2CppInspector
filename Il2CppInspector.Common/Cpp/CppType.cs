@@ -74,6 +74,8 @@ namespace Il2CppInspector.Cpp
 
         // Return the type as a field
         public override string ToFieldString(string fieldName) => ElementType.ToFieldString("*" + fieldName);
+
+        public override string ToString(string format = "") => ToFieldString("");
     }
 
     // An array type
@@ -90,7 +92,7 @@ namespace Il2CppInspector.Cpp
 
         public override int SizeBytes => ElementType.SizeBytes * Length;
 
-        public CppArrayType(CppType elementType, int length) : base(null) {
+        public CppArrayType(CppType elementType, int length) : base() {
             ElementType = elementType;
             Length = length;
         }
