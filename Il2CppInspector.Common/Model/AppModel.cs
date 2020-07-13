@@ -49,7 +49,7 @@ namespace Il2CppInspector.Model
 
         // All of the C++ types used in the application including Unity internal types
         // NOTE: This is for querying individual types for static analysis
-        // To generate code output, use DeclarationOrderedTypes
+        // To generate code output, use DependencyOrderedTypes
         public CppTypeCollection TypeCollection { get; set; } // TODO: Change to private set after integrating IDA output
 
         // All of the C++ types used in the application (.NET type translations only)
@@ -130,7 +130,7 @@ namespace Il2CppInspector.Model
 
             foreach (var method in ILModel.MethodsByDefinitionIndex.Where(m => m.VirtualAddress.HasValue)) {
                 declarationGenerator.IncludeMethod(method);
-                DependencyOrderedTypes.AddRange(declarationGenerator.GenerateRemainingTypeDeclarations());
+                AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
 
                 var fnPtr = declarationGenerator.GenerateMethodDeclaration(method);
                 Methods.Add(method, fnPtr, new AppMethod(method, fnPtr));
@@ -141,7 +141,7 @@ namespace Il2CppInspector.Model
 
             foreach (var method in ILModel.GenericMethods.Values.Where(m => m.VirtualAddress.HasValue)) {
                 declarationGenerator.IncludeMethod(method);
-                DependencyOrderedTypes.AddRange(declarationGenerator.GenerateRemainingTypeDeclarations());
+                AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
 
                 var fnPtr = declarationGenerator.GenerateMethodDeclaration(method);
                 Methods.Add(method, fnPtr, new AppMethod(method, fnPtr));
@@ -160,13 +160,13 @@ namespace Il2CppInspector.Model
                         case MetadataUsageType.TypeInfo:
                             var type = ILModel.GetMetadataUsageType(usage);
                             declarationGenerator.IncludeType(type);
-                            DependencyOrderedTypes.AddRange(declarationGenerator.GenerateRemainingTypeDeclarations());
+                            AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
                             break;
                         case MetadataUsageType.MethodDef:
                         case MetadataUsageType.MethodRef:
                             var method = ILModel.GetMetadataUsageMethod(usage);
                             declarationGenerator.IncludeMethod(method);
-                            DependencyOrderedTypes.AddRange(declarationGenerator.GenerateRemainingTypeDeclarations());
+                            AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
 
                             Methods[method].MethodInfoPtrAddress = address;
                             break;
@@ -177,6 +177,22 @@ namespace Il2CppInspector.Model
 
             // This is to allow this method to be chained after a new expression
             return this;
+        }
+
+        private void AddTypes(List<(TypeInfo ilType, CppType valueType, CppType referenceType, CppType fieldsType, CppType vtableType, CppType staticsType)> types) {
+            foreach (var type in types) {
+                if (type.vtableType != null)
+                    DependencyOrderedTypes.Add(type.vtableType);
+                if (type.staticsType != null)
+                    DependencyOrderedTypes.Add(type.staticsType);
+
+                if (type.fieldsType != null)
+                    DependencyOrderedTypes.Add(type.fieldsType);
+                if (type.valueType != null)
+                    DependencyOrderedTypes.Add(type.valueType);
+
+                DependencyOrderedTypes.Add(type.referenceType);
+            }
         }
 
         // Get all the types for a group

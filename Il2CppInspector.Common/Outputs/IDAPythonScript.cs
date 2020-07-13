@@ -226,7 +226,11 @@ typedef __int64 int64_t;
         }
 
         // TODO: Temporary compatibility function, remove when integrated with ApplicationModel
-        private void writeDecls(List<CppType> types) => writeDecls(string.Join("\n", types.Select(t => t.ToString())));
+        private void writeDecls(List<(TypeInfo ilType, CppType valueType, CppType referenceType, CppType fieldsType, CppType vtableType, CppType staticsType)> types)
+            => writeDecls(string.Join("\n",
+                  types.SelectMany(t => new List<CppType> {t.vtableType, t.staticsType, t.fieldsType, t.valueType, t.referenceType})
+                            .Where(t => t != null)
+                            .Select(t => t.ToString())));
 
         private void writeName(ulong address, string name) {
             writeLine($"SetName({address.ToAddressString()}, r'{name.ToEscapedString()}')");
