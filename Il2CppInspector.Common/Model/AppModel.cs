@@ -50,6 +50,7 @@ namespace Il2CppInspector.Model
         // All of the string literals in the IL2CPP binary
         // Note: Does not include string literals from global-metadata.dat
         // Note: The virtual addresses are of String* (VAs of the pointer to String*) objects, not the strings themselves
+        // For il2cpp < 19, the key is the string literal ordinal instead of the address
         public Dictionary<ulong, string> Strings = new Dictionary<ulong, string>();
 
         // The .NET type model for the application
@@ -195,6 +196,16 @@ namespace Il2CppInspector.Model
                             break;
                     }
                 }
+
+            else {
+                /* Version < 19 calls `il2cpp_codegen_string_literal_from_index` to get string literals.
+                 * Unfortunately, metadata references are just loose globals in Il2CppMetadataUsage.cpp
+                 * so we can't automatically name those. Next best thing is to define an enum for the strings. */
+                for (var i = 0; i < Package.StringLiterals.Length; i++) {
+                    var str = Package.StringLiterals[i];
+                    Strings.Add((ulong) i, str);
+                }
+            }
 
             // This is to allow this method to be chained after a new expression
             return this;
