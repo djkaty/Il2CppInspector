@@ -518,8 +518,8 @@ namespace Il2CppInspector.Cpp
         // Get all of the types in a logical group
         public IEnumerable<CppType> GetTypeGroup(string groupName) => Types.Values.Where(t => t.Group == groupName);
 
-        // Add a type externally
-        public void Add(CppType type) {
+        // Add a type
+        private void Add(CppType type) {
             type.Group = currentGroup;
             Types.Add(type.Name, type);
         }

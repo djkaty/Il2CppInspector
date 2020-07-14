@@ -7,6 +7,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Aron.Weiler;
 using Il2CppInspector.Cpp;
@@ -160,9 +161,25 @@ namespace Il2CppInspector.Model
                             AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
 
                             if (usage.Type == MetadataUsageType.TypeInfo)
-                                Types[type].TypeClassAddress = address;
+                                // .NET unsafe pointer type that has not been mapped by IL2CPP to a C type
+                                // (often void* or byte* in metadata v23 and v24.0)
+                                if (!Types.ContainsKey(type)) {
+                                    Debug.Assert(type.IsPointer);
+
+                                    // TODO: This should really be handled by CppDeclarationGenerator, and doesn't generate the full definition
+                                    var cppType = CppTypeCollection.Struct(declarationGenerator.TypeNamer.GetName(type) + "__TypeInfo");
+                                    var cppObjectType = (CppComplexType) CppTypeCollection["Il2CppObject"];
+                                    cppType.Fields = new SortedDictionary<int, List<CppField>>(cppObjectType.Fields);
+
+                                    DependencyOrderedCppTypes.Add(cppType);
+                                    Types.Add(type, cppType, new AppType(type, cppType, cppClassPtr: address));
+                                }
+                                else
+                                    // Regular type definition
+                                    Types[type].TypeClassAddress = address;
+
                             else if (!Types.ContainsKey(type))
-                                // Generic type definition has no associated C++ type, therefore no dictionary subkey
+                                // Generic type definition has no associated C++ type, therefore no dictionary sub-key
                                 Types.Add(type, new AppType(type, null, cppTypeRefPtr: address));
                             else
                                 // Regular type reference
