@@ -53,6 +53,9 @@ namespace Il2CppInspector.Model
         // For il2cpp < 19, the key is the string literal ordinal instead of the address
         public Dictionary<ulong, string> Strings = new Dictionary<ulong, string>();
 
+        // All of the custom attribute generator functions in the library
+        public Dictionary<CustomAttributeData, AppMethod> CustomAttributeGenerators = new Dictionary<CustomAttributeData, AppMethod>();
+
         public bool StringIndexesAreOrdinals => Package.MetadataUsages == null;
 
         // The .NET type model for the application
@@ -130,7 +133,7 @@ namespace Il2CppInspector.Model
             // Initialize ordered type list for code output
             DependencyOrderedCppTypes = new List<CppType>();
 
-            // Add method definitions to C++ type model
+            // Add method definitions and types used by them to C++ type model
             Group = "types_from_methods";
 
             foreach (var method in ILModel.MethodsByDefinitionIndex.Where(m => m.VirtualAddress.HasValue)) {
@@ -141,7 +144,7 @@ namespace Il2CppInspector.Model
                 Methods.Add(method, fnPtr, new AppMethod(method, fnPtr) {Group = Group});
             }
 
-            // Add generic methods to C++ type model
+            // Add generic methods definitions and types used by them to C++ type model
             Group = "types_from_generic_methods";
 
             foreach (var method in ILModel.GenericMethods.Values.Where(m => m.VirtualAddress.HasValue)) {
@@ -152,7 +155,7 @@ namespace Il2CppInspector.Model
                 Methods.Add(method, fnPtr, new AppMethod(method, fnPtr) {Group = Group});
             }
 
-            // Add metadata usage types to C++ type model
+            // Add types from metadata usage list to C++ type model
             // Not supported in il2cpp <19
             Group = "types_from_usages";
 
@@ -208,6 +211,7 @@ namespace Il2CppInspector.Model
                     }
                 }
 
+            // Add string literals for metadata <19 to the model
             else {
                 /* Version < 19 calls `il2cpp_codegen_string_literal_from_index` to get string literals.
                  * Unfortunately, metadata references are just loose globals in Il2CppMetadataUsage.cpp
@@ -216,6 +220,20 @@ namespace Il2CppInspector.Model
                     var str = Package.StringLiterals[i];
                     Strings.Add((ulong) i, str);
                 }
+            }
+
+            // Add custom attribute generators to the model
+            foreach (var method in ILModel.AttributesByIndices.Values.Where(m => m.VirtualAddress.HasValue)) {
+                var cppTypeName = declarationGenerator.TypeNamer.GetName(method.AttributeType);
+                var fnPtrType = CppFnPtrType.FromSignature(CppTypeCollection, $"void (*{cppTypeName}_CustomAttributesCacheGenerator)(CustomAttributesCache *)");
+                fnPtrType.Group = "custom_attribute_generators";
+
+                // Get first constructor for attribute
+                // This is not strictly what the cache generator C++ function is but it'll do
+                var ctor = method.AttributeType.DeclaredConstructors.First();
+
+                var appMethod = new AppMethod(ctor, fnPtrType, method.VirtualAddress.Value.Start);
+                CustomAttributeGenerators.Add(method, appMethod);
             }
 
             // This is to allow this method to be chained after a new expression
