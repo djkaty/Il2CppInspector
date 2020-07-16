@@ -11,6 +11,10 @@ namespace Il2CppInspector.Model
 {
     public class AppType
     {
+        // The logical group this type is part of
+        // This is purely for querying types in related groups and has no bearing on the code
+        public string Group { get; set; }
+
         // The corresponding C++ type definition which represents an instance of the object
         // This is derived from Il2CppObject
         // If the underlying .NET type is a struct (value type), this will return the boxed version

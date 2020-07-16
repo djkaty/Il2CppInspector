@@ -12,6 +12,10 @@ namespace Il2CppInspector.Model
     // Class that represents a composite IL/C++ method
     public class AppMethod
     {
+        // The logical group this method is part of
+        // This is purely for querying methods in related groups and has no bearing on the code
+        public string Group { get; set; }
+
         // The corresponding C++ function pointer type
         public CppFnPtrType CppFnPtrType { get; internal set; }
 

@@ -16,22 +16,12 @@ namespace Il2CppInspector.Outputs
 {
     public class IDAPythonScript
     {
-        // TODO: Make this readonly when we've integrated with ApplicationModel
-        private AppModel model;
+        private readonly AppModel model;
         private StreamWriter writer;
-        // TODO: Remove when integrated with ApplicationModel
-        private CppDeclarationGenerator declGenerator;
 
         public IDAPythonScript(AppModel model) => this.model = model;
 
         public void WriteScriptToFile(string outputFile) {
-            // TODO: Integrate with ApplicationModel - use this hack so we can use CppDeclarationGenerator without disturbing the model passed in
-            var internalModel = new AppModel(model.ILModel);
-            internalModel.UnityVersion = model.UnityVersion;
-            internalModel.UnityHeader = model.UnityHeader;
-            internalModel.CppTypeCollection = CppTypeCollection.FromUnityHeaders(model.UnityHeader, model.WordSize);
-            model = internalModel;
-            declGenerator = new CppDeclarationGenerator(model);
 
             using var fs = new FileStream(outputFile, FileMode.Create);
             writer = new StreamWriter(fs, Encoding.UTF8);
@@ -93,10 +83,12 @@ typedef __int64 int64_t;
 
         private void writeMethods() {
             writeSectionHeader("Method definitions");
-            writeMethods(model.ILModel.MethodsByDefinitionIndex);
+            writeTypes(model.GetDependencyOrderedCppTypeGroup("types_from_methods"));
+            writeMethods(model.GetMethodGroup("types_from_methods"));
 
             writeSectionHeader("Constructed generic methods");
-            writeMethods(model.ILModel.GenericMethods.Values);
+            writeTypes(model.GetDependencyOrderedCppTypeGroup("types_from_generic_methods"));
+            writeMethods(model.GetMethodGroup("types_from_generic_methods"));
 
             writeSectionHeader("Custom attributes generators");
             foreach (var method in model.ILModel.AttributesByIndices.Values.Where(m => m.VirtualAddress.HasValue)) {
@@ -113,13 +105,16 @@ typedef __int64 int64_t;
             }
         }
 
-        private void writeMethods(IEnumerable<MethodBase> methods) {
-            foreach (var method in methods.Where(m => m.VirtualAddress.HasValue)) {
-                declGenerator.IncludeMethod(method);
-                writeDecls(declGenerator.GenerateRemainingTypeDeclarations());
-                var address = method.VirtualAddress.Value.Start;
-                writeTypedName(address, declGenerator.GenerateMethodDeclaration(method).ToSignatureString(), declGenerator.GlobalNamer.GetName(method));
-                writeComment(address, method);
+        private void writeTypes(IEnumerable<CppType> types) {
+            foreach (var type in types)
+                writeDecls(type.ToString());
+        }
+
+        private void writeMethods(IEnumerable<AppMethod> methods) {
+            foreach (var method in methods) {
+                var address = method.MethodCodeAddress;
+                writeTypedName(address, method.CppFnPtrType.ToSignatureString(), method.CppFnPtrType.Name);
+                writeComment(address, method.Method);
             }
         }
         
@@ -129,58 +124,57 @@ typedef __int64 int64_t;
         }
 
         private void writeUsages() {
-            if (model.Package.MetadataUsages == null) {
-                /* Version < 19 calls `il2cpp_codegen_string_literal_from_index` to get string literals.
-                 * Unfortunately, metadata references are just loose globals in Il2CppMetadataUsage.cpp
-                 * so we can't automatically name those. Next best thing is to define an enum for the strings. */
+
+            // String literals
+
+            // For version < 19
+            if (model.StringIndexesAreOrdinals) {
                 var enumSrc = new StringBuilder();
                 enumSrc.Append("enum StringLiteralIndex {\n");
-                for (int i = 0; i < model.Package.StringLiterals.Length; i++) {
-                    var str = model.Package.StringLiterals[i];
-                    enumSrc.Append($"  STRINGLITERAL_{i}_{stringToIdentifier(str)},\n");
-                }
+                foreach (var str in model.Strings)
+                    enumSrc.Append($"  STRINGLITERAL_{str.Key}_{stringToIdentifier(str.Value)},\n");
                 enumSrc.Append("};\n");
 
                 writeDecls(enumSrc.ToString());
-
-                return;
             }
-            
-            var stringType = declGenerator.AsCType(model.ILModel.TypesByFullName["System.String"]);
-            foreach (var usage in model.Package.MetadataUsages) {
-                var address = usage.VirtualAddress;
-                string name;
 
-                switch (usage.Type) {
-                    case MetadataUsageType.StringLiteral:
-                        var str = model.ILModel.GetMetadataUsageName(usage);
-                        writeTypedName(address, stringType.ToString(), $"StringLiteral_{stringToIdentifier(str)}");
-                        writeComment(address, str);
-                        break;
-                    case MetadataUsageType.Type:
-                    case MetadataUsageType.TypeInfo:
-                        var type = model.ILModel.GetMetadataUsageType(usage);
-                        declGenerator.IncludeType(type);
-                        writeDecls(declGenerator.GenerateRemainingTypeDeclarations());
+            // For version >= 19
+            else {
+                var stringType = model.CppTypeCollection.GetType("String *");
 
-                        name = declGenerator.TypeNamer.GetName(type);
-                        if (usage.Type == MetadataUsageType.TypeInfo)
-                            writeTypedName(address, $"struct {name}__Class *", $"{name}__TypeInfo");
-                        else
-                            writeTypedName(address, $"struct Il2CppType *", $"{name}__TypeRef");
-                        writeComment(address, type.CSharpName);
-                        break;
-                    case MetadataUsageType.MethodDef:
-                    case MetadataUsageType.MethodRef:
-                        var method = model.ILModel.GetMetadataUsageMethod(usage);
-                        declGenerator.IncludeMethod(method);
-                        writeDecls(declGenerator.GenerateRemainingTypeDeclarations());
-
-                        name = declGenerator.GlobalNamer.GetName(method);
-                        writeTypedName(address, "struct MethodInfo *", $"{name}__MethodInfo");
-                        writeComment(address, method);
-                        break;
+                foreach (var str in model.Strings) {
+                    writeTypedName(str.Key, stringType.ToString(), $"StringLiteral_{stringToIdentifier(str.Value)}");
+                    writeComment(str.Key, str.Value);
                 }
+            }
+
+            // Metadata usage C++ type dependencies
+            var usageCppTypes = model.GetDependencyOrderedCppTypeGroup("types_from_usages");
+            writeTypes(usageCppTypes);
+
+            // Definition and reference addresses for all types from metadata usages
+            foreach (var type in model.Types.Values) {
+                // A type may have no addresses, for example an unreferenced array type
+
+                // Value types must not used the boxed definition
+                var name = type.CppValueType?.Name ?? type.CppType?.Name ?? model.declarationGenerator.TypeNamer.GetName(type.ILType);
+
+                if (type.TypeClassAddress != 0xffffffff_ffffffff) {
+                    writeTypedName(type.TypeClassAddress, $"struct {name}__Class *", $"{name}__TypeInfo");
+                    writeComment(type.TypeClassAddress, type.ILType.CSharpName);
+                }
+
+                if (type.TypeRefPtrAddress != 0xffffffff_ffffffff) {
+                    // A generic type definition does not have any direct C++ types, but may have a reference
+                    writeTypedName(type.TypeRefPtrAddress, "struct Il2CppType *", $"{name}__TypeRef");
+                    writeComment(type.TypeRefPtrAddress, type.ILType.CSharpName);
+                }
+            }
+
+            // Metedata usage methods
+            foreach (var method in model.Methods.Values.Where(m => m.MethodInfoPtrAddress != 0xffffffff_ffffffff)) {
+                writeTypedName(method.MethodInfoPtrAddress, "struct MethodInfo *", $"{method.CppFnPtrType.Name}__MethodInfo");
+                writeComment(method.MethodInfoPtrAddress, method.Method);
             }
         }
 
@@ -224,14 +218,6 @@ typedef __int64 int64_t;
             if (declString != "")
                 writeLine("idc.parse_decls('''" + declString + "''')");
         }
-
-        // TODO: Temporary compatibility function, remove when integrated with ApplicationModel
-        private void writeDecls(List<(TypeInfo ilType, CppComplexType valueType, CppComplexType referenceType,
-            CppComplexType fieldsType, CppComplexType vtableType, CppComplexType staticsType)> types)
-            => writeDecls(string.Join("\n",
-                  types.SelectMany(t => new List<CppType> {t.vtableType, t.staticsType, t.fieldsType, t.valueType, t.referenceType})
-                            .Where(t => t != null)
-                            .Select(t => t.ToString())));
 
         private void writeName(ulong address, string name) {
             writeLine($"SetName({address.ToAddressString()}, r'{name.ToEscapedString()}')");

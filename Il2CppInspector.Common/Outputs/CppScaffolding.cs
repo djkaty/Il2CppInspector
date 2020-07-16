@@ -37,9 +37,9 @@ namespace Il2CppInspector.Outputs
             writeCode("namespace app {");
             writeLine("");
 
-            writeTypesForGroup("Application type definitions", "type_definitions");
-            writeTypesForGroup("Application generic method type usages", "types_from_generics");
-            writeTypesForGroup("Application type usages", "types_from_usages");
+            writeTypesForGroup("Application types from method calls", "types_from_methods");
+            writeTypesForGroup("Application types from generic methods", "types_from_generic_methods");
+            writeTypesForGroup("Application types from usages", "types_from_usages");
 
             writeCode("}");
 
@@ -53,7 +53,7 @@ namespace Il2CppInspector.Outputs
 
         private void writeTypesForGroup(string header, string group) {
             writeSectionHeader(header);
-            foreach (var cppType in model.GetDependencyOrderedTypeGroup(group))
+            foreach (var cppType in model.GetDependencyOrderedCppTypeGroup(group))
                 writeCode(cppType.ToString());
         }
         

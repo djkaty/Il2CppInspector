@@ -26,16 +26,16 @@ namespace Il2CppInspector.Model
         public CppCompilerType TargetCompiler { get; private set; }
 
         // The Unity version used to build the binary
-        public UnityVersion UnityVersion { get; set; } // TODO: Change to private set after integrating IDA output
+        public UnityVersion UnityVersion { get; private set; }
 
         // The Unity IL2CPP C++ headers for the binary
         // Use this for code output
-        public UnityHeader UnityHeader { get; set; } // TODO: Change to private set after integrating IDA output
+        public UnityHeader UnityHeader { get; private set; }
 
         // All of the C++ types used in the application including Unity internal types
         // NOTE: This is for querying individual types for static analysis
         // To generate code output, use DependencyOrderedCppTypes
-        public CppTypeCollection CppTypeCollection { get; set; } // TODO: Change to private set after integrating IDA output
+        public CppTypeCollection CppTypeCollection { get; private set; }
 
         // All of the C++ types used in the application (.NET type translations only)
         // The types are ordered to enable the production of code output without forward dependencies
@@ -53,6 +53,8 @@ namespace Il2CppInspector.Model
         // For il2cpp < 19, the key is the string literal ordinal instead of the address
         public Dictionary<ulong, string> Strings = new Dictionary<ulong, string>();
 
+        public bool StringIndexesAreOrdinals => Package.MetadataUsages == null;
+
         // The .NET type model for the application
         public TypeModel ILModel { get; }
 
@@ -64,8 +66,7 @@ namespace Il2CppInspector.Model
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable) CppTypeCollection).GetEnumerator();
 
         // The C++ declaration generator for this binary
-        // TODO: Make this private once IDA output integration is completed
-        internal CppDeclarationGenerator declarationGenerator;
+        internal CppDeclarationGenerator declarationGenerator; // TODO: Make private when name integration completed
 
         // Convenience properties
 
@@ -80,6 +81,16 @@ namespace Il2CppInspector.Model
 
         // The Unity header text including word size define
         public string UnityHeaderText => (WordSize == 32 ? "#define IS_32BIT\n" : "") + UnityHeader.GetHeaderText();
+
+        // The group that the next added type(s) will be placed in
+        private string group = string.Empty;
+        private string Group {
+            get => group;
+            set {
+                group = value;
+                CppTypeCollection.SetGroup(group);
+            }
+        }
 
         // Initialize
         public AppModel(TypeModel model) {
@@ -120,30 +131,30 @@ namespace Il2CppInspector.Model
             DependencyOrderedCppTypes = new List<CppType>();
 
             // Add method definitions to C++ type model
-            CppTypeCollection.SetGroup("type_definitions");
+            Group = "types_from_methods";
 
             foreach (var method in ILModel.MethodsByDefinitionIndex.Where(m => m.VirtualAddress.HasValue)) {
                 declarationGenerator.IncludeMethod(method);
                 AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
 
                 var fnPtr = declarationGenerator.GenerateMethodDeclaration(method);
-                Methods.Add(method, fnPtr, new AppMethod(method, fnPtr));
+                Methods.Add(method, fnPtr, new AppMethod(method, fnPtr) {Group = Group});
             }
 
             // Add generic methods to C++ type model
-            CppTypeCollection.SetGroup("types_from_generics");
+            Group = "types_from_generic_methods";
 
             foreach (var method in ILModel.GenericMethods.Values.Where(m => m.VirtualAddress.HasValue)) {
                 declarationGenerator.IncludeMethod(method);
                 AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
 
                 var fnPtr = declarationGenerator.GenerateMethodDeclaration(method);
-                Methods.Add(method, fnPtr, new AppMethod(method, fnPtr));
+                Methods.Add(method, fnPtr, new AppMethod(method, fnPtr) {Group = Group});
             }
 
             // Add metadata usage types to C++ type model
             // Not supported in il2cpp <19
-            CppTypeCollection.SetGroup("types_from_usages");
+            Group = "types_from_usages";
 
             if (Package.MetadataUsages != null)
                 foreach (var usage in Package.MetadataUsages) {
@@ -168,12 +179,12 @@ namespace Il2CppInspector.Model
                                     Debug.Assert(type.IsPointer);
 
                                     // TODO: This should really be handled by CppDeclarationGenerator, and doesn't generate the full definition
-                                    var cppType = CppTypeCollection.Struct(declarationGenerator.TypeNamer.GetName(type) + "__TypeInfo");
+                                    var cppType = CppTypeCollection.Struct(declarationGenerator.TypeNamer.GetName(type));
                                     var cppObjectType = (CppComplexType) CppTypeCollection["Il2CppObject"];
                                     cppType.Fields = new SortedDictionary<int, List<CppField>>(cppObjectType.Fields);
 
                                     DependencyOrderedCppTypes.Add(cppType);
-                                    Types.Add(type, cppType, new AppType(type, cppType, cppClassPtr: address));
+                                    Types.Add(type, cppType, new AppType(type, cppType, cppClassPtr: address) {Group = Group});
                                 }
                                 else
                                     // Regular type definition
@@ -181,7 +192,7 @@ namespace Il2CppInspector.Model
 
                             else if (!Types.ContainsKey(type))
                                 // Generic type definition has no associated C++ type, therefore no dictionary sub-key
-                                Types.Add(type, new AppType(type, null, cppTypeRefPtr: address));
+                                Types.Add(type, new AppType(type, null, cppTypeRefPtr: address) {Group = Group});
                             else
                                 // Regular type reference
                                 Types[type].TypeRefPtrAddress = address;
@@ -232,11 +243,17 @@ namespace Il2CppInspector.Model
             // Create composite types
             foreach (var type in types)
                 if (!Types.ContainsKey(type.ilType))
-                    Types.Add(type.ilType, type.referenceType, new AppType(type.ilType, type.referenceType, type.valueType));
+                    Types.Add(type.ilType, type.referenceType, new AppType(type.ilType, type.referenceType, type.valueType) {Group = Group});
         }
 
-        // Get all the types for a group
-        public IEnumerable<CppType> GetTypeGroup(string groupName) => CppTypeCollection.GetTypeGroup(groupName);
-        public IEnumerable<CppType> GetDependencyOrderedTypeGroup(string groupName) => DependencyOrderedCppTypes.Where(t => t.Group == groupName);
+        // Get all the C++ types for a group
+        public IEnumerable<CppType> GetCppTypeGroup(string groupName) => CppTypeCollection.GetTypeGroup(groupName);
+        public IEnumerable<CppType> GetDependencyOrderedCppTypeGroup(string groupName) => DependencyOrderedCppTypes.Where(t => t.Group == groupName);
+
+        // Get all the composite types for a group
+        public IEnumerable<AppType> GetTypeGroup(string groupName) => Types.Values.Where(t => t.Group == groupName);
+
+        // Get all the composite methods for a group
+        public IEnumerable<AppMethod> GetMethodGroup(string groupName) => Methods.Values.Where(m => m.Group == groupName);
     }
 }
