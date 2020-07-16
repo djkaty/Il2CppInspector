@@ -32,9 +32,12 @@ namespace Il2CppInspector.Outputs
             writeSectionHeader("Preamble");
             writePreamble();
 
+            writeTypes();
             writeMethods();
 
-            writeSectionHeader("Metadata Usages");
+            writeSectionHeader("String literals");
+            writeStringLiterals();
+
             writeUsages();
 
             writeSectionHeader("Function boundaries");
@@ -77,17 +80,27 @@ typedef __int16 int16_t;
 typedef __int32 int32_t;
 typedef __int64 int64_t;
 ");
-            // IL2CPP internal types
+        }
+
+        private void writeTypes() {
+            writeSectionHeader("IL2CPP internal types");
             writeDecls(model.UnityHeaderText);
+
+            writeSectionHeader("Application types from method calls");
+            writeTypes(model.GetDependencyOrderedCppTypeGroup("types_from_methods"));
+
+            writeSectionHeader("Application types from generic methods");
+            writeTypes(model.GetDependencyOrderedCppTypeGroup("types_from_generic_methods"));
+
+            writeSectionHeader("Application types from usage metadata");
+            writeTypes(model.GetDependencyOrderedCppTypeGroup("types_from_usages"));
         }
 
         private void writeMethods() {
             writeSectionHeader("Method definitions");
-            writeTypes(model.GetDependencyOrderedCppTypeGroup("types_from_methods"));
             writeMethods(model.GetMethodGroup("types_from_methods"));
 
             writeSectionHeader("Constructed generic methods");
-            writeTypes(model.GetDependencyOrderedCppTypeGroup("types_from_generic_methods"));
             writeMethods(model.GetMethodGroup("types_from_generic_methods"));
 
             writeSectionHeader("Custom attributes generators");
@@ -117,16 +130,8 @@ typedef __int64 int64_t;
                 writeComment(address, method.Method);
             }
         }
-        
-        private static string stringToIdentifier(string str) {
-            str = str.Substring(0, Math.Min(32, str.Length));
-            return str.ToCIdentifier();
-        }
 
-        private void writeUsages() {
-
-            // String literals
-
+        private void writeStringLiterals() {
             // For version < 19
             if (model.StringIndexesAreOrdinals) {
                 var enumSrc = new StringBuilder();
@@ -136,27 +141,27 @@ typedef __int64 int64_t;
                 enumSrc.Append("};\n");
 
                 writeDecls(enumSrc.ToString());
+                return;
             }
 
             // For version >= 19
-            else {
-                var stringType = model.CppTypeCollection.GetType("String *");
+            var stringType = model.CppTypeCollection.GetType("String *");
 
-                foreach (var str in model.Strings) {
-                    writeTypedName(str.Key, stringType.ToString(), $"StringLiteral_{stringToIdentifier(str.Value)}");
-                    writeComment(str.Key, str.Value);
-                }
+            foreach (var str in model.Strings) {
+                writeTypedName(str.Key, stringType.ToString(), $"StringLiteral_{stringToIdentifier(str.Value)}");
+                writeComment(str.Key, str.Value);
             }
+        }
 
-            // Metadata usage C++ type dependencies
-            var usageCppTypes = model.GetDependencyOrderedCppTypeGroup("types_from_usages");
-            writeTypes(usageCppTypes);
-
+        private void writeUsages() {
             // Definition and reference addresses for all types from metadata usages
+            writeSectionHeader("Il2CppClass (TypeInfo) and Il2CppType (TypeRef) pointers");
+
             foreach (var type in model.Types.Values) {
                 // A type may have no addresses, for example an unreferenced array type
 
                 // Value types must not used the boxed definition
+                // TODO: Replace this with a future property of 'type' which gives the name
                 var name = type.CppValueType?.Name ?? type.CppType?.Name ?? model.declarationGenerator.TypeNamer.GetName(type.ILType);
 
                 if (type.TypeClassAddress != 0xffffffff_ffffffff) {
@@ -172,6 +177,8 @@ typedef __int64 int64_t;
             }
 
             // Metedata usage methods
+            writeSectionHeader("MethodInfo pointers");
+
             foreach (var method in model.Methods.Values.Where(m => m.MethodInfoPtrAddress != 0xffffffff_ffffffff)) {
                 writeTypedName(method.MethodInfoPtrAddress, "struct MethodInfo *", $"{method.CppFnPtrType.Name}__MethodInfo");
                 writeComment(method.MethodInfoPtrAddress, method.Method);
@@ -233,5 +240,10 @@ typedef __int64 int64_t;
         }
 
         private void writeLine(string line) => writer.WriteLine(line);
+
+        private static string stringToIdentifier(string str) {
+            str = str.Substring(0, Math.Min(32, str.Length));
+            return str.ToCIdentifier();
+        }
     }
 }
