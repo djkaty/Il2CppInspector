@@ -53,10 +53,10 @@ namespace Il2CppInspector.Reflection
             _                                   => type
         };
 
-        public string Name => $"RunTimeInvoker_{!IsStatic}{ReturnType.BaseName}_" + string.Join("_", ParameterTypes.Select(p => p.BaseName));
+        public string Name => $"RuntimeInvoker_{!IsStatic}{ReturnType.BaseName.ToCIdentifier()}_" + string.Join("_", ParameterTypes.Select(p => p.BaseName.ToCIdentifier()));
 
-        // Display as a C++ method signature
-        public string Signature => Name + "(Il2CppMethodPointer pointer, const RuntimeMethod* methodMetadata, void* obj, void** args)";
+        // Display as a C++ method signature; MethodInfo* is the same as RuntimeMethod* (see codegen/il2cpp-codegen-metadata.h)
+        public string Signature => $"void* {Name}(Il2CppMethodPointer pointer, const MethodInfo* methodMetadata, void* obj, void** args)";
 
         public override string ToString() => Signature;
     }
