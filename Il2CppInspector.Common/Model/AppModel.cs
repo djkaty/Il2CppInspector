@@ -223,17 +223,14 @@ namespace Il2CppInspector.Model
             }
 
             // Add custom attribute generators to the model
-            foreach (var method in ILModel.AttributesByIndices.Values.Where(m => m.VirtualAddress.HasValue)) {
-                var cppTypeName = declarationGenerator.TypeNamer.GetName(method.AttributeType);
-                var fnPtrType = CppFnPtrType.FromSignature(CppTypeCollection, $"void (*{cppTypeName}_CustomAttributesCacheGenerator)(CustomAttributesCache *)");
+            foreach (var cppMethod in ILModel.AttributesByIndices.Values.Where(m => m.VirtualAddress.HasValue)) {
+                var cppMethodName = declarationGenerator.TypeNamer.GetName(cppMethod.AttributeType) + "_CustomAttributesCacheGenerator";
+                var fnPtrType = CppFnPtrType.FromSignature(CppTypeCollection, $"void (*{cppMethodName})(CustomAttributesCache *)");
+                fnPtrType.Name = cppMethodName;
                 fnPtrType.Group = "custom_attribute_generators";
 
-                // Get first constructor for attribute
-                // This is not strictly what the cache generator C++ function is but it'll do
-                var ctor = method.AttributeType.DeclaredConstructors.First();
-
-                var appMethod = new AppMethod(ctor, fnPtrType, method.VirtualAddress.Value.Start);
-                CustomAttributeGenerators.Add(method, appMethod);
+                var appMethod = new AppMethod(null, fnPtrType, cppMethod.VirtualAddress.Value.Start) {Group = fnPtrType.Group};
+                CustomAttributeGenerators.Add(cppMethod, appMethod);
             }
 
             // This is to allow this method to be chained after a new expression
