@@ -128,6 +128,8 @@ namespace Il2CppInspector.Cpp
             var typedef = System.Text.RegularExpressions.Regex.Match(text, Regex);
 
             var returnType = types.GetType(typedef.Groups[1].Captures[0].ToString());
+            var name = typedef.Groups[2].Captures[0].ToString();
+
             var argumentText = typedef.Groups[3].Captures[0].ToString().Split(',');
             if (argumentText.Length == 1 && argumentText[0] == "")
                 argumentText = new string[0];
@@ -138,7 +140,7 @@ namespace Il2CppInspector.Cpp
             var arguments = argumentNames.Zip(argumentText, (name, argument) =>
                     (name, types.GetType(argument.Substring(0, argument.Length - name.Length)))).ToList();
 
-            return new CppFnPtrType(types.WordSize, returnType, arguments);
+            return new CppFnPtrType(types.WordSize, returnType, arguments) {Name = name};
         }
 
         // Output as a named field in a type
