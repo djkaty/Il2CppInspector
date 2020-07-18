@@ -42,6 +42,9 @@ namespace Il2CppInspector
         SHT_REL = 9,
         SHT_DYNSYM = 11,
 
+        // SHNs
+        SHN_UNDEF = 0,
+
         // dynamic sections
         DT_STRTAB = 5,
         DT_SYMTAB = 6,
@@ -187,30 +190,33 @@ namespace Il2CppInspector
     {
         uint st_name { get; }
         TWord st_value { get; }
+        ushort st_shndx { get; }
     }
 
     internal class elf_32_sym : Ielf_sym<uint>
     {
         public uint st_name => f_st_name;
         public uint st_value => f_st_value;
+        public ushort st_shndx => f_st_shndx;
 
         public uint f_st_name;
         public uint f_st_value;
         public uint st_size;
         public byte st_info;
         public byte st_other;
-        public ushort st_shndx;
+        public ushort f_st_shndx;
     }
 
     internal class elf_64_sym : Ielf_sym<ulong>
     {
         public uint st_name => f_st_name;
         public ulong st_value => f_st_value;
+        public ushort st_shndx => f_st_shndx;
 
         public uint f_st_name;
         public byte st_info;
         public byte st_other;
-        public ushort st_shndx;
+        public ushort f_st_shndx;
         public ulong f_st_value;
         public ulong st_size;
     }

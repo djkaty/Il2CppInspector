@@ -130,6 +130,9 @@ namespace Il2CppInspector
         private TPHdr getProgramHeader(Elf programIndex) => program_header_table.FirstOrDefault(x => x.p_type == (uint) programIndex);
         private elf_dynamic<TWord> getDynamic(Elf dynamicIndex) => dynamic_table?.FirstOrDefault(x => (Elf) conv.ULong(x.d_tag) == dynamicIndex);
 
+        private Dictionary<string, ulong> symbolTable = new Dictionary<string, ulong>();
+        private List<Export> exports = new List<Export>();
+
         protected abstract Elf ArchClass { get; }
 
         protected abstract void Write(BinaryWriter writer, TWord value);
@@ -284,6 +287,9 @@ namespace Il2CppInspector
                     throw new InvalidOperationException("This IL2CPP binary is packed in a way not currently supported by Il2CppInspector and cannot be loaded.");
             }
 
+            // Build symbol and export tables
+            processSymbols();
+
             return true;
         }
 
@@ -301,7 +307,10 @@ namespace Il2CppInspector
             xorRange(conv.Int(section.sh_offset), conv.Int(section.sh_size), xorValue);
         }
 
-        public override Dictionary<string, ulong> GetSymbolTable() {
+        public override Dictionary<string, ulong> GetSymbolTable() => symbolTable;
+        public override IEnumerable<Export> GetExports() => exports;
+
+        private void processSymbols() {
             // Three possible symbol tables in ELF files
             var pTables = new List<(TWord offset, TWord count, TWord strings)>();
 
@@ -337,7 +346,8 @@ namespace Il2CppInspector
             }
 
             // Now iterate through all of the symbol and string tables we found to build a full list
-            var symbolTable = new Dictionary<string, ulong>();
+            symbolTable.Clear();
+            var exportTable = new Dictionary<string, Export>();
 
             foreach (var pTab in pTables) {
                 var symbol_table = ReadArray<TSym>(conv.Long(pTab.offset), conv.Int(pTab.count));
@@ -347,10 +357,12 @@ namespace Il2CppInspector
 
                     // Avoid duplicates
                     symbolTable.TryAdd(name, conv.ULong(symbol.st_value));
+                    if (symbol.st_shndx != (ushort) Elf.SHN_UNDEF)
+                        exportTable.TryAdd(name, new Export {Name = name, VirtualAddress = conv.ULong(symbol.st_value)});
                 }
             }
 
-            return symbolTable;
+            exports = exportTable.Values.ToList();
         }
 
         public override uint[] GetFunctionTable() {
