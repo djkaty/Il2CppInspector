@@ -104,11 +104,13 @@ typedef __int64 int64_t;
             writeMethods(model.GetMethodGroup("types_from_generic_methods"));
 
             writeSectionHeader("Custom attributes generators");
-            writeMethods(model.CustomAttributeGenerators.Values, asRefs: true);
+            foreach (var method in model.ILModel.AttributesByIndices.Values) {
+                writeTypedName(method.VirtualAddress.Value.Start, method.Signature, method.Name);
+            }
 
             writeSectionHeader("Method.Invoke thunks");
             foreach (var method in model.ILModel.MethodInvokers.Where(m => m != null)) {
-                writeTypedName(method.VirtualAddress.Start, method.ToString(), method.Name);
+                writeTypedName(method.VirtualAddress.Start, method.Signature, method.Name);
             }
         }
 
@@ -117,14 +119,10 @@ typedef __int64 int64_t;
                 writeDecls(type.ToString());
         }
 
-        private void writeMethods(IEnumerable<AppMethod> methods, bool asRefs = false) {
+        private void writeMethods(IEnumerable<AppMethod> methods) {
             foreach (var method in methods) {
-                var address = asRefs? method.MethodInfoPtrAddress : method.MethodCodeAddress;
-                writeTypedName(address, method.CppFnPtrType.ToSignatureString(), method.CppFnPtrType.Name);
-
-                // C++-only methods won't have an IL equivalent, eg. invokers and custom attribute generators
-                if (method.Method != null)
-                    writeComment(address, method.Method);
+                writeTypedName(method.MethodCodeAddress, method.CppFnPtrType.ToSignatureString(), method.CppFnPtrType.Name);
+                writeComment(method.MethodCodeAddress, method.Method);
             }
         }
 

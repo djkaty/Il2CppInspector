@@ -53,9 +53,6 @@ namespace Il2CppInspector.Model
         // For il2cpp < 19, the key is the string literal ordinal instead of the address
         public Dictionary<ulong, string> Strings = new Dictionary<ulong, string>();
 
-        // All of the custom attribute generator functions in the library
-        public Dictionary<CustomAttributeData, AppMethod> CustomAttributeGenerators = new Dictionary<CustomAttributeData, AppMethod>();
-
         public bool StringIndexesAreOrdinals => Package.MetadataUsages == null;
 
         // The .NET type model for the application
@@ -220,17 +217,6 @@ namespace Il2CppInspector.Model
                     var str = Package.StringLiterals[i];
                     Strings.Add((ulong) i, str);
                 }
-            }
-
-            // Add custom attribute generators to the model
-            foreach (var cppMethod in ILModel.AttributesByIndices.Values.Where(m => m.VirtualAddress.HasValue)) {
-                var cppMethodName = declarationGenerator.TypeNamer.GetName(cppMethod.AttributeType) + "_CustomAttributesCacheGenerator";
-                var fnPtrType = CppFnPtrType.FromSignature(CppTypeCollection, $"void (*{cppMethodName})(CustomAttributesCache *)");
-                fnPtrType.Name = cppMethodName;
-                fnPtrType.Group = "custom_attribute_generators";
-
-                var appMethod = new AppMethod(null, fnPtrType, cppMethod.VirtualAddress.Value.Start) {Group = fnPtrType.Group};
-                CustomAttributeGenerators.Add(cppMethod, appMethod);
             }
 
             // This is to allow this method to be chained after a new expression

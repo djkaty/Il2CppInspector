@@ -25,6 +25,13 @@ namespace Il2CppInspector.Reflection
             // The last one will be wrong but there is no way to calculate it
             (Model.Package.CustomAttributeGenerators[Index], Model.Package.FunctionAddresses[Model.Package.CustomAttributeGenerators[Index]]);
 
+        // C++ method names
+        // TODO: Known issue here where we should be using CppDeclarationGenerator.TypeNamer to ensure uniqueness
+        public string Name => $"{AttributeType.Name.ToCIdentifier()}_CustomAttributesCacheGenerator";
+
+        // C++ method signature
+        public string Signature => $"void {Name}(CustomAttributesCache *)";
+
         public override string ToString() => "[" + AttributeType.FullName + "]";
 
         // Get all the custom attributes for a given assembly, type, member or parameter
