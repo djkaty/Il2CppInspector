@@ -40,6 +40,8 @@ namespace Il2CppInspector
         // Could also use coff.Characteristics (IMAGE_FILE_32BIT_MACHINE) or coff.Machine
         public override int Bits => (PE) pe.Magic == PE.IMAGE_NT_OPTIONAL_HDR64_MAGIC ? 64 : 32;
 
+        public override ulong ImageBase => pe.ImageBase;
+
         protected override bool Init() {
             // Check for MZ signature "MZ"
             if (ReadUInt16() != 0x5A4D)

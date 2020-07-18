@@ -25,7 +25,8 @@ namespace Il2CppInspector
         string Format { get; }
         string Arch { get; }
         int Bits { get; }
-        ulong GlobalOffset { get; }
+        ulong GlobalOffset { get; } // The virtual address where the code section (.text) would be loaded in memory
+        ulong ImageBase { get; } // The virtual address of where the image would be loaded in memory (same as GlobalOffset except for PE)
         Dictionary<string, ulong> GetSymbolTable();
         uint[] GetFunctionTable();
         IEnumerable<Export> GetExports();
@@ -86,6 +87,8 @@ namespace Il2CppInspector
         public uint NumImages { get; protected set; } = 1;
 
         public ulong GlobalOffset { get; protected set; }
+
+        public virtual ulong ImageBase => GlobalOffset;
 
         public virtual string Format => throw new NotImplementedException();
 

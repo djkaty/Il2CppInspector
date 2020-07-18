@@ -61,7 +61,22 @@ namespace Il2CppInspector.Outputs
             var exportRgx = new Regex(@"^_+");
 
             foreach (var export in exports) {
-                writeCode($"#define {exportRgx.Replace(export.Name, "")}_ptr 0x{model.Package.BinaryImage.MapVATR(export.VirtualAddress):x8}");
+                writeCode($"#define {exportRgx.Replace(export.Name, "")}_ptr 0x{model.Package.BinaryImage.MapVATR(export.VirtualAddress):X8}");
+            }
+
+            writer.Close();
+
+            // Write application type definition addresses to il2cpp-type-ptr.h
+            var il2cppTypeInfoFile = Path.Combine(outputPath, "il2cpp-type-ptr.h");
+
+            using var fs3 = new FileStream(il2cppTypeInfoFile, FileMode.Create);
+            writer = new StreamWriter(fs3, Encoding.UTF8);
+
+            writeHeader();
+            writeSectionHeader("IL2CPP application-specific type definition addresses");
+
+            foreach (var type in model.Types.Values.Where(t => t.TypeClassAddress != 0xffffffff_ffffffff)) {
+                writeCode($"DO_TYPEDEF(0x{type.TypeClassAddress - model.Package.BinaryImage.ImageBase:X8}, {type.Name});");
             }
 
             writer.Close();
