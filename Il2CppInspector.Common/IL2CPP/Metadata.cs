@@ -7,11 +7,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
@@ -46,7 +44,6 @@ namespace Il2CppInspector
         public string[] StringLiterals { get; }
 
         public Dictionary<int, string> Strings { get; } = new Dictionary<int, string>();
-        public List<MetadataUsage> MetadataUsages { get; } = new List<MetadataUsage>();
 
         public Metadata(Stream stream) : base(stream)
         {
