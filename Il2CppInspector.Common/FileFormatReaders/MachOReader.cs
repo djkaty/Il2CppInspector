@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -60,6 +60,8 @@ namespace Il2CppInspector
         private MachOSection<TWord> funcTab;
         private MachOSymtabCommand symTab;
 
+        private List<Export> exports = new List<Export>();
+
         protected MachOReader(Stream stream) : base(stream) { }
 
         public override string Format => "Mach-O " + (Bits == 32 ? "32-bit" : "64-bit");
@@ -103,6 +105,8 @@ namespace Il2CppInspector
                     // Segments
                     case MachO cmd when cmd == lc_Segment:
                         var segment = ReadObject<MachOSegmentCommand<TWord>>();
+
+                        // Code and data
                         if (segment.Name == "__TEXT" || segment.Name == "__DATA") {
                             for (int s = 0; s < segment.NumSections; s++) {
                                 var section = ReadObject<MachOSection<TWord>>();
@@ -126,6 +130,14 @@ namespace Il2CppInspector
 
                     case MachO.LC_DYSYMTAB:
                         // TODO: Implement Mach-O dynamic symbol table
+                        break;
+
+                    // Compressed dyld information
+                    case MachO.LC_DYLD_INFO:
+                    case MachO.LC_DYLD_INFO_ONLY:
+                        var dyld = ReadObject<MachODyldInfoCommand>();
+
+                        loadExportTrie(dyld.ExportOffset);
                         break;
 
                     // Encryption check
@@ -159,6 +171,51 @@ namespace Il2CppInspector
             return true;
         }
 
+        // Handle export trie
+        private void loadExportTrie(uint trieOffset, uint nodeOffset = 0, string partialSymbol = "") {
+            Position = trieOffset + nodeOffset;
+
+            var size = ULEB128.Decode(this);
+
+            // Terminal information
+            if (size != 0) {
+                var flags = ReadByte();
+                var symbolKind = flags & 0x03;
+                var symbolType = (flags >> 2) & 0x03;
+
+                // 0 = regular, 1 = weak, 2 = re-export, 3 = stub
+                switch (symbolType) {
+                    case 0:
+                        var address = ULEB128.Decode(this);
+                        exports.Add(new Export {Name = partialSymbol, VirtualAddress = GlobalOffset + address});
+                        break;
+                    case 1:
+                        var weakAddress = ULEB128.Decode(this);
+                        exports.Add(new Export {Name = partialSymbol, VirtualAddress = GlobalOffset + weakAddress});
+                        break;
+                    case 2:
+                        var ordinal = ULEB128.Decode(this);
+                        var name = ReadNullTerminatedString();
+                        break;
+                    case 3:
+                        var stubOffset = ULEB128.Decode(this);
+                        var resolverOffset = ULEB128.Decode(this);
+                        break;
+                }
+            }
+
+            var branchCount = ReadByte();
+
+            for (int branch = 0; branch < branchCount; branch++) {
+                var prefix = ReadNullTerminatedString();
+                var childNodeOffset = (uint) ULEB128.Decode(this);
+
+                var currentPosition = Position;
+                loadExportTrie(trieOffset, childNodeOffset, partialSymbol + prefix);
+                Position = currentPosition;
+            }
+        }
+
         public override uint[] GetFunctionTable() => ReadArray<TWord>(funcTab.ImageOffset, conv.Int(funcTab.Size) / (Bits / 8)).Select(x => MapVATR(conv.ULong(x)) & 0xffff_fffe).ToArray();
 
         public override Dictionary<string, ulong> GetSymbolTable() {
@@ -180,7 +237,10 @@ namespace Il2CppInspector
                 if (value != 0)
                     symbols.TryAdd(name, value);
             }
+
             return symbols;
         }
+
+        public override IEnumerable<Export> GetExports() => exports;
     }
 }

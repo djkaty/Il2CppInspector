@@ -25,6 +25,8 @@ namespace Il2CppInspector
         LC_DYSYMTAB = 0xb,
         LC_SEGMENT_64 = 0x19,
         LC_ENCRYPTION_INFO = 0x21,
+        LC_DYLD_INFO = 0x22,
+        LC_DYLD_INFO_ONLY = 0x80000022,
         LC_FUNCTION_STARTS = 0x26,
         LC_ENCRYPTION_INFO_64 = 0x2C,
 
@@ -88,6 +90,20 @@ namespace Il2CppInspector
         // MachOLoadCommand
         public uint Offset;
         public uint Size;
+    }
+
+    internal class MachODyldInfoCommand
+    {
+        public uint RebaseOffset;
+        public uint RebaseSize;
+        public uint BindOffset;
+        public uint BindSize;
+        public uint WeakBindOffset;
+        public uint WeakBindSize;
+        public uint LazyBindOffset;
+        public uint LazyBindSize;
+        public uint ExportOffset;
+        public uint ExportSize;
     }
 
     internal class MachOSymtabCommand
