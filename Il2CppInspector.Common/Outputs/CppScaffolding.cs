@@ -27,20 +27,16 @@ namespace Il2CppInspector.Outputs
             // A System.IOException will be thrown if it's a file'
             Directory.CreateDirectory(outputPath);
 
-            // Write il2cpp-types.h
+            // Write type definitions to il2cpp-types.h
             var typeHeaderFile = Path.Combine(outputPath, "il2cpp-types.h");
 
             using var fs = new FileStream(typeHeaderFile, FileMode.Create);
             writer = new StreamWriter(fs, Encoding.UTF8);
 
-            writeLine("// Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty");
-            writeLine("// Target Unity version: " + model.UnityHeader);
-            writeLine("");
-
+            writeHeader();
             writeSectionHeader("IL2CPP internal types");
             writeCode(model.UnityHeaderText);
 
-            // Prevent conflicts with symbols that are in scope for compilers by default
             writeCode("namespace app {");
             writeLine("");
 
@@ -51,8 +47,32 @@ namespace Il2CppInspector.Outputs
             writeCode("}");
 
             writer.Close();
+
+            // Write API function pointers to il2cpp-function-ptr.h
+            var il2cppFnPtrFile = Path.Combine(outputPath, "il2cpp-function-ptr.h");
+
+            using var fs2 = new FileStream(il2cppFnPtrFile, FileMode.Create);
+            writer = new StreamWriter(fs2, Encoding.UTF8);
+
+            writeHeader();
+            writeSectionHeader("IL2CPP API function pointers");
+
+            var exports = model.Exports.Where(e => e.Name.StartsWith("il2cpp_") || e.Name.StartsWith("_il2cpp_") || e.Name.StartsWith("__il2cpp_"));
+            var exportRgx = new Regex(@"^_+");
+
+            foreach (var export in exports) {
+                writeCode($"#define {exportRgx.Replace(export.Name, "")}_ptr 0x{model.Package.BinaryImage.MapVATR(export.VirtualAddress):x8}");
+            }
+
+            writer.Close();
         }
-        
+
+        private void writeHeader() {
+            writeLine("// Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty");
+            writeLine("// Target Unity version: " + model.UnityHeader);
+            writeLine("");
+        }
+
         private void writeUnityHeaders() {
             var prefix = (model.Package.BinaryImage.Bits == 32) ? "#define IS_32BIT\n" : "";
             writeCode(prefix + model.UnityHeader.GetHeaderText());
