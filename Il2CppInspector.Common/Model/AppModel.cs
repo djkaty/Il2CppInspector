@@ -66,7 +66,7 @@ namespace Il2CppInspector.Model
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable) CppTypeCollection).GetEnumerator();
 
         // The C++ declaration generator for this binary
-        internal CppDeclarationGenerator declarationGenerator; // TODO: Make private when name integration completed
+        private CppDeclarationGenerator declarationGenerator;
 
         // Convenience properties
 

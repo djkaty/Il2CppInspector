@@ -155,18 +155,14 @@ typedef __int64 int64_t;
             foreach (var type in model.Types.Values) {
                 // A type may have no addresses, for example an unreferenced array type
 
-                // Value types must not used the boxed definition
-                // TODO: Replace this with a future property of 'type' which gives the name
-                var name = type.CppValueType?.Name ?? type.CppType?.Name ?? model.declarationGenerator.TypeNamer.GetName(type.ILType);
-
                 if (type.TypeClassAddress != 0xffffffff_ffffffff) {
-                    writeTypedName(type.TypeClassAddress, $"struct {name}__Class *", $"{name}__TypeInfo");
+                    writeTypedName(type.TypeClassAddress, $"struct {type.Name}__Class *", $"{type.Name}__TypeInfo");
                     writeComment(type.TypeClassAddress, type.ILType.CSharpName);
                 }
 
                 if (type.TypeRefPtrAddress != 0xffffffff_ffffffff) {
                     // A generic type definition does not have any direct C++ types, but may have a reference
-                    writeTypedName(type.TypeRefPtrAddress, "struct Il2CppType *", $"{name}__TypeRef");
+                    writeTypedName(type.TypeRefPtrAddress, "struct Il2CppType *", $"{type.Name}__TypeRef");
                     writeComment(type.TypeRefPtrAddress, type.ILType.CSharpName);
                 }
             }
