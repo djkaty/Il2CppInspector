@@ -107,6 +107,11 @@ namespace Il2CppInspector.Model
         // (via the constructor of CppDeclarationGenerator, in InheritanceStyle)
         // If no target C++ compiler is specified, it will be set to match the one assumed to have been used to compile the binary
         public AppModel Build(UnityVersion unityVersion = null, CppCompilerType compiler = CppCompilerType.BinaryFormat) {
+            // Reset in case this is not the first build
+            Methods.Clear();
+            Types.Clear();
+            Strings.Clear();
+
             // Set target compiler
             TargetCompiler = compiler == CppCompilerType.BinaryFormat ? CppCompiler.GuessFromImage(ILModel.Package.BinaryImage) : compiler;
 
