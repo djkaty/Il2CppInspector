@@ -32,8 +32,8 @@ namespace Il2CppInspector.CLI
             [Option('p', "py-out", Required = false, HelpText = "IDA Python script output file", Default = "ida.py")]
             public string PythonOutFile { get; set; }
 
-            [Option('h', "cpp-out", Required = false, HelpText = "C++ header output file", Default = "il2cpp-types.h")]
-            public string CppOutFile { get; set; }
+            [Option('h', "cpp-out", Required = false, HelpText = "C++ scaffolding output path", Default = "cpp")]
+            public string CppOutPath { get; set; }
 
             [Option('e', "exclude-namespaces", Required = false, Separator = ',', HelpText = "Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces",
                 Default = new [] {
@@ -263,7 +263,7 @@ namespace Il2CppInspector.CLI
 
                 // C++ output
                 using (new Benchmark("Generate C++ code")) {
-                    new CppScaffolding(appModel).WriteCppToFile(options.CppOutFile);
+                    new CppScaffolding(appModel).Write(options.CppOutPath);
                 }
             }
 

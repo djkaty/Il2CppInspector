@@ -57,7 +57,7 @@ namespace Il2CppInspector
                     .WriteScriptToFile(testPath + $@"\test-ida-result{nameSuffix}.py");
 
                 new CppScaffolding(appModel)
-                    .WriteCppToFile(testPath + $@"\test-result{nameSuffix}.h");
+                    .Write(testPath + $@"\test-cpp-result{nameSuffix}");
             }
 
             // Compare test results with expected results
@@ -65,7 +65,7 @@ namespace Il2CppInspector
                 var suffix = (i > 0 ? "-" + i : "");
 
                 compareFiles(testPath, suffix + ".cs", $"test-result{suffix}.cs");
-                compareFiles(testPath, suffix + ".h", $"test-result{suffix}.h");
+                compareFiles(testPath, suffix + ".h", $@"test-cpp-result{suffix}\il2cpp-types.h");
                 compareFiles(testPath, suffix + ".py", $"test-ida-result{suffix}.py");
             }
         }

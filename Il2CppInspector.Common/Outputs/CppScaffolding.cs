@@ -22,8 +22,15 @@ namespace Il2CppInspector.Outputs
 
         public CppScaffolding(AppModel model) => this.model = model;
 
-        public void WriteCppToFile(string outputFile) {
-            using var fs = new FileStream(outputFile, FileMode.Create);
+        public void Write(string outputPath) {
+            // Ensure output directory exists and is not a file
+            // A System.IOException will be thrown if it's a file'
+            Directory.CreateDirectory(outputPath);
+
+            // Write il2cpp-types.h
+            var typeHeaderFile = Path.Combine(outputPath, "il2cpp-types.h");
+
+            using var fs = new FileStream(typeHeaderFile, FileMode.Create);
             writer = new StreamWriter(fs, Encoding.UTF8);
 
             writeLine("// Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty");

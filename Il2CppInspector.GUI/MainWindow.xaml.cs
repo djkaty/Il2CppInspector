@@ -419,17 +419,15 @@ namespace Il2CppInspectorGUI
                 // C++ scaffolding
                 case { rdoOutputCpp: var r } when r.IsChecked == true:
 
-                    var cppSaveFileDialog = new SaveFileDialog {
-                        Filter = "C++ header file (*.h)|*.h|All files (*.*)|*.*",
-                        FileName = "il2cpp-types.h",
-                        CheckFileExists = false,
-                        OverwritePrompt = true
+                    var cppSaveFolderDialog = new VistaFolderBrowserDialog {
+                        Description = "Select save location",
+                        UseDescriptionForTitle = true
                     };
 
-                    if (cppSaveFileDialog.ShowDialog() == false)
+                    if (cppSaveFolderDialog.ShowDialog() == false)
                         return;
 
-                    var cppOutFile = cppSaveFileDialog.FileName;
+                    var cppOutPath = cppSaveFolderDialog.SelectedPath;
 
                     areaBusyIndicator.Visibility = Visibility.Visible;
                     var selectedCppUnityVersion = ((UnityHeader)cboCppUnityVersion.SelectedItem)?.MinVersion;
@@ -439,7 +437,7 @@ namespace Il2CppInspectorGUI
                         model.Build(selectedCppUnityVersion, cppCompiler);
 
                         OnStatusUpdate(this, "Generating C++ scaffolding");
-                        new CppScaffolding(model).WriteCppToFile(cppOutFile);
+                        new CppScaffolding(model).Write(cppOutPath);
                     });
                     break;
             }
