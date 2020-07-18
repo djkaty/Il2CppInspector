@@ -80,6 +80,26 @@ namespace Il2CppInspector.Outputs
             }
 
             writer.Close();
+
+            // Write method pointers and signatures to il2cpp-functions.h
+            var methodFile = Path.Combine(outputPath, "il2cpp-functions.h");
+
+            using var fs4 = new FileStream(methodFile, FileMode.Create);
+            writer = new StreamWriter(fs4, Encoding.UTF8);
+
+            writeHeader();
+            writeSectionHeader("IL2CPP application-specific method definition addresses and signatures");
+
+            writeCode("using namespace app;");
+            writeLine("");
+
+            foreach (var method in model.Methods.Values) {
+                var arguments = string.Join(", ", method.CppFnPtrType.Arguments.Select(a => a.Type.Name + " " + (a.Name == "this" ? "__this" : a.Name)));
+                writeCode($"DO_APP_FUNC(0x{method.MethodCodeAddress - model.Package.BinaryImage.ImageBase:X8}, {method.CppFnPtrType.ReturnType.Name}, "
+                          + $"{method.CppFnPtrType.Name}, ({arguments}));");
+            }
+
+            writer.Close();
         }
 
         private void writeHeader() {
