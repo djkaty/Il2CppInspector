@@ -124,7 +124,7 @@ namespace Il2CppInspector
             var exportAddresses = ReadArray<uint>(MapVATR(exportDirectoryTable.AddressOfFunctions + pe.ImageBase), exportCount);
             var exports = exportAddresses.Select((a, i) => new Export {
                 Ordinal = (int) (exportDirectoryTable.Base + i),
-                VirtualAddress = pe.ImageBase + a
+                VirtualAddress = GlobalOffset + a
             }).ToDictionary(x => x.Ordinal, x => x);
 
             // Get export names
