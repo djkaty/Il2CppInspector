@@ -168,7 +168,7 @@ namespace Il2CppInspector.Outputs
             }
 
             // Merge everything into .sln file
-            var sln = Resources.SlnTemplate
+            var sln = Resources.CsSlnTemplate
                 .Replace("%PROJECTDEFINITIONS%", slnProjectDefs.ToString())
                 .Replace("%PROJECTCONFIGURATIONS%", slnProjectConfigs.ToString());
 

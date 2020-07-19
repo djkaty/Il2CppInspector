@@ -2,6 +2,7 @@
 // Copyright (c) 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 // All rights reserved
 
+using System;
 using System.Linq;
 using System.IO;
 using System.Text;
@@ -9,6 +10,7 @@ using System.Text.RegularExpressions;
 using Il2CppInspector.Reflection;
 using Il2CppInspector.Cpp;
 using Il2CppInspector.Model;
+using Il2CppInspector.Properties;
 
 namespace Il2CppInspector.Outputs
 {
@@ -100,6 +102,33 @@ namespace Il2CppInspector.Outputs
             }
 
             writer.Close();
+
+            // Write boilerplate code
+            File.WriteAllText(Path.Combine(outputPath, "il2cpp-init.h"), Resources.Cpp_IL2CPPInitH);
+            File.WriteAllText(Path.Combine(outputPath, "helpers.h"), Resources.Cpp_HelpersH);
+            File.WriteAllText(Path.Combine(outputPath, "dllmain.h"), Resources.Cpp_DLLMainH);
+            File.WriteAllText(Path.Combine(outputPath, "main.cpp"), Resources.Cpp_MainCpp);
+            File.WriteAllText(Path.Combine(outputPath, "helpers.cpp"), Resources.Cpp_HelpersCpp);
+            File.WriteAllText(Path.Combine(outputPath, "dllmain.cpp"), Resources.Cpp_DLLMainCpp);
+
+            // Write Visual Studio project and solution files
+            var projectGuid = Guid.NewGuid();
+            var projectName = "IL2CppDLL";
+            var projectFile = projectName + ".vcxproj";
+
+            File.WriteAllText(Path.Combine(outputPath, projectFile),
+                Resources.CppProjTemplate.Replace("%PROJECTGUID%", projectGuid.ToString()));
+
+            var solutionGuid = Guid.NewGuid();
+            var solutionFile = projectName + ".sln";
+
+            var sln = Resources.CppSlnTemplate
+                .Replace("%PROJECTGUID%", projectGuid.ToString())
+                .Replace("%PROJECTNAME%", projectName)
+                .Replace("%PROJECTFILE%", projectFile)
+                .Replace("%SOLUTIONGUID%", solutionGuid.ToString());
+
+            File.WriteAllText(Path.Combine(outputPath, solutionFile), sln);
         }
 
         private void writeHeader() {
