@@ -156,8 +156,7 @@ namespace Il2CppInspector.Cpp
                         ((CppEnumType)valueType).AddField(EnumNamer.GetName(field), field.DefaultValue);
                 }
 
-                // Use System.Enum base type as klass
-                boxedType = GenerateObjectStruct(name + "__Boxed", ti.BaseType);
+                boxedType = GenerateObjectStruct(name + "__Boxed", ti);
                 boxedType.AddField("value", AsCType(ti));
             } else {
                 // This structure is passed by value, so it doesn't include Il2CppObject fields.
@@ -327,17 +326,11 @@ namespace Il2CppInspector.Cpp
             VisitedTypes.Add(ti);
 
             if (ti.IsArray) {
-                VisitFieldStructs(ti);
                 IncludeType(ti.ElementType);
-                IncludeType(ti.BaseType);
-                return;
             } else if (ti.HasElementType) {
                 IncludeType(ti.ElementType);
-                return;
             } else if (ti.IsEnum) {
-                VisitFieldStructs(ti);
                 IncludeType(ti.GetEnumUnderlyingType());
-                return;
             }
 
             // Visit all fields first, considering only value types,

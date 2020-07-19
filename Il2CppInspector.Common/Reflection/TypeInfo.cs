@@ -273,7 +273,7 @@ namespace Il2CppInspector.Reflection
                 }
                 return res;
             }
-            return null;
+            return Array.Empty<MethodBase>();
         }
 
         // Method that the type is declared in if this is a type parameter of a generic method
