@@ -1,4 +1,4 @@
-# Il2CppInspector 2020.1
+# Il2CppInspector 2020.2 beta
 
 Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the most complete analysis currently available.
 
@@ -6,11 +6,13 @@ Main features:
 
 * Output IL2CPP type definitions, metadata and method pointers as C# stub code
 
-* Create C++ scaffolding for all types in an IL2CPP application
+* Create C++ scaffolding for all types, methods and API functions in an IL2CPP application
 
 * Create IDA Python scripts to populate symbol, function and type information
 
-* Create Visual Studio solutions directly from IL2CPP files
+* Create Visual Studio C++ DLL injection projects directly from IL2CPP files
+
+* Create Visual Studio C# code stub solutions directly from IL2CPP files
 
 * Create IL2CPP binaries from arbitrary C# source code without a Unity project
 
@@ -44,6 +46,7 @@ Nice to have:
 * Support for assemblies, classes, methods, constructors, fields, properties, enumerations, events, interfaces, structs, pointers, references, attributes, nested types, generic types, generic methods, generic constraints, default field values and default method parameter values
 * C# syntactic sugar for CTS value types, compiler-generated types, delegates, extension methods, operator overloading, indexers, user-defined conversion operators, explicit interface instantiations, finalizers, nullable types, unsafe contexts, fixed-size arrays, variable length argument lists, method hiding and escaped strings
 * Partition C# code output by namespace, assembly, class, full tree or single file; sort by index or type name; output flat or nested folder hierarchy. Each file includes the necessary `using` directives. Scope and type name conflicts are resolved automatically to produce code that compiles.
+* API function export processing for PE, ELF and Mach-O binaries
 * Static and dynamic symbol table scanning and relocation processing for ELF binaries 
 * Static symbol table scanning for Mach-O binaries
 * Automatically defeats certain basic obfuscation methods
@@ -110,7 +113,7 @@ File format and architecture are automatically detected.
   -m, --metadata              (Default: global-metadata.dat) IL2CPP metadata file input (ignored for APK/IPA)
   -c, --cs-out                (Default: types.cs) C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)
   -p, --py-out                (Default: ida.py) IDA Python script output file
-  -h, --cpp-out               (Default: il2cpp-types.h) C++ header output file
+  -h, --cpp-out               (Default: cpp) C++ scaffolding / DLL injection project output path
   -e, --exclude-namespaces    (Default: System Mono Microsoft.Reflection Microsoft.Win32 Internal.Runtime Unity UnityEditor UnityEngine UnityEngineInternal AOT JetBrains.Annotations) Comma-separated list of
                               namespaces to suppress in C# output, or 'none' to include all namespaces
   -l, --layout                (Default: single) Partitioning of C# output ('single' = single file, 'namespace' = one file per namespace in folders, 'assembly' = one file per assembly, 'class' = one file per
@@ -170,8 +173,8 @@ Il2CppInspector generates the following data for IDA projects:
 - Addresses for every known type
 - Names for all regular .NET methods
 - Names for all constructed generic methods
-- Names for all IL2CPP custom attributes generator functions
-- Names, .NET argument type lists and C++ signatures for all IL2CPP runtime invoker functions for both regular and constructed generic methods (per-signature Method.Invoke endpoints)
+- Names and typed signatures for all IL2CPP custom attributes generator functions
+- Names, .NET argument type lists and typed signatures for all IL2CPP runtime invoker functions for both regular and constructed generic methods (per-signature Method.Invoke endpoints)
 - Function boundaries for all of the above
 - Comments at each function entry point with .NET method signatures for all of the above
 - Names and type declarations for all of the following IL metadata references: Type, TypeInfo, MethodDef, FieldInfo, StringLiteral, MethodRef (this includes all generic class and method instantiation metadata)
@@ -182,16 +185,9 @@ Example IDA C++ decompilation after applying Il2CppInspector (initialization cod
 
 ![Il2CppInspector annotated IDA project](docs/IDA_Preview.png)
 
-### Creating C++ scaffolding
+### Creating C++ scaffolding or a DLL injection project
 
-Il2CppInspector generates C++ headers containing:
-
-- Type declarations for all internal IL2CPP types
-- Type declarations for every type used in the application including all enums, concrete generic type instances and inferred usages from metadata.
-- Boxed versions for types where applicable
-- VTables for every type
-
-You can use these files with a tool like `x64dbg` to analyze the memory of the application, or for accessing types via DLL injection, among other uses.
+Il2CppInspector generates a series of C++ source files which you can use with a tool like `x64dbg` to analyze the memory of the application, or for accessing types via DLL injection, among other uses.
 
 If you know which version of Unity the binary was compiled with, you can improve the output by specifying this with `--unity-version`, for example `--unity-version 2019.3.1f1`. Otherwise Il2CppInspector will make an educated guess based on the contents of the binary.
 
@@ -201,7 +197,77 @@ Il2CppInspector performs automatic name conflict resolution to avoid the use of 
 
 ![Il2CppInspector GUI](docs/Cpp_Preview.png)
 
-### Creating a Visual Studio solution
+The following files are generated:
+
+- `ilc2pp-types.h`:
+  - Type declarations for all internal IL2CPP types (a minimal version of the Unity headers)
+  - Type declarations for every type used in the application including all arrays, enums, concrete generic type instances and inferred usages from metadata.
+  - Boxed versions for types where applicable
+  - VTables for every type
+
+- `il2cpp-functions.h`:
+  - The function pointer signature and offset from the image base address to every C#-equivalent method
+
+- `il2cpp-type-ptr.h`:
+  - The offset from the image base address to every type information class (`Il2CppClass **`)
+
+- `il2cpp-function-ptr.h`:
+  - The offset from the image base address to every IL2CPP API function export (functions starting with `il2cpp_`)
+
+- `il2cpp-api-functions.h`:
+  - The function pointer signature to every IL2CPP API function (copied directly from Unity for the version used to compile the binary)
+
+The above files contain all the data needed for dynamic analysis in a debugger.
+
+In addition, the following files are generated for DLL injection:
+
+- `il2cpp-init.h`:
+  - Provides the `void init_il2cpp()` function which uses all of the above headers to generate usable function pointers and class pointers that are mapped to the correct places in the in-memory image at runtime
+
+- `dllmain.cpp` and `dllmain.h`:
+  - Provides a DLL injection stub which calls `init_il2cpp()` and starts `Run()` (see below) in a new thread
+
+- _`helpers.cpp` and `helpers.h`:
+  - Provides basic logging (`LogWrite(std::string text)`) and other helper functions. See the comments in `helpers.h` for details. To specify a log file target in your source code, use `extern const LPCWSTR LOG_FILE = L"my_log_file.txt"`
+
+- `main.cpp`:
+  - Contains a stub `Run()` function where you can enter your custom injected code. The function executes in a new thread and therefore does not block `DllMain`. **This is the only file that you should modify**.
+
+For Visual Studio users, the following files are also generated:
+
+- `IL2CppDLL.vxcproj` and `Il2CppDLL.sln`:
+  - The project and solution files for a DLL injection project. The first time you load the solution into Visual Studio, you will be asked to re-target the platform SDK and C++ toolchain. Accept the default suggestions.
+
+#### DLL Injection workflow
+
+1. Use Il2CppInspector to create C++ scaffolding output for the executable binary of interest
+2. Load the generated solution (`Il2CppDLL.sln`) into Visual Studio
+3. Add the code you wish to execute in the `Run()` function in `main.cpp`
+4. Compile the project
+5. Use a DLL injection tool such as [Cheat Engine](https://www.cheatengine.org/) or [RemoteDLL](https://securityxploded.com/remotedll.php) to inject the compiled DLL into the IL2CPP application at runtime
+
+You have access to all of the C#-equivalent types and methods in the application, plus all of the IL2CPP API functions.
+
+Example (create a `Vector3` and log its y co-ordinate to a file):
+
+```cpp
+// in main.cpp
+void Run()
+{
+    // Vector3 example
+
+    // (Call an IL2CPP API function)
+    Vector3__Boxed* myVector3 = (Vector3__Boxed*) il2cpp_object_new(Vector3__TypeInfo);
+
+    // (Call an instance constructor)
+    Vector3__ctor(myVector3, 1.0f, 2.0f, 3.0f, NULL);
+
+    // (Access an instance field)
+    LogWrite(to_string(myVector3->fields.y));
+}
+```
+
+### Creating a Visual Studio C# code stubs solution
 
 Il2CppInspector can create a complete Visual Studio workspace with a solution (.sln) file, project (.csproj) files and assembly-namespace-class tree-like folder structure. Each project creates a single assembly.
 

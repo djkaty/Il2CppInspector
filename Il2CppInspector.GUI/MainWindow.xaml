@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Il2CppInspectorGUI"
         xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
         mc:Ignorable="d"
-        Title="Il2CppInspector" Height="700" Width="1050" Background="White"
+        Title="Il2CppInspector" Height="850" Width="1080" Background="White"
         WindowStartupLocation="CenterScreen"
         ContentRendered="MainWindow_OnContentRendered">
     <Window.Resources>
@@ -358,7 +358,7 @@
                         <Separator Margin="5,15,5,15"/>
 
                         <!-- C++ scaffolding -->
-                        <RadioButton GroupName="grpOutputType" Name="rdoOutputCpp" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">C++ headers and scaffolding</RadioButton>
+                        <RadioButton GroupName="grpOutputType" Name="rdoOutputCpp" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">C++ scaffolding / DLL injection project</RadioButton>
                         <DockPanel>
                             <ComboBox Name="cboCppUnityVersion" DockPanel.Dock="Right" Margin="4"></ComboBox>
                             <Label DockPanel.Dock="Left" Width="250" VerticalAlignment="Center" HorizontalAlignment="Left">Unity version (if known):</Label>
