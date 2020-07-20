@@ -34,62 +34,29 @@ namespace Il2CppInspector.Cpp.UnityHeaders
         public override string ToString() => Version.ToString();
 
         // Return the contents of this header file as a string
-        public string GetHeaderText() {
-            string resourceName = typeof(UnityHeader).Namespace + "." + HeaderFilename;
-            Assembly assembly = Assembly.GetCallingAssembly();
-            using Stream stream = assembly.GetManifestResourceStream(resourceName);
-            if (stream == null) {
-                throw new FileNotFoundException(resourceName);
-            }
-            using StreamReader reader = new StreamReader(stream);
-            string result = reader.ReadToEnd();
-            return result;
-        }
+        public string GetHeaderText() => ResourceHelper.GetText(typeof(UnityHeader).Namespace + "." + HeaderFilename);
 
         // List all header files embedded into this build of Il2CppInspector
-        public static IEnumerable<UnityHeader> GetAllHeaders() {
-            string prefix = typeof(UnityHeader).Namespace + ".";
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            return assembly.GetManifestResourceNames()
-                .Where(s => s.StartsWith(prefix) && s.EndsWith(".h"))
-                .Select(s => new UnityHeader(s.Substring(prefix.Length)));
-        }
+        public static IEnumerable<UnityHeader> GetAllHeaders() => ResourceHelper.GetNamesForNamespace(typeof(UnityHeader).Namespace)
+                .Where(s => s.EndsWith(".h"))
+                .Select(s => new UnityHeader(s.Substring(typeof(UnityHeader).Namespace.Length + 1)));
 
         // List all API header files and versions embedded into this build of Il2CppInspector
-        public static IEnumerable<(string resourceName, UnityVersion minVersion, UnityVersion maxVersion)> GetAPIList() {
-            string prefix = "Il2CppInspector.Cpp.Il2CppAPIHeaders.";
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            var versions = new List<(string resourceName, UnityVersion minVersion, UnityVersion maxVersion)>();
-
-            foreach (var headerFilename in assembly.GetManifestResourceNames().Where(s => s.StartsWith(prefix) && s.EndsWith(".h"))) {
-                var bits = headerFilename.Substring(prefix.Length).Replace(".h", "").Split("-");
-                var min = new UnityVersion(bits[0]);
-                UnityVersion max = min;
-                if (bits.Length == 2 && bits[1] != "")
-                    max = new UnityVersion(bits[1]);
-                versions.Add((headerFilename, min, max));
-            }
-            return versions;
+        public static Dictionary<string, UnityVersionRange> GetAllAPIs() {
+            var list = ResourceHelper.GetNamesForNamespace("Il2CppInspector.Cpp.Il2CppAPIHeaders");
+            return list.Select(i => new {
+                Key = i,
+                Value = UnityVersionRange.FromFilename(i),
+            }).ToDictionary(kv => kv.Key, kv => kv.Value);
         }
 
         // Get the header file which supports the given version of Unity
         public static UnityHeader GetHeaderForVersion(string version) => GetHeaderForVersion(new UnityVersion(version));
         public static UnityHeader GetHeaderForVersion(UnityVersion version) => GetAllHeaders().First(h => h.Version.Contains(version));
 
-        public static string GetAPIResourceNameForVersion(UnityVersion version) =>
-            GetAPIList().First(v => version.CompareTo(v.minVersion) >= 0 && (v.maxVersion == null || version.CompareTo(v.maxVersion) <= 0)).resourceName;
-
-        public static string GetAPITextForVersion(UnityVersion version) {
-            var apiResource = GetAPIResourceNameForVersion(version);
-            Assembly assembly = Assembly.GetCallingAssembly();
-            using Stream stream = assembly.GetManifestResourceStream(apiResource);
-            if (stream == null) {
-                throw new FileNotFoundException(apiResource);
-            }
-            using StreamReader reader = new StreamReader(stream);
-            string result = reader.ReadToEnd();
-            return result;
-        }
+        // Get API file resources
+        public static string GetAPIResourceNameForVersion(UnityVersion version) => GetAllAPIs().First(h => h.Value.Contains(version)).Key;
+        public static string GetAPITextForVersion(UnityVersion version) => ResourceHelper.GetText(GetAPIResourceNameForVersion(version));
 
         // Guess which header file(s) correspond to the given metadata+binary.
         // Note that this may match multiple headers due to structural changes between versions
