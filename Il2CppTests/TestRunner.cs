@@ -75,6 +75,15 @@ namespace Il2CppInspector
             var expected = File.ReadAllLines(testPath + @"\..\..\TestExpectedResults\" + Path.GetFileName(testPath) + expectedFilenameSuffix);
             var actual = File.ReadAllLines(testPath + @"\" + actualFilename);
 
+            var extraInExpected = expected.Except(actual);
+            var extraInActual = actual.Except(expected);
+
+            string failureMessage = string.Empty;
+            if (extraInActual.Any() || extraInExpected.Any())
+                failureMessage =
+                  $"\n\nExtra in actual ({extraInActual.Count()}):\n\n" + string.Join("\n", extraInActual.Take(100))
+                + $"\n\nExtra in expected ({extraInExpected.Count()}):\n\n" + string.Join("\n", extraInExpected.Take(100));
+
             // We don't use Linq to strip whitespace lines or CollectionAssert to compare,
             // as we want to be able to determine the exact line number of the first mismatch
             for (int expLine = 0, actLine = 0; expLine < expected.Length || actLine < actual.Length; expLine++, actLine++) {
@@ -84,7 +93,7 @@ namespace Il2CppInspector
                     actLine++;
 
                 if (expLine < expected.Length && actLine < actual.Length)
-                    Assert.AreEqual(expected[expLine], actual[actLine], $"Mismatch at line {expLine + 1} / {actLine + 1} in {actualFilename}");
+                    Assert.AreEqual(expected[expLine], actual[actLine], $"Mismatch at line {expLine + 1} / {actLine + 1} in {actualFilename}{failureMessage}\n");
             }
         }
     }
