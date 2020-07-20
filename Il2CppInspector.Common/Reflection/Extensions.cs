@@ -85,6 +85,8 @@ namespace Il2CppInspector.Reflection
         }
 
         public static string ToCIdentifier(this string str) {
+            // replace * with Ptr
+            str = str.Replace("*", "Ptr");
             // replace illegal characters
             str = Regex.Replace(str, "[^a-zA-Z0-9_]", "_");
             // ensure identifier starts with a letter or _ (and is non-empty)

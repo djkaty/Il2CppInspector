@@ -178,22 +178,8 @@ namespace Il2CppInspector.Model
                             AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
 
                             if (usage.Type == MetadataUsageType.TypeInfo)
-                                // .NET unsafe pointer type that has not been mapped by IL2CPP to a C type
-                                // (often void* or byte* in metadata v23 and v24.0)
-                                if (!Types.ContainsKey(type)) {
-                                    Debug.Assert(type.IsPointer);
-
-                                    // TODO: This should really be handled by CppDeclarationGenerator, and doesn't generate the full definition
-                                    var cppType = CppTypeCollection.Struct(declarationGenerator.TypeNamer.GetName(type));
-                                    var cppObjectType = (CppComplexType) CppTypeCollection["Il2CppObject"];
-                                    cppType.Fields = new SortedDictionary<int, List<CppField>>(cppObjectType.Fields);
-
-                                    DependencyOrderedCppTypes.Add(cppType);
-                                    Types.Add(type, cppType, new AppType(type, cppType, cppClassPtr: address) {Group = Group});
-                                }
-                                else
-                                    // Regular type definition
-                                    Types[type].TypeClassAddress = address;
+                                // Regular type definition
+                                Types[type].TypeClassAddress = address;
 
                             else if (!Types.ContainsKey(type))
                                 // Generic type definition has no associated C++ type, therefore no dictionary sub-key

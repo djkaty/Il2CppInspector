@@ -102,7 +102,7 @@ namespace Il2CppInspector.Cpp
         private void VisitFieldStructs(TypeInfo ti) {
             if (VisitedFieldStructs.Contains(ti))
                 return;
-            if (ti.IsByRef || ti.IsPointer || ti.ContainsGenericParameters)
+            if (ti.IsByRef || ti.ContainsGenericParameters)
                 return;
             VisitedFieldStructs.Add(ti);
 
