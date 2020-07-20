@@ -110,7 +110,7 @@ typedef __int64 int64_t;
 
             writeSectionHeader("Method.Invoke thunks");
             foreach (var method in model.ILModel.MethodInvokers.Where(m => m != null)) {
-                writeTypedName(method.VirtualAddress.Start, method.Signature, method.Name);
+                writeTypedName(method.VirtualAddress.Start, method.GetSignature(model.UnityVersion), method.Name);
             }
         }
 

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Il2CppInspector.Cpp.UnityHeaders;
 
 namespace Il2CppInspector.Reflection
 {
@@ -56,8 +57,11 @@ namespace Il2CppInspector.Reflection
         public string Name => $"RuntimeInvoker_{!IsStatic}{ReturnType.BaseName.ToCIdentifier()}_" + string.Join("_", ParameterTypes.Select(p => p.BaseName.ToCIdentifier()));
 
         // Display as a C++ method signature; MethodInfo* is the same as RuntimeMethod* (see codegen/il2cpp-codegen-metadata.h)
-        public string Signature => $"void* {Name}(Il2CppMethodPointer pointer, const MethodInfo* methodMetadata, void* obj, void** args)";
+        public string GetSignature(UnityVersion version) =>
+            version.CompareTo("2017.1.0") >= 0
+                ? $"void* {Name}(Il2CppMethodPointer pointer, const MethodInfo* methodMetadata, void* obj, void** args)"
+                : $"void* {Name}(const MethodInfo* method, void* obj, void** args)";
 
-        public override string ToString() => Signature;
+        public override string ToString() => GetSignature(new UnityVersion("2017.1.0"));
     }
 }
