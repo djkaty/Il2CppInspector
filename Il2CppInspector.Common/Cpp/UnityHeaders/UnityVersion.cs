@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
     Copyright 2020 Robert Xiao - https://robertxiao.ca
 
     All rights reserved.
@@ -77,6 +77,9 @@ namespace Il2CppInspector.Cpp.UnityHeaders
 
         // Compare two version numbers, intransitively (due to the Unspecified build type)
         public int CompareTo(UnityVersion other) {
+            // null means maximum possible version
+            if (other == null)
+                return -1;
             int res;
             if (0 != (res = Major.CompareTo(other.Major)))
                 return res;
@@ -114,9 +117,10 @@ namespace Il2CppInspector.Cpp.UnityHeaders
     }
 
     // A range of Unity versions
-    public class UnityVersionRange
+    public class UnityVersionRange : IComparable<UnityVersionRange>
     {
         // Minimum and maximum Unity version numbers for this range. Both endpoints are inclusive
+        // Max can be null to specify no upper bound
         public UnityVersion Min { get; }
         public UnityVersion Max { get; }
 
@@ -155,6 +159,22 @@ namespace Il2CppInspector.Cpp.UnityHeaders
                 Max = new UnityVersion(bits[1]);
 
             return new UnityVersionRange(Min, Max);
+        }
+
+        // Compare and sort based on the lowest version number
+        public int CompareTo(UnityVersionRange other) => Min.CompareTo(other.Min);
+
+        // Intersect two ranges to find the smallest shared set of versions
+        // Returns null if the two ranges do not intersect
+        // Max == null means no upper bound on version
+        public UnityVersionRange Intersect(UnityVersionRange other) {
+            var highestLow = Min.CompareTo(other.Min) > 0 ? Min : other.Min;
+            var lowestHigh = Max == null? other.Max : Max.CompareTo(other.Max) < 0 ? Max : other.Max;
+
+            if (highestLow.CompareTo(lowestHigh) > 0)
+                return null;
+
+            return new UnityVersionRange(highestLow, lowestHigh);
         }
 
         public override string ToString() {
