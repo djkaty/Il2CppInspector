@@ -59,11 +59,11 @@ namespace Il2CppInspector.Outputs
             writeHeader();
             writeSectionHeader("IL2CPP API function pointers");
 
-            var exports = model.Exports.Where(e => e.Name.StartsWith("il2cpp_") || e.Name.StartsWith("_il2cpp_") || e.Name.StartsWith("__il2cpp_"));
-            var exportRgx = new Regex(@"^_+");
+            // TODO: Use model.APIExports instead once it is implemented
+            var exports = model.Package.Binary.GetAPIExports();
 
             foreach (var export in exports) {
-                writeCode($"#define {exportRgx.Replace(export.Name, "")}_ptr 0x{model.Package.BinaryImage.MapVATR(export.VirtualAddress):X8}");
+                writeCode($"#define {export.Key}_ptr 0x{model.Package.BinaryImage.MapVATR(export.Value):X8}");
             }
 
             writer.Close();

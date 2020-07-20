@@ -1,6 +1,6 @@
 ﻿/*
     Copyright 2017 Perfare - https://github.com/Perfare/Il2CppDumper
-    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Il2CppInspector
 {
@@ -265,6 +266,25 @@ namespace Il2CppInspector
                 GenericMethodPointers.Add(MethodSpecs[tableEntry.genericMethodIndex], genericMethodPointers[tableEntry.indices.methodIndex]);
                 GenericMethodInvokerIndices.Add(MethodSpecs[tableEntry.genericMethodIndex], tableEntry.indices.invokerIndex);
             }
+        }
+
+        // IL2CPP API exports
+        // This strips leading underscores and selects only il2cpp_* symbols which can be mapped into the binary
+        // (therefore ignoring extern imports)
+        public Dictionary<string, ulong> GetAPIExports() {
+            var exports = Image.GetExports()?.Where(e => e.Name.StartsWith("il2cpp_") || e.Name.StartsWith("_il2cpp_") || e.Name.StartsWith("__il2cpp_"));
+
+            if (exports == null)
+                return new Dictionary<string, ulong>();
+
+            var exportRgx = new Regex(@"^_+");
+            var il2cppExports = new Dictionary<string, ulong>();
+            
+            foreach (var export in exports)
+                if (Image.TryMapVATR(export.VirtualAddress, out _))
+                    il2cppExports.Add(exportRgx.Replace(export.Name, ""), export.VirtualAddress);
+
+            return il2cppExports;
         }
     }
 }
