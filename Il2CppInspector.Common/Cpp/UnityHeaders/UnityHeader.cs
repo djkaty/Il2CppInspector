@@ -34,7 +34,19 @@ namespace Il2CppInspector.Cpp.UnityHeaders
         public override string ToString() => Version.ToString();
 
         // Return the contents of this header file as a string
-        public string GetHeaderText() => ResourceHelper.GetText(typeof(UnityHeader).Namespace + "." + HeaderFilename);
+        public string GetHeaderText() {
+            var str = ResourceHelper.GetText(typeof(UnityHeader).Namespace + "." + HeaderFilename);
+
+            // Versions 5.3.6-5.4.6 don't include a definition for VirtualInvokeData
+            if (Version.Min.CompareTo("5.3.6") >= 0 && Version.Max.CompareTo("5.4.6") <= 0) {
+                str = str + @"struct VirtualInvokeData
+{
+    Il2CppMethodPointer methodPtr;
+    const MethodInfo* method;
+} VirtualInvokeData;";
+            }
+            return str;
+        }
 
         // List all header files embedded into this build of Il2CppInspector
         public static IEnumerable<UnityHeader> GetAllHeaders() => ResourceHelper.GetNamesForNamespace(typeof(UnityHeader).Namespace)
