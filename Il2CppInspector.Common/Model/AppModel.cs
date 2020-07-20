@@ -117,7 +117,7 @@ namespace Il2CppInspector.Model
 
             // Determine Unity version and get headers
             UnityHeader = unityVersion != null ? UnityHeader.GetHeaderForVersion(unityVersion) : UnityHeader.GuessHeadersForModel(ILModel)[0];
-            UnityVersion = unityVersion ?? UnityHeader.MinVersion;
+            UnityVersion = unityVersion ?? UnityHeader.Version.Min;
 
             // Check for matching metadata and binary versions
             if (UnityHeader.MetadataVersion != ILModel.Package.BinaryImage.Version) {

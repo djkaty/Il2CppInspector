@@ -406,7 +406,7 @@ namespace Il2CppInspectorGUI
                     var outFile = scriptSaveFileDialog.FileName;
 
                     areaBusyIndicator.Visibility = Visibility.Visible;
-                    var selectedVersion = ((UnityHeader)cboUnityVersion.SelectedItem)?.MinVersion;
+                    var selectedVersion = ((UnityHeader) cboUnityVersion.SelectedItem)?.Version.Min;
                     await Task.Run(() => {
                         OnStatusUpdate(this, "Building C++ application model");
                         model.Build(selectedVersion, CppCompilerType.GCC);
@@ -430,7 +430,7 @@ namespace Il2CppInspectorGUI
                     var cppOutPath = cppSaveFolderDialog.SelectedPath;
 
                     areaBusyIndicator.Visibility = Visibility.Visible;
-                    var selectedCppUnityVersion = ((UnityHeader)cboCppUnityVersion.SelectedItem)?.MinVersion;
+                    var selectedCppUnityVersion = ((UnityHeader) cboCppUnityVersion.SelectedItem)?.Version.Min;
                     var cppCompiler = (CppCompilerType) Enum.Parse(typeof(CppCompilerType), cboCppCompiler.SelectionBoxItem.ToString());
                     await Task.Run(() => {
                         OnStatusUpdate(this, "Building C++ application model");

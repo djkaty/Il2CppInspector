@@ -6,6 +6,8 @@
 */
 
 using System;
+using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Il2CppInspector.Cpp.UnityHeaders
@@ -108,6 +110,60 @@ namespace Il2CppInspector.Cpp.UnityHeaders
 
         public override int GetHashCode() {
             return HashCode.Combine(Major, Minor, Update, BuildType, BuildNumber);
+        }
+    }
+
+    // A range of Unity versions
+    public class UnityVersionRange
+    {
+        // Minimum and maximum Unity version numbers for this range. Both endpoints are inclusive
+        public UnityVersion Min { get; }
+        public UnityVersion Max { get; }
+
+        // Determine if this range contains the specified version
+        public bool Contains(UnityVersion version) => version.CompareTo(Min) >= 0 && (Max == null || version.CompareTo(Max) <= 0);
+
+        public UnityVersionRange(UnityVersion min, UnityVersion max) {
+            Min = min;
+            Max = max;
+        }
+
+        // Create a version range from a string, in the format "[Il2CppInspector.Cpp.<namespace-leaf>.][metadataVersion-]<min>-[max].h"
+        public static UnityVersionRange FromFilename(string headerFilename) {
+            var baseNamespace = "Il2CppInspector.Cpp.";
+            headerFilename = headerFilename.Replace(".h", "");
+
+            if (headerFilename.StartsWith(baseNamespace)) {
+                headerFilename = headerFilename.Substring(baseNamespace.Length);
+                headerFilename = headerFilename.Substring(headerFilename.IndexOf(".") + 1);
+            }
+
+            var bits = headerFilename.Split("-");
+
+            // Metadata version supplied
+            // Note: This relies on the metadata version being either 2 or 4 characters,
+            // and that the smallest Unity version must be 5 characters or more
+            if (headerFilename[2] == '-' || headerFilename[4] == '-')
+                bits = bits.Skip(1).ToArray();
+
+            var Min = new UnityVersion(bits[0]);
+            UnityVersion Max = null;
+
+            if (bits.Length == 1)
+                Max = Min;
+            if (bits.Length == 2 && bits[1] != "")
+                Max = new UnityVersion(bits[1]);
+
+            return new UnityVersionRange(Min, Max);
+        }
+
+        public override string ToString() {
+            var res = $"{Min}";
+            if (Max == null)
+                res += "+";
+            else if (Max != Min)
+                res += $" - {Max}";
+            return res;
         }
     }
 }
