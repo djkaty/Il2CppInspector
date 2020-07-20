@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -34,6 +34,7 @@ namespace Il2CppInspector
         U[] ReadMappedArray<U>(ulong uiAddr, int count) where U : new();
         long[] ReadMappedWordArray(ulong uiAddr, int count);
         uint MapVATR(ulong uiAddr);
+        bool TryMapVATR(ulong uiAddr, out uint fileOffset);
 
         byte[] ReadBytes(int count);
         ulong ReadUInt64();
@@ -146,6 +147,17 @@ namespace Il2CppInspector
         // Map an RVA to an offset into the file image
         // No mapping by default
         public virtual uint MapVATR(ulong uiAddr) => (uint) uiAddr;
+
+        // Try to map an RVA to an offset in the file image
+        public bool TryMapVATR(ulong uiAddr, out uint fileOffset) {
+            try {
+                fileOffset = MapVATR(uiAddr);
+                return true;
+            } catch (InvalidOperationException) {
+                fileOffset = 0;
+                return false;
+            }
+        }
 
         // Read a file format dependent word (32 or 64 bits)
         // The primitive mappings in Bin2Object will automatically read a uint if the file is 32-bit
