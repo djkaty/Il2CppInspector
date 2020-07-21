@@ -182,13 +182,30 @@ namespace Il2CppInspector.Cpp
                 if (line.Length == 0)
                     continue;
 
-                // Process #ifs before anything else
+                // Ignore defines
+                if (line.StartsWith("#define"))
+                    continue;
+
+                // Process #ifdefs before anything else
                 // Doesn't handle nesting but we probably don't need to (use a Stack if we do)
                 var ifdef = rgxIsBitDirective.Match(line);
                 if (ifdef.Success) {
                     var bits = int.Parse(ifdef.Groups[1].Captures[0].ToString());
                     if (bits != WordSize)
                         falseIfBlock = true;
+
+                    Debug.WriteLine($"[IF           ] {line}");
+                    continue;
+                }
+                // Other #ifdef
+                if (line.StartsWith("#ifdef") || line.StartsWith("#if ")) {
+                    falseIfBlock = true;
+
+                    Debug.WriteLine($"[IF           ] {line}");
+                    continue;
+                }
+                if (line.StartsWith("#ifndef")) {
+                    falseIfBlock = false;
 
                     Debug.WriteLine($"[IF           ] {line}");
                     continue;

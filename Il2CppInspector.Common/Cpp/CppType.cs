@@ -113,7 +113,7 @@ namespace Il2CppInspector.Cpp
         public List<(string Name, CppType Type)> Arguments { get; }
 
         // Regex which matches a function pointer
-        public const string Regex = @"(\S+)\s*\(\s*\*(\S+)\s*\)\s*\(\s*(.*?)\s*\)";
+        public const string Regex = @"(\S+)\s*\(\s*\*\s*(\S+?)\s*?\)\s*\(\s*(.*?)\s*\)";
 
         public CppFnPtrType(int WordSize, CppType returnType, List<(string Name, CppType Type)> arguments) : base(null, WordSize) {
             ReturnType = returnType;
@@ -121,6 +121,7 @@ namespace Il2CppInspector.Cpp
         }
 
         // Generate a CppFnPtrType from a text signature (typedef or field)
+        // TODO: Fails to select correct arguments if one or more arguments are a function pointer; needs recursive parsing
         public static CppFnPtrType FromSignature(CppTypeCollection types, string text) {
             if (text.StartsWith("typedef "))
                 text = text.Substring(8);
