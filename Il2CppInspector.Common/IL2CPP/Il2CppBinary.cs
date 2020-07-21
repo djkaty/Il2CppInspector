@@ -271,8 +271,11 @@ namespace Il2CppInspector
         // IL2CPP API exports
         // This strips leading underscores and selects only il2cpp_* symbols which can be mapped into the binary
         // (therefore ignoring extern imports)
+        // Some binaries have functions starting "il2cpp_z_" - ignore these too
         public Dictionary<string, ulong> GetAPIExports() {
-            var exports = Image.GetExports()?.Where(e => e.Name.StartsWith("il2cpp_") || e.Name.StartsWith("_il2cpp_") || e.Name.StartsWith("__il2cpp_"));
+            var exports = Image.GetExports()?
+                .Where(e => (e.Name.StartsWith("il2cpp_") || e.Name.StartsWith("_il2cpp_") || e.Name.StartsWith("__il2cpp_"))
+                    && !e.Name.Contains("il2cpp_z_"));
 
             if (exports == null)
                 return new Dictionary<string, ulong>();
