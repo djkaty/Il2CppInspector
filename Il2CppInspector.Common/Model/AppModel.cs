@@ -30,7 +30,7 @@ namespace Il2CppInspector.Model
 
         // The Unity IL2CPP C++ headers for the binary
         // Use this for code output
-        public UnityHeader UnityHeader { get; private set; }
+        public UnityHeaders UnityHeaders { get; private set; }
 
         // All of the C++ types used in the application including Unity internal types
         // NOTE: This is for querying individual types for static analysis
@@ -58,7 +58,7 @@ namespace Il2CppInspector.Model
         // The .NET type model for the application
         public TypeModel ILModel { get; }
 
-        // All of the function exports for the binary
+        // All of the symbol exports (including function exports) for the binary
         public List<Export> Exports { get; }
 
         // Delegated C++ types iterator
@@ -79,9 +79,6 @@ namespace Il2CppInspector.Model
         // The compiler used to build the binary
         public CppCompilerType SourceCompiler => declarationGenerator.InheritanceStyle;
 
-        // The Unity header text including word size define
-        public string UnityHeaderText => (WordSize == 32 ? "#define IS_32BIT\n" : "") + UnityHeader.GetHeaderText();
-
         // The group that the next added type(s) will be placed in
         private string group = string.Empty;
         private string Group {
@@ -97,7 +94,7 @@ namespace Il2CppInspector.Model
             // Save .NET type model
             ILModel = model;
 
-            // Get addresses of IL2CPP API function exports
+            // Get addresses of all exports
             Exports = model.Package.Binary.Image.GetExports()?.ToList() ?? new List<Export>();
         }
 
@@ -116,21 +113,21 @@ namespace Il2CppInspector.Model
             TargetCompiler = compiler == CppCompilerType.BinaryFormat ? CppCompiler.GuessFromImage(ILModel.Package.BinaryImage) : compiler;
 
             // Determine Unity version and get headers
-            UnityHeader = unityVersion != null ? UnityHeader.GetHeaderForVersion(unityVersion) : UnityHeader.GuessHeadersForModel(ILModel)[0];
-            UnityVersion = unityVersion ?? UnityHeader.Version.Min;
+            UnityHeaders = unityVersion != null ? UnityHeaders.GetHeadersForVersion(unityVersion) : UnityHeaders.GuessHeadersForBinary(ILModel.Package.Binary)[0];
+            UnityVersion = unityVersion ?? UnityHeaders.VersionRange.Min;
 
             // Check for matching metadata and binary versions
-            if (UnityHeader.MetadataVersion != ILModel.Package.BinaryImage.Version) {
-                Console.WriteLine($"Warning: selected version {UnityVersion} (metadata version {UnityHeader.MetadataVersion})" +
+            if (UnityHeaders.MetadataVersion != ILModel.Package.BinaryImage.Version) {
+                Console.WriteLine($"Warning: selected version {UnityVersion} (metadata version {UnityHeaders.MetadataVersion})" +
                                   $" does not match metadata version {ILModel.Package.BinaryImage.Version}.");
             }
 
-            // Start creation of type model by parsing all of the Unity IL2CPP headers
-            // Calling declarationGenerator.GenerateRemainingTypeDeclarations() below will automatically add to this collection
-            CppTypeCollection = CppTypeCollection.FromUnityHeaders(UnityHeader, WordSize);
-
             // Initialize declaration generator to process every type in the binary
             declarationGenerator = new CppDeclarationGenerator(this);
+
+            // Start creation of type model by parsing all of the Unity IL2CPP headers
+            // Calling declarationGenerator.GenerateRemainingTypeDeclarations() below will automatically add to this collection
+            CppTypeCollection = CppTypeCollection.FromUnityHeaders(UnityHeaders, declarationGenerator);
 
             // Initialize ordered type list for code output
             DependencyOrderedCppTypes = new List<CppType>();

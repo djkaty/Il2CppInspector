@@ -16,12 +16,15 @@ using Il2CppInspector.Reflection;
 namespace Il2CppInspector.Cpp
 {
     // Class for generating C header declarations from Reflection objects (TypeInfo, etc.)
-    internal class CppDeclarationGenerator
+    public class CppDeclarationGenerator
     {
         private readonly AppModel appModel;
 
         private TypeModel model => appModel.ILModel;
         private CppTypeCollection types => appModel.CppTypeCollection;
+
+        // Word size (32/64-bit) for this generator
+        public int WordSize => appModel.WordSize;
 
         // Version number and header file to generate structures for
         public UnityVersion UnityVersion => appModel.UnityVersion;
@@ -63,7 +66,7 @@ namespace Il2CppInspector.Cpp
         public CppType AsCType(TypeInfo ti) {
             // IsArray case handled by TypeNamer.GetName
             if (ti.IsByRef || ti.IsPointer) {
-                return AsCType(ti.ElementType).AsPointer(types.WordSize);
+                return AsCType(ti.ElementType).AsPointer(WordSize);
             }
             if (ti.IsValueType) {
                 if (ti.IsPrimitive && primitiveTypeMap.ContainsKey(ti.Name)) {
@@ -513,16 +516,10 @@ namespace Il2CppInspector.Cpp
         // You can customize how naming works by modifying this function.
         private void InitializeNaming() {
             TypeNamespace = CreateNamespace();
-            // Type names that may appear in the header
-            foreach (var typeName in new [] { "CustomAttributesCache", "CustomAttributeTypeCache", "EventInfo", "FieldInfo", "Hash16", "MemberInfo", "MethodInfo", "MethodVariableKind", "MonitorData", "ParameterInfo", "PInvokeArguments", "PropertyInfo", "SequencePointKind", "StackFrameType", "VirtualInvokeData" }) {
-                TypeNamespace.ReserveName(typeName);
-            }
             TypeNamer = TypeNamespace.MakeNamer<TypeInfo>((ti) => {
                 if (ti.IsArray)
                     return TypeNamer.GetName(ti.ElementType) + "__Array";
                 var name = ti.Name.ToCIdentifier();
-                if (name.StartsWith("Il2Cpp"))
-                    name = "_" + name;
                 name = Regex.Replace(name, "__+", "_");
                 // Work around a dumb IDA bug: enums can't be named the same as certain "built-in" types
                 // like KeyCode, Position, ErrorType. This only applies to enums, not structs.

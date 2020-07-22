@@ -37,7 +37,7 @@ namespace Il2CppInspector.Outputs
 
             writeHeader();
             writeSectionHeader("IL2CPP internal types");
-            writeCode(model.UnityHeaderText);
+            writeCode(model.UnityHeaders.GetTypeHeaderText(model.WordSize));
 
             writeCode("namespace app {");
             writeLine("");
@@ -133,13 +133,8 @@ namespace Il2CppInspector.Outputs
 
         private void writeHeader() {
             writeLine("// Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty");
-            writeLine("// Target Unity version: " + model.UnityHeader);
+            writeLine("// Target Unity version: " + model.UnityHeaders);
             writeLine("");
-        }
-
-        private void writeUnityHeaders() {
-            var prefix = (model.Package.BinaryImage.Bits == 32) ? "#define IS_32BIT\n" : "";
-            writeCode(prefix + model.UnityHeader.GetHeaderText());
         }
 
         private void writeTypesForGroup(string header, string group) {

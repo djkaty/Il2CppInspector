@@ -27,7 +27,7 @@ namespace Il2CppInspector.Outputs
             writer = new StreamWriter(fs, Encoding.UTF8);
 
             writeLine("# Generated script file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty");
-            writeLine("# Target Unity version: " + model.UnityHeader);
+            writeLine("# Target Unity version: " + model.UnityHeaders);
             writeLine("print('Generated script file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty')");
             writeSectionHeader("Preamble");
             writePreamble();
@@ -84,7 +84,7 @@ typedef __int64 int64_t;
 
         private void writeTypes() {
             writeSectionHeader("IL2CPP internal types");
-            writeDecls(model.UnityHeaderText);
+            writeDecls(model.UnityHeaders.GetTypeHeaderText(model.WordSize));
 
             writeSectionHeader("Application types from method calls");
             writeTypes(model.GetDependencyOrderedCppTypeGroup("types_from_methods"));

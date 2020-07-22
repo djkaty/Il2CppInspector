@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Il2CppInspector.Cpp.UnityHeaders;
 
 namespace Il2CppInspector
 {

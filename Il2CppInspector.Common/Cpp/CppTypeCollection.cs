@@ -535,6 +535,9 @@ namespace Il2CppInspector.Cpp
         // Get all of the types in a logical group
         public IEnumerable<CppType> GetTypeGroup(string groupName) => Types.Values.Where(t => t.Group == groupName);
 
+        // Get all of the typedefs in a logical group
+        public IEnumerable<CppType> GetTypedefGroup(string groupName) => TypedefAliases.Values.Where(t => t.Group == groupName);
+
         // Add a type
         private void Add(CppType type) {
             type.Group = currentGroup;
@@ -578,21 +581,44 @@ namespace Il2CppInspector.Cpp
         public CppEnumType NewDefaultEnum(string name = "") => Enum(Types["int"], name);
 
         // Generate a populated CppTypeCollection object from a set of Unity headers
-        public static CppTypeCollection FromUnityVersion(UnityVersion version, int wordSize = 32)
-            => FromUnityHeaders(UnityHeader.GetHeaderForVersion(version), wordSize);
+        // The CppDeclarationGenerator is used to ensure that the Unity header type names are not used again afterwards
+        // Omit this parameter only when fetching headers for inspection without a model
+        public static CppTypeCollection FromUnityVersion(UnityVersion version, CppDeclarationGenerator declGen = null)
+            => FromUnityHeaders(UnityHeaders.UnityHeaders.GetHeadersForVersion(version), declGen);
 
-        public static CppTypeCollection FromUnityHeaders(UnityHeader header, int wordSize = 32) {
+        public static CppTypeCollection FromUnityHeaders(UnityHeaders.UnityHeaders header, CppDeclarationGenerator declGen = null) {
+            var wordSize = declGen?.WordSize ?? 64;
             var cppTypes = new CppTypeCollection(wordSize);
 
+            // Process Unity headers
             cppTypes.SetGroup("il2cpp");
             
             // Add junk from config files we haven't included
             cppTypes.TypedefAliases.Add("Il2CppIManagedObjectHolder", cppTypes["void"].AsPointer(wordSize));
             cppTypes.TypedefAliases.Add("Il2CppIUnknown", cppTypes["void"].AsPointer(wordSize));
 
-            // Process Unity headers
-            var headers = header.GetHeaderText();
+            var headers = header.GetTypeHeaderText(wordSize);
             cppTypes.AddFromDeclarationText(headers);
+
+            // Don't allow any of the header type names to be re-used; ignore primitive types
+            foreach (var type in cppTypes.GetTypeGroup("il2cpp"))
+                declGen?.TypeNamespace.ReserveName(type.Name);
+
+            foreach (var typedef in cppTypes.GetTypedefGroup("il2cpp"))
+                declGen?.GlobalsNamespace.ReserveName(typedef.Name);
+
+            cppTypes.SetGroup("il2cpp-api");
+
+            var apis = header.GetAPIHeaderTypedefText();
+            cppTypes.AddFromDeclarationText(apis);
+
+            foreach (var type in cppTypes.GetTypeGroup("il2cpp-api"))
+                declGen?.TypeNamespace.ReserveName(type.Name);
+
+            foreach (var typedef in cppTypes.GetTypedefGroup("il2cpp-api"))
+                declGen?.GlobalsNamespace.ReserveName(typedef.Name);
+
+            cppTypes.SetGroup("");
 
             return cppTypes;
         }

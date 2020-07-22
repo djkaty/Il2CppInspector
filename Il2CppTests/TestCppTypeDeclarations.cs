@@ -22,15 +22,17 @@ namespace Il2CppInspector
         public void TestCppTypeDeclarations() {
             // NOTE: This test doesn't check for correct results, only that parsing doesn't fail!
 
-            var unityAllHeaders = UnityHeader.GetAllHeaders();
+            var unityTypeHeaders = UnityHeaders.GetAllTypeHeaders();
 
             // Ensure we have read the embedded assembly resources
-            Assert.IsTrue(unityAllHeaders.Any());
+            Assert.IsTrue(unityTypeHeaders.Any());
 
             // Ensure we can interpret every header from every version of Unity without errors
             // This will throw InvalidOperationException if there is a problem
-            foreach (var unityHeader in unityAllHeaders) {
-                var cppTypes = CppTypeCollection.FromUnityHeaders(unityHeader);
+            foreach (var unityTypeHeader in unityTypeHeaders) {
+                var cppTypes = new CppTypeCollection(64);
+                cppTypes.AddFromDeclarationText(unityTypeHeader.GetText());
+
                 foreach (var cppType in cppTypes.Types)
                     Debug.WriteLine("// " + cppType.Key + "\n" + cppType.Value.ToString("o"));
             }
@@ -38,7 +40,7 @@ namespace Il2CppInspector
             // Do a few sanity checks taken from real applications
             // NOTE: Does not provide full code coverage!
 
-            var cppTypes2 = CppTypeCollection.FromUnityVersion(new UnityVersion("2019.3.1f1"), 64);
+            var cppTypes2 = CppTypeCollection.FromUnityVersion(new UnityVersion("2019.3.1f1"));
 
             CppComplexType ct;
             CppField field;

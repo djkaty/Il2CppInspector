@@ -6,7 +6,6 @@
 */
 
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -181,7 +180,7 @@ namespace Il2CppInspector.Cpp.UnityHeaders
             var res = $"{Min}";
             if (Max == null)
                 res += "+";
-            else if (Max != Min)
+            else if (!Max.Equals(Min))
                 res += $" - {Max}";
             return res;
         }
