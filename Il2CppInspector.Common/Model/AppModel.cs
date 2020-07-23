@@ -42,16 +42,16 @@ namespace Il2CppInspector.Model
         public List<CppType> DependencyOrderedCppTypes { get; private set; }
 
         // Composite mapping of all the .NET methods in the IL2CPP binary
-        public MultiKeyDictionary<MethodBase, CppFnPtrType, AppMethod> Methods = new MultiKeyDictionary<MethodBase, CppFnPtrType, AppMethod>();
+        public MultiKeyDictionary<MethodBase, CppFnPtrType, AppMethod> Methods { get; } = new MultiKeyDictionary<MethodBase, CppFnPtrType, AppMethod>();
 
         // Composite mapping of all the .NET types in the IL2CPP binary
-        public MultiKeyDictionary<TypeInfo, CppComplexType, AppType> Types = new MultiKeyDictionary<TypeInfo, CppComplexType, AppType>();
+        public MultiKeyDictionary<TypeInfo, CppComplexType, AppType> Types { get; } = new MultiKeyDictionary<TypeInfo, CppComplexType, AppType>();
 
         // All of the string literals in the IL2CPP binary
         // Note: Does not include string literals from global-metadata.dat
         // Note: The virtual addresses are of String* (VAs of the pointer to String*) objects, not the strings themselves
         // For il2cpp < 19, the key is the string literal ordinal instead of the address
-        public Dictionary<ulong, string> Strings = new Dictionary<ulong, string>();
+        public Dictionary<ulong, string> Strings { get; } = new Dictionary<ulong, string>();
 
         public bool StringIndexesAreOrdinals => Package.MetadataUsages == null;
 
@@ -60,6 +60,9 @@ namespace Il2CppInspector.Model
 
         // All of the symbol exports (including function exports) for the binary
         public List<Export> Exports { get; }
+
+        // All of the API exports defined in the IL2CPP binary
+        public Dictionary<ulong, CppFnPtrType> APIExports { get; private set; } = new Dictionary<ulong, CppFnPtrType>();
 
         // Delegated C++ types iterator
         public IEnumerator<CppType> GetEnumerator() => CppTypeCollection.GetEnumerator();
@@ -128,6 +131,15 @@ namespace Il2CppInspector.Model
             // Start creation of type model by parsing all of the Unity IL2CPP headers
             // Calling declarationGenerator.GenerateRemainingTypeDeclarations() below will automatically add to this collection
             CppTypeCollection = CppTypeCollection.FromUnityHeaders(UnityHeaders, declarationGenerator);
+
+            // Populate APIExports with actual API symbols from Binary.GetAPIExports() and their matching header signatures
+            // NOTE: This will only be filled with exports that actually exist in the binary and have a mappable address
+            APIExports = ILModel.Package.Binary.GetAPIExports()
+                .Select(e => new {
+                    VirtualAddress = e.Value,
+                    FnPtr = CppTypeCollection.TypedefAliases[e.Key]
+                })
+                .ToDictionary(kv => kv.VirtualAddress, kv => (CppFnPtrType) kv.FnPtr);
 
             // Initialize ordered type list for code output
             DependencyOrderedCppTypes = new List<CppType>();
