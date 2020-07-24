@@ -578,7 +578,7 @@ namespace Il2CppInspector.Cpp
         }
 
         // Create an empty enum with the default underlying type for the architecture (32 or 64-bit)
-        public CppEnumType NewDefaultEnum(string name = "") => Enum(Types["int"], name);
+        public CppEnumType NewDefaultEnum(string name = "") => Enum(Types["long"], name);
 
         // Generate a populated CppTypeCollection object from a set of Unity headers
         // The CppDeclarationGenerator is used to ensure that the Unity header type names are not used again afterwards
