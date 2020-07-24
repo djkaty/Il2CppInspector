@@ -7,6 +7,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using Il2CppInspector.Cpp;
 using Il2CppInspector.Model;
 using Il2CppInspector.Outputs;
 using Il2CppInspector.Reflection;
@@ -44,7 +45,7 @@ namespace Il2CppInspector
             int i = 0;
             foreach (var il2cpp in inspectors) {
                 var model = new TypeModel(il2cpp);
-                var appModel = new AppModel(model).Build();
+                var appModel = new AppModel(model).Build(compiler: CppCompilerType.MSVC);
                 var nameSuffix = i++ > 0 ? "-" + (i - 1) : "";
 
                 new CSharpCodeStubs(model) {
