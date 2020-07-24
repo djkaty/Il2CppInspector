@@ -117,7 +117,7 @@ namespace Il2CppInspector.Model
             TargetCompiler = compiler == CppCompilerType.BinaryFormat ? CppCompiler.GuessFromImage(ILModel.Package.BinaryImage) : compiler;
 
             // Determine Unity version and get headers
-            UnityHeaders = unityVersion != null ? UnityHeaders.GetHeadersForVersion(unityVersion) : UnityHeaders.GuessHeadersForBinary(ILModel.Package.Binary)[0];
+            UnityHeaders = unityVersion != null ? UnityHeaders.GetHeadersForVersion(unityVersion) : UnityHeaders.GuessHeadersForBinary(ILModel.Package.Binary).Last();
             UnityVersion = unityVersion ?? UnityHeaders.VersionRange.Min;
 
             Console.WriteLine($"Selected Unity version(s) {UnityHeaders.VersionRange} (types: {UnityHeaders.TypeHeaderResource.VersionRange}, APIs: {UnityHeaders.APIHeaderResource.VersionRange})");

@@ -209,8 +209,8 @@ namespace Il2CppInspectorGUI
                 cboUnityVersion.Items.Add(version);
                 cboCppUnityVersion.Items.Add(version);
             }
-            cboUnityVersion.SelectedIndex = 0;
-            cboCppUnityVersion.SelectedIndex = 0;
+            cboUnityVersion.SelectedIndex = cboUnityVersion.Items.Count - 1;
+            cboCppUnityVersion.SelectedIndex = cboCppUnityVersion.Items.Count - 1;
             if (prevSelection != null) {
                 cboUnityVersion.SelectedItem = prevSelection;
                 cboCppUnityVersion.SelectedItem = prevCppSelection;
