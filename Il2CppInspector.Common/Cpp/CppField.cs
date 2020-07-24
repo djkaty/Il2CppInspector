@@ -81,6 +81,8 @@ namespace Il2CppInspector.Cpp
 
         public CppEnumField(string name, CppType type, object value) : base(name, type) => Value = value;
 
-        public override string ToString(string format = "") => Name + " = " + Value;
+        // We output as hex to avoid unsigned value compiler errors for top bit set values in VS <= 2017
+        // We'll get compiler warnings instead but it will still compile
+        public override string ToString(string format = "") => $"{Name} = 0x{Value:x8}";
     }
 }
