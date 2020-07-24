@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Il2CppInspector.Reflection;
 using Il2CppInspector.Cpp;
+using Il2CppInspector.Cpp.UnityHeaders;
 using Il2CppInspector.Model;
 using Il2CppInspector.Properties;
 
@@ -50,6 +51,27 @@ namespace Il2CppInspector.Outputs
 
             writer.Close();
 
+            // Write selected Unity API function file to il2cpp-api-functions.h
+            // (this is a copy of the header file from an actual Unity install)
+            var il2cppApiFile = Path.Combine(outputPath, "il2cpp-api-functions.h");
+            var apiHeaderText = model.UnityHeaders.GetAPIHeaderText();
+
+            using var fsApi = new FileStream(il2cppApiFile, FileMode.Create);
+            writer = new StreamWriter(fsApi, Encoding.UTF8);
+
+            writeHeader();
+
+            // Elide APIs that aren't in the binary to avoid compile errors
+            foreach (var line in apiHeaderText.Split('\n')) {
+                var fnName = UnityHeaders.GetFunctionNameFromAPILine(line);
+
+                if (string.IsNullOrEmpty(fnName))
+                    writer.WriteLine(line);
+                else if (model.AvailableAPIs.ContainsKey(fnName))
+                    writer.WriteLine(line);
+            }
+            writer.Close();
+
             // Write API function pointers to il2cpp-function-ptr.h
             var il2cppFnPtrFile = Path.Combine(outputPath, "il2cpp-function-ptr.h");
 
@@ -59,7 +81,9 @@ namespace Il2CppInspector.Outputs
             writeHeader();
             writeSectionHeader("IL2CPP API function pointers");
 
-            // TODO: Use model.APIExports instead once it is implemented
+            // We could use model.AvailableAPIs here but that would exclude outputting the address
+            // of API exports which for some reason aren't defined in our selected API header,
+            // so although it doesn't affect the C++ compilation, we use GetAPIExports() instead for completeness
             var exports = model.Package.Binary.GetAPIExports();
 
             foreach (var export in exports) {

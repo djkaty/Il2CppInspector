@@ -173,10 +173,14 @@ namespace Il2CppInspector.Cpp.UnityHeaders
         }
 
         // Convert il2cpp-api-functions.h from "DO_API(r, n, p)" to "typedef r (*n)(p)"
-        internal static string GetTypedefsFromAPIHeader(string text) {
-            var rgx = new Regex(@"^DO_API(?:_NO_RETURN)?\((.*?),(.*?),\s*\((.*?)\)\s*\);", RegexOptions.Multiline);
-            return rgx.Replace(text, "typedef $1 (*$2)($3);");
+        private static readonly Regex APILineRegex = new Regex(@"^DO_API(?:_NO_RETURN)?\((.*?),(.*?),\s*\((.*?)\)\s*\);", RegexOptions.Multiline);
+
+        internal static string GetFunctionNameFromAPILine(string line) {
+            var match = APILineRegex.Match(line);
+            return match.Success ? match.Groups[2].ToString().Trim() : string.Empty;
         }
+
+        internal static string GetTypedefsFromAPIHeader(string text) => APILineRegex.Replace(text, "typedef $1 (*$2)($3);");
 
         // Get a list of function names from il2cpp-api-functions.h, taking #ifs into account
         private static IEnumerable<string> GetFunctionNamesFromAPIHeaderText(string text) {
