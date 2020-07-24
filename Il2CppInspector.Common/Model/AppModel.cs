@@ -62,7 +62,8 @@ namespace Il2CppInspector.Model
         public List<Export> Exports { get; }
 
         // All of the API exports defined in the IL2CPP binary
-        public Dictionary<ulong, CppFnPtrType> APIExports { get; private set; } = new Dictionary<ulong, CppFnPtrType>();
+        // Note: Multiple export names may have the same virtual address
+        public MultiKeyDictionary<string, ulong, CppFnPtrType> AvailableAPIs { get; } = new MultiKeyDictionary<string, ulong, CppFnPtrType>();
 
         // Delegated C++ types iterator
         public IEnumerator<CppType> GetEnumerator() => CppTypeCollection.GetEnumerator();
@@ -119,6 +120,8 @@ namespace Il2CppInspector.Model
             UnityHeaders = unityVersion != null ? UnityHeaders.GetHeadersForVersion(unityVersion) : UnityHeaders.GuessHeadersForBinary(ILModel.Package.Binary)[0];
             UnityVersion = unityVersion ?? UnityHeaders.VersionRange.Min;
 
+            Console.WriteLine($"Selected Unity version(s) {UnityHeaders.VersionRange} (types: {UnityHeaders.TypeHeaderResource.VersionRange}, APIs: {UnityHeaders.APIHeaderResource.VersionRange})");
+
             // Check for matching metadata and binary versions
             if (UnityHeaders.MetadataVersion != ILModel.Package.BinaryImage.Version) {
                 Console.WriteLine($"Warning: selected version {UnityVersion} (metadata version {UnityHeaders.MetadataVersion})" +
@@ -132,14 +135,19 @@ namespace Il2CppInspector.Model
             // Calling declarationGenerator.GenerateRemainingTypeDeclarations() below will automatically add to this collection
             CppTypeCollection = CppTypeCollection.FromUnityHeaders(UnityHeaders, declarationGenerator);
 
-            // Populate APIExports with actual API symbols from Binary.GetAPIExports() and their matching header signatures
-            // NOTE: This will only be filled with exports that actually exist in the binary and have a mappable address
-            APIExports = ILModel.Package.Binary.GetAPIExports()
+            // Populate AvailableAPIs with actual API symbols from Binary.GetAPIExports() and their matching header signatures
+            // NOTE: This will only be filled with exports that actually exist in both the binary and the API header,
+            // and have a mappable address. This prevents exceptions when cross-querying the header and binary APIs.
+            var exports = ILModel.Package.Binary.GetAPIExports()
+                .Where(e => CppTypeCollection.TypedefAliases.ContainsKey(e.Key))
                 .Select(e => new {
                     VirtualAddress = e.Value,
                     FnPtr = CppTypeCollection.TypedefAliases[e.Key]
-                })
-                .ToDictionary(kv => kv.VirtualAddress, kv => (CppFnPtrType) kv.FnPtr);
+                });
+
+            AvailableAPIs.Clear();
+            foreach (var export in exports)
+                AvailableAPIs.Add(export.FnPtr.Name, export.VirtualAddress, (CppFnPtrType) export.FnPtr);
 
             // Initialize ordered type list for code output
             DependencyOrderedCppTypes = new List<CppType>();
