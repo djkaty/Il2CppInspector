@@ -6,8 +6,6 @@
 */
 
 using System;
-using System.Reflection;
-using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,13 +25,13 @@ namespace Il2CppInspector.Cpp.UnityHeaders
         public UnityVersionRange VersionRange { get; }
 
         // The fully qualified names of the embedded resources
-        private readonly UnityResource typeHeaderResource;
-        private readonly UnityResource apiHeaderResource;
+        public UnityResource TypeHeaderResource { get; }
+        public UnityResource APIHeaderResource { get; }
 
         // Initialize from a type header and an API header
         private UnityHeaders(UnityResource typeHeaders, UnityResource apiHeaders) {
-            typeHeaderResource = typeHeaders;
-            apiHeaderResource = apiHeaders;
+            TypeHeaderResource = typeHeaders;
+            APIHeaderResource = apiHeaders;
 
             VersionRange = typeHeaders.VersionRange.Intersect(apiHeaders.VersionRange);
             MetadataVersion = GetMetadataVersionFromFilename(typeHeaders.Name);
@@ -41,7 +39,7 @@ namespace Il2CppInspector.Cpp.UnityHeaders
 
         // Return the contents of the type header file as a string
         public string GetTypeHeaderText(int WordSize) {
-            var str = (WordSize == 32 ? "#define IS_32BIT\n" : "") + typeHeaderResource.GetText();
+            var str = (WordSize == 32 ? "#define IS_32BIT\n" : "") + TypeHeaderResource.GetText();
             
             // Versions 5.3.6-5.4.6 don't include a definition for VirtualInvokeData
             if (VersionRange.Min.CompareTo("5.3.6") >= 0 && VersionRange.Max.CompareTo("5.4.6") <= 0) {
@@ -55,7 +53,7 @@ namespace Il2CppInspector.Cpp.UnityHeaders
         }
 
         // Return the contents of the API header file as a string
-        public string GetAPIHeaderText() => apiHeaderResource.GetText();
+        public string GetAPIHeaderText() => APIHeaderResource.GetText();
 
         // Return the contents of the API header file translated to typedefs as a string
         public string GetAPIHeaderTypedefText() => GetTypedefsFromAPIHeader(GetAPIHeaderText());
@@ -126,8 +124,52 @@ namespace Il2CppInspector.Cpp.UnityHeaders
                 typeHeaders.Add(r);
             }
 
-            // TODO: Replace this with an implementation which searches for the correct API header
-            return typeHeaders.Select(t => new UnityHeaders(t, GetAPIHeaderForVersion(t.VersionRange.Min))).ToList();
+            // Get total range of selected headers
+            // Sort is needed because 5.x.x comes before 20xx.x.x in the resource list
+            typeHeaders = typeHeaders.OrderBy(x => x.VersionRange).ToList();
+            var totalRange = new UnityVersionRange(typeHeaders.First().VersionRange.Min, typeHeaders.Last().VersionRange.Max);
+
+            // Get all API versions in this range
+            var apis = GetAllAPIHeaders().Where(a => a.VersionRange.Intersect(totalRange) != null).ToList();
+
+            // Get the API exports for the binary
+            var exports = binary.GetAPIExports();
+
+            // No il2cpp exports? Just return the earliest version from the header range
+            // The API version may be incorrect but should be a subset of the real API and won't cause C++ compile errors
+            if (!exports.Any()) {
+                Console.WriteLine("No IL2CPP API exports found in binary - IL2CPP APIs will be unavailable in C++ project");
+
+                return typeHeaders.Select(t => new UnityHeaders(t, apis[0])).ToList();
+            }
+
+            // Go through all of the possible API versions and see how closely they match the binary
+            // Note: if apis.Count == 1, we can't actually narrow down the version range further,
+            // but we still need to check that the APIs actually exist in the binary
+            var apiMatches = new List<UnityResource>();
+            foreach (var api in apis) {
+                var apiFunctionList = GetFunctionNamesFromAPIHeaderText(api.GetText());
+                
+                // Every single function in the API list must be an export for a match
+                if (!apiFunctionList.Except(exports.Keys).Any()) {
+                    apiMatches.Add(api);
+                }
+            }
+
+            if (apiMatches.Any()) {
+                // Intersect all API ranges with all header ranges to produce final list of possible ranges
+               Console.WriteLine("IL2CPP API discovery was successful");
+
+                return typeHeaders.SelectMany(
+                    t => apis.Where(a => t.VersionRange.Intersect(a.VersionRange) != null)
+                             .Select(a => new UnityHeaders(t, a))).ToList();
+            }
+
+            // None of the possible API versions match the binary
+            // Select the oldest API version from the group - C++ project compilation will fail
+            Console.WriteLine("No exact match for IL2CPP APIs found in binary - IL2CPP API availability in C++ project will be partial");
+
+            return typeHeaders.Select(t => new UnityHeaders(t, apis[0])).ToList();
         }
 
         // Convert il2cpp-api-functions.h from "DO_API(r, n, p)" to "typedef r (*n)(p)"
