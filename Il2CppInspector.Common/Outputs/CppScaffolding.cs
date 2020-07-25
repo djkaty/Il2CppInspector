@@ -40,6 +40,10 @@ namespace Il2CppInspector.Outputs
             writeSectionHeader("IL2CPP internal types");
             writeCode(model.UnityHeaders.GetTypeHeaderText(model.WordSize));
 
+            // Stop MSVC complaining about out-of-bounds enum values
+            if (model.TargetCompiler == CppCompilerType.MSVC)
+                writeCode("#pragma warning(disable : 4369)");
+
             writeCode("namespace app {");
             writeLine("");
 
