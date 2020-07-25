@@ -42,7 +42,7 @@ namespace Il2CppInspector.Cpp.UnityHeaders
             var str = (WordSize == 32 ? "#define IS_32BIT\n" : "") + TypeHeaderResource.GetText();
             
             // Versions 5.3.6-5.4.6 don't include a definition for VirtualInvokeData
-            if (VersionRange.Min.CompareTo("5.3.6") >= 0 && VersionRange.Max.CompareTo("5.4.6") <= 0) {
+            if (VersionRange.Min.CompareTo("5.3.6") >= 0 && VersionRange.Max?.CompareTo("5.4.6") <= 0) {
                 str = str + @"struct VirtualInvokeData
 {
     Il2CppMethodPointer methodPtr;
