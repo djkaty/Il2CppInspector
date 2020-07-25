@@ -542,7 +542,7 @@ namespace Il2CppInspector.Cpp
             }
             /* Reserve commonly defined C++ symbols for MSVC DLL projects */
             /* This is not an exhaustive list! (windows.h etc.) */
-            foreach (var symbol in new[] {"_int32", "DEFAULT_CHARSET", "FILETIME", "NULL", "SYSTEMTIME", "stderr", "stdin", "stdout", "Sleep"}) {
+            foreach (var symbol in new[] {"_int32", "DEFAULT_CHARSET", "FILETIME", "NULL", "SYSTEMTIME", "stderr", "stdin", "stdout", "Sleep", "PlatformInformation", "LoadResource"}) {
                 ns.ReserveName(symbol);
             }
             /* Reserve builtin keywords in IDA */
