@@ -140,7 +140,8 @@ namespace Il2CppInspector.Cpp.UnityHeaders
             if (!exports.Any()) {
                 Console.WriteLine("No IL2CPP API exports found in binary - IL2CPP APIs will be unavailable in C++ project");
 
-                return typeHeaders.Select(t => new UnityHeaders(t, apis[0])).ToList();
+                return typeHeaders.Select(t => new UnityHeaders(t, 
+                    apis.Last(a => a.VersionRange.Intersect(t.VersionRange) != null))).ToList();
             }
 
             // Go through all of the possible API versions and see how closely they match the binary
@@ -169,7 +170,8 @@ namespace Il2CppInspector.Cpp.UnityHeaders
             // Select the oldest API version from the group - C++ project compilation will fail
             Console.WriteLine("No exact match for IL2CPP APIs found in binary - IL2CPP API availability in C++ project will be partial");
 
-            return typeHeaders.Select(t => new UnityHeaders(t, apis[0])).ToList();
+            return typeHeaders.Select(t => new UnityHeaders(t, 
+                apis.Last(a => a.VersionRange.Intersect(t.VersionRange) != null))).ToList();
         }
 
         // Convert il2cpp-api-functions.h from "DO_API(r, n, p)" to "typedef r (*n)(p)"
