@@ -187,13 +187,15 @@ Example IDA C++ decompilation after applying Il2CppInspector (initialization cod
 
 ### Creating C++ scaffolding or a DLL injection project
 
-Il2CppInspector generates a series of C++ source files which you can use with a tool like `x64dbg` to analyze the memory of the application, or for accessing types via DLL injection, among other uses.
+Il2CppInspector generates a series of C++ source files which you can use with a tool like `x64dbg` to analyze the memory of the application, or for accessing types, methods and IL2CPP API functions via DLL injection, among other uses.
 
 If you know which version of Unity the binary was compiled with, you can improve the output by specifying this with `--unity-version`, for example `--unity-version 2019.3.1f1`. Otherwise Il2CppInspector will make an educated guess based on the contents of the binary.
 
-You can target which C++ compiler you wish to use the output files with: specify `--cpp-compiler MSVC` for Visual Studio and `--cpp-compiler GCC` for gcc. Clang is compatible with either option.
+You can target which C++ compiler you wish to use the output files with: specify `--cpp-compiler MSVC` for Visual Studio and `--cpp-compiler GCC` for gcc or clang.
 
 Il2CppInspector performs automatic name conflict resolution to avoid the use of pre-defined symbols and keywords in C++, and to handle re-definition of same-named symbols in the application.
+
+Some IL2CPP binary files contain only a partial set of API exports, or none at all. For these cases, Il2CppInspector will build scaffolding using only the available exports to ensure that the project compiles successfully.
 
 ![Il2CppInspector GUI](docs/Cpp_Preview.png)
 
@@ -215,7 +217,7 @@ The following files are generated:
   - The offset from the image base address to every IL2CPP API function export (functions starting with `il2cpp_`)
 
 - `il2cpp-api-functions.h`:
-  - The function pointer signature to every IL2CPP API function (copied directly from Unity for the version used to compile the binary)
+  - The function pointer signature to every IL2CPP API function (copied directly from Unity for the version used to compile the binary). Functions not found in the binary's export list will be elided
 
 The above files contain all the data needed for dynamic analysis in a debugger.
 
@@ -236,7 +238,7 @@ In addition, the following files are generated for DLL injection:
 For Visual Studio users, the following files are also generated:
 
 - `IL2CppDLL.vxcproj` and `Il2CppDLL.sln`:
-  - The project and solution files for a DLL injection project. The first time you load the solution into Visual Studio, you will be asked to re-target the platform SDK and C++ toolchain. Accept the default suggestions.
+  - The project and solution files for a DLL injection project. The first time you load the solution into Visual Studio, you will be asked to re-target the platform SDK and C++ toolchain. Accept the default suggestions. **WARNING: Compilation may fail if you don't do this.**
 
 #### DLL Injection workflow
 
@@ -246,7 +248,7 @@ For Visual Studio users, the following files are also generated:
 4. Compile the project
 5. Use a DLL injection tool such as [Cheat Engine](https://www.cheatengine.org/) or [RemoteDLL](https://securityxploded.com/remotedll.php) to inject the compiled DLL into the IL2CPP application at runtime
 
-You have access to all of the C#-equivalent types and methods in the application, plus all of the IL2CPP API functions.
+You have access to all of the C#-equivalent types and methods in the application, plus all of the available IL2CPP API functions.
 
 Example (create a `Vector3` and log its y co-ordinate to a file):
 
