@@ -162,7 +162,7 @@ namespace Il2CppInspector.Cpp.UnityHeaders
                Console.WriteLine("IL2CPP API discovery was successful");
 
                 return typeHeaders.SelectMany(
-                    t => apis.Where(a => t.VersionRange.Intersect(a.VersionRange) != null)
+                    t => apiMatches.Where(a => t.VersionRange.Intersect(a.VersionRange) != null)
                              .Select(a => new UnityHeaders(t, a))).ToList();
             }
 
