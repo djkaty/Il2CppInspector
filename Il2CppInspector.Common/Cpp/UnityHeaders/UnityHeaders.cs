@@ -47,7 +47,7 @@ namespace Il2CppInspector.Cpp.UnityHeaders
 {
     Il2CppMethodPointer methodPtr;
     const MethodInfo* method;
-} VirtualInvokeData;";
+};";
             }
             return str;
         }
