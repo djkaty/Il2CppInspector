@@ -1,6 +1,6 @@
 ﻿/*
     Copyright 2017 Perfare - https://github.com/Perfare/Il2CppDumper
-    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -110,6 +110,7 @@ namespace Il2CppInspector
         private elf_dynamic<TWord>[] dynamic_table;
         private elf_header<TWord> elf_header;
         private Dictionary<string, elf_shdr<TWord>> sectionByName = new Dictionary<string, elf_shdr<TWord>>();
+        private List<(uint Start, uint End)> reverseMapExclusions = new List<(uint Start, uint End)>();
 
         public ElfReader(Stream stream) : base(stream) { }
 
@@ -177,28 +178,38 @@ namespace Il2CppInspector
             StatusUpdate("Processing relocations");
 
             // Two types: add value from offset in image, and add value from specified addend
-            foreach (var relSection in getSections(Elf.SHT_REL))
+            foreach (var relSection in getSections(Elf.SHT_REL)) {
+                reverseMapExclusions.Add(((uint) conv.Int(relSection.sh_offset), (uint) (conv.Int(relSection.sh_offset) + conv.Int(relSection.sh_size) - 1)));
                 rels.UnionWith(
                     from rel in ReadArray<elf_rel<TWord>>(conv.Long(relSection.sh_offset), conv.Int(conv.Div(relSection.sh_size, relSection.sh_entsize)))
                     select new ElfReloc(rel, section_header_table[relSection.sh_link].sh_offset));
-                
-            foreach (var relaSection in getSections(Elf.SHT_RELA))
+            }
+
+            foreach (var relaSection in getSections(Elf.SHT_RELA)) {
+                reverseMapExclusions.Add(((uint) conv.Int(relaSection.sh_offset), (uint) (conv.Int(relaSection.sh_offset) + conv.Int(relaSection.sh_size) - 1)));
                 rels.UnionWith(
                     from rela in ReadArray<elf_rela<TWord>>(conv.Long(relaSection.sh_offset), conv.Int(conv.Div(relaSection.sh_size, relaSection.sh_entsize)))
                     select new ElfReloc(rela, section_header_table[relaSection.sh_link].sh_offset));
+            }
 
             // Relocations in dynamic section
             if (getDynamic(Elf.DT_REL) is elf_dynamic<TWord> dt_rel) {
-                var dt_rel_count = conv.Div(getDynamic(Elf.DT_RELSZ).d_un, getDynamic(Elf.DT_RELENT).d_un);
-                var dt_rel_list = ReadArray<elf_rel<TWord>>(MapVATR(conv.ULong(dt_rel.d_un)), conv.Int(dt_rel_count));
+                var dt_rel_count = conv.Int(conv.Div(getDynamic(Elf.DT_RELSZ).d_un, getDynamic(Elf.DT_RELENT).d_un));
+                var dt_item_size = Sizeof(typeof(elf_rel<TWord>));
+                var dt_start = MapVATR(conv.ULong(dt_rel.d_un));
+                var dt_rel_list = ReadArray<elf_rel<TWord>>(dt_start, dt_rel_count);
                 var dt_symtab = getDynamic(Elf.DT_SYMTAB).d_un;
+                reverseMapExclusions.Add((dt_start, (uint) (dt_start + dt_rel_count * dt_item_size - 1)));
                 rels.UnionWith(from rel in dt_rel_list select new ElfReloc(rel, dt_symtab));
             }
 
             if (getDynamic(Elf.DT_RELA) is elf_dynamic<TWord> dt_rela) {
-                var dt_rela_count = conv.Div(getDynamic(Elf.DT_RELASZ).d_un, getDynamic(Elf.DT_RELAENT).d_un);
-                var dt_rela_list = ReadArray<elf_rela<TWord>>(MapVATR(conv.ULong(dt_rela.d_un)), conv.Int(dt_rela_count));
+                var dt_rela_count = conv.Int(conv.Div(getDynamic(Elf.DT_RELASZ).d_un, getDynamic(Elf.DT_RELAENT).d_un));
+                var dt_item_size = Sizeof(typeof(elf_rela<TWord>));
+                var dt_start = MapVATR(conv.ULong(dt_rela.d_un));
+                var dt_rela_list = ReadArray<elf_rela<TWord>>(dt_start, dt_rela_count);
                 var dt_symtab = getDynamic(Elf.DT_SYMTAB).d_un;
+                reverseMapExclusions.Add((dt_start, (uint) (dt_start + dt_rela_count * dt_item_size - 1)));
                 rels.UnionWith(from rela in dt_rela_list select new ElfReloc(rela, dt_symtab));
             }
 
@@ -390,6 +401,15 @@ namespace Il2CppInspector
                 uiAddr &= 0xffff_ffff;
              var program_header_table = this.program_header_table.First(x => uiAddr >= conv.ULong(x.p_vaddr) && uiAddr <= conv.ULong(conv.Add(x.p_vaddr, x.p_filesz)));
             return (uint) (uiAddr - conv.ULong(conv.Sub(program_header_table.p_vaddr, program_header_table.p_offset)));
+        }
+
+        public override ulong MapFileOffsetToVA(uint offset) {
+            // Exclude relocation areas
+            if (reverseMapExclusions.Any(r => offset >= r.Start && offset <= r.End))
+                throw new InvalidOperationException("Attempt to map to a relocation address");
+
+            var section = program_header_table.First(x => offset >= conv.Int(x.p_offset) && offset < conv.Int(x.p_offset) + conv.Int(x.p_filesz));
+            return conv.ULong(section.p_vaddr) + offset - conv.ULong(section.p_offset);
         }
         
         // Get the address of the procedure linkage table (.got.plt) which is needed for some disassemblies

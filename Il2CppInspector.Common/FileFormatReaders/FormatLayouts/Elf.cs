@@ -1,6 +1,6 @@
 ﻿/*
     Copyright 2017 Perfare - https://github.com/Perfare/Il2CppDumper
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -30,6 +30,7 @@ namespace Il2CppInspector
         ET_EXEC = 2,
 
         // PHTs
+        PT_LOAD = 1,
         PT_DYNAMIC = 2,
         DT_PLTGOT = 3,
 

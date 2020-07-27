@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -118,6 +118,11 @@ namespace Il2CppInspector
         public override uint MapVATR(ulong uiAddr) {
             var program_header_table = pht.First(x => uiAddr >= x.p_vaddr && uiAddr <= x.p_vaddr + x.p_filesz);
             return (uint) (uiAddr - (program_header_table.p_vaddr - program_header_table.p_offset));
+        }
+
+        public override ulong MapFileOffsetToVA(uint offset) {
+            var segment = pht.First(x => offset >= x.p_offset && offset < x.p_offset + x.p_filesz);
+            return segment.p_vaddr + offset - segment.p_offset;
         }
     }
 }

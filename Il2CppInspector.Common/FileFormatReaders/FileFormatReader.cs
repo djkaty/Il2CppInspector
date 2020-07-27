@@ -35,6 +35,8 @@ namespace Il2CppInspector
         long[] ReadMappedWordArray(ulong uiAddr, int count);
         uint MapVATR(ulong uiAddr);
         bool TryMapVATR(ulong uiAddr, out uint fileOffset);
+        ulong MapFileOffsetToVA(uint offset);
+        bool TryMapFileOffsetToVA(uint offset, out ulong va);
 
         byte[] ReadBytes(int count);
         ulong ReadUInt64();
@@ -155,6 +157,22 @@ namespace Il2CppInspector
                 return true;
             } catch (InvalidOperationException) {
                 fileOffset = 0;
+                return false;
+            }
+        }
+
+        // Map an offset into the file image to an RVA
+        // No mapping by default
+        public virtual ulong MapFileOffsetToVA(uint offset) => offset;
+
+        // Try to map an offset into the file image to an RVA
+        public bool TryMapFileOffsetToVA(uint offset, out ulong va) {
+            try {
+                va = MapFileOffsetToVA(offset);
+                return true;
+            }
+            catch (InvalidOperationException) {
+                va = 0;
                 return false;
             }
         }

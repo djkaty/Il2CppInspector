@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -149,6 +149,12 @@ namespace Il2CppInspector
             var section = sections.First(x => uiAddr - pe.ImageBase >= x.VirtualAddress &&
                                               uiAddr - pe.ImageBase < x.VirtualAddress + x.SizeOfRawData);
             return (uint) (uiAddr - section.VirtualAddress - pe.ImageBase + section.PointerToRawData);
+        }
+
+        public override ulong MapFileOffsetToVA(uint offset) {
+            var section = sections.First(x => offset >= x.PointerToRawData && offset < x.PointerToRawData + x.SizeOfRawData);
+
+            return pe.ImageBase + section.VirtualAddress + offset - section.PointerToRawData;
         }
     }
 }

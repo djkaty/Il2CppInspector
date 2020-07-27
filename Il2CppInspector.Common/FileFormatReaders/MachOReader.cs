@@ -27,6 +27,11 @@ namespace Il2CppInspector
             var section = sections.First(x => uiAddr >= x.Address && uiAddr <= x.Address + x.Size);
             return (uint) uiAddr - (section.Address - section.ImageOffset);
         }
+
+        public override ulong MapFileOffsetToVA(uint offset) {
+            var section = sections.First(x => offset >= x.ImageOffset && offset < x.ImageOffset + x.Size);
+            return section.Address + offset - section.ImageOffset;
+        }
     }
 
     internal class MachOReader64 : MachOReader<ulong, MachOReader64, Convert64>
@@ -43,6 +48,11 @@ namespace Il2CppInspector
         public override uint MapVATR(ulong uiAddr) {
             var section = sections.First(x => uiAddr >= x.Address && uiAddr <= x.Address + x.Size);
             return (uint) (uiAddr - (section.Address - section.ImageOffset));
+        }
+
+        public override ulong MapFileOffsetToVA(uint offset) {
+            var section = sections.First(x => offset >= x.ImageOffset && offset < x.ImageOffset + x.Size);
+            return section.Address + offset - section.ImageOffset;
         }
     }
 
