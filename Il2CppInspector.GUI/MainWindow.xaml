@@ -8,7 +8,8 @@
         mc:Ignorable="d"
         Title="Il2CppInspector" Height="850" Width="1080" Background="White"
         WindowStartupLocation="CenterScreen"
-        ContentRendered="MainWindow_OnContentRendered">
+        ContentRendered="MainWindow_OnContentRendered"
+        Drop="MainWindow_OnDrop">
     <Window.Resources>
         <!-- Our favourite colours -->
         <SolidColorBrush x:Key="MicrosoftBlue" Color="#00A2ED"/>
@@ -91,6 +92,20 @@
             <CheckBox Focusable="False" IsChecked="{Binding IsChecked}" VerticalAlignment="Center" Content="{Binding Name}"/>
         </HierarchicalDataTemplate>
     </Window.Resources>
+
+    <!-- Enable/disable drag & drop dynamically -->
+    <Window.Style>
+        <Style TargetType="{x:Type Window}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=grdFirstPage, Path=Visibility}" Value="Visible">
+                    <Setter Property="AllowDrop" Value="True"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ElementName=btnSelectBinaryFile, Path=Visibility}" Value="Visible">
+                    <Setter Property="AllowDrop" Value="True"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
 
     <!-- Window content -->
     <Grid>
@@ -407,20 +422,22 @@
                 <TextBlock TextAlignment="Center">
                     <TextBlock FontSize="22">Option 1</TextBlock>
                     <LineBreak/>
-                    <TextBlock>Select an IL2CPP metadata file</TextBlock>
+                    <TextBlock>Select or drag &amp; drop an IL2CPP metadata file</TextBlock>
+                    <LineBreak/>
+                    <TextBlock FontSize="16">You can drag &amp; drop both the metadata and binary together</TextBlock>
                 </TextBlock>
             </Button>
             <Button Grid.Row="1" Name="btnSelectPackageFile" Style="{StaticResource LightBoxButton}" Margin="100,50,100,100" Click="BtnSelectPackageFile_OnClick">
                 <TextBlock TextAlignment="Center">
                     <TextBlock FontSize="22">Option 2</TextBlock>
                     <LineBreak/>
-                    <TextBlock>Select an APK or IPA file</TextBlock>
+                    <TextBlock>Select or drag &amp; drop an APK or IPA file</TextBlock>
                     <LineBreak/>
                     <TextBlock FontSize="16">Encrypted IPA files are not supported</TextBlock>
                 </TextBlock>
             </Button>
         </Grid>
-        <Button Name="btnSelectBinaryFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectBinaryFile_OnClick" Visibility="Hidden">Select an IL2CPP binary file</Button>
+        <Button Name="btnSelectBinaryFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectBinaryFile_OnClick" Visibility="Hidden">Select or drag &amp; drop an IL2CPP binary file</Button>
 
         <!-- Back button -->
         <Button Name="btnBack" Margin="7" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="18" Width="120" Click="BtnBack_OnClick" Content="&lt;&lt; Back">

@@ -67,28 +67,32 @@ namespace Il2CppInspectorGUI
         /// Select global metadata file
         /// </summary>
         private async void BtnSelectMetadataFile_OnClick(object sender, RoutedEventArgs e) {
-            var app = (App) Application.Current;
-
             var openFileDialog = new OpenFileDialog {
                 Filter = "IL2CPP global metadata file|global-metadata.dat|All files (*.*)|*.*",
                 CheckFileExists = true
             };
 
             if (openFileDialog.ShowDialog() == true) {
-                areaBusyIndicator.Visibility = Visibility.Visible;
-                grdFirstPage.Visibility = Visibility.Hidden;
+                await LoadMetadataAsync(openFileDialog.FileName);
+            }
+        }
 
-                // Load the metadata file
-                if (await app.LoadMetadataAsync(openFileDialog.FileName)) {
-                    // Metadata loaded successfully
-                    btnSelectBinaryFile.Visibility = Visibility.Visible;
-                    areaBusyIndicator.Visibility = Visibility.Hidden;
-                }
-                else {
-                    areaBusyIndicator.Visibility = Visibility.Hidden;
-                    grdFirstPage.Visibility = Visibility.Visible;
-                    MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+        // Load the metadata file
+        private async Task LoadMetadataAsync(string filename) {
+            var app = (App) Application.Current;
+
+            areaBusyIndicator.Visibility = Visibility.Visible;
+            grdFirstPage.Visibility = Visibility.Hidden;
+
+            if (await app.LoadMetadataAsync(filename)) {
+                // Metadata loaded successfully
+                btnSelectBinaryFile.Visibility = Visibility.Visible;
+                areaBusyIndicator.Visibility = Visibility.Hidden;
+            }
+            else {
+                areaBusyIndicator.Visibility = Visibility.Hidden;
+                grdFirstPage.Visibility = Visibility.Visible;
+                MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -96,31 +100,36 @@ namespace Il2CppInspectorGUI
         /// Select binary file
         /// </summary>
         private async void BtnSelectBinaryFile_OnClick(object sender, RoutedEventArgs e) {
-            var app = (App) Application.Current;
-
             var openFileDialog = new OpenFileDialog {
                 Filter = "Binary executable file (*.exe;*.dll;*.so;*.bin;*.prx;*.sprx)|*.exe;*.dll;*.so;*.bin;*.prx;*.sprx|All files (*.*)|*.*",
                 CheckFileExists = true
             };
 
             if (openFileDialog.ShowDialog() == true) {
-                txtBusyStatus.Text = "Processing binary...";
-                areaBusyIndicator.Visibility = Visibility.Visible;
-                btnSelectBinaryFile.Visibility = Visibility.Hidden;
+                await LoadBinaryAsync(openFileDialog.FileName);
+            }
+        }
 
-                // Load the binary file
-                if (await app.LoadBinaryAsync(openFileDialog.FileName)) {
-                    // Binary loaded successfully
-                    areaBusyIndicator.Visibility = Visibility.Hidden;
+        // Load the binary file
+        private async Task LoadBinaryAsync(string filename) {
+            var app = (App) Application.Current;
 
-                    lstImages.ItemsSource = app.AppModels;
-                    lstImages.SelectedIndex = 0;
-                }
-                else {
-                    areaBusyIndicator.Visibility = Visibility.Hidden;
-                    btnSelectBinaryFile.Visibility = Visibility.Visible;
-                    MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+            txtBusyStatus.Text = "Processing binary...";
+            areaBusyIndicator.Visibility = Visibility.Visible;
+            btnSelectBinaryFile.Visibility = Visibility.Hidden;
+
+            // Load the binary file
+            if (await app.LoadBinaryAsync(filename)) {
+                // Binary loaded successfully
+                areaBusyIndicator.Visibility = Visibility.Hidden;
+
+                lstImages.ItemsSource = app.AppModels;
+                lstImages.SelectedIndex = 0;
+            }
+            else {
+                areaBusyIndicator.Visibility = Visibility.Hidden;
+                btnSelectBinaryFile.Visibility = Visibility.Visible;
+                MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -128,31 +137,36 @@ namespace Il2CppInspectorGUI
         /// Select APK or IPA package file
         /// </summary>
         private async void BtnSelectPackageFile_OnClick(object sender, RoutedEventArgs e) {
-            var app = (App) Application.Current;
-
             var openFileDialog = new OpenFileDialog {
                 Filter = "Android/iOS Application Package (*.apk;*.ipa;*.zip)|*.apk;*.ipa;*.zip|All files (*.*)|*.*",
                 CheckFileExists = true
             };
 
             if (openFileDialog.ShowDialog() == true) {
-                txtBusyStatus.Text = "Extracting package...";
-                areaBusyIndicator.Visibility = Visibility.Visible;
-                grdFirstPage.Visibility = Visibility.Hidden;
+                await LoadPackageAsync(openFileDialog.FileName);
+            }
+        }
 
-                // Load the package
-                if (await app.LoadPackageAsync(openFileDialog.FileName)) {
-                    // Package loaded successfully
-                    areaBusyIndicator.Visibility = Visibility.Hidden;
+        // Load the package file
+        private async Task LoadPackageAsync(string filename) {
+            var app = (App) Application.Current;
 
-                    lstImages.ItemsSource = app.AppModels;
-                    lstImages.SelectedIndex = 0;
-                }
-                else {
-                    areaBusyIndicator.Visibility = Visibility.Hidden;
-                    grdFirstPage.Visibility = Visibility.Visible;
-                    MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+            txtBusyStatus.Text = "Extracting package...";
+            areaBusyIndicator.Visibility = Visibility.Visible;
+            grdFirstPage.Visibility = Visibility.Hidden;
+
+            // Load the package
+            if (await app.LoadPackageAsync(filename)) {
+                // Package loaded successfully
+                areaBusyIndicator.Visibility = Visibility.Hidden;
+
+                lstImages.ItemsSource = app.AppModels;
+                lstImages.SelectedIndex = 0;
+            }
+            else {
+                areaBusyIndicator.Visibility = Visibility.Hidden;
+                grdFirstPage.Visibility = Visibility.Visible;
+                MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -477,6 +491,45 @@ namespace Il2CppInspectorGUI
                     User.Default.ShowDecompilerWarning = false;
                     User.Default.Save();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Surface to handle dropped files
+        /// </summary>
+        private async void MainWindow_OnDrop(object sender, DragEventArgs e) {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
+                string[] files = (string[]) e.Data.GetData(DataFormats.FileDrop);
+
+                if (grdFirstPage.Visibility == Visibility.Visible) {
+                    // Metadata or APK/IPA
+                    if (files.Length == 1) {
+                        switch (files[0].ToLower()) {
+                            case var s when s.EndsWith(".dat"):
+                                await LoadMetadataAsync(s);
+                                break;
+
+                            case var s when s.EndsWith(".apk") || s.EndsWith(".ipa") || s.EndsWith(".zip"):
+                                await LoadPackageAsync(s);
+                                break;
+                        }
+                    }
+                    // Metadata and binary
+                    else if (files.Length == 2) {
+                        var metadataIndex = files[0].ToLower().EndsWith(".dat") ? 0 : 1;
+                        var binaryIndex = 1 - metadataIndex;
+
+                        await LoadMetadataAsync(files[metadataIndex]);
+
+                        // Only load binary if metadata was successful
+                        if (btnSelectBinaryFile.Visibility == Visibility.Visible)
+                            await LoadBinaryAsync(files[binaryIndex]);
+                    }
+                }
+                // Binary (on 2nd page)
+                else if (btnSelectBinaryFile.Visibility == Visibility.Visible)
+                    if (files.Length == 1)
+                        await LoadBinaryAsync(files[0]);
             }
         }
     }
