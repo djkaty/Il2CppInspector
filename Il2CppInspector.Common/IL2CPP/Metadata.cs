@@ -145,21 +145,25 @@ namespace Il2CppInspector
                 StringLiterals[i] = ReadFixedLengthString(Header.stringLiteralDataOffset + stringLiteralList[i].dataIndex, stringLiteralList[i].length);
         }
 
-        private int Sizeof(Type type)
-        {
+        private int Sizeof(Type type) => Sizeof(type, Version);
+
+        public static int Sizeof(Type type, double metadataVersion, int longSizeBytes = 8) {
+
             int size = 0;
             foreach (var i in type.GetTypeInfo().GetFields())
             {
                 // Only process fields for our selected object versioning
                 var versionAttr = i.GetCustomAttribute<VersionAttribute>(false);
                 if (versionAttr != null) {
-                    if (versionAttr.Min != -1 && versionAttr.Min > Version)
+                    if (versionAttr.Min != -1 && versionAttr.Min > metadataVersion)
                         continue;
-                    if (versionAttr.Max != -1 && versionAttr.Max < Version)
+                    if (versionAttr.Max != -1 && versionAttr.Max < metadataVersion)
                         continue;
                 }
 
-                if (i.FieldType == typeof(int) || i.FieldType == typeof(uint))
+                if (i.FieldType == typeof(long) || i.FieldType == typeof(ulong))
+                    size += longSizeBytes;
+                else if (i.FieldType == typeof(int) || i.FieldType == typeof(uint))
                     size += 4;
                 else if (i.FieldType == typeof(short) || i.FieldType == typeof(ushort))
                     size += 2;
@@ -173,7 +177,7 @@ namespace Il2CppInspector
 
                 // Embedded object
                 else
-                    size += Sizeof(i.FieldType);
+                    size += Sizeof(i.FieldType, metadataVersion);
             }
             return size;
         }
