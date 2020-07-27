@@ -90,7 +90,7 @@ namespace Il2CppInspectorGUI
                         // Architecture-agnostic load attempt
                         try {
                             // If we can't load the IL2CPP data here, it's probably packed or obfuscated; ignore it
-                            if (Il2CppBinary.Load(image, metadata.Version) is Il2CppBinary binary) {
+                            if (Il2CppBinary.Load(image, metadata) is Il2CppBinary binary) {
                                 var inspector = new Inspector(binary, metadata);
 
                                 // Build type model

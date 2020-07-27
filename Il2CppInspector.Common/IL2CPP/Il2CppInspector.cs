@@ -409,7 +409,7 @@ namespace Il2CppInspector
 
                 // Architecture-agnostic load attempt
                 try {
-                    if (Il2CppBinary.Load(image, metadata.Version) is Il2CppBinary binary) {
+                    if (Il2CppBinary.Load(image, metadata) is Il2CppBinary binary) {
                         Console.WriteLine("IL2CPP binary version " + image.Version);
 
                         processors.Add(new Il2CppInspector(binary, metadata));
