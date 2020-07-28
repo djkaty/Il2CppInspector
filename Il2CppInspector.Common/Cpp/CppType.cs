@@ -322,7 +322,8 @@ namespace Il2CppInspector.Cpp
         public override string ToString(string format = "") {
             var sb = new StringBuilder();
             
-            sb.Append($"enum {Name} : {UnderlyingType.Name} {{");
+            // Don't output " : {underlyingType.Name}" because it breaks C
+            sb.Append($"enum {Name} {{");
 
             foreach (var field in Fields.Values.SelectMany(f => f))
                 sb.Append("\n    " + string.Join("\n    ", field.ToString(format).Split('\n')) + ",");
