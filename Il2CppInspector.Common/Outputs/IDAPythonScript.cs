@@ -23,6 +23,10 @@ namespace Il2CppInspector.Outputs
 
         public void WriteScriptToFile(string outputFile) {
 
+            // Write types file first
+            var typeHeaderFile = Path.Combine(Path.GetDirectoryName(outputFile), Path.GetFileNameWithoutExtension(outputFile) + ".h");
+            writeTypes(typeHeaderFile);
+
             using var fs = new FileStream(outputFile, FileMode.Create);
             writer = new StreamWriter(fs, Encoding.UTF8);
 
@@ -32,7 +36,13 @@ namespace Il2CppInspector.Outputs
             writeSectionHeader("Preamble");
             writePreamble();
 
-            writeTypes();
+            writeSectionHeader("Types");
+            writeLine(
+@"original_macros = ida_typeinf.get_c_macros()
+ida_typeinf.set_c_macros(original_macros + "";_IDA_=1"")
+idc.parse_decls(""" + Path.GetFileName(typeHeaderFile) + @""", idc.PT_FILE)
+ida_typeinf.set_c_macros(original_macros)");
+
             writeMethods();
 
             writeSectionHeader("String literals");
@@ -66,34 +76,12 @@ def MakeFunction(start):
 def SetType(addr, type):
   ret = idc.SetType(addr, type)
   if ret is None:
-    print('SetType(0x%x, %r) failed!' % (addr, type))
-");
-
-            // Compatibility (in a separate decl block in case these are already defined)
-            writeDecls(@"
-typedef unsigned __int8 uint8_t;
-typedef unsigned __int16 uint16_t;
-typedef unsigned __int32 uint32_t;
-typedef unsigned __int64 uint64_t;
-typedef __int8 int8_t;
-typedef __int16 int16_t;
-typedef __int32 int32_t;
-typedef __int64 int64_t;
-");
+    print('SetType(0x%x, %r) failed!' % (addr, type))");
         }
 
-        private void writeTypes() {
-            writeSectionHeader("IL2CPP internal types");
-            writeDecls(model.UnityHeaders.GetTypeHeaderText(model.WordSize));
-
-            writeSectionHeader("Application types from method calls");
-            writeTypes(model.GetDependencyOrderedCppTypeGroup("types_from_methods"));
-
-            writeSectionHeader("Application types from generic methods");
-            writeTypes(model.GetDependencyOrderedCppTypeGroup("types_from_generic_methods"));
-
-            writeSectionHeader("Application types from usage metadata");
-            writeTypes(model.GetDependencyOrderedCppTypeGroup("types_from_usages"));
+        private void writeTypes(string typeHeaderFile) {
+            var cpp = new CppScaffolding(model);
+            cpp.WriteTypes(typeHeaderFile);
         }
 
         private void writeMethods() {
@@ -112,11 +100,6 @@ typedef __int64 int64_t;
             foreach (var method in model.ILModel.MethodInvokers.Where(m => m != null)) {
                 writeTypedName(method.VirtualAddress.Start, method.GetSignature(model.UnityVersion), method.Name);
             }
-        }
-
-        private void writeTypes(IEnumerable<CppType> types) {
-            foreach (var type in types)
-                writeDecls(type.ToString());
         }
 
         private void writeMethods(IEnumerable<AppMethod> methods) {
