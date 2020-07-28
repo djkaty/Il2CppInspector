@@ -28,7 +28,7 @@ namespace Il2CppInspector.Outputs
             writeTypes(typeHeaderFile);
 
             using var fs = new FileStream(outputFile, FileMode.Create);
-            writer = new StreamWriter(fs, Encoding.UTF8);
+            writer = new StreamWriter(fs, Encoding.ASCII);
 
             writeLine("# Generated script file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty");
             writeLine("# Target Unity version: " + model.UnityHeaders);

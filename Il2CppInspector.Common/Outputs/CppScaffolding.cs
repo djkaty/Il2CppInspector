@@ -29,7 +29,7 @@ namespace Il2CppInspector.Outputs
         // This can be used by other output modules
         public void WriteTypes(string typeHeaderFile) {
             using var fs = new FileStream(typeHeaderFile, FileMode.Create);
-            writer = new StreamWriter(fs, Encoding.UTF8);
+            writer = new StreamWriter(fs, Encoding.ASCII);
 
             writeHeader();
 
@@ -90,7 +90,7 @@ typedef size_t uintptr_t;
             var apiHeaderText = model.UnityHeaders.GetAPIHeaderText();
 
             using var fsApi = new FileStream(il2cppApiFile, FileMode.Create);
-            writer = new StreamWriter(fsApi, Encoding.UTF8);
+            writer = new StreamWriter(fsApi, Encoding.ASCII);
 
             writeHeader();
 
@@ -109,7 +109,7 @@ typedef size_t uintptr_t;
             var il2cppFnPtrFile = Path.Combine(outputPath, "il2cpp-function-ptr.h");
 
             using var fs2 = new FileStream(il2cppFnPtrFile, FileMode.Create);
-            writer = new StreamWriter(fs2, Encoding.UTF8);
+            writer = new StreamWriter(fs2, Encoding.ASCII);
 
             writeHeader();
             writeSectionHeader("IL2CPP API function pointers");
@@ -129,7 +129,7 @@ typedef size_t uintptr_t;
             var il2cppTypeInfoFile = Path.Combine(outputPath, "il2cpp-type-ptr.h");
 
             using var fs3 = new FileStream(il2cppTypeInfoFile, FileMode.Create);
-            writer = new StreamWriter(fs3, Encoding.UTF8);
+            writer = new StreamWriter(fs3, Encoding.ASCII);
 
             writeHeader();
             writeSectionHeader("IL2CPP application-specific type definition addresses");
@@ -144,7 +144,7 @@ typedef size_t uintptr_t;
             var methodFile = Path.Combine(outputPath, "il2cpp-functions.h");
 
             using var fs4 = new FileStream(methodFile, FileMode.Create);
-            writer = new StreamWriter(fs4, Encoding.UTF8);
+            writer = new StreamWriter(fs4, Encoding.ASCII);
 
             writeHeader();
             writeSectionHeader("IL2CPP application-specific method definition addresses and signatures");
