@@ -25,18 +25,33 @@ namespace Il2CppInspector.Outputs
 
         public CppScaffolding(AppModel model) => this.model = model;
 
-        public void Write(string outputPath) {
-            // Ensure output directory exists and is not a file
-            // A System.IOException will be thrown if it's a file'
-            Directory.CreateDirectory(outputPath);
-
-            // Write type definitions to il2cpp-types.h
-            var typeHeaderFile = Path.Combine(outputPath, "il2cpp-types.h");
-
+        // Write the type header
+        // This can be used by other output modules
+        public void WriteTypes(string typeHeaderFile) {
             using var fs = new FileStream(typeHeaderFile, FileMode.Create);
             writer = new StreamWriter(fs, Encoding.UTF8);
 
             writeHeader();
+
+            // Write primitive type definitions for when we're not including other headers
+            writeCode($@"#if defined(_GHIDRA_) || defined(_IDA_)
+typedef unsigned __int8 uint8_t;
+typedef unsigned __int16 uint16_t;
+typedef unsigned __int32 uint32_t;
+typedef unsigned __int64 uint64_t;
+typedef __int8 int8_t;
+typedef __int16 int16_t;
+typedef __int32 int32_t;
+typedef __int64 int64_t;
+#endif
+
+#if defined(_GHIDRA_)
+typedef __int{model.Package.BinaryImage.Bits} size_t;
+typedef size_t intptr_t;
+typedef size_t uintptr_t;
+#endif
+");
+
             writeSectionHeader("IL2CPP internal types");
             writeCode(model.UnityHeaders.GetTypeHeaderText(model.WordSize));
 
@@ -44,16 +59,30 @@ namespace Il2CppInspector.Outputs
             if (model.TargetCompiler == CppCompilerType.MSVC)
                 writeCode("#pragma warning(disable : 4369)");
 
+            // C does not support namespaces
+            writeCode("#if !defined(_GHIDRA_) && !defined(_IDA_)");
             writeCode("namespace app {");
+            writeCode("#endif");
             writeLine("");
 
             writeTypesForGroup("Application types from method calls", "types_from_methods");
             writeTypesForGroup("Application types from generic methods", "types_from_generic_methods");
             writeTypesForGroup("Application types from usages", "types_from_usages");
 
+            writeCode("#if !defined(_GHIDRA_) && !defined(_IDA_)");
             writeCode("}");
+            writeCode("#endif");
 
             writer.Close();
+        }
+
+        public void Write(string outputPath) {
+            // Ensure output directory exists and is not a file
+            // A System.IOException will be thrown if it's a file'
+            Directory.CreateDirectory(outputPath);
+
+            // Write type definitions to il2cpp-types.h
+            WriteTypes(Path.Combine(outputPath, "il2cpp-types.h"));
 
             // Write selected Unity API function file to il2cpp-api-functions.h
             // (this is a copy of the header file from an actual Unity install)
