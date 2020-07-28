@@ -21,11 +21,20 @@ namespace Il2CppInspector.Outputs
 
         public IDAPythonScript(AppModel model) => this.model = model;
 
-        public void WriteScriptToFile(string outputFile) {
+        public void WriteScriptToFile(string outputFile, string existingTypeHeaderFIle = null) {
 
-            // Write types file first
+            // Write types file first if it hasn't been specified
             var typeHeaderFile = Path.Combine(Path.GetDirectoryName(outputFile), Path.GetFileNameWithoutExtension(outputFile) + ".h");
-            writeTypes(typeHeaderFile);
+
+            if (string.IsNullOrEmpty(existingTypeHeaderFIle))
+                writeTypes(typeHeaderFile);
+            else
+                typeHeaderFile = existingTypeHeaderFIle;
+
+            var typeHeaderRelativePath = Path.GetRelativePath(Path.GetDirectoryName(Path.GetFullPath(outputFile)),
+                                             Path.GetDirectoryName(Path.GetFullPath(typeHeaderFile)))
+                                         + Path.DirectorySeparatorChar
+                                         + Path.GetFileName(typeHeaderFile);
 
             using var fs = new FileStream(outputFile, FileMode.Create);
             writer = new StreamWriter(fs, Encoding.ASCII);
@@ -40,7 +49,7 @@ namespace Il2CppInspector.Outputs
             writeLine(
 @"original_macros = ida_typeinf.get_c_macros()
 ida_typeinf.set_c_macros(original_macros + "";_IDA_=1"")
-idc.parse_decls(""" + Path.GetFileName(typeHeaderFile) + @""", idc.PT_FILE)
+idc.parse_decls(""" + typeHeaderRelativePath + @""", idc.PT_FILE)
 ida_typeinf.set_c_macros(original_macros)");
 
             writeMethods();

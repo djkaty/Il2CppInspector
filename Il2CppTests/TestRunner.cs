@@ -55,7 +55,7 @@ namespace Il2CppInspector
                 }.WriteSingleFile(testPath + $@"\test-result{nameSuffix}.cs");
 
                 new IDAPythonScript(appModel)
-                    .WriteScriptToFile(testPath + $@"\test-ida-result{nameSuffix}.py");
+                    .WriteScriptToFile(testPath + $@"\test-ida-result{nameSuffix}.py", testPath + $@"\test-cpp-result{nameSuffix}\il2cpp-types.h");
 
                 new CppScaffolding(appModel)
                     .Write(testPath + $@"\test-cpp-result{nameSuffix}");
