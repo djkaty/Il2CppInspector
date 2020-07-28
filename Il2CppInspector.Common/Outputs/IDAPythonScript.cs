@@ -71,7 +71,7 @@ ida_typeinf.set_c_macros(original_macros)");
         
         private void writePreamble() {
             writeLine(
-@"import idaapi
+                @"import idaapi
 
 def SetName(addr, name):
   ret = idc.set_name(addr, name, SN_NOWARN | SN_NOCHECK)
@@ -85,7 +85,10 @@ def MakeFunction(start):
 def SetType(addr, type):
   ret = idc.SetType(addr, type)
   if ret is None:
-    print('SetType(0x%x, %r) failed!' % (addr, type))");
+    print('SetType(0x%x, %r) failed!' % (addr, type))
+
+def SetComment(addr, text):
+  idc.set_cmt(addr, text, 1)");
         }
 
         private void writeTypes(string typeHeaderFile) {
@@ -219,7 +222,7 @@ def SetType(addr, type):
         }
 
         private void writeComment(ulong address, object comment) {
-            writeLine($"idc.set_cmt({address.ToAddressString()}, r'{comment.ToString().ToEscapedString()}', 1)");
+            writeLine($"SetComment({address.ToAddressString()}, r'{comment.ToString().ToEscapedString()}')");
         }
 
         private void writeLine(string line) => writer.WriteLine(line);
