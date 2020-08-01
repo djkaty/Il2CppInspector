@@ -32,7 +32,7 @@ namespace Il2CppInspector.Outputs
                 typeHeaderFile = existingTypeHeaderFIle;
 
             var typeHeaderRelativePath = Path.GetRelativePath(Path.GetDirectoryName(Path.GetFullPath(outputFile)),
-                                             Path.GetDirectoryName(Path.GetFullPath(typeHeaderFile)))
+                                           Path.GetDirectoryName(Path.GetFullPath(typeHeaderFile)))
                                          + Path.DirectorySeparatorChar
                                          + Path.GetFileName(typeHeaderFile);
 
@@ -82,13 +82,19 @@ def SetName(addr, name):
 def MakeFunction(start):
   ida_funcs.add_func(start)
 
+def SetFunctionType(addr, sig):
+  SetType(addr, sig)
+
 def SetType(addr, type):
   ret = idc.SetType(addr, type)
   if ret is None:
     print('SetType(0x%x, %r) failed!' % (addr, type))
 
 def SetComment(addr, text):
-  idc.set_cmt(addr, text, 1)");
+  idc.set_cmt(addr, text, 1)
+
+def SetHeaderComment(addr, text):
+  SetComment(addr, text)");
         }
 
         private void writeTypes(string typeHeaderFile) {
@@ -105,19 +111,19 @@ def SetComment(addr, text):
 
             writeSectionHeader("Custom attributes generators");
             foreach (var method in model.ILModel.AttributesByIndices.Values) {
-                writeTypedName(method.VirtualAddress.Value.Start, method.Signature, method.Name);
+                writeTypedFunctionName(method.VirtualAddress.Value.Start, method.Signature, method.Name);
             }
 
             writeSectionHeader("Method.Invoke thunks");
             foreach (var method in model.ILModel.MethodInvokers.Where(m => m != null)) {
-                writeTypedName(method.VirtualAddress.Start, method.GetSignature(model.UnityVersion), method.Name);
+                writeTypedFunctionName(method.VirtualAddress.Start, method.GetSignature(model.UnityVersion), method.Name);
             }
         }
 
         private void writeMethods(IEnumerable<AppMethod> methods) {
             foreach (var method in methods) {
-                writeTypedName(method.MethodCodeAddress, method.CppFnPtrType.ToSignatureString(), method.CppFnPtrType.Name);
-                writeComment(method.MethodCodeAddress, method.Method);
+                writeTypedFunctionName(method.MethodCodeAddress, method.CppFnPtrType.ToSignatureString(), method.CppFnPtrType.Name);
+                writeHeaderComment(method.MethodCodeAddress, method.Method);
             }
         }
 
@@ -221,8 +227,17 @@ def SetComment(addr, text):
             writeLine($"SetType({address.ToAddressString()}, r'{type.ToEscapedString()}')");
         }
 
+        private void writeTypedFunctionName(ulong address, string type, string name) {
+            writeName(address, name);
+            writeLine($"SetFunctionType({address.ToAddressString()}, r'{type.ToEscapedString()}')");
+        }
+
         private void writeComment(ulong address, object comment) {
             writeLine($"SetComment({address.ToAddressString()}, r'{comment.ToString().ToEscapedString()}')");
+        }
+
+        private void writeHeaderComment(ulong address, object comment) {
+            writeLine($"SetHeaderComment({address.ToAddressString()}, r'{comment.ToString().ToEscapedString()}')");
         }
 
         private void writeLine(string line) => writer.WriteLine(line);
