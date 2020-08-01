@@ -49,7 +49,7 @@ namespace Il2CppInspector.Outputs
             writeLine(
 @"original_macros = ida_typeinf.get_c_macros()
 ida_typeinf.set_c_macros(original_macros + "";_IDA_=1"")
-idc.parse_decls(""" + typeHeaderRelativePath + @""", idc.PT_FILE)
+idc.parse_decls(""" + typeHeaderRelativePath.ToEscapedString() + @""", idc.PT_FILE)
 ida_typeinf.set_c_macros(original_macros)");
 
             writeMethods();
