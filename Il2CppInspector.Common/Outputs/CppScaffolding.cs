@@ -80,17 +80,24 @@ typedef size_t uintptr_t;
             writer.Close();
         }
 
-        public void Write(string outputPath) {
+        public void Write(string projectPath) {
             // Ensure output directory exists and is not a file
             // A System.IOException will be thrown if it's a file'
-            Directory.CreateDirectory(outputPath);
+            var srcUserPath = Path.Combine(projectPath, "user");
+            var srcFxPath = Path.Combine(projectPath, "framework");
+            var srcDataPath = Path.Combine(projectPath, "appdata");
+
+            Directory.CreateDirectory(projectPath);
+            Directory.CreateDirectory(srcUserPath);
+            Directory.CreateDirectory(srcFxPath);
+            Directory.CreateDirectory(srcDataPath);
 
             // Write type definitions to il2cpp-types.h
-            WriteTypes(Path.Combine(outputPath, "il2cpp-types.h"));
+            WriteTypes(Path.Combine(srcDataPath, "il2cpp-types.h"));
 
             // Write selected Unity API function file to il2cpp-api-functions.h
             // (this is a copy of the header file from an actual Unity install)
-            var il2cppApiFile = Path.Combine(outputPath, "il2cpp-api-functions.h");
+            var il2cppApiFile = Path.Combine(srcDataPath, "il2cpp-api-functions.h");
             var apiHeaderText = model.UnityHeaders.GetAPIHeaderText();
 
             using var fsApi = new FileStream(il2cppApiFile, FileMode.Create);
@@ -110,7 +117,7 @@ typedef size_t uintptr_t;
             writer.Close();
 
             // Write API function pointers to il2cpp-function-ptr.h
-            var il2cppFnPtrFile = Path.Combine(outputPath, "il2cpp-function-ptr.h");
+            var il2cppFnPtrFile = Path.Combine(srcDataPath, "il2cpp-function-ptr.h");
 
             using var fs2 = new FileStream(il2cppFnPtrFile, FileMode.Create);
             writer = new StreamWriter(fs2, Encoding.ASCII);
@@ -130,7 +137,7 @@ typedef size_t uintptr_t;
             writer.Close();
 
             // Write application type definition addresses to il2cpp-type-ptr.h
-            var il2cppTypeInfoFile = Path.Combine(outputPath, "il2cpp-type-ptr.h");
+            var il2cppTypeInfoFile = Path.Combine(srcDataPath, "il2cpp-type-ptr.h");
 
             using var fs3 = new FileStream(il2cppTypeInfoFile, FileMode.Create);
             writer = new StreamWriter(fs3, Encoding.ASCII);
@@ -145,7 +152,7 @@ typedef size_t uintptr_t;
             writer.Close();
 
             // Write method pointers and signatures to il2cpp-functions.h
-            var methodFile = Path.Combine(outputPath, "il2cpp-functions.h");
+            var methodFile = Path.Combine(srcDataPath, "il2cpp-functions.h");
 
             using var fs4 = new FileStream(methodFile, FileMode.Create);
             writer = new StreamWriter(fs4, Encoding.ASCII);
@@ -165,19 +172,24 @@ typedef size_t uintptr_t;
             writer.Close();
 
             // Write boilerplate code
-            File.WriteAllText(Path.Combine(outputPath, "il2cpp-init.h"), Resources.Cpp_IL2CPPInitH);
-            File.WriteAllText(Path.Combine(outputPath, "helpers.h"), Resources.Cpp_HelpersH);
-            File.WriteAllText(Path.Combine(outputPath, "dllmain.h"), Resources.Cpp_DLLMainH);
-            File.WriteAllText(Path.Combine(outputPath, "main.cpp"), Resources.Cpp_MainCpp);
-            File.WriteAllText(Path.Combine(outputPath, "helpers.cpp"), Resources.Cpp_HelpersCpp);
-            File.WriteAllText(Path.Combine(outputPath, "dllmain.cpp"), Resources.Cpp_DLLMainCpp);
+            File.WriteAllText(Path.Combine(srcFxPath, "dllmain.cpp"), Resources.Cpp_DLLMainCpp);
+            File.WriteAllText(Path.Combine(srcFxPath, "helpers.cpp"), Resources.Cpp_HelpersCpp);
+            File.WriteAllText(Path.Combine(srcFxPath, "helpers.h"), Resources.Cpp_HelpersH);
+            File.WriteAllText(Path.Combine(srcFxPath, "il2cpp-appdata.h"), Resources.Cpp_Il2CppAppDataH);
+            File.WriteAllText(Path.Combine(srcFxPath, "il2cpp-init.cpp"), Resources.Cpp_Il2CppInitCpp);
+            File.WriteAllText(Path.Combine(srcFxPath, "il2cpp-init.h"), Resources.Cpp_Il2CppInitH);
+            File.WriteAllText(Path.Combine(srcFxPath, "pch-il2cpp.cpp"), Resources.Cpp_PCHIl2Cpp);
+            File.WriteAllText(Path.Combine(srcFxPath, "pch-il2cpp.h"), Resources.Cpp_PCHIl2CppH);
+
+            File.WriteAllText(Path.Combine(srcUserPath, "main.cpp"), Resources.Cpp_MainCpp);
+            File.WriteAllText(Path.Combine(srcUserPath, "main.h"), Resources.Cpp_MainH);
 
             // Write Visual Studio project and solution files
             var projectGuid = Guid.NewGuid();
             var projectName = "IL2CppDLL";
             var projectFile = projectName + ".vcxproj";
 
-            File.WriteAllText(Path.Combine(outputPath, projectFile),
+            File.WriteAllText(Path.Combine(projectPath, projectFile),
                 Resources.CppProjTemplate.Replace("%PROJECTGUID%", projectGuid.ToString()));
 
             var solutionGuid = Guid.NewGuid();
@@ -189,7 +201,7 @@ typedef size_t uintptr_t;
                 .Replace("%PROJECTFILE%", projectFile)
                 .Replace("%SOLUTIONGUID%", solutionGuid.ToString());
 
-            File.WriteAllText(Path.Combine(outputPath, solutionFile), sln);
+            File.WriteAllText(Path.Combine(projectPath, solutionFile), sln);
         }
 
         private void writeHeader() {

@@ -55,7 +55,8 @@ namespace Il2CppInspector
                 }.WriteSingleFile(testPath + $@"\test-result{nameSuffix}.cs");
 
                 new IDAPythonScript(appModel)
-                    .WriteScriptToFile(testPath + $@"\test-ida-result{nameSuffix}.py", testPath + $@"\test-cpp-result{nameSuffix}\il2cpp-types.h");
+                    .WriteScriptToFile(testPath + $@"\test-ida-result{nameSuffix}.py",
+                        testPath + $@"\test-cpp-result{nameSuffix}\appdata\il2cpp-types.h");
 
                 new CppScaffolding(appModel)
                     .Write(testPath + $@"\test-cpp-result{nameSuffix}");
@@ -66,7 +67,7 @@ namespace Il2CppInspector
                 var suffix = (i > 0 ? "-" + i : "");
 
                 compareFiles(testPath, suffix + ".cs", $"test-result{suffix}.cs");
-                compareFiles(testPath, suffix + ".h", $@"test-cpp-result{suffix}\il2cpp-types.h");
+                compareFiles(testPath, suffix + ".h", $@"test-cpp-result{suffix}\appdata\il2cpp-types.h");
                 compareFiles(testPath, suffix + ".py", $"test-ida-result{suffix}.py");
             }
         }

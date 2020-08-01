@@ -119,10 +119,12 @@
   </resheader>
   <data name="Cpp-DLLMainCpp" xml:space="preserve">
     <value>// Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+// DLL entry point
 
 #define WIN32_LEAN_AND_MEAN
-#include "windows.h"
-#include "dllmain.h"
+#include &lt;windows.h&gt;
+#include "il2cpp-init.h"
+#include "main.h"
 
 // DLL entry point
 BOOL APIENTRY DllMain( HMODULE hModule,
@@ -144,51 +146,59 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     return TRUE;
 }</value>
   </data>
-  <data name="Cpp-DLLMainH" xml:space="preserve">
-    <value>// Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
-
-// Entry point declaration for custom injected code
-void Run();
-
-// IL2CPP initializer
-void init_il2cpp();</value>
-  </data>
   <data name="Cpp-HelpersCpp" xml:space="preserve">
     <value>// Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
-// Logging functions
+// Helper functions
 
 #define WIN32_LEAN_AND_MEAN
-#define WIN32_EXTRA_LEAN
 #include &lt;windows.h&gt;
+#include &lt;string&gt;
 #include "helpers.h"
 
-// Write some text to the log file
-void LogWrite(std::string text)
-{
+// Log file location
+extern const LPCWSTR LOG_FILE;
+
+// Helper function to get the module base address
+uintptr_t GetBaseAddress() {
+    return (uintptr_t) GetModuleHandleW(L"GameAssembly.dll");
+}
+
+// Helper function to append text to a file
+void LogWrite(std::string text) {
     HANDLE hfile = CreateFileW(LOG_FILE, FILE_APPEND_DATA, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (hfile == INVALID_HANDLE_VALUE)
-        MessageBox(0, L"Could not open log file", 0, 0);
+        MessageBoxW(0, L"Could not open log file", 0, 0);
 
     DWORD written;
     WriteFile(hfile, text.c_str(), (DWORD) text.length(), &amp;written, NULL);
     WriteFile(hfile, "\r\n", 2, &amp;written, NULL);
     CloseHandle(hfile);
+}
+
+// Helper function to open a new console window and redirect stdout there
+void NewConsole() {
+    AllocConsole();
+    freopen_s((FILE**) stdout, "CONOUT$", "w", stdout);
 }</value>
   </data>
   <data name="Cpp-HelpersH" xml:space="preserve">
     <value>// Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
-// Logging functions
+// Helper functions
 
 #pragma once
+
 #include &lt;string&gt;
 #include &lt;sstream&gt;
-#include &lt;iomanip&gt;
 
-extern const LPCWSTR LOG_FILE;
+// Helper function to get the module base address
+uintptr_t GetBaseAddress();
 
 // Helper function to append text to a file
 void LogWrite(std::string text);
+
+// Helper function to open a new console window and redirect stdout there
+void NewConsole();
 
 // Helper function to convert a pointer to hex
 template&lt;typename T&gt; std::string to_hex_string(T i) {
@@ -197,111 +207,25 @@ template&lt;typename T&gt; std::string to_hex_string(T i) {
     return stream.str();
 }</value>
   </data>
-  <data name="Cpp-IL2CPPInitH" xml:space="preserve">
+  <data name="Cpp_Il2CppInitH" xml:space="preserve">
     <value>// Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
 // IL2CPP application initializer
 
 #pragma once
 
-#include &lt;cstdint&gt;
-
-// Application-specific types
-#include "il2cpp-types.h"
-
-// IL2CPP API function pointers
-#include "il2cpp-function-ptr.h"
-
-// IL2CPP APIs
-#define DO_API(r, n, p) r (*n) p
-#include "il2cpp-api-functions.h"
-#undef DO_API
-
-// Application-specific functions
-#define DO_APP_FUNC(a, r, n, p) r (*n) p
-#include "il2cpp-functions.h"
-#undef DO_APP_FUNC
-
-// TypeInfo pointers
-#define DO_TYPEDEF(a, n) n ## __Class* n ## __TypeInfo
-#include "il2cpp-type-ptr.h"
-#undef DO_TYPEDEF
-
-// Try not to include any Windows symbosl that might cause a naming conflict
-#define WIN32_LEAN_AND_MEAN
-#define WIN32_EXTRA_LEAN
-#define NOIME
-#define NOWINRES
-#define NOGDICAPMASKS
-#define NOVIRTUALKEYCODES
-#define NOWINMESSAGES
-#define NOWINSTYLES
-#define NOSYSMETRICS
-#define NOMENUS
-#define NOICONS
-#define NOKEYSTATES
-#define NOSYSCOMMANDS
-#define NORASTEROPS
-#define NOSHOWWINDOW
-#define OEMRESOURCE
-#define NOATOM
-#define NOCLIPBOARD
-#define NOCOLOR
-#define NOCTLMGR
-#define NODRAWTEXT
-#define NOGDI
-#define NOUSER
-#define NOMB
-#define NOMEMMGR
-#define NOMETAFILE
-#define NOMINMAX
-#define NOMSG
-#define NOOPENFILE
-#define NOSCROLL
-#define NOSERVICE
-#define NOSOUND
-#define NOTEXTMETRIC
-#define NOWH
-#define NOWINOFFSETS
-#define NOCOMM
-#define NOKANJI
-#define NOHELP
-#define NOPROFILER
-#define NODEFERWINDOWPOS
-#define NOMCX
-#define NOIME
-#define NOPROXYSTUB
-#define NOIMAGE
-#define NO
-#define NOTAPE
-#define ANSI_ONLY
-#include "windows.h"
-
-// Initialize everything
-void init_il2cpp() {
-	// Get base address of IL2CPP module
-	uintptr_t baseAddress = (uintptr_t) GetModuleHandleW(L"GameAssembly.dll");
-
-	// Define IL2CPP API function addresses
-	#define DO_API(r, n, p) n = (r (*) p)(baseAddress + n ## _ptr)
-	#include "il2cpp-api-functions.h"
-	#undef DO_API
-
-	// Define function addresses
-	#define DO_APP_FUNC(a, r, n, p) n = (r (*) p)(baseAddress + a)
-	#include "il2cpp-functions.h"
-	#undef DO_APP_FUNC
-
-	// Define TypeInfo variables
-	#define DO_TYPEDEF(a, n) n ## __TypeInfo = *(n ## __Class**) (baseAddress + a);
-	#include "il2cpp-type-ptr.h"
-	#undef DO_TYPEDEF
-}</value>
+// IL2CPP application initializer
+void init_il2cpp();</value>
   </data>
   <data name="Cpp-MainCpp" xml:space="preserve">
     <value>// Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
 // Custom injected code entry point
 
-#include "il2cpp-init.h"
+#include "pch-il2cpp.h"
+
+#define WIN32_LEAN_AND_MEAN
+#include &lt;Windows.h&gt;
+#include &lt;iostream&gt;
+#include "il2cpp-appdata.h"
 #include "helpers.h"
 
 using namespace app;
@@ -309,10 +233,14 @@ using namespace app;
 // Set the name of your log file here
 extern const LPCWSTR LOG_FILE = L"il2cpp-log.txt";
 
-// Injected code entry point
+// Custom injected code entry point
 void Run()
 {
-    LogWrite("Startup");
+    // If you would like to write to a log file, specify the name above and use LogWrite()
+    // LogWrite("Startup");
+
+    // If you would like to output to a new console window, use NewConsole() to open one and redirect stdout
+    // NewConsole();
 
     // Place your custom code here
 }</value>
@@ -338,10 +266,44 @@ void Run()
       &lt;Platform&gt;x64&lt;/Platform&gt;
     &lt;/ProjectConfiguration&gt;
   &lt;/ItemGroup&gt;
+  &lt;ItemGroup&gt;
+    &lt;ClCompile Include="framework\dllmain.cpp"&gt;
+      &lt;PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"&gt;NotUsing&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"&gt;NotUsing&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"&gt;NotUsing&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'"&gt;NotUsing&lt;/PrecompiledHeader&gt;
+    &lt;/ClCompile&gt;
+    &lt;ClCompile Include="framework\helpers.cpp"&gt;
+      &lt;PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"&gt;NotUsing&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"&gt;NotUsing&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"&gt;NotUsing&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'"&gt;NotUsing&lt;/PrecompiledHeader&gt;
+    &lt;/ClCompile&gt;
+    &lt;ClCompile Include="framework\il2cpp-init.cpp" /&gt;
+    &lt;ClCompile Include="framework\pch-il2cpp.cpp"&gt;
+      &lt;PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"&gt;Create&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"&gt;Create&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"&gt;Create&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'"&gt;Create&lt;/PrecompiledHeader&gt;
+    &lt;/ClCompile&gt;
+    &lt;ClCompile Include="user\main.cpp" /&gt;
+  &lt;/ItemGroup&gt;
+  &lt;ItemGroup&gt;
+    &lt;ClInclude Include="appdata\il2cpp-api-functions.h" /&gt;
+    &lt;ClInclude Include="appdata\il2cpp-function-ptr.h" /&gt;
+    &lt;ClInclude Include="appdata\il2cpp-functions.h" /&gt;
+    &lt;ClInclude Include="appdata\il2cpp-type-ptr.h" /&gt;
+    &lt;ClInclude Include="appdata\il2cpp-types.h" /&gt;
+    &lt;ClInclude Include="framework\helpers.h" /&gt;
+    &lt;ClInclude Include="framework\il2cpp-appdata.h" /&gt;
+    &lt;ClInclude Include="framework\il2cpp-init.h" /&gt;
+    &lt;ClInclude Include="framework\pch-il2cpp.h" /&gt;
+    &lt;ClInclude Include="user\main.h" /&gt;
+  &lt;/ItemGroup&gt;
   &lt;PropertyGroup Label="Globals"&gt;
     &lt;!--&lt;VCProjectVersion&gt;16.0&lt;/VCProjectVersion&gt;--&gt;
     &lt;Keyword&gt;Win32Proj&lt;/Keyword&gt;
-    &lt;ProjectGuid&gt;{%PROJECTGUID%}&lt;/ProjectGuid&gt;
+    &lt;ProjectGuid&gt;{%PROJECTGUID}&lt;/ProjectGuid&gt;
     &lt;RootNamespace&gt;Il2CppDLL&lt;/RootNamespace&gt;
     &lt;!--&lt;WindowsTargetPlatformVersion&gt;10.0&lt;/WindowsTargetPlatformVersion&gt;--&gt;
   &lt;/PropertyGroup&gt;
@@ -408,7 +370,10 @@ void Run()
       &lt;SDLCheck&gt;true&lt;/SDLCheck&gt;
       &lt;PreprocessorDefinitions&gt;WIN32;_DEBUG;IL2CPPDLL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)&lt;/PreprocessorDefinitions&gt;
       &lt;ConformanceMode&gt;true&lt;/ConformanceMode&gt;
-      &lt;PrecompiledHeader&gt;NotUsing&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeader&gt;Use&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeaderFile&gt;pch-il2cpp.h&lt;/PrecompiledHeaderFile&gt;
+      &lt;MultiProcessorCompilation&gt;true&lt;/MultiProcessorCompilation&gt;
+      &lt;AdditionalIncludeDirectories&gt;$(ProjectDir)appdata;$(ProjectDir)framework;$(ProjectDir)user&lt;/AdditionalIncludeDirectories&gt;
     &lt;/ClCompile&gt;
     &lt;Link&gt;
       &lt;SubSystem&gt;Windows&lt;/SubSystem&gt;
@@ -424,7 +389,10 @@ void Run()
       &lt;SDLCheck&gt;true&lt;/SDLCheck&gt;
       &lt;PreprocessorDefinitions&gt;WIN32;NDEBUG;IL2CPPDLL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)&lt;/PreprocessorDefinitions&gt;
       &lt;ConformanceMode&gt;true&lt;/ConformanceMode&gt;
-      &lt;PrecompiledHeader&gt;NotUsing&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeader&gt;Use&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeaderFile&gt;pch-il2cpp.h&lt;/PrecompiledHeaderFile&gt;
+      &lt;MultiProcessorCompilation&gt;true&lt;/MultiProcessorCompilation&gt;
+      &lt;AdditionalIncludeDirectories&gt;$(ProjectDir)appdata;$(ProjectDir)framework;$(ProjectDir)user&lt;/AdditionalIncludeDirectories&gt;
     &lt;/ClCompile&gt;
     &lt;Link&gt;
       &lt;SubSystem&gt;Windows&lt;/SubSystem&gt;
@@ -440,7 +408,10 @@ void Run()
       &lt;SDLCheck&gt;true&lt;/SDLCheck&gt;
       &lt;PreprocessorDefinitions&gt;_DEBUG;IL2CPPDLL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)&lt;/PreprocessorDefinitions&gt;
       &lt;ConformanceMode&gt;true&lt;/ConformanceMode&gt;
-      &lt;PrecompiledHeader&gt;NotUsing&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeader&gt;Use&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeaderFile&gt;pch-il2cpp.h&lt;/PrecompiledHeaderFile&gt;
+      &lt;MultiProcessorCompilation&gt;true&lt;/MultiProcessorCompilation&gt;
+      &lt;AdditionalIncludeDirectories&gt;$(ProjectDir)appdata;$(ProjectDir)framework;$(ProjectDir)user&lt;/AdditionalIncludeDirectories&gt;
     &lt;/ClCompile&gt;
     &lt;Link&gt;
       &lt;SubSystem&gt;Windows&lt;/SubSystem&gt;
@@ -456,7 +427,10 @@ void Run()
       &lt;SDLCheck&gt;true&lt;/SDLCheck&gt;
       &lt;PreprocessorDefinitions&gt;NDEBUG;IL2CPPDLL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)&lt;/PreprocessorDefinitions&gt;
       &lt;ConformanceMode&gt;true&lt;/ConformanceMode&gt;
-      &lt;PrecompiledHeader&gt;NotUsing&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeader&gt;Use&lt;/PrecompiledHeader&gt;
+      &lt;PrecompiledHeaderFile&gt;pch-il2cpp.h&lt;/PrecompiledHeaderFile&gt;
+      &lt;MultiProcessorCompilation&gt;true&lt;/MultiProcessorCompilation&gt;
+      &lt;AdditionalIncludeDirectories&gt;$(ProjectDir)appdata;$(ProjectDir)framework;$(ProjectDir)user&lt;/AdditionalIncludeDirectories&gt;
     &lt;/ClCompile&gt;
     &lt;Link&gt;
       &lt;SubSystem&gt;Windows&lt;/SubSystem&gt;
@@ -466,21 +440,6 @@ void Run()
       &lt;EnableUAC&gt;false&lt;/EnableUAC&gt;
     &lt;/Link&gt;
   &lt;/ItemDefinitionGroup&gt;
-  &lt;ItemGroup&gt;
-    &lt;ClCompile Include="dllmain.cpp" /&gt;
-    &lt;ClCompile Include="helpers.cpp" /&gt;
-    &lt;ClCompile Include="main.cpp" /&gt;
-  &lt;/ItemGroup&gt;
-  &lt;ItemGroup&gt;
-    &lt;ClInclude Include="dllmain.h" /&gt;
-    &lt;ClInclude Include="helpers.h" /&gt;
-    &lt;ClInclude Include="il2cpp-api-functions.h" /&gt;
-    &lt;ClInclude Include="il2cpp-init.h" /&gt;
-    &lt;ClInclude Include="il2cpp-function-ptr.h" /&gt;
-    &lt;ClInclude Include="il2cpp-functions.h" /&gt;
-    &lt;ClInclude Include="il2cpp-type-ptr.h" /&gt;
-    &lt;ClInclude Include="il2cpp-types.h" /&gt;
-  &lt;/ItemGroup&gt;
   &lt;Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" /&gt;
   &lt;ImportGroup Label="ExtensionTargets"&gt;
   &lt;/ImportGroup&gt;
@@ -1171,5 +1130,122 @@ Global
 	EndGlobalSection
 EndGlobal
 </value>
+  </data>
+  <data name="Cpp-Il2CppAppDataH" xml:space="preserve">
+    <value>// Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+// IL2CPP application data
+
+#pragma once
+
+#include &lt;cstdint&gt;
+
+// Application-specific types
+#include "il2cpp-types.h"
+
+// IL2CPP API function pointers
+#include "il2cpp-function-ptr.h"
+
+// IL2CPP APIs
+#define DO_API(r, n, p) extern r (*n) p
+#include "il2cpp-api-functions.h"
+#undef DO_API
+
+// Application-specific functions
+#define DO_APP_FUNC(a, r, n, p) extern r (*n) p
+namespace app {
+	#include "il2cpp-functions.h"
+}
+#undef DO_APP_FUNC
+
+// TypeInfo pointers
+#define DO_TYPEDEF(a, n) extern n ## __Class* n ## __TypeInfo
+namespace app {
+	#include "il2cpp-type-ptr.h"
+}
+#undef DO_TYPEDEF</value>
+  </data>
+  <data name="Cpp-Il2CppInitCpp" xml:space="preserve">
+    <value>// Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+// IL2CPP application initializer
+
+#include "pch-il2cpp.h"
+
+#include "il2cpp-appdata.h"
+#include "il2cpp-init.h"
+#include "helpers.h"
+
+// IL2CPP APIs
+#define DO_API(r, n, p) r (*n) p
+#include "il2cpp-api-functions.h"
+#undef DO_API
+
+// Application-specific functions
+#define DO_APP_FUNC(a, r, n, p) r (*n) p
+namespace app {
+#include "il2cpp-functions.h"
+}
+#undef DO_APP_FUNC
+
+// TypeInfo pointers
+#define DO_TYPEDEF(a, n) n ## __Class* n ## __TypeInfo
+namespace app {
+#include "il2cpp-type-ptr.h"
+}
+#undef DO_TYPEDEF
+
+// IL2CPP application initializer
+void init_il2cpp()
+{
+	// Get base address of IL2CPP module
+	uintptr_t baseAddress = GetBaseAddress();
+
+	using namespace app;
+
+	// Define IL2CPP API function addresses
+	#define DO_API(r, n, p) n = (r (*) p)(baseAddress + n ## _ptr)
+	#include "il2cpp-api-functions.h"
+	#undef DO_API
+
+	// Define function addresses
+	#define DO_APP_FUNC(a, r, n, p) n = (r (*) p)(baseAddress + a)
+	#include "il2cpp-functions.h"
+	#undef DO_APP_FUNC
+
+	// Define TypeInfo variables
+	#define DO_TYPEDEF(a, n) n ## __TypeInfo = *(n ## __Class**) (baseAddress + a);
+	#include "il2cpp-type-ptr.h"
+	#undef DO_TYPEDEF
+}</value>
+  </data>
+  <data name="Cpp-MainH" xml:space="preserve">
+    <value>// Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+// Custom injected code entry point
+
+#pragma once
+
+// Custom injected code entry point
+void Run();</value>
+  </data>
+  <data name="Cpp-PCHIl2Cpp" xml:space="preserve">
+    <value>// pch.cpp: source file corresponding to the pre-compiled header
+
+#include "pch-il2cpp.h"
+
+// When you are using pre-compiled headers, this source file is necessary for compilation to succeed.</value>
+  </data>
+  <data name="Cpp-PCHIl2CppH" xml:space="preserve">
+    <value>// pch.h: This is a precompiled header file.
+// Files listed below are compiled only once, improving build performance for future builds.
+// This also affects IntelliSense performance, including code completion and many code browsing features.
+// However, files listed here are ALL re-compiled if any one of them is updated between builds.
+// Do not add files here that you will be updating frequently as this negates the performance advantage.
+
+#ifndef PCH_IL2CPP_H
+#define PCH_IL2CPP_H
+
+// add headers that you want to pre-compile here
+#include "il2cpp-appdata.h"
+
+#endif //PCH_IL2CPP_H</value>
   </data>
 </root>

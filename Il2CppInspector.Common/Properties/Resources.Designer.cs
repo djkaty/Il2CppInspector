@@ -62,10 +62,12 @@ namespace Il2CppInspector.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to // Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+        ///// DLL entry point
         ///
         ///#define WIN32_LEAN_AND_MEAN
-        ///#include &quot;windows.h&quot;
-        ///#include &quot;dllmain.h&quot;
+        ///#include &lt;windows.h&gt;
+        ///#include &quot;il2cpp-init.h&quot;
+        ///#include &quot;main.h&quot;
         ///
         ///// DLL entry point
         ///BOOL APIENTRY DllMain( HMODULE hModule,
@@ -77,7 +79,7 @@ namespace Il2CppInspector.Properties {
         ///    {
         ///    case DLL_PROCESS_ATTACH:
         ///        init_il2cpp();
-        ///        CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) Run, NULL,  [rest of string was truncated]&quot;;.
+        ///        CreateThread(NULL, 0, (LPTHREAD_S [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_DLLMainCpp {
             get {
@@ -87,35 +89,24 @@ namespace Il2CppInspector.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to // Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
-        ///
-        ///// Entry point declaration for custom injected code
-        ///void Run();
-        ///
-        ///// IL2CPP initializer
-        ///void init_il2cpp();.
-        /// </summary>
-        internal static string Cpp_DLLMainH {
-            get {
-                return ResourceManager.GetString("Cpp-DLLMainH", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to // Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
-        ///// Logging functions
+        ///// Helper functions
         ///
         ///#define WIN32_LEAN_AND_MEAN
-        ///#define WIN32_EXTRA_LEAN
         ///#include &lt;windows.h&gt;
+        ///#include &lt;string&gt;
         ///#include &quot;helpers.h&quot;
         ///
-        ///// Write some text to the log file
-        ///void LogWrite(std::string text)
-        ///{
-        ///    HANDLE hfile = CreateFileW(LOG_FILE, FILE_APPEND_DATA, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+        ///// Log file location
+        ///extern const LPCWSTR LOG_FILE;
         ///
-        ///    if (hfile == INVALID_HANDLE_VALUE)
-        ///        MessageBox(0, L&quot;Could not open log file&quot;, 0,  [rest of string was truncated]&quot;;.
+        ///// Helper function to get the module base address
+        ///uintptr_t GetBaseAddress() {
+        ///    return (uintptr_t) GetModuleHandleW(L&quot;GameAssembly.dll&quot;);
+        ///}
+        ///
+        ///// Helper function to append text to a file
+        ///void LogWrite(std::string text) {
+        ///    HANDLE hfile = CreateFileW(LOG [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_HelpersCpp {
             get {
@@ -125,22 +116,24 @@ namespace Il2CppInspector.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to // Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
-        ///// Logging functions
+        ///// Helper functions
         ///
         ///#pragma once
+        ///
         ///#include &lt;string&gt;
         ///#include &lt;sstream&gt;
-        ///#include &lt;iomanip&gt;
         ///
-        ///extern const LPCWSTR LOG_FILE;
+        ///// Helper function to get the module base address
+        ///uintptr_t GetBaseAddress();
         ///
         ///// Helper function to append text to a file
         ///void LogWrite(std::string text);
         ///
+        ///// Helper function to open a new console window and redirect stdout there
+        ///void NewConsole();
+        ///
         ///// Helper function to convert a pointer to hex
-        ///template&lt;typename T&gt; std::string to_hex_string(T i) {
-        ///    std::stringstream stream;
-        ///    stream &lt;&lt; &quot;0x&quot; &lt;&lt; std::setfill(&apos;0&apos;) &lt;&lt; std::setw(sizeof(T) * 2) &lt;&lt; [rest of string was truncated]&quot;;.
+        ///template&lt;typename T&gt; std::string to_hex_string(T [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_HelpersH {
             get {
@@ -150,7 +143,7 @@ namespace Il2CppInspector.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to // Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
-        ///// IL2CPP application initializer
+        ///// IL2CPP application data
         ///
         ///#pragma once
         ///
@@ -163,18 +156,65 @@ namespace Il2CppInspector.Properties {
         ///#include &quot;il2cpp-function-ptr.h&quot;
         ///
         ///// IL2CPP APIs
+        ///#define DO_API(r, n, p) extern r (*n) p
+        ///#include &quot;il2cpp-api-functions.h&quot;
+        ///#undef DO_API
+        ///
+        ///// Application-specific functions
+        ///#define DO_APP_FUNC(a, r, n, p) extern r (*n) p
+        ///namespace app {
+        ///	#include &quot;il2cpp-functions.h&quot;
+        ///} [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Cpp_Il2CppAppDataH {
+            get {
+                return ResourceManager.GetString("Cpp-Il2CppAppDataH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+        ///// IL2CPP application initializer
+        ///
+        ///#include &quot;pch-il2cpp.h&quot;
+        ///
+        ///#include &quot;il2cpp-appdata.h&quot;
+        ///#include &quot;il2cpp-init.h&quot;
+        ///#include &quot;helpers.h&quot;
+        ///
+        ///// IL2CPP APIs
         ///#define DO_API(r, n, p) r (*n) p
         ///#include &quot;il2cpp-api-functions.h&quot;
         ///#undef DO_API
         ///
         ///// Application-specific functions
         ///#define DO_APP_FUNC(a, r, n, p) r (*n) p
+        ///namespace app {
         ///#include &quot;il2cpp-functions.h&quot;
-        ///#und [rest of string was truncated]&quot;;.
+        ///}
+        ///#undef DO_APP_FUNC
+        ///
+        ///// TypeInfo pointers
+        ///#define DO_TYPEDEF(a, n [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Cpp_IL2CPPInitH {
+        internal static string Cpp_Il2CppInitCpp {
             get {
-                return ResourceManager.GetString("Cpp-IL2CPPInitH", resourceCulture);
+                return ResourceManager.GetString("Cpp-Il2CppInitCpp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+        ///// IL2CPP application initializer
+        ///
+        ///#pragma once
+        ///
+        ///// IL2CPP application initializer
+        ///void init_il2cpp();.
+        /// </summary>
+        internal static string Cpp_Il2CppInitH {
+            get {
+                return ResourceManager.GetString("Cpp_Il2CppInitH", resourceCulture);
             }
         }
         
@@ -182,7 +222,12 @@ namespace Il2CppInspector.Properties {
         ///   Looks up a localized string similar to // Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
         ///// Custom injected code entry point
         ///
-        ///#include &quot;il2cpp-init.h&quot;
+        ///#include &quot;pch-il2cpp.h&quot;
+        ///
+        ///#define WIN32_LEAN_AND_MEAN
+        ///#include &lt;Windows.h&gt;
+        ///#include &lt;iostream&gt;
+        ///#include &quot;il2cpp-appdata.h&quot;
         ///#include &quot;helpers.h&quot;
         ///
         ///using namespace app;
@@ -190,17 +235,60 @@ namespace Il2CppInspector.Properties {
         ///// Set the name of your log file here
         ///extern const LPCWSTR LOG_FILE = L&quot;il2cpp-log.txt&quot;;
         ///
-        ///// Injected code entry point
+        ///// Custom injected code entry point
         ///void Run()
         ///{
-        ///    LogWrite(&quot;Startup&quot;);
-        ///
-        ///    // Place your custom code here
-        ///}.
+        ///    // If you would like to write to a log file, specify the name above and u [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_MainCpp {
             get {
                 return ResourceManager.GetString("Cpp-MainCpp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
+        ///// Custom injected code entry point
+        ///
+        ///#pragma once
+        ///
+        ///// Custom injected code entry point
+        ///void Run();.
+        /// </summary>
+        internal static string Cpp_MainH {
+            get {
+                return ResourceManager.GetString("Cpp-MainH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // pch.cpp: source file corresponding to the pre-compiled header
+        ///
+        ///#include &quot;pch-il2cpp.h&quot;
+        ///
+        ///// When you are using pre-compiled headers, this source file is necessary for compilation to succeed..
+        /// </summary>
+        internal static string Cpp_PCHIl2Cpp {
+            get {
+                return ResourceManager.GetString("Cpp-PCHIl2Cpp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // pch.h: This is a precompiled header file.
+        ///// Files listed below are compiled only once, improving build performance for future builds.
+        ///// This also affects IntelliSense performance, including code completion and many code browsing features.
+        ///// However, files listed here are ALL re-compiled if any one of them is updated between builds.
+        ///// Do not add files here that you will be updating frequently as this negates the performance advantage.
+        ///
+        ///#ifndef PCH_IL2CPP_H
+        ///#define PCH_IL2CPP_H
+        ///
+        ///// add headers [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Cpp_PCHIl2CppH {
+            get {
+                return ResourceManager.GetString("Cpp-PCHIl2CppH", resourceCulture);
             }
         }
         
@@ -238,7 +326,7 @@ namespace Il2CppInspector.Properties {
         ///		Release|x64 = Release|x64
         ///		Release|x86 = Release|x86
         ///	EndGlobalSection
-        ///	GlobalSection(ProjectConfig [rest of string was truncated]&quot;;.
+        ///	GlobalSection(ProjectConfigurationPlatfo [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CppSlnTemplate {
             get {

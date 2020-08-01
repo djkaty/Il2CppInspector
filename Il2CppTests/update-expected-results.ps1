@@ -10,8 +10,8 @@ $bin = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-result.cs)
 $bin2 = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-result-1.cs)
 $py = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-ida-result.py)
 $py2 = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-ida-result-1.py)
-$cpp = (gci "$PSScriptRoot/TestBinaries/*/test-cpp-result/*" -Filter il2cpp-types.h)
-$cpp2 = (gci "$PSScriptRoot/TestBinaries/*/test-cpp-result-1/*" -Filter il2cpp-types.h)
+$cpp = (gci "$PSScriptRoot/TestBinaries/*/test-cpp-result/appdata/*" -Filter il2cpp-types.h)
+$cpp2 = (gci "$PSScriptRoot/TestBinaries/*/test-cpp-result-1/appdata/*" -Filter il2cpp-types.h)
 
 # Get path to expected test results
 $results = "$PSScriptRoot/TestExpectedResults"
