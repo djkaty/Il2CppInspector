@@ -116,8 +116,8 @@ typedef size_t uintptr_t;
             }
             writer.Close();
 
-            // Write API function pointers to il2cpp-function-ptr.h
-            var il2cppFnPtrFile = Path.Combine(srcDataPath, "il2cpp-function-ptr.h");
+            // Write API function pointers to il2cpp-api-functions-ptr.h
+            var il2cppFnPtrFile = Path.Combine(srcDataPath, "il2cpp-api-functions-ptr.h");
 
             using var fs2 = new FileStream(il2cppFnPtrFile, FileMode.Create);
             writer = new StreamWriter(fs2, Encoding.ASCII);
@@ -136,8 +136,8 @@ typedef size_t uintptr_t;
 
             writer.Close();
 
-            // Write application type definition addresses to il2cpp-type-ptr.h
-            var il2cppTypeInfoFile = Path.Combine(srcDataPath, "il2cpp-type-ptr.h");
+            // Write application type definition addresses to il2cpp-types-ptr.h
+            var il2cppTypeInfoFile = Path.Combine(srcDataPath, "il2cpp-types-ptr.h");
 
             using var fs3 = new FileStream(il2cppTypeInfoFile, FileMode.Create);
             writer = new StreamWriter(fs3, Encoding.ASCII);

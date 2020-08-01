@@ -122,6 +122,7 @@ namespace Il2CppInspector.Properties {
         ///
         ///#include &lt;string&gt;
         ///#include &lt;sstream&gt;
+        ///#include &lt;iomanip&gt;
         ///
         ///// Helper function to get the module base address
         ///uintptr_t GetBaseAddress();
@@ -133,7 +134,7 @@ namespace Il2CppInspector.Properties {
         ///void NewConsole();
         ///
         ///// Helper function to convert a pointer to hex
-        ///template&lt;typename T&gt; std::string to_hex_string(T [rest of string was truncated]&quot;;.
+        ///template&lt;t [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_HelpersH {
             get {
@@ -153,7 +154,7 @@ namespace Il2CppInspector.Properties {
         ///#include &quot;il2cpp-types.h&quot;
         ///
         ///// IL2CPP API function pointers
-        ///#include &quot;il2cpp-function-ptr.h&quot;
+        ///#include &quot;il2cpp-api-functions-ptr.h&quot;
         ///
         ///// IL2CPP APIs
         ///#define DO_API(r, n, p) extern r (*n) p
@@ -163,8 +164,7 @@ namespace Il2CppInspector.Properties {
         ///// Application-specific functions
         ///#define DO_APP_FUNC(a, r, n, p) extern r (*n) p
         ///namespace app {
-        ///	#include &quot;il2cpp-functions.h&quot;
-        ///} [rest of string was truncated]&quot;;.
+        ///	#incl [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_Il2CppAppDataH {
             get {
@@ -195,7 +195,7 @@ namespace Il2CppInspector.Properties {
         ///#undef DO_APP_FUNC
         ///
         ///// TypeInfo pointers
-        ///#define DO_TYPEDEF(a, n [rest of string was truncated]&quot;;.
+        ///# [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_Il2CppInitCpp {
             get {

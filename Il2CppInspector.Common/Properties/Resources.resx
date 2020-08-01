@@ -190,6 +190,7 @@ void NewConsole() {
 
 #include &lt;string&gt;
 #include &lt;sstream&gt;
+#include &lt;iomanip&gt;
 
 // Helper function to get the module base address
 uintptr_t GetBaseAddress();
@@ -290,9 +291,9 @@ void Run()
   &lt;/ItemGroup&gt;
   &lt;ItemGroup&gt;
     &lt;ClInclude Include="appdata\il2cpp-api-functions.h" /&gt;
-    &lt;ClInclude Include="appdata\il2cpp-function-ptr.h" /&gt;
+    &lt;ClInclude Include="appdata\il2cpp-api-functions-ptr.h" /&gt;
     &lt;ClInclude Include="appdata\il2cpp-functions.h" /&gt;
-    &lt;ClInclude Include="appdata\il2cpp-type-ptr.h" /&gt;
+    &lt;ClInclude Include="appdata\il2cpp-types-ptr.h" /&gt;
     &lt;ClInclude Include="appdata\il2cpp-types.h" /&gt;
     &lt;ClInclude Include="framework\helpers.h" /&gt;
     &lt;ClInclude Include="framework\il2cpp-appdata.h" /&gt;
@@ -1143,7 +1144,7 @@ EndGlobal
 #include "il2cpp-types.h"
 
 // IL2CPP API function pointers
-#include "il2cpp-function-ptr.h"
+#include "il2cpp-api-functions-ptr.h"
 
 // IL2CPP APIs
 #define DO_API(r, n, p) extern r (*n) p
@@ -1160,7 +1161,7 @@ namespace app {
 // TypeInfo pointers
 #define DO_TYPEDEF(a, n) extern n ## __Class* n ## __TypeInfo
 namespace app {
-	#include "il2cpp-type-ptr.h"
+	#include "il2cpp-types-ptr.h"
 }
 #undef DO_TYPEDEF</value>
   </data>
@@ -1189,7 +1190,7 @@ namespace app {
 // TypeInfo pointers
 #define DO_TYPEDEF(a, n) n ## __Class* n ## __TypeInfo
 namespace app {
-#include "il2cpp-type-ptr.h"
+#include "il2cpp-types-ptr.h"
 }
 #undef DO_TYPEDEF
 
@@ -1213,7 +1214,7 @@ void init_il2cpp()
 
 	// Define TypeInfo variables
 	#define DO_TYPEDEF(a, n) n ## __TypeInfo = *(n ## __Class**) (baseAddress + a);
-	#include "il2cpp-type-ptr.h"
+	#include "il2cpp-types-ptr.h"
 	#undef DO_TYPEDEF
 }</value>
   </data>
