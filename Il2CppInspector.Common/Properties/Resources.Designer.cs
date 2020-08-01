@@ -294,6 +294,28 @@ namespace Il2CppInspector.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;Project ToolsVersion=&quot;4.0&quot; xmlns=&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;&gt;
+        ///  &lt;ItemGroup&gt;
+        ///    &lt;ClCompile Include=&quot;user\main.cpp&quot;&gt;
+        ///      &lt;Filter&gt;user&lt;/Filter&gt;
+        ///    &lt;/ClCompile&gt;
+        ///    &lt;ClCompile Include=&quot;framework\dllmain.cpp&quot;&gt;
+        ///      &lt;Filter&gt;framework&lt;/Filter&gt;
+        ///    &lt;/ClCompile&gt;
+        ///    &lt;ClCompile Include=&quot;framework\helpers.cpp&quot;&gt;
+        ///      &lt;Filter&gt;framework&lt;/Filter&gt;
+        ///    &lt;/ClCompile&gt;
+        ///    &lt;ClCompile Include=&quot;framework\il2cpp-init.cpp&quot;&gt;
+        ///      &lt;Filter&gt;framework&lt; [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string CppProjFilters {
+            get {
+                return ResourceManager.GetString("CppProjFilters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;Project DefaultTargets=&quot;Build&quot; xmlns=&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;&gt;
         ///  &lt;ItemGroup Label=&quot;ProjectConfigurations&quot;&gt;
         ///    &lt;ProjectConfiguration Include=&quot;Debug|Win32&quot;&gt;

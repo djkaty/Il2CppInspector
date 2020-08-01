@@ -1249,4 +1249,69 @@ void Run();</value>
 
 #endif //PCH_IL2CPP_H</value>
   </data>
+  <data name="CppProjFilters" xml:space="preserve">
+    <value>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"&gt;
+  &lt;ItemGroup&gt;
+    &lt;ClCompile Include="user\main.cpp"&gt;
+      &lt;Filter&gt;user&lt;/Filter&gt;
+    &lt;/ClCompile&gt;
+    &lt;ClCompile Include="framework\dllmain.cpp"&gt;
+      &lt;Filter&gt;framework&lt;/Filter&gt;
+    &lt;/ClCompile&gt;
+    &lt;ClCompile Include="framework\helpers.cpp"&gt;
+      &lt;Filter&gt;framework&lt;/Filter&gt;
+    &lt;/ClCompile&gt;
+    &lt;ClCompile Include="framework\il2cpp-init.cpp"&gt;
+      &lt;Filter&gt;framework&lt;/Filter&gt;
+    &lt;/ClCompile&gt;
+    &lt;ClCompile Include="framework\pch-il2cpp.cpp"&gt;
+      &lt;Filter&gt;framework&lt;/Filter&gt;
+    &lt;/ClCompile&gt;
+  &lt;/ItemGroup&gt;
+  &lt;ItemGroup&gt;
+    &lt;ClInclude Include="user\main.h"&gt;
+      &lt;Filter&gt;user&lt;/Filter&gt;
+    &lt;/ClInclude&gt;
+    &lt;ClInclude Include="appdata\il2cpp-api-functions.h"&gt;
+      &lt;Filter&gt;appdata&lt;/Filter&gt;
+    &lt;/ClInclude&gt;
+    &lt;ClInclude Include="appdata\il2cpp-api-functions-ptr.h"&gt;
+      &lt;Filter&gt;appdata&lt;/Filter&gt;
+    &lt;/ClInclude&gt;
+    &lt;ClInclude Include="appdata\il2cpp-functions.h"&gt;
+      &lt;Filter&gt;appdata&lt;/Filter&gt;
+    &lt;/ClInclude&gt;
+    &lt;ClInclude Include="appdata\il2cpp-types.h"&gt;
+      &lt;Filter&gt;appdata&lt;/Filter&gt;
+    &lt;/ClInclude&gt;
+    &lt;ClInclude Include="appdata\il2cpp-types-ptr.h"&gt;
+      &lt;Filter&gt;appdata&lt;/Filter&gt;
+    &lt;/ClInclude&gt;
+    &lt;ClInclude Include="framework\helpers.h"&gt;
+      &lt;Filter&gt;framework&lt;/Filter&gt;
+    &lt;/ClInclude&gt;
+    &lt;ClInclude Include="framework\il2cpp-appdata.h"&gt;
+      &lt;Filter&gt;framework&lt;/Filter&gt;
+    &lt;/ClInclude&gt;
+    &lt;ClInclude Include="framework\il2cpp-init.h"&gt;
+      &lt;Filter&gt;framework&lt;/Filter&gt;
+    &lt;/ClInclude&gt;
+    &lt;ClInclude Include="framework\pch-il2cpp.h"&gt;
+      &lt;Filter&gt;framework&lt;/Filter&gt;
+    &lt;/ClInclude&gt;
+  &lt;/ItemGroup&gt;
+  &lt;ItemGroup&gt;
+    &lt;Filter Include="appdata"&gt;
+      &lt;UniqueIdentifier&gt;{%GUID1%}&lt;/UniqueIdentifier&gt;
+    &lt;/Filter&gt;
+    &lt;Filter Include="framework"&gt;
+      &lt;UniqueIdentifier&gt;{%GUID2%}&lt;/UniqueIdentifier&gt;
+    &lt;/Filter&gt;
+    &lt;Filter Include="user"&gt;
+      &lt;UniqueIdentifier&gt;{%GUID3%}&lt;/UniqueIdentifier&gt;
+    &lt;/Filter&gt;
+  &lt;/ItemGroup&gt;
+&lt;/Project&gt;</value>
+  </data>
 </root>

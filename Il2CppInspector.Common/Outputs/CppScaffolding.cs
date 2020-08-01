@@ -192,6 +192,18 @@ typedef size_t uintptr_t;
             File.WriteAllText(Path.Combine(projectPath, projectFile),
                 Resources.CppProjTemplate.Replace("%PROJECTGUID%", projectGuid.ToString()));
 
+            var guid1 = Guid.NewGuid();
+            var guid2 = Guid.NewGuid();
+            var guid3 = Guid.NewGuid();
+            var filtersFile = projectFile + ".filters";
+
+            var filters = Resources.CppProjFilters
+                .Replace("%GUID1%", guid1.ToString())
+                .Replace("%GUID2%", guid2.ToString())
+                .Replace("%GUID3%", guid3.ToString());
+
+            File.WriteAllText(Path.Combine(projectPath, filtersFile), filters);
+
             var solutionGuid = Guid.NewGuid();
             var solutionFile = projectName + ".sln";
 
