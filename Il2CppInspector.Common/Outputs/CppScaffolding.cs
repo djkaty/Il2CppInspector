@@ -59,6 +59,10 @@ typedef size_t uintptr_t;
             if (model.TargetCompiler == CppCompilerType.MSVC)
                 writeCode("#pragma warning(disable : 4369)");
 
+            // Stop MSVC complaining about constant truncation of enum values
+            if (model.TargetCompiler == CppCompilerType.MSVC)
+                writeCode("#pragma warning(disable : 4309)");
+
             // C does not support namespaces
             writeCode("#if !defined(_GHIDRA_) && !defined(_IDA_)");
             writeCode("namespace app {");
