@@ -35,6 +35,9 @@ namespace Il2CppInspector.CLI
             [Option('h', "cpp-out", Required = false, HelpText = "C++ scaffolding / DLL injection project output path", Default = "cpp")]
             public string CppOutPath { get; set; }
 
+            [Option('o', "json-out", Required = false, HelpText = "JSON metadata output file", Default = "metadata.json")]
+            public string JsonOutPath { get; set; }
+
             [Option('e', "exclude-namespaces", Required = false, Separator = ',', HelpText = "Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces",
                 Default = new [] {
                     "System",
@@ -256,14 +259,19 @@ namespace Il2CppInspector.CLI
                         Console.WriteLine("An error occurred: " + ex.Message);
                 }
 
-                // IDA Python script output
-                using (new Benchmark("Generate IDAPython script")) {
-                    new IDAPythonScript(appModel).WriteScriptToFile(options.PythonOutFile, Path.Combine(options.CppOutPath, "appdata/il2cpp-types.h"));
-                }
-
                 // C++ output
                 using (new Benchmark("Generate C++ code")) {
                     new CppScaffolding(appModel).Write(options.CppOutPath);
+                }
+
+                // JSON output
+                using (new Benchmark("Generate JSON metadata")) {
+                    new JSONMetadata(appModel).Write(options.JsonOutPath);
+                }
+
+                // IDA Python script output
+                using (new Benchmark("Generate IDAPython script")) {
+                    new IDAPythonScript(appModel).WriteScriptToFile(options.PythonOutFile, Path.Combine(options.CppOutPath, "appdata/il2cpp-types.h"));
                 }
             }
 
