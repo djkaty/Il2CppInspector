@@ -366,7 +366,7 @@
                         <!-- IDAPython script -->
                         <RadioButton GroupName="grpOutputType" Name="rdoOutputIDA" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">IDAPython script</RadioButton>
                         <DockPanel>
-                            <ComboBox Name="cboUnityVersion" DockPanel.Dock="Right" Margin="4"></ComboBox>
+                            <ComboBox Name="cboIdaUnityVersion" DockPanel.Dock="Right" Margin="4"></ComboBox>
                             <Label DockPanel.Dock="Left" Width="170" VerticalAlignment="Center" HorizontalAlignment="Left">Unity version (if known):</Label>
                         </DockPanel>
 
@@ -385,6 +385,16 @@
                             </ComboBox>
                             <Label DockPanel.Dock="Left" Width="250" VerticalAlignment="Center" HorizontalAlignment="Left">Target C++ compiler for output:</Label>
                         </DockPanel>
+
+                        <Separator Margin="5,15,5,15"/>
+                            
+                        <!-- JSON metadata -->
+                        <RadioButton GroupName="grpOutputType" Name="rdoOutputJSON" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">JSON metadata</RadioButton>
+                        <DockPanel>
+                            <ComboBox Name="cboJsonUnityVersion" DockPanel.Dock="Right" Margin="4"></ComboBox>
+                            <Label DockPanel.Dock="Left" Width="170" VerticalAlignment="Center" HorizontalAlignment="Left">Unity version (if known):</Label>
+                        </DockPanel>
+
                     </StackPanel>
                     </ScrollViewer>
                 </DockPanel>

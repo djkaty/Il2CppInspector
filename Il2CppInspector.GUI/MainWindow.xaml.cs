@@ -215,19 +215,24 @@ namespace Il2CppInspectorGUI
             trvNamespaces.ItemsSource = namespaceTree;
 
             // Populate Unity version combo boxes
-            var prevSelection = cboUnityVersion.SelectedItem;
+            var prevIdaSelection = cboIdaUnityVersion.SelectedItem;
             var prevCppSelection = cboCppUnityVersion.SelectedItem;
-            cboUnityVersion.Items.Clear();
+            var prevJsonSelection = cboJsonUnityVersion.SelectedItem;
+            cboIdaUnityVersion.Items.Clear();
             cboCppUnityVersion.Items.Clear();
+            cboJsonUnityVersion.Items.Clear();
             foreach (var version in UnityHeaders.GuessHeadersForBinary(model.Package.Binary)) {
-                cboUnityVersion.Items.Add(version);
+                cboIdaUnityVersion.Items.Add(version);
                 cboCppUnityVersion.Items.Add(version);
+                cboJsonUnityVersion.Items.Add(version);
             }
-            cboUnityVersion.SelectedIndex = cboUnityVersion.Items.Count - 1;
+            cboIdaUnityVersion.SelectedIndex = cboIdaUnityVersion.Items.Count - 1;
             cboCppUnityVersion.SelectedIndex = cboCppUnityVersion.Items.Count - 1;
-            if (prevSelection != null) {
-                cboUnityVersion.SelectedItem = prevSelection;
+            cboJsonUnityVersion.SelectedIndex = cboJsonUnityVersion.Items.Count - 1;
+            if (prevIdaSelection != null) {
+                cboIdaUnityVersion.SelectedItem = prevIdaSelection;
                 cboCppUnityVersion.SelectedItem = prevCppSelection;
+                cboJsonUnityVersion.SelectedItem = prevJsonSelection;
             }
         }
 
@@ -407,26 +412,26 @@ namespace Il2CppInspectorGUI
                 // IDA Python script
                 case { rdoOutputIDA: var r } when r.IsChecked == true:
 
-                    var scriptSaveFileDialog = new SaveFileDialog {
+                    var idaSaveFileDialog = new SaveFileDialog {
                         Filter = "Python scripts (*.py)|*.py|All files (*.*)|*.*",
                         FileName = "ida.py",
                         CheckFileExists = false,
                         OverwritePrompt = true
                     };
 
-                    if (scriptSaveFileDialog.ShowDialog() == false)
+                    if (idaSaveFileDialog.ShowDialog() == false)
                         return;
 
-                    var outFile = scriptSaveFileDialog.FileName;
+                    var idaOutFile = idaSaveFileDialog.FileName;
 
                     areaBusyIndicator.Visibility = Visibility.Visible;
-                    var selectedVersion = ((UnityHeaders) cboUnityVersion.SelectedItem)?.VersionRange.Min;
+                    var selectedIdaUnityVersion = ((UnityHeaders) cboIdaUnityVersion.SelectedItem)?.VersionRange.Min;
                     await Task.Run(() => {
                         OnStatusUpdate(this, "Building C++ application model");
-                        model.Build(selectedVersion, CppCompilerType.GCC);
+                        model.Build(selectedIdaUnityVersion, CppCompilerType.GCC);
 
                         OnStatusUpdate(this, "Generating IDAPython script");
-                        new IDAPythonScript(model).WriteScriptToFile(outFile);
+                        new IDAPythonScript(model).WriteScriptToFile(idaOutFile);
                     });
                     break;
 
@@ -452,6 +457,32 @@ namespace Il2CppInspectorGUI
 
                         OnStatusUpdate(this, "Generating C++ scaffolding");
                         new CppScaffolding(model).Write(cppOutPath);
+                    });
+                    break;
+
+                // JSON metadata
+                case { rdoOutputJSON: var r } when r.IsChecked == true:
+
+                    var jsonSaveFileDialog = new SaveFileDialog {
+                        Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
+                        FileName = "metadata.json",
+                        CheckFileExists = false,
+                        OverwritePrompt = true
+                    };
+
+                    if (jsonSaveFileDialog.ShowDialog() == false)
+                        return;
+
+                    var jsonOutFile = jsonSaveFileDialog.FileName;
+
+                    areaBusyIndicator.Visibility = Visibility.Visible;
+                    var selectedJsonUnityVersion = ((UnityHeaders) cboJsonUnityVersion.SelectedItem)?.VersionRange.Min;
+                    await Task.Run(() => {
+                        OnStatusUpdate(this, "Building C++ application model");
+                        model.Build(selectedJsonUnityVersion, CppCompilerType.GCC);
+
+                        OnStatusUpdate(this, "Generating JSON metadata file");
+                        new JSONMetadata(model).Write(jsonOutFile);
                     });
                     break;
             }
