@@ -6,8 +6,10 @@
 # It is only intended to be used during development, not for end-user scenarios
 
 # Get all test results
-$bin = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-result.cs)
-$bin2 = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-result-1.cs)
+$cs = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-result.cs)
+$cs2 = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-result-1.cs)
+$json = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-result.json)
+$json2 = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-result-1.json)
 $py = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-ida-result.py)
 $py2 = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-ida-result-1.py)
 $cpp = (gci "$PSScriptRoot/TestBinaries/*/test-cpp-result/appdata/*" -Filter il2cpp-types.h)
@@ -16,13 +18,23 @@ $cpp2 = (gci "$PSScriptRoot/TestBinaries/*/test-cpp-result-1/appdata/*" -Filter 
 # Get path to expected test results
 $results = "$PSScriptRoot/TestExpectedResults"
 
-$bin | % {
+$cs | % {
 	$target = $results + "/" + (Split-Path -Path (Split-Path -Path $_) -Leaf) + ".cs"
 	cp $_ -Destination $target -Force
 }
 
-$bin2 | % {
+$cs2 | % {
 	$target = $results + "/" + (Split-Path -Path (Split-Path -Path $_) -Leaf) + "-1.cs"
+	cp $_ -Destination $target -Force
+}
+
+$json | % {
+	$target = $results + "/" + (Split-Path -Path (Split-Path -Path $_) -Leaf) + ".json"
+	cp $_ -Destination $target -Force
+}
+
+$json2 | % {
+	$target = $results + "/" + (Split-Path -Path (Split-Path -Path $_) -Leaf) + "-1.json"
 	cp $_ -Destination $target -Force
 }
 
@@ -37,11 +49,11 @@ $py2 | % {
 }
 
 $cpp | % {
-	$target = $results + "/" + (Split-Path -Path (Split-Path -Path (Split-Path -Path $_)) -Leaf) + ".h"
+	$target = $results + "/" + (Split-Path -Path (Split-Path -Path (Split-Path -Path (Split-Path -Path $_))) -Leaf) + ".h"
 	cp $_ -Destination $target -Force
 }
 
 $cpp2 | % {
-	$target = $results + "/" + (Split-Path -Path (Split-Path -Path (Split-Path -Path $_)) -Leaf) + "-1.h"
+	$target = $results + "/" + (Split-Path -Path (Split-Path -Path (Split-Path -Path (Split-Path -Path $_))) -Leaf) + "-1.h"
 	cp $_ -Destination $target -Force
 }

@@ -54,6 +54,9 @@ namespace Il2CppInspector
                     MustCompile = true
                 }.WriteSingleFile(testPath + $@"\test-result{nameSuffix}.cs");
 
+                new JSONMetadata(appModel)
+                    .Write(testPath + $@"\test-result{nameSuffix}.json");
+
                 new IDAPythonScript(appModel)
                     .WriteScriptToFile(testPath + $@"\test-ida-result{nameSuffix}.py",
                         testPath + $@"\test-cpp-result{nameSuffix}\appdata\il2cpp-types.h");
@@ -67,6 +70,7 @@ namespace Il2CppInspector
                 var suffix = (i > 0 ? "-" + i : "");
 
                 compareFiles(testPath, suffix + ".cs", $"test-result{suffix}.cs");
+                compareFiles(testPath, suffix + ".json", $"test-result{suffix}.json");
                 compareFiles(testPath, suffix + ".h", $@"test-cpp-result{suffix}\appdata\il2cpp-types.h");
                 compareFiles(testPath, suffix + ".py", $"test-ida-result{suffix}.py");
             }
