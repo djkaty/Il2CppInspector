@@ -11,13 +11,18 @@ using Il2CppInspector.Model;
 
 namespace Il2CppInspector.Outputs
 {
+    // Output module to produce machine readable metadata in JSON format
     public class JSONMetadata
     {
         private readonly AppModel model;
         private Utf8JsonWriter writer;
 
+        // Allow non-compliant C-style comments in JSON output
+        public bool AllowComments { get; set; } = false;
+
         public JSONMetadata(AppModel model) => this.model = model;
 
+        // Write JSON metadata to file
         public void Write(string outputFile) {
 
             using var fs = new FileStream(outputFile, FileMode.Create);
@@ -68,12 +73,20 @@ namespace Il2CppInspector.Outputs
         }
 
         private void writeStringLiterals() {
-            writeObject("stringLiterals", () => {
+            writeArray("stringLiterals", () => {
                 foreach (var str in model.Strings)
-                    if (model.StringIndexesAreOrdinals)
-                        writer.WriteNumber(str.Value, str.Key);
-                    else
-                        writer.WriteString(str.Key.ToAddressString(), str.Value);
+                    writeObject(() => {
+                        // For version < 19
+                        if (model.StringIndexesAreOrdinals) {
+                            writer.WriteNumber("ordinal", str.Key);
+                            writer.WriteString("name", $"STRINGLITERAL_{str.Key}_{stringToIdentifier(str.Value)}");
+                        // For version >= 19
+                        } else {
+                            writer.WriteString("virtualAddress", str.Key.ToAddressString());
+                            writer.WriteString("name", "StringLiteral_" + stringToIdentifier(str.Value));
+                        }
+                        writer.WriteString("string", str.Value);
+                    });
             }, "String literals");
         }
 
@@ -154,7 +167,7 @@ namespace Il2CppInspector.Outputs
         private void writeObject(Action objectWriter) => writeObject(null, objectWriter);
 
         private void writeObject(string name, Action objectWriter, string description = null) {
-            if (description != null)
+            if (AllowComments && description != null)
                 writer.WriteCommentValue(" " + description + " ");
             if (name != null)
                 writer.WriteStartObject(name);
@@ -166,7 +179,7 @@ namespace Il2CppInspector.Outputs
 
         private void writeArray(string name, Action arrayWriter, string description = null) {
             writer.WriteStartArray(name);
-            if (description != null)
+            if (AllowComments && description != null)
                 writer.WriteCommentValue(" " + description + " ");
             arrayWriter();
             writer.WriteEndArray();
@@ -193,6 +206,11 @@ namespace Il2CppInspector.Outputs
 
         private void writeDotNetTypeName(TypeInfo type) {
             writer.WriteString("dotNetType", type.CSharpName);
+        }
+
+        private static string stringToIdentifier(string str) {
+            str = str.Substring(0, Math.Min(32, str.Length));
+            return str.ToCIdentifier();
         }
     }
 }
