@@ -149,7 +149,8 @@ namespace Il2CppInspector.Outputs
 
                 if (model.Package.Version >= 24.2)
                     writeObject(() => writeTypedName(binary.CodeRegistration.pcodeGenModules,
-                        $"struct Il2CppCodeGenModule *[{binary.CodeRegistration.codeGenModulesCount}]", "g_CodeGenModules"));
+                        // Ghidra doesn't like *[x] or ** so use * * instead
+                        $"struct Il2CppCodeGenModule * *", "g_CodeGenModules"));
 
                 foreach (var ptr in binary.CodeGenModulePointers)
                     writeObject(() => writeTypedName(ptr.Value, "struct Il2CppCodeGenModule", $"g_{ptr.Key.Replace(".dll", "")}CodeGenModule"));
