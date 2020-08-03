@@ -156,12 +156,21 @@ namespace Il2CppInspector.Outputs
                     writeObject(() => writeTypedName(ptr.Value, "struct Il2CppCodeGenModule", $"g_{ptr.Key.Replace(".dll", "")}CodeGenModule"));
             }, "IL2CPP Type Metadata");
 
+            // plagiarism. noun - https://www.lexico.com/en/definition/plagiarism
+	        //   the practice of taking someone else's work or ideas and passing them off as one's own.
+	        // Synonyms: copying, piracy, theft, strealing, infringement of copyright
+
             writeArray("functionMetadata", () => {
                 // This will be zero if we found the structs from the symbol table
                 if (binary.RegistrationFunctionPointer != 0)
-                    writeObject(() => writeTypedFunctionName(binary.RegistrationFunctionPointer,
-                        "void il2cpp_codegen_register(const Il2CppCodeRegistration* const codeRegistration, const Il2CppMetadataRegistration* const metadataRegistration, const Il2CppCodeGenOptions* const codeGenOptions)",
-                        "il2cpp_codegen_register"));
+                    if (model.UnityVersion.CompareTo("5.3.5") >= 0)
+                        writeObject(() => writeTypedFunctionName(binary.RegistrationFunctionPointer,
+                            "void il2cpp_codegen_register(const Il2CppCodeRegistration* const codeRegistration, const Il2CppMetadataRegistration* const metadataRegistration, const Il2CppCodeGenOptions* const codeGenOptions)",
+                            "il2cpp_codegen_register"));
+                    else
+                        writeObject(() => writeTypedFunctionName(binary.RegistrationFunctionPointer,
+                            "void il2cpp_codegen_register(const Il2CppCodeRegistration* const codeRegistration, const Il2CppMetadataRegistration* const metadataRegistration)",
+                            "il2cpp_codegen_register"));
             }, "IL2CPP Function Metadata");
         }
 
