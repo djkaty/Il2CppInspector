@@ -16,6 +16,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Cpp\UnityHeaders\**" />
     <EmbeddedResource Include="Cpp\Il2CppAPIHeaders\**" />
+    <EmbeddedResource Include="Outputs\ScriptResources\**" />
   </ItemGroup>
 
   <ItemGroup>
