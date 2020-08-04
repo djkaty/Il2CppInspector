@@ -23,10 +23,16 @@ namespace Il2CppInspector.Model
         public MethodBase Method { get; internal set; }
 
         // The VA of the MethodInfo* (VA of the pointer to the MethodInfo) object which defines this method
+        // Methods not referenced by the binary will be 0xffffffff_ffffffff
         public ulong MethodInfoPtrAddress { get; internal set; } 
 
-        // The VA of the method code itself, or 0 if unknown/not compiled
-        public ulong MethodCodeAddress => Method.VirtualAddress?.Start ?? 0;
+        // The VA of the method code itself
+        // Generic method definitions do not have a code address but may have a reference above
+        public ulong MethodCodeAddress => Method.VirtualAddress?.Start ?? 0xffffffff_ffffffff;
+
+        // Helpers
+        public bool HasMethodInfo => MethodInfoPtrAddress != 0xffffffff_ffffffff;
+        public bool HasCompiledCode => Method.VirtualAddress.HasValue && Method.VirtualAddress.Value.Start != 0;
 
         public AppMethod(MethodBase method, CppFnPtrType cppMethod, ulong methodInfoPtr = 0xffffffff_ffffffff) {
             Method = method;

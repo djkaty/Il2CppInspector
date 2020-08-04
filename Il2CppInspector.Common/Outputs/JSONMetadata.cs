@@ -64,7 +64,7 @@ namespace Il2CppInspector.Outputs
         }
 
         private void writeMethods(IEnumerable<AppMethod> methods) {
-            foreach (var method in methods) {
+            foreach (var method in methods.Where(m => m.HasCompiledCode)) {
                 writeObject(() => {
                     writeTypedFunctionName(method.MethodCodeAddress, method.CppFnPtrType.ToSignatureString(), method.CppFnPtrType.Name);
                     writeDotNetSignature(method.Method);
@@ -123,7 +123,7 @@ namespace Il2CppInspector.Outputs
             // Metedata usage methods
             writeArray("methodInfoPointers",
                 () => {
-                    foreach (var method in model.Methods.Values.Where(m => m.MethodInfoPtrAddress != 0xffffffff_ffffffff)) {
+                    foreach (var method in model.Methods.Values.Where(m => m.HasMethodInfo)) {
                         writeObject(() => {
                             writeName(method.MethodInfoPtrAddress, $"{method.CppFnPtrType.Name}__MethodInfo");
                             writeDotNetSignature(method.Method);
