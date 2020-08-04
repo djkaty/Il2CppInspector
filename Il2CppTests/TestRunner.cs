@@ -59,11 +59,6 @@ namespace Il2CppInspector
 
                 new CppScaffolding(appModel)
                     .Write(testPath + $@"\test-cpp-result{nameSuffix}");
-
-                new IDAPythonScript(appModel)
-                    .WriteScriptToFile(testPath + $@"\test-ida-result{nameSuffix}.py",
-                        testPath + $@"\test-cpp-result{nameSuffix}\appdata\il2cpp-types.h",
-                        testPath + $@"\test-result{nameSuffix}.json");
             }
 
             // Compare test results with expected results
@@ -73,7 +68,6 @@ namespace Il2CppInspector
                 compareFiles(testPath, suffix + ".cs", $"test-result{suffix}.cs");
                 compareFiles(testPath, suffix + ".json", $"test-result{suffix}.json");
                 compareFiles(testPath, suffix + ".h", $@"test-cpp-result{suffix}\appdata\il2cpp-types.h");
-                compareFiles(testPath, suffix + ".py", $"test-ida-result{suffix}.py");
             }
         }
 

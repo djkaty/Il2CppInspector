@@ -10,8 +10,6 @@ $cs = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-result.cs)
 $cs2 = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-result-1.cs)
 $json = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-result.json)
 $json2 = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-result-1.json)
-$py = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-ida-result.py)
-$py2 = (gci "$PSScriptRoot/TestBinaries/*/*" -Filter test-ida-result-1.py)
 $cpp = (gci "$PSScriptRoot/TestBinaries/*/test-cpp-result/appdata/*" -Filter il2cpp-types.h)
 $cpp2 = (gci "$PSScriptRoot/TestBinaries/*/test-cpp-result-1/appdata/*" -Filter il2cpp-types.h)
 
@@ -35,16 +33,6 @@ $json | % {
 
 $json2 | % {
 	$target = $results + "/" + (Split-Path -Path (Split-Path -Path $_) -Leaf) + "-1.json"
-	cp $_ -Destination $target -Force
-}
-
-$py | % {
-	$target = $results + "/" + (Split-Path -Path (Split-Path -Path $_) -Leaf) + ".py"
-	cp $_ -Destination $target -Force
-}
-
-$py2 | % {
-	$target = $results + "/" + (Split-Path -Path (Split-Path -Path $_) -Leaf) + "-1.py"
 	cp $_ -Destination $target -Force
 }
 
