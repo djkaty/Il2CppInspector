@@ -47,8 +47,10 @@ def SetHeaderComment(addr, text):
 	setPlateComment(toAddr(addr), text)
 
 def CustomInitializer():
-	# Do we need this for PE/MachO?
-	currentProgram.setImageBase(toAddr(0), True)
+	# Ghidra sets the image base for ELF to 0x100000 for some reason
+	# https://github.com/NationalSecurityAgency/ghidra/issues/1020
+	if currentProgram.getExecutableFormat().endswith('(ELF)'):
+		currentProgram.setImageBase(toAddr(0), True)
 
 def GetScriptDirectory():
 	# Ghidra doesn't define __file__ so we have to iterate all the scripts
