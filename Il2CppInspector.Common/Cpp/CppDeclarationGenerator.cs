@@ -177,7 +177,7 @@ namespace Il2CppInspector.Cpp
         private (CppComplexType objectOrArrayType, CppComplexType fieldsType) GenerateRefFieldStruct(TypeInfo ti) {
             var name = TypeNamer.GetName(ti);
 
-            if (ti.IsArray || ti.FullName == "System.Array") {
+            if (ti.IsArray) {
                 var klassType = ti.IsArray ? ti : ti.BaseType;
                 var elementType = ti.IsArray ? AsCType(ti.ElementType) : types.GetType("void *");
                 var type = GenerateObjectStruct(name, klassType);
