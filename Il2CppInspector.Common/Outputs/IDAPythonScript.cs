@@ -7,6 +7,7 @@ using System.Linq;
 using System.IO;
 using Il2CppInspector.Reflection;
 using Il2CppInspector.Model;
+using System.Collections.Generic;
 
 namespace Il2CppInspector.Outputs
 {
@@ -16,6 +17,14 @@ namespace Il2CppInspector.Outputs
 
         public IDAPythonScript(AppModel model) => this.model = model;
 
+        // Get list of available script targets
+        public static IEnumerable<string> GetAvailableTargets() {
+            var ns = typeof(IDAPythonScript).Namespace + ".ScriptResources.Targets";
+            var res = ResourceHelper.GetNamesForNamespace(ns);
+            return res.Select(s => Path.GetFileNameWithoutExtension(s.Substring(ns.Length + 1))).OrderBy(s => s);
+        }
+        
+        // Output script file
         public void WriteScriptToFile(string outputFile, string existingTypeHeaderFIle = null, string existingJsonMetadataFile = null) {
 
             // Write types file first if it hasn't been specified
@@ -42,10 +51,9 @@ namespace Il2CppInspector.Outputs
             var targetApi = "IDA";
 
             var ns = typeof(IDAPythonScript).Namespace + ".ScriptResources";
-            var scripts = ResourceHelper.GetNamesForNamespace(ns);
-            var preamble = ResourceHelper.GetText(scripts.First(s => s == ns + ".shared-preamble.py"));
-            var main = ResourceHelper.GetText(scripts.First(s => s == ns + ".shared-main.py"));
-            var api = ResourceHelper.GetText(scripts.First(s => s == $"{ns}.{targetApi.ToLower()}-api.py"));
+            var preamble = ResourceHelper.GetText(ns + ".shared-preamble.py");
+            var main = ResourceHelper.GetText(ns + ".shared-main.py");
+            var api = ResourceHelper.GetText($"{ns}.Targets.{targetApi}.py");
 
             var script = string.Join("\n", new [] { preamble, api, main })
                 .Replace("%SCRIPTFILENAME%", Path.GetFileName(outputFile))
@@ -55,7 +63,7 @@ namespace Il2CppInspector.Outputs
 
             File.WriteAllText(outputFile, script);
         }
-        
+
         private void writeTypes(string typeHeaderFile) => new CppScaffolding(model).WriteTypes(typeHeaderFile);
 
         private void writeJsonMetadata(string jsonMetadataFile) => new JSONMetadata(model).Write(jsonMetadataFile);
