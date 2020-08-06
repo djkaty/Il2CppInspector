@@ -78,6 +78,9 @@ namespace Il2CppInspector.CLI
             [Option("cpp-compiler", Required = false, HelpText = "Compiler to target for C++ output (MSVC or GCC); selects based on binary executable type by default", Default = CppCompilerType.BinaryFormat)]
             public CppCompilerType CppCompiler { get; set; }
 
+            [Option('t', "script-target", Required = false, HelpText = "Application to target for Python script output (IDA or Ghidra) - case-sensitive", Default = "IDA")]
+            public string ScriptTarget { get; set; }
+
             [Option("unity-path", Required = false, HelpText = "Path to Unity editor (when using --project). Wildcards select last matching folder in alphanumeric order", Default = @"C:\Program Files\Unity\Hub\Editor\*")]
             public string UnityPath { get; set; }
 
@@ -120,6 +123,13 @@ namespace Il2CppInspector.CLI
             Console.WriteLine(asmInfo.LegalCopyright);
             Console.WriteLine("");
             
+            // Check script target is valid
+            if (!PythonScript.GetAvailableTargets().Contains(options.ScriptTarget)) {
+                Console.Error.WriteLine($"Script target {options.ScriptTarget} is invalid.");
+                Console.Error.WriteLine("Valid targets are: " + string.Join(", ", PythonScript.GetAvailableTargets()));
+                return 1;
+            }
+
             // Check excluded namespaces
             if (options.ExcludedNamespaces.Count() == 1 && options.ExcludedNamespaces.First().ToLower() == "none")
                 options.ExcludedNamespaces = new List<string>();
@@ -270,8 +280,9 @@ namespace Il2CppInspector.CLI
                 }
 
                 // Python script output
-                using (new Benchmark("Generate Python script")) {
-                    new PythonScript(appModel).WriteScriptToFile(options.PythonOutFile, "IDA",
+                using (new Benchmark($"Generate {options.ScriptTarget} Python script")) {
+                    new PythonScript(appModel).WriteScriptToFile(options.PythonOutFile,
+                        options.ScriptTarget,
                         Path.Combine(options.CppOutPath, "appdata/il2cpp-types.h"),
                         options.JsonOutPath);
                 }
