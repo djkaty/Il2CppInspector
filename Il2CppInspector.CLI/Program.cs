@@ -271,7 +271,7 @@ namespace Il2CppInspector.CLI
 
                 // IDA Python script output
                 using (new Benchmark("Generate IDAPython script")) {
-                    new IDAPythonScript(appModel).WriteScriptToFile(options.PythonOutFile, "IDA",
+                    new PythonScript(appModel).WriteScriptToFile(options.PythonOutFile, "IDA",
                         Path.Combine(options.CppOutPath, "appdata/il2cpp-types.h"),
                         options.JsonOutPath);
                 }

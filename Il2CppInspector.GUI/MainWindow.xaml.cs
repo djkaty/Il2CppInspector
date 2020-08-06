@@ -431,7 +431,7 @@ namespace Il2CppInspectorGUI
                         model.Build(selectedIdaUnityVersion, CppCompilerType.GCC);
 
                         OnStatusUpdate(this, "Generating IDAPython script");
-                        new IDAPythonScript(model).WriteScriptToFile(idaOutFile, "IDA");
+                        new PythonScript(model).WriteScriptToFile(idaOutFile, "IDA");
                     });
                     break;
 

@@ -12,15 +12,15 @@ using System;
 
 namespace Il2CppInspector.Outputs
 {
-    public class IDAPythonScript
+    public class PythonScript
     {
         private readonly AppModel model;
 
-        public IDAPythonScript(AppModel model) => this.model = model;
+        public PythonScript(AppModel model) => this.model = model;
 
         // Get list of available script targets
         public static IEnumerable<string> GetAvailableTargets() {
-            var ns = typeof(IDAPythonScript).Namespace + ".ScriptResources.Targets";
+            var ns = typeof(PythonScript).Namespace + ".ScriptResources.Targets";
             var res = ResourceHelper.GetNamesForNamespace(ns);
             return res.Select(s => Path.GetFileNameWithoutExtension(s.Substring(ns.Length + 1))).OrderBy(s => s);
         }
@@ -52,7 +52,7 @@ namespace Il2CppInspector.Outputs
 
             var jsonMetadataRelativePath = getRelativePath(outputFile, jsonMetadataFile);
 
-            var ns = typeof(IDAPythonScript).Namespace + ".ScriptResources";
+            var ns = typeof(PythonScript).Namespace + ".ScriptResources";
             var preamble = ResourceHelper.GetText(ns + ".shared-preamble.py");
             var main = ResourceHelper.GetText(ns + ".shared-main.py");
             var api = ResourceHelper.GetText($"{ns}.Targets.{target}.py");
