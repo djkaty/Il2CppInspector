@@ -215,22 +215,22 @@ namespace Il2CppInspectorGUI
             trvNamespaces.ItemsSource = namespaceTree;
 
             // Populate Unity version combo boxes
-            var prevIdaSelection = cboIdaUnityVersion.SelectedItem;
+            var prevIdaSelection = cboPyUnityVersion.SelectedItem;
             var prevCppSelection = cboCppUnityVersion.SelectedItem;
             var prevJsonSelection = cboJsonUnityVersion.SelectedItem;
-            cboIdaUnityVersion.Items.Clear();
+            cboPyUnityVersion.Items.Clear();
             cboCppUnityVersion.Items.Clear();
             cboJsonUnityVersion.Items.Clear();
             foreach (var version in UnityHeaders.GuessHeadersForBinary(model.Package.Binary)) {
-                cboIdaUnityVersion.Items.Add(version);
+                cboPyUnityVersion.Items.Add(version);
                 cboCppUnityVersion.Items.Add(version);
                 cboJsonUnityVersion.Items.Add(version);
             }
-            cboIdaUnityVersion.SelectedIndex = cboIdaUnityVersion.Items.Count - 1;
+            cboPyUnityVersion.SelectedIndex = cboPyUnityVersion.Items.Count - 1;
             cboCppUnityVersion.SelectedIndex = cboCppUnityVersion.Items.Count - 1;
             cboJsonUnityVersion.SelectedIndex = cboJsonUnityVersion.Items.Count - 1;
             if (prevIdaSelection != null) {
-                cboIdaUnityVersion.SelectedItem = prevIdaSelection;
+                cboPyUnityVersion.SelectedItem = prevIdaSelection;
                 cboCppUnityVersion.SelectedItem = prevCppSelection;
                 cboJsonUnityVersion.SelectedItem = prevJsonSelection;
             }
@@ -409,29 +409,29 @@ namespace Il2CppInspectorGUI
                     });
                     break;
 
-                // IDA Python script
-                case { rdoOutputIDA: var r } when r.IsChecked == true:
+                // Python script
+                case { rdoOutputPy: var r } when r.IsChecked == true:
 
-                    var idaSaveFileDialog = new SaveFileDialog {
+                    var pySaveFileDialog = new SaveFileDialog {
                         Filter = "Python scripts (*.py)|*.py|All files (*.*)|*.*",
-                        FileName = "ida.py",
+                        FileName = "il2cpp.py",
                         CheckFileExists = false,
                         OverwritePrompt = true
                     };
 
-                    if (idaSaveFileDialog.ShowDialog() == false)
+                    if (pySaveFileDialog.ShowDialog() == false)
                         return;
 
-                    var idaOutFile = idaSaveFileDialog.FileName;
+                    var pyOutFile = pySaveFileDialog.FileName;
 
                     areaBusyIndicator.Visibility = Visibility.Visible;
-                    var selectedIdaUnityVersion = ((UnityHeaders) cboIdaUnityVersion.SelectedItem)?.VersionRange.Min;
+                    var selectedPyUnityVersion = ((UnityHeaders) cboPyUnityVersion.SelectedItem)?.VersionRange.Min;
                     await Task.Run(() => {
                         OnStatusUpdate(this, "Building C++ application model");
-                        model.Build(selectedIdaUnityVersion, CppCompilerType.GCC);
+                        model.Build(selectedPyUnityVersion, CppCompilerType.GCC);
 
-                        OnStatusUpdate(this, "Generating IDAPython script");
-                        new PythonScript(model).WriteScriptToFile(idaOutFile, "IDA");
+                        OnStatusUpdate(this, "Generating Python script");
+                        new PythonScript(model).WriteScriptToFile(pyOutFile, "IDA");
                     });
                     break;
 

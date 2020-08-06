@@ -29,7 +29,7 @@ namespace Il2CppInspector.CLI
             [Option('c', "cs-out", Required = false, HelpText = "C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)", Default = "types.cs")]
             public string CSharpOutPath { get; set; }
 
-            [Option('p', "py-out", Required = false, HelpText = "IDA Python script output file", Default = "ida.py")]
+            [Option('p', "py-out", Required = false, HelpText = "Python script output file", Default = "il2cpp.py")]
             public string PythonOutFile { get; set; }
 
             [Option('h', "cpp-out", Required = false, HelpText = "C++ scaffolding / DLL injection project output path", Default = "cpp")]
@@ -84,7 +84,7 @@ namespace Il2CppInspector.CLI
             [Option("unity-assemblies", Required = false, HelpText = "Path to Unity script assemblies (when using --project). Wildcards select last matching folder in alphanumeric order", Default = @"C:\Program Files\Unity\Hub\Editor\*\Editor\Data\Resources\PackageManager\ProjectTemplates\libcache\com.unity.template.3d-*\ScriptAssemblies")]
             public string UnityAssembliesPath { get; set; }
 
-            [Option("unity-version", Required = false, HelpText = "Version of Unity used to create the input files, if known. Used to enhance IDAPython and C++ output. If not specified, a close match will be inferred automatically.", Default = null)]
+            [Option("unity-version", Required = false, HelpText = "Version of Unity used to create the input files, if known. Used to enhance Python, C++ and JSON output. If not specified, a close match will be inferred automatically.", Default = null)]
             public UnityVersion UnityVersion { get; set; }
         }
 
@@ -269,8 +269,8 @@ namespace Il2CppInspector.CLI
                     new JSONMetadata(appModel).Write(options.JsonOutPath);
                 }
 
-                // IDA Python script output
-                using (new Benchmark("Generate IDAPython script")) {
+                // Python script output
+                using (new Benchmark("Generate Python script")) {
                     new PythonScript(appModel).WriteScriptToFile(options.PythonOutFile, "IDA",
                         Path.Combine(options.CppOutPath, "appdata/il2cpp-types.h"),
                         options.JsonOutPath);

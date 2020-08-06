@@ -363,10 +363,10 @@
 
                         <Separator Margin="5,15,5,15"/>
 
-                        <!-- IDAPython script -->
-                        <RadioButton GroupName="grpOutputType" Name="rdoOutputIDA" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">IDAPython script</RadioButton>
+                        <!-- Python script -->
+                        <RadioButton GroupName="grpOutputType" Name="rdoOutputPy" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">Python script for disassemblers</RadioButton>
                         <DockPanel>
-                            <ComboBox Name="cboIdaUnityVersion" DockPanel.Dock="Right" Margin="4"></ComboBox>
+                            <ComboBox Name="cboPyUnityVersion" DockPanel.Dock="Right" Margin="4"></ComboBox>
                             <Label DockPanel.Dock="Left" Width="170" VerticalAlignment="Center" HorizontalAlignment="Left">Unity version (if known):</Label>
                         </DockPanel>
 
