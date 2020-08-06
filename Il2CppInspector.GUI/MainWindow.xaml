@@ -369,6 +369,10 @@
                             <ComboBox Name="cboPyUnityVersion" DockPanel.Dock="Right" Margin="4"></ComboBox>
                             <Label DockPanel.Dock="Left" Width="170" VerticalAlignment="Center" HorizontalAlignment="Left">Unity version (if known):</Label>
                         </DockPanel>
+                        <DockPanel>
+                            <ComboBox Name="cboPyTarget" DockPanel.Dock="Right" Margin="4" Width="80"></ComboBox>
+                            <Label DockPanel.Dock="Left" Width="170" VerticalAlignment="Center" HorizontalAlignment="Left">Script target:</Label>
+                        </DockPanel>
 
                         <Separator Margin="5,15,5,15"/>
 

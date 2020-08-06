@@ -49,6 +49,10 @@ namespace Il2CppInspectorGUI
             var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
             txtUnityPath.Text = Utils.FindPath($@"{programFiles}\Unity\Hub\Editor\*") ?? "<not set>";
             txtUnityScriptPath.Text = Utils.FindPath($@"{programFiles}\Unity\Hub\Editor\*\Editor\Data\Resources\PackageManager\ProjectTemplates\libcache\com.unity.template.3d-*\ScriptAssemblies") ?? "<not set>";
+
+            // Populate script target combo box and select IDA by default
+            cboPyTarget.ItemsSource = PythonScript.GetAvailableTargets();
+            cboPyTarget.SelectedItem = (cboPyTarget.ItemsSource as IEnumerable<string>).First(x => x == "IDA");
         }
 
         /// <summary>
@@ -426,12 +430,13 @@ namespace Il2CppInspectorGUI
 
                     areaBusyIndicator.Visibility = Visibility.Visible;
                     var selectedPyUnityVersion = ((UnityHeaders) cboPyUnityVersion.SelectedItem)?.VersionRange.Min;
+                    var selectedPyTarget = (string) cboPyTarget.SelectedItem;
                     await Task.Run(() => {
                         OnStatusUpdate(this, "Building C++ application model");
                         model.Build(selectedPyUnityVersion, CppCompilerType.GCC);
 
-                        OnStatusUpdate(this, "Generating Python script");
-                        new PythonScript(model).WriteScriptToFile(pyOutFile, "IDA");
+                        OnStatusUpdate(this, $"Generating {selectedPyTarget} Python script");
+                        new PythonScript(model).WriteScriptToFile(pyOutFile, selectedPyTarget);
                     });
                     break;
 
