@@ -8,6 +8,7 @@ using System.IO;
 using Il2CppInspector.Reflection;
 using Il2CppInspector.Model;
 using System.Collections.Generic;
+using System;
 
 namespace Il2CppInspector.Outputs
 {
@@ -25,7 +26,11 @@ namespace Il2CppInspector.Outputs
         }
         
         // Output script file
-        public void WriteScriptToFile(string outputFile, string existingTypeHeaderFIle = null, string existingJsonMetadataFile = null) {
+        public void WriteScriptToFile(string outputFile, string target, string existingTypeHeaderFIle = null, string existingJsonMetadataFile = null) {
+
+            // Check that target script API is valid
+            if (!GetAvailableTargets().Contains(target))
+                throw new InvalidOperationException("Unknown script API target: " + target);
 
             // Write types file first if it hasn't been specified
             var typeHeaderFile = Path.Combine(Path.GetDirectoryName(outputFile), Path.GetFileNameWithoutExtension(outputFile) + ".h");
@@ -47,13 +52,10 @@ namespace Il2CppInspector.Outputs
 
             var jsonMetadataRelativePath = getRelativePath(outputFile, jsonMetadataFile);
 
-            // TODO: Replace with target selector
-            var targetApi = "IDA";
-
             var ns = typeof(IDAPythonScript).Namespace + ".ScriptResources";
             var preamble = ResourceHelper.GetText(ns + ".shared-preamble.py");
             var main = ResourceHelper.GetText(ns + ".shared-main.py");
-            var api = ResourceHelper.GetText($"{ns}.Targets.{targetApi}.py");
+            var api = ResourceHelper.GetText($"{ns}.Targets.{target}.py");
 
             var script = string.Join("\n", new [] { preamble, api, main })
                 .Replace("%SCRIPTFILENAME%", Path.GetFileName(outputFile))
