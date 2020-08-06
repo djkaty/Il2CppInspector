@@ -28,8 +28,9 @@ def DefineCode(code):
 	pass
 
 def SetFunctionType(addr, sig):
+	MakeFunction(addr)
 	typeSig = CParserUtils.parseSignature(None, currentProgram, sig)
-	ApplyFunctionSignatureCmd(toAddr(addr), typeSig, SourceType.USER_DEFINED).applyTo(currentProgram)
+	ApplyFunctionSignatureCmd(toAddr(addr), typeSig, SourceType.USER_DEFINED, False, True).applyTo(currentProgram)
 
 def SetType(addr, type):
 	if type.startswith('struct '):
