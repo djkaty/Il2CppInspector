@@ -52,7 +52,7 @@ namespace Il2CppInspector
         U ReadObject<U>() where U : new();
         string ReadMappedNullTerminatedString(ulong uiAddr);
         List<U> ReadMappedObjectPointerArray<U>(ulong uiAddr, int count) where U : new();
-        event EventHandler<string> OnStatusUpdate;
+        EventHandler<string> OnStatusUpdate { get; set; }
     }
 
     public class FileFormatReader
@@ -99,7 +99,7 @@ namespace Il2CppInspector
 
         public virtual int Bits => throw new NotImplementedException();
 
-        public event EventHandler<string> OnStatusUpdate;
+        public EventHandler<string> OnStatusUpdate { get; set; }
 
         protected void StatusUpdate(string status) => OnStatusUpdate?.Invoke(this, status);
 
@@ -118,7 +118,9 @@ namespace Il2CppInspector
         public static T Load(Stream stream, EventHandler<string> statusCallback = null) {
             // Copy the original stream in case we modify it
             var ms = new MemoryStream();
-            stream.Position = 0;
+
+            if (stream.CanSeek)
+                stream.Position = 0;
             stream.CopyTo(ms);
             
             ms.Position = 0;
@@ -127,7 +129,7 @@ namespace Il2CppInspector
         }
 
         private bool InitImpl(EventHandler<string> statusCallback = null) {
-            OnStatusUpdate += statusCallback;
+            OnStatusUpdate = statusCallback;
             return Init();
         }
 

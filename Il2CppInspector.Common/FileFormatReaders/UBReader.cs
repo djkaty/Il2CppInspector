@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -39,7 +39,7 @@ namespace Il2CppInspector
                 Endianness = Endianness.Little;
 
                 using var s = new MemoryStream(ReadBytes((int) arch.Size));
-                return (IFileFormatReader) MachOReader32.Load(s) ?? MachOReader64.Load(s);
+                return (IFileFormatReader) MachOReader32.Load(s, OnStatusUpdate) ?? MachOReader64.Load(s, OnStatusUpdate);
             }
         }
     }

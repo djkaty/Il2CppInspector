@@ -33,6 +33,8 @@ namespace Il2CppInspectorGUI
         // Attempt to load an IL2CPP application package (APK or IPA)
         public async Task<bool> LoadPackageAsync(string packageFile) {
             try {
+                OnStatusUpdate?.Invoke(this, "Extracting package");
+
                 var streams = Inspector.GetStreamsFromPackage(packageFile);
                 if (streams == null)
                     throw new InvalidOperationException("The supplied package is not an APK or IPA file, or does not contain an IL2CPP application");
@@ -55,6 +57,7 @@ namespace Il2CppInspectorGUI
             Task.Run(() => {
                 try {
                     OnStatusUpdate?.Invoke(this, "Processing metadata");
+
                     metadata = new Metadata(metadataStream);
                     return true;
                 }
@@ -73,19 +76,21 @@ namespace Il2CppInspectorGUI
         public Task<bool> LoadBinaryAsync(Stream binaryStream) =>
             Task.Run(() => {
                 try {
+                    OnStatusUpdate?.Invoke(this, "Processing binary");
+
                     // This may throw other exceptions from the individual loaders as well
                     IFileFormatReader stream = FileFormatReader.Load(binaryStream, StatusUpdate);
                     if (stream == null) {
                         throw new InvalidOperationException("Could not determine the binary file format");
                     }
-                    if (!stream.Images.Any()) {
+                    if (stream.NumImages == 0) {
                         throw new InvalidOperationException("Could not find any binary images in the file");
                     }
 
                     // Multi-image binaries may contain more than one Il2Cpp image
                     AppModels.Clear();
                     foreach (var image in stream.Images) {
-                        OnStatusUpdate?.Invoke(this, "Analyzing IL2CPP data");
+                        OnStatusUpdate?.Invoke(this, $"Analyzing IL2CPP data for {image.Format}/{image.Arch} image");
 
                         // Architecture-agnostic load attempt
                         try {
@@ -94,7 +99,7 @@ namespace Il2CppInspectorGUI
                                 var inspector = new Inspector(binary, metadata);
 
                                 // Build type model
-                                OnStatusUpdate?.Invoke(this, "Building .NET type model");
+                                OnStatusUpdate?.Invoke(this, $"Building .NET type model for {image.Format}/{image.Arch} image");
                                 var typeModel = new TypeModel(inspector);
 
                                 // Initialize (but don't build) application model

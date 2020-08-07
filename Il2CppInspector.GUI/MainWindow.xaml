@@ -471,7 +471,7 @@
         </Button>
 
         <!-- Busy indicator -->
-        <Border Name="areaBusyIndicator" Width="500" BorderThickness="1" CornerRadius="2" BorderBrush="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" SnapsToDevicePixels="True" Visibility="Hidden">
+        <Border Name="areaBusyIndicator" Width="800" BorderThickness="1" CornerRadius="2" BorderBrush="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" SnapsToDevicePixels="True" Visibility="Hidden">
             <StackPanel Margin="60,40,60,40">
                 <TextBlock Name="txtBusyStatus" Foreground="{StaticResource WindowsBlue}" FontSize="24" HorizontalAlignment="Center">Getting things ready...</TextBlock>
                 <Image gif:AnimationBehavior.SourceUri="Resources/pizza.gif" Width="100" Margin="0,20,0,0" RenderOptions.BitmapScalingMode="Fant" />

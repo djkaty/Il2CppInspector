@@ -118,7 +118,6 @@ namespace Il2CppInspectorGUI
         private async Task LoadBinaryAsync(string filename) {
             var app = (App) Application.Current;
 
-            txtBusyStatus.Text = "Processing binary...";
             areaBusyIndicator.Visibility = Visibility.Visible;
             btnSelectBinaryFile.Visibility = Visibility.Hidden;
 
@@ -155,7 +154,6 @@ namespace Il2CppInspectorGUI
         private async Task LoadPackageAsync(string filename) {
             var app = (App) Application.Current;
 
-            txtBusyStatus.Text = "Extracting package...";
             areaBusyIndicator.Visibility = Visibility.Visible;
             grdFirstPage.Visibility = Visibility.Hidden;
 
@@ -439,7 +437,7 @@ namespace Il2CppInspectorGUI
                     var selectedPyUnityVersion = ((UnityHeaders) cboPyUnityVersion.SelectedItem)?.VersionRange.Min;
                     var selectedPyTarget = (string) cboPyTarget.SelectedItem;
                     await Task.Run(() => {
-                        OnStatusUpdate(this, "Building C++ application model");
+                        OnStatusUpdate(this, "Building application model");
                         model.Build(selectedPyUnityVersion, CppCompilerType.GCC);
 
                         OnStatusUpdate(this, $"Generating {selectedPyTarget} Python script");
@@ -464,7 +462,7 @@ namespace Il2CppInspectorGUI
                     var selectedCppUnityVersion = ((UnityHeaders) cboCppUnityVersion.SelectedItem)?.VersionRange.Min;
                     var cppCompiler = (CppCompilerType) Enum.Parse(typeof(CppCompilerType), cboCppCompiler.SelectionBoxItem.ToString());
                     await Task.Run(() => {
-                        OnStatusUpdate(this, "Building C++ application model");
+                        OnStatusUpdate(this, "Building application model");
                         model.Build(selectedCppUnityVersion, cppCompiler);
 
                         OnStatusUpdate(this, "Generating C++ scaffolding");
@@ -490,7 +488,7 @@ namespace Il2CppInspectorGUI
                     areaBusyIndicator.Visibility = Visibility.Visible;
                     var selectedJsonUnityVersion = ((UnityHeaders) cboJsonUnityVersion.SelectedItem)?.VersionRange.Min;
                     await Task.Run(() => {
-                        OnStatusUpdate(this, "Building C++ application model");
+                        OnStatusUpdate(this, "Building application model");
                         model.Build(selectedJsonUnityVersion, CppCompilerType.GCC);
 
                         OnStatusUpdate(this, "Generating JSON metadata file");
