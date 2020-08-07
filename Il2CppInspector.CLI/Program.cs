@@ -201,9 +201,11 @@ namespace Il2CppInspector.CLI
             if (il2cppInspectors == null)
                 Environment.Exit(1);
 
-            // Write output file
-            int i = 0;
+            // Write output files for each binary
+            int imageIndex = 0;
             foreach (var il2cpp in il2cppInspectors) {
+                Console.WriteLine($"Processing image {imageIndex} - {il2cpp.BinaryImage.Arch} / {il2cpp.BinaryImage.Bits}-bit");
+
                 // Create model
                 TypeModel model;
                 using (new Benchmark("Create .NET type model"))
@@ -222,13 +224,7 @@ namespace Il2CppInspector.CLI
                         MustCompile = options.MustCompile
                     };
 
-                    var imageSuffix = i++ > 0 ? "-" + (i - 1) : "";
-
-                    var csOut = options.CSharpOutPath;
-                    if (csOut.ToLower().EndsWith(".cs"))
-                        csOut = csOut.Insert(csOut.Length - 3, imageSuffix);
-                    else
-                        csOut += imageSuffix;
+                    var csOut = getOutputPath(options.CSharpOutPath, "cs", imageIndex);
 
                     if (options.CreateSolution)
                         writer.WriteSolution(csOut, unityPath, unityAssembliesPath);
@@ -271,25 +267,39 @@ namespace Il2CppInspector.CLI
 
                 // C++ output
                 using (new Benchmark("Generate C++ code")) {
-                    new CppScaffolding(appModel).Write(options.CppOutPath);
+                    new CppScaffolding(appModel).Write(getOutputPath(options.CppOutPath, "", imageIndex));
                 }
 
                 // JSON output
                 using (new Benchmark("Generate JSON metadata")) {
-                    new JSONMetadata(appModel).Write(options.JsonOutPath);
+                    new JSONMetadata(appModel).Write(getOutputPath(options.JsonOutPath, "json", imageIndex));
                 }
 
                 // Python script output
                 using (new Benchmark($"Generate {options.ScriptTarget} Python script")) {
-                    new PythonScript(appModel).WriteScriptToFile(options.PythonOutFile,
+                    new PythonScript(appModel).WriteScriptToFile(
+                        getOutputPath(options.PythonOutFile, "py", imageIndex),
                         options.ScriptTarget,
-                        Path.Combine(options.CppOutPath, "appdata/il2cpp-types.h"),
-                        options.JsonOutPath);
+                        Path.Combine(getOutputPath(options.CppOutPath, "", imageIndex), "appdata/il2cpp-types.h"),
+                        getOutputPath(options.JsonOutPath, "json", imageIndex));
                 }
+
+                imageIndex++;
             }
 
             // Success exit code
             return 0;
+        }
+
+        private static string getOutputPath(string path, string extension, int suffix) {
+            if (suffix == 0)
+                return path;
+            var imageSuffix = "-" + suffix;
+            if (extension.Length > 0 && path.ToLower().EndsWith("." + extension))
+                path = path.Insert(path.Length - (extension.Length + 1), imageSuffix);
+            else
+                path += imageSuffix;
+            return path;
         }
     }
 }
