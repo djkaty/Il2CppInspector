@@ -210,7 +210,13 @@ namespace Il2CppInspector.Model
                             var method = ILModel.GetMetadataUsageMethod(usage);
                             declarationGenerator.IncludeMethod(method);
                             AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
-
+                            
+                            // Any method here SHOULD already be in the Methods list
+                            // but we have seen one example where this is not the case for a MethodDef
+                            if (!Methods.ContainsKey(method)) {
+                                var fnPtr = declarationGenerator.GenerateMethodDeclaration(method);
+                                Methods.Add(method, fnPtr, new AppMethod(method, fnPtr) {Group = Group});
+                            }
                             Methods[method].MethodInfoPtrAddress = address;
                             break;
                     }
