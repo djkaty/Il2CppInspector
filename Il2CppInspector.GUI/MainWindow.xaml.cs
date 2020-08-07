@@ -231,17 +231,20 @@ namespace Il2CppInspectorGUI
                 cboJsonUnityVersion.Items.Add(version);
             }
 
-            // Prefer latest Unity versions
-            cboPyUnityVersion.SelectedIndex = cboPyUnityVersion.Items.Count - 1;
-            cboCppUnityVersion.SelectedIndex = cboCppUnityVersion.Items.Count - 1;
-            cboJsonUnityVersion.SelectedIndex = cboJsonUnityVersion.Items.Count - 1;
-
             // Restore previous selection via value equality
             if (prevIdaSelection != null) {
-                cboPyUnityVersion.SelectedItem = cboPyUnityVersion.Items.Cast<UnityHeaders>().First(v => v.Equals(prevIdaSelection));
-                cboCppUnityVersion.SelectedItem = cboCppUnityVersion.Items.Cast<UnityHeaders>().First(v => v.Equals(prevCppSelection));
-                cboJsonUnityVersion.SelectedItem = cboJsonUnityVersion.Items.Cast<UnityHeaders>().First(v => v.Equals(prevJsonSelection));
+                cboPyUnityVersion.SelectedItem = cboPyUnityVersion.Items.Cast<UnityHeaders>().FirstOrDefault(v => v.Equals(prevIdaSelection));
+                cboCppUnityVersion.SelectedItem = cboCppUnityVersion.Items.Cast<UnityHeaders>().FirstOrDefault(v => v.Equals(prevCppSelection));
+                cboJsonUnityVersion.SelectedItem = cboJsonUnityVersion.Items.Cast<UnityHeaders>().FirstOrDefault(v => v.Equals(prevJsonSelection));
             }
+
+            // Prefer latest Unity versions if there was no previous selection or it's now invalid
+            if (cboPyUnityVersion.SelectedItem == null)
+                cboPyUnityVersion.SelectedIndex = cboPyUnityVersion.Items.Count - 1;
+            if (cboCppUnityVersion.SelectedItem == null)
+                cboCppUnityVersion.SelectedIndex = cboCppUnityVersion.Items.Count - 1;
+            if (cboJsonUnityVersion.SelectedItem == null)
+                cboJsonUnityVersion.SelectedIndex = cboJsonUnityVersion.Items.Count - 1;
         }
 
         private IEnumerable<CheckboxNode> deconstructNamespaces(IEnumerable<string> input) {
