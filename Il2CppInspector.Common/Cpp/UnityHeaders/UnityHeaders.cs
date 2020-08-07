@@ -16,7 +16,7 @@ namespace Il2CppInspector.Cpp.UnityHeaders
 {
     // Each instance of UnityHeaders represents all of the header files needed to build for a specific range of Unity versions
     // Also provides helper functions to fetch various types of resources
-    public class UnityHeaders
+    public class UnityHeaders : IEquatable<UnityHeaders>
     {
         // Metadata version for which this group of headers are valid. Multiple headers may have the same metadata version
         public double MetadataVersion { get; }
@@ -196,5 +196,22 @@ namespace Il2CppInspector.Cpp.UnityHeaders
         // Get the metadata version from a type header resource name
         private static double GetMetadataVersionFromFilename(string resourceName)
             => double.Parse(resourceName.Substring(typeof(UnityHeaders).Namespace.Length + 1).Split('-')[0], NumberFormatInfo.InvariantInfo);
+
+        // Equality comparisons
+        public static bool operator ==(UnityHeaders first, UnityHeaders second) {
+            if (ReferenceEquals(first, second))
+                return true;
+            if (ReferenceEquals(first, null) || ReferenceEquals(second, null))
+                return false;
+            return first.VersionRange.Equals(second.VersionRange);
+        }
+
+        public static bool operator !=(UnityHeaders first, UnityHeaders second) => !(first == second);
+
+        public override bool Equals(object obj) => Equals(obj as UnityHeaders);
+
+        public bool Equals(UnityHeaders other) => VersionRange == other?.VersionRange;
+
+        public override int GetHashCode() => VersionRange.GetHashCode();
     }
 }

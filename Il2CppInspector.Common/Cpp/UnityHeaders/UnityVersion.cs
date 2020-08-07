@@ -97,9 +97,18 @@ namespace Il2CppInspector.Cpp.UnityHeaders
             return 0;
         }
 
-        public override bool Equals(object obj) {
-            return Equals(obj as UnityVersion);
+        // Equality comparisons
+        public static bool operator ==(UnityVersion first, UnityVersion second) {
+            if (ReferenceEquals(first, second))
+                return true;
+            if (ReferenceEquals(first, null) || ReferenceEquals(second, null))
+                return false;
+            return first.Equals(second);
         }
+
+        public static bool operator !=(UnityVersion first, UnityVersion second) => !(first == second);
+
+        public override bool Equals(object obj) => Equals(obj as UnityVersion);
 
         public bool Equals(UnityVersion other) {
             return other != null &&
@@ -110,13 +119,11 @@ namespace Il2CppInspector.Cpp.UnityHeaders
                    BuildNumber == other.BuildNumber;
         }
 
-        public override int GetHashCode() {
-            return HashCode.Combine(Major, Minor, Update, BuildType, BuildNumber);
-        }
+        public override int GetHashCode() => HashCode.Combine(Major, Minor, Update, BuildType, BuildNumber);
     }
 
     // A range of Unity versions
-    public class UnityVersionRange : IComparable<UnityVersionRange>
+    public class UnityVersionRange : IComparable<UnityVersionRange>, IEquatable<UnityVersionRange>
     {
         // Minimum and maximum Unity version numbers for this range. Both endpoints are inclusive
         // Max can be null to specify no upper bound
@@ -184,5 +191,22 @@ namespace Il2CppInspector.Cpp.UnityHeaders
                 res += $" - {Max}";
             return res;
         }
+
+        // Equality comparisons
+        public static bool operator ==(UnityVersionRange first, UnityVersionRange second) {
+            if (ReferenceEquals(first, second))
+                return true;
+            if (ReferenceEquals(first, null) || ReferenceEquals(second, null))
+                return false;
+            return first.Equals(second);
+        }
+
+        public static bool operator !=(UnityVersionRange first, UnityVersionRange second) => !(first == second);
+
+        public override bool Equals(object obj) => Equals(obj as UnityVersionRange);
+
+        public bool Equals(UnityVersionRange other) => Min.Equals(other?.Min) && Max.Equals(other?.Max);
+
+        public override int GetHashCode() => HashCode.Combine(Min, Max);
     }
 }
