@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -315,7 +315,7 @@ namespace Il2CppInspector
 
                 // Check for Android APK
                 var metadataFile = zip.Entries.FirstOrDefault(f => f.FullName == "assets/bin/Data/Managed/Metadata/global-metadata.dat");
-                var binaryFile = zip.Entries.FirstOrDefault(f => f.FullName.StartsWith("lib/") && f.Name == "libil2cpp.so");
+                var binaryFiles = zip.Entries.Where(f => f.FullName.StartsWith("lib/") && f.Name == "libil2cpp.so");
 
                 // Check for iOS IPA
                 var ipaBinaryFolder = zip.Entries.FirstOrDefault(f => f.FullName.StartsWith("Payload/") && f.FullName.EndsWith(".app/") && f.FullName.Count(x => x == '/') == 2);
@@ -323,29 +323,40 @@ namespace Il2CppInspector
                 if (ipaBinaryFolder != null) {
                     var ipaBinaryName = ipaBinaryFolder.FullName[8..^5];
                     metadataFile = zip.Entries.FirstOrDefault(f => f.FullName == $"Payload/{ipaBinaryName}.app/Data/Managed/Metadata/global-metadata.dat");
-                    binaryFile = zip.Entries.FirstOrDefault(f => f.FullName == $"Payload/{ipaBinaryName}.app/{ipaBinaryName}");
+                    binaryFiles = zip.Entries.Where(f => f.FullName == $"Payload/{ipaBinaryName}.app/{ipaBinaryName}");
                 }
 
                 // This package doesn't contain an IL2CPP application
-                if (metadataFile == null || binaryFile == null) {
+                if (metadataFile == null || !binaryFiles.Any()) {
                     Console.WriteLine($"Package {packageFile} does not contain an IL2CPP application");
                     return null;
                 }
 
-                // Extract the files to memory
+                // Extract the metadata file to memory
                 Console.WriteLine($"Extracting metadata from {packageFile}{Path.DirectorySeparatorChar}{metadataFile.FullName}");
-                Console.WriteLine($"Extracting binary from {packageFile}{Path.DirectorySeparatorChar}{binaryFile.FullName}");
 
-                var binaryMemoryStream = new MemoryStream();
                 var metadataMemoryStream = new MemoryStream();
-
                 metadataStream = metadataFile.Open();
-                binaryStream = binaryFile.Open();
-
-                binaryStream.CopyTo(binaryMemoryStream);
                 metadataStream.CopyTo(metadataMemoryStream);
-                binaryMemoryStream.Position = 0;
                 metadataMemoryStream.Position = 0;
+
+                // Extract the binary file or package to memory
+                var binaryMemoryStream = new MemoryStream();
+
+                // IPAs will only have one binary (which may or may not be a UB covering multiple architectures)
+                if (ipaBinaryFolder != null) {
+                    Console.WriteLine($"Extracting binary from {packageFile}{Path.DirectorySeparatorChar}{binaryFiles.First().FullName}");
+
+                    binaryStream = binaryFiles.First().Open();
+                    binaryStream.CopyTo(binaryMemoryStream);
+                    binaryMemoryStream.Position = 0;
+                }
+
+                // APKs may have one or more binaries, one per architecture
+                // We'll read the entire APK and load those via APKReader
+                else {
+                    binaryMemoryStream = new MemoryStream(File.ReadAllBytes(packageFile));
+                }
 
                 return (metadataMemoryStream, binaryMemoryStream);
             }
