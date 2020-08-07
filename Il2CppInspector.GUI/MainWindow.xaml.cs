@@ -230,13 +230,17 @@ namespace Il2CppInspectorGUI
                 cboCppUnityVersion.Items.Add(version);
                 cboJsonUnityVersion.Items.Add(version);
             }
+
+            // Prefer latest Unity versions
             cboPyUnityVersion.SelectedIndex = cboPyUnityVersion.Items.Count - 1;
             cboCppUnityVersion.SelectedIndex = cboCppUnityVersion.Items.Count - 1;
             cboJsonUnityVersion.SelectedIndex = cboJsonUnityVersion.Items.Count - 1;
+
+            // Restore previous selection via value equality
             if (prevIdaSelection != null) {
-                cboPyUnityVersion.SelectedItem = prevIdaSelection;
-                cboCppUnityVersion.SelectedItem = prevCppSelection;
-                cboJsonUnityVersion.SelectedItem = prevJsonSelection;
+                cboPyUnityVersion.SelectedItem = cboPyUnityVersion.Items.Cast<UnityHeaders>().First(v => v.Equals(prevIdaSelection));
+                cboCppUnityVersion.SelectedItem = cboCppUnityVersion.Items.Cast<UnityHeaders>().First(v => v.Equals(prevCppSelection));
+                cboJsonUnityVersion.SelectedItem = cboJsonUnityVersion.Items.Cast<UnityHeaders>().First(v => v.Equals(prevJsonSelection));
             }
         }
 
