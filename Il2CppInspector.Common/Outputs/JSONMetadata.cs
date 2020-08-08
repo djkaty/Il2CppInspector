@@ -38,6 +38,7 @@ namespace Il2CppInspector.Outputs
                     writeUsages();
                     writeFunctions();
                     writeMetadata();
+                    writeExports();
                 },
                 "Address map of methods, internal functions, type pointers and string literals in the binary file"
             );
@@ -172,6 +173,16 @@ namespace Il2CppInspector.Outputs
                             "void il2cpp_codegen_register(const Il2CppCodeRegistration* const codeRegistration, const Il2CppMetadataRegistration* const metadataRegistration)",
                             "il2cpp_codegen_register"));
             }, "IL2CPP Function Metadata");
+        }
+
+        private void writeExports() {
+            var exports = model.Package.Binary.GetAPIExports();
+
+            writeArray("exports", () => {
+                foreach (var export in exports) {
+                    writeObject(() => writeName(export.Value, export.Key));
+                }
+            }, "Exports");
         }
 
         private void writeObject(Action objectWriter) => writeObject(null, objectWriter);
