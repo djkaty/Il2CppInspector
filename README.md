@@ -49,7 +49,7 @@ Nice to have:
 * C# syntactic sugar for CTS value types, compiler-generated types, delegates, extension methods, operator overloading, indexers, user-defined conversion operators, explicit interface instantiations, finalizers, nullable types, unsafe contexts, fixed-size arrays, variable length argument lists, method hiding and escaped strings
 * Partition C# code output by namespace, assembly, class, full tree or single file; sort by index or type name; output flat or nested folder hierarchy. Each file includes the necessary `using` directives. Scope and type name conflicts are resolved automatically to produce code that compiles.
 * API function export processing for PE, ELF, Mach-O and SELF (PRX) binaries
-* Static and dynamic symbol table scanning for PE, ELF and Mach-O binaries 
+* Symbol table processing and name demangling for ELF and Mach-O binaries 
 * Relocation processing for ELF binaries
 * Automatically defeats certain basic obfuscation methods
 * Test chassis for automated integration testing of IL2CPP binaries
@@ -426,6 +426,12 @@ The output schema is as follows:
     - `functionMetadata` (array)
       The virtual address, name and C++ function signature of key metadata functions in the binary. Depending on how the binary was analyzed by Il2CppInspector, this may include `il2cpp_codegen_register`.
 
+    - `exports` (array)
+      The virtual address and name of every export in the binary
+
+    - `symbols` (array)
+      The virtual address, name and symbol type of every named (non-zero name length) and non-zero address function definition, type, field name and import (for ELF) defined in the binary. Not currently supported for PE files.
+
 ### Generating IL2CPP binaries without a Unity project
 
 Two Powershell scripts are provided to enable easy testing and debugging:
@@ -524,7 +530,13 @@ Thanks to the following major contributors!
 - nneonneo - https://github.com/nneonneo (huge overhaul of generics and script generation)
 - carterbush - https://github.com/carterbush (IDA script generation)
 
-This project uses [MultiKeyDictionary](https://www.codeproject.com/Articles/32894/C-Multi-key-Generic-Dictionary) by Aron Weiler.
+This project uses:
+
+- [MultiKeyDictionary](https://www.codeproject.com/Articles/32894/C-Multi-key-Generic-Dictionary) by Aron Weiler
+- [CxxDemangler](https://github.com/southpolenator/CxxDemangler) by Vuk Jovanovic
+- [CommandLineParser](https://github.com/commandlineparser/commandline) 
+- [Ookii Dialogs](http://www.ookii.org/software/dialogs/) by Sven Groot
+- [XamlAnimatedGif](https://github.com/XamlAnimatedGif/WpfAnimatedGif) by Thomas Levesque
 
 Thanks to the following individuals whose code and research helped me develop this tool:
 
