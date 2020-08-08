@@ -39,6 +39,7 @@ namespace Il2CppInspector.Outputs
                     writeFunctions();
                     writeMetadata();
                     writeExports();
+                    writeSymbols();
                 },
                 "Address map of methods, internal functions, type pointers and string literals in the binary file"
             );
@@ -183,6 +184,20 @@ namespace Il2CppInspector.Outputs
                     writeObject(() => writeName(export.Value, export.Key));
                 }
             }, "Exports");
+        }
+
+        private void writeSymbols() {
+            var symbols = model.Package.BinaryImage.GetSymbolTable().Values;
+
+            writeArray("symbols", () => {
+                foreach (var symbol in symbols) {
+                    writeObject(() => {
+                        writeName(symbol.VirtualAddress, symbol.Name);
+                        writer.WriteString("demangledName", symbol.DemangledName);
+                        writer.WriteString("type", symbol.Type.ToString());
+                    });
+                }
+            }, "Symbol table");
         }
 
         private void writeObject(Action objectWriter) => writeObject(null, objectWriter);
