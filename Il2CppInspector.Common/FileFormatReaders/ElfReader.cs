@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -131,7 +132,7 @@ namespace Il2CppInspector
         private TPHdr getProgramHeader(Elf programIndex) => program_header_table.FirstOrDefault(x => x.p_type == (uint) programIndex);
         private elf_dynamic<TWord> getDynamic(Elf dynamicIndex) => dynamic_table?.FirstOrDefault(x => (Elf) conv.ULong(x.d_tag) == dynamicIndex);
 
-        private Dictionary<string, ulong> symbolTable = new Dictionary<string, ulong>();
+        private Dictionary<string, Symbol> symbolTable = new Dictionary<string, Symbol>();
         private List<Export> exports = new List<Export>();
 
         protected abstract Elf ArchClass { get; }
@@ -318,7 +319,7 @@ namespace Il2CppInspector
             xorRange(conv.Int(section.sh_offset), conv.Int(section.sh_size), xorValue);
         }
 
-        public override Dictionary<string, ulong> GetSymbolTable() => symbolTable;
+        public override Dictionary<string, Symbol> GetSymbolTable() => symbolTable;
         public override IEnumerable<Export> GetExports() => exports;
 
         private void processSymbols() {
@@ -366,10 +367,18 @@ namespace Il2CppInspector
                 foreach (var symbol in symbol_table) {
                     var name = ReadNullTerminatedString(conv.Long(pTab.strings) + symbol.st_name);
 
+                    var type = symbol.type == Elf.STT_FUNC? SymbolType.Function
+                               : symbol.type == Elf.STT_OBJECT || symbol.type == Elf.STT_COMMON? SymbolType.Name
+                               : SymbolType.Unknown;
+
+                    if (symbol.st_shndx == (ushort) Elf.SHN_UNDEF)
+                        type = SymbolType.Import;
+
                     // Avoid duplicates
-                    symbolTable.TryAdd(name, conv.ULong(symbol.st_value));
+                    var symbolItem = new Symbol {Name = name, Type = type, VirtualAddress = conv.ULong(symbol.st_value) };
+                    symbolTable.TryAdd(name, symbolItem);
                     if (symbol.st_shndx != (ushort) Elf.SHN_UNDEF)
-                        exportTable.TryAdd(name, new Export {Name = name, VirtualAddress = conv.ULong(symbol.st_value)});
+                        exportTable.TryAdd(name, new Export {Name = symbolItem.DemangledName, VirtualAddress = conv.ULong(symbol.st_value)});
                 }
             }
 

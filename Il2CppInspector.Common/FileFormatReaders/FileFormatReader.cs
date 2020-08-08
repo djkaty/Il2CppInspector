@@ -27,7 +27,7 @@ namespace Il2CppInspector
         int Bits { get; }
         ulong GlobalOffset { get; } // The virtual address where the code section (.text) would be loaded in memory
         ulong ImageBase { get; } // The virtual address of where the image would be loaded in memory (same as GlobalOffset except for PE)
-        Dictionary<string, ulong> GetSymbolTable();
+        Dictionary<string, Symbol> GetSymbolTable();
         uint[] GetFunctionTable();
         IEnumerable<Export> GetExports();
         U ReadMappedObject<U>(ulong uiAddr) where U : new();
@@ -140,7 +140,7 @@ namespace Il2CppInspector
         public virtual IFileFormatReader this[uint index] => (index == 0)? this : throw new IndexOutOfRangeException("Binary image index out of bounds");
 
         // Find search locations in the symbol table for Il2Cpp data
-        public virtual Dictionary<string, ulong> GetSymbolTable() => null;
+        public virtual Dictionary<string, Symbol> GetSymbolTable() => new Dictionary<string, Symbol>();
 
         // Find search locations in the machine code for Il2Cpp data
         public virtual uint[] GetFunctionTable() => throw new NotImplementedException();

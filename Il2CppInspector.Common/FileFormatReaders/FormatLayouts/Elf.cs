@@ -46,6 +46,19 @@ namespace Il2CppInspector
         // SHNs
         SHN_UNDEF = 0,
 
+        // STTs
+        STT_NOTYPE = 0,
+        STT_OBJECT = 1,
+        STT_FUNC = 2,
+        STT_SECTION = 3,
+        STT_FILE = 4,
+        STT_COMMON = 5,
+        STT_LOOS = 10,
+        STT_HIOS = 12,
+        STT_LOPROC = 13,
+        STT_SPARC_REGISTER = 13,
+        STT_HIPROC = 15,
+
         // dynamic sections
         DT_STRTAB = 5,
         DT_SYMTAB = 6,
@@ -192,6 +205,8 @@ namespace Il2CppInspector
         uint st_name { get; }
         TWord st_value { get; }
         ushort st_shndx { get; }
+        Elf st_info { get; }
+        Elf type { get; }
     }
 
     internal class elf_32_sym : Ielf_sym<uint>
@@ -199,11 +214,13 @@ namespace Il2CppInspector
         public uint st_name => f_st_name;
         public uint st_value => f_st_value;
         public ushort st_shndx => f_st_shndx;
+        public Elf st_info => (Elf) f_st_info;
+        public Elf type => (Elf) (f_st_info & 0xf);
 
         public uint f_st_name;
         public uint f_st_value;
         public uint st_size;
-        public byte st_info;
+        public byte f_st_info;
         public byte st_other;
         public ushort f_st_shndx;
     }
@@ -213,9 +230,11 @@ namespace Il2CppInspector
         public uint st_name => f_st_name;
         public ulong st_value => f_st_value;
         public ushort st_shndx => f_st_shndx;
+        public Elf st_info => (Elf) f_st_info;
+        public Elf type => (Elf) (f_st_info & 0xf);
 
         public uint f_st_name;
-        public byte st_info;
+        public byte f_st_info;
         public byte st_other;
         public ushort f_st_shndx;
         public ulong f_st_value;

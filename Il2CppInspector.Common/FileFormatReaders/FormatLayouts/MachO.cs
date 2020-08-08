@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System;
 using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
@@ -33,7 +34,34 @@ namespace Il2CppInspector
         CPU_TYPE_X86 = 7,
         CPU_TYPE_X86_64 = 0x01000000 + CPU_TYPE_X86,
         CPU_TYPE_ARM = 12,
-        CPU_TYPE_ARM64 = 0x01000000 + CPU_TYPE_ARM
+        CPU_TYPE_ARM64 = 0x01000000 + CPU_TYPE_ARM,
+    }
+
+    [Flags]
+    public enum MachO_NType : byte
+    {
+        // n_type masks
+        N_STAB = 0xe0,
+        N_PEXT = 0x10,
+        N_TYPE = 0x0e,
+        N_EXT  = 0x01,
+
+        // n_stab bits
+        N_UNDF = 0x00,
+        N_ABS  = 0x02,
+        N_SECT = 0x0e,
+        N_PBUD = 0x0c,
+        N_INDR = 0x0a,
+
+        // n_type bits when N_STAB has some bits set
+        N_GSYM  = 0x20,
+        N_FNAME = 0x22,
+        N_FUN   = 0x24,
+        N_STSYM = 0x26,
+        N_BNSYM = 0x2E,
+        N_ENSYM = 0x4E,
+        N_SO    = 0x64,
+        N_OSO   = 0x66,
     }
 
     internal class MachOHeader<TWord> where TWord : struct
@@ -124,8 +152,9 @@ namespace Il2CppInspector
 
     internal class MachO_nlist<TWord> where TWord : struct
     {
+        public MachO_NType n_type => (MachO_NType) f_n_type;
         public uint n_strx;
-        public byte n_type;
+        public byte f_n_type;
         public byte n_sect;
         public ushort n_desc;
         public TWord n_value;

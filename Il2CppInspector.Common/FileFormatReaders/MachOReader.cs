@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using NoisyCowStudios.Bin2Object;
@@ -228,8 +229,8 @@ namespace Il2CppInspector
 
         public override uint[] GetFunctionTable() => ReadArray<TWord>(funcTab.ImageOffset, conv.Int(funcTab.Size) / (Bits / 8)).Select(x => MapVATR(conv.ULong(x)) & 0xffff_fffe).ToArray();
 
-        public override Dictionary<string, ulong> GetSymbolTable() {
-            var symbols = new Dictionary<string, ulong>();
+        public override Dictionary<string, Symbol> GetSymbolTable() {
+            var symbols = new Dictionary<string, Symbol>();
 
             // https://opensource.apple.com/source/cctools/cctools-795/include/mach-o/nlist.h
             // n_sect: https://opensource.apple.com/source/cctools/cctools-795/include/mach-o/stab.h
@@ -243,11 +244,33 @@ namespace Il2CppInspector
                 var name = (symbol.n_strx != 0) ? ReadNullTerminatedString() : "";
                 var value = (ulong) Convert.ChangeType(symbol.n_value, typeof(ulong));
 
-                // Ignore duplicates for now, also ignore symbols with no address
-                if (value != 0)
-                    symbols.TryAdd(name, value);
-            }
+                // Ignore symbols with no address or name
+                if (value == 0 || name.Length == 0)
+                    continue;
 
+                // Mask out the N_EXT and N_PEXT bits because we don't care about it
+                var ntype = (MachO_NType) ((byte)symbol.n_type & ~(byte)MachO_NType.N_EXT & ~(byte)MachO_NType.N_PEXT);
+
+                // For non-debugging symbols (no bits of N_STAB set), just leave the N_TYPE
+                // Otherwise leave the whole n_type field (with N_EXT and N_PEXT removed)
+                var dbg = (symbol.n_type & MachO_NType.N_STAB) != 0;
+
+                if (dbg)
+                    if (ntype == MachO_NType.N_BNSYM || ntype == MachO_NType.N_ENSYM
+                        || ntype == MachO_NType.N_SO || ntype == MachO_NType.N_OSO)
+                        continue;
+
+                var type = ntype == MachO_NType.N_FUN? SymbolType.Function
+                    : ntype == MachO_NType.N_STSYM || ntype == MachO_NType.N_GSYM || ntype == MachO_NType.N_SECT? SymbolType.Name
+                    : SymbolType.Unknown;
+
+                if (type == SymbolType.Unknown) {
+                    Console.WriteLine($"Unknown symbol type: {((int) ntype):x2}   {value:x16}   " + CxxDemangler.CxxDemangler.Demangle(name));
+                }
+
+                // Ignore duplicates
+                symbols.TryAdd(name, new Symbol { Name = name, VirtualAddress = value, Type = type });
+            }
             return symbols;
         }
 

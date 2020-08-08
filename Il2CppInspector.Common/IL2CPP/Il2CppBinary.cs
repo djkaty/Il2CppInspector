@@ -148,20 +148,20 @@ namespace Il2CppInspector
             // Try searching the symbol table
             var symbols = Image.GetSymbolTable();
 
-            if (symbols?.Any() ?? false) {
+            if (symbols.Any()) {
                 Console.WriteLine($"Symbol table(s) found with {symbols.Count} entries");
 
                 symbols.TryGetValue("g_CodeRegistration", out var code);
                 symbols.TryGetValue("g_MetadataRegistration", out var metadata);
 
-                if (code == 0)
+                if (code == null)
                     symbols.TryGetValue("_g_CodeRegistration", out code);
-                if (metadata == 0)
+                if (metadata == null)
                     symbols.TryGetValue("_g_MetadataRegistration", out metadata);
 
-                if (code != 0 && metadata != 0) {
+                if (code != null && metadata != null) {
                     Console.WriteLine("Required structures acquired from symbol lookup");
-                    Configure(code, metadata);
+                    Configure(code.VirtualAddress, metadata.VirtualAddress);
                     return true;
                 }
                 else {
