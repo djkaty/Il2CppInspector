@@ -48,8 +48,8 @@ namespace Il2CppInspector.Reflection
         // List of all generated CustomAttributeData objects by their instanceIndex into AttributeTypeIndices
         public ConcurrentDictionary<int, CustomAttributeData> AttributesByIndices { get; } = new ConcurrentDictionary<int, CustomAttributeData>();
 
-        // List of unique custom attributes generators (multiple indices above may refer to a single generator function)
-        public List<CustomAttributeData> CustomAttributeGenerators { get; }
+        // List of unique custom attributes generators indexed by type (multiple indices above may refer to a single generator function)
+        public Dictionary<TypeInfo, List<CustomAttributeData>> CustomAttributeGenerators { get; }
 
         // Get an assembly by its image name
         public Assembly GetAssembly(string name) => Assemblies.FirstOrDefault(a => a.ShortName == name);
@@ -132,8 +132,10 @@ namespace Il2CppInspector.Reflection
             var allMethodAttributes = MethodsByDefinitionIndex.Select(m => m.CustomAttributes).ToList();
             var allParameterAttributes = MethodsByDefinitionIndex.SelectMany(m => m.DeclaredParameters).Select(p => p.CustomAttributes).ToList();
 
-            // Populate list of unique custom attribute generators
-            CustomAttributeGenerators = AttributesByIndices.Values.GroupBy(a => a.VirtualAddress.Start).Select(a => a.First()).ToList();
+            // Populate list of unique custom attribute generators for each type
+            CustomAttributeGenerators = AttributesByIndices.Values
+                .GroupBy(a => a.AttributeType)
+                .ToDictionary(g => g.Key, g => g.GroupBy(a => a.VirtualAddress.Start).Select(g => g.First()).ToList());
 
             // Create method invokers (one per signature, in invoker index order)
             foreach (var method in MethodsByDefinitionIndex) {
