@@ -459,7 +459,7 @@ namespace Il2CppInspector.Reflection
 
                 // Check to see if there is a namespace in our using directives which brings this type into scope
                 // Sort by descending order of length to search the deepest namespaces first
-                : scope.Namespaces.OrderByDescending(n => n.Length).FirstOrDefault(n => declaringScope == n || declaringScope.StartsWith(n + "."));
+                : scope.Namespaces?.OrderByDescending(n => n.Length).FirstOrDefault(n => declaringScope == n || declaringScope.StartsWith(n + "."));
 
             // minimallyScopedName will eventually contain the least qualified name needed to access the type
             // Initially we set it as follows:
@@ -522,7 +522,8 @@ namespace Il2CppInspector.Reflection
                 outerTypeName = minimallyScopedName.Split('.')[0];
 
                 // Take matching type names from all namespaces in scope
-                var matchingNamespaces = scope.Namespaces.Where(n => Assembly.Model.TypesByFullName.ContainsKey(n + "." + outerTypeName)).ToList();
+                var matchingNamespaces = scope.Namespaces?
+                    .Where(n => Assembly.Model.TypesByFullName.ContainsKey(n + "." + outerTypeName)).ToList() ?? new List<string>();
 
                 // The global namespace is in scope so take every matching type from that too
                 if (Assembly.Model.TypesByFullName.ContainsKey(outerTypeName))
@@ -542,7 +543,8 @@ namespace Il2CppInspector.Reflection
 
             // Finally, check if the selected name has ambiguity with any available namespaces in the current scope
             // If so, use the full name with the mutual root scope cut off from the start
-            var checkNamespaces = scope.Namespaces.Select(ns => (!string.IsNullOrEmpty(ns)? ns + "." : "") + minimallyScopedName).ToList();
+            var checkNamespaces = scope.Namespaces?
+                .Select(ns => (!string.IsNullOrEmpty(ns)? ns + "." : "") + minimallyScopedName).ToList() ?? new List<string>();
 
             if (Assembly.Model.Namespaces.Intersect(checkNamespaces).Any())
                 minimallyScopedName = mutualRootScope.Length > 0 ? usedType.Substring(mutualRootScope.Length + 1) : usedType;
