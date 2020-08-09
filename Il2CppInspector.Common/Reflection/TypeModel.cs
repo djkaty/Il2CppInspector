@@ -51,6 +51,9 @@ namespace Il2CppInspector.Reflection
         // List of unique custom attributes generators indexed by type (multiple indices above may refer to a single generator function)
         public Dictionary<TypeInfo, List<CustomAttributeData>> CustomAttributeGenerators { get; }
 
+        // List of unique custom attributes generators indexed by virtual address
+        public Dictionary<ulong, List<CustomAttributeData>> CustomAttributeGeneratorsByAddress { get; }
+
         // Get an assembly by its image name
         public Assembly GetAssembly(string name) => Assemblies.FirstOrDefault(a => a.ShortName == name);
 
@@ -136,6 +139,11 @@ namespace Il2CppInspector.Reflection
             CustomAttributeGenerators = AttributesByIndices.Values
                 .GroupBy(a => a.AttributeType)
                 .ToDictionary(g => g.Key, g => g.GroupBy(a => a.VirtualAddress.Start).Select(g => g.First()).ToList());
+
+            // Populate list of unique custom attribute generators for each address
+            CustomAttributeGeneratorsByAddress = AttributesByIndices.Values
+                .GroupBy(a => a.VirtualAddress.Start)
+                .ToDictionary(g => g.Key, g => g.GroupBy(a => a.AttributeType).Select(g => g.First()).ToList());
 
             // Create method invokers (one per signature, in invoker index order)
             foreach (var method in MethodsByDefinitionIndex) {
