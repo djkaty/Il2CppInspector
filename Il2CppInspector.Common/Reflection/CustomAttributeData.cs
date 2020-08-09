@@ -77,6 +77,6 @@ namespace Il2CppInspector.Reflection
         public static IList<CustomAttributeData> GetCustomAttributes(ParameterInfo param) => getCustomAttributes(param.DeclaringMethod.Assembly, param.Definition.token, param.Definition.customAttributeIndex);
         public static IList<CustomAttributeData> GetCustomAttributes(PropertyInfo prop)
             => prop.Definition != null ? getCustomAttributes(prop.Assembly, prop.Definition.token, prop.Definition.customAttributeIndex) : new List<CustomAttributeData>();
-        public static IList<CustomAttributeData> GetCustomAttributes(TypeInfo type) => getCustomAttributes(type.Assembly, type.Definition.token, type.Definition.customAttributeIndex);
+        public static IList<CustomAttributeData> GetCustomAttributes(TypeInfo type) => type.Definition != null? getCustomAttributes(type.Assembly, type.Definition.token, type.Definition.customAttributeIndex) : new List<CustomAttributeData>();
     }
 }
