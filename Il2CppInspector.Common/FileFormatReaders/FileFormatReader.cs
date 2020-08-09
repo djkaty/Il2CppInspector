@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
@@ -30,28 +31,62 @@ namespace Il2CppInspector
         Dictionary<string, Symbol> GetSymbolTable();
         uint[] GetFunctionTable();
         IEnumerable<Export> GetExports();
-        U ReadMappedObject<U>(ulong uiAddr) where U : new();
-        U[] ReadMappedArray<U>(ulong uiAddr, int count) where U : new();
-        long[] ReadMappedWordArray(ulong uiAddr, int count);
+
         uint MapVATR(ulong uiAddr);
         bool TryMapVATR(ulong uiAddr, out uint fileOffset);
         ulong MapFileOffsetToVA(uint offset);
         bool TryMapFileOffsetToVA(uint offset, out ulong va);
 
+        byte ReadByte();
+        byte ReadByte(long uiAddr);
         byte[] ReadBytes(int count);
+        byte[] ReadBytes(long uiAddr, int count);
+        bool ReadBoolean();
+        bool ReadBoolean(long uiAddr);
+        long ReadInt64();
+        long ReadInt64(long uiAddr);
+        int ReadInt32();
+        int ReadInt32(long uiAddr);
+        short ReadInt16();
+        short ReadInt16(long uiAddr);
         ulong ReadUInt64();
         ulong ReadUInt64(long uiAddr);
         uint ReadUInt32();
         uint ReadUInt32(long uiAddr);
         ushort ReadUInt16();
         ushort ReadUInt16(long uiAddr);
-        byte ReadByte();
-        byte ReadByte(long uiAddr);
+        U ReadObject<U>() where U : new();
+        U ReadObject<U>(long uiAddr) where U : new();
+        U[] ReadArray<U>(int count) where U : new();
+        U[] ReadArray<U>(long uiAddr, int count) where U : new();
+        string ReadNullTerminatedString(Encoding encoding = null);
+        string ReadNullTerminatedString(long uiAddr, Encoding encoding = null);
+        string ReadFixedLengthString(int length, Encoding encoding = null);
+        string ReadFixedLengthString(long uiAddr, int length, Encoding encoding = null);
+
         long ReadWord();
         long ReadWord(long uiAddr);
-        U ReadObject<U>() where U : new();
-        string ReadMappedNullTerminatedString(ulong uiAddr);
+        long[] ReadWordArray(int count);
+        long[] ReadWordArray(long uiAddr, int count);
+
+        byte ReadMappedByte(ulong uiAddr);
+        byte[] ReadMappedBytes(ulong uiAddr, int count);
+        bool ReadMappedBoolean(ulong uiAddr);
+        long ReadMappedInt64(ulong uiAddr);
+        int ReadMappedInt32(ulong uiAddr);
+        short ReadMappedInt16(ulong uiAddr);
+        ulong ReadMappedUInt64(ulong uiAddr);
+        uint ReadMappedUInt32(ulong uiAddr);
+        ushort ReadMappedUInt16(ulong uiAddr);
+        U ReadMappedObject<U>(ulong uiAddr) where U : new();
+        U[] ReadMappedArray<U>(ulong uiAddr, int count) where U : new();
+        string ReadMappedNullTerminatedString(ulong uiAddr, Encoding encoding = null);
+        string ReadMappedFixedLengthString(ulong uiAddr, int length, Encoding encoding = null);
+
+        long ReadMappedWord(ulong uiAddr);
+        long[] ReadMappedWordArray(ulong uiAddr, int count);
         List<U> ReadMappedObjectPointerArray<U>(ulong uiAddr, int count) where U : new();
+
         EventHandler<string> OnStatusUpdate { get; set; }
     }
 
@@ -183,17 +218,29 @@ namespace Il2CppInspector
         // The primitive mappings in Bin2Object will automatically read a uint if the file is 32-bit
         public long ReadWord() => ReadObject<long>();
         public long ReadWord(long uiAddr) => ReadObject<long>(uiAddr);
+        public long[] ReadWordArray(int count) => ReadArray<long>(count);
+        public long[] ReadWordArray(long uiAddr, int count) => ReadArray<long>(uiAddr, count);
 
-        // Retrieve object(s) from specified RVA(s)
+        // Retrieve items from specified RVA(s)
+        public byte ReadMappedByte(ulong uiAddr) => ReadByte(MapVATR(uiAddr));
+        public byte[] ReadMappedBytes(ulong uiAddr, int count) => ReadBytes(MapVATR(uiAddr), count);
+        public bool ReadMappedBoolean(ulong uiAddr) => ReadBoolean(MapVATR(uiAddr));
+        public long ReadMappedInt64(ulong uiAddr) => ReadInt64(MapVATR(uiAddr));
+        public int ReadMappedInt32(ulong uiAddr) => ReadInt32(MapVATR(uiAddr));
+        public short ReadMappedInt16(ulong uiAddr) => ReadInt16(MapVATR(uiAddr));
+        public ulong ReadMappedUInt64(ulong uiAddr) => ReadUInt64(MapVATR(uiAddr));
+        public uint ReadMappedUInt32(ulong uiAddr) => ReadUInt32(MapVATR(uiAddr));
+        public ushort ReadMappedUInt16(ulong uiAddr) => ReadUInt16(MapVATR(uiAddr));
+
         public U ReadMappedObject<U>(ulong uiAddr) where U : new() => ReadObject<U>(MapVATR(uiAddr));
-
         public U[] ReadMappedArray<U>(ulong uiAddr, int count) where U : new() => ReadArray<U>(MapVATR(uiAddr), count);
+        public string ReadMappedNullTerminatedString(ulong uiAddr, Encoding encoding = null) => ReadNullTerminatedString(MapVATR(uiAddr), encoding);
+        public string ReadMappedFixedLengthString(ulong uiAddr, int length, Encoding encoding = null) => ReadFixedLengthString(MapVATR(uiAddr), length, encoding);
 
         // Read a file format dependent array of words (32 or 64 bits)
         // The primitive mappings in Bin2Object will automatically read a uint if the file is 32-bit
+        public long ReadMappedWord(ulong uiAddr) => ReadWord(MapVATR(uiAddr));
         public long[] ReadMappedWordArray(ulong uiAddr, int count) => ReadArray<long>(MapVATR(uiAddr), count);
-
-        public string ReadMappedNullTerminatedString(ulong uiAddr) => ReadNullTerminatedString(MapVATR(uiAddr));
 
         // Reads a list of pointers, then reads each object pointed to
         public List<U> ReadMappedObjectPointerArray<U>(ulong uiAddr, int count) where U : new() {
