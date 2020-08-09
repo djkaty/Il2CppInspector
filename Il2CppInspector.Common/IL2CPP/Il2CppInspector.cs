@@ -301,7 +301,7 @@ namespace Il2CppInspector
 
         // Finds and extracts the metadata and IL2CPP binary from an APK or IPA file into MemoryStreams
         // Returns null if package not recognized or does not contain an IL2CPP application
-        public static (MemoryStream Metadata, MemoryStream Binary)? GetStreamsFromPackage(string packageFile) {
+        public static (MemoryStream Metadata, MemoryStream Binary)? GetStreamsFromPackage(string packageFile, bool silent = false) {
             try {
                 // Check if it's a zip file first because ZipFile.OpenRead is extremely slow if it isn't
                 using (BinaryReader zipTest = new BinaryReader(File.Open(packageFile, FileMode.Open))) {
@@ -328,12 +328,13 @@ namespace Il2CppInspector
 
                 // This package doesn't contain an IL2CPP application
                 if (metadataFile == null || !binaryFiles.Any()) {
-                    Console.WriteLine($"Package {packageFile} does not contain an IL2CPP application");
+                    Console.Error.WriteLine($"Package {packageFile} does not contain an IL2CPP application");
                     return null;
                 }
 
                 // Extract the metadata file to memory
-                Console.WriteLine($"Extracting metadata from {packageFile}{Path.DirectorySeparatorChar}{metadataFile.FullName}");
+                if (!silent)
+                    Console.WriteLine($"Extracting metadata from {packageFile}{Path.DirectorySeparatorChar}{metadataFile.FullName}");
 
                 var metadataMemoryStream = new MemoryStream();
                 metadataStream = metadataFile.Open();
@@ -345,7 +346,8 @@ namespace Il2CppInspector
 
                 // IPAs will only have one binary (which may or may not be a UB covering multiple architectures)
                 if (ipaBinaryFolder != null) {
-                    Console.WriteLine($"Extracting binary from {packageFile}{Path.DirectorySeparatorChar}{binaryFiles.First().FullName}");
+                    if (!silent)
+                        Console.WriteLine($"Extracting binary from {packageFile}{Path.DirectorySeparatorChar}{binaryFiles.First().FullName}");
 
                     binaryStream = binaryFiles.First().Open();
                     binaryStream.CopyTo(binaryMemoryStream);
@@ -368,21 +370,27 @@ namespace Il2CppInspector
         }
 
         // Load from an APK or IPA file
-        public static List<Il2CppInspector> LoadFromPackage(string packageFile) {
-            var streams = GetStreamsFromPackage(packageFile);
+        public static List<Il2CppInspector> LoadFromPackage(string packageFile, bool silent = false) {
+            var streams = GetStreamsFromPackage(packageFile, silent);
             if (!streams.HasValue)
                 return null;
-            return LoadFromStream(streams.Value.Binary, streams.Value.Metadata);
+            return LoadFromStream(streams.Value.Binary, streams.Value.Metadata, silent);
         }
 
         // Load from a binary file and metadata file
-        public static List<Il2CppInspector> LoadFromFile(string binaryFile, string metadataFile)
+        public static List<Il2CppInspector> LoadFromFile(string binaryFile, string metadataFile, bool silent = false)
             => LoadFromStream(new FileStream(binaryFile, FileMode.Open, FileAccess.Read),
-                                new MemoryStream(File.ReadAllBytes(metadataFile)));
+                                new MemoryStream(File.ReadAllBytes(metadataFile)),
+                                silent);
 
         // Load from a binary stream and metadata stream
         // Must be a seekable stream otherwise we catch a System.IO.NotSupportedException
-        public static List<Il2CppInspector> LoadFromStream(Stream binaryStream, Stream metadataStream) {
+        public static List<Il2CppInspector> LoadFromStream(Stream binaryStream, Stream metadataStream, bool silent = false) {
+
+            // Silent operation if requested
+            var stdout = Console.Out;
+            if (silent)
+                Console.SetOut(new StreamWriter(Stream.Null));
 
             // Load the metadata file
             Metadata metadata;
@@ -391,6 +399,7 @@ namespace Il2CppInspector
             }
             catch (Exception ex) {
                 Console.Error.WriteLine(ex.Message);
+                Console.SetOut(stdout);
                 return null;
             }
 
@@ -406,6 +415,7 @@ namespace Il2CppInspector
             }
             catch (Exception ex) {
                 Console.Error.WriteLine(ex.Message);
+                Console.SetOut(stdout);
                 return null;
             }
 
@@ -435,6 +445,8 @@ namespace Il2CppInspector
                     Console.Error.WriteLine(ex.Message);
                 }
             }
+
+            Console.SetOut(stdout);
             return processors;
         }
     }
