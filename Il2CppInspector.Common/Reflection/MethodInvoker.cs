@@ -20,6 +20,9 @@ namespace Il2CppInspector.Reflection
         // IL2CPP invoker index
         public int Index { get; }
 
+        // IL2CPP package
+        public Il2CppInspector Package { get; }
+
         // Virtual address of the invoker function
         public (ulong Start, ulong End) VirtualAddress { get; }
 
@@ -35,7 +38,7 @@ namespace Il2CppInspector.Reflection
         // Find the correct method invoker for a method with a specific signature
         public MethodInvoker(MethodBase exampleMethod, int index) {
             var model = exampleMethod.Assembly.Model;
-            var package = exampleMethod.Assembly.Model.Package;
+            Package = exampleMethod.Assembly.Model.Package;
 
             Index = index;
             IsStatic = exampleMethod.IsStatic;
@@ -43,8 +46,8 @@ namespace Il2CppInspector.Reflection
             ReturnType = exampleMethod.IsConstructor ? model.TypesByFullName["System.Void"] : mapParameterType(model, ((MethodInfo) exampleMethod).ReturnType);
             ParameterTypes = exampleMethod.DeclaredParameters.Select(p => mapParameterType(model, p.ParameterType)).ToArray();
 
-            var start = package.MethodInvokePointers[Index];
-            VirtualAddress = (start & 0xffff_ffff_ffff_fffe, package.FunctionAddresses[start]);
+            var start = Package.MethodInvokePointers[Index];
+            VirtualAddress = (start & 0xffff_ffff_ffff_fffe, Package.FunctionAddresses[start]);
         }
 
         // The invokers use Object for all reference types, and SByte for booleans
@@ -53,6 +56,9 @@ namespace Il2CppInspector.Reflection
             { FullName: "System.Boolean" }      => model.TypesByFullName["System.SByte"],
             _                                   => type
         };
+
+        // Get the machine code of the C++ function
+        public byte[] GetMethodBody() => Package.BinaryImage.ReadMappedBytes(VirtualAddress.Start, (int) (VirtualAddress.End - VirtualAddress.Start));
 
         public string Name => $"RuntimeInvoker_{!IsStatic}{ReturnType.BaseName.ToCIdentifier()}_" + string.Join("_", ParameterTypes.Select(p => p.BaseName.ToCIdentifier()));
 

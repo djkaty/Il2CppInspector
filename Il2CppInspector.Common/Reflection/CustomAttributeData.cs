@@ -34,6 +34,9 @@ namespace Il2CppInspector.Reflection
 
         public override string ToString() => "[" + AttributeType.FullName + "]";
 
+        // Get the machine code of the C++ function
+        public byte[] GetMethodBody() => Model.Package.BinaryImage.ReadMappedBytes(VirtualAddress.Start, (int) (VirtualAddress.End - VirtualAddress.Start));
+
         // Get all the custom attributes for a given assembly, type, member or parameter
         private static IEnumerable<CustomAttributeData> getCustomAttributes(Assembly asm, int customAttributeIndex) {
             if (customAttributeIndex < 0)

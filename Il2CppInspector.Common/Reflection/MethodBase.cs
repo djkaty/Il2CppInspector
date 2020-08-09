@@ -89,8 +89,7 @@ namespace Il2CppInspector.Reflection
                 return null;
 
             var image = Assembly.Model.Package.BinaryImage;
-            image.Position = image.MapVATR(VirtualAddress.Value.Start);
-            return image.ReadBytes((int) (VirtualAddress.Value.End - VirtualAddress.Value.Start));
+            return image.ReadMappedBytes(VirtualAddress.Value.Start, (int) (VirtualAddress.Value.End - VirtualAddress.Value.Start));
         }
 
         public string CSharpName =>
