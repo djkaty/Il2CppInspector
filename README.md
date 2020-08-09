@@ -247,6 +247,8 @@ To import metadata into an existing Ghidra project:
 7. Click Refresh to make the script appear in _Script Manager_.
 8. Right-click the script and choose _Run_. This may take a while to complete.
 
+   **NOTE:** If you receive a `Conflicting data exists at address` error when running the script, re-load the binary into the project but choose No when Ghidra asks if you would like to perform auto-analysis.
+
 ![Ghidra import help](docs/Ghidra_Guide.png)
 
 Il2CppInspector generates identical data for Ghidra projects as it does for IDA - see the above section for details.
