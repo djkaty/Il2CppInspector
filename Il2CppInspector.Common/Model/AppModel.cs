@@ -16,8 +16,6 @@ using Il2CppInspector.Reflection;
 
 namespace Il2CppInspector.Model
 {
-    // Class that represents a composite IL/C++ type
-
     // Class that represents the entire structure of the IL2CPP binary realized as C++ types and code,
     // correlated with .NET types where applicable. Primarily designed to enable automated static analysis of disassembly code.
     public class AppModel : IEnumerable<CppType>
@@ -58,8 +56,11 @@ namespace Il2CppInspector.Model
         // The .NET type model for the application
         public TypeModel ILModel { get; }
 
-        // All of the symbol exports (including function exports) for the binary
+        // All of the exports (including function exports) for the binary
         public List<Export> Exports { get; }
+
+        // All of the symbols representing function names, signatures or type/field names or address labels for the binary
+        public Dictionary<string, Symbol> Symbols { get; }
 
         // All of the API exports defined in the IL2CPP binary
         // Note: Multiple export names may have the same virtual address
@@ -99,7 +100,10 @@ namespace Il2CppInspector.Model
             ILModel = model;
 
             // Get addresses of all exports
-            Exports = model.Package.Binary.Image.GetExports()?.ToList() ?? new List<Export>();
+            Exports = Package.BinaryImage.GetExports()?.ToList() ?? new List<Export>();
+
+            // Get all symbols
+            Symbols = Package.BinaryImage.GetSymbolTable();
         }
 
         // Build the application model targeting a specific version of Unity and C++ compiler

@@ -9,6 +9,7 @@ using Il2CppInspector.Reflection;
 
 namespace Il2CppInspector.Model
 {
+    // Class that represents a composite IL/C++ type
     public class AppType
     {
         // The logical group this type is part of

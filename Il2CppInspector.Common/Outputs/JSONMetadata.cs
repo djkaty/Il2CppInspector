@@ -187,7 +187,7 @@ namespace Il2CppInspector.Outputs
         }
 
         private void writeSymbols() {
-            var symbols = model.Package.BinaryImage.GetSymbolTable().Values;
+            var symbols = model.Symbols.Values;
 
             writeArray("symbols", () => {
                 foreach (var symbol in symbols) {
