@@ -55,6 +55,8 @@ namespace Il2CppInspector.Reflection
 
         public static string ToAddressString(this (ulong start, ulong end)? address) => ToAddressString(address?.start ?? 0) + "-" + ToAddressString(address?.end ?? 0);
 
+        public static string ToAddressString(this (ulong start, ulong end) address) => ToAddressString(address.start) + "-" + ToAddressString(address.end);
+
         // C# string literal escape characters
         // Taken from: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/#regular-and-verbatim-string-literals
         private static Dictionary<char, string> escapeChars = new Dictionary<char, string> {

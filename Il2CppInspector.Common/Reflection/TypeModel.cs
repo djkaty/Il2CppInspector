@@ -133,7 +133,7 @@ namespace Il2CppInspector.Reflection
             var allParameterAttributes = MethodsByDefinitionIndex.SelectMany(m => m.DeclaredParameters).Select(p => p.CustomAttributes).ToList();
 
             // Populate list of unique custom attribute generators
-            CustomAttributeGenerators = AttributesByIndices.Values.GroupBy(a => a.VirtualAddress.Value.Start).Select(a => a.First()).ToList();
+            CustomAttributeGenerators = AttributesByIndices.Values.GroupBy(a => a.VirtualAddress.Start).Select(a => a.First()).ToList();
 
             // Create method invokers (one per signature, in invoker index order)
             foreach (var method in MethodsByDefinitionIndex) {

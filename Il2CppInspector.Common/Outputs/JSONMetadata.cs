@@ -52,9 +52,11 @@ namespace Il2CppInspector.Outputs
             writeArray("methodDefinitions", () => writeMethods(model.GetMethodGroup("types_from_methods")), "Method definitions");
             writeArray("constructedGenericMethods", () => writeMethods(model.GetMethodGroup("types_from_generic_methods")), "Constructed generic methods");
 
+            // We could use ILModel.CustomAttributeGenerators here to ensure uniqueness but then we lose function name information
+            // TODO: Merge CAG names that deal with multiple attribute types to reflect all of the attribute type names (solving the above)
             writeArray("customAttributesGenerators", () => {
                 foreach (var method in model.ILModel.AttributesByIndices.Values) {
-                    writeObject(() => writeTypedFunctionName(method.VirtualAddress.Value.Start, method.Signature, method.Name));
+                    writeObject(() => writeTypedFunctionName(method.VirtualAddress.Start, method.Signature, method.Name));
                 }
             }, "Custom attributes generators");
 

@@ -21,7 +21,7 @@ namespace Il2CppInspector.Reflection
         // The type of the attribute
         public TypeInfo AttributeType { get; set; }
 
-        public (ulong Start, ulong End)? VirtualAddress =>
+        public (ulong Start, ulong End) VirtualAddress =>
             // The last one will be wrong but there is no way to calculate it
             (Model.Package.CustomAttributeGenerators[Index], Model.Package.FunctionAddresses[Model.Package.CustomAttributeGenerators[Index]]);
 
