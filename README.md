@@ -2,7 +2,7 @@
 
 Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the most complete analysis currently available.
 
-Main features:
+### Main features
 
 * Output IL2CPP type definitions, metadata and method pointers as **[C# stub code](#creating-c-prototypes)**
 
@@ -28,12 +28,15 @@ Main features:
 
 * Tested with [every release of IL2CPP](#version-support) since Unity 5.3.0
 
+
+### Tutorials and Guides
+
 You can read more about IL2CPP in my series [IL2CPP Reverse Engineering](https://katyscode.wordpress.com/category/reverse-engineering/il2cpp/).
 
-**NOTE**: Il2CppInspector is not a decompiler. It can provide you with the structure of an application and function addresses for every method so that you can easily jump straight to methods of interest in your disassembler. It does not attempt to recover the entire source code of the application.
+[Using Il2CppInspector's type model to extract protobuf-net definitions (Case Study: Fall Guys)](https://katyscode.wordpress.com/2020/08/10/practical-il2cpp-protobuf/)
 
-![Il2CppInspector GUI](docs/GUI_Preview.png)
 
+### Other features
 
 File format and architecture support:
 
@@ -55,6 +58,10 @@ Nice to have:
 * Test chassis for automated integration testing of IL2CPP binaries
 
 Class library targets .NET Standard 2.1. Application targets .NET Core 3.0. Built with Visual Studio 2019.
+
+**NOTE**: Il2CppInspector is not a decompiler. It can provide you with the structure of an application and function addresses for every method so that you can easily jump straight to methods of interest in your disassembler. It does not attempt to recover the entire source code of the application.
+
+![Il2CppInspector GUI](docs/GUI_Preview.png)
 
 ### Build instructions
 
