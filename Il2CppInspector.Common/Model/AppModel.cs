@@ -274,5 +274,14 @@ namespace Il2CppInspector.Model
 
         // Get all the composite methods for a group
         public IEnumerable<AppMethod> GetMethodGroup(string groupName) => Methods.Values.Where(m => m.Group == groupName);
+
+        // Get the address map for the model
+        // This takes a while to construct so we only build it if requested
+        private AddressMap addressMap;
+        public AddressMap GetAddressMap() {
+            if (addressMap == null)
+                addressMap = new AddressMap(this);
+            return addressMap;
+        }
     }
 }
