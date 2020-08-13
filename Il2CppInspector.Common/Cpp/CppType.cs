@@ -250,6 +250,13 @@ namespace Il2CppInspector.Cpp
             if (field.BitfieldSize == 0 && field.Offset % 8 != 0)
                 field.Offset = (field.Offset / 8) * 8 + 8;
 
+            // A struct or union must be aligned on a word boundary for the architecture bit width
+            //if (field.Type is CppComplexType && 
+
+            // A 2, 4 or 8-byte value etc. must be aligned on an equivalent boundary
+            if (!(field.Type is CppComplexType) && field.OffsetBytes % field.SizeBytes != 0)
+                field.Offset += (field.SizeBytes - field.OffsetBytes % field.SizeBytes) * 8;
+
             // Respect alignment directives
             if (alignmentBytes > 0 && field.OffsetBytes % alignmentBytes != 0)
                 field.Offset += (alignmentBytes - field.OffsetBytes % alignmentBytes) * 8;
