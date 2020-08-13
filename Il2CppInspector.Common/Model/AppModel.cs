@@ -7,7 +7,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Aron.Weiler;
 using Il2CppInspector.Cpp;
@@ -275,6 +274,8 @@ namespace Il2CppInspector.Model
         // Get all the composite methods for a group
         public IEnumerable<AppMethod> GetMethodGroup(string groupName) => Methods.Values.Where(m => m.Group == groupName);
 
+        // Static analysis tools
+
         // Get the address map for the model
         // This takes a while to construct so we only build it if requested
         private AddressMap addressMap;
@@ -282,6 +283,26 @@ namespace Il2CppInspector.Model
             if (addressMap == null)
                 addressMap = new AddressMap(this);
             return addressMap;
+        }
+
+        // Get the byte offset in Il2CppClass for this app's Unity version to the vtable
+        public int GetVTableOffset() => CppTypeCollection.GetComplexType("Il2CppClass")["vtable"].OffsetBytes;
+
+        // Get the vtable method index from an offset from the start of the Il2CppClass
+        // Unity 5.3.0-5.3.5 uses MethodInfo** - a pointer to a list of MethodInfo pointers
+        // Unity 5.3.6-5.4.6 uses VirtualInvokeData* - a pointer to an array of VirtualInvokeData
+        // Unity 5.5.0 onwards moves the VirtualInvokeData to the end of Il2CppClass and makes it an array
+        // We only include support for Unity 5.5.0 onwards
+        public int GetVTableIndexFromClassOffset(int offset) {
+            if (UnityVersion.CompareTo("5.5.0") < 0)
+                throw new NotImplementedException("VTable index resolution is only supported for Unity 5.5.0 and later");
+
+            // VirtualInvokeData has two members. The first is the jump target.
+            // Il2CppMethodPointer methodPtr;
+            // const MethodInfo* method;
+            var offsetIntoVTable = offset - GetVTableOffset();
+            var vidSize = WordSize == 32? 8 : 16;
+            return offsetIntoVTable / vidSize;
         }
     }
 }
