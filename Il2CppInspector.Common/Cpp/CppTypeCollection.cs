@@ -25,7 +25,8 @@ namespace Il2CppInspector.Cpp
         // All of the literal typedef aliases
         public Dictionary<string, CppType> TypedefAliases { get; } = new Dictionary<string, CppType>();
 
-        public CppType this[string s] => Types[s];
+        public CppType this[string s] => Types.ContainsKey(s)? Types[s] :
+                                         TypedefAliases.ContainsKey(s)? TypedefAliases[s].AsAlias(s) : null;
 
         public IEnumerator<CppType> GetEnumerator() => Types.Values.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
