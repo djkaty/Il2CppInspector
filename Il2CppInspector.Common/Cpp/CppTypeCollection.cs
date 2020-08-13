@@ -502,7 +502,7 @@ namespace Il2CppInspector.Cpp
         #endregion
 
         // Get a type from its name, handling typedef aliases and pointer types
-        public CppType GetType(string typeName) {
+        public CppType GetType(string typeName, bool returnUnaliased = false) {
 
             // Separate type name from pointers
             var baseName = typeName.Replace("*", "");
@@ -513,7 +513,7 @@ namespace Il2CppInspector.Cpp
 
             // Typedef alias
             if (TypedefAliases.TryGetValue(baseName, out CppType aliasType))
-                type = aliasType.AsAlias(baseName);
+                type = returnUnaliased? aliasType : aliasType.AsAlias(baseName);
 
             // Non-aliased type
             else {
@@ -532,6 +532,9 @@ namespace Il2CppInspector.Cpp
 
             return type;
         }
+
+        // Get a type, casting it to CppComplexType; deliberately throws exception if the type is not a CppComplexType
+        public CppComplexType GetComplexType(string typeName) => (CppComplexType) GetType(typeName, returnUnaliased: true);
 
         // Get all of the types in a logical group
         public IEnumerable<CppType> GetTypeGroup(string groupName) => Types.Values.Where(t => t.Group == groupName);
