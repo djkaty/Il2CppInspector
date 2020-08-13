@@ -239,23 +239,50 @@ namespace Il2CppInspector.Cpp
         // Unions and bitfields can have more than one field at the same offset
         public SortedDictionary<int, List<CppField>> Fields { get; internal set; } = new SortedDictionary<int, List<CppField>>();
 
-        public CppComplexType(ComplexValueType complexValueType) : base("", 0) => ComplexValueType = complexValueType;
+        public CppComplexType(ComplexValueType complexValueType) : base("", 0) {
+            ComplexValueType = complexValueType;
+
+            // An empty class shall always have sizeof() >= 1
+            // This will get overwritten the first time a field is added
+            Size = 8;
+        }
 
         // Add a field to the type. Returns the offset of the field in the type
         public int AddField(CppField field, int alignmentBytes = 0) {
             // Unions and enums always have an offset of zero
-            field.Offset = ComplexValueType == ComplexValueType.Struct ? Size : 0;
+            // An empty struct has a Size (bits) of 8 so the first field must also be set to zero offset
+            field.Offset = ComplexValueType == ComplexValueType.Struct ? (Fields.Any()? Size : 0) : 0;
 
             // If we just came out of a bitfield, move to the next byte if necessary
             if (field.BitfieldSize == 0 && field.Offset % 8 != 0)
                 field.Offset = (field.Offset / 8) * 8 + 8;
 
-            // A struct or union must be aligned on a word boundary for the architecture bit width
-            //if (field.Type is CppComplexType && 
-
             // A 2, 4 or 8-byte value etc. must be aligned on an equivalent boundary
-            if (!(field.Type is CppComplexType) && field.OffsetBytes % field.SizeBytes != 0)
-                field.Offset += (field.SizeBytes - field.OffsetBytes % field.SizeBytes) * 8;
+            // The same goes for the first entry in a struct, union or array
+            // This block searches depth-first for the first field or element in any child types to find the required alignment boundary
+            // https://en.wikipedia.org/wiki/Data_structure_alignment
+            if (field.BitfieldSize == 0) {
+                var firstSimpleType = field.Type;
+                var foundType = false;
+                while (!foundType) {
+                    var simpleType = firstSimpleType switch {
+                        CppAlias alias => alias.ElementType,
+                        CppComplexType { ComplexValueType: ComplexValueType.Struct } complex => complex.Fields.FirstOrDefault().Value?.First().Type,
+                        CppArrayType array => array.ElementType,
+                        _ => firstSimpleType
+                    };
+                    if (simpleType == firstSimpleType)
+                        foundType = true;
+                    firstSimpleType = simpleType;
+                }
+
+                // Empty classes shall always have sizeof() >= 1 and alignment doesn't matter
+                // Empty classes will be returned as null by the above code (complex? null conditional operator)
+                // https://www.stroustrup.com/bs_faq2.html#sizeof-empty
+                if (firstSimpleType != null)
+                    if (field.OffsetBytes % firstSimpleType.SizeBytes != 0)
+                        field.Offset += (firstSimpleType.SizeBytes - field.OffsetBytes % firstSimpleType.SizeBytes) * 8;
+            }
 
             // Respect alignment directives
             if (alignmentBytes > 0 && field.OffsetBytes % alignmentBytes != 0)
