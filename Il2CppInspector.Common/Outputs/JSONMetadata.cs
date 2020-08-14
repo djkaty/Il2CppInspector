@@ -104,7 +104,7 @@ namespace Il2CppInspector.Outputs
                         if (type.TypeClassAddress != 0xffffffff_ffffffff) {
                             writeObject(() => {
                                 writeTypedName(type.TypeClassAddress, $"struct {type.Name}__Class *", $"{type.Name}__TypeInfo");
-                                writeDotNetTypeName(type.ILType);
+                                writeDotNetTypeName(type.Type);
                             });
                         }
                     }
@@ -118,7 +118,7 @@ namespace Il2CppInspector.Outputs
                             writeObject(() => {
                                 // A generic type definition does not have any direct C++ types, but may have a reference
                                 writeName(type.TypeRefPtrAddress, $"{type.Name}__TypeRef");
-                                writeDotNetTypeName(type.ILType);
+                                writeDotNetTypeName(type.Type);
                             });
                         }
                     }

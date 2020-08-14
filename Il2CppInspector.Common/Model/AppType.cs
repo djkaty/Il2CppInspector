@@ -25,7 +25,7 @@ namespace Il2CppInspector.Model
         public CppComplexType CppValueType { get; internal set; }
 
         // The type in the .NET type model this object maps to
-        public TypeInfo ILType { get; internal set; }
+        public TypeInfo Type { get; internal set; }
 
         // The VA of the Il2CppClass object which defines this type (ClassName__TypeInfo)
         public ulong TypeClassAddress { get; internal set; }
@@ -36,7 +36,7 @@ namespace Il2CppInspector.Model
         public AppType(TypeInfo ilType, CppComplexType cppType, CppComplexType valueType = null,
             ulong cppClassPtr = 0xffffffff_ffffffff, ulong cppTypeRefPtr = 0xffffffff_ffffffff) {
             CppType = cppType;
-            ILType = ilType;
+            Type = ilType;
             CppValueType = valueType;
             TypeClassAddress = cppClassPtr;
             TypeRefPtrAddress = cppTypeRefPtr;
@@ -45,8 +45,8 @@ namespace Il2CppInspector.Model
         // The C++ name of the type
         // TODO: Known issue here where we should be using CppDeclarationGenerator.TypeNamer to ensure uniqueness
         // Prefer Foo over Foo__Boxed; if there is no C++ type defined, just convert the IL type to a C identifier
-        public string Name => CppValueType?.Name ?? CppType?.Name ?? ILType.Name.ToCIdentifier();
+        public string Name => CppValueType?.Name ?? CppType?.Name ?? Type.Name.ToCIdentifier();
 
-        public override string ToString() => ILType.FullName + " -> " + CppType.Name;
+        public override string ToString() => Type.FullName + " -> " + CppType.Name;
     }
 }
