@@ -22,6 +22,19 @@ namespace Il2CppInspector.Model
         public AppModel Model { get; }
 
         // Underlying collection
+        // Objects this can return (subject to change):
+        // - AppMethod                   (for method function body)
+        // - AppMethodReference          (for MethodInfo *)
+        // - List<CustomAttributeData>   (for custom attributes generator)
+        // - MethodInvoker               (for a Method.Invoke think)
+        // - string (System.String)      (for a string literal)
+        // - Il2CppCodeRegistration
+        // - Il2CppMetadataRegistration
+        // - Dictionary<string, ulong>   (for Il2CppCodeGenModules *[])
+        // - Il2CppCodeGenModule
+        // - CppFnPtrType                (for il2cpp_codegen_register, Il2CPP API exports, unknown functions)
+        // - Export                      (for exports)
+        // - Symbol                      (for symbols)
         public SortedDictionary<ulong, object> Items { get; } = new SortedDictionary<ulong, object>();
 
         #region Surrogate implementation of IDictionary
@@ -67,7 +80,11 @@ namespace Il2CppInspector.Model
 
                 // Method reference (MethodInfo *)
                 if (method.HasMethodInfo)
-                    Add(method.MethodInfoPtrAddress, new CppField($"{method.CppFnPtrType.Name}__MethodInfo", methodInfoPtrType));
+                    Add(method.MethodInfoPtrAddress,
+                        new AppMethodReference {
+                            Field = new CppField($"{method.CppFnPtrType.Name}__MethodInfo", methodInfoPtrType),
+                            Method = method
+                        });
             }
 
             // Add all custom attributes generators
@@ -89,10 +106,16 @@ namespace Il2CppInspector.Model
             var classRefPtrType = cppTypes.GetType("Il2CppType *");
             foreach (var type in Model.Types.Values) {
                 if (type.TypeClassAddress != 0xffffffff_ffffffff)
-                    Add(type.TypeClassAddress, new CppField($"{type.Name}__TypeInfo", classPtrType));
+                    Add(type.TypeClassAddress, new AppTypeReference {
+                        Field = new CppField($"{type.Name}__TypeInfo", classPtrType),
+                        Type = type
+                    });
 
                 if (type.TypeRefPtrAddress != 0xffffffff_ffffffff)
-                    Add(type.TypeRefPtrAddress, new CppField($"{type.Name}__TypeRef", classRefPtrType));
+                    Add(type.TypeRefPtrAddress, new AppTypeReference {
+                        Field = new CppField($"{type.Name}__TypeRef", classRefPtrType),
+                        Type = type
+                    });
             }
              
             // Internal metadata
