@@ -41,11 +41,30 @@ namespace Il2CppInspector
 
             var vtable = model.GetType("System.IO.BufferedStream").GetVTable();
 
+            // Check vtable calculations are correct
             Assert.AreEqual("get_CanWrite", vtable[app.GetVTableIndexFromClassOffset(0x1E0)].Name);
 
+            // Check method lookup is correct
             var method = app.Methods.Values.First(m => m.MethodCodeAddress == 0x7C94D4);
             Assert.AreEqual("Flush", method.Method.Name);
             Assert.AreEqual("System.IO.BufferedStream", method.Method.DeclaringType.FullName);
+
+            // AsyncStateMachineAttribute CAG - 0x3B7C58 - Type from Il2CppType**
+            // adrp x9,0xfca000 - ldr x9,[x9, #0x90] - ldr x0,[x9]
+
+            // Check Il2CppType * lookup is correct via AppModel
+            var typeRefPtr = (ulong) app.Image.ReadMappedWord(0xFCA090);
+            var typeFromRef = app.Types.Values.First(t => t.TypeRefPtrAddress == typeRefPtr).Type;
+
+            Assert.AreEqual("System.IO.StreamReader+<ReadAsyncInternal>d__65", typeFromRef.FullName);
+
+            // Check Il2CppType * lookup is correct via AddressMap
+            var map = app.GetAddressMap();
+            var appTypeReference = map[typeRefPtr];
+            Assert.AreEqual(typeof(AppTypeReference), appTypeReference.GetType());
+
+            Assert.AreEqual(typeFromRef, ((AppTypeReference) appTypeReference).Type.Type);
+            Assert.AreEqual(typeRefPtr, ((AppTypeReference) appTypeReference).Type.TypeRefPtrAddress);
         }
     }
 }
