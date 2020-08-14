@@ -4,9 +4,19 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>Il2CppInspector.Common</AssemblyName>
     <Authors>Katy Coe</Authors>
-    <Version>2020.1</Version>
+    <Version>2020.2-preview-2</Version>
     <Company>Noisy Cow Studios</Company>
     <Product>Il2CppInspector Shared Library</Product>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+    <PackageId>NoisyCowStudios.Il2CppInspector</PackageId>
+    <Description>Unity IL2CPP application reverse engineering framework
+</Description>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/djkaty/Il2CppInspector</PackageProjectUrl>
+    <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/djkaty/Il2CppInspector</RepositoryUrl>
+    <PackageTags>IL2CPP;Unity;Reverse Engineering;Metadata</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -37,7 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bin2Object\Bin2Object\Bin2Object.csproj" />
+    <ProjectReference Include="..\Bin2Object\Bin2Object\Bin2Object.csproj" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,5 +64,11 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+    </ItemGroup>
+  </Target>
 
 </Project>
