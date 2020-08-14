@@ -406,6 +406,7 @@ namespace Il2CppInspector.Outputs
 
             // Properties
             sb.Clear();
+            var hasIndexer = false;
             foreach (var prop in type.DeclaredProperties) {
                 // Attributes
                 sb.Append(prop.CustomAttributes.OrderBy(a => a.AttributeType.Name)
@@ -435,6 +436,7 @@ namespace Il2CppInspector.Outputs
                                   .Select(p => p.GetParameterString(scope, !SuppressMetadata, MustCompile))) + "] { ");
                     getBody = " => default;";
                     setBody = " {}";
+                    hasIndexer = true;
                 }
 
                 sb.Append((prop.CanRead? prop.GetMethod.CustomAttributes.Where(a => !MustCompile || a.AttributeType.FullName != CGAttribute)
@@ -554,9 +556,9 @@ namespace Il2CppInspector.Outputs
             if (type.IsSerializable)
                 sb.Append(prefix + "[Serializable]\n");
 
-            // TODO: DefaultMemberAttribute should be output if it is present and the type does not have an indexer, otherwise suppressed
+            // DefaultMemberAttribute should be output if it is present and the type does not have an indexer, otherwise suppressed
             // See https://docs.microsoft.com/en-us/dotnet/api/system.reflection.defaultmemberattribute?view=netframework-4.8
-            sb.Append(type.CustomAttributes.Where(a => a.AttributeType.FullName != DMAttribute && a.AttributeType.FullName != ExtAttribute)
+            sb.Append(type.CustomAttributes.Where(a => (a.AttributeType.FullName != DMAttribute || !hasIndexer) && a.AttributeType.FullName != ExtAttribute)
                                             .OrderBy(a => a.AttributeType.Name).ToString(scope, prefix, emitPointer: !SuppressMetadata, mustCompile: MustCompile));
 
             // Roll-up multicast delegates to use the 'delegate' syntactic sugar
