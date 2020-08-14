@@ -75,7 +75,10 @@ namespace Il2CppInspector.Model
         // Convenience properties
 
         // The word size of the binary in bits
-        public int WordSize => TypeModel.Package.BinaryImage.Bits;
+        public int WordSize => Image.Bits;
+
+        // The binary image
+        public IFileFormatReader Image => Package.BinaryImage;
 
         // The IL2CPP package for this application
         public Il2CppInspector Package => TypeModel.Package;
@@ -99,10 +102,10 @@ namespace Il2CppInspector.Model
             TypeModel = model;
 
             // Get addresses of all exports
-            Exports = Package.BinaryImage.GetExports()?.ToList() ?? new List<Export>();
+            Exports = Image.GetExports()?.ToList() ?? new List<Export>();
 
             // Get all symbols
-            Symbols = Package.BinaryImage.GetSymbolTable();
+            Symbols = Image.GetSymbolTable();
         }
 
         // Build the application model targeting a specific version of Unity and C++ compiler
@@ -117,7 +120,7 @@ namespace Il2CppInspector.Model
             Strings.Clear();
 
             // Set target compiler
-            TargetCompiler = compiler == CppCompilerType.BinaryFormat ? CppCompiler.GuessFromImage(TypeModel.Package.BinaryImage) : compiler;
+            TargetCompiler = compiler == CppCompilerType.BinaryFormat ? CppCompiler.GuessFromImage(Image) : compiler;
 
             // Determine Unity version and get headers
             UnityHeaders = unityVersion != null ? UnityHeaders.GetHeadersForVersion(unityVersion) : UnityHeaders.GuessHeadersForBinary(TypeModel.Package.Binary).Last();
@@ -126,9 +129,9 @@ namespace Il2CppInspector.Model
             Console.WriteLine($"Selected Unity version(s) {UnityHeaders.VersionRange} (types: {UnityHeaders.TypeHeaderResource.VersionRange}, APIs: {UnityHeaders.APIHeaderResource.VersionRange})");
 
             // Check for matching metadata and binary versions
-            if (UnityHeaders.MetadataVersion != TypeModel.Package.BinaryImage.Version) {
+            if (UnityHeaders.MetadataVersion != Image.Version) {
                 Console.WriteLine($"Warning: selected version {UnityVersion} (metadata version {UnityHeaders.MetadataVersion})" +
-                                  $" does not match metadata version {TypeModel.Package.BinaryImage.Version}.");
+                                  $" does not match metadata version {Image.Version}.");
             }
 
             // Initialize declaration generator to process every type in the binary
