@@ -35,6 +35,7 @@ namespace Il2CppInspector.Outputs
         private const string CGAttribute = "System.Runtime.CompilerServices.CompilerGeneratedAttribute";
         private const string FBAttribute = "System.Runtime.CompilerServices.FixedBufferAttribute";
         private const string ExtAttribute = "System.Runtime.CompilerServices.ExtensionAttribute";
+        private const string AsyncAttribute = "System.Runtime.CompilerServices.AsyncStateMachineAttribute";
         private const string DMAttribute = "System.Reflection.DefaultMemberAttribute";
 
         // Assembly attributes we have already emitted
@@ -621,7 +622,8 @@ namespace Il2CppInspector.Outputs
             var writer = new StringBuilder();
 
             // Attributes
-            writer.Append(method.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute).OrderBy(a => a.AttributeType.Name)
+            writer.Append(method.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute && a.AttributeType.FullName != AsyncAttribute)
+                .OrderBy(a => a.AttributeType.Name)
                 .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
 
             // IL2CPP doesn't seem to retain return type attributes

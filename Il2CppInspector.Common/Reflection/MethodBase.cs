@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
     Copyright 2020 Robert Xiao - https://robertxiao.ca
 
     All rights reserved.
@@ -284,6 +284,10 @@ namespace Il2CppInspector.Reflection
                 modifiers.Append("implicit ");
             if (Name == "op_Explicit")
                 modifiers.Append("explicit ");
+
+            // Async depends on a compiler-generated attribute
+            if (GetCustomAttributes("System.Runtime.CompilerServices.AsyncStateMachineAttribute").Any())
+                modifiers.Append("async ");
 
             // Will include a trailing space
             return modifiers.ToString();
