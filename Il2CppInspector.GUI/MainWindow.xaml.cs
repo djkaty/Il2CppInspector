@@ -195,7 +195,7 @@ namespace Il2CppInspectorGUI
             var model = (AppModel)((ListBox)sender).SelectedItem;
 
             // Get namespaces
-            var namespaces = model.ILModel.Assemblies.SelectMany(x => x.DefinedTypes).GroupBy(t => t.Namespace).Select(n => n.Key);
+            var namespaces = model.TypeModel.Assemblies.SelectMany(x => x.DefinedTypes).GroupBy(t => t.Namespace).Select(n => n.Key);
 
             // Break namespaces down into a tree
             var namespaceTree = deconstructNamespaces(namespaces);
@@ -347,7 +347,7 @@ namespace Il2CppInspectorGUI
                     // Get options
                     var excludedNamespaces = constructExcludedNamespaces((IEnumerable<CheckboxNode>) trvNamespaces.ItemsSource);
 
-                    var writer = new CSharpCodeStubs(model.ILModel) {
+                    var writer = new CSharpCodeStubs(model.TypeModel) {
                         ExcludedNamespaces = excludedNamespaces.ToList(),
                         SuppressMetadata = cbSuppressMetadata.IsChecked == true,
                         MustCompile = cbMustCompile.IsChecked == true

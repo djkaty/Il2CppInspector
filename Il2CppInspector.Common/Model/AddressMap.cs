@@ -72,11 +72,11 @@ namespace Il2CppInspector.Model
 
             // Add all custom attributes generators
             // The compiler might perform ICF which will cause duplicates with the above
-            foreach (var cag in Model.ILModel.CustomAttributeGeneratorsByAddress)
+            foreach (var cag in Model.TypeModel.CustomAttributeGeneratorsByAddress)
                 TryAdd(cag.Key, cag.Value);
 
             // Add all method invokers. Multiple invoker indices may reference the same function address
-            foreach (var mi in Model.ILModel.MethodInvokers.Where(m => m != null))
+            foreach (var mi in Model.TypeModel.MethodInvokers.Where(m => m != null))
                 TryAdd(mi.VirtualAddress.Start, mi);
 
             // String literals (metadata >= 19)

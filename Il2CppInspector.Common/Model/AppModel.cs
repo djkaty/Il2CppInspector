@@ -53,7 +53,7 @@ namespace Il2CppInspector.Model
         public bool StringIndexesAreOrdinals => Package.MetadataUsages == null;
 
         // The .NET type model for the application
-        public TypeModel ILModel { get; }
+        public TypeModel TypeModel { get; }
 
         // All of the exports (including function exports) for the binary
         public List<Export> Exports { get; }
@@ -75,10 +75,10 @@ namespace Il2CppInspector.Model
         // Convenience properties
 
         // The word size of the binary in bits
-        public int WordSize => ILModel.Package.BinaryImage.Bits;
+        public int WordSize => TypeModel.Package.BinaryImage.Bits;
 
         // The IL2CPP package for this application
-        public Il2CppInspector Package => ILModel.Package;
+        public Il2CppInspector Package => TypeModel.Package;
 
         // The compiler used to build the binary
         public CppCompilerType SourceCompiler => declarationGenerator.InheritanceStyle;
@@ -96,7 +96,7 @@ namespace Il2CppInspector.Model
         // Initialize
         public AppModel(TypeModel model) {
             // Save .NET type model
-            ILModel = model;
+            TypeModel = model;
 
             // Get addresses of all exports
             Exports = Package.BinaryImage.GetExports()?.ToList() ?? new List<Export>();
@@ -117,18 +117,18 @@ namespace Il2CppInspector.Model
             Strings.Clear();
 
             // Set target compiler
-            TargetCompiler = compiler == CppCompilerType.BinaryFormat ? CppCompiler.GuessFromImage(ILModel.Package.BinaryImage) : compiler;
+            TargetCompiler = compiler == CppCompilerType.BinaryFormat ? CppCompiler.GuessFromImage(TypeModel.Package.BinaryImage) : compiler;
 
             // Determine Unity version and get headers
-            UnityHeaders = unityVersion != null ? UnityHeaders.GetHeadersForVersion(unityVersion) : UnityHeaders.GuessHeadersForBinary(ILModel.Package.Binary).Last();
+            UnityHeaders = unityVersion != null ? UnityHeaders.GetHeadersForVersion(unityVersion) : UnityHeaders.GuessHeadersForBinary(TypeModel.Package.Binary).Last();
             UnityVersion = unityVersion ?? UnityHeaders.VersionRange.Min;
 
             Console.WriteLine($"Selected Unity version(s) {UnityHeaders.VersionRange} (types: {UnityHeaders.TypeHeaderResource.VersionRange}, APIs: {UnityHeaders.APIHeaderResource.VersionRange})");
 
             // Check for matching metadata and binary versions
-            if (UnityHeaders.MetadataVersion != ILModel.Package.BinaryImage.Version) {
+            if (UnityHeaders.MetadataVersion != TypeModel.Package.BinaryImage.Version) {
                 Console.WriteLine($"Warning: selected version {UnityVersion} (metadata version {UnityHeaders.MetadataVersion})" +
-                                  $" does not match metadata version {ILModel.Package.BinaryImage.Version}.");
+                                  $" does not match metadata version {TypeModel.Package.BinaryImage.Version}.");
             }
 
             // Initialize declaration generator to process every type in the binary
@@ -141,7 +141,7 @@ namespace Il2CppInspector.Model
             // Populate AvailableAPIs with actual API symbols from Binary.GetAPIExports() and their matching header signatures
             // NOTE: This will only be filled with exports that actually exist in both the binary and the API header,
             // and have a mappable address. This prevents exceptions when cross-querying the header and binary APIs.
-            var exports = ILModel.Package.Binary.GetAPIExports()
+            var exports = TypeModel.Package.Binary.GetAPIExports()
                 .Where(e => CppTypeCollection.TypedefAliases.ContainsKey(e.Key))
                 .Select(e => new {
                     VirtualAddress = e.Value,
@@ -158,7 +158,7 @@ namespace Il2CppInspector.Model
             // Add method definitions and types used by them to C++ type model
             Group = "types_from_methods";
 
-            foreach (var method in ILModel.MethodsByDefinitionIndex.Where(m => m.VirtualAddress.HasValue)) {
+            foreach (var method in TypeModel.MethodsByDefinitionIndex.Where(m => m.VirtualAddress.HasValue)) {
                 declarationGenerator.IncludeMethod(method);
                 AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
 
@@ -169,7 +169,7 @@ namespace Il2CppInspector.Model
             // Add generic methods definitions and types used by them to C++ type model
             Group = "types_from_generic_methods";
 
-            foreach (var method in ILModel.GenericMethods.Values.Where(m => m.VirtualAddress.HasValue)) {
+            foreach (var method in TypeModel.GenericMethods.Values.Where(m => m.VirtualAddress.HasValue)) {
                 declarationGenerator.IncludeMethod(method);
                 AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
 
@@ -187,13 +187,13 @@ namespace Il2CppInspector.Model
 
                     switch (usage.Type) {
                         case MetadataUsageType.StringLiteral:
-                            var str = ILModel.GetMetadataUsageName(usage);
+                            var str = TypeModel.GetMetadataUsageName(usage);
                             Strings.Add(address, str);
                             break;
 
                         case MetadataUsageType.Type:
                         case MetadataUsageType.TypeInfo:
-                            var type = ILModel.GetMetadataUsageType(usage);
+                            var type = TypeModel.GetMetadataUsageType(usage);
                             declarationGenerator.IncludeType(type);
                             AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
 
@@ -210,7 +210,7 @@ namespace Il2CppInspector.Model
                             break;
                         case MetadataUsageType.MethodDef:
                         case MetadataUsageType.MethodRef:
-                            var method = ILModel.GetMetadataUsageMethod(usage);
+                            var method = TypeModel.GetMetadataUsageMethod(usage);
                             declarationGenerator.IncludeMethod(method);
                             AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
                             

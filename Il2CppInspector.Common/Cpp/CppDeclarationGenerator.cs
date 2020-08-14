@@ -20,7 +20,7 @@ namespace Il2CppInspector.Cpp
     {
         private readonly AppModel appModel;
 
-        private TypeModel model => appModel.ILModel;
+        private TypeModel model => appModel.TypeModel;
         private CppTypeCollection types => appModel.CppTypeCollection;
 
         // Word size (32/64-bit) for this generator

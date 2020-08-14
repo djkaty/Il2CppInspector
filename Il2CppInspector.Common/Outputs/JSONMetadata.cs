@@ -55,13 +55,13 @@ namespace Il2CppInspector.Outputs
             // We could use ILModel.CustomAttributeGenerators here to ensure uniqueness but then we lose function name information
             // TODO: Merge CAG names that deal with multiple attribute types to reflect all of the attribute type names (solving the above)
             writeArray("customAttributesGenerators", () => {
-                foreach (var method in model.ILModel.AttributesByIndices.Values) {
+                foreach (var method in model.TypeModel.AttributesByIndices.Values) {
                     writeObject(() => writeTypedFunctionName(method.VirtualAddress.Start, method.Signature, method.Name));
                 }
             }, "Custom attributes generators");
 
             writeArray("methodInvokers", () => {
-                foreach (var method in model.ILModel.MethodInvokers.Where(m => m != null)) {
+                foreach (var method in model.TypeModel.MethodInvokers.Where(m => m != null)) {
                     writeObject(() => writeTypedFunctionName(method.VirtualAddress.Start, method.GetSignature(model.UnityVersion), method.Name));
                 }
             }, "Method.Invoke thunks");
