@@ -57,7 +57,7 @@ namespace Il2CppInspector
 
             // Rewind and read metadata header in full
             Header = ReadObject<Il2CppGlobalMetadataHeader>(0);
-            if (Version < 16 || Version > 24)
+            if (Version < 16 || Version > 27)
             {
                 throw new InvalidOperationException($"The supplied metadata file is not of a supported version ({Header.version}).");
             }
@@ -122,9 +122,11 @@ namespace Il2CppInspector
                 Assemblies = ReadArray<Il2CppAssemblyDefinition>(Header.assembliesOffset, Header.assembliesCount / Sizeof(typeof(Il2CppAssemblyDefinition)));
                 ParameterDefaultValues = ReadArray<Il2CppParameterDefaultValue>(Header.parameterDefaultValuesOffset, Header.parameterDefaultValuesCount / Sizeof(typeof(Il2CppParameterDefaultValue)));
             }
-            if (Version >= 19) {
+            if (Version >= 19 && Version < 27) {
                 MetadataUsageLists = ReadArray<Il2CppMetadataUsageList>(Header.metadataUsageListsOffset, Header.metadataUsageListsCount / Sizeof(typeof(Il2CppMetadataUsageList)));
                 MetadataUsagePairs = ReadArray<Il2CppMetadataUsagePair>(Header.metadataUsagePairsOffset, Header.metadataUsagePairsCount / Sizeof(typeof(Il2CppMetadataUsagePair)));
+            }
+            if (Version >= 19) {
                 FieldRefs = ReadArray<Il2CppFieldRef>(Header.fieldRefsOffset, Header.fieldRefsCount / Sizeof(typeof(Il2CppFieldRef)));
             }
             if (Version >= 21) {

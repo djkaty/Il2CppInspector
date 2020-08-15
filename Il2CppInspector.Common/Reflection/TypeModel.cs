@@ -198,6 +198,8 @@ namespace Il2CppInspector.Reflection
                     // It appears that TypeRef can be -1 if the generic depth recursion limit
                     // (--maximum-recursive-generic-depth=) is reached in Il2Cpp. In this case,
                     // no generic instance type is generated, so we just produce a null TypeInfo here.
+
+                    // TODO: Generic type definition index resolution is broken in metadata v27 (replaced with Il2CppType *type)
                     if ((generic.typeDefinitionIndex & 0xffff_ffff) == 0x0000_0000_ffff_ffff)
                         return null;
 

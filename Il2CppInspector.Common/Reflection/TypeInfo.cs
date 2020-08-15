@@ -803,7 +803,9 @@ namespace Il2CppInspector.Reflection
 
             // Pass-by-reference type
             // NOTE: This should actually always evaluate to false in the current implementation
-            IsByRef = Index == Definition.byrefTypeIndex;
+            // This field is no longer present in metadata v27
+            // IsByRef = Index == Definition.byrefTypeIndex;
+            IsByRef = false;
 
             // Add all implemented interfaces
             implementedInterfaceReferences = new TypeRef[Definition.interfaces_count];

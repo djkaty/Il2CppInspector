@@ -148,6 +148,7 @@ namespace Il2CppInspector
             var mrSize = (ulong) Metadata.Sizeof(typeof(Il2CppMetadataRegistration), Image.Version, Image.Bits / 8);
             vas = FindAllMappedWords(imageBytes, (ulong) metadata.Types.Length).Select(a => a - mrSize + ptrSize * 4);
 
+            // TODO: The metadata usages heuristic no longer works in metadata v27
             foreach (var va in vas) {
                 var mr = Image.ReadMappedObject<Il2CppMetadataRegistration>(va);
                 if (mr.metadataUsagesCount == (ulong) metadata.MetadataUsageLists.Length)

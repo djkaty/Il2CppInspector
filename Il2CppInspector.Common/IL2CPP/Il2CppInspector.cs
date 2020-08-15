@@ -127,6 +127,7 @@ namespace Il2CppInspector
             return ((ulong) pValue, value);
         }
 
+        // TODO: The resolution of metadata usages is broken for metadata v27 (MetadataUsageLists, MetadataUsagePairs no longer exist)
         private List<MetadataUsage> buildMetadataUsages()
         {
             var usages = new Dictionary<uint, MetadataUsage>();

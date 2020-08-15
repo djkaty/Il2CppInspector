@@ -267,7 +267,10 @@ namespace Il2CppInspector
             TypeReferences = Image.ReadMappedObjectPointerArray<Il2CppType>(MetadataRegistration.ptypes, (int) MetadataRegistration.typesCount);
 
             // Custom attribute constructors (function pointers)
-            CustomAttributeGenerators = Image.ReadMappedArray<ulong>(CodeRegistration.customAttributeGenerators, (int) CodeRegistration.customAttributeCount);
+            // TODO: Custom attribute generator load is broken in metadata v27 - this was moved to Il2CppCodeGenModule
+            if (Image.Version < 27) {
+                CustomAttributeGenerators = Image.ReadMappedArray<ulong>(CodeRegistration.customAttributeGenerators, (int) CodeRegistration.customAttributeCount);
+            }
             
             // Method.Invoke function pointers
             MethodInvokePointers = Image.ReadMappedArray<ulong>(CodeRegistration.invokerPointers, (int) CodeRegistration.invokerPointersCount);
