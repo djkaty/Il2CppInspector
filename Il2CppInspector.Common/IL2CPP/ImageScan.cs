@@ -91,20 +91,34 @@ namespace Il2CppInspector
             // Find CodeRegistration
             // >= 24.2
             if (metadata.Version >= 24.2) {
+
+                // < 27: mscorlib.dll is always the first CodeGenModule
+                // >= 27: mscorlib.dll is always the last CodeGenModule (Assembly-CSharp.dll is always the first but non-Unity builds don't have this DLL)
                 var offsets = FindAllStrings(imageBytes, "mscorlib.dll\0");
                 vas = offsets.Select(o => Image.MapFileOffsetToVA(o));
 
-                // Unwind from string pointer -> CodeGenModule -> CodeGenModules -> CodeRegistration + x
-                vas = FindAllPointerChains(imageBytes, vas, 3);
+                // Unwind from string pointer -> CodeGenModule -> CodeGenModules + x
+                vas = FindAllPointerChains(imageBytes, vas, 2);
+                IEnumerable<ulong> codeRegVas = null;
 
-                if (!vas.Any())
+                // We'll work back one pointer width at a time trying to find the first CodeGenModule
+                // Let's hope there aren't more than 200 DLLs in any given application :)
+                for (int backtrack = 0; backtrack < 200 && (codeRegVas?.Count() ?? 0) != 1; backtrack++) {
+                    // Unwind from CodeGenModules + x -> CodeRegistration + y
+                    codeRegVas = FindAllMappedWords(imageBytes, vas);
+
+                    // Move to the previous CodeGenModule if the above fails
+                    vas = vas.Select(va => va - ptrSize);
+                }
+
+                if (!codeRegVas.Any())
                     return (0, 0);
 
-                if (vas.Count() > 1)
+                if (codeRegVas.Count() > 1)
                     throw new InvalidOperationException("More than one valid pointer chain found during data heuristics");
 
                 // pCodeGenModules is the last field in CodeRegistration so we subtract the size of one pointer from the struct size
-                codeRegistration = vas.First() - ((ulong) Metadata.Sizeof(typeof(Il2CppCodeRegistration), Image.Version, Image.Bits / 8) - ptrSize);
+                codeRegistration = codeRegVas.First() - ((ulong) Metadata.Sizeof(typeof(Il2CppCodeRegistration), Image.Version, Image.Bits / 8) - ptrSize);
 
                 // In v24.3, windowsRuntimeFactoryTable collides with codeGenModules. So far no samples have had windowsRuntimeFactoryCount > 0;
                 // if this changes we'll have to get smarter about disambiguating these two.
@@ -148,13 +162,37 @@ namespace Il2CppInspector
             var mrSize = (ulong) Metadata.Sizeof(typeof(Il2CppMetadataRegistration), Image.Version, Image.Bits / 8);
             vas = FindAllMappedWords(imageBytes, (ulong) metadata.Types.Length).Select(a => a - mrSize + ptrSize * 4);
 
-            // TODO: The metadata usages heuristic no longer works in metadata v27
-            foreach (var va in vas) {
-                var mr = Image.ReadMappedObject<Il2CppMetadataRegistration>(va);
-                if (mr.metadataUsagesCount == (ulong) metadata.MetadataUsageLists.Length)
-                    metadataRegistration = va;
-            }
+            // >= 19 && <= 24.3
+            if (Image.Version < 27)
+                foreach (var va in vas) {
+                    var mr = Image.ReadMappedObject<Il2CppMetadataRegistration>(va);
+                    if (mr.metadataUsagesCount == (ulong) metadata.MetadataUsageLists.Length)
+                        metadataRegistration = va;
+                }
 
+            // plagiarism. noun - https://www.lexico.com/en/definition/plagiarism
+            //   the practice of taking someone else's work or ideas and passing them off as one's own.
+            // Synonyms: copying, piracy, theft, strealing, infringement of copyright
+
+            // >= 27
+            else {
+                // We're going to just sanity check all of the fields
+                // All counts should be under a certain threshold
+                // All pointers should be mappable to the binary
+
+                var mrFieldCount = mrSize / (ulong) (Image.Bits / 8);
+                foreach (var va in vas) {
+                    var mrWords = Image.ReadMappedWordArray(va, (int) mrFieldCount);
+
+                    // Even field indices are counts, odd field indices are pointers
+                    bool ok = true;
+                    for (var i = 0; i < mrWords.Length && ok; i++) {
+                        ok = i % 2 == 0 ? mrWords[i] < 0x30000 : Image.TryMapVATR((ulong) mrWords[i], out _);
+                    }
+                    if (ok)
+                        metadataRegistration = va;
+                }
+            }
             if (metadataRegistration == 0)
                 return (0, 0);
 
