@@ -1,6 +1,6 @@
 ﻿/*
     Copyright 2017 Perfare - https://github.com/Perfare/Il2CppDumper
-    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -39,7 +39,11 @@ namespace Il2CppInspector
         public ulong genericMethodPointers;
         public ulong invokerPointersCount;
         public ulong invokerPointers;
+
+        // Removed in metadata v27
+        [Version(Max = 24.3)]
         public long customAttributeCount;
+        [Version(Max = 24.3)]
         public ulong customAttributeGenerators;
 
         // Removed in metadata v23
@@ -86,6 +90,13 @@ namespace Il2CppInspector
         public ulong rgctxsCount;
         public ulong rgctxs;
         public ulong debuggerMetadata;
+
+        // Added in metadata v27
+        public ulong customAttributeCacheGenerator; // CustomAttributesCacheGenerator*
+        public ulong moduleInitializer; // Il2CppMethodPointer
+        public ulong staticConstructorTypeIndices; // TypeDefinitionIndex*
+        public ulong metadataRegistration; // Il2CppMetadataRegistration* // Per-assembly mode only
+        public ulong codeRegistration; // Il2CppCodeRegistration* // Per-assembly mode only
     }
 
 #pragma warning disable CS0649
@@ -167,10 +178,12 @@ namespace Il2CppInspector
         /*
         union
         {
-            TypeDefinitionIndex klassIndex; // for VALUETYPE and CLASS 
+            TypeDefinitionIndex klassIndex; // for VALUETYPE and CLASS (<v27; v27: at startup)
+            Il2CppMetadataTypeHandle typeHandle; // for VALUETYPE and CLASS (added in v27: at runtime)
             const Il2CppType* type; // for PTR and SZARRAY 
             Il2CppArrayType* array; // for ARRAY 
-            GenericParameterIndex genericParameterIndex; // for VAR and MVAR 
+            GenericParameterIndex genericParameterIndex; // for VAR and MVAR (<v27; v27: at startup)
+            Il2CppMetadataGenericParameterHandle genericParameterHandle; // for VAR and MVAR (added in v27: at runtime)
             Il2CppGenericClass* generic_class; // for GENERICINST
         }
         */
@@ -186,7 +199,11 @@ namespace Il2CppInspector
 
     public class Il2CppGenericClass
     {
+        [Version(Max = 24.3)]
         public long typeDefinitionIndex;    /* the generic type definition */
+        [Version(Min = 27)]
+        public long type; // Il2CppType*    /* the generic type definition */
+
         public Il2CppGenericContext context;   /* a context that contains the type instantiation doesn't contain any method instantiation */
         public ulong cached_class; /* if present, the Il2CppClass corresponding to the instantiation.  */
     }

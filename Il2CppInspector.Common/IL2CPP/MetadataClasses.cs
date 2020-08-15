@@ -1,6 +1,6 @@
 ﻿/*
     Copyright 2017 Perfare - https://github.com/Perfare/Il2CppDumper
-    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -27,6 +27,7 @@ namespace Il2CppInspector
     // Unity 2019.1.0f2 -> v24.2
     // Unity 2019.2.8f1 -> v24.2
     // Unity 2019.3.7f1 -> v24.3
+    // Unity 2020.2.0f1 -> v27
     // https://unity3d.com/get-unity/download/archive
     // Metadata version is written at the end of Unity.IL2CPP.MetadataCacheWriter.WriteLibIl2CppMetadata or WriteMetadata (Unity.IL2CPP.dll)
 
@@ -99,20 +100,20 @@ namespace Il2CppInspector
         [Version(Min = 16)]
         public int assembliesCount;
 
-        [Version(Min = 19)]
+        [Version(Min = 19, Max = 24.3)]
         public int metadataUsageListsOffset; // Il2CppMetadataUsageList
-        [Version(Min = 19)]
+        [Version(Min = 19, Max = 24.3)]
         public int metadataUsageListsCount;
-        [Version(Min = 19)]
+        [Version(Min = 19, Max = 24.3)]
         public int metadataUsagePairsOffset; // Il2CppMetadataUsagePair
-        [Version(Min = 19)]
+        [Version(Min = 19, Max = 24.3)]
         public int metadataUsagePairsCount;
         [Version(Min = 19)]
         public int fieldRefsOffset; // Il2CppFieldRef
         [Version(Min = 19)]
         public int fieldRefsCount;
         [Version(Min = 20)]
-        public int referencedAssembliesOffset; // int
+        public int referencedAssembliesOffset; // int32_t
         [Version(Min = 20)]
         public int referencedAssembliesCount;
 
@@ -140,6 +141,12 @@ namespace Il2CppInspector
         public int windowsRuntimeTypeNamesOffset; // Il2CppWindowsRuntimeTypeNamePair
         [Version(Min = 23)]
         public int windowsRuntimeTypeNamesSize;
+
+        // Added in metadata v27
+        [Version(Min = 27)]
+        public int windowsRuntimeStringsOffset; // const char*
+        [Version(Min = 27)]
+        public int windowsRuntimeStringsSize;
 
         // Added in metadata v24
         [Version(Min = 24)]
@@ -232,6 +239,7 @@ namespace Il2CppInspector
         public int customAttributeIndex;
 
         public int byvalTypeIndex;
+        [Version(Max = 24.3)]
         public int byrefTypeIndex;
 
         public int declaringTypeIndex;
@@ -424,12 +432,14 @@ namespace Il2CppInspector
         public int offset;
     }
 
+    // Removed in metadata v27
     public class Il2CppMetadataUsageList
     {
         public uint start;
         public uint count;
     }
 
+    // Removed in metadata v27
     public class Il2CppMetadataUsagePair
     {
         public uint destinationindex;
