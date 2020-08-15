@@ -7,6 +7,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Aron.Weiler;
 using Il2CppInspector.Cpp;
@@ -117,7 +118,12 @@ namespace Il2CppInspector.Model
         // The C++ compiler used to actually build the original IL2CPP binary will always be guessed based on the binary file format
         // (via the constructor of CppDeclarationGenerator, in InheritanceStyle)
         // If no target C++ compiler is specified, it will be set to match the one assumed to have been used to compile the binary
-        public AppModel Build(UnityVersion unityVersion = null, CppCompilerType compiler = CppCompilerType.BinaryFormat) {
+        public AppModel Build(UnityVersion unityVersion = null, CppCompilerType compiler = CppCompilerType.BinaryFormat, bool silent = false) {
+            // Silent operation if requested
+            var stdout = Console.Out;
+            if (silent)
+                Console.SetOut(new StreamWriter(Stream.Null));
+
             // Reset in case this is not the first build
             Methods.Clear();
             Types.Clear();
@@ -135,7 +141,7 @@ namespace Il2CppInspector.Model
             // Check for matching metadata and binary versions
             if (UnityHeaders.MetadataVersion != Image.Version) {
                 Console.WriteLine($"Warning: selected version {UnityVersion} (metadata version {UnityHeaders.MetadataVersion})" +
-                                  $" does not match metadata version {Image.Version}.");
+                                    $" does not match metadata version {Image.Version}.");
             }
 
             // Initialize declaration generator to process every type in the binary
@@ -242,6 +248,9 @@ namespace Il2CppInspector.Model
                     Strings.Add((ulong) i, str);
                 }
             }
+
+            // Restore stdout
+            Console.SetOut(stdout);
 
             // This is to allow this method to be chained after a new expression
             return this;
