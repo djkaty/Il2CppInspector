@@ -104,7 +104,7 @@ namespace Il2CppInspectorGUI
 
                                 // Initialize (but don't build) application model
                                 // We will build the model after the user confirms the Unity version and target compiler
-                                AppModels.Add(new AppModel(typeModel));
+                                AppModels.Add(new AppModel(typeModel, makeDefaultBuild: false));
                             }
                         }
                         // Unsupported architecture; ignore it

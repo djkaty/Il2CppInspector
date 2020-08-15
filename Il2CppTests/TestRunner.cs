@@ -45,7 +45,7 @@ namespace Il2CppInspector
             int i = 0;
             foreach (var il2cpp in inspectors) {
                 var model = new TypeModel(il2cpp);
-                var appModel = new AppModel(model).Build(compiler: CppCompilerType.MSVC);
+                var appModel = new AppModel(model, makeDefaultBuild: false).Build(compiler: CppCompilerType.MSVC);
                 var nameSuffix = i++ > 0 ? "-" + (i - 1) : "";
 
                 new CSharpCodeStubs(model) {

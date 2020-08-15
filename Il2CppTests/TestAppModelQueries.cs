@@ -29,7 +29,7 @@ namespace Il2CppInspector
             // Act
             var inspectors = Il2CppInspector.LoadFromFile(testPath + @"\ArraysAndPointers-ARM64.so", testPath + @"\global-metadata.dat");
             var model = new TypeModel(inspectors[0]);
-            var app = new AppModel(model).Build();
+            var app = new AppModel(model);
 
             // Assert
 

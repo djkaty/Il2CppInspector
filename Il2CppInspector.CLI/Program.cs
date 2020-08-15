@@ -213,7 +213,7 @@ namespace Il2CppInspector.CLI
 
                 AppModel appModel;
                 using (new Benchmark("Create C++ application model")) {
-                    appModel = new AppModel(model).Build(options.UnityVersion, options.CppCompiler);
+                    appModel = new AppModel(model, makeDefaultBuild: false).Build(options.UnityVersion, options.CppCompiler);
                 }
 
                 // C# signatures output

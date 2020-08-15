@@ -97,7 +97,7 @@ namespace Il2CppInspector.Model
         }
 
         // Initialize
-        public AppModel(TypeModel model) {
+        public AppModel(TypeModel model, bool makeDefaultBuild = true) {
             // Save .NET type model
             TypeModel = model;
 
@@ -106,6 +106,10 @@ namespace Il2CppInspector.Model
 
             // Get all symbols
             Symbols = Image.GetSymbolTable();
+
+            // Build if requested
+            if (makeDefaultBuild)
+                Build();
         }
 
         // Build the application model targeting a specific version of Unity and C++ compiler
