@@ -83,13 +83,12 @@ namespace Il2CppInspector.Cpp
         public void AddFromDeclarationText(string text) {
             using StringReader lines = new StringReader(text);
 
-            var rgxForwardDecl = new Regex(@"(struct|union) (\S+);");
-            var rgxTypedefAlias = new Regex(@"typedef (struct|union) (\S+) (\S+);");
-            var rgxTypedefFnPtr = new Regex(@"typedef\s+(?:struct )?" + CppFnPtrType.Regex + ";");
-            var rgxTypedefPtr = new Regex(@"typedef (\S+?\s*\**)\s*(\S+);");
-            var rgxDefinition = new Regex(@"^(typedef )?(struct|union|enum)");
+            var rgxForwardDecl = new Regex(@"(struct|union)\s+(\S+);");
+            var rgxTypedefAlias = new Regex(@"typedef\s+(?:(struct|union)\s+)?(\S+)\s+(\S+);");
+            var rgxTypedefFnPtr = new Regex(@"typedef\s+(?:struct\s+)?" + CppFnPtrType.Regex + ";");
+            var rgxDefinition = new Regex(@"^(typedef\s+)?(struct|union|enum)");
             var rgxFieldFnPtr = new Regex(CppFnPtrType.Regex + @";");
-            var rgxField = new Regex(@"^(?:struct |enum )?(\S+?\s*\**)\s*((?:\S|\s*,\s*)+)(?:\s*:\s*([0-9]+))?;");
+            var rgxField = new Regex(@"^(?:struct\s+|enum\s+)?(\S+?\s*\**)\s*((?:\S|\s*,\s*)+)(?:\s*:\s*([0-9]+))?;");
             var rgxEnumValue = new Regex(@"^\s*([A-Za-z0-9_]+)(?:\s*=\s*(.+?))?,?\s*$");
             var rgxIsConst = new Regex(@"\bconst\b");
 
@@ -245,26 +244,23 @@ namespace Il2CppInspector.Cpp
                     continue;
                 }
 
-                // Struct or union alias
+                // Typedef alias
                 // typedef <struct|union> <existing-type> <alias>
                 var typedef = rgxTypedefAlias.Match(line);
                 if (typedef.Success) {
-                    var complexType = complexTypeMap[typedef.Groups[1].Captures[0].ToString()];
-                    var declType = typedef.Groups[2].Captures[0].ToString();
+                    //var complexType = complexTypeMap[typedef.Groups[1].Captures[0].ToString()];
+                    var existingType = typedef.Groups[2].Captures[0].ToString();
                     var alias = typedef.Groups[3].Captures[0].ToString();
 
                     // Sometimes we might get multiple forward declarations for the same type
-                    if (!Types.ContainsKey(declType)) {
-                        switch (complexType) {
-                            case ComplexValueType.Struct: Struct(declType); break;
-                            case ComplexValueType.Union: Union(declType); break;
-                        }
-                    }
+                    // Potential multiple indirection
+                    var type = GetType(existingType);
 
                     // C++ allows the same typedef to be defined more than once
-                    TypedefAliases.TryAdd(alias, Types[declType]);
+                    TypedefAliases.TryAdd(alias, type);
 
-                    Debug.WriteLine($"[TYPEDEF STRUC] {line}");
+                    var pointers = line.Count(c => c == '*');
+                    Debug.WriteLine($"[TYPEDEF {(pointers > 0 ? "PTR" : "VAL")}  ] {line}  --  Adding typedef from {type.Name} to {alias}");
                     continue;
                 }
 
@@ -280,23 +276,6 @@ namespace Il2CppInspector.Cpp
                     TypedefAliases.Add(alias, fnPtrType);
 
                     Debug.WriteLine($"[TYPEDEF FNPTR] {line}  --  Adding method pointer typedef to {alias}");
-                    continue;
-                }
-
-                // Type (pointer) alias
-                // typedef <targetType[*..]> <alias>;
-                typedef = rgxTypedefPtr.Match(line);
-                if (typedef.Success) {
-                    var alias = typedef.Groups[2].Captures[0].ToString();
-                    var existingType = typedef.Groups[1].Captures[0].ToString();
-
-                    // Potential multiple indirection
-                    var type = GetType(existingType);
-
-                    TypedefAliases.TryAdd(alias, type);
-
-                    var pointers = line.Count(c => c == '*');
-                    Debug.WriteLine($"[TYPEDEF {(pointers > 0? "PTR":"VAL")}  ] {line}  --  Adding typedef from {type.Name} to {alias}");
                     continue;
                 }
 
