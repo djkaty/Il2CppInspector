@@ -59,7 +59,7 @@ namespace Il2CppInspector
         public Dictionary<ulong, int> TypeReferenceIndicesByAddress => Binary.TypeReferenceIndicesByAddress;
         public List<Il2CppGenericInst> GenericInstances => Binary.GenericInstances;
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
-        public ulong[] CustomAttributeGenerators => Binary.CustomAttributeGenerators;
+        public ulong[] CustomAttributeGenerators { get; }
         public ulong[] MethodInvokePointers => Binary.MethodInvokePointers;
         public Il2CppMethodSpec[] MethodSpecs => Binary.MethodSpecs;
         public Dictionary<Il2CppMethodSpec, ulong> GenericMethodPointers => Binary.GenericMethodPointers;
@@ -193,10 +193,26 @@ namespace Il2CppInspector
                 FieldOffsets = offsets.OrderBy(x => x.Key).Select(x => x.Value).ToList();
             }
 
+            // Build list of custom attribute generators
+            if (Version < 27)
+                CustomAttributeGenerators = Binary.CustomAttributeGenerators;
+
+            else {
+                var cagCount = Images.Sum(i => i.customAttributeCount);
+                CustomAttributeGenerators = new ulong[cagCount];
+
+                foreach (var image in Images) {
+                    // Get CodeGenModule for this image
+                    var codeGenModule = Binary.Modules[Strings[image.nameIndex]];
+                    var cags = BinaryImage.ReadMappedWordArray(codeGenModule.customAttributeCacheGenerator, (int) image.customAttributeCount);
+                    cags.CopyTo(CustomAttributeGenerators, image.customAttributeStart);
+                }
+            }
+
             // Get sorted list of function pointers from all sources
             var sortedFunctionPointers = (Version <= 24.1)?
-                Binary.GlobalMethodPointers.ToList() :
-                Binary.ModuleMethodPointers.SelectMany(module => module.Value).ToList();
+            Binary.GlobalMethodPointers.ToList() :
+            Binary.ModuleMethodPointers.SelectMany(module => module.Value).ToList();
 
             sortedFunctionPointers.AddRange(CustomAttributeGenerators);
             sortedFunctionPointers.AddRange(MethodInvokePointers);

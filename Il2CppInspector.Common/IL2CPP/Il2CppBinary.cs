@@ -48,6 +48,7 @@ namespace Il2CppInspector
         public long[] FieldOffsetPointers { get; private set; }
 
         // Generated functions which call constructors on custom attributes
+        // Only for <=24.3
         public ulong[] CustomAttributeGenerators { get; private set; }
 
         // IL2CPP-generated functions which implement MethodBase.Invoke with a unique signature per invoker, defined in Il2CppInvokerTable.cpp
@@ -267,7 +268,7 @@ namespace Il2CppInspector
             TypeReferences = Image.ReadMappedObjectPointerArray<Il2CppType>(MetadataRegistration.ptypes, (int) MetadataRegistration.typesCount);
 
             // Custom attribute constructors (function pointers)
-            // TODO: Custom attribute generator load is broken in metadata v27 - this was moved to Il2CppCodeGenModule
+            // This is managed in Il2CppInspector for metadata >= 27
             if (Image.Version < 27) {
                 CustomAttributeGenerators = Image.ReadMappedArray<ulong>(CodeRegistration.customAttributeGenerators, (int) CodeRegistration.customAttributeCount);
             }
