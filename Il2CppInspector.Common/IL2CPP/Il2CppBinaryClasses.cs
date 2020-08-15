@@ -202,7 +202,7 @@ namespace Il2CppInspector
         [Version(Max = 24.3)]
         public long typeDefinitionIndex;    /* the generic type definition */
         [Version(Min = 27)]
-        public long type; // Il2CppType*    /* the generic type definition */
+        public ulong type; // Il2CppType*   /* the generic type definition */
 
         public Il2CppGenericContext context;   /* a context that contains the type instantiation doesn't contain any method instantiation */
         public ulong cached_class; /* if present, the Il2CppClass corresponding to the instantiation.  */
