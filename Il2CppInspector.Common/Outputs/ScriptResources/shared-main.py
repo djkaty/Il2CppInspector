@@ -102,6 +102,11 @@ def ProcessJSON(jsonData):
 	for d in jsonData['functionMetadata']:
 		DefineCppFunction(d)
 
+	# IL2CPP API functions
+	print('Processing IL2CPP API functions')
+	for d in jsonData['apis']:
+		DefineCppFunction(d)
+
 # Entry point
 print('Generated script file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty')
 CustomInitializer()
