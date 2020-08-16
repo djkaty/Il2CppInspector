@@ -171,7 +171,7 @@ namespace Il2CppInspector
 
             // Scan the image looking for a sequential block of at least 'threshold' valid metadata tokens
             while (BinaryImage.Position < BinaryImage.Length && (usagesCount == 0 || sequenceLength > 0)) {
-                var word = BinaryImage.ReadWord();
+                var word = BinaryImage.ReadObject<ulong>();
 
                 if (word % 2 != 1 || word >> 32 != 0) {
                     sequenceLength = 0;
