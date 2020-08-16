@@ -51,7 +51,7 @@ namespace Il2CppInspector.Model
         // For il2cpp < 19, the key is the string literal ordinal instead of the address
         public Dictionary<ulong, string> Strings { get; } = new Dictionary<ulong, string>();
 
-        public bool StringIndexesAreOrdinals => Package.MetadataUsages == null;
+        public bool StringIndexesAreOrdinals => Package.Version < 19;
 
         // The .NET type model for the application
         public TypeModel TypeModel { get; }
@@ -239,7 +239,7 @@ namespace Il2CppInspector.Model
                 }
 
             // Add string literals for metadata <19 to the model
-            else {
+            if (Package.Version < 19) {
                 /* Version < 19 calls `il2cpp_codegen_string_literal_from_index` to get string literals.
                  * Unfortunately, metadata references are just loose globals in Il2CppMetadataUsage.cpp
                  * so we can't automatically name those. Next best thing is to define an enum for the strings. */

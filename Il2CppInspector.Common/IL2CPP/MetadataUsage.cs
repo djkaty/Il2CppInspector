@@ -42,6 +42,10 @@ namespace Il2CppInspector
                 var encodedType = encodedIndex & 0xE0000000;
                 usageType = (MetadataUsageType)(encodedType >> 29);
                 index = encodedIndex & 0x1FFFFFFF;
+
+                // From v27 the bottom bit is set to indicate the usage token hasn't been replaced with a pointer at runtime yet
+                if (package.Version >= 27)
+                    index >>= 1;
             }
             return new MetadataUsage(usageType, (int)index);
         }

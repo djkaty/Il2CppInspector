@@ -127,9 +127,17 @@ namespace Il2CppInspector
             return ((ulong) pValue, value);
         }
 
-        // TODO: The resolution of metadata usages is broken for metadata v27 (MetadataUsageLists, MetadataUsagePairs no longer exist)
         private List<MetadataUsage> buildMetadataUsages()
         {
+            // No metadata usages for versions < 19
+            if (Version < 19)
+                return null;
+
+            // Metadata usages are lazily initialized during runtime for versions >= 27
+            if (Version >= 27)
+                return buildLateBindingMetadataUsages();
+
+            // Version >= 19 && <= 24.3
             var usages = new Dictionary<uint, MetadataUsage>();
             foreach (var metadataUsageList in Metadata.MetadataUsageLists)
             {
@@ -148,6 +156,11 @@ namespace Il2CppInspector
                 usage.Value.SetAddress(addresses[usage.Key]);
 
             return usages.Values.ToList();
+        }
+
+        public List<MetadataUsage> buildLateBindingMetadataUsages() {
+            // TODO: Resolve late binding for metadata v27
+            return null;
         }
 
         public Il2CppInspector(Il2CppBinary binary, Metadata metadata) {
@@ -243,8 +256,7 @@ namespace Il2CppInspector
             }
 
             // Merge all metadata usage references into a single distinct list
-            if (Version >= 19)
-                MetadataUsages = buildMetadataUsages();
+            MetadataUsages = buildMetadataUsages();
         }
 
         // Get a method pointer if available
