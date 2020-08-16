@@ -113,7 +113,7 @@ namespace Il2CppInspector.Cpp
         public List<(string Name, CppType Type)> Arguments { get; }
 
         // Regex which matches a function pointer
-        public const string Regex = @"(\S+)\s*\(\s*\*\s*(\S+?)\s*?\)\s*\(\s*(.*?)\s*\)";
+        public const string Regex = @"(\S+)\s*\(\s*\*\s*(\S+?)\s*?\)\s*\(\s*(.*)\s*\)";
 
         public CppFnPtrType(int WordSize, CppType returnType, List<(string Name, CppType Type)> arguments) : base(null, WordSize) {
             ReturnType = returnType;
@@ -121,37 +121,91 @@ namespace Il2CppInspector.Cpp
         }
 
         // Generate a CppFnPtrType from a text signature (typedef or field)
-        // TODO: Fails to select correct arguments if one or more arguments are a function pointer; needs recursive parsing
         public static CppFnPtrType FromSignature(CppTypeCollection types, string text) {
             if (text.StartsWith("typedef "))
                 text = text.Substring(8);
 
-            var typedef = System.Text.RegularExpressions.Regex.Match(text, Regex);
+            if (text.EndsWith(";"))
+                text = text[..^1];
+
+            var typedef = System.Text.RegularExpressions.Regex.Match(text, Regex + "$");
 
             var returnType = types.GetType(typedef.Groups[1].Captures[0].ToString());
-            var name = typedef.Groups[2].Captures[0].ToString();
+            var fnPtrName = typedef.Groups[2].Captures[0].ToString();
 
-            var argumentText = typedef.Groups[3].Captures[0].ToString().Split(',');
-            if (argumentText.Length == 1 && argumentText[0] == "")
-                argumentText = new string[0];
-            var argumentNames = argumentText.Select(
-                a => a.IndexOf("*") != -1 ? a.Substring(a.LastIndexOf("*") + 1).Trim() :
-                a.IndexOf(" ") != -1 ? a.Substring(a.LastIndexOf(" ") + 1) : "");
+            var argumentText = typedef.Groups[3].Captures[0].ToString() + ")";
 
-            var arguments = argumentNames.Zip(argumentText, (name, argument) =>
-                    (name, types.GetType(argument.Substring(0, argument.Length - name.Length)))).ToList();
+            // Look for each argument one at a time
+            // An argument is complete when we have zero bracket depth and either a comma or a close bracket (final argument)
+            var arguments = new List<string>();
+            while (argumentText.Length > 0) {
+                string argument = null;
+                var originalArgumentText = argumentText;
+                var depth = 0;
+                while (depth >= 0) {
+                    var firstComma = argumentText.IndexOf(",");
+                    var firstOpenBracket = argumentText.IndexOf("(");
+                    var firstCloseBracket = argumentText.IndexOf(")");
+                    if (firstOpenBracket == -1) {
+                        argument += argumentText.Substring(0, 1 + ((firstComma != -1) ? firstComma : firstCloseBracket));
+                        // End of argument if we get a comma or close bracket at zero depth,
+                        // but only for the final close bracket if we are inside a function pointer signature
+                        if (depth == 0 || firstComma == -1)
+                            depth--;
+                        // This condition handles function pointers followed by more arguments, ie. "), "
+                        if (firstComma != -1 && firstCloseBracket < firstComma)
+                            depth -= 2;
+                    } else if (firstOpenBracket < firstCloseBracket) {
+                        depth++;
+                        argument += argumentText.Substring(0, firstOpenBracket + 1);
+                    } else {
+                        depth--;
+                        argument += argumentText.Substring(0, firstCloseBracket + 1);
+                    }
+                    argumentText = originalArgumentText.Substring(argument.Length);
+                }
 
-            return new CppFnPtrType(types.WordSize, returnType, arguments) {Name = name};
+                // Function with no arguments ie. (*foo)()
+                if (argument.Length > 1) {
+                    arguments.Add(argument[..^1].Trim());
+                }
+            }
+
+            // Split argument names and types
+            var fnPtrArguments = new List<(string, CppType)>();
+
+            foreach (var argument in arguments) {
+                string name;
+                CppType type;
+
+                // Function pointer
+                if (argument.IndexOf("(") != -1) {
+                    type = FromSignature(types, argument);
+                    name = type.Name;
+
+                // Non-function pointer
+                } else {
+                    name = argument.IndexOf("*") != -1? argument.Substring(argument.LastIndexOf("*") + 1).Trim() :
+                           argument.IndexOf(" ") != -1? argument.Substring(argument.LastIndexOf(" ") + 1) : "";
+                    type = types.GetType(argument.Substring(0, argument.Length - name.Length));
+                }
+                fnPtrArguments.Add((name, type));
+            }
+            return new CppFnPtrType(types.WordSize, returnType, fnPtrArguments) {Name = fnPtrName};
         }
 
         // Output as a named field in a type
-        public override string ToFieldString(string name) => $"{ReturnType.Name} (*{name})({string.Join(", ", Arguments.Select(a => a.Type.Name + (a.Name.Length > 0? " " + a.Name : "")))})";
+        public override string ToFieldString(string name) => $"{ReturnType.Name} (*{name})("
+            + string.Join(", ", Arguments.Select(a => a.Type is CppFnPtrType fn ? fn.ToFieldString(a.Name) : a.Type.Name + (a.Name.Length > 0 ? " " + a.Name : "")))
+            + ")";
 
         // Output as a typedef declaration
         public override string ToString(string format = "") => "typedef " + ToFieldString(Name) + ";\n";
 
         // Output as a function signature
-        public string ToSignatureString() => $"{ReturnType.Name} {Name}({string.Join(", ", Arguments.Select(a => a.Type.Name + (a.Name.Length > 0? " " + a.Name : "")))})";
+        public string ToSignatureString() => $"{ReturnType.Name} {Name}("
+            + string.Join(", ", Arguments.Select(a => a.Type is CppFnPtrType fn? fn.ToFieldString(a.Name) : a.Type.Name + (a.Name.Length > 0? " " + a.Name : "")))
+            + ")";
     }
 
     // A named alias for another type
