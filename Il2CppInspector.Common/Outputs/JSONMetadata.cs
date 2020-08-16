@@ -38,6 +38,7 @@ namespace Il2CppInspector.Outputs
                     writeUsages();
                     writeFunctions();
                     writeMetadata();
+                    writeApis();
                     writeExports();
                     writeSymbols();
                 },
@@ -176,6 +177,17 @@ namespace Il2CppInspector.Outputs
                             "void il2cpp_codegen_register(const Il2CppCodeRegistration* const codeRegistration, const Il2CppMetadataRegistration* const metadataRegistration)",
                             "il2cpp_codegen_register"));
             }, "IL2CPP Function Metadata");
+        }
+
+        private void writeApis() {
+            var apis = model.AvailableAPIs;
+            writeArray("apis", () => {
+                foreach (var api in apis) {
+                    var address = apis.primaryToSubkeyMapping[api.Key];
+
+                    writeObject(() => writeTypedFunctionName(address, api.Value.ToSignatureString(), api.Key));
+                }
+            }, "IL2CPP API functions");
         }
 
         private void writeExports() {
