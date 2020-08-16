@@ -179,11 +179,11 @@ namespace Il2CppInspector.Outputs
         }
 
         private void writeExports() {
-            var exports = model.Package.Binary.GetAPIExports();
+            var exports = model.Exports;
 
             writeArray("exports", () => {
                 foreach (var export in exports) {
-                    writeObject(() => writeName(export.Value, export.Key));
+                    writeObject(() => writeName(export.VirtualAddress, export.Name));
                 }
             }, "Exports");
         }
