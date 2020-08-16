@@ -24,12 +24,13 @@ namespace Il2CppInspector
         public int SourceIndex { get; }
         public ulong VirtualAddress { get; private set; }
 
-        public MetadataUsage(MetadataUsageType type, int sourceIndex) {
+        public MetadataUsage(MetadataUsageType type, int sourceIndex, ulong virtualAddress = 0) {
             Type = type;
             SourceIndex = sourceIndex;
+            VirtualAddress = virtualAddress;
         }
 
-        public static MetadataUsage FromEncodedIndex(Il2CppInspector package, uint encodedIndex) {
+        public static MetadataUsage FromEncodedIndex(Il2CppInspector package, uint encodedIndex, ulong virtualAddress = 0) {
             uint index;
             MetadataUsageType usageType;
             if (package.Version < 19) {
@@ -47,7 +48,7 @@ namespace Il2CppInspector
                 if (package.Version >= 27)
                     index >>= 1;
             }
-            return new MetadataUsage(usageType, (int)index);
+            return new MetadataUsage(usageType, (int)index, virtualAddress);
         }
 
         public void SetAddress(ulong virtualAddress) => VirtualAddress = virtualAddress;

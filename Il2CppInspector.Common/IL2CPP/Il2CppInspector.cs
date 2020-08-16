@@ -158,8 +158,59 @@ namespace Il2CppInspector
             return usages.Values.ToList();
         }
 
-        public List<MetadataUsage> buildLateBindingMetadataUsages() {
-            // TODO: Resolve late binding for metadata v27
+        public List<MetadataUsage> buildLateBindingMetadataUsages()
+        {
+            // plagiarism. noun - https://www.lexico.com/en/definition/plagiarism
+            //   the practice of taking someone else's work or ideas and passing them off as one's own.
+            // Synonyms: copying, piracy, theft, strealing, infringement of copyright
+
+            BinaryImage.Position = 0;
+            var sequenceLength = 0;
+            var threshold = 6000; // current versions of mscorlib generate about 6000-7000 metadata usages
+            var usagesCount = 0;
+
+            // Scan the image looking for a sequential block of at least 'threshold' valid metadata tokens
+            while (BinaryImage.Position < BinaryImage.Length && (usagesCount == 0 || sequenceLength > 0)) {
+                var word = BinaryImage.ReadWord();
+
+                if (word % 2 != 1 || word >> 32 != 0) {
+                    sequenceLength = 0;
+                    continue;
+                }
+
+                var potentialUsage = MetadataUsage.FromEncodedIndex(this, (uint) word);
+                switch (potentialUsage.Type) {
+                    case MetadataUsageType.Type:
+                    case MetadataUsageType.TypeInfo:
+                    case MetadataUsageType.MethodDef:
+                    case MetadataUsageType.MethodRef:
+                    case MetadataUsageType.FieldInfo:
+                    case MetadataUsageType.StringLiteral:
+                        sequenceLength++;
+
+                        if (sequenceLength >= threshold)
+                            usagesCount = sequenceLength;
+                        break;
+                    default:
+                        sequenceLength = 0;
+                        break;
+                }
+            }
+
+            // If we found a block, read all the tokens and map them with their VAs to MetadataUsage objects
+            if (usagesCount > 0) {
+                var wordSize = BinaryImage.Bits / 8;
+                var pMetadataUsages = (uint) (BinaryImage.Position - (usagesCount + 1) * wordSize);
+                var pMetadataUsagesVA = BinaryImage.MapFileOffsetToVA(pMetadataUsages);
+                var usageTokens = BinaryImage.ReadWordArray(pMetadataUsages, usagesCount);
+                var usages = usageTokens.Zip(Enumerable.Range(0, usagesCount)
+                    .Select(a => pMetadataUsagesVA + (ulong) (a * wordSize)), (t, a) => MetadataUsage.FromEncodedIndex(this, (uint) t, a));
+
+                Console.WriteLine("Late binding metadata usage block found successfully for metadata v27");
+                return usages.ToList();
+            }
+
+            Console.WriteLine("Late binding metadata usage block could not be auto-detected - metadata usage references will not be available for this project");
             return null;
         }
 
