@@ -53,6 +53,8 @@ namespace Il2CppInspector.Reflection
             ? string.Format($"0x{(uint)address:X8}")
             : string.Format($"0x{address:X16}");
 
+        public static string ToAddressString(this long address) => ((ulong) address).ToAddressString();
+
         public static string ToAddressString(this (ulong start, ulong end)? address) => ToAddressString(address?.start ?? 0) + "-" + ToAddressString(address?.end ?? 0);
 
         public static string ToAddressString(this (ulong start, ulong end) address) => ToAddressString(address.start) + "-" + ToAddressString(address.end);
