@@ -274,6 +274,7 @@ namespace Il2CppInspector
             }
 
             // Get sorted list of function pointers from all sources
+            // TODO: This does not include IL2CPP API functions
             var sortedFunctionPointers = (Version <= 24.1)?
             Binary.GlobalMethodPointers.ToList() :
             Binary.ModuleMethodPointers.SelectMany(module => module.Value).ToList();

@@ -53,7 +53,7 @@ typedef size_t uintptr_t;
 ");
 
             writeSectionHeader("IL2CPP internal types");
-            writeCode(model.UnityHeaders.GetTypeHeaderText(model.WordSize));
+            writeCode(model.UnityHeaders.GetTypeHeaderText(model.WordSizeBits));
 
             // Stop MSVC complaining about out-of-bounds enum values
             if (model.TargetCompiler == CppCompilerType.MSVC)

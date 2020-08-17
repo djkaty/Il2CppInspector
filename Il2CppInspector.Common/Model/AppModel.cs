@@ -76,7 +76,10 @@ namespace Il2CppInspector.Model
         // Convenience properties
 
         // The word size of the binary in bits
-        public int WordSize => Image.Bits;
+        public int WordSizeBits => Image.Bits;
+
+        // The word size of the binary in bytes
+        public int WordSizeBytes => WordSizeBits / 8;
 
         // The binary image
         public IFileFormatReader Image => Package.BinaryImage;
@@ -317,7 +320,7 @@ namespace Il2CppInspector.Model
             // Il2CppMethodPointer methodPtr;
             // const MethodInfo* method;
             var offsetIntoVTable = offset - GetVTableOffset();
-            var vidSize = WordSize == 32? 8 : 16;
+            var vidSize = WordSizeBits == 32? 8 : 16;
             return offsetIntoVTable / vidSize;
         }
     }

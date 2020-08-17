@@ -24,7 +24,7 @@ namespace Il2CppInspector.Cpp
         private CppTypeCollection types => appModel.CppTypeCollection;
 
         // Word size (32/64-bit) for this generator
-        public int WordSize => appModel.WordSize;
+        public int WordSize => appModel.WordSizeBits;
 
         // Version number and header file to generate structures for
         public UnityVersion UnityVersion => appModel.UnityVersion;
