@@ -1,4 +1,4 @@
-# Il2CppInspector 2020.2 beta
+# Il2CppInspector 2020.2
 
 Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the most complete analysis currently available.
 
@@ -14,11 +14,11 @@ Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the
 
 * Create Visual Studio **[C# code stub solutions](#creating-a-visual-studio-c-code-stubs-solution)** directly from IL2CPP files
 
-* Create **[JSON metadata](#generating-json-metadata)** with a complete address map directly from IL2CPP Files
+* Create **[JSON metadata](#generating-json-metadata)** with a complete address map directly from IL2CPP Files.
 
 * Create **[IL2CPP binaries from arbitrary C# source code without a Unity project](#generating-il2cpp-binaries-without-a-unity-project)**
 
-* **[Three major APIs](#using-the-apis-for-programmatic-analysis)** for use in your own custom static analysis projects for querying low level binary metadata, the .NET type model and the whole C++ application
+* **[Three major APIs](#using-the-apis-for-programmatic-analysis)** for use in your own custom static analysis projects for querying low level binary metadata, the .NET type model and the whole C++ application. These are also available as a [NuGet Package](https://www.nuget.org/packages/NoisyCowStudios.Il2CppInspector/).
 
 * Supports **all major file formats and processor architectures**
 
@@ -227,6 +227,7 @@ Il2CppInspector generates the following data for IDA projects:
 - Names and type declarations for all of the following IL metadata references: Type, TypeInfo, MethodDef, FieldInfo, StringLiteral, MethodRef (this includes all generic class and method instantiation metadata)
 - Comments for all IL string literal metadata pointers containing the value of the string
 - Names and types for some IL2CPP-specific data structures and functions
+- Names and typed signatures for all IL2CPP API functions that could be identified
 
 Example IDA C++ decompilation after applying Il2CppInspector (initialization code omitted for brevity):
 
@@ -435,6 +436,9 @@ The output schema is as follows:
     - `functionMetadata` (array)
       The virtual address, name and C++ function signature of key metadata functions in the binary. Depending on how the binary was analyzed by Il2CppInspector, this may include `il2cpp_codegen_register`.
 
+    - `apis` (array)
+      The virtual address, name and C++ function signature of every IL2CPP API function identified in the binary
+
     - `exports` (array)
       The virtual address and name of every export in the binary
 
@@ -454,6 +458,8 @@ To learn more about this feature, see the section entitled **Using Il2CppInspect
 
 ### Using the APIs for programmatic analysis
 
+**NOTE: _The Il2CppInspector APIs are also available as a [NuGet package](https://www.nuget.org/packages/NoisyCowStudios.Il2CppInspector/)! (search: NoisyCowStudios.Il2CppInspector)_**
+
 Il2CppInspector offers the following re-usable class library APIs:
 
 * **Il2CppInspector** - low-level access to the binary image and metadata
@@ -470,7 +476,7 @@ Include the following `using` directives:
 * `using Il2CppInspector.Reflection` to use `TypeModel`.
 * `using Il2CppInspector.Model` to use `AppModel`.
 
-See the source code for further details. Tutorials coming soon.
+See the source code for further details or the tutorials above.
 
 ### Extending Il2CppInspector's Python output to support other targets
 
@@ -515,6 +521,7 @@ Unity version | IL2CPP version | Support
 2018.3.x-2018.4.x | 24.1 | Working
 2019.1.x-2019.3.6 | 24.2 | Working
 2019.3.7-2020.1.x | 24.3 | Working
+2020.2.0 (alpha) | 27 | Working
 
 Please refer to the companion repository https://github.com/nneonneo/Il2CppVersions if you would like to track the changes between each IL2CPP release version.
 
