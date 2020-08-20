@@ -28,7 +28,7 @@ $CSC = (gci "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\Bin\
 
 # Path to latest installed version of Unity
 # The introduction of Unity Hub changed the base path of the Unity editor
-$UnityPath = (gci "$env:ProgramFiles\Unity\Hub\Editor\$unityVersion\Editor\Data" | sort FullName)[-1].FullName
+$UnityPath = (gi "$env:ProgramFiles\Unity\Hub\Editor\$unityVersion\Editor\Data" | sort FullName)[-1].FullName
 
 # Path to il2cpp.exe
 # Up to Unity 2019.2, il2cpp\build\il2cpp.exe
