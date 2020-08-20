@@ -129,7 +129,7 @@ gci $asm -filter $assemblies | % {
 	$name = "GameAssembly-$($_.BaseName)-x86"
 	echo "Running il2cpp for test assembly $name (Windows/x86)..."
 	md $bin/$name 2>&1 >$null
-	rm -Force -Recurse $cpp/$name
+	rm -Force -Recurse $cpp/$name >$null
 	& $il2cpp $arg '--platform=WindowsDesktop', '--architecture=x86', `
 				"--assembly=$asm/$_,$mscorlib", `
 				"--outputpath=$bin/$name/$name.dll", `
@@ -146,7 +146,7 @@ gci $asm -filter $assemblies | % {
 	$name = "GameAssembly-$($_.BaseName)-x64"
 	echo "Running il2cpp for test assembly $name (Windows/x64)..."
 	md $bin/$name 2>&1 >$null
-	rm -Force -Recurse $cpp/$name
+	rm -Force -Recurse $cpp/$name >$null
 	& $il2cpp $arg '--platform=WindowsDesktop', '--architecture=x64', `
 				"--assembly=$asm/$_,$mscorlib", `
 				"--outputpath=$bin/$name/$name.dll", `
@@ -163,7 +163,7 @@ gci $asm -filter $assemblies | % {
 		$name = "$($_.BaseName)-ARMv7"
 		echo "Running il2cpp for test assembly $name (Android/ARMv7)..."
 		md $bin/$name 2>&1 >$null
-		rm -Force -Recurse $cpp/$name
+		rm -Force -Recurse $cpp/$name >$null
 		& $il2cpp $arg '--platform=Android', '--architecture=ARMv7', `
 					"--assembly=$asm/$_,$mscorlib", `
 					"--outputpath=$bin/$name/$name.so", `
@@ -184,7 +184,7 @@ gci $asm -filter $assemblies | % {
 		$name = "$($_.BaseName)-ARM64"
 		echo "Running il2cpp for test assembly $name (Android/ARM64)..."
 		md $bin/$name 2>&1 >$null
-		rm -Force -Recurse $cpp/$name
+		rm -Force -Recurse $cpp/$name >$null
 		& $il2cpp $arg '--platform=Android', '--architecture=ARM64', `
 					"--assembly=$asm/$_,$mscorlib", `
 					"--outputpath=$bin/$name/$name.so", `
