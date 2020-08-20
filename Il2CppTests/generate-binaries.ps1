@@ -46,6 +46,7 @@ $mscorlib = (gci "$UnityPath\Mono*\lib\mono\unityaot\mscorlib.dll")[0].FullName
 # https://docs.unity3d.com/2019.1/Documentation/Manual/android-sdksetup.html
 $AndroidPlayer = $UnityPath + '\PlaybackEngines\AndroidPlayer'
 $AndroidNDK = $AndroidPlayer + '\NDK'
+$AndroidBuildEnabled = $True
 
 $ErrorActionPreference = "Continue"
 
@@ -61,8 +62,8 @@ if (!$UnityPath) {
 }
 
 if (!(Test-Path -Path $AndroidNDK -PathType container)) {
-	Write-Error "Could not find Android NDK at '$AndroidNDK' - aborting"
-	Exit
+	echo "Could not find Android NDK at '$AndroidNDK'"
+	$AndroidBuildEnabled = $False
 }
 
 if (!$il2cpp) {
@@ -76,16 +77,21 @@ if (!$mscorlib) {
 }
 
 if (!(Test-Path -Path $AndroidPlayer -PathType container)) {
-	Write-Error "Could not find Unity Android build support - aborting"
-	Exit
+	echo "Could not find Unity Android build support at '$AndroidPlayer'"
+	$AndroidBuildEnabled = $False
 }
 
 echo "Using C# compiler at '$CSC'"
 echo "Using Unity installation at '$UnityPath'"
 echo "Using IL2CPP toolchain at '$il2cpp'"
 echo "Using Unity mscorlib assembly at '$mscorlib'"
-echo "Using Android player at '$AndroidPlayer'"
-echo "Using Android NDK at '$AndroidNDK'"
+
+if ($AndroidBuildEnabled) {
+	echo "Using Android player at '$AndroidPlayer'"
+	echo "Using Android NDK at '$AndroidNDK'"
+} else {
+	echo "Android build is disabled due to missing components"
+}
 
 # Workspace paths
 $src = "$PSScriptRoot/TestSources"
@@ -153,42 +159,46 @@ gci $asm -filter $assemblies | % {
 	rm -Force -Recurse $bin/$name/Data
 
 	# ARMv7
-	$name = "$($_.BaseName)-ARMv7"
-	echo "Running il2cpp for test assembly $name (Android/ARMv7)..."
-	md $bin/$name 2>&1 >$null
-	rm -Force -Recurse $cpp/$name
-	& $il2cpp $arg '--platform=Android', '--architecture=ARMv7', `
-				"--assembly=$asm/$_,$mscorlib", `
-				"--outputpath=$bin/$name/$name.so", `
-				"--generatedcppdir=$cpp/$name", `
-				"--additional-include-directories=$AndroidPlayer/Tools/bdwgc/include" `
-				"--additional-include-directories=$AndroidPlayer/Tools/libil2cpp/include" `
-				"--tool-chain-path=$AndroidNDK"
-	if ($LastExitCode -ne 0) {
-		Write-Error "IL2CPP error - aborting"
-		Exit
+	if ($AndroidBuildEnabled) {
+		$name = "$($_.BaseName)-ARMv7"
+		echo "Running il2cpp for test assembly $name (Android/ARMv7)..."
+		md $bin/$name 2>&1 >$null
+		rm -Force -Recurse $cpp/$name
+		& $il2cpp $arg '--platform=Android', '--architecture=ARMv7', `
+					"--assembly=$asm/$_,$mscorlib", `
+					"--outputpath=$bin/$name/$name.so", `
+					"--generatedcppdir=$cpp/$name", `
+					"--additional-include-directories=$AndroidPlayer/Tools/bdwgc/include" `
+					"--additional-include-directories=$AndroidPlayer/Tools/libil2cpp/include" `
+					"--tool-chain-path=$AndroidNDK"
+		if ($LastExitCode -ne 0) {
+			Write-Error "IL2CPP error - aborting"
+			Exit
+		}
+		mv -Force $bin/$name/Data/metadata/global-metadata.dat $bin/$name
+		rm -Force -Recurse $bin/$name/Data
 	}
-	mv -Force $bin/$name/Data/metadata/global-metadata.dat $bin/$name
-	rm -Force -Recurse $bin/$name/Data
 
 	# ARMv8 / A64
-	$name = "$($_.BaseName)-ARM64"
-	echo "Running il2cpp for test assembly $name (Android/ARM64)..."
-	md $bin/$name 2>&1 >$null
-	rm -Force -Recurse $cpp/$name
-	& $il2cpp $arg '--platform=Android', '--architecture=ARM64', `
-				"--assembly=$asm/$_,$mscorlib", `
-				"--outputpath=$bin/$name/$name.so", `
-				"--generatedcppdir=$cpp/$name", `
-				"--additional-include-directories=$AndroidPlayer/Tools/bdwgc/include" `
-				"--additional-include-directories=$AndroidPlayer/Tools/libil2cpp/include" `
-				"--tool-chain-path=$AndroidNDK"
-	if ($LastExitCode -ne 0) {
-		Write-Error "IL2CPP error - aborting"
-		Exit
+	if ($AndroidBuildEnabled) {
+		$name = "$($_.BaseName)-ARM64"
+		echo "Running il2cpp for test assembly $name (Android/ARM64)..."
+		md $bin/$name 2>&1 >$null
+		rm -Force -Recurse $cpp/$name
+		& $il2cpp $arg '--platform=Android', '--architecture=ARM64', `
+					"--assembly=$asm/$_,$mscorlib", `
+					"--outputpath=$bin/$name/$name.so", `
+					"--generatedcppdir=$cpp/$name", `
+					"--additional-include-directories=$AndroidPlayer/Tools/bdwgc/include" `
+					"--additional-include-directories=$AndroidPlayer/Tools/libil2cpp/include" `
+					"--tool-chain-path=$AndroidNDK"
+		if ($LastExitCode -ne 0) {
+			Write-Error "IL2CPP error - aborting"
+			Exit
+		}
+		mv -Force $bin/$name/Data/metadata/global-metadata.dat $bin/$name
+		rm -Force -Recurse $bin/$name/Data
 	}
-	mv -Force $bin/$name/Data/metadata/global-metadata.dat $bin/$name
-	rm -Force -Recurse $bin/$name/Data
 }
 
 # Generate test stubs
