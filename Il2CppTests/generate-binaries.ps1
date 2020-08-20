@@ -7,7 +7,10 @@
 
 param (
 	# Which assemblies in the TestAssemblies folder to generate binaries for with il2cpp
-	[string]$assemblies = "*"
+	[string]$assemblies = "*",
+
+	# Which Unity version to use; uses the latest installed if not specified
+	[string]$unityVersion = "*"
 )
 
 $ErrorActionPreference = "SilentlyContinue"
@@ -17,7 +20,7 @@ $ErrorActionPreference = "SilentlyContinue"
 # a silent exception will be thrown and the variable will not be re-assigned.
 
 # Look for Unity Roslyn installs
-$CSC = (gci "$env:ProgramFiles\Unity\Hub\Editor\*\Editor\Data\Tools\Roslyn\csc.exe" | sort FullName)[-1].FullName
+$CSC = (gci "$env:ProgramFiles\Unity\Hub\Editor\$unityVersion\Editor\Data\Tools\Roslyn\csc.exe" | sort FullName)[-1].FullName
 # Look for .NET Framework installs
 $CSC = (gci "${env:ProgramFiles(x86)}\MSBuild\*\Bin\csc.exe" | sort FullName)[-1].FullName
 # Look for Visual Studio Roslyn installs
@@ -25,7 +28,7 @@ $CSC = (gci "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\Bin\
 
 # Path to latest installed version of Unity
 # The introduction of Unity Hub changed the base path of the Unity editor
-$UnityPath = (gci "$env:ProgramFiles\Unity\Hub\Editor\*\Editor\Data" | sort FullName)[-1].FullName
+$UnityPath = (gci "$env:ProgramFiles\Unity\Hub\Editor\$unityVersion\Editor\Data" | sort FullName)[-1].FullName
 
 # Path to il2cpp.exe
 # Up to Unity 2019.2, il2cpp\build\il2cpp.exe
