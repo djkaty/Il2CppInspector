@@ -146,6 +146,7 @@ namespace Il2CppInspector.Reflection
                 .ToDictionary(g => g.Key, g => g.GroupBy(a => a.AttributeType).Select(g => g.First()).ToList());
 
             // Create method invokers (one per signature, in invoker index order)
+            // Generic type definitions have an invoker index of -1
             foreach (var method in MethodsByDefinitionIndex) {
                 var index = package.GetInvokerIndex(method.DeclaringType.Assembly.ModuleDefinition, method.Definition);
                 if (index != -1) {
@@ -156,7 +157,6 @@ namespace Il2CppInspector.Reflection
                 }
             }
 
-            // TODO: Some invokers are not initialized or missing, need to find out why
             // Create method invokers sourced from generic method invoker indices
             foreach (var spec in GenericMethods.Keys) {
                 if (package.GenericMethodInvokerIndices.TryGetValue(spec, out var index)) {

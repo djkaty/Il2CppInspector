@@ -235,7 +235,14 @@ namespace Il2CppInspector
                     CodeGenModulePointers.Add(name, mp.Pointer);
 
                     // Read method pointers
-                    ModuleMethodPointers.Add(module, Image.ReadMappedArray<ulong>(module.methodPointers, (int) module.methodPointerCount));
+                    // If a module contains only interfaces, abstract methods and/or non-concrete generic methods,
+                    // the entire method pointer array will be NULL values, causing the methodPointer to be mapped to .bss
+                    // and therefore out of scope of the binary image
+                    try {
+                        ModuleMethodPointers.Add(module, Image.ReadMappedArray<ulong>(module.methodPointers, (int) module.methodPointerCount));
+                    } catch (InvalidOperationException) {
+                        ModuleMethodPointers.Add(module, new ulong[module.methodPointerCount]);
+                    }
 
                     // Read method invoker pointer indices - one per method
                     MethodInvokerIndices.Add(module, Image.ReadMappedArray<int>(module.invokerIndices, (int) module.methodPointerCount));
