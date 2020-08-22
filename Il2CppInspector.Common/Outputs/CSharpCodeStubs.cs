@@ -399,7 +399,14 @@ namespace Il2CppInspector.Outputs
                         sb.Append($" // 0x{(uint) field.Offset:X2}");
                     // Output metadata file offset for const fields
                     if (field.IsLiteral && !SuppressMetadata)
-                        sb.Append($" // Metadata: 0x{(uint) field.DefaultValueMetadataAddress:X8}");
+                        sb.Append($" // Metadata: {field.DefaultValueMetadataAddress.ToAddressString()}");
+                    // For static array initializers, output metadata address and preview
+                    if (field.HasFieldRVA && !SuppressMetadata) {
+                        var preview = model.Package.Metadata.ReadBytes((long) field.DefaultValueMetadataAddress, 8);
+                        var previewText = string.Join(" ", preview.Select(b => $"{b:x2}"));
+
+                        sb.Append($" // Starts with: {previewText} - Metadata: {field.DefaultValueMetadataAddress.ToAddressString()}");
+                    }
                     sb.Append("\n");
                 }
                 codeBlocks.Add("Fields", sb.ToString());

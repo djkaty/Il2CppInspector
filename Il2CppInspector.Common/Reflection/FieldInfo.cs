@@ -25,7 +25,8 @@ namespace Il2CppInspector.Reflection {
         private readonly long rawOffset;
         public long Offset => DeclaringType.ContainsGenericParameters? 0 :
             rawOffset - (DeclaringType.IsValueType && !IsStatic? (Assembly.Model.Package.BinaryImage.Bits / 8) * 2 : 0);
-        
+
+        public bool HasFieldRVA => (Attributes & FieldAttributes.HasFieldRVA) != 0;
         public ulong DefaultValueMetadataAddress { get; }
 
         // Custom attributes for this member
@@ -126,6 +127,8 @@ namespace Il2CppInspector.Reflection {
                 Attributes |= FieldAttributes.PinvokeImpl;
             if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_HAS_DEFAULT) != 0)
                 Attributes |= FieldAttributes.HasDefault;
+            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_HAS_FIELD_RVA) != 0)
+                Attributes |= FieldAttributes.HasFieldRVA;
 
             // Default initialization value if present
             if (pkg.FieldDefaultValue.TryGetValue(fieldIndex, out (ulong address, object variant) value)) {
