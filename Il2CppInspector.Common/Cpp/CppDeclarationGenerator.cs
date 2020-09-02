@@ -546,7 +546,14 @@ namespace Il2CppInspector.Cpp
                 ns.ReserveName(symbol);
             }
             /* Reserve builtin keywords in IDA */
-            foreach (var keyword in new [] { "_BYTE", "_DWORD", "_OWORD", "_QWORD", "_UNKNOWN", "_WORD", "__cdecl", "__declspec", "__export", "__far", "__fastcall", "__huge", "__import", "__int128", "__int16", "__int32", "__int64", "__int8", "__interrupt", "__near", "__pascal", "__spoils", "__stdcall", "__thiscall", "__thread", "__unaligned", "__usercall", "__userpurge", "_cs", "_ds", "_es", "_ss", "flat" }) {
+            foreach (var keyword in new [] {
+                "_BYTE", "_DWORD", "_OWORD", "_QWORD", "_UNKNOWN", "_WORD",
+                "__array_ptr", "__cdecl", "__cppobj", "__declspec", "__export", "__far", "__fastcall", "__hidden", "__huge", "__import",
+                "__int128", "__int16", "__int32", "__int64", "__int8", "__interrupt", "__near", "__noreturn", "__pascal",
+                "__ptr32", "__ptr64", "__pure", "__restrict", "__return_ptr", "__shifted", "__spoils", "__stdcall", "__struct_ptr",
+                "__thiscall", "__thread", "__unaligned", "__usercall", "__userpurge",
+                "_cs", "_ds", "_es", "_ss", "far", "flat", "near",
+                "Mask", "Region", "Pointer", "GC" }) {
                 ns.ReserveName(keyword);
             }
             return ns;
