@@ -16,10 +16,10 @@ def DefineCode(code):
 def SetFunctionType(addr, sig):
   SetType(addr, sig)
 
-def SetType(addr, type):
-  ret = idc.SetType(addr, type)
+def SetType(addr, cppType):
+  ret = idc.SetType(addr, cppType)
   if ret is None:
-    print('SetType(0x%x, %r) failed!' % (addr, type))
+    print('SetType(0x%x, %r) failed!' % (addr, cppType))
 
 def SetComment(addr, text):
   idc.set_cmt(addr, text, 1)
