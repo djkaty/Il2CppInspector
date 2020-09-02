@@ -1,39 +1,42 @@
 ﻿# Shared interface
+def AsUTF8(s):
+	return s if sys.version_info[0] > 2 else s.encode('utf-8')
+
 def ParseAddress(d):
 	return int(d['virtualAddress'], 0)
 
 def DefineILMethod(jsonDef):
 	addr = ParseAddress(jsonDef)
-	SetName(addr, jsonDef['name'].encode('utf-8'))
-	SetFunctionType(addr, jsonDef['signature'].encode('utf-8'))
-	SetHeaderComment(addr, jsonDef['dotNetSignature'].encode('utf-8'))
+	SetName(addr, AsUTF8(jsonDef['name']))
+	SetFunctionType(addr, AsUTF8(jsonDef['signature']))
+	SetHeaderComment(addr, AsUTF8(jsonDef['dotNetSignature']))
 
 def DefineILMethodInfo(jsonDef):
 	addr = ParseAddress(jsonDef)
-	SetName(addr, jsonDef['name'].encode('utf-8'))
+	SetName(addr, AsUTF8(jsonDef['name']))
 	SetType(addr, r'struct MethodInfo *')
-	SetComment(addr, jsonDef['dotNetSignature'].encode('utf-8'))
+	SetComment(addr, AsUTF8(jsonDef['dotNetSignature']))
 
 def DefineCppFunction(jsonDef):
 	addr = ParseAddress(jsonDef)
-	SetName(addr, jsonDef['name'].encode('utf-8'))
-	SetFunctionType(addr, jsonDef['signature'].encode('utf-8'))
+	SetName(addr, AsUTF8(jsonDef['name']))
+	SetFunctionType(addr, AsUTF8(jsonDef['signature']))
 
 def DefineString(jsonDef):
 	addr = ParseAddress(jsonDef)
-	SetName(addr, jsonDef['name'].encode('utf-8'))
+	SetName(addr, AsUTF8(jsonDef['name']))
 	SetType(addr, r'struct String *')
-	SetComment(addr, jsonDef['string'].encode('utf-8'))
+	SetComment(addr, AsUTF8(jsonDef['string']))
 
 def DefineFieldFromJson(jsonDef):
 	DefineField(jsonDef['virtualAddress'], jsonDef['name'], jsonDef['type'], jsonDef['dotNetType'])
 
 def DefineField(addr, name, type, ilType = None):
 	addr = int(addr, 0)
-	SetName(addr, name.encode('utf-8'))
-	SetType(addr, type.encode('utf-8'))
+	SetName(addr, AsUTF8(name))
+	SetType(addr, AsUTF8(type))
 	if (ilType is not None):
-		SetComment(addr, ilType.encode('utf-8'))
+		SetComment(addr, AsUTF8(ilType))
 
 # Process JSON
 def ProcessJSON(jsonData):
@@ -68,7 +71,7 @@ def ProcessJSON(jsonData):
 	else:
 		litDecl = 'enum StringLiteralIndex {\n'
 		for d in jsonData['stringLiterals']:
-			litDecl += "  " + d['name'].encode('utf-8') + ",\n"
+			litDecl += "  " + AsUTF8(d['name']) + ",\n"
 		litDecl += '};\n'
 		DefineCode(litDecl)
 	
