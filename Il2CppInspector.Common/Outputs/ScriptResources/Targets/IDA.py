@@ -32,7 +32,7 @@ def CustomInitializer():
 
 	original_macros = ida_typeinf.get_c_macros()
 	ida_typeinf.set_c_macros(original_macros + ";_IDA_=1")
-	idc.parse_decls("%TYPE_HEADER_RELATIVE_PATH%", idc.PT_FILE)
+	idc.parse_decls(os.path.join(GetScriptDirectory(), "%TYPE_HEADER_RELATIVE_PATH%"), idc.PT_FILE)
 	ida_typeinf.set_c_macros(original_macros)
 
 def GetScriptDirectory():
