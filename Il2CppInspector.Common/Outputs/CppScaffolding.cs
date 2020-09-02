@@ -181,15 +181,18 @@ typedef size_t uintptr_t;
             File.WriteAllText(Path.Combine(srcFxPath, "pch-il2cpp.cpp"), Resources.Cpp_PCHIl2Cpp);
             File.WriteAllText(Path.Combine(srcFxPath, "pch-il2cpp.h"), Resources.Cpp_PCHIl2CppH);
 
-            File.WriteAllText(Path.Combine(srcUserPath, "main.cpp"), Resources.Cpp_MainCpp);
-            File.WriteAllText(Path.Combine(srcUserPath, "main.h"), Resources.Cpp_MainH);
+            // Write user code without overwriting existing code
+            void WriteIfNotExists(string path, string contents) { if (!File.Exists(path)) File.WriteAllText(path, contents); }
+
+            WriteIfNotExists(Path.Combine(srcUserPath, "main.cpp"), Resources.Cpp_MainCpp);
+            WriteIfNotExists(Path.Combine(srcUserPath, "main.h"), Resources.Cpp_MainH);
 
             // Write Visual Studio project and solution files
             var projectGuid = Guid.NewGuid();
             var projectName = "IL2CppDLL";
             var projectFile = projectName + ".vcxproj";
 
-            File.WriteAllText(Path.Combine(projectPath, projectFile),
+            WriteIfNotExists(Path.Combine(projectPath, projectFile),
                 Resources.CppProjTemplate.Replace("%PROJECTGUID%", projectGuid.ToString()));
 
             var guid1 = Guid.NewGuid();
@@ -202,7 +205,7 @@ typedef size_t uintptr_t;
                 .Replace("%GUID2%", guid2.ToString())
                 .Replace("%GUID3%", guid3.ToString());
 
-            File.WriteAllText(Path.Combine(projectPath, filtersFile), filters);
+            WriteIfNotExists(Path.Combine(projectPath, filtersFile), filters);
 
             var solutionGuid = Guid.NewGuid();
             var solutionFile = projectName + ".sln";
@@ -213,7 +216,7 @@ typedef size_t uintptr_t;
                 .Replace("%PROJECTFILE%", projectFile)
                 .Replace("%SOLUTIONGUID%", solutionGuid.ToString());
 
-            File.WriteAllText(Path.Combine(projectPath, solutionFile), sln);
+            WriteIfNotExists(Path.Combine(projectPath, solutionFile), sln);
         }
 
         private void writeHeader() {
