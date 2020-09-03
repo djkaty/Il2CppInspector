@@ -59,6 +59,11 @@ namespace Il2CppInspector
 
                 new CppScaffolding(appModel)
                     .Write(testPath + $@"\test-cpp-result{nameSuffix}");
+
+                new PythonScript(appModel)
+                    .WriteScriptToFile(testPath + $@"\test-ida{nameSuffix}.py", "IDA",
+                        testPath + $@"\test-cpp-result{nameSuffix}\appdata\il2cpp-types.h",
+                        testPath + $@"\test-result{nameSuffix}.json");
             }
 
             // Compare test results with expected results
