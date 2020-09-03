@@ -1,16 +1,16 @@
 ﻿# Copyright 2019-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 # All rights reserved.
 
-# Compile all of the test items in TestSources via IL2CPP to produce the binaries necessary to run the tests
-# Requires Unity 2019.2.8f1 or later and Visual Studio 2017 (or MSBuild with C# 7+ support) or later to be installed
+# Compile the specified .cs files in TestSources to produce a .NET assembly DLL, the transpiled C++ source code and an IL2CPP binary for each
+# Requires Unity 2018.3.0f2 or later and Visual Studio 2017 (or MSBuild with C# 7+ support) or later to be installed
 # Requires Android NDK r13b or newer for Android test builds (https://developer.android.com/ndk/downloads)
 
 param (
-	# Which assemblies in the TestAssemblies folder to generate binaries for with il2cpp
-	[string]$assemblies = "*",
+	# Which source files in TestSources to generate aseemblies, C++ and IL2CPP binaries for
+	[string[]] $assemblies = "*",
 
 	# Which Unity version to use; uses the latest installed if not specified
-	[string]$unityVersion = "*"
+	[string] $unityVersion = "*"
 )
 
 $ErrorActionPreference = "SilentlyContinue"
@@ -31,13 +31,13 @@ $CSC = (gci "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\Bin\
 $UnityPath = (gi "$env:ProgramFiles\Unity\Hub\Editor\$unityVersion\Editor\Data" | sort FullName)[-1].FullName
 
 # Path to il2cpp.exe
-# Up to Unity 2019.2, il2cpp\build\il2cpp.exe
-# From Unity 2019.3, il2cpp\build\deploy\net471\il2cpp.exe
+# For Unity <= 2019.2.21f1, il2cpp\build\il2cpp.exe
+# For Unity >= 2019.3.0f6, il2cpp\build\deploy\net471\il2cpp.exe
 $il2cpp = (gci "$UnityPath\il2cpp\build" -Recurse -Filter il2cpp.exe)[0].FullName
 
 # Path to mscorlib.dll
-# Up to Unity 2019.2, Mono\lib\mono\unity\...
-# From Unity 2019.3, MonoBleedingEdge\lib\mono\unityaot\...
+# For Unity <= 2018.1.9f2, Mono\lib\mono\2.0\...
+# For Unity >= 2018.2.0f2, MonoBleedingEdge\lib\mono\unityaot\...
 $mscorlib = (gci "$UnityPath\Mono*\lib\mono\unityaot\mscorlib.dll")[0].FullName
 
 # Path to the Android NDK
@@ -109,12 +109,14 @@ $arg =	'--convert-to-cpp', '--compile-cpp', '--libil2cpp-static', '--configurati
 # Prepare output folders
 md $asm, $bin 2>&1 >$null
 
-# Compile all .cs files in TestSources
+# Compile all specified .cs files in TestSources
 echo "Compiling source code..."
-gci $src | % {
-	echo $_.BaseName
 
-	& $csc "/t:library" "/nologo" "/unsafe" "/out:$asm/$($_.BaseName).dll" "$src/$_"
+$cs = $assemblies | % {"$_.cs"}
+gci "$src/*" -Include $cs | % {
+	echo "$($_.Name) -> $($_.BaseName).dll"
+
+	& $csc "/t:library" "/nologo" "/unsafe" "/out:$asm/$($_.BaseName).dll" "$_"
 	
 	if ($LastExitCode -ne 0) {
 		Write-Error "Compilation error - aborting"
@@ -124,14 +126,16 @@ gci $src | % {
 
 # Run IL2CPP on all generated assemblies for both x86 and ARM
 # Earlier builds of Unity included mscorlib.dll automatically; in current versions we must specify its location
-gci $asm -filter $assemblies | % {
+
+$dll = $assemblies | % {"$_.dll"}
+gci "$asm/*" -Include $dll | % {
 	# x86
 	$name = "GameAssembly-$($_.BaseName)-x86"
 	echo "Running il2cpp for test assembly $name (Windows/x86)..."
 	md $bin/$name 2>&1 >$null
-	rm -Force -Recurse $cpp/$name >$null
+	rm -Force -Recurse $cpp/$name 2>&1 >$null
 	& $il2cpp $arg '--platform=WindowsDesktop', '--architecture=x86', `
-				"--assembly=$asm/$_,$mscorlib", `
+				"--assembly=$_,$mscorlib", `
 				"--outputpath=$bin/$name/$name.dll", `
 				"--generatedcppdir=$cpp/$name"
 	if ($LastExitCode -ne 0) {
@@ -146,9 +150,9 @@ gci $asm -filter $assemblies | % {
 	$name = "GameAssembly-$($_.BaseName)-x64"
 	echo "Running il2cpp for test assembly $name (Windows/x64)..."
 	md $bin/$name 2>&1 >$null
-	rm -Force -Recurse $cpp/$name >$null
+	rm -Force -Recurse $cpp/$name 2>&1 >$null
 	& $il2cpp $arg '--platform=WindowsDesktop', '--architecture=x64', `
-				"--assembly=$asm/$_,$mscorlib", `
+				"--assembly=$_,$mscorlib", `
 				"--outputpath=$bin/$name/$name.dll", `
 				"--generatedcppdir=$cpp/$name"
 	if ($LastExitCode -ne 0) {
@@ -163,9 +167,9 @@ gci $asm -filter $assemblies | % {
 		$name = "$($_.BaseName)-ARMv7"
 		echo "Running il2cpp for test assembly $name (Android/ARMv7)..."
 		md $bin/$name 2>&1 >$null
-		rm -Force -Recurse $cpp/$name >$null
+		rm -Force -Recurse $cpp/$name 2>&1 >$null
 		& $il2cpp $arg '--platform=Android', '--architecture=ARMv7', `
-					"--assembly=$asm/$_,$mscorlib", `
+					"--assembly=$_,$mscorlib", `
 					"--outputpath=$bin/$name/$name.so", `
 					"--generatedcppdir=$cpp/$name", `
 					"--additional-include-directories=$AndroidPlayer/Tools/bdwgc/include" `
@@ -184,9 +188,9 @@ gci $asm -filter $assemblies | % {
 		$name = "$($_.BaseName)-ARM64"
 		echo "Running il2cpp for test assembly $name (Android/ARM64)..."
 		md $bin/$name 2>&1 >$null
-		rm -Force -Recurse $cpp/$name >$null
+		rm -Force -Recurse $cpp/$name 2>&1 >$null
 		& $il2cpp $arg '--platform=Android', '--architecture=ARM64', `
-					"--assembly=$asm/$_,$mscorlib", `
+					"--assembly=$_,$mscorlib", `
 					"--outputpath=$bin/$name/$name.so", `
 					"--generatedcppdir=$cpp/$name", `
 					"--additional-include-directories=$AndroidPlayer/Tools/bdwgc/include" `
