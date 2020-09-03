@@ -83,7 +83,11 @@
     <Content Include="TestExpectedResults\PartialGenericTypes-ARM64.cs" />
     <Content Include="TestExpectedResults\VTablesAndLayout-ARMv7.cs" />
     <Content Include="TestExpectedResults\VTablesAndLayout-ARM64.cs" />
-    
+    <Content Include="TestExpectedResults\GameAssembly-Enums-x64.cs" />
+    <Content Include="TestExpectedResults\GameAssembly-Enums-x86.cs" />
+    <Content Include="TestExpectedResults\Enums-ARMv7.cs" />
+    <Content Include="TestExpectedResults\Enums-ARM64.cs" />
+
     <Content Include="TestExpectedResults\ExplicitInterfaces-ARMv7.json" />
     <Content Include="TestExpectedResults\ExplicitInterfaces-ARM64.json" />
     <Content Include="TestExpectedResults\GameAssembly-ExplicitInterfaces-x64.json" />
@@ -136,6 +140,11 @@
     <Content Include="TestExpectedResults\PartialGenericTypes-ARM64.json" />
     <Content Include="TestExpectedResults\VTablesAndLayout-ARMv7.json" />
     <Content Include="TestExpectedResults\VTablesAndLayout-ARM64.json" />
+    <Content Include="TestExpectedResults\GameAssembly-Enums-x64.json" />
+    <Content Include="TestExpectedResults\GameAssembly-Enums-x86.json" />
+    <Content Include="TestExpectedResults\Enums-ARMv7.json" />
+    <Content Include="TestExpectedResults\Enums-ARM64.json" />
+
 
     <Content Include="TestExpectedResults\ExplicitInterfaces-ARMv7.h" />
     <Content Include="TestExpectedResults\ExplicitInterfaces-ARM64.h" />
@@ -189,6 +198,10 @@
     <Content Include="TestExpectedResults\PartialGenericTypes-ARM64.h" />
     <Content Include="TestExpectedResults\VTablesAndLayout-ARMv7.h" />
     <Content Include="TestExpectedResults\VTablesAndLayout-ARM64.h" />
+    <Content Include="TestExpectedResults\GameAssembly-Enums-x64.h" />
+    <Content Include="TestExpectedResults\GameAssembly-Enums-x86.h" />
+    <Content Include="TestExpectedResults\Enums-ARMv7.h" />
+    <Content Include="TestExpectedResults\Enums-ARM64.h" />
 
   </ItemGroup>
 
