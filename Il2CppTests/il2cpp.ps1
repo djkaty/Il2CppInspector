@@ -15,6 +15,33 @@ param (
 
 $ErrorActionPreference = "SilentlyContinue"
 
+# Function to compare two Unity versions
+function Compare-UnityVersions {
+	param (
+		[string] $left,
+		[string] $right
+	)
+	$rgx = '^(?<major>[0-9]{1,4})\.(?<minor>[0-6])\.(?<build>[0-9]{1,2}).*$'
+	if ($left -notmatch $rgx) {
+		Write-Error "Invalid Unity version number"
+		Exit
+	}
+	$leftVersion = $Matches
+	if ($right -notmatch $rgx) {
+		Write-Error "Invalid Unity version number"
+		Exit
+	}
+	$rightVersion = $Matches
+
+	if ($leftVersion.major -ne $rightVersion.major) {
+		return $leftVersion.major - $rightVersion.major
+	}
+	if ($leftVersion.minor -ne $rightVersion.minor) {
+		return $leftVersion.minor - $rightVersion.minor
+	}
+	$leftVersion.build - $rightVersion.build
+}
+
 # If supplied Unity version is a path, use it, otherwise assume default path from version number alone
 if ($unityVersion -match "[\\/]") {
 	$UnityFolder = $unityVersion
@@ -49,6 +76,32 @@ $stripper = (gci "$UnityPath\il2cpp\build" -Recurse -Filter UnityLinker.exe)[0].
 # For Unity >= 2018.2.0f2, MonoBleedingEdge\lib\mono\unityaot\...
 $mscorlib = (gci "$UnityPath\Mono*\lib\mono\unityaot\mscorlib.dll")[0].FullName
 
+# Determine the actual Unity version
+$actualUnityVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$UnityFolder\Editor\Unity.exe").FileVersion
+
+# For Unity >= 2020.1.0f1, we need baselib
+if ($actualUnityVersion -and (Compare-UnityVersions $actualUnityVersion 2020.1.0) -ge 0) {
+	$baselibX64 = $UnityPath + '\PlaybackEngines\windowsstandalonesupport\Variations\win64_nondevelopment_il2cpp'
+	if (Test-Path -Path $baselibX64 -PathType container) {
+		$baselibX64Arg = "--baselib-directory=$baselibX64"
+	}
+
+	$baselibX86 = $UnityPath + '\PlaybackEngines\windowsstandalonesupport\Variations\win32_nondevelopment_il2cpp'
+	if (Test-Path -Path $baselibX86 -PathType container) {
+		$baselibX86Arg = "--baselib-directory=$baselibX86"
+	}
+
+	$baselibARM64 = $UnityPath + '\PlaybackEngines\AndroidPlayer\Variations\il2cpp\Release\StaticLibs\arm64-v8a'
+	if (Test-Path -Path $baselibARM64 -PathType container) {
+		$baselibARM64Arg = "--baselib-directory=$baselibARM64"
+	}
+
+	$baselibARMv7 = $UnityPath + '\PlaybackEngines\AndroidPlayer\Variations\il2cpp\Release\StaticLibs\armeabi-v7a'
+	if (Test-Path -Path $baselibARMv7 -PathType container) {
+		$baselibARMv7Arg = "--baselib-directory=$baselibARMv7"
+	}
+}
+
 # Path to the Android NDK
 # Different Unity versions require specific NDKs, see the section Change the NDK at:
 # The NDK can also be installed standalone without AndroidPlayer
@@ -65,7 +118,7 @@ if (!$CSC) {
 	Exit
 }
 
-if (!$UnityPath) {
+if (!$actualUnityVersion) {
 	Write-Error "Could not find Unity editor - aborting"
 	Exit
 }
@@ -106,6 +159,8 @@ if ($AndroidBuildEnabled) {
 } else {
 	echo "Android build is disabled due to missing components"
 }
+
+echo "Targeted Unity version: $actualUnityVersion"
 
 # Workspace paths
 $src = "$PSScriptRoot/TestSources"
@@ -168,7 +223,7 @@ function Do-IL2CPP-Build {
 		[string] $Platform,
 		[string] $Architecture,
 		[string] $Name,
-		[string[]] $AdditionalArgs
+		$AdditionalArgs
 	)
 
 	# Determine target name
@@ -200,14 +255,14 @@ function Do-IL2CPP-Build {
 # Generate build for each target platform and architecture
 gci "$asm/*" -Include $dll | % {
 	# x86
-	Do-IL2CPP-Build WindowsDesktop x86 $_.BaseName 
+	Do-IL2CPP-Build WindowsDesktop x86 $_.BaseName $baselibX86Arg
 
 	# x64
-	Do-IL2CPP-Build WindowsDesktop x64 $_.BaseName
+	Do-IL2CPP-Build WindowsDesktop x64 $_.BaseName $baselibX64Arg
 
 	# ARMv7
 	if ($AndroidBuildEnabled) {
-		Do-IL2CPP-Build Android ARMv7 $_.BaseName `
+		Do-IL2CPP-Build Android ARMv7 $_.BaseName $baselibARMv7Arg, `
 					"--additional-include-directories=$AndroidPlayer/Tools/bdwgc/include", `
 					"--additional-include-directories=$AndroidPlayer/Tools/libil2cpp/include", `
 					"--tool-chain-path=$AndroidNDK"
@@ -215,7 +270,7 @@ gci "$asm/*" -Include $dll | % {
 
 	# ARMv8 / A64
 	if ($AndroidBuildEnabled) {
-		Do-IL2CPP-Build Android ARM64 $_.BaseName `
+		Do-IL2CPP-Build Android ARM64 $_.BaseName $baselibARM64Arg, `
 					"--additional-include-directories=$AndroidPlayer/Tools/bdwgc/include", `
 					"--additional-include-directories=$AndroidPlayer/Tools/libil2cpp/include", `
 					"--tool-chain-path=$AndroidNDK"
