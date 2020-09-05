@@ -162,9 +162,12 @@ function Do-IL2CPP-Build {
 
 	# Compile
 	md $bin/$TargetBaseName 2>&1 >$null
+	md $bin/$TargetBaseName/cache 2>&1 >$null
+
 	& $il2cpp $compileArg $AdditionalArgs "--platform=$Platform", "--architecture=$Architecture", `
 				"--outputpath=$bin/$TargetBaseName/$TargetBaseName.$ext", `
-				"--generatedcppdir=$cpp/$Name" >$null
+				"--generatedcppdir=$cpp/$Name", `
+				"--cachedirectory=$bin/$TargetBaseName/cache" >$null
 
 	if ($LastExitCode -ne 0) {
 		Write-Error "IL2CPP error - aborting"
@@ -173,6 +176,7 @@ function Do-IL2CPP-Build {
 
 	mv -Force $bin/$TargetBaseName/Data/metadata/global-metadata.dat $bin/$TargetBaseName
 	rm -Force -Recurse $bin/$TargetBaseName/Data
+	rm -Force -Recurse $bin/$TargetBaseName/cache
 }
 
 # Generate build for each target platform and architecture
