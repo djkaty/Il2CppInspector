@@ -23,7 +23,6 @@ $UnityFolder = $unityVersion
 }else{
 $UnityFolder = "$env:ProgramFiles\Unity\Hub\Editor\$unityVersion"
 }
-echo $UnityFolder
 # Look for Unity Roslyn installs
 $CSC = (gci "$UnityFolder\Editor\Data\Tools\Roslyn\csc.exe" | sort FullName)[-1].FullName
 # Look for .NET Framework installs
