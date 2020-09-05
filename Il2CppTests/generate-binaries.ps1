@@ -18,9 +18,14 @@ $ErrorActionPreference = "SilentlyContinue"
 # Path to C¤ compiler (14.0 = Visual Studio 2017, 15.0 = Visual Studio 2019 etc.)
 # These are ordered from least to most preferred. If no files exist at the specified path,
 # a silent exception will be thrown and the variable will not be re-assigned.
-
+if ($unityVersion -match "[\\/]"){
+$UnityFolder = $unityVersion
+}else{
+$UnityFolder = "$env:ProgramFiles\Unity\Hub\Editor\$unityVersion"
+}
+echo $UnityFolder
 # Look for Unity Roslyn installs
-$CSC = (gci "$env:ProgramFiles\Unity\Hub\Editor\$unityVersion\Editor\Data\Tools\Roslyn\csc.exe" | sort FullName)[-1].FullName
+$CSC = (gci "$UnityFolder\Editor\Data\Tools\Roslyn\csc.exe" | sort FullName)[-1].FullName
 # Look for .NET Framework installs
 $CSC = (gci "${env:ProgramFiles(x86)}\MSBuild\*\Bin\csc.exe" | sort FullName)[-1].FullName
 # Look for Visual Studio Roslyn installs
@@ -28,7 +33,7 @@ $CSC = (gci "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\Bin\
 
 # Path to latest installed version of Unity
 # The introduction of Unity Hub changed the base path of the Unity editor
-$UnityPath = (gi "$env:ProgramFiles\Unity\Hub\Editor\$unityVersion\Editor\Data" | sort FullName)[-1].FullName
+$UnityPath = (gi "$UnityFolder\Editor\Data" | sort FullName)[-1].FullName
 
 # Path to il2cpp.exe
 # For Unity <= 2019.2.21f1, il2cpp\build\il2cpp.exe
