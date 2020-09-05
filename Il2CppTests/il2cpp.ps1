@@ -41,6 +41,9 @@ $UnityPath = (gi "$UnityFolder\Editor\Data" | sort FullName)[-1].FullName
 # For Unity >= 2019.3.0f6, il2cpp\build\deploy\net471\il2cpp.exe
 $il2cpp = (gci "$UnityPath\il2cpp\build" -Recurse -Filter il2cpp.exe)[0].FullName
 
+# Path to bytecode stripper
+$stripper = (gci "$UnityPath\il2cpp\build" -Recurse -Filter UnityLinker.exe)[0].FullName
+
 # Path to mscorlib.dll
 # For Unity <= 2018.1.9f2, Mono\lib\mono\2.0\...
 # For Unity >= 2018.2.0f2, MonoBleedingEdge\lib\mono\unityaot\...
@@ -74,6 +77,11 @@ if (!(Test-Path -Path $AndroidNDK -PathType container)) {
 
 if (!$il2cpp) {
 	Write-Error "Could not find Unity IL2CPP build support - aborting"
+	Exit
+}
+
+if (!$stripper) {
+	Write-Error "Could not find Unity IL2CPP bytecode stripper - aborting"
 	Exit
 }
 
@@ -132,15 +140,25 @@ gci "$src/*" -Include $cs | % {
 	}
 }
 
-# Transpile all of the DLLs to C++
-# We split this up from the binary compilation phase to avoid unnecessary DLL -> C++ transpiles for the same application
+# Strip each assembly of unnecessary code to reduce compile time
 $dll = $assemblies | % {"$_.dll"}
 
+gci "$asm/*" -Include $dll | % {
+	$name = $_.Name
+	echo "Running bytecode stripper on $name..."
+
+	& $stripper	"--out=$asm/$($_.BaseName)-stripped", "--i18n=none", "--core-action=link", `
+				"--include-assembly=$_,$mscorlib", "--dotnetruntime=il2cpp", "--dotnetprofile=unityaot", `
+				"--use-editor-options"
+}
+
+# Transpile all of the DLLs to C++
+# We split this up from the binary compilation phase to avoid unnecessary DLL -> C++ transpiles for the same application
 gci "$asm/*" -Include $dll | % {
 	$name = $_.BaseName
 	echo "Converting assembly $($_.Name) to C++..."
 	rm -Force -Recurse $cpp/$name 2>&1 >$null
-	& $il2cpp $cppArg "--generatedcppdir=$cpp/$name", "--assembly=$_,$mscorlib" >$null
+	& $il2cpp $cppArg "--generatedcppdir=$cpp/$name", "--assembly=$asm/$($_.BaseName)-stripped/$($_.Name)" >$null
 }
 
 # Run IL2CPP on all generated assemblies for both x86 and ARM
