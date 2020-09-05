@@ -72,6 +72,7 @@ typedef size_t uintptr_t;
             writeTypesForGroup("Application types from method calls", "types_from_methods");
             writeTypesForGroup("Application types from generic methods", "types_from_generic_methods");
             writeTypesForGroup("Application types from usages", "types_from_usages");
+            writeTypesForGroup("Application unused value types", "unused_value_types");
 
             writeCode("#if !defined(_GHIDRA_) && !defined(_IDA_)");
             writeCode("}");

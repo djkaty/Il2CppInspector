@@ -252,6 +252,17 @@ namespace Il2CppInspector.Model
                 }
             }
 
+            // Find unused concrete value types
+            var usedTypes = Types.Values.Select(t => t.Type);
+            var unusedTypes = TypeModel.Types.Except(usedTypes);
+            var unusedValueTypes = unusedTypes.Where(t => t.IsValueType && !t.IsGenericType && !t.IsGenericParameter);
+
+            Group = "unused_value_types";
+
+            foreach (var type in unusedValueTypes)
+                declarationGenerator.IncludeType(type);
+            AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
+
             // Restore stdout
             Console.SetOut(stdout);
 
