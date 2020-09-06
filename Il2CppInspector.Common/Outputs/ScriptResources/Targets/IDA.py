@@ -10,6 +10,10 @@ def SetName(addr, name):
 def MakeFunction(start):
   ida_funcs.add_func(start)
 
+def MakeArray(addr, numItems, cppType):
+	SetType(addr, cppType)
+	idc.make_array(addr, numItems)
+
 def DefineCode(code):
 	idc.parse_decls(code)
 

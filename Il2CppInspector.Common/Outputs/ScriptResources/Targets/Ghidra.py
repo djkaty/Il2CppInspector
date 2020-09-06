@@ -2,6 +2,7 @@
 from ghidra.app.cmd.function import ApplyFunctionSignatureCmd
 from ghidra.app.script import GhidraScriptUtil
 from ghidra.app.util.cparser.C import CParserUtils
+from ghidra.program.model.data import ArrayDataType
 from ghidra.program.model.symbol import SourceType
 
 def SetName(addr, name):
@@ -21,6 +22,16 @@ def MakeFunction(start, name=None):
 	if name is not None:
 		setPlateComment(addr, name)
 
+def MakeArray(addr, numItems, cppType):
+	if cppType.startswith('struct '):
+		cppType = cppType[7:]
+	
+	t = getDataTypes(cppType)[0]
+	a = ArrayDataType(t, numItems, t.getLength())
+	addr = toAddr(addr)
+	removeDataAt(addr)
+	createData(addr, a)
+
 def DefineCode(code):
 	# Code declarations are not supported in Ghidra
 	# This only affects string literals for metadata version < 19
@@ -32,11 +43,11 @@ def SetFunctionType(addr, sig):
 	typeSig = CParserUtils.parseSignature(None, currentProgram, sig)
 	ApplyFunctionSignatureCmd(toAddr(addr), typeSig, SourceType.USER_DEFINED, False, True).applyTo(currentProgram)
 
-def SetType(addr, type):
-	if type.startswith('struct '):
-		type = type[7:]
+def SetType(addr, cppType):
+	if cppType.startswith('struct '):
+		cppType = cppType[7:]
 	
-	t = getDataTypes(type)[0]
+	t = getDataTypes(cppType)[0]
 	addr = toAddr(addr)
 	removeDataAt(addr)
 	createData(addr, t)
