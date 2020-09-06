@@ -147,15 +147,9 @@ namespace Il2CppInspector.Outputs
         private void writeMetadata() {
             var binary = model.Package.Binary;
 
-            // TODO: In the future, add struct definitions/fields, data ranges and the entire IL2CPP metadata tree
             writeArray("typeMetadata", () => {
                 writeObject(() => writeTypedName(binary.CodeRegistrationPointer, "struct Il2CppCodeRegistration", "g_CodeRegistration"));
                 writeObject(() => writeTypedName(binary.MetadataRegistrationPointer, "struct Il2CppMetadataRegistration", "g_MetadataRegistration"));
-
-                if (model.Package.Version >= 24.2)
-                    writeObject(() => writeTypedName(binary.CodeRegistration.pcodeGenModules,
-                        // Ghidra doesn't like *[x] or ** so use * * instead
-                        $"struct Il2CppCodeGenModule * *", "g_CodeGenModules"));
 
                 foreach (var ptr in binary.CodeGenModulePointers)
                     writeObject(() => writeTypedName(ptr.Value, "struct Il2CppCodeGenModule", $"g_{ptr.Key.Replace(".dll", "")}CodeGenModule"));
@@ -177,6 +171,13 @@ namespace Il2CppInspector.Outputs
                             "void il2cpp_codegen_register(const Il2CppCodeRegistration* const codeRegistration, const Il2CppMetadataRegistration* const metadataRegistration)",
                             "il2cpp_codegen_register"));
             }, "IL2CPP Function Metadata");
+
+            // TODO: In the future, add data ranges for the entire IL2CPP metadata tree
+            writeArray("arrayMetadata", () => {
+                if (model.Package.Version >= 24.2) {
+                    writeObject(() => writeTypedArray(binary.CodeRegistration.pcodeGenModules, binary.Modules.Count, "struct Il2CppCodeGenModule *", "g_CodeGenModules"));
+                }
+            }, "IL2CPP Array Metadata");
         }
 
         private void writeApis() {
@@ -214,6 +215,7 @@ namespace Il2CppInspector.Outputs
             }, "Symbol table");
         }
 
+        // JSON helpers
         private void writeObject(Action objectWriter) => writeObject(null, objectWriter);
 
         private void writeObject(string name, Action objectWriter, string description = null) {
@@ -248,6 +250,11 @@ namespace Il2CppInspector.Outputs
         private void writeTypedFunctionName(ulong address, string type, string name) {
             writeName(address, name);
             writer.WriteString("signature", type.ToEscapedString());
+        }
+
+        private void writeTypedArray(ulong address, int count, string type, string name) {
+            writeTypedName(address, type, name);
+            writer.WriteNumber("count", count);
         }
 
         private void writeDotNetSignature(MethodBase method) {

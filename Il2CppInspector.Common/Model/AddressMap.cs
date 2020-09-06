@@ -124,6 +124,7 @@ namespace Il2CppInspector.Model
             Add(binary.MetadataRegistrationPointer, binary.MetadataRegistration);
 
             if (Model.Package.Version >= 24.2) {
+                // TODO: Add some kind of AppArray composite type for arrays as we'll be adding more later
                 Add(binary.CodeRegistration.pcodeGenModules, binary.CodeGenModulePointers);
 
                 foreach (var ptr in binary.CodeGenModulePointers)
