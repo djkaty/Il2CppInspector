@@ -22,10 +22,13 @@
 # gci $env:ProgramFiles\Unity\Hub\Editor | % { ./il2cpp.ps1 <source-file-without-extension> $_.Name }
 
 param (
-	# Which source files in TestSources to generate aseemblies, C++ and IL2CPP binaries for
+	# Which source files in TestSources to generate aseemblies, C++ and IL2CPP binaries for (comma-separated)
 	[string[]] $assemblies = "*",
 
 	# Which Unity version to use; uses the latest installed if not specified
+	# Accepts wildcards and always sorts from highest to lowest version eg.:
+	# 2018* will select the latest Unity 2018 install, 2019.1.* will select the latest 2019.1 install etc.
+	# You can also specify a full path to a Unity install folder
 	[string] $unityVersion = "*"
 )
 
@@ -43,12 +46,12 @@ function Compare-UnityVersions {
 	)
 	$rgx = '^(?<major>[0-9]{1,4})\.(?<minor>[0-6])\.(?<build>[0-9]{1,2}).*$'
 	if ($left -notmatch $rgx) {
-		Write-Error "Invalid Unity version number"
+		Write-Error "Invalid Unity version number or the specified Unity version is not installed"
 		Exit
 	}
 	$leftVersion = $Matches
 	if ($right -notmatch $rgx) {
-		Write-Error "Invalid Unity version number"
+		Write-Error "Invalid Unity version number or the specified Unity version is not installed"
 		Exit
 	}
 	$rightVersion = $Matches
@@ -81,7 +84,8 @@ $CSC = (gci "${env:ProgramFiles(x86)}\MSBuild\*\Bin\csc.exe" | sort FullName)[-1
 $CSC = (gci "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\Bin\Roslyn\csc.exe" | sort FullName)[-1].FullName
 
 # Path to latest installed version of Unity
-$UnityPath = (gi "$UnityFolder\Editor\Data" | sort FullName)[-1].FullName
+$UnityEditorPath = (gi "$UnityFolder\Editor" | sort FullName)[-1].FullName
+$UnityPath = "$UnityEditorPath\Data"
 
 # Path to il2cpp.exe
 # For Unity <= 2019.2.21f1, il2cpp\build\il2cpp.exe
@@ -92,7 +96,10 @@ $il2cpp = (gci "$UnityPath\il2cpp\build" -Recurse -Filter il2cpp.exe)[0].FullNam
 $stripper = (gci "$UnityPath\il2cpp\build" -Recurse -Filter UnityLinker.exe)[0].FullName
 
 # Determine the actual Unity version
-$actualUnityVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$UnityFolder\Editor\Unity.exe").FileVersion
+$actualUnityVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$UnityEditorPath\Unity.exe").FileVersion
+
+# Enable Write-Error before calling Compare-UnityVersions
+$ErrorActionPreference = "Continue"
 
 # Path to mscorlib.dll
 # For Unity <= 2018.1.9f2, Mono\lib\mono\2.0\... (but also has the MonoBleedingEdge path which is incompatible)
@@ -133,16 +140,9 @@ $AndroidPlayer = $UnityPath + '\PlaybackEngines\AndroidPlayer'
 $AndroidNDK = $AndroidPlayer + '\NDK'
 $AndroidBuildEnabled = $True
 
-$ErrorActionPreference = "Continue"
-
 # Check that everything is installed
 if (!$CSC) {
 	Write-Error "Could not find C¤ compiler csc.exe - aborting"
-	Exit
-}
-
-if (!$actualUnityVersion) {
-	Write-Error "Could not find Unity editor - aborting"
 	Exit
 }
 
