@@ -438,9 +438,10 @@ namespace Il2CppInspector.Outputs
                 
                 // Indexer
                 else {
-                    // Replace "Item" with "this" - preserves explicit interface implementations
-                    sb.Append(prop.CSharpName[..^4] + "this");
-                    sb.Append("[" + string.Join(", ", primary.DeclaredParameters.SkipLast(getAccess >= setAccess ? 0 : 1)
+                    // Replace indexer name (usually "Item" but not always) with "this" - preserves explicit interface implementations
+                    if (prop.CSharpName.IndexOf('.') != -1)
+                        sb.Append(prop.CSharpName.Substring(0, prop.CSharpName.IndexOf('.') + 1));
+                    sb.Append("this[" + string.Join(", ", primary.DeclaredParameters.SkipLast(getAccess >= setAccess ? 0 : 1)
                                   .Select(p => p.GetParameterString(scope, !SuppressMetadata, MustCompile))) + "] { ");
                     getBody = " => default;";
                     setBody = " {}";
