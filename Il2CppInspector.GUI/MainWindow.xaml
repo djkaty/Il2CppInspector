@@ -231,6 +231,12 @@
                     <DockPanel DockPanel.Dock="Right" Width="230">
                         <Label DockPanel.Dock="Top" Foreground="{StaticResource WindowsBlue}" FontSize="18">Namespaces</Label>
                         <TextBlock DockPanel.Dock="Top" TextWrapping="WrapWithOverflow" Margin="10,0,5,5">This only applies to C# prototypes output</TextBlock>
+
+                        <StackPanel DockPanel.Dock="Top" Margin="10,0,5,5" Orientation="Horizontal">
+                            <Button Margin="2,0,5,0" Width="103" Click="SelectAllNamespaces_Click">Select all</Button>
+                            <Button Width="103" Click="SelectNoneNamespaces_Click">Select none</Button>
+                        </StackPanel>
+                        
                         <TreeView DockPanel.Dock="Bottom" Name="trvNamespaces" ItemTemplate="{StaticResource NamespaceTreeItemTemplate}" Width="210" Margin="10,5,5,5"></TreeView>
                     </DockPanel>
 
