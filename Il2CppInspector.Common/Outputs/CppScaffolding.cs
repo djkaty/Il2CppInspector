@@ -49,6 +49,8 @@ typedef __int64 int64_t;
 typedef __int{model.Package.BinaryImage.Bits} size_t;
 typedef size_t intptr_t;
 typedef size_t uintptr_t;
+#else
+#define _CPLUSPLUS_
 #endif
 ");
 
@@ -247,7 +249,16 @@ typedef size_t uintptr_t;
         private void writeTypesForGroup(string header, string group) {
             writeSectionHeader(header);
             foreach (var cppType in model.GetDependencyOrderedCppTypeGroup(group))
-                writeCode(cppType.ToString());
+                if (cppType is CppEnumType) {
+                    // Ghidra can't process C++ enum base types
+                    writeCode("#if defined(_CPLUSPLUS_)");
+                    writeCode(cppType.ToString());
+                    writeCode("#else");
+                    writeCode(cppType.ToString("c"));
+                    writeCode("#endif");
+                } else {
+                    writeCode(cppType.ToString());
+                }
         }
         
         private void writeCode(string text) {

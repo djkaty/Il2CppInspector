@@ -407,11 +407,15 @@ namespace Il2CppInspector.Cpp
         // Return the type as a field
         public override string ToFieldString(string fieldName) => "enum " + Name + " " + fieldName;
 
+        // Format specifier: 'c' = don't output C++-style enum with base type, use C-compatible code only
         public override string ToString(string format = "") {
             var sb = new StringBuilder();
             
             // Don't output " : {underlyingType.Name}" because it breaks C
-            sb.Append($"enum {Name} {{");
+            if (format.Contains('c'))
+                sb.Append($"enum {Name} {{");
+            else
+                sb.Append($"enum {Name} : {UnderlyingType.Name} {{");
 
             foreach (var field in Fields.Values.SelectMany(f => f))
                 sb.Append("\n    " + string.Join("\n    ", field.ToString(format).Split('\n')) + ",");
