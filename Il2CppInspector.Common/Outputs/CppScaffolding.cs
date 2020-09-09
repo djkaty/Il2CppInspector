@@ -172,6 +172,17 @@ typedef size_t uintptr_t;
 
             writer.Close();
 
+            // Write metadata version
+            var versionFile = Path.Combine(srcDataPath, "il2cpp-metadata-version.h");
+
+            using var fs5 = new FileStream(versionFile, FileMode.Create);
+            writer = new StreamWriter(fs5, Encoding.ASCII);
+
+            writeHeader();
+            writeCode($"#define __IL2CPP_METADATA_VERSION {model.Package.Version * 10:F0}");
+
+            writer.Close();
+
             // Write boilerplate code
             File.WriteAllText(Path.Combine(srcFxPath, "dllmain.cpp"), Resources.Cpp_DLLMainCpp);
             File.WriteAllText(Path.Combine(srcFxPath, "helpers.cpp"), Resources.Cpp_HelpersCpp);
