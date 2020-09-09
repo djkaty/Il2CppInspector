@@ -307,8 +307,7 @@ namespace Il2CppInspector.Properties {
         ///      &lt;Filter&gt;framework&lt;/Filter&gt;
         ///    &lt;/ClCompile&gt;
         ///    &lt;ClCompile Include=&quot;framework\il2cpp-init.cpp&quot;&gt;
-        ///      &lt;Filter&gt;framework&lt;/Filter&gt;
-        ///     [rest of string was truncated]&quot;;.
+        ///      &lt;Filter&gt;framework&lt; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CppProjFilters {
             get {
@@ -328,7 +327,7 @@ namespace Il2CppInspector.Properties {
         ///      &lt;Configuration&gt;Release&lt;/Configuration&gt;
         ///      &lt;Platform&gt;Win32&lt;/Platform&gt;
         ///    &lt;/ProjectConfiguration&gt;
-        ///    &lt;ProjectConfiguration  [rest of string was truncated]&quot;;.
+        ///    &lt;ProjectCon [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CppProjTemplate {
             get {

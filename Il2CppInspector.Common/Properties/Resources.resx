@@ -314,6 +314,7 @@ void Run()
     &lt;ClInclude Include="appdata\il2cpp-api-functions.h" /&gt;
     &lt;ClInclude Include="appdata\il2cpp-api-functions-ptr.h" /&gt;
     &lt;ClInclude Include="appdata\il2cpp-functions.h" /&gt;
+	  &lt;ClInclude Include="appdata\il2cpp-metadata-version.h" /&gt;
     &lt;ClInclude Include="appdata\il2cpp-types-ptr.h" /&gt;
     &lt;ClInclude Include="appdata\il2cpp-types.h" /&gt;
     &lt;ClInclude Include="framework\helpers.h" /&gt;
@@ -1180,7 +1181,7 @@ namespace app {
 #undef DO_APP_FUNC
 
 // TypeInfo pointers
-#define DO_TYPEDEF(a, n) extern n ## __Class* n ## __TypeInfo
+#define DO_TYPEDEF(a, n) extern n ## __Class** n ## __TypeInfo
 namespace app {
 	#include "il2cpp-types-ptr.h"
 }
@@ -1209,7 +1210,7 @@ namespace app {
 #undef DO_APP_FUNC
 
 // TypeInfo pointers
-#define DO_TYPEDEF(a, n) n ## __Class* n ## __TypeInfo
+#define DO_TYPEDEF(a, n) n ## __Class** n ## __TypeInfo
 namespace app {
 #include "il2cpp-types-ptr.h"
 }
@@ -1234,7 +1235,7 @@ void init_il2cpp()
 	#undef DO_APP_FUNC
 
 	// Define TypeInfo variables
-	#define DO_TYPEDEF(a, n) n ## __TypeInfo = *(n ## __Class**) (baseAddress + a);
+	#define DO_TYPEDEF(a, n) n ## __TypeInfo = (n ## __Class**) (baseAddress + a);
 	#include "il2cpp-types-ptr.h"
 	#undef DO_TYPEDEF
 }</value>
@@ -1301,6 +1302,9 @@ void Run();</value>
       &lt;Filter&gt;appdata&lt;/Filter&gt;
     &lt;/ClInclude&gt;
     &lt;ClInclude Include="appdata\il2cpp-functions.h"&gt;
+      &lt;Filter&gt;appdata&lt;/Filter&gt;
+    &lt;/ClInclude&gt;
+    &lt;ClInclude Include="appdata\il2cpp-metadata-version.h"&gt;
       &lt;Filter&gt;appdata&lt;/Filter&gt;
     &lt;/ClInclude&gt;
     &lt;ClInclude Include="appdata\il2cpp-types.h"&gt;
