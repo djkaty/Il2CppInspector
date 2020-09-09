@@ -63,6 +63,13 @@ typedef size_t uintptr_t;
             if (model.TargetCompiler == CppCompilerType.MSVC)
                 writeCode("#pragma warning(disable : 4309)");
 
+            // MSVC will (rightly) throw a compiler warning when compiling for 32-bit architectures
+            // if the specified alignment of a type is smaller than the size of its largest element.
+            // We keep the alignments in to make them match Il2CppObject wherever possible, but it is
+            // safe to ignore them if they are too small, so we just disable the warning
+            if (model.TargetCompiler == CppCompilerType.MSVC)
+                writeCode("#pragma warning(disable : 4359)");
+
             // C does not support namespaces
             writeCode("#if !defined(_GHIDRA_) && !defined(_IDA_)");
             writeCode("namespace app {");
