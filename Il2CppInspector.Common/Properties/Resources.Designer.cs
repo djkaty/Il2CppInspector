@@ -91,22 +91,24 @@ namespace Il2CppInspector.Properties {
         ///   Looks up a localized string similar to // Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
         ///// Helper functions
         ///
+        ///#include &quot;pch-il2cpp.h&quot;
+        ///
         ///#define WIN32_LEAN_AND_MEAN
         ///#include &lt;windows.h&gt;
         ///#include &lt;string&gt;
+        ///#include &lt;codecvt&gt;
         ///#include &quot;helpers.h&quot;
         ///
         ///// Log file location
         ///extern const LPCWSTR LOG_FILE;
         ///
         ///// Helper function to get the module base address
-        ///uintptr_t GetBaseAddress() {
+        ///uintptr_t il2cppi_get_base_address() {
         ///    return (uintptr_t) GetModuleHandleW(L&quot;GameAssembly.dll&quot;);
         ///}
         ///
         ///// Helper function to append text to a file
-        ///void LogWrite(std::string text) {
-        ///    HANDLE hfile = CreateFileW(LOG [rest of string was truncated]&quot;;.
+        ///void il2cppi_l [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_HelpersCpp {
             get {
@@ -125,16 +127,15 @@ namespace Il2CppInspector.Properties {
         ///#include &lt;iomanip&gt;
         ///
         ///// Helper function to get the module base address
-        ///uintptr_t GetBaseAddress();
+        ///uintptr_t il2cppi_get_base_address();
         ///
         ///// Helper function to append text to a file
-        ///void LogWrite(std::string text);
+        ///void il2cppi_log_write(std::string text);
         ///
         ///// Helper function to open a new console window and redirect stdout there
-        ///void NewConsole();
+        ///void il2cppi_new_console();
         ///
-        ///// Helper function to convert a pointer to hex
-        ///template&lt;t [rest of string was truncated]&quot;;.
+        ///// Helper function to convert Il2CppString to st [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_HelpersH {
             get {
@@ -164,7 +165,7 @@ namespace Il2CppInspector.Properties {
         ///// Application-specific functions
         ///#define DO_APP_FUNC(a, r, n, p) extern r (*n) p
         ///namespace app {
-        ///	#incl [rest of string was truncated]&quot;;.
+        ///	#include &quot;il2cpp-functions [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_Il2CppAppDataH {
             get {
@@ -195,7 +196,7 @@ namespace Il2CppInspector.Properties {
         ///#undef DO_APP_FUNC
         ///
         ///// TypeInfo pointers
-        ///# [rest of string was truncated]&quot;;.
+        ///#define DO_TYPEDEF(a, n [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_Il2CppInitCpp {
             get {
@@ -284,7 +285,7 @@ namespace Il2CppInspector.Properties {
         ///#ifndef PCH_IL2CPP_H
         ///#define PCH_IL2CPP_H
         ///
-        ///// add headers [rest of string was truncated]&quot;;.
+        ///// add headers that you [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_PCHIl2CppH {
             get {
@@ -306,7 +307,8 @@ namespace Il2CppInspector.Properties {
         ///      &lt;Filter&gt;framework&lt;/Filter&gt;
         ///    &lt;/ClCompile&gt;
         ///    &lt;ClCompile Include=&quot;framework\il2cpp-init.cpp&quot;&gt;
-        ///      &lt;Filter&gt;framework&lt; [rest of string was truncated]&quot;;.
+        ///      &lt;Filter&gt;framework&lt;/Filter&gt;
+        ///     [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CppProjFilters {
             get {
@@ -326,7 +328,7 @@ namespace Il2CppInspector.Properties {
         ///      &lt;Configuration&gt;Release&lt;/Configuration&gt;
         ///      &lt;Platform&gt;Win32&lt;/Platform&gt;
         ///    &lt;/ProjectConfiguration&gt;
-        ///    &lt;ProjectCon [rest of string was truncated]&quot;;.
+        ///    &lt;ProjectConfiguration  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CppProjTemplate {
             get {
