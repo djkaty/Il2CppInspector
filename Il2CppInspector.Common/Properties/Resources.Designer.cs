@@ -126,6 +126,8 @@ namespace Il2CppInspector.Properties {
         ///#include &lt;sstream&gt;
         ///#include &lt;iomanip&gt;
         ///
+        ///#include &quot;il2cpp-metadata-version.h&quot;
+        ///
         ///// Helper function to get the module base address
         ///uintptr_t il2cppi_get_base_address();
         ///
@@ -135,7 +137,7 @@ namespace Il2CppInspector.Properties {
         ///// Helper function to open a new console window and redirect stdout there
         ///void il2cppi_new_console();
         ///
-        ///// Helper function to convert Il2CppString to st [rest of string was truncated]&quot;;.
+        ///// Helper  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_HelpersH {
             get {

@@ -207,6 +207,8 @@ std::string il2cppi_to_string(app::String* str) {
 #include &lt;sstream&gt;
 #include &lt;iomanip&gt;
 
+#include "il2cpp-metadata-version.h"
+
 // Helper function to get the module base address
 uintptr_t il2cppi_get_base_address();
 
@@ -221,6 +223,16 @@ std::string il2cppi_to_string(Il2CppString* str);
 
 // Helper function to convert System.String to std::string
 std::string il2cppi_to_string(app::String* str);
+
+// Helper function to check if a metadata usage pointer is initialized
+template&lt;typename T&gt; bool il2cppi_is_initialized(T* metadataItem) {
+#if __IL2CPP_METADATA_VERISON &lt; 270
+    return *metadataItem != 0;
+#else
+    // Metadata &gt;=27 (Unity 2020.2)
+    return !((uintptr_t) *metadataItem &amp; 1);
+#endif
+}
 
 // Helper function to convert a pointer to hex
 template&lt;typename T&gt; std::string to_hex_string(T i) {
