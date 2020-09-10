@@ -57,9 +57,9 @@ namespace Il2CppInspector.Cpp
                 CppComplexType t when string.IsNullOrEmpty(t.Name) => (format == "o"? "\n" : "") 
                                     + t.ToString(format)[..^2] + (Name.Length > 0? " " + Name : ""),
                 // function pointers
-                CppFnPtrType t when string.IsNullOrEmpty(t.Name) => t.ToFieldString(Name),
+                CppFnPtrType t when string.IsNullOrEmpty(t.Name) => t.ToFieldString(Name, format),
                 // regular fields
-                _ => $"{Type.ToFieldString(Name)}" + (BitfieldSize > 0? $" : {BitfieldSize}" : "")
+                _ => $"{Type.ToFieldString(Name, format)}" + (BitfieldSize > 0? $" : {BitfieldSize}" : "")
             };
 
             var suffix = "";

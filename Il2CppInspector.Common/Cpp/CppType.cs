@@ -56,7 +56,7 @@ namespace Il2CppInspector.Cpp
         public CppAlias AsAlias(string Name) => new CppAlias(Name, this);
 
         // Return the type as a field
-        public virtual string ToFieldString(string fieldName) => Name + " " + fieldName;
+        public virtual string ToFieldString(string fieldName, string format = "") => Name + " " + fieldName;
 
         public virtual string ToString(string format = "") => format == "o" ? $"/* {SizeBytes:x2} - {Name} */" : "";
 
@@ -73,7 +73,7 @@ namespace Il2CppInspector.Cpp
         public CppPointerType(int WordSize, CppType elementType) : base(null, WordSize) => ElementType = elementType;
 
         // Return the type as a field
-        public override string ToFieldString(string fieldName) => ElementType.ToFieldString("*" + fieldName);
+        public override string ToFieldString(string fieldName, string format = "") => ElementType.ToFieldString("*" + fieldName, format);
 
         public override string ToString(string format = "") => ToFieldString("");
     }
@@ -98,7 +98,8 @@ namespace Il2CppInspector.Cpp
         }
 
         // Return the type as a field
-        public override string ToFieldString(string fieldName) => ElementType.ToFieldString(fieldName) + "[" + Length + "]";
+        public override string ToFieldString(string fieldName, string format = "")
+            => ElementType.ToFieldString(fieldName, format) + "[" + Length + "]";
 
         public override string ToString(string format = "") => ElementType + "[" + Length + "]";
     }
@@ -195,8 +196,8 @@ namespace Il2CppInspector.Cpp
         }
 
         // Output as a named field in a type
-        public override string ToFieldString(string name) => $"{ReturnType.Name} (*{name})("
-            + string.Join(", ", Arguments.Select(a => a.Type is CppFnPtrType fn ? fn.ToFieldString(a.Name) : a.Type.Name + (a.Name.Length > 0 ? " " + a.Name : "")))
+        public override string ToFieldString(string name, string format = "") => $"{ReturnType.Name} (*{name})("
+            + string.Join(", ", Arguments.Select(a => a.Type is CppFnPtrType fn ? fn.ToFieldString(a.Name, format) : a.Type.Name + (a.Name.Length > 0 ? " " + a.Name : "")))
             + ")";
 
         // Output as a typedef declaration
@@ -368,7 +369,8 @@ namespace Il2CppInspector.Cpp
             => AddField(new CppField(name, type, bitfield, isConst), alignmentBytes);
 
         // Return the type as a field
-        public override string ToFieldString(string fieldName) => (ComplexValueType == ComplexValueType.Struct ? "struct " : "union ") + Name + " " + fieldName;
+        public override string ToFieldString(string fieldName, string format = "")
+            => (ComplexValueType == ComplexValueType.Struct ? "struct " : "union ") + Name + " " + fieldName;
 
         // Summarize all field names and offsets
         public override string ToString(string format = "") {
@@ -382,8 +384,22 @@ namespace Il2CppInspector.Cpp
             sb.Append(Name + (Name.Length > 0 ? " " : ""));
 
             sb.Append("{");
-            foreach (var field in Fields.Values.SelectMany(f => f))
-                sb.Append("\n    " + string.Join("\n    ", field.ToString(format).Split('\n')) + ";");
+            foreach (var field in Fields.Values.SelectMany(f => f)) {
+                var fieldString = field.ToString(format);
+                var suffix = ";";
+                // C-compatible enum field
+                if (field.Type is CppEnumType) {
+                    var sbEnum = new StringBuilder();
+                    sbEnum.AppendLine("#if defined(_CPLUSPLUS_)");
+                    sbEnum.AppendLine(fieldString + ";");
+                    sbEnum.AppendLine("#else");
+                    sbEnum.AppendLine(field.ToString(format + "c") + ";");
+                    sbEnum.Append("#endif");
+                    fieldString = sbEnum.ToString();
+                    suffix = "";
+                }
+                sb.Append("\n    " + string.Join("\n    ", fieldString.Split('\n')) + suffix);
+            }
 
             sb.Append($"\n}}{(format == "o"? $" /* Size: 0x{SizeBytes:x2} */" : "")};");
 
@@ -405,7 +421,22 @@ namespace Il2CppInspector.Cpp
         public void AddField(string name, object value) => AddField(new CppEnumField(name, UnderlyingType, value));
 
         // Return the type as a field
-        public override string ToFieldString(string fieldName) => "enum " + Name + " " + fieldName;
+        public override string ToFieldString(string fieldName, string format = "") {
+            // C++
+            if (!format.Contains('c'))
+                return "enum " + Name + " " + fieldName;
+
+            // For the C-compatible definition, we have an alignment problem when the enum
+            // does not derive from the architecture integer width.
+            return UnderlyingType.SizeBytes switch
+            {
+                1 => "uint8_t",
+                2 => "uint16_t",
+                4 => "uint32_t",
+                8 => "uint16_t",
+                _ => "enum " + Name
+            } + " " + fieldName;
+        }
 
         // Format specifier: 'c' = don't output C++-style enum with base type, use C-compatible code only
         public override string ToString(string format = "") {
