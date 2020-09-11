@@ -35,7 +35,8 @@ namespace Il2CppInspectorGUI
             try {
                 OnStatusUpdate?.Invoke(this, "Extracting package");
 
-                var streams = Inspector.GetStreamsFromPackage(packageFile);
+                // TODO: Accept multiple APKs
+                var streams = Inspector.GetStreamsFromPackage(new string[] { packageFile });
                 if (streams == null)
                     throw new InvalidOperationException("The supplied package is not an APK or IPA file, or does not contain an IL2CPP application");
 

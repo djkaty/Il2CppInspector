@@ -23,20 +23,19 @@ namespace Il2CppInspector
         protected override bool Init() {
 
             // Check if it's a zip file first because ZipFile.OpenRead is extremely slow if it isn't
-            if (ReadUInt32() != 0x04034B50)
+            // 0x04034B50 = magic file header
+            // 0x02014B50 = central directory file header (will appear if we merged a split APK in memory)
+            var magic = ReadUInt32();
+            if (magic != 0x04034B50 && magic != 0x02014B50)
                 return false;
 
             try {
                 zip = new ZipArchive(BaseStream);
 
-                // Check for existence of global-metadata.dat
-                if (!zip.Entries.Any(f => f.FullName == "assets/bin/Data/Managed/Metadata/global-metadata.dat"))
-                    return false;
-
                 // Get list of binary files
                 binaryFiles = zip.Entries.Where(f => f.FullName.StartsWith("lib/") && f.Name == "libil2cpp.so").ToArray();
 
-                // This package doesn't contain an IL2CPP application
+                // This package doesn't contain an IL2CPP binary
                 if (!binaryFiles.Any())
                     return false;
             }

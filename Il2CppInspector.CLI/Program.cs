@@ -20,8 +20,8 @@ namespace Il2CppInspector.CLI
     {
         private class Options
         {
-            [Option('i', "bin", Required = false, HelpText = "IL2CPP binary, APK or IPA input file", Default = "libil2cpp.so")]
-            public string BinaryFile { get; set; }
+            [Option('i', "bin", Required = false, Separator = ',', HelpText = "IL2CPP binary, APK or IPA input file(s) (single file or comma-separated list for split APKs)", Default = new[] { "libil2cpp.so" })]
+            public IEnumerable<string> BinaryFiles { get; set; }
 
             [Option('m', "metadata", Required = false, HelpText = "IL2CPP metadata file input (ignored for APK/IPA)", Default = "global-metadata.dat")]
             public string MetadataFile { get; set; }
@@ -171,17 +171,19 @@ namespace Il2CppInspector.CLI
                 Console.WriteLine("Using Unity assemblies at " + unityAssembliesPath);
             }
 
+            // Check that specified binary files exist
+            foreach (var file in options.BinaryFiles)
+                if (!File.Exists(file)) {
+                    Console.Error.WriteLine($"File {file} does not exist");
+                    return 1;
+                }
+
             // Check files exist and determine whether they're archives or not
             List<Il2CppInspector> il2cppInspectors;
             using (new Benchmark("Analyze IL2CPP data")) {
 
-                if (!File.Exists(options.BinaryFile)) {
-                    Console.Error.WriteLine($"File {options.BinaryFile} does not exist");
-                    return 1;
-                }
-
                 try {
-                    il2cppInspectors = Il2CppInspector.LoadFromPackage(options.BinaryFile);
+                    il2cppInspectors = Il2CppInspector.LoadFromPackage(options.BinaryFiles);
                 }
                 catch (Exception ex) {
                     Console.Error.WriteLine(ex.Message);
@@ -194,7 +196,7 @@ namespace Il2CppInspector.CLI
                         return 1;
                     }
 
-                    il2cppInspectors = Il2CppInspector.LoadFromFile(options.BinaryFile, options.MetadataFile);
+                    il2cppInspectors = Il2CppInspector.LoadFromFile(options.BinaryFiles.First(), options.MetadataFile);
                 }
             }
 
