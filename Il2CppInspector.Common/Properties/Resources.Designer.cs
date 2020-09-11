@@ -351,7 +351,7 @@ namespace Il2CppInspector.Properties {
         ///		Release|x64 = Release|x64
         ///		Release|x86 = Release|x86
         ///	EndGlobalSection
-        ///	GlobalSection(ProjectConfigurationPlatfo [rest of string was truncated]&quot;;.
+        ///	GlobalSection(ProjectConfig [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CppSlnTemplate {
             get {
