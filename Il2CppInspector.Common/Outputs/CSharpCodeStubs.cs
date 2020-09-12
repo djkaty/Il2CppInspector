@@ -644,11 +644,11 @@ namespace Il2CppInspector.Outputs
                 
             // Regular method or operator overload
             else if (method.Name != "op_Implicit" && method.Name != "op_Explicit")
-                writer.Append($"{method.ReturnParameter.GetReturnParameterString(scope)} {method.CSharpName}{method.GetTypeParametersString(scope)}");
+                writer.Append($"{method.ReturnParameter.GetReturnParameterString(scope)} {method.CSharpSafeName}{method.GetTypeParametersString(scope)}");
 
             // User-defined conversion operator
             else
-                writer.Append($"{method.CSharpName}{method.ReturnType.GetScopedCSharpName(scope)}");
+                writer.Append($"{method.CSharpSafeName}{method.ReturnType.GetScopedCSharpName(scope)}");
 
             // Parameters
             writer.Append("(" + method.GetParametersString(scope, !SuppressMetadata) + ")");
@@ -678,7 +678,7 @@ namespace Il2CppInspector.Outputs
                     { ReturnType: var retType } when retType.FullName == "System.Void" => " {}",
 
                     // Ref return type
-                    { ReturnType: var retType } when retType.IsByRef => " => ref _refReturnTypeFor" + method.CSharpName + ";",
+                    { ReturnType: var retType } when retType.IsByRef => " => ref _refReturnTypeFor" + method.CSharpSafeName + ";",
 
                     // Regular return type
                     _ => " => default;"
@@ -691,7 +691,7 @@ namespace Il2CppInspector.Outputs
 
             // Ref return type requires us to invent a field
             if (MustCompile && method.ReturnType.IsByRef)
-                writer.Append($"{prefix}\tprivate {method.ReturnType.GetScopedCSharpName(scope)} _refReturnTypeFor{method.CSharpName}; // Dummy field\n");
+                writer.Append($"{prefix}\tprivate {method.ReturnType.GetScopedCSharpName(scope)} _refReturnTypeFor{method.CSharpSafeName}; // Dummy field\n");
 
             return writer.ToString();
         }

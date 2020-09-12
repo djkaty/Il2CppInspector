@@ -110,6 +110,19 @@ namespace Il2CppInspector.Reflection
 
             // Regular method
             : Name;
+        //for get rid of compiler generated characters when generate c# code 
+        public new string CSharpSafeName
+        {
+            get
+            {
+                var index = CSharpName.LastIndexOf(".");
+                return (index >= 0)
+                        //implement for interface may contains generic parameters
+                        ? (CSharpName.Substring(0, index + 1) + CSharpName.Substring(index + 1).Replace("<", "_").Replace(">", "_"))
+                        : CSharpName.Replace("<", "_").Replace(">", "_");
+
+            }
+        }
 
         // Initialize a method from a method definition (MethodDef)
         protected MethodBase(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) : base(declaringType) {

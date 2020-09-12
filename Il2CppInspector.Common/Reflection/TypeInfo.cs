@@ -294,6 +294,8 @@ namespace Il2CppInspector.Reflection
             var index = name.IndexOf("`", StringComparison.Ordinal);
             if (index != -1)
                 name = name.Remove(index);
+            //get rid of compiler generate characters that's c# not support
+            name = name.Replace("<", "_").Replace(">", "_");
             return name;
         }
 
