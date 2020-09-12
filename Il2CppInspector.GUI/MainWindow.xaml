@@ -451,7 +451,7 @@
                 <TextBlock TextAlignment="Center">
                     <TextBlock FontSize="22">Option 2</TextBlock>
                     <LineBreak/>
-                    <TextBlock>Select or drag &amp; drop an APK or IPA file</TextBlock>
+                    <TextBlock>Select or drag &amp; drop one or more APK files or an IPA file</TextBlock>
                     <LineBreak/>
                     <TextBlock FontSize="16">Encrypted IPA files are not supported</TextBlock>
                 </TextBlock>

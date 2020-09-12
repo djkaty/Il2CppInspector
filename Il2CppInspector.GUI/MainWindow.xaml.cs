@@ -137,28 +137,30 @@ namespace Il2CppInspectorGUI
         }
 
         /// <summary>
-        /// Select APK or IPA package file
+        /// Select APK or IPA package files
         /// </summary>
         private async void BtnSelectPackageFile_OnClick(object sender, RoutedEventArgs e) {
             var openFileDialog = new OpenFileDialog {
                 Filter = "Android/iOS Application Package (*.apk;*.ipa;*.zip)|*.apk;*.ipa;*.zip|All files (*.*)|*.*",
-                CheckFileExists = true
+                CheckFileExists = true,
+                Multiselect = true
             };
 
             if (openFileDialog.ShowDialog() == true) {
-                await LoadPackageAsync(openFileDialog.FileName);
+                await LoadPackageAsync(openFileDialog.FileNames);
             }
         }
 
         // Load the package file
-        private async Task LoadPackageAsync(string filename) {
+        private async Task LoadPackageAsync(string filename) => await LoadPackageAsync(new[] { filename });
+        private async Task LoadPackageAsync(IEnumerable<string> filenames) {
             var app = (App) Application.Current;
 
             areaBusyIndicator.Visibility = Visibility.Visible;
             grdFirstPage.Visibility = Visibility.Hidden;
 
             // Load the package
-            if (await app.LoadPackageAsync(filename)) {
+            if (await app.LoadPackageAsync(filenames)) {
                 // Package loaded successfully
                 areaBusyIndicator.Visibility = Visibility.Hidden;
 
@@ -556,7 +558,7 @@ namespace Il2CppInspectorGUI
                         }
                     }
                     // Metadata and binary
-                    else if (files.Length == 2) {
+                    else if (files.Length == 2 && (files[0].ToLower().EndsWith(".dat") || files[1].ToLower().EndsWith(".dat"))) {
                         var metadataIndex = files[0].ToLower().EndsWith(".dat") ? 0 : 1;
                         var binaryIndex = 1 - metadataIndex;
 
@@ -565,6 +567,10 @@ namespace Il2CppInspectorGUI
                         // Only load binary if metadata was successful
                         if (btnSelectBinaryFile.Visibility == Visibility.Visible)
                             await LoadBinaryAsync(files[binaryIndex]);
+                    }
+                    // Split APK (files.Length >= 2)
+                    else {
+                        await LoadPackageAsync(files);
                     }
                 }
                 // Binary (on 2nd page)

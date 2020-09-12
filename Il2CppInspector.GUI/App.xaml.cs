@@ -31,14 +31,13 @@ namespace Il2CppInspectorGUI
         private void StatusUpdate(object sender, string status) => OnStatusUpdate?.Invoke(sender, status);
 
         // Attempt to load an IL2CPP application package (APK or IPA)
-        public async Task<bool> LoadPackageAsync(string packageFile) {
+        public async Task<bool> LoadPackageAsync(IEnumerable<string> packageFiles) {
             try {
                 OnStatusUpdate?.Invoke(this, "Extracting package");
 
-                // TODO: Accept multiple APKs
-                var streams = Inspector.GetStreamsFromPackage(new string[] { packageFile });
+                var streams = Inspector.GetStreamsFromPackage(packageFiles);
                 if (streams == null)
-                    throw new InvalidOperationException("The supplied package is not an APK or IPA file, or does not contain an IL2CPP application");
+                    throw new InvalidOperationException("The supplied package is not an APK or IPA file, or does not contain a complete IL2CPP application");
 
                 return await LoadMetadataAsync(streams.Value.Metadata) && await LoadBinaryAsync(streams.Value.Binary);
             }
