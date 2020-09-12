@@ -223,7 +223,7 @@ namespace Il2CppInspector
 
         // Retrieve items from specified RVA(s)
         public byte ReadMappedByte(ulong uiAddr) => ReadByte(MapVATR(uiAddr));
-        public byte[] ReadMappedBytes(ulong uiAddr, int count) => ReadBytes(MapVATR(uiAddr), count);
+        public byte[] ReadMappedBytes(ulong uiAddr, int count) => count > 0? ReadBytes(MapVATR(uiAddr), count) : new byte[0];
         public bool ReadMappedBoolean(ulong uiAddr) => ReadBoolean(MapVATR(uiAddr));
         public long ReadMappedInt64(ulong uiAddr) => ReadInt64(MapVATR(uiAddr));
         public int ReadMappedInt32(ulong uiAddr) => ReadInt32(MapVATR(uiAddr));
@@ -233,14 +233,14 @@ namespace Il2CppInspector
         public ushort ReadMappedUInt16(ulong uiAddr) => ReadUInt16(MapVATR(uiAddr));
 
         public U ReadMappedObject<U>(ulong uiAddr) where U : new() => ReadObject<U>(MapVATR(uiAddr));
-        public U[] ReadMappedArray<U>(ulong uiAddr, int count) where U : new() => ReadArray<U>(MapVATR(uiAddr), count);
+        public U[] ReadMappedArray<U>(ulong uiAddr, int count) where U : new() => count > 0 ? ReadArray<U>(MapVATR(uiAddr), count) : new U[0];
         public string ReadMappedNullTerminatedString(ulong uiAddr, Encoding encoding = null) => ReadNullTerminatedString(MapVATR(uiAddr), encoding);
         public string ReadMappedFixedLengthString(ulong uiAddr, int length, Encoding encoding = null) => ReadFixedLengthString(MapVATR(uiAddr), length, encoding);
 
         // Read a file format dependent array of words (32 or 64 bits)
         // The primitive mappings in Bin2Object will automatically read a uint if the file is 32-bit
         public long ReadMappedWord(ulong uiAddr) => ReadWord(MapVATR(uiAddr));
-        public long[] ReadMappedWordArray(ulong uiAddr, int count) => ReadArray<long>(MapVATR(uiAddr), count);
+        public long[] ReadMappedWordArray(ulong uiAddr, int count) => count > 0 ? ReadArray<long>(MapVATR(uiAddr), count) : new long[0];
 
         // Reads a list of pointers, then reads each object pointed to
         public List<U> ReadMappedObjectPointerArray<U>(ulong uiAddr, int count) where U : new() {
