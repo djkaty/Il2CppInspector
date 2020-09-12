@@ -38,6 +38,11 @@ def DefineField(addr, name, type, ilType = None):
 	if (ilType is not None):
 		SetComment(addr, AsUTF8(ilType))
 
+def DefineArray(jsonDef):
+	addr = ParseAddress(jsonDef)
+	MakeArray(addr, int(jsonDef['count']), AsUTF8(jsonDef['type']))
+	SetName(addr, AsUTF8(jsonDef['name']))
+
 # Process JSON
 def ProcessJSON(jsonData):
 
@@ -104,6 +109,11 @@ def ProcessJSON(jsonData):
 	print('Processing IL2CPP function metadata')
 	for d in jsonData['functionMetadata']:
 		DefineCppFunction(d)
+
+	# IL2CPP array metadata
+	print('Processing IL2CPP array metadata')
+	for d in jsonData['arrayMetadata']:
+		DefineArray(d)
 
 	# IL2CPP API functions
 	print('Processing IL2CPP API functions')

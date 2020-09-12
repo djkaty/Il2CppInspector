@@ -150,21 +150,24 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     <value>// Generated C++ file by Il2CppInspector - http://www.djkaty.com - https://github.com/djkaty
 // Helper functions
 
+#include "pch-il2cpp.h"
+
 #define WIN32_LEAN_AND_MEAN
 #include &lt;windows.h&gt;
 #include &lt;string&gt;
+#include &lt;codecvt&gt;
 #include "helpers.h"
 
 // Log file location
 extern const LPCWSTR LOG_FILE;
 
 // Helper function to get the module base address
-uintptr_t GetBaseAddress() {
+uintptr_t il2cppi_get_base_address() {
     return (uintptr_t) GetModuleHandleW(L"GameAssembly.dll");
 }
 
 // Helper function to append text to a file
-void LogWrite(std::string text) {
+void il2cppi_log_write(std::string text) {
     HANDLE hfile = CreateFileW(LOG_FILE, FILE_APPEND_DATA, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (hfile == INVALID_HANDLE_VALUE)
@@ -177,9 +180,21 @@ void LogWrite(std::string text) {
 }
 
 // Helper function to open a new console window and redirect stdout there
-void NewConsole() {
+void il2cppi_new_console() {
     AllocConsole();
     freopen_s((FILE**) stdout, "CONOUT$", "w", stdout);
+}
+
+// Helper function to convert Il2CppString to std::string
+std::string il2cppi_to_string(Il2CppString* str) {
+    std::u16string u16(reinterpret_cast&lt;const char16_t*&gt;(str-&gt;chars));
+    return std::wstring_convert&lt;std::codecvt_utf8_utf16&lt;char16_t&gt;, char16_t&gt;{}.to_bytes(u16);
+}
+
+// Helper function to convert System.String to std::string
+std::string il2cppi_to_string(app::String* str) {
+    std::u16string u16(reinterpret_cast&lt;const char16_t*&gt;(&amp;str-&gt;fields.m_firstChar));
+    return std::wstring_convert&lt;std::codecvt_utf8_utf16&lt;char16_t&gt;, char16_t&gt;{}.to_bytes(u16);
 }</value>
   </data>
   <data name="Cpp-HelpersH" xml:space="preserve">
@@ -192,14 +207,32 @@ void NewConsole() {
 #include &lt;sstream&gt;
 #include &lt;iomanip&gt;
 
+#include "il2cpp-metadata-version.h"
+
 // Helper function to get the module base address
-uintptr_t GetBaseAddress();
+uintptr_t il2cppi_get_base_address();
 
 // Helper function to append text to a file
-void LogWrite(std::string text);
+void il2cppi_log_write(std::string text);
 
 // Helper function to open a new console window and redirect stdout there
-void NewConsole();
+void il2cppi_new_console();
+
+// Helper function to convert Il2CppString to std::string
+std::string il2cppi_to_string(Il2CppString* str);
+
+// Helper function to convert System.String to std::string
+std::string il2cppi_to_string(app::String* str);
+
+// Helper function to check if a metadata usage pointer is initialized
+template&lt;typename T&gt; bool il2cppi_is_initialized(T* metadataItem) {
+#if __IL2CPP_METADATA_VERISON &lt; 270
+    return *metadataItem != 0;
+#else
+    // Metadata &gt;=27 (Unity 2020.2)
+    return !((uintptr_t) *metadataItem &amp; 1);
+#endif
+}
 
 // Helper function to convert a pointer to hex
 template&lt;typename T&gt; std::string to_hex_string(T i) {
@@ -237,11 +270,11 @@ extern const LPCWSTR LOG_FILE = L"il2cpp-log.txt";
 // Custom injected code entry point
 void Run()
 {
-    // If you would like to write to a log file, specify the name above and use LogWrite()
-    // LogWrite("Startup");
+    // If you would like to write to a log file, specify the name above and use il2cppi_log_write()
+    // il2cppi_log_write("Startup");
 
-    // If you would like to output to a new console window, use NewConsole() to open one and redirect stdout
-    // NewConsole();
+    // If you would like to output to a new console window, use il2cppi_new_console() to open one and redirect stdout
+    // il2cppi_new_console();
 
     // Place your custom code here
 }</value>
@@ -293,6 +326,7 @@ void Run()
     &lt;ClInclude Include="appdata\il2cpp-api-functions.h" /&gt;
     &lt;ClInclude Include="appdata\il2cpp-api-functions-ptr.h" /&gt;
     &lt;ClInclude Include="appdata\il2cpp-functions.h" /&gt;
+	  &lt;ClInclude Include="appdata\il2cpp-metadata-version.h" /&gt;
     &lt;ClInclude Include="appdata\il2cpp-types-ptr.h" /&gt;
     &lt;ClInclude Include="appdata\il2cpp-types.h" /&gt;
     &lt;ClInclude Include="framework\helpers.h" /&gt;
@@ -1159,7 +1193,7 @@ namespace app {
 #undef DO_APP_FUNC
 
 // TypeInfo pointers
-#define DO_TYPEDEF(a, n) extern n ## __Class* n ## __TypeInfo
+#define DO_TYPEDEF(a, n) extern n ## __Class** n ## __TypeInfo
 namespace app {
 	#include "il2cpp-types-ptr.h"
 }
@@ -1188,7 +1222,7 @@ namespace app {
 #undef DO_APP_FUNC
 
 // TypeInfo pointers
-#define DO_TYPEDEF(a, n) n ## __Class* n ## __TypeInfo
+#define DO_TYPEDEF(a, n) n ## __Class** n ## __TypeInfo
 namespace app {
 #include "il2cpp-types-ptr.h"
 }
@@ -1198,7 +1232,7 @@ namespace app {
 void init_il2cpp()
 {
 	// Get base address of IL2CPP module
-	uintptr_t baseAddress = GetBaseAddress();
+	uintptr_t baseAddress = il2cppi_get_base_address();
 
 	using namespace app;
 
@@ -1213,7 +1247,7 @@ void init_il2cpp()
 	#undef DO_APP_FUNC
 
 	// Define TypeInfo variables
-	#define DO_TYPEDEF(a, n) n ## __TypeInfo = *(n ## __Class**) (baseAddress + a);
+	#define DO_TYPEDEF(a, n) n ## __TypeInfo = (n ## __Class**) (baseAddress + a);
 	#include "il2cpp-types-ptr.h"
 	#undef DO_TYPEDEF
 }</value>
@@ -1280,6 +1314,9 @@ void Run();</value>
       &lt;Filter&gt;appdata&lt;/Filter&gt;
     &lt;/ClInclude&gt;
     &lt;ClInclude Include="appdata\il2cpp-functions.h"&gt;
+      &lt;Filter&gt;appdata&lt;/Filter&gt;
+    &lt;/ClInclude&gt;
+    &lt;ClInclude Include="appdata\il2cpp-metadata-version.h"&gt;
       &lt;Filter&gt;appdata&lt;/Filter&gt;
     &lt;/ClInclude&gt;
     &lt;ClInclude Include="appdata\il2cpp-types.h"&gt;

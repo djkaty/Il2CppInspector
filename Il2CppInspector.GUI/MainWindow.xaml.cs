@@ -22,7 +22,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
-using Il2CppInspector;
+using Il2CppInspector; 
 using Il2CppInspector.Cpp;
 using Il2CppInspector.GUI;
 using Il2CppInspector.Model;
@@ -572,6 +572,23 @@ namespace Il2CppInspectorGUI
                     if (files.Length == 1)
                         await LoadBinaryAsync(files[0]);
             }
+        }
+
+        private void SelectAllNamespaces_Click(object sender, RoutedEventArgs e) {
+            var tree = (IEnumerable<CheckboxNode>) trvNamespaces.ItemsSource;
+
+            // Breadth-first selection
+            for (var level = tree; level.Any(); level = level.Where(node => node.Children != null).SelectMany(node => node.Children))
+                foreach (var item in level)
+                    item.IsChecked = true;
+        }
+
+        private void SelectNoneNamespaces_Click(object sender, RoutedEventArgs e) {
+            var tree = (IEnumerable<CheckboxNode>) trvNamespaces.ItemsSource;
+
+            // Only need to clear the top level because this will clear all the children automatically
+            foreach (var topLevelItem in tree)
+                topLevelItem.IsChecked = false;
         }
     }
 

@@ -63,6 +63,13 @@ typedef size_t uintptr_t;
             if (model.TargetCompiler == CppCompilerType.MSVC)
                 writeCode("#pragma warning(disable : 4309)");
 
+            // MSVC will (rightly) throw a compiler warning when compiling for 32-bit architectures
+            // if the specified alignment of a type is smaller than the size of its largest element.
+            // We keep the alignments in to make them match Il2CppObject wherever possible, but it is
+            // safe to ignore them if they are too small, so we just disable the warning
+            if (model.TargetCompiler == CppCompilerType.MSVC)
+                writeCode("#pragma warning(disable : 4359)");
+
             // C does not support namespaces
             writeCode("#if !defined(_GHIDRA_) && !defined(_IDA_)");
             writeCode("namespace app {");
@@ -72,6 +79,7 @@ typedef size_t uintptr_t;
             writeTypesForGroup("Application types from method calls", "types_from_methods");
             writeTypesForGroup("Application types from generic methods", "types_from_generic_methods");
             writeTypesForGroup("Application types from usages", "types_from_usages");
+            writeTypesForGroup("Application unused value types", "unused_value_types");
 
             writeCode("#if !defined(_GHIDRA_) && !defined(_IDA_)");
             writeCode("}");
@@ -168,6 +176,17 @@ typedef size_t uintptr_t;
                 writeCode($"DO_APP_FUNC(0x{method.MethodCodeAddress - model.Package.BinaryImage.ImageBase:X8}, {method.CppFnPtrType.ReturnType.Name}, "
                           + $"{method.CppFnPtrType.Name}, ({arguments}));");
             }
+
+            writer.Close();
+
+            // Write metadata version
+            var versionFile = Path.Combine(srcDataPath, "il2cpp-metadata-version.h");
+
+            using var fs5 = new FileStream(versionFile, FileMode.Create);
+            writer = new StreamWriter(fs5, Encoding.ASCII);
+
+            writeHeader();
+            writeCode($"#define __IL2CPP_METADATA_VERSION {model.Package.Version * 10:F0}");
 
             writer.Close();
 
