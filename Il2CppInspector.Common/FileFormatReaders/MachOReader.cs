@@ -102,8 +102,8 @@ namespace Il2CppInspector
 
             header = ReadObject<MachOHeader<TWord>>(0);
 
-            // Must be executable file
-            if ((MachO)header.FileType != MachO.MH_EXECUTE)
+            // Must be of a known file type
+            if ((MachO)header.FileType < MachO.MH_MIN_FILETYPE || (MachO)header.FileType > MachO.MH_MAX_FILETYPE)
                 return false;
 
             // Process load commands

@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -19,7 +19,8 @@ namespace Il2CppInspector
         MH_MAGIC_64 = 0xfeedfacf,
         MH_CIGAM_64 = 0xcffaedfe,
 
-        MH_EXECUTE = 0x2,
+        MH_MIN_FILETYPE = 0x1,
+        MH_MAX_FILETYPE = 0xB,
 
         LC_SEGMENT = 0x1,
         LC_SYMTAB = 0x2,
