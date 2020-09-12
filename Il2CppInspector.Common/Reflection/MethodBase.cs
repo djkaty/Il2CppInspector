@@ -109,7 +109,7 @@ namespace Il2CppInspector.Reflection
             }))()
 
             // Regular method
-            : Name;
+            : Name.Replace("<", "_").Replace(">", "_");
 
         // Initialize a method from a method definition (MethodDef)
         protected MethodBase(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) : base(declaringType) {

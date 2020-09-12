@@ -288,7 +288,7 @@ namespace Il2CppInspector.Reflection
         public TypeInfo ElementType { get; }
 
         #region Names
-        public string BaseName => base.Name;
+        public string BaseName => base.Name.Replace("<", "_").Replace(">", "_");
 
         private static string unmangleName(string name) {
             var index = name.IndexOf("`", StringComparison.Ordinal);
@@ -298,7 +298,7 @@ namespace Il2CppInspector.Reflection
         }
 
         // Get rid of generic backticks
-        public string UnmangledBaseName => unmangleName(base.Name);
+        public string UnmangledBaseName => unmangleName(BaseName);
 
         // C# colloquial name of the type (if available)
         public string CSharpName {
@@ -313,9 +313,9 @@ namespace Il2CppInspector.Reflection
                         n += "*";
                     return n;
                 } else {
-                    var s = Namespace + "." + base.Name;
+                    var s = Namespace + "." + BaseName;
                     var i = Il2CppConstants.FullNameTypeString.IndexOf(s);
-                    var n = (i != -1 ? Il2CppConstants.CSharpTypeString[i] : base.Name);
+                    var n = (i != -1 ? Il2CppConstants.CSharpTypeString[i] : BaseName);
                     n = unmangleName(n);
                     var ga = GetGenericArguments();
                     if (ga.Any())
@@ -339,7 +339,7 @@ namespace Il2CppInspector.Reflection
                     n += "*";
                 return n;
             } else {
-                var n = unmangleName(base.Name);
+                var n = unmangleName(BaseName);
                 var ga = IsNested ? GetGenericArguments().Where(p => DeclaringType.GetGenericArguments().All(dp => dp.Name != p.Name)) : GetGenericArguments();
                 if (ga.Any())
                     n += "<" + string.Join(", ", ga.Select(x => (!x.IsGenericTypeParameter ? x.Namespace + "." : "") + x.GetCSharpTypeDeclarationName(includeVariance: true))) + ">";
@@ -357,7 +357,7 @@ namespace Il2CppInspector.Reflection
         public override string Name {
             get {
                 if (IsGenericParameter)
-                    return base.Name;
+                    return BaseName;
                 if (HasElementType) {
                     var n = ElementType.Name;
                     if (IsArray)
@@ -371,7 +371,7 @@ namespace Il2CppInspector.Reflection
                     /* XXX This is not exactly accurate to C# Type.Name:
                      * Type.Name should be the bare name (with & * [] suffixes)
                      * but without nested types or generic arguments */
-                    var n = base.Name;
+                    var n = BaseName;
                     if (DeclaringType != null)
                         n = DeclaringType.Name + "+" + n;
                     var ga = GetGenericArguments();
@@ -400,7 +400,7 @@ namespace Il2CppInspector.Reflection
                         n += "*";
                     return n;
                 } else {
-                    var n = base.Name;
+                    var n = BaseName;
                     if (DeclaringType != null)
                         n = DeclaringType.FullName + "+" + n;
                     else if (Namespace.Length > 0)
@@ -424,13 +424,13 @@ namespace Il2CppInspector.Reflection
 
             // Are we in the same scope as the scope the type is defined in? Save ourselves a bunch of work if so
             if (usingScope == declaringScope)
-                return base.Name;
+                return BaseName;
 
             // We're also in the same scope the type is defined in if we're looking for a nested type
             // that is declared in a type we derive from
             for (var b = scope.Current?.BaseType; b != null; b = b.BaseType)
                 if (b.FullName.Replace('+', '.') == declaringScope)
-                    return base.Name;
+                    return BaseName;
 
             // Find first difference in the declaring scope from the using scope, moving one namespace/type name at a time
             var diff = 1;
@@ -469,9 +469,9 @@ namespace Il2CppInspector.Reflection
             // The first two must be checked in this order to avoid a . at the start
             // when the mutual root scope and declaring scope are both empty
             var minimallyScopedName =
-                    declaringScope == mutualRootScope ? base.Name :
-                    string.IsNullOrEmpty(mutualRootScope) ? declaringScope + '.' + base.Name :
-                    declaringScope.Substring(mutualRootScope.Length + 1) + '.' + base.Name;
+                    declaringScope == mutualRootScope ? BaseName :
+                    string.IsNullOrEmpty(mutualRootScope) ? declaringScope + '.' + BaseName :
+                    declaringScope.Substring(mutualRootScope.Length + 1) + '.' + BaseName;
 
             // Find the outermost type name if the wanted type is a nested type (if we need it below)
             string outerTypeName = "";
@@ -511,7 +511,7 @@ namespace Il2CppInspector.Reflection
 
                 // If the wanted type is an unhidden ancestor, we don't need any additional scope at all
                 if (foundTypeInAncestorScope)
-                    minimallyScopedName = base.Name;
+                    minimallyScopedName = BaseName;
             }
 
             // If there are multiple using directives that would allow the same minimally scoped name to be used,
@@ -575,7 +575,7 @@ namespace Il2CppInspector.Reflection
             if (IsGenericParameter)
                 return CSharpName;
 
-            var s = Namespace + "." + base.Name;
+            var s = Namespace + "." + BaseName;
 
             // Built-in keyword type names do not require a scope
             var i = Il2CppConstants.FullNameTypeString.IndexOf(s);

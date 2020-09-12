@@ -88,6 +88,9 @@ namespace Il2CppInspector.Reflection {
 
         public override MemberTypes MemberType => MemberTypes.Field;
 
+        // Replace C# unacceptable character which appear in Nested Type
+        public override string Name => base.Name.Replace("<", "_").Replace(">", "_");
+
         public FieldInfo(Il2CppInspector pkg, int fieldIndex, TypeInfo declaringType) :
             base(declaringType) {
             Definition = pkg.Fields[fieldIndex];
