@@ -176,7 +176,7 @@ namespace Il2CppInspector
             // Find all relocations; target address => (rela header (rels are converted to rela), symbol table base address, is rela?)
             var rels = new HashSet<ElfReloc>();
 
-            StatusUpdate("Processing relocations");
+            StatusUpdate("Finding relocations");
 
             // Two types: add value from offset in image, and add value from specified addend
             foreach (var relSection in getSections(Elf.SHT_REL)) {
@@ -222,7 +222,14 @@ namespace Il2CppInspector
             using var writer = new BinaryWriter(BaseStream, Encoding.Default, true);
             var relsz = Sizeof(typeof(TSym));
 
+            var currentRel = 0;
+            var totalRel = rels.Count();
+
             foreach (var rel in rels) {
+                currentRel++;
+                if (currentRel % 1000 == 0)
+                    StatusUpdate($"Processing relocations ({currentRel * 100 / totalRel:F0}%)");
+
                 var symValue = ReadObject<TSym>(conv.Long(rel.SymbolTable) + conv.Long(rel.SymbolIndex) * relsz).st_value; // S
 
                 // Ignore relocations into memory addresses not mapped from the image
@@ -269,6 +276,8 @@ namespace Il2CppInspector
             Console.WriteLine($"Processed {rels.Count} relocations");
 
             // Detect and defeat trivial XOR encryption
+            StatusUpdate("Detecting encryption");
+
             if (getDynamic(Elf.DT_INIT) != null && sectionByName.ContainsKey(".rodata")) {
                 // Use the data section to determine IF the file is obfuscated
                 var rodataFirstBytes = ReadArray<byte>(conv.Long(sectionByName[".rodata"].sh_offset), 256);
@@ -323,6 +332,8 @@ namespace Il2CppInspector
         public override IEnumerable<Export> GetExports() => exports;
 
         private void processSymbols() {
+            StatusUpdate("Processing symbols");
+
             // Three possible symbol tables in ELF files
             var pTables = new List<(TWord offset, TWord count, TWord strings)>();
 
