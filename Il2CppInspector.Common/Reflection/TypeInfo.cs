@@ -298,10 +298,10 @@ namespace Il2CppInspector.Reflection
         }
 
         // Get rid of generic backticks
-        public string UnmangledBaseName => unmangleName(base.Name);
+        public string CSharpBaseName => unmangleName(base.Name);
 
         // C# colloquial name of the type (if available)
-        public string CSharpName {
+        public override string CSharpName {
             get {
                 if (HasElementType) {
                     var n = ElementType.CSharpName;

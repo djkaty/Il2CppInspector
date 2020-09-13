@@ -92,7 +92,7 @@ namespace Il2CppInspector.Reflection
             return image.ReadMappedBytes(VirtualAddress.Value.Start, (int) (VirtualAddress.Value.End - VirtualAddress.Value.Start));
         }
 
-        public string CSharpName =>
+        public override string CSharpName =>
             // Operator overload or user-defined conversion operator
             OperatorMethodNames.ContainsKey(Name)? "operator " + OperatorMethodNames[Name]
 

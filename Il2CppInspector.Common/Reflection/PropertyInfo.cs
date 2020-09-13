@@ -31,14 +31,14 @@ namespace Il2CppInspector.Reflection {
 
         public override string Name { get; protected set; }
 
-        public string CSharpName {
+        public override string CSharpName {
             get {
                 // Explicit interface implementation
                 if (DeclaringType.ImplementedInterfaces
-                    .FirstOrDefault(i => CSharpSafeName.IndexOf("." + i.CSharpName, StringComparison.Ordinal) != -1) is TypeInfo @interface)
-                    return CSharpSafeName.Substring(CSharpSafeName.IndexOf("." + @interface.CSharpName, StringComparison.Ordinal) + 1);
+                    .FirstOrDefault(i => Name.IndexOf("." + i.CSharpName, StringComparison.Ordinal) != -1) is TypeInfo @interface)
+                    return Name.Substring(Name.IndexOf("." + @interface.CSharpName, StringComparison.Ordinal) + 1);
 
-                // Regular method
+                // Regular property
                 return Name;
             }
         }

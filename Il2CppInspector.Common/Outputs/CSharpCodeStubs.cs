@@ -385,11 +385,11 @@ namespace Il2CppInspector.Outputs
                     if (field.GetCustomAttributes(FBAttribute).Any()) {
                         if (!SuppressMetadata)
                             sb.Append($"/* {field.GetCustomAttributes(FBAttribute)[0].VirtualAddress.ToAddressString()} */ ");
-                        sb.Append($"{field.FieldType.DeclaredFields[0].FieldType.GetScopedCSharpName(scope)} {field.CSharpSafeName}[0]"); // FixedElementField
+                        sb.Append($"{field.FieldType.DeclaredFields[0].FieldType.GetScopedCSharpName(scope)} {field.CSharpName}[0]"); // FixedElementField
                     }
                     // Regular fields
                     else
-                        sb.Append($"{field.FieldType.GetScopedCSharpName(scope)} {field.CSharpSafeName}");
+                        sb.Append($"{field.FieldType.GetScopedCSharpName(scope)} {field.CSharpName}");
                     if (field.HasDefaultValue)
                         sb.Append($" = {field.GetDefaultValueString(scope)}");
                     sb.Append(";");
@@ -477,7 +477,7 @@ namespace Il2CppInspector.Outputs
                     .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
 
                 string modifiers = evt.AddMethod?.GetModifierString();
-                sb.Append($"{prefix}\t{modifiers}event {evt.EventHandlerType.GetScopedCSharpName(scope)} {evt.CSharpSafeName}");
+                sb.Append($"{prefix}\t{modifiers}event {evt.EventHandlerType.GetScopedCSharpName(scope)} {evt.CSharpName}");
                 
                 if (!MustCompile) {
                     sb.Append(" {\n");
@@ -507,14 +507,14 @@ namespace Il2CppInspector.Outputs
             // Crete a parameterless constructor for every relevant type when making code that compiles to mitigate CS1729 and CS7036
             if (MustCompile && !type.IsInterface && !(type.IsAbstract && type.IsSealed) && !type.IsValueType
                 && type.DeclaredConstructors.All(c => c.IsStatic || c.DeclaredParameters.Any()))
-                sb.Append($"{prefix}\t{(type.IsAbstract? "protected" : "public")} {type.UnmangledBaseName}() {{}} // Dummy constructor\n");
+                sb.Append($"{prefix}\t{(type.IsAbstract? "protected" : "public")} {type.CSharpBaseName}() {{}} // Dummy constructor\n");
 
             foreach (var method in type.DeclaredConstructors) {
                 // Attributes
                 sb.Append(method.CustomAttributes.OrderBy(a => a.AttributeType.Name)
                     .ToString(scope, prefix + "\t", emitPointer: !SuppressMetadata, mustCompile: MustCompile));
 
-                sb.Append($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.UnmangledBaseName}{method.GetTypeParametersString(scope)}");
+                sb.Append($"{prefix}\t{method.GetModifierString()}{method.DeclaringType.CSharpBaseName}{method.GetTypeParametersString(scope)}");
                 sb.Append($"({method.GetParametersString(scope, !SuppressMetadata)})");
 
                 if (MustCompile) {
@@ -640,7 +640,7 @@ namespace Il2CppInspector.Outputs
 
             // Finalizers become destructors
             if (method.Name == "Finalize" && method.IsVirtual && method.ReturnType.FullName == "System.Void" && method.IsFamily)
-                writer.Append("~" + method.DeclaringType.UnmangledBaseName);
+                writer.Append("~" + method.DeclaringType.CSharpBaseName);
                 
             // Regular method or operator overload
             else if (method.Name != "op_Implicit" && method.Name != "op_Explicit")
