@@ -43,7 +43,7 @@ namespace Il2CppInspector.Reflection
 
         // Name of parameter
         public string Name { get; }
-        public string CSharpSafeName => Constants.Keywords.Contains(Name) ? "@" + Name : Name;
+        public string CSharpName => Constants.Keywords.Contains(Name) ? "@" + Name : Name.ToCIdentifier();
 
         // Type of this parameter
         private readonly TypeRef paramTypeReference;
@@ -135,7 +135,7 @@ namespace Il2CppInspector.Reflection
         public string GetParameterString(Scope usingScope, bool emitPointer = false, bool compileAttributes = false) => IsRetval? null :
               $"{CustomAttributes.ToString(usingScope, inline: true, emitPointer: emitPointer, mustCompile: compileAttributes).Replace("[ParamArray]", "params")}"
             + (Position == 0 && DeclaringMethod.GetCustomAttributes("System.Runtime.CompilerServices.ExtensionAttribute").Any()? "this ":"")
-            + $"{getCSharpSignatureString(usingScope)} {CSharpSafeName}"
+            + $"{getCSharpSignatureString(usingScope)} {CSharpName}"
             + (IsOptional? " = " + DefaultValue.ToCSharpValue(ParameterType, usingScope) 
             + (emitPointer && !(DefaultValue is null)? $" /* Metadata: 0x{(uint) DefaultValueMetadataAddress:X8} */" : "") : "");
 
