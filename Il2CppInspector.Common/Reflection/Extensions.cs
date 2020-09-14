@@ -88,11 +88,11 @@ namespace Il2CppInspector.Reflection
             return s.ToString();
         }
 
-        public static string ToCIdentifier(this string str) {
+        public static string ToCIdentifier(this string str, bool allowScopeQualifiers = false) {
             // replace * with Ptr
             str = str.Replace("*", "Ptr");
             // replace illegal characters
-            str = Regex.Replace(str, "[^a-zA-Z0-9_]", "_");
+            str = Regex.Replace(str, allowScopeQualifiers? @"[^a-zA-Z0-9_\.:]" : "[^a-zA-Z0-9_]", "_");
             // ensure identifier starts with a letter or _ (and is non-empty)
             if (!Regex.IsMatch(str, "^[a-zA-Z_]"))
                 str = "_" + str;

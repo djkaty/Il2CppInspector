@@ -297,8 +297,8 @@ namespace Il2CppInspector.Reflection
             return name;
         }
 
-        // Get rid of generic backticks
-        public string CSharpBaseName => unmangleName(base.Name);
+        // Get rid of generic backticks and invalid characters
+        public string CSharpBaseName => unmangleName(base.Name).ToCIdentifier();
 
         // C# colloquial name of the type (if available)
         public override string CSharpName {
@@ -315,8 +315,7 @@ namespace Il2CppInspector.Reflection
                 } else {
                     var s = Namespace + "." + base.Name;
                     var i = Il2CppConstants.FullNameTypeString.IndexOf(s);
-                    var n = (i != -1 ? Il2CppConstants.CSharpTypeString[i] : base.Name);
-                    n = unmangleName(n);
+                    var n = (i != -1 ? Il2CppConstants.CSharpTypeString[i] : CSharpBaseName);
                     var ga = GetGenericArguments();
                     if (ga.Any())
                         n += "<" + string.Join(", ", ga.Select(x => x.CSharpName)) + ">";
@@ -339,7 +338,7 @@ namespace Il2CppInspector.Reflection
                     n += "*";
                 return n;
             } else {
-                var n = unmangleName(base.Name);
+                var n = CSharpBaseName;
                 var ga = IsNested ? GetGenericArguments().Where(p => DeclaringType.GetGenericArguments().All(dp => dp.Name != p.Name)) : GetGenericArguments();
                 if (ga.Any())
                     n += "<" + string.Join(", ", ga.Select(x => (!x.IsGenericTypeParameter ? x.Namespace + "." : "") + x.GetCSharpTypeDeclarationName(includeVariance: true))) + ">";
@@ -580,7 +579,7 @@ namespace Il2CppInspector.Reflection
             // Built-in keyword type names do not require a scope
             var i = Il2CppConstants.FullNameTypeString.IndexOf(s);
             var n = i != -1 ? Il2CppConstants.CSharpTypeString[i] : getScopedFullName(usingScope);
-            n = unmangleName(n);
+            n = unmangleName(n).ToCIdentifier(allowScopeQualifiers: true);
 
             // Generic type parameters and type arguments
             // Inheriting from a base class or implementing an interface use the type's declaring scope, not the type's scope itself
