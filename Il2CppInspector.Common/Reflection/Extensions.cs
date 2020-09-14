@@ -91,6 +91,14 @@ namespace Il2CppInspector.Reflection
         public static string ToCIdentifier(this string str, bool allowScopeQualifiers = false) {
             // replace * with Ptr
             str = str.Replace("*", "Ptr");
+            // escape non-ASCII characters
+            var s = new StringBuilder();
+            for (var i = 0; i < str.Length; i++)
+                if (str[i] < 32 || str[i] > 126)
+                    s.Append($"u{(int) str[i]:X4}");
+                else
+                    s.Append(str[i]);
+            str = s.ToString();
             // replace illegal characters
             str = Regex.Replace(str, allowScopeQualifiers? @"[^a-zA-Z0-9_\.:]" : "[^a-zA-Z0-9_]", "_");
             // ensure identifier starts with a letter or _ (and is non-empty)
