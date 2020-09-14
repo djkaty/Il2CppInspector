@@ -2,6 +2,7 @@
 // All rights reserved
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -201,29 +202,43 @@ namespace Il2CppInspector.Outputs
             if (outputAssemblyAttributes)
                 nsRefs.UnionWith(assemblies.SelectMany(a => a.CustomAttributes).Select(a => a.AttributeType.Namespace));
 
+            var results = new ConcurrentBag<Dictionary<TypeInfo, StringBuilder>>();
+
             // Generate each type
+            Parallel.ForEach(types, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount / 2 },
+                () => new Dictionary<TypeInfo, StringBuilder>(),
+                (type, _, dict) => {
+                    // Skip namespace and any children if requested
+                    if (ExcludedNamespaces?.Any(x => x == type.Namespace || type.Namespace.StartsWith(x + ".")) ?? false)
+                        return dict;
+
+                    // Don't output global::Locale if desired
+                    if (MustCompile
+                        && type.Name == "Locale" && type.Namespace == string.Empty
+                        && type.BaseType.FullName == "System.Object"
+                        && type.IsClass && type.IsSealed && type.IsNotPublic && !type.ContainsGenericParameters
+                        && type.DeclaredMembers.Count == type.DeclaredMethods.Count
+                        && type.GetMethods("GetText").Length == type.DeclaredMethods.Count)
+                        return dict;
+
+                    // Assembly.DefinedTypes returns nested types in the assembly by design - ignore them
+                    if (type.IsNested)
+                        return dict;
+
+                    // Get code
+                    var code = generateType(type, nsRefs);
+                    if (code.Length > 0)
+                        dict.Add(type, code);
+                    return dict;
+            },
+            dict => results.Add(dict));
+
+            // Flatten
+            var sortedResults = results.SelectMany(d => d).ToDictionary(i => i.Key, i => i.Value);
+
+            // Process in order according to original sorted type list
             foreach (var type in types) {
-
-                // Skip namespace and any children if requested
-                if (ExcludedNamespaces?.Any(x => x == type.Namespace || type.Namespace.StartsWith(x + ".")) ?? false)
-                    continue;
-
-                // Don't output global::Locale if desired
-                if (MustCompile
-                    && type.Name == "Locale" && type.Namespace == string.Empty
-                    && type.BaseType.FullName == "System.Object"
-                    && type.IsClass && type.IsSealed && type.IsNotPublic && !type.ContainsGenericParameters
-                    && type.DeclaredMembers.Count == type.DeclaredMethods.Count
-                    && type.GetMethods("GetText").Length == type.DeclaredMethods.Count)
-                    continue;
-
-                // Assembly.DefinedTypes returns nested types in the assembly by design - ignore them
-                if (type.IsNested)
-                    continue;
-
-                // Get code
-                var text = generateType(type, nsRefs);
-                if (string.IsNullOrEmpty(text))
+                if (!sortedResults.TryGetValue(type, out var text))
                     continue;
 
                 // Determine if we need to change namespace (after we have established the code block is not empty)
@@ -239,8 +254,9 @@ namespace Il2CppInspector.Outputs
                     }
 
                     if (!string.IsNullOrEmpty(nsContext)) {
-                        text = "\t" + text.Replace("\n", "\n\t");
-                        text = text.Remove(text.Length - 1);
+                        text.Insert(0, "\t");
+                        text.Replace("\n", "\n\t");
+                        text.Length--;
                     }
                 }
 
@@ -249,7 +265,8 @@ namespace Il2CppInspector.Outputs
                     code.Append($"// Namespace: {(!string.IsNullOrEmpty(type.Namespace) ? type.Namespace : "<global namespace>")}\n");
                 
                 // Append type definition
-                code.Append(text + "\n");
+                code.Append(text);
+                code.Append("\n");
 
                 // Add to list of used types
                 usedTypes.Add(type);
@@ -351,14 +368,14 @@ namespace Il2CppInspector.Outputs
             return text.ToString().TrimEnd();
         }
 
-        private string generateType(TypeInfo type, IEnumerable<string> namespaces, string prefix = "") {
+        private StringBuilder generateType(TypeInfo type, IEnumerable<string> namespaces, string prefix = "") {
             // Don't output compiler-generated types if desired
             if (MustCompile && type.GetCustomAttributes(CGAttribute).Any())
-                return string.Empty;
+                return new StringBuilder();
 
-            var codeBlocks = new Dictionary<string, string>();
+            var codeBlocks = new Dictionary<string, StringBuilder>();
             var usedMethods = new List<MethodInfo>();
-            var sb = new StringBuilder();
+            StringBuilder sb;
 
             var scope = new Scope {
                 Current = type,
@@ -366,7 +383,7 @@ namespace Il2CppInspector.Outputs
             };
 
             // Fields
-            sb.Clear();
+            sb = new StringBuilder();
             if (!type.IsEnum) {
                 foreach (var field in type.DeclaredFields) {
                     if (MustCompile && field.GetCustomAttributes(CGAttribute).Any())
@@ -409,11 +426,11 @@ namespace Il2CppInspector.Outputs
                     }
                     sb.Append("\n");
                 }
-                codeBlocks.Add("Fields", sb.ToString());
+                codeBlocks.Add("Fields", sb);
             }
 
             // Properties
-            sb.Clear();
+            sb = new StringBuilder();
             var hasIndexer = false;
             foreach (var prop in type.DeclaredProperties) {
                 // Attributes
@@ -467,10 +484,10 @@ namespace Il2CppInspector.Outputs
                 usedMethods.Add(prop.GetMethod);
                 usedMethods.Add(prop.SetMethod);
             }
-            codeBlocks.Add("Properties", sb.ToString());
+            codeBlocks.Add("Properties", sb);
 
             // Events
-            sb.Clear();
+            sb = new StringBuilder();
             foreach (var evt in type.DeclaredEvents) {
                 // Attributes
                 sb.Append(evt.CustomAttributes.OrderBy(a => a.AttributeType.Name)
@@ -493,16 +510,15 @@ namespace Il2CppInspector.Outputs
                 usedMethods.Add(evt.RemoveMethod);
                 usedMethods.Add(evt.RaiseMethod);
             }
-            codeBlocks.Add("Events", sb.ToString());
+            codeBlocks.Add("Events", sb);
 
             // Nested types
-            codeBlocks.Add("Nested types", string.Join("\n", type.DeclaredNestedTypes
-                .Select(n => generateType(n, namespaces, prefix + "\t")).Where(c => !string.IsNullOrEmpty(c))));
+            codeBlocks.Add("Nested types", new StringBuilder().AppendJoin("\n", type.DeclaredNestedTypes
+                .Select(n => generateType(n, namespaces, prefix + "\t")).Where(c => c.Length > 0)));
 
             // Constructors
+            sb = new StringBuilder();
             var fields = type.DeclaredFields.Where(f => !f.GetCustomAttributes(CGAttribute).Any());
-
-            sb.Clear();
 
             // Crete a parameterless constructor for every relevant type when making code that compiles to mitigate CS1729 and CS7036
             if (MustCompile && !type.IsInterface && !(type.IsAbstract && type.IsSealed) && !type.IsValueType
@@ -546,19 +562,24 @@ namespace Il2CppInspector.Outputs
 
                 sb.Append((!SuppressMetadata && method.VirtualAddress != null ? $" // {method.VirtualAddress.ToAddressString()}" : "") + "\n");
             }
-            codeBlocks.Add("Constructors", sb.ToString());
+            codeBlocks.Add("Constructors", sb);
 
             // Methods
             // Don't re-output methods for constructors, properties, events etc.
             var methods = type.DeclaredMethods.Except(usedMethods).Where(m => m.CustomAttributes.All(a => a.AttributeType.FullName != ExtAttribute));
-            codeBlocks.Add("Methods", string.Concat(methods.Select(m => generateMethod(m, scope, prefix))));
+            codeBlocks.Add("Methods", methods
+                .Select(m => generateMethod(m, scope, prefix))
+                .Aggregate(new StringBuilder(), (r, i) => r.Append(i)));
+
             usedMethods.AddRange(methods);
 
             // Extension methods 
-            codeBlocks.Add("Extension methods", string.Concat(type.DeclaredMethods.Except(usedMethods).Select(m => generateMethod(m, scope, prefix))));
+            codeBlocks.Add("Extension methods", type.DeclaredMethods.Except(usedMethods)
+                .Select(m => generateMethod(m, scope, prefix))
+                .Aggregate(new StringBuilder(), (r, i) => r.Append(i)));
 
             // Type declaration
-            sb.Clear();
+            sb = new StringBuilder();
 
             if (type.IsImport)
                 sb.Append(prefix + "[ComImport]\n");
@@ -584,7 +605,7 @@ namespace Il2CppInspector.Outputs
                 if (!SuppressMetadata)
                     sb.Append($" // TypeDefIndex: {type.Index}; {del.VirtualAddress.ToAddressString()}");
                 sb.Append("\n");
-                return sb.ToString();
+                return sb;
             }
 
             sb.Append(prefix + type.GetModifierString());
@@ -611,23 +632,24 @@ namespace Il2CppInspector.Outputs
 
             // Enumeration
             if (type.IsEnum) {
-                sb.Append(string.Join(",\n", type.GetEnumNames().Zip(type.GetEnumValues().OfType<object>(),
-                              (k, v) => new { k, v }).OrderBy(x => x.v).Select(x => $"{prefix}\t{x.k} = {x.v}")) + "\n");
+                sb.AppendJoin(",\n", type.GetEnumNames().Zip(type.GetEnumValues().OfType<object>(),
+                              (k, v) => new { k, v }).OrderBy(x => x.v).Select(x => $"{prefix}\t{x.k} = {x.v}"));
+                sb.Append("\n");
             }
 
             // Type definition
             else
-                sb.Append(string.Join("\n", codeBlocks.Where(b => b.Value != string.Empty).Select(b => prefix + "\t// " + b.Key + "\n" + b.Value)));
+                sb.AppendJoin("\n", codeBlocks.Where(b => b.Value.Length > 0).Select(b => prefix + "\t// " + b.Key + "\n" + b.Value));
 
             sb.Append(prefix + "}\n");
-            return sb.ToString();
+            return sb;
         }
 
-        private string generateMethod(MethodInfo method, Scope scope, string prefix) {
-            if (MustCompile && method.GetCustomAttributes(CGAttribute).Any())
-                return string.Empty;
-
+        private StringBuilder generateMethod(MethodInfo method, Scope scope, string prefix) {
             var writer = new StringBuilder();
+
+            if (MustCompile && method.GetCustomAttributes(CGAttribute).Any())
+                return writer;
 
             // Attributes
             writer.Append(method.CustomAttributes.Where(a => a.AttributeType.FullName != ExtAttribute && a.AttributeType.FullName != AsyncAttribute)
@@ -693,7 +715,7 @@ namespace Il2CppInspector.Outputs
             if (MustCompile && method.ReturnType.IsByRef)
                 writer.Append($"{prefix}\tprivate {method.ReturnType.GetScopedCSharpName(scope)} _refReturnTypeFor{method.CSharpName}; // Dummy field\n");
 
-            return writer.ToString();
+            return writer;
         }
     }
 }
