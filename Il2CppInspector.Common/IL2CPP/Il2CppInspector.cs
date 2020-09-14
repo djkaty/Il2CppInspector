@@ -493,7 +493,7 @@ namespace Il2CppInspector
 
         // Load from a binary file and metadata file
         public static List<Il2CppInspector> LoadFromFile(string binaryFile, string metadataFile, bool silent = false)
-            => LoadFromStream(new FileStream(binaryFile, FileMode.Open, FileAccess.Read),
+            => LoadFromStream(new FileStream(binaryFile, FileMode.Open, FileAccess.Read, FileShare.Read),
                                 new MemoryStream(File.ReadAllBytes(metadataFile)),
                                 silent);
 

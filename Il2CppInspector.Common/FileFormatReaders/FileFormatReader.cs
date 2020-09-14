@@ -146,7 +146,7 @@ namespace Il2CppInspector
         }
 
         public static T Load(string filename, EventHandler<string> statusCallback = null) {
-            using var stream = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            using var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
             return Load(stream, statusCallback);
         }
 
