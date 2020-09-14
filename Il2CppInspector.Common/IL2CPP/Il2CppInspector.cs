@@ -147,7 +147,7 @@ namespace Il2CppInspector
                     usages.TryAdd(metadataUsagePair.destinationindex, MetadataUsage.FromEncodedIndex(this, metadataUsagePair.encodedSourceIndex));
                 }
             }
-            
+
             // Metadata usages (addresses)
             // Unfortunately the value supplied in MetadataRegistration.matadataUsagesCount seems to be incorrect,
             // so we have to calculate the correct number of usages above before reading the usage address list from the binary
@@ -393,6 +393,7 @@ namespace Il2CppInspector
                     }
 
                 MemoryStream metadataMemoryStream = null, binaryMemoryStream = null;
+                ZipArchiveEntry androidAAB = null;
                 ZipArchiveEntry ipaBinaryFolder = null;
                 var binaryFiles = new List<ZipArchiveEntry>();
 
@@ -411,6 +412,14 @@ namespace Il2CppInspector
                     // Check for Android APK (split APKs will only fill one of these two variables)
                     var metadataFile = zip.Entries.FirstOrDefault(f => f.FullName == "assets/bin/Data/Managed/Metadata/global-metadata.dat");
                     binaryFiles.AddRange(zip.Entries.Where(f => f.FullName.StartsWith("lib/") && f.Name == "libil2cpp.so"));
+
+                    // Check for Android AAB
+                    androidAAB = zip.Entries.FirstOrDefault(f => f.FullName == "base/resources.pb");
+
+                    if (androidAAB != null) {
+                        metadataFile = zip.Entries.FirstOrDefault(f => f.FullName == "base/assets/bin/Data/Managed/Metadata/global-metadata.dat");
+                        binaryFiles.AddRange(zip.Entries.Where(f => f.FullName.StartsWith("base/lib/") && f.Name == "libil2cpp.so"));
+                    }
 
                     // Check for iOS IPA
                     ipaBinaryFolder = zip.Entries.FirstOrDefault(f => f.FullName.StartsWith("Payload/") && f.FullName.EndsWith(".app/") && f.FullName.Count(x => x == '/') == 2);
@@ -452,8 +461,8 @@ namespace Il2CppInspector
                     binaryMemoryStream.Position = 0;
                 }
 
-                // Single APKs may have one or more binaries, one per architecture
-                // We'll read the entire APK and load those via APKReader
+                // AABs or single APKs may have one or more binaries, one per architecture
+                // We'll read the entire AAB/APK and load those via AABReader/APKReader
                 else if (packageFiles.Count() == 1) {
                     binaryMemoryStream = new MemoryStream(File.ReadAllBytes(packageFiles.First()));
                 }
