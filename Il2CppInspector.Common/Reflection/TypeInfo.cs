@@ -561,6 +561,10 @@ namespace Il2CppInspector.Reflection
                     minimallyScopedName = mutualRootScope.Length > 0 ? usedType.Substring(mutualRootScope.Length + 1) : "global::" + usedType;
             }
 
+            // If the final name starts with ".", it's a reference to the global namespace (ie. unnamed root namespace)
+            if (minimallyScopedName.StartsWith("."))
+                minimallyScopedName = "global::" + minimallyScopedName.Substring(1);
+
             return minimallyScopedName;
         }
 
@@ -873,6 +877,8 @@ namespace Il2CppInspector.Reflection
             declaredEvents = new List<EventInfo>();
             for (var e = Definition.eventStart; e < Definition.eventStart + Definition.event_count; e++)
                 declaredEvents.Add(new EventInfo(pkg, e, this));
+
+            // TODO: Events have the same edge case issue as properties above, eg. PoGo 0.35.0
         }
 
         // Initialize a type from a concrete generic instance
