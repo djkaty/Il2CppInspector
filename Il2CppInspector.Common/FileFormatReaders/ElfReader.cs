@@ -280,7 +280,7 @@ namespace Il2CppInspector
 
             if (getDynamic(Elf.DT_INIT) != null && sectionByName.ContainsKey(".rodata")) {
                 // Use the data section to determine IF the file is obfuscated
-                var rodataFirstBytes = ReadArray<byte>(conv.Long(sectionByName[".rodata"].sh_offset), 256);
+                var rodataFirstBytes = ReadBytes(conv.Long(sectionByName[".rodata"].sh_offset), 256);
                 var xorKeyCandidate = rodataFirstBytes.GroupBy(b => b).OrderByDescending(f => f.Count()).First().Key;
 
                 // We examine the bottom nibble of the 2nd byte and top nibble of 4th byte
@@ -303,7 +303,7 @@ namespace Il2CppInspector
             // We have seen several examples (eg. #14 and #26) where most of the file is zeroed
             // and packed data is found in the latter third. So far these files always have zeroed .rodata sections
             if (sectionByName.ContainsKey(".rodata")) {
-                var rodataBytes = ReadArray<byte>(conv.Long(sectionByName[".rodata"].sh_offset), conv.Int(sectionByName[".rodata"].sh_size));
+                var rodataBytes = ReadBytes(conv.Long(sectionByName[".rodata"].sh_offset), conv.Int(sectionByName[".rodata"].sh_size));
                 if (rodataBytes.All(b => b == 0x00))
                     throw new InvalidOperationException("This IL2CPP binary is packed in a way not currently supported by Il2CppInspector and cannot be loaded.");
             }
@@ -317,7 +317,7 @@ namespace Il2CppInspector
         private void xorRange(int offset, int length, byte xorValue) {
             using var writer = new BinaryWriter(BaseStream, Encoding.Default, true);
 
-            var bytes = ReadArray<byte>(offset, length);
+            var bytes = ReadBytes(offset, length);
             bytes = bytes.Select(b => (byte) (b ^ xorValue)).ToArray();
             writer.Seek(offset, SeekOrigin.Begin);
             writer.Write(bytes);
