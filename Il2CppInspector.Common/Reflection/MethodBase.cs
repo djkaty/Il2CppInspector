@@ -97,19 +97,20 @@ namespace Il2CppInspector.Reflection
             OperatorMethodNames.ContainsKey(Name)? "operator " + OperatorMethodNames[Name]
 
             // Explicit interface implementation
-            : (IsVirtual && IsFinal && (Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot && Name.IndexOf('.') != -1)? 
+            : (IsVirtual && IsFinal && (Attributes & MethodAttributes.VtableLayoutMask) == MethodAttributes.NewSlot && Name.IndexOf('.') != -1)?
             ((Func<string>)(() => {
                 // This is some shenanigans because IL2CPP does not use a consistent naming scheme for explicit interface implementation method names
                 var implementingInterface = DeclaringType.ImplementedInterfaces.FirstOrDefault(i => Name.StartsWith(i.Namespace + "." + i.CSharpName + "."))
                     ?? DeclaringType.ImplementedInterfaces.FirstOrDefault(i => Name.StartsWith(i.Namespace + "." + i.GetCSharpTypeDeclarationName().Replace(" ", "") + "."));
                 // TODO: There are some combinations we haven't dealt with so use this test as a safety valve
+                // Don't call ToCIdentifier() because this still does definitely implement an interface, we just don't know which
                 if (implementingInterface == null)
                     return Name;
-                return implementingInterface.CSharpName + Name.Substring(Name.LastIndexOf('.'));
+                return implementingInterface.CSharpName + "." + Name.Substring(Name.LastIndexOf('.') + 1).ToCIdentifier();
             }))()
 
             // Regular method
-            : Name;
+            : Name.ToCIdentifier(allowScopeQualifiers: true);
 
         // Initialize a method from a method definition (MethodDef)
         protected MethodBase(Il2CppInspector pkg, int methodIndex, TypeInfo declaringType) : base(declaringType) {
