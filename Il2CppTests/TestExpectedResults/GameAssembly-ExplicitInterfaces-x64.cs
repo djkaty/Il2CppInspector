@@ -13,38 +13,38 @@ using System.Runtime.InteropServices;
 using System.Security;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-2871
-[assembly: AllowPartiallyTrustedCallers] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: AssemblyCompany] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: AssemblyCopyright] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: AssemblyDefaultAlias] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: AssemblyDelaySign] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: AssemblyDescription] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: AssemblyFileVersion] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: AssemblyInformationalVersion] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: AssemblyKeyFile] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: AssemblyProduct] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: AssemblyTitle] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: CLSCompliant] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: ComCompatibleVersion] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: CompilationRelaxations] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: ComVisible] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: Debuggable] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: DefaultDependency] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: Guid] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: InternalsVisibleTo] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: InternalsVisibleTo] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: InternalsVisibleTo] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: InternalsVisibleTo] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: InternalsVisibleTo] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: NeutralResourcesLanguage] // 0x000000018000B150-0x000000018000B4B0
-[assembly: RuntimeCompatibility] // 0x000000018000B150-0x000000018000B4B0
-// [assembly: SatelliteContractVersion] // 0x000000018000B150-0x000000018000B4B0
-[assembly: StringFreezing] // 0x000000018000B150-0x000000018000B4B0
+[assembly: AllowPartiallyTrustedCallers] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: AssemblyCompany] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: AssemblyCopyright] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: AssemblyDefaultAlias] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: AssemblyDelaySign] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: AssemblyDescription] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: AssemblyFileVersion] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: AssemblyInformationalVersion] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: AssemblyKeyFile] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: AssemblyProduct] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: AssemblyTitle] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: CLSCompliant] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: ComCompatibleVersion] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: CompilationRelaxations] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: ComVisible] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: Debuggable] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: DefaultDependency] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: Guid] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: InternalsVisibleTo] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: InternalsVisibleTo] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: InternalsVisibleTo] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: InternalsVisibleTo] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: InternalsVisibleTo] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: NeutralResourcesLanguage] // 0x000000018000B4E0-0x000000018000B840
+[assembly: RuntimeCompatibility] // 0x000000018000B4E0-0x000000018000B840
+// [assembly: SatelliteContractVersion] // 0x000000018000B4E0-0x000000018000B840
+[assembly: StringFreezing] // 0x000000018000B4E0-0x000000018000B840
 
 // Image 1: ExplicitInterfaces.dll - Assembly: ExplicitInterfaces, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 2872-2882
-// [assembly: CompilationRelaxations] // 0x00000001800097F0-0x0000000180009850
-// [assembly: Debuggable] // 0x00000001800097F0-0x0000000180009850
-[assembly: RuntimeCompatibility] // 0x00000001800097F0-0x0000000180009850
+// [assembly: CompilationRelaxations] // 0x0000000180009BB0-0x0000000180009C10
+// [assembly: Debuggable] // 0x0000000180009BB0-0x0000000180009C10
+[assembly: RuntimeCompatibility] // 0x0000000180009BB0-0x0000000180009C10
 
 internal static class Interop // TypeDefIndex: 2
 {
@@ -127,8 +127,8 @@ internal sealed class Locale // TypeDefIndex: 6
 	private Locale() {} // 0x0000000180123B10-0x0000000180123B20
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x0000000180149C90-0x0000000180149CA0
-	public static string GetText(string fmt, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x000000018032C1F0-0x000000018032C200
+	public static string GetText(string msg) => default; // 0x0000000180149CA0-0x0000000180149CB0
+	public static string GetText(string fmt, params /* 0x0000000180001CF0-0x0000000180001D00 */ object[] args) => default; // 0x000000018032C230-0x000000018032C240
 }
 
 internal static class SR // TypeDefIndex: 7
@@ -957,14 +957,14 @@ internal static class SR // TypeDefIndex: 7
 	public const string OutstandingReferences = "Release all references before disposing this instance."; // Metadata: 0x00184ECC
 
 	// Methods
-	internal static string GetString(string name, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x000000018019D110-0x000000018019D180
-	internal static string GetString(CultureInfo culture, string name, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x000000018019D190-0x000000018019D1A0
-	internal static string GetString(string name) => default; // 0x0000000180149C90-0x0000000180149CA0
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x000000018019D180-0x000000018019D190
-	internal static string Format(string resourceFormat, params /* 0x0000000180001CC0-0x0000000180001CD0 */ object[] args) => default; // 0x000000018019CF80-0x000000018019D000
-	internal static string Format(string resourceFormat, object p1) => default; // 0x000000018019D0A0-0x000000018019D110
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x000000018019CEF0-0x000000018019CF80
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x000000018019D000-0x000000018019D0A0
+	internal static string GetString(string name, params /* 0x0000000180001CF0-0x0000000180001D00 */ object[] args) => default; // 0x000000018019D120-0x000000018019D190
+	internal static string GetString(CultureInfo culture, string name, params /* 0x0000000180001CF0-0x0000000180001D00 */ object[] args) => default; // 0x000000018019D1A0-0x000000018019D1B0
+	internal static string GetString(string name) => default; // 0x0000000180149CA0-0x0000000180149CB0
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x000000018019D190-0x000000018019D1A0
+	internal static string Format(string resourceFormat, params /* 0x0000000180001CF0-0x0000000180001D00 */ object[] args) => default; // 0x000000018019CF90-0x000000018019D010
+	internal static string Format(string resourceFormat, object p1) => default; // 0x000000018019D0B0-0x000000018019D120
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x000000018019CF00-0x000000018019CF90
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x000000018019D010-0x000000018019D0B0
 }
 
 namespace Il2CppTests.TestSources
@@ -1006,13 +1006,13 @@ namespace Il2CppTests.TestSources
 	internal class Middle : ILeft, IRight // TypeDefIndex: 2878
 	{
 		// Properties
-		int ILeft.P { get => default; } // 0x0000000180150B30-0x0000000180150B40 
+		int ILeft.P { get => default; } // 0x0000000180150B40-0x0000000180150B50 
 	
 		// Constructors
 		public Middle() {} // 0x0000000180123B10-0x0000000180123B20
 	
 		// Methods
-		public int P() => default; // 0x0000000180150B30-0x0000000180150B40
+		public int P() => default; // 0x0000000180150B40-0x0000000180150B50
 	}
 
 	internal interface IGeneric<in T> // TypeDefIndex: 2879
