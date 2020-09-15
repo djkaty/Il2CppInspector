@@ -96,9 +96,16 @@ def ProcessJSON(jsonData):
 		DefineILMethodInfo(d)
 
 	# Function boundaries
-	print('Processing function boundaries')
-	for d in jsonData['functionAddresses']:
-		MakeFunction(int(d, 0))
+	functionAddresses = jsonData['functionAddresses']
+	count = len(functionAddresses)
+	for i in range(count):
+		addrStart = int(functionAddresses[i],0)
+		if addrStart == 0:
+			continue
+		addrNext = None
+		if i != count -1:
+			addrNext = int(functionAddresses[i+1],0)
+		MakeFunction(addrStart,None,addrNext)
 
 	# IL2CPP type metadata
 	print('Processing IL2CPP type metadata')
