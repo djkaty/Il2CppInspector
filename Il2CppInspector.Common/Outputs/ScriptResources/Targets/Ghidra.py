@@ -8,7 +8,7 @@ from ghidra.program.model.symbol import SourceType
 def SetName(addr, name):
 	createLabel(toAddr(addr), name, True)
 
-def MakeFunction(start, name=None):
+def MakeFunction(start, name=None, addrMax=None):
 	addr = toAddr(start)
 	# Don't override existing functions
 	fn = getFunctionAt(addr)
