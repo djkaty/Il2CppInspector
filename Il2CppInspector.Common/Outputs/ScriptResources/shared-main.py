@@ -96,7 +96,9 @@ def ProcessJSON(jsonData):
 		DefineILMethodInfo(d)
 
 	# Function boundaries
+	print('Processing function boundaries')
 	functionAddresses = jsonData['functionAddresses']
+	functionAddresses.sort()
 	count = len(functionAddresses)
 	for i in range(count):
 		addrStart = int(functionAddresses[i],0)
