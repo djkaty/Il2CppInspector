@@ -381,7 +381,7 @@ namespace Il2CppInspector
         }
 
         #region Loaders
-        // Finds and extracts the metadata and IL2CPP binary from one or more APK files, or one IPA file into MemoryStreams
+        // Finds and extracts the metadata and IL2CPP binary from one or more APK files, or one AAB or IPA file into MemoryStreams
         // Returns null if package not recognized or does not contain an IL2CPP application
         public static (MemoryStream Metadata, MemoryStream Binary)? GetStreamsFromPackage(IEnumerable<string> packageFiles, bool silent = false) {
             try {
@@ -401,8 +401,8 @@ namespace Il2CppInspector
                 // There are three possibilities:
                 // - A single IPA file containing global-metadata.dat and a single binary supporting one or more architectures
                 //   (we return the binary inside the IPA to be loaded by MachOReader for single arch or UBReader for multi arch)
-                // - A single APK file containing global-metadata.dat and one or more binaries (one per architecture)
-                //   (we return the entire APK to be loaded by APKReader)
+                // - A single APK or AAB file containing global-metadata.dat and one or more binaries (one per architecture)
+                //   (we return the entire APK or AAB to be loaded by APKReader or AABReader)
                 // - Multiple APK files, one of which contains global-metadadata.dat and the others contain one binary each
                 //   (we return all of the binaries re-packed in memory to a new Zip file, to be loaded by APKReader)
                 foreach (var file in packageFiles) {
@@ -492,7 +492,7 @@ namespace Il2CppInspector
             }
         }
 
-        // Load from an IPA or one or more APK files
+        // Load from an AAB, IPA or one or more APK files
         public static List<Il2CppInspector> LoadFromPackage(IEnumerable<string> packageFiles, bool silent = false) {
             var streams = GetStreamsFromPackage(packageFiles, silent);
             if (!streams.HasValue)

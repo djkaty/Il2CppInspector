@@ -20,10 +20,10 @@ namespace Il2CppInspector.CLI
     {
         private class Options
         {
-            [Option('i', "bin", Required = false, Separator = ',', HelpText = "IL2CPP binary, APK or IPA input file(s) (single file or comma-separated list for split APKs)", Default = new[] { "libil2cpp.so" })]
+            [Option('i', "bin", Required = false, Separator = ',', HelpText = "IL2CPP binary, APK, AAB or IPA input file(s) (single file or comma-separated list for split APKs)", Default = new[] { "libil2cpp.so" })]
             public IEnumerable<string> BinaryFiles { get; set; }
 
-            [Option('m', "metadata", Required = false, HelpText = "IL2CPP metadata file input (ignored for APK/IPA)", Default = "global-metadata.dat")]
+            [Option('m', "metadata", Required = false, HelpText = "IL2CPP metadata file input (ignored for APK/AAB/IPA)", Default = "global-metadata.dat")]
             public string MetadataFile { get; set; }
 
             [Option('c', "cs-out", Required = false, HelpText = "C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)", Default = "types.cs")]

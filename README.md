@@ -41,7 +41,7 @@ You can read more about IL2CPP in my series [IL2CPP Reverse Engineering](https:/
 File format and architecture support:
 
 * Supports ELF (Android .so), PE (Windows .exe), Mach-O (Apple iOS/Mac), Universal Binary (Fat Mach-O) and FSELF (PlayStation 4 .prx/.sprx) file formats
-* Also supports single and split APK (Android) and decrypted IPA (iOS) application package files as input
+* Also supports single and split APK (Android), AAB (Android App Bundle) and decrypted IPA (iOS) application package files as input
 * 32-bit and 64-bit support for all file formats
 * Supports ARMv7, Thumb-2, ARMv8 (A64), x86 and x64 architectures regardless of file format
 * Supports applications created with Unity 5.3.0 onwards (full IL2CPP version table below)
@@ -109,9 +109,9 @@ Run `Il2CppInspector.exe` at the command prompt.
 File format and architecture are automatically detected.
 
 ```
-  -i, --bin                   (Default: libil2cpp.so) IL2CPP binary, APK or IPA input file(s) (single file or comma-separated list for split APKs)
+  -i, --bin                   (Default: libil2cpp.so) IL2CPP binary, APK, AAB or IPA input file(s) (single file or comma-separated list for split APKs)
 
-  -m, --metadata              (Default: global-metadata.dat) IL2CPP metadata file input (ignored for APK/IPA)
+  -m, --metadata              (Default: global-metadata.dat) IL2CPP metadata file input (ignored for APK/AAB/IPA)
 
   -c, --cs-out                (Default: types.cs) C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)
 

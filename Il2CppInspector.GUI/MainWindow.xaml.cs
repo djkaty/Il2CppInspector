@@ -137,11 +137,11 @@ namespace Il2CppInspectorGUI
         }
 
         /// <summary>
-        /// Select APK or IPA package files
+        /// Select APK, AAB or IPA package files
         /// </summary>
         private async void BtnSelectPackageFile_OnClick(object sender, RoutedEventArgs e) {
             var openFileDialog = new OpenFileDialog {
-                Filter = "Android/iOS Application Package (*.apk;*.ipa;*.zip)|*.apk;*.ipa;*.zip|All files (*.*)|*.*",
+                Filter = "Android/iOS Application Package (*.apk;*.aab;*.ipa;*.zip)|*.apk;*.aab;*.ipa;*.zip|All files (*.*)|*.*",
                 CheckFileExists = true,
                 Multiselect = true
             };
@@ -545,14 +545,14 @@ namespace Il2CppInspectorGUI
                 string[] files = (string[]) e.Data.GetData(DataFormats.FileDrop);
 
                 if (grdFirstPage.Visibility == Visibility.Visible) {
-                    // Metadata or APK/IPA
+                    // Metadata or APK/AAB/IPA
                     if (files.Length == 1) {
                         switch (files[0].ToLower()) {
                             case var s when s.EndsWith(".dat"):
                                 await LoadMetadataAsync(s);
                                 break;
 
-                            case var s when s.EndsWith(".apk") || s.EndsWith(".ipa") || s.EndsWith(".zip"):
+                            case var s when s.EndsWith(".apk") || s.EndsWith(".aab") || s.EndsWith(".ipa") || s.EndsWith(".zip"):
                                 await LoadPackageAsync(s);
                                 break;
                         }
