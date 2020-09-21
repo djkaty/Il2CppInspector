@@ -255,11 +255,12 @@ namespace Il2CppInspector.Model
             // Find unused concrete value types
             var usedTypes = Types.Values.Select(t => t.Type);
             var unusedTypes = TypeModel.Types.Except(usedTypes);
-            var unusedValueTypes = unusedTypes.Where(t => t.IsValueType && !t.IsGenericType && !t.IsGenericParameter);
+            var unusedConcreteTypes = unusedTypes.Where(t => !t.IsGenericType && !t.IsGenericParameter
+                                                && !t.IsByRef && !t.IsPointer && !t.IsArray && !t.IsAbstract && t.Name != "<Module>");
 
-            Group = "unused_value_types";
+            Group = "unused_concrete_types";
 
-            foreach (var type in unusedValueTypes)
+            foreach (var type in unusedConcreteTypes)
                 declarationGenerator.IncludeType(type);
             AddTypes(declarationGenerator.GenerateRemainingTypeDeclarations());
 
