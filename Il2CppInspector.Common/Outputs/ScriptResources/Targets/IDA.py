@@ -7,8 +7,16 @@ def SetName(addr, name):
 		new_name = name + '_' + str(addr)
 		ret = idc.set_name(addr, new_name, SN_NOWARN | SN_NOCHECK)
 
-def MakeFunction(start):
-  ida_funcs.add_func(start)
+def MakeFunction(start, name=None, addrMax=None):
+	ida_funcs.add_func(start)
+	#limit end function to maxAddr if any
+	if addrMax is None:
+		return
+	addrEnd = idc.get_func_attr(start,FUNCATTR_END)
+	if addrEnd == idaapi.BADADDR:
+		return
+	if addrEnd > addrMax:
+		idc.set_func_end(start,addrMax)
 
 def MakeArray(addr, numItems, cppType):
 	SetType(addr, cppType)
