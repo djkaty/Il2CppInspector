@@ -106,7 +106,7 @@ namespace Il2CppInspector.Cpp
             bool inComment = false;
             bool inMethod = false;
             bool inTypedef = false;
-            var nextEnumValue = 0ul;
+            var nextEnumValue = 0L;
             string rawLine, line;
 
             while ((rawLine = line = lines.ReadLine()) != null) {
@@ -441,10 +441,10 @@ namespace Il2CppInspector.Cpp
                     if (enumValue.Groups[2].Captures.Count > 0) {
                         // Convert the text to a ulong even if it's hexadecimal with a 0x prefix
                         var valueText = enumValue.Groups[2].Captures[0].ToString();
-                        var conv = new UInt64Converter();
+                        var conv = new Int64Converter();
 
                         // Handle bit shift operator
-                        var values = valueText.Split("<<").Select(t => (ulong) conv.ConvertFromInvariantString(t.Trim())).ToArray();
+                        var values = valueText.Split("<<").Select(t => (long) conv.ConvertFromInvariantString(t.Trim())).ToArray();
                         value = values.Length == 1 ? values[0] : values[0] << (int)values[1];
                         nextEnumValue = value + 1;
                     }
