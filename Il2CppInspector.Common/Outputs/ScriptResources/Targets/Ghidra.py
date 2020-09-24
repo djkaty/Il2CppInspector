@@ -59,6 +59,12 @@ def SetHeaderComment(addr, text):
 	setPlateComment(toAddr(addr), text)
 
 def CustomInitializer():
+	# Check that the user has parsed the C headers first
+	if len(getDataTypes('Il2CppObject')) == 0:
+		print('STOP! You must import the generated C header file (%TYPE_HEADER_RELATIVE_PATH%) before running this script.')
+		print('See https://github.com/djkaty/Il2CppInspector/blob/master/README.md#adding-metadata-to-your-ghidra-workflow for instructions.')
+		sys.exit()
+
 	# Ghidra sets the image base for ELF to 0x100000 for some reason
 	# https://github.com/NationalSecurityAgency/ghidra/issues/1020
 	if currentProgram.getExecutableFormat().endswith('(ELF)'):
