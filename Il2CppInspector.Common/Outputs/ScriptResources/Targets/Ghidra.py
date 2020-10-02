@@ -71,5 +71,4 @@ def CustomInitializer():
 		currentProgram.setImageBase(toAddr(0), True)
 
 def GetScriptDirectory():
-	# Ghidra doesn't define __file__ so we have to iterate all the scripts
-	return next(iter(filter(lambda x: x.getName() == '%SCRIPTFILENAME%', GhidraScriptUtil.getAllScripts())), None).getParentFile().toString()
+	return getSourceFile().getParentFile().toString()
