@@ -577,29 +577,24 @@ namespace Il2CppInspector.Cpp
             cppTypes.SetGroup("il2cpp");
             
             // Add junk from config files we haven't included
+            // TODO: Remove these two lines when resolving #79
             cppTypes.TypedefAliases.Add("Il2CppIManagedObjectHolder", cppTypes["void"].AsPointer(wordSize));
             cppTypes.TypedefAliases.Add("Il2CppIUnknown", cppTypes["void"].AsPointer(wordSize));
 
             var headers = header.GetTypeHeaderText(wordSize);
             cppTypes.AddFromDeclarationText(headers);
 
-            // Don't allow any of the header type names to be re-used; ignore primitive types
-            foreach (var type in cppTypes.GetTypeGroup("il2cpp"))
-                declGen?.TypeNamespace.ReserveName(type.Name);
-
-            foreach (var typedef in cppTypes.GetTypedefGroup("il2cpp"))
-                declGen?.GlobalsNamespace.ReserveName(typedef.Name);
-
             cppTypes.SetGroup("il2cpp-api");
 
             var apis = header.GetAPIHeaderTypedefText();
             cppTypes.AddFromDeclarationText(apis);
 
-            foreach (var type in cppTypes.GetTypeGroup("il2cpp-api"))
-                declGen?.TypeNamespace.ReserveName(type.Name);
+            // Don't allow any of the header type names or primitive type names to be re-used
+            foreach (var type in cppTypes.Types.Values)
+                declGen?.TypeNamespace.TryReserveName(type.Name);
 
-            foreach (var typedef in cppTypes.GetTypedefGroup("il2cpp-api"))
-                declGen?.GlobalsNamespace.ReserveName(typedef.Name);
+            foreach (var typedef in cppTypes.TypedefAliases.Values)
+                declGen?.GlobalsNamespace.TryReserveName(typedef.Name);
 
             cppTypes.SetGroup("");
 
