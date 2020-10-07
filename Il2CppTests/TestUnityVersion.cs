@@ -17,7 +17,7 @@ namespace Il2CppInspector
     {
         [Test]
         public void TestVersions() {
-            Assert.That(UnityHeaders.GetTypeHeaderForVersion("5.3.1p4").VersionRange.ToString(), Is.EqualTo("5.3.0 - 5.3.1"));
+            Assert.That(UnityHeaders.GetTypeHeaderForVersion("5.4.3p4").VersionRange.ToString(), Is.EqualTo("5.4.1 - 5.4.3"));
             Assert.That(UnityHeaders.GetTypeHeaderForVersion("5.6.4").VersionRange.ToString(), Is.EqualTo("5.6.1 - 5.6.7"));
             Assert.That(new UnityVersion("2020.1.0b5").ToString(), Is.EqualTo("2020.1.0b5"));
             Assert.That(new UnityVersion("2020.1").ToString(), Is.EqualTo("2020.1.0"));

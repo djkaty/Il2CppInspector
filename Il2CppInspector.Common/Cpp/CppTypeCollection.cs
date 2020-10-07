@@ -576,11 +576,6 @@ namespace Il2CppInspector.Cpp
             // Process Unity headers
             cppTypes.SetGroup("il2cpp");
             
-            // Add junk from config files we haven't included
-            // TODO: Remove these two lines when resolving #79
-            cppTypes.TypedefAliases.Add("Il2CppIManagedObjectHolder", cppTypes["void"].AsPointer(wordSize));
-            cppTypes.TypedefAliases.Add("Il2CppIUnknown", cppTypes["void"].AsPointer(wordSize));
-
             var headers = header.GetTypeHeaderText(wordSize);
             cppTypes.AddFromDeclarationText(headers);
 
