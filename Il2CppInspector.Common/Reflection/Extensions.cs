@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -111,19 +112,19 @@ namespace Il2CppInspector.Reflection
         public static string ToCSharpValue(this object value, TypeInfo type, Scope usingScope = null) {
             if (value is bool)
                 return (bool) value ? "true" : "false";
-            if (value is float)
+            if (value is float f)
                 return value switch {
                     float.PositiveInfinity => "1F / 0F",
                     float.NegativeInfinity => "-1F / 0F",
                     float.NaN => "0F / 0F",
-                    _ => value + "f"
+                    _ => f.ToString(CultureInfo.InvariantCulture) + "f"
                 };
-            if (value is double)
+            if (value is double d)
                 return value switch {
                     double.PositiveInfinity => "1D / 0D",
                     double.NegativeInfinity => "-1D / 0D",
                     double.NaN => "0D / 0D",
-                    _ => value.ToString()
+                    _ => d.ToString(CultureInfo.InvariantCulture)
                 };
             if (value is string str) {
                 return $"\"{str.ToEscapedString()}\"";
