@@ -60,8 +60,9 @@ namespace Il2CppInspector
                 new CppScaffolding(appModel)
                     .Write(testPath + $@"\test-cpp-result{nameSuffix}");
 
-                new PythonScript(appModel)
-                    .WriteScriptToFile(testPath + $@"\test-ida{nameSuffix}.py", "IDA",
+                var python = new PythonScript(appModel);
+                foreach (var target in PythonScript.GetAvailableTargets())
+                    python.WriteScriptToFile(testPath + $@"\test-{target.ToLower()}{nameSuffix}.py", target,
                         testPath + $@"\test-cpp-result{nameSuffix}\appdata\il2cpp-types.h",
                         testPath + $@"\test-result{nameSuffix}.json");
             }
