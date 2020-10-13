@@ -177,9 +177,8 @@ typedef size_t uintptr_t;
                 if (method.HasCompiledCode) {
                     var arguments = string.Join(", ", method.CppFnPtrType.Arguments.Select(a => a.Type.Name + " " + (a.Name == "this" ? "__this" : a.Name)));
 
-                    writeCode(
-                        $"DO_APP_FUNC(0x{method.MethodCodeAddress - model.Package.BinaryImage.ImageBase:X8}, {method.CppFnPtrType.ReturnType.Name}, "
-                        + $"{method.CppFnPtrType.Name}, ({arguments}));");
+                    writeCode($"DO_APP_FUNC(0x{method.MethodCodeAddress - model.Package.BinaryImage.ImageBase:X8}, {method.CppFnPtrType.ReturnType.Name}, "
+                              + $"{method.CppFnPtrType.Name}, ({arguments}));");
                 }
 
                 if (method.HasMethodInfo) {
