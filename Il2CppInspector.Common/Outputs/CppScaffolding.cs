@@ -173,10 +173,17 @@ typedef size_t uintptr_t;
             writeCode("using namespace app;");
             writeLine("");
 
-            foreach (var method in model.Methods.Values.Where(m => m.HasCompiledCode)) {
-                var arguments = string.Join(", ", method.CppFnPtrType.Arguments.Select(a => a.Type.Name + " " + (a.Name == "this" ? "__this" : a.Name)));
-                writeCode($"DO_APP_FUNC(0x{method.MethodCodeAddress - model.Package.BinaryImage.ImageBase:X8}, {method.CppFnPtrType.ReturnType.Name}, "
-                          + $"{method.CppFnPtrType.Name}, ({arguments}));");
+            foreach (var method in model.Methods.Values) {
+                if (method.HasCompiledCode) {
+                    var arguments = string.Join(", ", method.CppFnPtrType.Arguments.Select(a => a.Type.Name + " " + (a.Name == "this" ? "__this" : a.Name)));
+
+                    writeCode($"DO_APP_FUNC(0x{method.MethodCodeAddress - model.Package.BinaryImage.ImageBase:X8}, {method.CppFnPtrType.ReturnType.Name}, "
+                              + $"{method.CppFnPtrType.Name}, ({arguments}));");
+                }
+
+                if (method.HasMethodInfo) {
+                    writeCode($"DO_APP_FUNC_METHODINFO(0x{method.MethodInfoPtrAddress - model.Package.BinaryImage.ImageBase:X8}, {method.CppFnPtrType.Name}__MethodInfo);");
+                }
             }
 
             writer.Close();
