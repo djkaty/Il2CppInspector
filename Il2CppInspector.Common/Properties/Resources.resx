@@ -1187,7 +1187,7 @@ EndGlobal
 
 // Application-specific functions
 #define DO_APP_FUNC(a, r, n, p) extern r (*n) p
-#define DO_APP_FUNC_METHODINFO(a, n) extern struct MethodInfo * n
+#define DO_APP_FUNC_METHODINFO(a, n) extern struct MethodInfo ** n
 namespace app {
 	#include "il2cpp-functions.h"
 }
@@ -1218,7 +1218,7 @@ namespace app {
 
 // Application-specific functions
 #define DO_APP_FUNC(a, r, n, p) r (*n) p
-#define DO_APP_FUNC_METHODINFO(a, n) struct MethodInfo * n
+#define DO_APP_FUNC_METHODINFO(a, n) struct MethodInfo ** n
 namespace app {
 #include "il2cpp-functions.h"
 }
@@ -1247,7 +1247,7 @@ void init_il2cpp()
 
 	// Define function addresses
 	#define DO_APP_FUNC(a, r, n, p) n = (r (*) p)(baseAddress + a)
- 	#define DO_APP_FUNC_METHODINFO(a, n) n = (struct MethodInfo *)(baseAddress + a)
+ 	#define DO_APP_FUNC_METHODINFO(a, n) n = (struct MethodInfo **)(baseAddress + a)
 	#include "il2cpp-functions.h"
 	#undef DO_APP_FUNC
  	#undef DO_APP_FUNC_METHODINFO

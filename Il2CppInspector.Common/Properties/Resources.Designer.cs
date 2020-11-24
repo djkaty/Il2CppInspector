@@ -166,8 +166,7 @@ namespace Il2CppInspector.Properties {
         ///
         ///// Application-specific functions
         ///#define DO_APP_FUNC(a, r, n, p) extern r (*n) p
-        ///namespace app {
-        ///	#include &quot;il2cpp-functions [rest of string was truncated]&quot;;.
+        ///#define DO_APP_FUNC_METHODINFO(a, n) extern [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_Il2CppAppDataH {
             get {
@@ -192,13 +191,11 @@ namespace Il2CppInspector.Properties {
         ///
         ///// Application-specific functions
         ///#define DO_APP_FUNC(a, r, n, p) r (*n) p
+        ///#define DO_APP_FUNC_METHODINFO(a, n) struct MethodInfo ** n
         ///namespace app {
         ///#include &quot;il2cpp-functions.h&quot;
         ///}
-        ///#undef DO_APP_FUNC
-        ///
-        ///// TypeInfo pointers
-        ///#define DO_TYPEDEF(a, n [rest of string was truncated]&quot;;.
+        ///#und [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_Il2CppInitCpp {
             get {
@@ -309,7 +306,8 @@ namespace Il2CppInspector.Properties {
         ///      &lt;Filter&gt;framework&lt;/Filter&gt;
         ///    &lt;/ClCompile&gt;
         ///    &lt;ClCompile Include=&quot;framework\il2cpp-init.cpp&quot;&gt;
-        ///      &lt;Filter&gt;framework&lt; [rest of string was truncated]&quot;;.
+        ///      &lt;Filter&gt;framework&lt;/Filter&gt;
+        ///     [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CppProjFilters {
             get {
@@ -329,7 +327,7 @@ namespace Il2CppInspector.Properties {
         ///      &lt;Configuration&gt;Release&lt;/Configuration&gt;
         ///      &lt;Platform&gt;Win32&lt;/Platform&gt;
         ///    &lt;/ProjectConfiguration&gt;
-        ///    &lt;ProjectCon [rest of string was truncated]&quot;;.
+        ///    &lt;ProjectConfiguration  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CppProjTemplate {
             get {
@@ -351,7 +349,7 @@ namespace Il2CppInspector.Properties {
         ///		Release|x64 = Release|x64
         ///		Release|x86 = Release|x86
         ///	EndGlobalSection
-        ///	GlobalSection(ProjectConfig [rest of string was truncated]&quot;;.
+        ///	GlobalSection(ProjectConfigurationPlatfo [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CppSlnTemplate {
             get {
