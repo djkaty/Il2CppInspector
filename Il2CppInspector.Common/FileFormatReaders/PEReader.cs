@@ -81,6 +81,17 @@ namespace Il2CppInspector
             // Get sections table
             sections = ReadArray<PESection>(coff.NumberOfSections);
 
+            // Packed with Themida?
+            // TODO: Deal with Themida packing (issues #56, #95, #101)
+            if (sections.FirstOrDefault(x => x.Name == ".themida") is PESection _) {
+                throw new InvalidOperationException("This IL2CPP binary is packed with Themida and cannot be loaded directly. Unpack the binary first and try again. NOTE: Automatic unpacking of PE files will be included in a future update coming soon!");
+            }
+
+            // Packed with something else?
+            if (sections.FirstOrDefault(x => x.Name == ".rdata") is null) {
+                throw new InvalidOperationException("This IL2CPP binary is packed in a way not currently supported by Il2CppInspector and cannot be loaded. NOTE: Automatic unpacking of PE files will be included in a future update coming soon!");
+            }
+
             // Confirm that .rdata section begins at same place as IAT
             var rData = sections.First(x => x.Name == ".rdata");
             if (rData.VirtualAddress != IATStart)
