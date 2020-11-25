@@ -137,7 +137,7 @@ namespace Il2CppInspector.Properties {
         ///// Helper function to open a new console window and redirect stdout there
         ///void il2cppi_new_console();
         ///
-        ///// Helper  [rest of string was truncated]&quot;;.
+        ///#if _MSC_V [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_HelpersH {
             get {
