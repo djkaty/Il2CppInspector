@@ -234,7 +234,7 @@ gci "$asm/*" -Include $dll | % {
 	$name = $_.Name
 	echo "Running bytecode stripper on $name..."
 
-	& $stripper	"--out=$asm/$($_.BaseName)-stripped", "--i18n=none", "--core-action=link", `
+	& $stripper	"--out=$asm/$($_.BaseName)-stripped" "--i18n=none" "--core-action=link" `
 				"--include-assembly=$_,$mscorlib" $stripperAdditionalArguments
 }
 
@@ -244,7 +244,7 @@ gci "$asm/*" -Include $dll | % {
 	$name = $_.BaseName
 	echo "Converting assembly $($_.Name) to C++..."
 	rm -Force -Recurse $cpp/$name 2>&1 >$null
-	& $il2cpp $cppArg "--generatedcppdir=$cpp/$name", "--assembly=$asm/$($_.BaseName)-stripped/$($_.Name)", "--copy-level=None" >$null
+	& $il2cpp $cppArg "--generatedcppdir=$cpp/$name" "--assembly=$asm/$($_.BaseName)-stripped/$($_.Name)" "--copy-level=None" >$null
 }
 
 # Run IL2CPP on all generated assemblies for both x86 and ARM
@@ -254,7 +254,7 @@ function Do-IL2CPP-Build {
 		[string] $Platform,
 		[string] $Architecture,
 		[string] $Name,
-		$AdditionalArgs
+		[string[]] $AdditionalArgs
 	)
 
 	# Determine target name
@@ -268,9 +268,9 @@ function Do-IL2CPP-Build {
 	md $bin/$TargetBaseName 2>&1 >$null
 	md $bin/$TargetBaseName/cache 2>&1 >$null
 
-	& $il2cpp $compileArg $AdditionalArgs "--platform=$Platform", "--architecture=$Architecture", `
-				"--outputpath=$bin/$TargetBaseName/$TargetBaseName.$ext", `
-				"--generatedcppdir=$cpp/$Name", `
+	& $il2cpp $compileArg $AdditionalArgs "--platform=$Platform" "--architecture=$Architecture" `
+				"--outputpath=$bin/$TargetBaseName/$TargetBaseName.$ext" `
+				"--generatedcppdir=$cpp/$Name" `
 				"--cachedirectory=$bin/$TargetBaseName/cache" >$null
 
 	if ($LastExitCode -ne 0) {
