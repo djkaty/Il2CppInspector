@@ -275,7 +275,7 @@ namespace Il2CppInspector
             }
             Console.WriteLine($"Processed {rels.Count} relocations");
 
-            // Detect and defeat trivial XOR encryption
+            // Detect and defeat XOR encryption
             StatusUpdate("Detecting encryption");
 
             if (getDynamic(Elf.DT_INIT) != null && sectionByName.ContainsKey(".rodata")) {
@@ -291,11 +291,39 @@ namespace Il2CppInspector
                 var xorKey = (byte) (((top << 4) ^ 0xE0) | bottom);
 
                 if (xorKeyCandidate != 0x00) {
-                    StatusUpdate("Decrypting");
-                    Console.WriteLine($"Performing trivial XOR decryption (key: 0x{xorKey:X2})");
 
-                    xorSection(".text", xorKey);
-                    xorSection(".rodata", xorKey);
+                    // Some files may use a striped encryption whereby alternate blocks are encrypted and un-encrypted
+                    // The first part of each section is always encrypted. Scan for the first unencrypted block and find its size
+                    // Limit ourselves to 128KB. If no stripe has been found by then, the whole section is probably encrypted
+
+                    // We refer to issue #96 where the code uses striped encryption in 4KB blocks
+                    // We perform heuristics for 128-byte blocks below
+                    var start = conv.Int(sectionByName[".text"].sh_offset);
+                    var length = conv.Int(sectionByName[".text"].sh_size);
+                    var blockSize = 0x80;
+                    var maxSearchLength = 128 * 1024;
+                    var firstUnencrypted = 0xffffffff;
+                    var stripeSize = 0xffffffff;
+                    var threshold = (blockSize / 4) / 2;
+                    for (var pos = start; pos < start + maxSearchLength && stripeSize == 0xffffffff; pos += blockSize) {
+                        var size = Math.Min(blockSize, start + length - pos);
+                        var dwords = ReadArray<uint>(pos, size / 4);
+                        var count0 = dwords.Count(w => ((w >> 8) & 0xF) == 0x0);
+                        var countE = dwords.Count(w => (w >> 28) == 0xE);
+                        var encrypted = countE < threshold && count0 < threshold;
+
+                        if (!encrypted && firstUnencrypted == 0xffffffff)
+                            firstUnencrypted = (uint) pos;
+
+                        if (encrypted && firstUnencrypted != 0xffffffff)
+                            stripeSize = (uint) pos - firstUnencrypted;
+                    }
+
+                    StatusUpdate("Decrypting");
+                    Console.WriteLine($"Performing XOR decryption (key: 0x{xorKey:X2}, stripe size: 0x{stripeSize:X4})");
+
+                    xorSection(".text", xorKey, stripeSize);
+                    xorSection(".rodata", xorKey, stripeSize);
                 }
             }
 
@@ -323,9 +351,32 @@ namespace Il2CppInspector
             writer.Write(bytes);
         }
 
-        private void xorSection(string sectionName, byte xorValue) {
+        private void xorSection(string sectionName, byte xorValue, uint stripeSize) {
             var section = sectionByName[sectionName];
-            xorRange(conv.Int(section.sh_offset), conv.Int(section.sh_size), xorValue);
+
+            // First part up to stripe size boundary is always encrypted, first full block is always encrypted
+            var start = conv.Int(section.sh_offset);
+            var length = conv.Int(section.sh_size);
+
+            // Non-striped
+            if (stripeSize == 0xffffffff) {
+                xorRange(start, length, xorValue);
+                return;
+            }
+
+            // Striped
+            // The first block's length is the distance to the boundary to the first stripe size + one stripe
+            var firstBlockLength = stripeSize;
+            if (start % stripeSize != 0)
+                firstBlockLength += stripeSize - (uint) (start % stripeSize);
+
+            xorRange(start, (int) firstBlockLength, xorValue);
+
+            // Step forward two stripe sizes at a time, decrypting the first and ignoring the second
+            for (var pos = start + firstBlockLength + stripeSize; pos < start + length; pos += stripeSize * 2) {
+                var size = Math.Min(stripeSize, start + length - pos);
+                xorRange((int) pos, (int) size, xorValue);
+            }
         }
 
         public override Dictionary<string, Symbol> GetSymbolTable() => symbolTable;
