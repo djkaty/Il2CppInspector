@@ -7,7 +7,7 @@
 # Requires Windows Standalone IL2CPP support, Android IL2CPP support (optional)
 # Requires Android NDK for Android test builds (https://developer.android.com/ndk/downloads)
 
-# Tested with Unity 2017.1.0f3 - 2020.2.0b1
+# Tested with Unity 2017.1.0f3 - 2021.1.0a6
 
 # WARNING: The following IL2CPP versions will NOT compile correctly with the VS 2019 C++ build tools installed (use the VS 2017 C++ build tools instead):
 #          5.5.5f1, 5.5.6f1, 5.6.2f1-5.6.7f1, 2017.1.0f3-2017.4.16f1, 2018.1.0f2-2018.2.18f1
@@ -90,6 +90,7 @@ $UnityPath = "$UnityEditorPath\Data"
 # Path to il2cpp.exe
 # For Unity <= 2019.2.21f1, il2cpp\build\il2cpp.exe
 # For Unity >= 2019.3.0f6, il2cpp\build\deploy\net471\il2cpp.exe
+# For Unity >= 2020.2.0b2-ish, il2cpp\build\deploy\netcoreapp3.1\il2cpp.exe
 $il2cpp = (gci "$UnityPath\il2cpp\build" -Recurse -Filter il2cpp.exe)[0].FullName
 
 # Path to bytecode stripper
@@ -198,7 +199,7 @@ $bin = "$PSScriptRoot/TestBinaries"
 $cppArg =		'--convert-to-cpp', '-emit-null-checks', '--enable-array-bounds-check'
 
 $compileArg =	'--compile-cpp', '--libil2cpp-static', '--configuration=Release', `
-				'--map-file-parser=$UnityPath\il2cpp\MapFileParser\MapFileParser.exe', '--forcerebuild'
+				"--map-file-parser=$UnityPath\il2cpp\MapFileParser\MapFileParser.exe", '--forcerebuild'
 				
 if ((Compare-UnityVersions $actualUnityVersion 2018.2.0f2) -ge 0) {
 	$cppArg +=		'--dotnetprofile="unityaot"'
