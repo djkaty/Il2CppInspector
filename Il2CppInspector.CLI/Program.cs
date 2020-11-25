@@ -196,7 +196,13 @@ namespace Il2CppInspector.CLI
                         return 1;
                     }
 
-                    il2cppInspectors = Il2CppInspector.LoadFromFile(options.BinaryFiles.First(), options.MetadataFile);
+                    try {
+                        il2cppInspectors = Il2CppInspector.LoadFromFile(options.BinaryFiles.First(), options.MetadataFile);
+                    }
+                    catch (Exception ex) {
+                        Console.Error.WriteLine(ex.Message);
+                        return 1;
+                    }
                 }
             }
 
