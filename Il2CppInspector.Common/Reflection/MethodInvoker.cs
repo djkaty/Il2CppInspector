@@ -63,6 +63,7 @@ namespace Il2CppInspector.Reflection
         public string Name => $"RuntimeInvoker_{!IsStatic}{ReturnType.BaseName.ToCIdentifier()}_" + string.Join("_", ParameterTypes.Select(p => p.BaseName.ToCIdentifier()));
 
         // Display as a C++ method signature; MethodInfo* is the same as RuntimeMethod* (see codegen/il2cpp-codegen-metadata.h)
+        // TODO: Unity 2021.1: the return value is now an extra argument, and the invokers always return void
         public string GetSignature(UnityVersion version) =>
             version.CompareTo("2017.1.0") >= 0
                 ? $"void* {Name}(Il2CppMethodPointer pointer, const MethodInfo* methodMetadata, void* obj, void** args)"
