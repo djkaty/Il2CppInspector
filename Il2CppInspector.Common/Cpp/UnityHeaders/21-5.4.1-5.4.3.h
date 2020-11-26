@@ -1036,6 +1036,86 @@ typedef struct Il2CppPerfCounters
  unsigned int threadpool_threads;
  unsigned int threadpool_iothreads;
 } Il2CppPerfCounters;
+typedef struct Il2CppMetadataField
+{
+ uint32_t offset;
+ uint32_t typeIndex;
+ const char* name;
+ bool isStatic;
+} Il2CppMetadataField;
+typedef enum Il2CppMetadataTypeFlags
+{
+ kNone = 0,
+ kValueType = 1 << 0,
+ kArray = 1 << 1,
+ kArrayRankMask = 0xFFFF0000
+} Il2CppMetadataTypeFlags;
+typedef struct Il2CppMetadataType
+{
+ Il2CppMetadataTypeFlags flags;
+ Il2CppMetadataField* fields;
+ uint32_t fieldCount;
+ uint32_t staticsSize;
+ uint8_t* statics;
+ uint32_t baseOrElementTypeIndex;
+ char* name;
+ const char* assemblyName;
+ uint64_t typeInfoAddress;
+ uint32_t size;
+} Il2CppMetadataType;
+typedef struct Il2CppMetadataSnapshot
+{
+ uint32_t typeCount;
+ Il2CppMetadataType* types;
+} Il2CppMetadataSnapshot;
+typedef struct Il2CppManagedMemorySection
+{
+ uint64_t sectionStartAddress;
+ uint32_t sectionSize;
+ uint8_t* sectionBytes;
+} Il2CppManagedMemorySection;
+typedef struct Il2CppManagedHeap
+{
+ uint32_t sectionCount;
+ Il2CppManagedMemorySection* sections;
+} Il2CppManagedHeap;
+typedef struct Il2CppStacks
+{
+ uint32_t stackCount;
+ Il2CppManagedMemorySection* stacks;
+} Il2CppStacks;
+typedef struct NativeObject
+{
+ uint32_t gcHandleIndex;
+ uint32_t size;
+ uint32_t instanceId;
+ uint32_t classId;
+ uint32_t referencedNativeObjectIndicesCount;
+ uint32_t* referencedNativeObjectIndices;
+} NativeObject;
+typedef struct Il2CppGCHandles
+{
+ uint32_t trackedObjectCount;
+ uint64_t* pointersToObjects;
+} Il2CppGCHandles;
+typedef struct Il2CppRuntimeInformation
+{
+ uint32_t pointerSize;
+ uint32_t objectHeaderSize;
+ uint32_t arrayHeaderSize;
+ uint32_t arrayBoundsOffsetInHeader;
+ uint32_t arraySizeOffsetInHeader;
+ uint32_t allocationGranularity;
+} Il2CppRuntimeInformation;
+typedef struct Il2CppManagedMemorySnapshot
+{
+ Il2CppManagedHeap heap;
+ Il2CppStacks stacks;
+ Il2CppMetadataSnapshot metadata;
+ Il2CppGCHandles gcHandles;
+ Il2CppRuntimeInformation runtimeInformation;
+ void* additionalUserInformation;
+} Il2CppManagedMemorySnapshot;
 typedef struct Il2CppClass Il2CppClass;
 typedef struct MethodInfo MethodInfo;
 typedef struct PropertyInfo PropertyInfo;

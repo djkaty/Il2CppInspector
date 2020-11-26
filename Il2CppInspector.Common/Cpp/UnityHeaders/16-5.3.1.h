@@ -792,6 +792,184 @@ typedef struct Il2CppRuntimeStats
 } Il2CppRuntimeStats;
 extern Il2CppRuntimeStats il2cpp_runtime_stats;
 typedef struct Il2CppClass Il2CppClass;
+typedef struct Il2CppType Il2CppType;
+typedef struct EventInfo EventInfo;
+typedef struct MethodInfo MethodInfo;
+typedef struct FieldInfo FieldInfo;
+typedef struct PropertyInfo PropertyInfo;
+typedef struct Il2CppAssembly Il2CppAssembly;
+typedef struct Il2CppArray Il2CppArray;
+typedef struct Il2CppDelegate Il2CppDelegate;
+typedef struct Il2CppDomain Il2CppDomain;
+typedef struct Il2CppImage Il2CppImage;
+typedef struct Il2CppException Il2CppException;
+typedef struct Il2CppProfiler Il2CppProfiler;
+typedef struct Il2CppObject Il2CppObject;
+typedef struct Il2CppReflectionMethod Il2CppReflectionMethod;
+typedef struct Il2CppReflectionType Il2CppReflectionType;
+typedef struct Il2CppString Il2CppString;
+typedef struct Il2CppThread Il2CppThread;
+typedef struct Il2CppAsyncResult Il2CppAsyncResult;
+typedef enum Il2CppProfileFlags
+{
+ IL2CPP_PROFILE_NONE = 0,
+ IL2CPP_PROFILE_APPDOMAIN_EVENTS = 1 << 0,
+ IL2CPP_PROFILE_ASSEMBLY_EVENTS = 1 << 1,
+ IL2CPP_PROFILE_MODULE_EVENTS = 1 << 2,
+ IL2CPP_PROFILE_CLASS_EVENTS = 1 << 3,
+ IL2CPP_PROFILE_JIT_COMPILATION = 1 << 4,
+ IL2CPP_PROFILE_INLINING = 1 << 5,
+ IL2CPP_PROFILE_EXCEPTIONS = 1 << 6,
+ IL2CPP_PROFILE_ALLOCATIONS = 1 << 7,
+ IL2CPP_PROFILE_GC = 1 << 8,
+ IL2CPP_PROFILE_THREADS = 1 << 9,
+ IL2CPP_PROFILE_REMOTING = 1 << 10,
+ IL2CPP_PROFILE_TRANSITIONS = 1 << 11,
+ IL2CPP_PROFILE_ENTER_LEAVE = 1 << 12,
+ IL2CPP_PROFILE_COVERAGE = 1 << 13,
+ IL2CPP_PROFILE_INS_COVERAGE = 1 << 14,
+ IL2CPP_PROFILE_STATISTICAL = 1 << 15,
+ IL2CPP_PROFILE_METHOD_EVENTS = 1 << 16,
+ IL2CPP_PROFILE_MONITOR_EVENTS = 1 << 17,
+ IL2CPP_PROFILE_IOMAP_EVENTS = 1 << 18,
+ IL2CPP_PROFILE_GC_MOVES = 1 << 19
+} Il2CppProfileFlags;
+typedef enum Il2CppGCEvent
+{
+ IL2CPP_GC_EVENT_START,
+ IL2CPP_GC_EVENT_MARK_START,
+ IL2CPP_GC_EVENT_MARK_END,
+ IL2CPP_GC_EVENT_RECLAIM_START,
+ IL2CPP_GC_EVENT_RECLAIM_END,
+ IL2CPP_GC_EVENT_END,
+ IL2CPP_GC_EVENT_PRE_STOP_WORLD,
+ IL2CPP_GC_EVENT_POST_STOP_WORLD,
+ IL2CPP_GC_EVENT_PRE_START_WORLD,
+ IL2CPP_GC_EVENT_POST_START_WORLD
+} Il2CppGCEvent;
+typedef enum Il2CppStat
+{
+ IL2CPP_STAT_NEW_OBJECT_COUNT,
+ IL2CPP_STAT_INITIALIZED_CLASS_COUNT,
+ IL2CPP_STAT_METHOD_COUNT,
+ IL2CPP_STAT_CLASS_STATIC_DATA_SIZE,
+ IL2CPP_STAT_GENERIC_INSTANCE_COUNT,
+ IL2CPP_STAT_GENERIC_CLASS_COUNT,
+ IL2CPP_STAT_INFLATED_METHOD_COUNT,
+ IL2CPP_STAT_INFLATED_TYPE_COUNT,
+} Il2CppStat;
+typedef enum StackFrameType
+{
+ FRAME_TYPE_MANAGED = 0,
+ FRAME_TYPE_DEBUGGER_INVOKE = 1,
+ FRAME_TYPE_MANAGED_TO_NATIVE = 2,
+ FRAME_TYPE_SENTINEL = 3
+} StackFrameType;
+typedef enum Il2CppRuntimeUnhandledExceptionPolicy
+{
+ IL2CPP_UNHANDLED_POLICY_LEGACY,
+ IL2CPP_UNHANDLED_POLICY_CURRENT
+} Il2CppRuntimeUnhandledExceptionPolicy;
+typedef struct Il2CppStackFrameInfo
+{
+ const MethodInfo *method;
+} Il2CppStackFrameInfo;
+typedef struct {
+ void* (*malloc_func)(size_t size);
+ void (*free_func)(void *ptr);
+ void* (*calloc_func)(size_t nmemb, size_t size);
+ void* (*realloc_func)(void *ptr, size_t size);
+} Il2CppMemoryCallbacks;
+typedef void (*register_object_callback)(void** arr, int size, void* userdata);
+typedef void (*WorldChangedCallback)();
+typedef void (*Il2CppFrameWalkFunc) (const Il2CppStackFrameInfo *info, void *user_data);
+typedef void (*Il2CppProfileFunc) (Il2CppProfiler* prof);
+typedef void (*Il2CppProfileMethodFunc) (Il2CppProfiler* prof, const MethodInfo *method);
+typedef void (*Il2CppProfileAllocFunc) (Il2CppProfiler* prof, Il2CppObject *obj, Il2CppClass *klass);
+typedef void (*Il2CppProfileGCFunc) (Il2CppProfiler* prof, Il2CppGCEvent event, int generation);
+typedef void (*Il2CppProfileGCResizeFunc) (Il2CppProfiler* prof, int64_t new_size);
+typedef const char* (*Il2CppSetFindPlugInCallback)(const char*);
+typedef struct Il2CppMetadataField
+{
+ uint32_t offset;
+ uint32_t typeIndex;
+ const char* name;
+ bool isStatic;
+} Il2CppMetadataField;
+typedef enum Il2CppMetadataTypeFlags
+{
+ kNone = 0,
+ kValueType = 1 << 0,
+ kArray = 1 << 1,
+ kArrayRankMask = 0xFFFF0000
+} Il2CppMetadataTypeFlags;
+typedef struct Il2CppMetadataType
+{
+ Il2CppMetadataTypeFlags flags;
+ Il2CppMetadataField* fields;
+ uint32_t fieldCount;
+ uint32_t staticsSize;
+ uint8_t* statics;
+ uint32_t baseOrElementTypeIndex;
+ char* name;
+ const char* assemblyName;
+ uint64_t typeInfoAddress;
+ uint32_t size;
+} Il2CppMetadataType;
+typedef struct Il2CppMetadataSnapshot
+{
+ uint32_t typeCount;
+ Il2CppMetadataType* types;
+} Il2CppMetadataSnapshot;
+typedef struct Il2CppManagedMemorySection
+{
+ uint64_t sectionStartAddress;
+ uint32_t sectionSize;
+ uint8_t* sectionBytes;
+} Il2CppManagedMemorySection;
+typedef struct Il2CppManagedHeap
+{
+ uint32_t sectionCount;
+ Il2CppManagedMemorySection* sections;
+} Il2CppManagedHeap;
+typedef struct Il2CppStacks
+{
+ uint32_t stackCount;
+ Il2CppManagedMemorySection* stacks;
+} Il2CppStacks;
+typedef struct NativeObject
+{
+ uint32_t gcHandleIndex;
+ uint32_t size;
+ uint32_t instanceId;
+ uint32_t classId;
+ uint32_t referencedNativeObjectIndicesCount;
+ uint32_t* referencedNativeObjectIndices;
+} NativeObject;
+typedef struct Il2CppGCHandles
+{
+ uint32_t trackedObjectCount;
+ uint64_t* pointersToObjects;
+} Il2CppGCHandles;
+typedef struct Il2CppRuntimeInformation
+{
+ uint32_t pointerSize;
+ uint32_t objectHeaderSize;
+ uint32_t arrayHeaderSize;
+ uint32_t arrayBoundsOffsetInHeader;
+ uint32_t arraySizeOffsetInHeader;
+ uint32_t allocationGranularity;
+} Il2CppRuntimeInformation;
+typedef struct Il2CppManagedMemorySnapshot
+{
+ Il2CppManagedHeap heap;
+ Il2CppStacks stacks;
+ Il2CppMetadataSnapshot metadata;
+ Il2CppGCHandles gcHandles;
+ Il2CppRuntimeInformation runtimeInformation;
+ void* additionalUserInformation;
+} Il2CppManagedMemorySnapshot;
+typedef struct Il2CppClass Il2CppClass;
 typedef struct MethodInfo MethodInfo;
 typedef struct PropertyInfo PropertyInfo;
 typedef struct FieldInfo FieldInfo;
