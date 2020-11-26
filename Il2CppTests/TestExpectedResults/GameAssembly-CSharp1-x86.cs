@@ -12,38 +12,38 @@ using System.Runtime.InteropServices;
 using System.Security;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-2871
-[assembly: AllowPartiallyTrustedCallers] // 0x1000C520-0x1000C7F0
-// [assembly: AssemblyCompany] // 0x1000C520-0x1000C7F0
-// [assembly: AssemblyCopyright] // 0x1000C520-0x1000C7F0
-// [assembly: AssemblyDefaultAlias] // 0x1000C520-0x1000C7F0
-// [assembly: AssemblyDelaySign] // 0x1000C520-0x1000C7F0
-// [assembly: AssemblyDescription] // 0x1000C520-0x1000C7F0
-// [assembly: AssemblyFileVersion] // 0x1000C520-0x1000C7F0
-// [assembly: AssemblyInformationalVersion] // 0x1000C520-0x1000C7F0
-// [assembly: AssemblyKeyFile] // 0x1000C520-0x1000C7F0
-// [assembly: AssemblyProduct] // 0x1000C520-0x1000C7F0
-// [assembly: AssemblyTitle] // 0x1000C520-0x1000C7F0
-// [assembly: CLSCompliant] // 0x1000C520-0x1000C7F0
-// [assembly: ComCompatibleVersion] // 0x1000C520-0x1000C7F0
-// [assembly: CompilationRelaxations] // 0x1000C520-0x1000C7F0
-// [assembly: ComVisible] // 0x1000C520-0x1000C7F0
-// [assembly: Debuggable] // 0x1000C520-0x1000C7F0
-// [assembly: DefaultDependency] // 0x1000C520-0x1000C7F0
-// [assembly: Guid] // 0x1000C520-0x1000C7F0
-// [assembly: InternalsVisibleTo] // 0x1000C520-0x1000C7F0
-// [assembly: InternalsVisibleTo] // 0x1000C520-0x1000C7F0
-// [assembly: InternalsVisibleTo] // 0x1000C520-0x1000C7F0
-// [assembly: InternalsVisibleTo] // 0x1000C520-0x1000C7F0
-// [assembly: InternalsVisibleTo] // 0x1000C520-0x1000C7F0
-// [assembly: NeutralResourcesLanguage] // 0x1000C520-0x1000C7F0
-[assembly: RuntimeCompatibility] // 0x1000C520-0x1000C7F0
-// [assembly: SatelliteContractVersion] // 0x1000C520-0x1000C7F0
-[assembly: StringFreezing] // 0x1000C520-0x1000C7F0
+[assembly: AllowPartiallyTrustedCallers] // 0x10007410-0x100076E0
+// [assembly: AssemblyCompany] // 0x10007410-0x100076E0
+// [assembly: AssemblyCopyright] // 0x10007410-0x100076E0
+// [assembly: AssemblyDefaultAlias] // 0x10007410-0x100076E0
+// [assembly: AssemblyDelaySign] // 0x10007410-0x100076E0
+// [assembly: AssemblyDescription] // 0x10007410-0x100076E0
+// [assembly: AssemblyFileVersion] // 0x10007410-0x100076E0
+// [assembly: AssemblyInformationalVersion] // 0x10007410-0x100076E0
+// [assembly: AssemblyKeyFile] // 0x10007410-0x100076E0
+// [assembly: AssemblyProduct] // 0x10007410-0x100076E0
+// [assembly: AssemblyTitle] // 0x10007410-0x100076E0
+// [assembly: CLSCompliant] // 0x10007410-0x100076E0
+// [assembly: ComCompatibleVersion] // 0x10007410-0x100076E0
+// [assembly: CompilationRelaxations] // 0x10007410-0x100076E0
+// [assembly: ComVisible] // 0x10007410-0x100076E0
+// [assembly: Debuggable] // 0x10007410-0x100076E0
+// [assembly: DefaultDependency] // 0x10007410-0x100076E0
+// [assembly: Guid] // 0x10007410-0x100076E0
+// [assembly: InternalsVisibleTo] // 0x10007410-0x100076E0
+// [assembly: InternalsVisibleTo] // 0x10007410-0x100076E0
+// [assembly: InternalsVisibleTo] // 0x10007410-0x100076E0
+// [assembly: InternalsVisibleTo] // 0x10007410-0x100076E0
+// [assembly: InternalsVisibleTo] // 0x10007410-0x100076E0
+// [assembly: NeutralResourcesLanguage] // 0x10007410-0x100076E0
+[assembly: RuntimeCompatibility] // 0x10007410-0x100076E0
+// [assembly: SatelliteContractVersion] // 0x10007410-0x100076E0
+[assembly: StringFreezing] // 0x10007410-0x100076E0
 
 // Image 1: CSharp1.dll - Assembly: CSharp1, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 2872-2876
-// [assembly: CompilationRelaxations] // 0x1000AED0-0x1000AF20
-// [assembly: Debuggable] // 0x1000AED0-0x1000AF20
-[assembly: RuntimeCompatibility] // 0x1000AED0-0x1000AF20
+// [assembly: CompilationRelaxations] // 0x10005D60-0x10005DB0
+// [assembly: Debuggable] // 0x10005D60-0x10005DB0
+[assembly: RuntimeCompatibility] // 0x10005D60-0x10005DB0
 
 internal static class Interop // TypeDefIndex: 2
 {
@@ -123,11 +123,11 @@ internal static class Consts // TypeDefIndex: 5
 internal sealed class Locale // TypeDefIndex: 6
 {
 	// Constructors
-	private Locale() {} // 0x100F5550-0x100F5560
+	private Locale() {} // 0x100F8700-0x100F8710
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x10116390-0x101163A0
-	public static string GetText(string fmt, params /* 0x10003130-0x10003150 */ object[] args) => default; // 0x102B2CB0-0x102B2CC0
+	public static string GetText(string msg) => default; // 0x1010CB20-0x1010CB30
+	public static string GetText(string fmt, params /* 0x100035A0-0x100035C0 */ object[] args) => default; // 0x10133950-0x10133980
 }
 
 internal static class SR // TypeDefIndex: 7
@@ -956,14 +956,14 @@ internal static class SR // TypeDefIndex: 7
 	public const string OutstandingReferences = "Release all references before disposing this instance."; // Metadata: 0x00184D4C
 
 	// Methods
-	internal static string GetString(string name, params /* 0x10003130-0x10003150 */ object[] args) => default; // 0x10159660-0x101596C0
-	internal static string GetString(CultureInfo culture, string name, params /* 0x10003130-0x10003150 */ object[] args) => default; // 0x101596D0-0x101596E0
-	internal static string GetString(string name) => default; // 0x10116390-0x101163A0
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x101596C0-0x101596D0
-	internal static string Format(string resourceFormat, params /* 0x10003130-0x10003150 */ object[] args) => default; // 0x10159530-0x101595A0
-	internal static string Format(string resourceFormat, object p1) => default; // 0x10159600-0x10159660
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x101594D0-0x10159530
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x101595A0-0x10159600
+	internal static string GetString(string name, params /* 0x100035A0-0x100035C0 */ object[] args) => default; // 0x10115470-0x101154D0
+	internal static string GetString(CultureInfo culture, string name, params /* 0x100035A0-0x100035C0 */ object[] args) => default; // 0x101154D0-0x101154E0
+	internal static string GetString(string name) => default; // 0x1010CB20-0x1010CB30
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x101154E0-0x101154F0
+	internal static string Format(string resourceFormat, params /* 0x100035A0-0x100035C0 */ object[] args) => default; // 0x101152E0-0x10115350
+	internal static string Format(string resourceFormat, object p1) => default; // 0x10115350-0x101153B0
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x101153B0-0x10115410
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x10115410-0x10115470
 }
 
 namespace Il2CppTests.TestSources
@@ -975,21 +975,21 @@ namespace Il2CppTests.TestSources
 		public int i; // 0x10
 	
 		// Properties
-		public int SimpleProperty { get => default; set {} } // 0x1011C470-0x1011C480 0x105F2570-0x105F25A0
+		public int SimpleProperty { get => default; set {} } // 0x100FAAD0-0x100FAAE0 0x105F0350-0x105F0380
 	
 		// Events
 		public event SimpleDelegate SimpleEvent;
 	
 		// Nested types
-		public delegate SimpleStruct SimpleDelegate(SimpleStruct ss); // TypeDefIndex: 2874; 0x10592520-0x105927E0
+		public delegate SimpleStruct SimpleDelegate(SimpleStruct ss); // TypeDefIndex: 2874; 0x104FCF90-0x104FD250
 	
 		// Constructors
-		public SimpleClass() {} // 0x100F5550-0x100F5560
+		public SimpleClass() {} // 0x100F8700-0x100F8710
 	
 		// Methods
-		public static SimpleStruct StaticFunc(SimpleStruct ss) => default; // 0x105F23D0-0x105F2460
-		public SimpleStruct InstanceFunc(SimpleStruct ss) => default; // 0x105F2350-0x105F23D0
-		public int func(int val) => default; // 0x105F24E0-0x105F24F0
+		public static SimpleStruct StaticFunc(SimpleStruct ss) => default; // 0x105F01B0-0x105F0240
+		public SimpleStruct InstanceFunc(SimpleStruct ss) => default; // 0x105F0130-0x105F01B0
+		public int func(int val) => default; // 0x105F02C0-0x105F02D0
 	}
 
 	public struct SimpleStruct : SimpleInterface // TypeDefIndex: 2875
@@ -999,9 +999,9 @@ namespace Il2CppTests.TestSources
 		public int i; // 0x04
 	
 		// Methods
-		public static SimpleStruct StaticFunc(SimpleStruct ss) => default; // 0x105F2600-0x105F2600
-		public SimpleClass InstanceFunc(SimpleStruct ss) => default; // 0x10063990-0x10063A10
-		public int func(int val) => default; // 0x10063A10-0x100F3000
+		public static SimpleStruct StaticFunc(SimpleStruct ss) => default; // 0x105F03E0-0x105F03E0
+		public SimpleClass InstanceFunc(SimpleStruct ss) => default; // 0x10064670-0x100646F0
+		public int func(int val) => default; // 0x100646F0-0x100F8000
 	}
 
 	public interface SimpleInterface // TypeDefIndex: 2876

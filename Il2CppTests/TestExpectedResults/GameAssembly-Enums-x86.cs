@@ -12,1038 +12,1035 @@ using System.Runtime.InteropServices;
 using System.Security;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-2871
-[assembly: AllowPartiallyTrustedCallers] // 0x1000C650-0x1000C920
-// [assembly: AssemblyCompany] // 0x1000C650-0x1000C920
-// [assembly: AssemblyCopyright] // 0x1000C650-0x1000C920
-// [assembly: AssemblyDefaultAlias] // 0x1000C650-0x1000C920
-// [assembly: AssemblyDelaySign] // 0x1000C650-0x1000C920
-// [assembly: AssemblyDescription] // 0x1000C650-0x1000C920
-// [assembly: AssemblyFileVersion] // 0x1000C650-0x1000C920
-// [assembly: AssemblyInformationalVersion] // 0x1000C650-0x1000C920
-// [assembly: AssemblyKeyFile] // 0x1000C650-0x1000C920
-// [assembly: AssemblyProduct] // 0x1000C650-0x1000C920
-// [assembly: AssemblyTitle] // 0x1000C650-0x1000C920
-// [assembly: CLSCompliant] // 0x1000C650-0x1000C920
-// [assembly: ComCompatibleVersion] // 0x1000C650-0x1000C920
-// [assembly: CompilationRelaxations] // 0x1000C650-0x1000C920
-// [assembly: ComVisible] // 0x1000C650-0x1000C920
-// [assembly: Debuggable] // 0x1000C650-0x1000C920
-// [assembly: DefaultDependency] // 0x1000C650-0x1000C920
-// [assembly: Guid] // 0x1000C650-0x1000C920
-// [assembly: InternalsVisibleTo] // 0x1000C650-0x1000C920
-// [assembly: InternalsVisibleTo] // 0x1000C650-0x1000C920
-// [assembly: InternalsVisibleTo] // 0x1000C650-0x1000C920
-// [assembly: InternalsVisibleTo] // 0x1000C650-0x1000C920
-// [assembly: InternalsVisibleTo] // 0x1000C650-0x1000C920
-// [assembly: NeutralResourcesLanguage] // 0x1000C650-0x1000C920
-[assembly: RuntimeCompatibility] // 0x1000C650-0x1000C920
-// [assembly: SatelliteContractVersion] // 0x1000C650-0x1000C920
-[assembly: StringFreezing] // 0x1000C650-0x1000C920
+[assembly: AllowPartiallyTrustedCallers] // 0x10006DD0-0x100070A0
+// [assembly: AssemblyCompany] // 0x10006DD0-0x100070A0
+// [assembly: AssemblyCopyright] // 0x10006DD0-0x100070A0
+// [assembly: AssemblyDefaultAlias] // 0x10006DD0-0x100070A0
+// [assembly: AssemblyDelaySign] // 0x10006DD0-0x100070A0
+// [assembly: AssemblyDescription] // 0x10006DD0-0x100070A0
+// [assembly: AssemblyFileVersion] // 0x10006DD0-0x100070A0
+// [assembly: AssemblyInformationalVersion] // 0x10006DD0-0x100070A0
+// [assembly: AssemblyKeyFile] // 0x10006DD0-0x100070A0
+// [assembly: AssemblyProduct] // 0x10006DD0-0x100070A0
+// [assembly: AssemblyTitle] // 0x10006DD0-0x100070A0
+// [assembly: CLSCompliant] // 0x10006DD0-0x100070A0
+// [assembly: ComCompatibleVersion] // 0x10006DD0-0x100070A0
+// [assembly: CompilationRelaxations] // 0x10006DD0-0x100070A0
+// [assembly: ComVisible] // 0x10006DD0-0x100070A0
+// [assembly: Debuggable] // 0x10006DD0-0x100070A0
+// [assembly: DefaultDependency] // 0x10006DD0-0x100070A0
+// [assembly: Guid] // 0x10006DD0-0x100070A0
+// [assembly: InternalsVisibleTo] // 0x10006DD0-0x100070A0
+// [assembly: InternalsVisibleTo] // 0x10006DD0-0x100070A0
+// [assembly: InternalsVisibleTo] // 0x10006DD0-0x100070A0
+// [assembly: InternalsVisibleTo] // 0x10006DD0-0x100070A0
+// [assembly: InternalsVisibleTo] // 0x10006DD0-0x100070A0
+// [assembly: NeutralResourcesLanguage] // 0x10006DD0-0x100070A0
+[assembly: RuntimeCompatibility] // 0x10006DD0-0x100070A0
+// [assembly: SatelliteContractVersion] // 0x10006DD0-0x100070A0
+[assembly: StringFreezing] // 0x10006DD0-0x100070A0
 
-// Image 1: Enums.dll - Assembly: Enums, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 2872-2876
-// [assembly: CompilationRelaxations] // 0x1000B000-0x1000B050
-// [assembly: Debuggable] // 0x1000B000-0x1000B050
-[assembly: RuntimeCompatibility] // 0x1000B000-0x1000B050
+// Image 1: Enums.dll - Assembly: Enums, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 2872-2879
+// [assembly: CompilationRelaxations] // 0x1006D210-0x1006D260
+// [assembly: Debuggable] // 0x1006D210-0x1006D260
+[assembly: RuntimeCompatibility] // 0x1006D210-0x1006D260
 
-internal static class Interop // TypeDefIndex: 2
+internal static class Interop // TypeDefIndex: 3
 {
 	// Nested types
-	internal static class Libraries // TypeDefIndex: 3
+	internal static class Libraries // TypeDefIndex: 2
 	{
 		// Fields
-		internal const string CoreLibNative = "System.Private.CoreLib.Native"; // Metadata: 0x001769D0
+		internal const string CoreLibNative = "System.Private.CoreLib.Native"; // Metadata: 0x00176928
 	}
 }
 
 internal static class AssemblyRef // TypeDefIndex: 4
 {
 	// Fields
-	internal const string SystemConfiguration = "System.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x001769F1
-	internal const string System = "System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"; // Metadata: 0x00176A4C
-	public const string EcmaPublicKey = "b77a5c561934e089"; // Metadata: 0x00176A99
-	public const string FrameworkPublicKeyFull = "0024000004800000940000000602000000240000525341310004000001000100B5FC90E7027F67871E773A8FDE8938C81DD402BA65B9201D60593E96C492651E889CC13F1415EBB53FAC1131AE0BD333C5EE6021672D9718EA31A8AEBD0DA0072F25D87DBA6FC90FFD598ED4DA35E44C398C454307E8E33B8426143DAEC9F596836F97C8F74750E5975C64E2189F45DEF46B2A2B1247ADC3652BF5C308055DA9"; // Metadata: 0x00176AAD
-	public const string FrameworkPublicKeyFull2 = "00240000048000009400000006020000002400005253413100040000010001008D56C76F9E8649383049F383C44BE0EC204181822A6C31CF5EB7EF486944D032188EA1D3920763712CCB12D75FB77E9811149E6148E5D32FBAAB37611C1878DDC19E20EF135D0CB2CFF2BFEC3D115810C3D9069638FE4BE215DBF795861920E5AB6F7DB2E2CEEF136AC23D5DD2BF031700AEC232F6C6B1C785B4305C123B37AB"; // Metadata: 0x00176BF1
-	public const string MicrosoftPublicKey = "b03f5f7f11d50a3a"; // Metadata: 0x00176D35
-	public const string MicrosoftJScript = "Microsoft.JScript, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00176D49
-	public const string MicrosoftVSDesigner = "Microsoft.VSDesigner, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00176DA1
-	public const string SystemData = "System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x00176DFC
-	public const string SystemDesign = "System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00176E4E
-	public const string SystemDrawing = "System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00176EA2
-	public const string SystemWeb = "System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00176EF7
-	public const string SystemWebExtensions = "System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"; // Metadata: 0x00176F48
-	public const string SystemWindowsForms = "System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x00176FA4
+	internal const string SystemConfiguration = "System.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00176949
+	internal const string System = "System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"; // Metadata: 0x001769A4
+	public const string EcmaPublicKey = "b77a5c561934e089"; // Metadata: 0x001769F1
+	public const string FrameworkPublicKeyFull = "0024000004800000940000000602000000240000525341310004000001000100B5FC90E7027F67871E773A8FDE8938C81DD402BA65B9201D60593E96C492651E889CC13F1415EBB53FAC1131AE0BD333C5EE6021672D9718EA31A8AEBD0DA0072F25D87DBA6FC90FFD598ED4DA35E44C398C454307E8E33B8426143DAEC9F596836F97C8F74750E5975C64E2189F45DEF46B2A2B1247ADC3652BF5C308055DA9"; // Metadata: 0x00176A05
+	public const string FrameworkPublicKeyFull2 = "00240000048000009400000006020000002400005253413100040000010001008D56C76F9E8649383049F383C44BE0EC204181822A6C31CF5EB7EF486944D032188EA1D3920763712CCB12D75FB77E9811149E6148E5D32FBAAB37611C1878DDC19E20EF135D0CB2CFF2BFEC3D115810C3D9069638FE4BE215DBF795861920E5AB6F7DB2E2CEEF136AC23D5DD2BF031700AEC232F6C6B1C785B4305C123B37AB"; // Metadata: 0x00176B49
+	public const string MicrosoftPublicKey = "b03f5f7f11d50a3a"; // Metadata: 0x00176C8D
+	public const string MicrosoftJScript = "Microsoft.JScript, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00176CA1
+	public const string MicrosoftVSDesigner = "Microsoft.VSDesigner, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00176CF9
+	public const string SystemData = "System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x00176D54
+	public const string SystemDesign = "System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00176DA6
+	public const string SystemDrawing = "System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00176DFA
+	public const string SystemWeb = "System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00176E4F
+	public const string SystemWebExtensions = "System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"; // Metadata: 0x00176EA0
+	public const string SystemWindowsForms = "System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x00176EFC
 }
 
 internal static class Consts // TypeDefIndex: 5
 {
 	// Fields
-	public const string MonoVersion = "5.11.0.0"; // Metadata: 0x00176FFF
-	public const string MonoCompany = "Mono development team"; // Metadata: 0x0017700B
-	public const string MonoProduct = "Mono Common Language Infrastructure"; // Metadata: 0x00177024
-	public const string MonoCopyright = "(c) Various Mono authors"; // Metadata: 0x0017704B
-	public const int MonoCorlibVersion = 1051100001; // Metadata: 0x00177067
-	public const string FxVersion = "4.0.0.0"; // Metadata: 0x0017706B
-	public const string FxFileVersion = "4.0.30319.17020"; // Metadata: 0x00177076
-	public const string EnvironmentVersion = "4.0.30319.17020"; // Metadata: 0x00177089
-	public const string VsVersion = "0.0.0.0"; // Metadata: 0x0017709C
-	public const string VsFileVersion = "11.0.0.0"; // Metadata: 0x001770A7
-	private const string PublicKeyToken = "b77a5c561934e089"; // Metadata: 0x001770B3
-	public const string AssemblyI18N = "I18N, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x001770C7
-	public const string AssemblyMicrosoft_JScript = "Microsoft.JScript, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00177112
-	public const string AssemblyMicrosoft_VisualStudio = "Microsoft.VisualStudio, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x0017716A
-	public const string AssemblyMicrosoft_VisualStudio_Web = "Microsoft.VisualStudio.Web, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x001771C7
-	public const string AssemblyMicrosoft_VSDesigner = "Microsoft.VSDesigner, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00177228
-	public const string AssemblyMono_Http = "Mono.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x00177283
-	public const string AssemblyMono_Posix = "Mono.Posix, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x001772D3
-	public const string AssemblyMono_Security = "Mono.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x00177324
-	public const string AssemblyMono_Messaging_RabbitMQ = "Mono.Messaging.RabbitMQ, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x00177378
-	public const string AssemblyCorlib = "mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x001773D6
-	public const string AssemblySystem = "System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x00177425
-	public const string AssemblySystem_Data = "System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x00177472
-	public const string AssemblySystem_Design = "System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x001774C4
-	public const string AssemblySystem_DirectoryServices = "System.DirectoryServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00177518
-	public const string AssemblySystem_Drawing = "System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00177577
-	public const string AssemblySystem_Drawing_Design = "System.Drawing.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x001775CC
-	public const string AssemblySystem_Messaging = "System.Messaging, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00177628
-	public const string AssemblySystem_Security = "System.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x0017767F
-	public const string AssemblySystem_ServiceProcess = "System.ServiceProcess, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x001776D5
-	public const string AssemblySystem_Web = "System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00177731
-	public const string AssemblySystem_Windows_Forms = "System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x00177782
-	public const string AssemblySystem_2_0 = "System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x001777DD
-	public const string AssemblySystemCore_3_5 = "System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x0017782A
-	public const string AssemblySystem_Core = "System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x0017787C
-	public const string WindowsBase_3_0 = "WindowsBase, Version=3.0.0.0, PublicKeyToken=31bf3856ad364e35"; // Metadata: 0x001778CE
-	public const string AssemblyWindowsBase = "WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"; // Metadata: 0x0017790F
-	public const string AssemblyPresentationCore_3_5 = "PresentationCore, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"; // Metadata: 0x00177961
-	public const string AssemblyPresentationCore_4_0 = "PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"; // Metadata: 0x001779B8
-	public const string AssemblyPresentationFramework_3_5 = "PresentationFramework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"; // Metadata: 0x00177A0F
-	public const string AssemblySystemServiceModel_3_0 = "System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x00177A6B
+	public const string MonoVersion = "5.11.0.0"; // Metadata: 0x00176F57
+	public const string MonoCompany = "Mono development team"; // Metadata: 0x00176F63
+	public const string MonoProduct = "Mono Common Language Infrastructure"; // Metadata: 0x00176F7C
+	public const string MonoCopyright = "(c) Various Mono authors"; // Metadata: 0x00176FA3
+	public const int MonoCorlibVersion = 1051100001; // Metadata: 0x00176FBF
+	public const string FxVersion = "4.0.0.0"; // Metadata: 0x00176FC3
+	public const string FxFileVersion = "4.0.30319.17020"; // Metadata: 0x00176FCE
+	public const string EnvironmentVersion = "4.0.30319.17020"; // Metadata: 0x00176FE1
+	public const string VsVersion = "0.0.0.0"; // Metadata: 0x00176FF4
+	public const string VsFileVersion = "11.0.0.0"; // Metadata: 0x00176FFF
+	private const string PublicKeyToken = "b77a5c561934e089"; // Metadata: 0x0017700B
+	public const string AssemblyI18N = "I18N, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x0017701F
+	public const string AssemblyMicrosoft_JScript = "Microsoft.JScript, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x0017706A
+	public const string AssemblyMicrosoft_VisualStudio = "Microsoft.VisualStudio, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x001770C2
+	public const string AssemblyMicrosoft_VisualStudio_Web = "Microsoft.VisualStudio.Web, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x0017711F
+	public const string AssemblyMicrosoft_VSDesigner = "Microsoft.VSDesigner, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00177180
+	public const string AssemblyMono_Http = "Mono.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x001771DB
+	public const string AssemblyMono_Posix = "Mono.Posix, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x0017722B
+	public const string AssemblyMono_Security = "Mono.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x0017727C
+	public const string AssemblyMono_Messaging_RabbitMQ = "Mono.Messaging.RabbitMQ, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"; // Metadata: 0x001772D0
+	public const string AssemblyCorlib = "mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x0017732E
+	public const string AssemblySystem = "System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x0017737D
+	public const string AssemblySystem_Data = "System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x001773CA
+	public const string AssemblySystem_Design = "System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x0017741C
+	public const string AssemblySystem_DirectoryServices = "System.DirectoryServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00177470
+	public const string AssemblySystem_Drawing = "System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x001774CF
+	public const string AssemblySystem_Drawing_Design = "System.Drawing.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00177524
+	public const string AssemblySystem_Messaging = "System.Messaging, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00177580
+	public const string AssemblySystem_Security = "System.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x001775D7
+	public const string AssemblySystem_ServiceProcess = "System.ServiceProcess, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x0017762D
+	public const string AssemblySystem_Web = "System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"; // Metadata: 0x00177689
+	public const string AssemblySystem_Windows_Forms = "System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x001776DA
+	public const string AssemblySystem_2_0 = "System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x00177735
+	public const string AssemblySystemCore_3_5 = "System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x00177782
+	public const string AssemblySystem_Core = "System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x001777D4
+	public const string WindowsBase_3_0 = "WindowsBase, Version=3.0.0.0, PublicKeyToken=31bf3856ad364e35"; // Metadata: 0x00177826
+	public const string AssemblyWindowsBase = "WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"; // Metadata: 0x00177867
+	public const string AssemblyPresentationCore_3_5 = "PresentationCore, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"; // Metadata: 0x001778B9
+	public const string AssemblyPresentationCore_4_0 = "PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"; // Metadata: 0x00177910
+	public const string AssemblyPresentationFramework_3_5 = "PresentationFramework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"; // Metadata: 0x00177967
+	public const string AssemblySystemServiceModel_3_0 = "System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"; // Metadata: 0x001779C3
 }
 
 internal sealed class Locale // TypeDefIndex: 6
 {
 	// Constructors
-	private Locale() {} // 0x100F5550-0x100F5560
+	private Locale() {} // 0x101403B0-0x101403C0
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x101163D0-0x101163E0
-	public static string GetText(string fmt, params /* 0x10003130-0x10003150 */ object[] args) => default; // 0x102B2CB0-0x102B2CC0
+	public static string GetText(string msg) => default; // 0x1012C590-0x1012C5A0
+	public static string GetText(string fmt, params /* 0x10003570-0x10003590 */ object[] args) => default; // 0x10365D40-0x10365D70
 }
 
 internal static class SR // TypeDefIndex: 7
 {
 	// Fields
-	public const string Arg_AccessException = "Cannot access member."; // Metadata: 0x00177AC5
-	public const string Arg_AccessViolationException = "Attempted to read or write protected memory. This is often an indication that other memory is corrupt."; // Metadata: 0x00177ADE
-	public const string Arg_ApplicationException = "Error in the application."; // Metadata: 0x00177B48
-	public const string Arg_ArgumentException = "Value does not fall within the expected range."; // Metadata: 0x00177B65
-	public const string Arg_ArgumentOutOfRangeException = "Specified argument was out of the range of valid values."; // Metadata: 0x00177B97
-	public const string Arg_ArithmeticException = "Overflow or underflow in the arithmetic operation."; // Metadata: 0x00177BD3
-	public const string Arg_ArrayPlusOffTooSmall = "Destination array is not long enough to copy all the items in the collection. Check array index and length."; // Metadata: 0x00177C09
-	public const string Arg_ArrayTypeMismatchException = "Attempted to access an element as a type incompatible with the array."; // Metadata: 0x00177C78
-	public const string Arg_ArrayZeroError = "Array must not be of length zero."; // Metadata: 0x00177CC1
-	public const string Arg_BadImageFormatException = "Format of the executable (.exe) or library (.dll) is invalid."; // Metadata: 0x00177CE6
-	public const string Arg_BogusIComparer = "Unable to sort because the IComparer.Compare() method returns inconsistent results. Either a value does not compare equal to itself, or one value repeatedly compared to another value yields different results. IComparer: \'{0}\'."; // Metadata: 0x00177D27
-	public const string Arg_CannotBeNaN = "TimeSpan does not accept floating point Not-a-Number values."; // Metadata: 0x00177E0D
-	public const string Arg_CannotHaveNegativeValue = "String cannot contain a minus sign if the base is not 10."; // Metadata: 0x00177E4D
-	public const string Arg_CopyNonBlittableArray = "Arrays must contain only blittable data in order to be copied to unmanaged memory."; // Metadata: 0x00177E8A
-	public const string Arg_CopyOutOfRange = "Requested range extends past the end of the array."; // Metadata: 0x00177EE0
-	public const string Arg_CryptographyException = "Error occurred during a cryptographic operation."; // Metadata: 0x00177F16
-	public const string Arg_DataMisalignedException = "A datatype misalignment was detected in a load or store instruction."; // Metadata: 0x00177F4A
-	public const string Arg_DateTimeRange = "Combination of arguments to the DateTime constructor is out of the legal range."; // Metadata: 0x00177F92
-	public const string Arg_DirectoryNotFoundException = "Attempted to access a path that is not on the disk."; // Metadata: 0x00177FE5
-	public const string Arg_DecBitCtor = "Decimal byte array constructor requires an array of length four containing valid decimal bytes."; // Metadata: 0x0017801C
-	public const string Arg_DivideByZero = "Attempted to divide by zero."; // Metadata: 0x0017807F
-	public const string Arg_DlgtNullInst = "Delegate to an instance method cannot have null \'this\'."; // Metadata: 0x0017809F
-	public const string Arg_DlgtTypeMis = "Delegates must be of the same type."; // Metadata: 0x001780DA
-	public const string Arg_DuplicateWaitObjectException = "Duplicate objects in argument."; // Metadata: 0x00178101
-	public const string Arg_EnumAndObjectMustBeSameType = "Object must be the same type as the enum. The type passed in was \'{0}\'; the enum type was \'{1}\'."; // Metadata: 0x00178123
-	public const string Arg_EntryPointNotFoundException = "Entry point was not found."; // Metadata: 0x00178187
-	public const string Arg_EntryPointNotFoundExceptionParameterized = "Unable to find an entry point named \'{0}\' in DLL \'{1}\'."; // Metadata: 0x001781A5
-	public const string Arg_EnumIllegalVal = "Illegal enum value: {0}."; // Metadata: 0x001781E0
-	public const string Arg_ExecutionEngineException = "Internal error in the runtime."; // Metadata: 0x001781FC
-	public const string Arg_ExternalException = "External component has thrown an exception."; // Metadata: 0x0017821E
-	public const string Arg_FieldAccessException = "Attempted to access a field that is not accessible by the caller."; // Metadata: 0x0017824D
-	public const string Arg_FormatException = "One of the identified items was in an invalid format."; // Metadata: 0x00178292
-	public const string Arg_GuidArrayCtor = "Byte array for GUID must be exactly {0} bytes long."; // Metadata: 0x001782CB
-	public const string Arg_HexStyleNotSupported = "The number style AllowHexSpecifier is not supported on floating point data types."; // Metadata: 0x00178302
-	public const string Arg_HTCapacityOverflow = "Hashtable\'s capacity overflowed and went negative. Check load factor, capacity and the current size of the table."; // Metadata: 0x00178357
-	public const string Arg_IndexOutOfRangeException = "Index was outside the bounds of the array."; // Metadata: 0x001783CC
-	public const string Arg_InsufficientExecutionStackException = "Insufficient stack to continue executing the program safely. This can happen from having too many functions on the call stack or function on the stack using too much stack space."; // Metadata: 0x001783FA
-	public const string Arg_InvalidBase = "Invalid Base."; // Metadata: 0x001784B0
-	public const string Arg_InvalidCastException = "Specified cast is not valid."; // Metadata: 0x001784C1
-	public const string Arg_InvalidHexStyle = "With the AllowHexSpecifier bit set in the enum bit field, the only other valid bits that can be combined into the enum value must be a subset of those in HexNumber."; // Metadata: 0x001784E1
-	public const string Arg_InvalidOperationException = "Operation is not valid due to the current state of the object."; // Metadata: 0x00178589
-	public const string Arg_OleAutDateInvalid = " Not a legal OleAut date."; // Metadata: 0x001785CB
-	public const string Arg_OleAutDateScale = "OleAut date did not convert to a DateTime correctly."; // Metadata: 0x001785E8
-	public const string Arg_InvalidRuntimeTypeHandle = "Invalid RuntimeTypeHandle."; // Metadata: 0x00178620
-	public const string Arg_IOException = "I/O error occurred."; // Metadata: 0x0017863E
-	public const string Arg_KeyNotFound = "The given key was not present in the dictionary."; // Metadata: 0x00178655
-	public const string Arg_LongerThanSrcString = "Source string was not long enough. Check sourceIndex and count."; // Metadata: 0x00178689
-	public const string Arg_LowerBoundsMustMatch = "The arrays\' lower bounds must be identical."; // Metadata: 0x001786CC
-	public const string Arg_MissingFieldException = "Attempted to access a non-existing field."; // Metadata: 0x001786FB
-	public const string Arg_MethodAccessException = "Attempt to access the method failed."; // Metadata: 0x00178728
-	public const string Arg_MissingMemberException = "Attempted to access a missing member."; // Metadata: 0x00178750
-	public const string Arg_MissingMethodException = "Attempted to access a missing method."; // Metadata: 0x00178779
-	public const string Arg_MulticastNotSupportedException = "Attempted to add multiple callbacks to a delegate that does not support multicast."; // Metadata: 0x001787A2
-	public const string Arg_MustBeBoolean = "Object must be of type Boolean."; // Metadata: 0x001787F8
-	public const string Arg_MustBeByte = "Object must be of type Byte."; // Metadata: 0x0017881B
-	public const string Arg_MustBeChar = "Object must be of type Char."; // Metadata: 0x0017883B
-	public const string Arg_MustBeDateTime = "Object must be of type DateTime."; // Metadata: 0x0017885B
-	public const string Arg_MustBeDateTimeOffset = "Object must be of type DateTimeOffset."; // Metadata: 0x0017887F
-	public const string Arg_MustBeDecimal = "Object must be of type Decimal."; // Metadata: 0x001788A9
-	public const string Arg_MustBeDouble = "Object must be of type Double."; // Metadata: 0x001788CC
-	public const string Arg_MustBeEnum = "Type provided must be an Enum."; // Metadata: 0x001788EE
-	public const string Arg_MustBeGuid = "Object must be of type GUID."; // Metadata: 0x00178910
-	public const string Arg_MustBeInt16 = "Object must be of type Int16."; // Metadata: 0x00178930
-	public const string Arg_MustBeInt32 = "Object must be of type Int32."; // Metadata: 0x00178951
-	public const string Arg_MustBeInt64 = "Object must be of type Int64."; // Metadata: 0x00178972
-	public const string Arg_MustBePrimArray = "Object must be an array of primitives."; // Metadata: 0x00178993
-	public const string Arg_MustBeSByte = "Object must be of type SByte."; // Metadata: 0x001789BD
-	public const string Arg_MustBeSingle = "Object must be of type Single."; // Metadata: 0x001789DE
-	public const string Arg_MustBeStatic = "Method must be a static method."; // Metadata: 0x00178A00
-	public const string Arg_MustBeString = "Object must be of type String."; // Metadata: 0x00178A23
-	public const string Arg_MustBeStringPtrNotAtom = "The pointer passed in as a String must not be in the bottom 64K of the process\'s address space."; // Metadata: 0x00178A45
-	public const string Arg_MustBeTimeSpan = "Object must be of type TimeSpan."; // Metadata: 0x00178AA8
-	public const string Arg_MustBeUInt16 = "Object must be of type UInt16."; // Metadata: 0x00178ACC
-	public const string Arg_MustBeUInt32 = "Object must be of type UInt32."; // Metadata: 0x00178AEE
-	public const string Arg_MustBeUInt64 = "Object must be of type UInt64."; // Metadata: 0x00178B10
-	public const string Arg_MustBeVersion = "Object must be of type Version."; // Metadata: 0x00178B32
-	public const string Arg_NeedAtLeast1Rank = "Must provide at least one rank."; // Metadata: 0x00178B55
-	public const string Arg_Need2DArray = "Array was not a two-dimensional array."; // Metadata: 0x00178B78
-	public const string Arg_Need3DArray = "Array was not a three-dimensional array."; // Metadata: 0x00178BA2
-	public const string Arg_NegativeArgCount = "Argument count must not be negative."; // Metadata: 0x00178BCE
-	public const string Arg_NotFiniteNumberException = "Arg_NotFiniteNumberException = Number encountered was not a finite quantity."; // Metadata: 0x00178BF6
-	public const string Arg_NonZeroLowerBound = "The lower bound of target array must be zero."; // Metadata: 0x00178C46
-	public const string Arg_NotGenericParameter = "Method may only be called on a Type for which Type.IsGenericParameter is true."; // Metadata: 0x00178C77
-	public const string Arg_NotImplementedException = "The method or operation is not implemented."; // Metadata: 0x00178CC9
-	public const string Arg_NotSupportedException = "Specified method is not supported."; // Metadata: 0x00178CF8
-	public const string Arg_NotSupportedNonZeroLowerBound = "Arrays with non-zero lower bounds are not supported."; // Metadata: 0x00178D1E
-	public const string Arg_NullReferenceException = "Object reference not set to an instance of an object."; // Metadata: 0x00178D56
-	public const string Arg_ObjObjEx = "Object of type \'{0}\' cannot be converted to type \'{1}\'."; // Metadata: 0x00178D8F
-	public const string Arg_OverflowException = "Arithmetic operation resulted in an overflow."; // Metadata: 0x00178DCA
-	public const string Arg_OutOfMemoryException = "Insufficient memory to continue the execution of the program."; // Metadata: 0x00178DFB
-	public const string Arg_PlatformNotSupported = "Operation is not supported on this platform."; // Metadata: 0x00178E3C
-	public const string Arg_ParamName_Name = "Parameter name: {0}"; // Metadata: 0x00178E6C
-	public const string Arg_PathIllegal = "The path is not of a legal form."; // Metadata: 0x00178E83
-	public const string Arg_PathIllegalUNC = "The UNC path should be of the form \\\\\\\\server\\\\share."; // Metadata: 0x00178EA7
-	public const string Arg_RankException = "Attempted to operate on an array with the incorrect number of dimensions."; // Metadata: 0x00178EE0
-	public const string Arg_RankIndices = "Indices length does not match the array rank."; // Metadata: 0x00178F2D
-	public const string Arg_RankMultiDimNotSupported = "Only single dimensional arrays are supported for the requested action."; // Metadata: 0x00178F5E
-	public const string Arg_RanksAndBounds = "Number of lengths and lowerBounds must match."; // Metadata: 0x00178FA8
-	public const string Arg_RegGetOverflowBug = "RegistryKey.GetValue does not allow a String that has a length greater than Int32.MaxValue."; // Metadata: 0x00178FD9
-	public const string Arg_RegKeyNotFound = "The specified registry key does not exist."; // Metadata: 0x00179038
-	public const string Arg_SecurityException = "Security error."; // Metadata: 0x00179066
-	public const string Arg_StackOverflowException = "Operation caused a stack overflow."; // Metadata: 0x00179079
-	public const string Arg_SynchronizationLockException = "Object synchronization method was called from an unsynchronized block of code."; // Metadata: 0x0017909F
-	public const string Arg_SystemException = "System error."; // Metadata: 0x001790F1
-	public const string Arg_TargetInvocationException = "Exception has been thrown by the target of an invocation."; // Metadata: 0x00179102
-	public const string Arg_TargetParameterCountException = "Number of parameters specified does not match the expected number."; // Metadata: 0x0017913F
-	public const string Arg_DefaultValueMissingException = "Missing parameter does not have a default value."; // Metadata: 0x00179185
-	public const string Arg_ThreadStartException = "Thread failed to start."; // Metadata: 0x001791B9
-	public const string Arg_ThreadStateException = "Thread was in an invalid state for the operation being executed."; // Metadata: 0x001791D4
-	public const string Arg_TimeoutException = "The operation has timed out."; // Metadata: 0x00179218
-	public const string Arg_TypeAccessException = "Attempt to access the type failed."; // Metadata: 0x00179238
-	public const string Arg_TypeLoadException = "Failure has occurred while loading a type."; // Metadata: 0x0017925E
-	public const string Arg_UnauthorizedAccessException = "Attempted to perform an unauthorized operation."; // Metadata: 0x0017928C
-	public const string Arg_VersionString = "Version string portion was too short or too long."; // Metadata: 0x001792BF
-	public const string Arg_WrongType = "The value \'{0}\' is not of type \'{1}\' and cannot be used in this generic collection."; // Metadata: 0x001792F4
-	public const string Argument_AbsolutePathRequired = "Absolute path information is required."; // Metadata: 0x0017934B
-	public const string Argument_AddingDuplicate = "An item with the same key has already been added. Key: {0}"; // Metadata: 0x00179375
-	public const string Argument_AddingDuplicate__ = "Item has already been added. Key in dictionary: \'{0}\'  Key being added: \'{1}\'"; // Metadata: 0x001793B3
-	public const string Argument_AdjustmentRulesNoNulls = "The AdjustmentRule array cannot contain null elements."; // Metadata: 0x00179404
-	public const string Argument_AdjustmentRulesOutOfOrder = "The elements of the AdjustmentRule array must be in chronological order and must not overlap."; // Metadata: 0x0017943E
-	public const string Argument_BadFormatSpecifier = "Format specifier was invalid."; // Metadata: 0x0017949F
-	public const string Argument_CodepageNotSupported = "{0} is not a supported code page."; // Metadata: 0x001794C0
-	public const string Argument_CompareOptionOrdinal = "CompareOption.Ordinal cannot be used with other options."; // Metadata: 0x001794E5
-	public const string Argument_ConflictingDateTimeRoundtripStyles = "The DateTimeStyles value RoundtripKind cannot be used with the values AssumeLocal, AssumeUniversal or AdjustToUniversal."; // Metadata: 0x00179521
-	public const string Argument_ConflictingDateTimeStyles = "The DateTimeStyles values AssumeLocal and AssumeUniversal cannot be used together."; // Metadata: 0x0017959D
-	public const string Argument_ConversionOverflow = "Conversion buffer overflow."; // Metadata: 0x001795F3
-	public const string Argument_ConvertMismatch = "The conversion could not be completed because the supplied DateTime did not have the Kind property set correctly.  For example, when the Kind property is DateTimeKind.Local, the source time zone must be TimeZoneInfo.Local."; // Metadata: 0x00179612
-	public const string Argument_CultureInvalidIdentifier = "{0} is an invalid culture identifier."; // Metadata: 0x001796F4
-	public const string Argument_CultureIetfNotSupported = "Culture IETF Name {0} is not a recognized IETF name."; // Metadata: 0x0017971D
-	public const string Argument_CultureIsNeutral = "Culture ID {0} (0x{0:X4}) is a neutral culture; a region cannot be created from it."; // Metadata: 0x00179755
-	public const string Argument_CultureNotSupported = "Culture is not supported."; // Metadata: 0x001797AC
-	public const string Argument_CustomCultureCannotBePassedByNumber = "Customized cultures cannot be passed by LCID, only by name."; // Metadata: 0x001797C9
-	public const string Argument_DateTimeBadBinaryData = "The binary data must result in a DateTime with ticks between DateTime.MinValue.Ticks and DateTime.MaxValue.Ticks."; // Metadata: 0x00179808
-	public const string Argument_DateTimeHasTicks = "The supplied DateTime must have the Year, Month, and Day properties set to 1.  The time cannot be specified more precisely than whole milliseconds."; // Metadata: 0x0017987D
-	public const string Argument_DateTimeHasTimeOfDay = "The supplied DateTime includes a TimeOfDay setting.   This is not supported."; // Metadata: 0x00179914
-	public const string Argument_DateTimeIsInvalid = "The supplied DateTime represents an invalid time.  For example, when the clock is adjusted forward, any time in the period that is skipped is invalid."; // Metadata: 0x00179964
-	public const string Argument_DateTimeIsNotAmbiguous = "The supplied DateTime is not in an ambiguous time range."; // Metadata: 0x001799FE
-	public const string Argument_DateTimeKindMustBeUnspecified = "The supplied DateTime must have the Kind property set to DateTimeKind.Unspecified."; // Metadata: 0x00179A3A
-	public const string Argument_DateTimeOffsetInvalidDateTimeStyles = "The DateTimeStyles value \'NoCurrentDateDefault\' is not allowed when parsing DateTimeOffset."; // Metadata: 0x00179A90
-	public const string Argument_DateTimeOffsetIsNotAmbiguous = "The supplied DateTimeOffset is not in an ambiguous time range."; // Metadata: 0x00179AEF
-	public const string Argument_EmptyDecString = "Decimal separator cannot be the empty string."; // Metadata: 0x00179B31
-	public const string Argument_EmptyName = "Empty name is not legal."; // Metadata: 0x00179B62
-	public const string Argument_EmptyWaithandleArray = "Waithandle array may not be empty."; // Metadata: 0x00179B7E
-	public const string Argument_EncoderFallbackNotEmpty = "Must complete Convert() operation or call Encoder.Reset() before calling GetBytes() or GetByteCount(). Encoder \'{0}\' fallback \'{1}\'."; // Metadata: 0x00179BA4
-	public const string Argument_EncodingConversionOverflowBytes = "The output byte buffer is too small to contain the encoded data, encoding \'{0}\' fallback \'{1}\'."; // Metadata: 0x00179C2C
-	public const string Argument_EncodingConversionOverflowChars = "The output char buffer is too small to contain the decoded characters, encoding \'{0}\' fallback \'{1}\'."; // Metadata: 0x00179C8F
-	public const string Argument_EncodingNotSupported = "\'{0}\' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method."; // Metadata: 0x00179CF8
-	public const string Argument_EnumTypeDoesNotMatch = "The argument type, \'{0}\', is not the same as the enum type \'{1}\'."; // Metadata: 0x00179D92
-	public const string Argument_FallbackBufferNotEmpty = "Cannot change fallback when buffer is not empty. Previous Convert() call left data in the fallback buffer."; // Metadata: 0x00179DD7
-	public const string Argument_IdnBadLabelSize = "IDN labels must be between 1 and 63 characters long."; // Metadata: 0x00179E45
-	public const string Argument_IdnBadPunycode = "Invalid IDN encoded string."; // Metadata: 0x00179E7D
-	public const string Argument_IdnIllegalName = "Decoded string is not a valid IDN name."; // Metadata: 0x00179E9C
-	public const string Argument_ImplementIComparable = "At least one object must implement IComparable."; // Metadata: 0x00179EC7
-	public const string Argument_InvalidArgumentForComparison = "Type of argument is not compatible with the generic comparer."; // Metadata: 0x00179EFA
-	public const string Argument_InvalidArrayLength = "Length of the array must be {0}."; // Metadata: 0x00179F3B
-	public const string Argument_InvalidArrayType = "Target array type is not compatible with the type of items in the collection."; // Metadata: 0x00179F5F
-	public const string Argument_InvalidCalendar = "Not a valid calendar for the given culture."; // Metadata: 0x00179FB0
-	public const string Argument_InvalidCharSequence = "Invalid Unicode code point found at index {0}."; // Metadata: 0x00179FDF
-	public const string Argument_InvalidCharSequenceNoIndex = "String contains invalid Unicode code points."; // Metadata: 0x0017A011
-	public const string Argument_InvalidCodePageBytesIndex = "Unable to translate bytes {0} at index {1} from specified code page to Unicode."; // Metadata: 0x0017A041
-	public const string Argument_InvalidCodePageConversionIndex = "Unable to translate Unicode character \\\\u{0:X4} at index {1} to specified code page."; // Metadata: 0x0017A094
-	public const string Argument_InvalidCultureName = "Culture name \'{0}\' is not supported."; // Metadata: 0x0017A0EC
-	public const string Argument_InvalidDateTimeKind = "Invalid DateTimeKind value."; // Metadata: 0x0017A114
-	public const string Argument_InvalidDateTimeStyles = "An undefined DateTimeStyles value is being used."; // Metadata: 0x0017A133
-	public const string Argument_InvalidDigitSubstitution = "The DigitSubstitution property must be of a valid member of the DigitShapes enumeration. Valid entries include Context, NativeNational or None."; // Metadata: 0x0017A167
-	public const string Argument_InvalidEnumValue = "The value \'{0}\' is not valid for this usage of the type {1}."; // Metadata: 0x0017A1FA
-	public const string Argument_InvalidFlag = "Value of flags is invalid."; // Metadata: 0x0017A23A
-	public const string Argument_InvalidGroupSize = "Every element in the value array should be between one and nine, except for the last element, which can be zero."; // Metadata: 0x0017A258
-	public const string Argument_InvalidHighSurrogate = "Found a high surrogate char without a following low surrogate at index: {0}. The input may not be in this encoding, or may not contain valid Unicode (UTF-16) characters."; // Metadata: 0x0017A2CC
-	public const string Argument_InvalidId = "The specified ID parameter \'{0}\' is not supported."; // Metadata: 0x0017A379
-	public const string Argument_InvalidLowSurrogate = "Found a low surrogate char without a preceding high surrogate at index: {0}. The input may not be in this encoding, or may not contain valid Unicode (UTF-16) characters."; // Metadata: 0x0017A3AF
-	public const string Argument_InvalidNativeDigitCount = "The NativeDigits array must contain exactly ten members."; // Metadata: 0x0017A45C
-	public const string Argument_InvalidNativeDigitValue = "Each member of the NativeDigits array must be a single text element (one or more UTF16 code points) with a Unicode Nd (Number, Decimal Digit) property indicating it is a digit."; // Metadata: 0x0017A498
-	public const string Argument_InvalidNeutralRegionName = "The region name {0} should not correspond to neutral culture; a specific culture name is required."; // Metadata: 0x0017A54C
-	public const string Argument_InvalidNormalizationForm = "Invalid normalization form."; // Metadata: 0x0017A5B2
-	public const string Argument_InvalidNumberStyles = "An undefined NumberStyles value is being used."; // Metadata: 0x0017A5D1
-	public const string Argument_InvalidOffLen = "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."; // Metadata: 0x0017A603
-	public const string Argument_InvalidPathChars = "Illegal characters in path."; // Metadata: 0x0017A699
-	public const string Argument_InvalidREG_TZI_FORMAT = "The REG_TZI_FORMAT structure is corrupt."; // Metadata: 0x0017A6B8
-	public const string Argument_InvalidResourceCultureName = "The given culture name \'{0}\' cannot be used to locate a resource file. Resource filenames must consist of only letters, numbers, hyphens or underscores."; // Metadata: 0x0017A6E4
-	public const string Argument_InvalidSerializedString = "The specified serialized string \'{0}\' is not supported."; // Metadata: 0x0017A780
-	public const string Argument_InvalidTimeSpanStyles = "An undefined TimeSpanStyles value is being used."; // Metadata: 0x0017A7BB
-	public const string Argument_MustBeFalse = "Argument must be initialized to false"; // Metadata: 0x0017A7EF
-	public const string Argument_NoEra = "No Era was supplied."; // Metadata: 0x0017A818
-	public const string Argument_NoRegionInvariantCulture = "There is no region associated with the Invariant Culture (Culture ID: 0x7F)."; // Metadata: 0x0017A830
-	public const string Argument_NotIsomorphic = "Object contains non-primitive or non-blittable data."; // Metadata: 0x0017A880
-	public const string Argument_OffsetLocalMismatch = "The UTC Offset of the local dateTime parameter does not match the offset argument."; // Metadata: 0x0017A8B8
-	public const string Argument_OffsetPrecision = "Offset must be specified in whole minutes."; // Metadata: 0x0017A90E
-	public const string Argument_OffsetOutOfRange = "Offset must be within plus or minus 14 hours."; // Metadata: 0x0017A93C
-	public const string Argument_OffsetUtcMismatch = "The UTC Offset for Utc DateTime instances must be 0."; // Metadata: 0x0017A96D
-	public const string Argument_OneOfCulturesNotSupported = "Culture name {0} or {1} is not supported."; // Metadata: 0x0017A9A5
-	public const string Argument_OnlyMscorlib = "Only mscorlib\'s assembly is valid."; // Metadata: 0x0017A9D2
-	public const string Argument_OutOfOrderDateTimes = "The DateStart property must come before the DateEnd property."; // Metadata: 0x0017A9F8
-	public const string ArgumentOutOfRange_HugeArrayNotSupported = "Arrays larger than 2GB are not supported."; // Metadata: 0x0017AA39
-	public const string ArgumentOutOfRange_Index = "Index was out of range. Must be non-negative and less than the size of the collection."; // Metadata: 0x0017AA66
-	public const string ArgumentOutOfRange_Length = "The specified length exceeds maximum capacity of SecureString."; // Metadata: 0x0017AAC0
-	public const string ArgumentOutOfRange_LengthTooLarge = "The specified length exceeds the maximum value of {0}."; // Metadata: 0x0017AB02
-	public const string ArgumentOutOfRange_NeedNonNegNum = "Non-negative number required."; // Metadata: 0x0017AB3C
-	public const string ArgumentOutOfRange_NeedNonNegNumRequired = "Non-negative number required."; // Metadata: 0x0017AB5D
-	public const string Argument_PathFormatNotSupported = "The given path\'s format is not supported."; // Metadata: 0x0017AB7E
-	public const string Argument_RecursiveFallback = "Recursive fallback not allowed for character \\\\u{0:X4}."; // Metadata: 0x0017ABAB
-	public const string Argument_RecursiveFallbackBytes = "Recursive fallback not allowed for bytes {0}."; // Metadata: 0x0017ABE6
-	public const string Argument_ResultCalendarRange = "The result is out of the supported range for this calendar. The result should be between {0} (Gregorian date) and {1} (Gregorian date), inclusive."; // Metadata: 0x0017AC17
-	public const string Argument_SemaphoreInitialMaximum = "The initial count for the semaphore must be greater than or equal to zero and less than the maximum count."; // Metadata: 0x0017ACAD
-	public const string Argument_TimeSpanHasSeconds = "The TimeSpan parameter cannot be specified more precisely than whole minutes."; // Metadata: 0x0017AD1B
-	public const string Argument_TimeZoneNotFound = "The time zone ID \'{0}\' was not found on the local computer."; // Metadata: 0x0017AD6C
-	public const string Argument_TimeZoneInfoBadTZif = "The tzfile does not begin with the magic characters \'TZif\'.  Please verify that the file is not corrupt."; // Metadata: 0x0017ADAB
-	public const string Argument_TimeZoneInfoInvalidTZif = "The TZif data structure is corrupt."; // Metadata: 0x0017AE17
-	public const string Argument_ToExclusiveLessThanFromExclusive = "fromInclusive must be less than or equal to toExclusive."; // Metadata: 0x0017AE3E
-	public const string Argument_TransitionTimesAreIdentical = "The DaylightTransitionStart property must not equal the DaylightTransitionEnd property."; // Metadata: 0x0017AE7A
-	public const string Argument_UTCOutOfRange = "The UTC time represented when the offset is applied must be between year 0 and 10,000."; // Metadata: 0x0017AED5
-	public const string Argument_WaitHandleNameTooLong = "The name can be no more than {0} characters in length."; // Metadata: 0x0017AF2F
-	public const string ArgumentException_OtherNotArrayOfCorrectLength = "Object is not a array with the same number of elements as the array to compare it to."; // Metadata: 0x0017AF69
-	public const string ArgumentException_TupleIncorrectType = "Argument must be of type {0}."; // Metadata: 0x0017AFC2
-	public const string ArgumentException_TupleLastArgumentNotATuple = "The last element of an eight element tuple must be a Tuple."; // Metadata: 0x0017AFE3
-	public const string ArgumentException_ValueTupleIncorrectType = "Argument must be of type {0}."; // Metadata: 0x0017B022
-	public const string ArgumentException_ValueTupleLastArgumentNotAValueTuple = "The last element of an eight element ValueTuple must be a ValueTuple."; // Metadata: 0x0017B043
-	public const string ArgumentNull_Array = "Array cannot be null."; // Metadata: 0x0017B08C
-	public const string ArgumentNull_ArrayElement = "At least one element in the specified array was null."; // Metadata: 0x0017B0A5
-	public const string ArgumentNull_ArrayValue = "Found a null value within an array."; // Metadata: 0x0017B0DE
-	public const string ArgumentNull_Generic = "Value cannot be null."; // Metadata: 0x0017B105
-	public const string ArgumentNull_Key = "Key cannot be null."; // Metadata: 0x0017B11E
-	public const string ArgumentNull_Obj = "Object cannot be null."; // Metadata: 0x0017B135
-	public const string ArgumentNull_String = "String reference not set to an instance of a String."; // Metadata: 0x0017B14F
-	public const string ArgumentNull_Type = "Type cannot be null."; // Metadata: 0x0017B187
-	public const string ArgumentNull_Waithandles = "The waitHandles parameter cannot be null."; // Metadata: 0x0017B19F
-	public const string ArgumentNull_WithParamName = "Parameter \'{0}\' cannot be null."; // Metadata: 0x0017B1CC
-	public const string ArgumentOutOfRange_AddValue = "Value to add was out of range."; // Metadata: 0x0017B1EF
-	public const string ArgumentOutOfRange_ActualValue = "Actual value was {0}."; // Metadata: 0x0017B211
-	public const string ArgumentOutOfRange_BadYearMonthDay = "Year, Month, and Day parameters describe an un-representable DateTime."; // Metadata: 0x0017B22A
-	public const string ArgumentOutOfRange_BadHourMinuteSecond = "Hour, Minute, and Second parameters describe an un-representable DateTime."; // Metadata: 0x0017B274
-	public const string ArgumentOutOfRange_BiggerThanCollection = "Must be less than or equal to the size of the collection."; // Metadata: 0x0017B2C2
-	public const string ArgumentOutOfRange_Bounds_Lower_Upper = "Argument must be between {0} and {1}."; // Metadata: 0x0017B2FF
-	public const string ArgumentOutOfRange_CalendarRange = "Specified time is not supported in this calendar. It should be between {0} (Gregorian date) and {1} (Gregorian date), inclusive."; // Metadata: 0x0017B328
-	public const string ArgumentOutOfRange_Capacity = "Capacity exceeds maximum capacity."; // Metadata: 0x0017B3AC
-	public const string ArgumentOutOfRange_Count = "Count must be positive and count must refer to a location within the string/array/collection."; // Metadata: 0x0017B3D2
-	public const string ArgumentOutOfRange_DateArithmetic = "The added or subtracted value results in an un-representable DateTime."; // Metadata: 0x0017B433
-	public const string ArgumentOutOfRange_DateTimeBadMonths = "Months value must be between +/-120000."; // Metadata: 0x0017B47D
-	public const string ArgumentOutOfRange_DateTimeBadTicks = "Ticks must be between DateTime.MinValue.Ticks and DateTime.MaxValue.Ticks."; // Metadata: 0x0017B4A8
-	public const string ArgumentOutOfRange_DateTimeBadYears = "Years value must be between +/-10000."; // Metadata: 0x0017B4F6
-	public const string ArgumentOutOfRange_Day = "Day must be between 1 and {0} for month {1}."; // Metadata: 0x0017B51F
-	public const string ArgumentOutOfRange_DayOfWeek = "The DayOfWeek enumeration must be in the range 0 through 6."; // Metadata: 0x0017B54F
-	public const string ArgumentOutOfRange_DayParam = "The Day parameter must be in the range 1 through 31."; // Metadata: 0x0017B58E
-	public const string ArgumentOutOfRange_DecimalRound = "Decimal can only round to between 0 and 28 digits of precision."; // Metadata: 0x0017B5C6
-	public const string ArgumentOutOfRange_DecimalScale = "Decimal\'s scale value must be between 0 and 28, inclusive."; // Metadata: 0x0017B609
-	public const string ArgumentOutOfRange_EndIndexStartIndex = "endIndex cannot be greater than startIndex."; // Metadata: 0x0017B647
-	public const string ArgumentOutOfRange_Enum = "Enum value was out of legal range."; // Metadata: 0x0017B676
-	public const string ArgumentOutOfRange_Era = "Time value was out of era range."; // Metadata: 0x0017B69C
-	public const string ArgumentOutOfRange_FileTimeInvalid = "Not a valid Win32 FileTime."; // Metadata: 0x0017B6C0
-	public const string ArgumentOutOfRange_GenericPositive = "Value must be positive."; // Metadata: 0x0017B6DF
-	public const string ArgumentOutOfRange_GetByteCountOverflow = "Too many characters. The resulting number of bytes is larger than what can be returned as an int."; // Metadata: 0x0017B6FA
-	public const string ArgumentOutOfRange_GetCharCountOverflow = "Too many bytes. The resulting number of chars is larger than what can be returned as an int."; // Metadata: 0x0017B75F
-	public const string ArgumentOutOfRange_IndexCount = "Index and count must refer to a location within the string."; // Metadata: 0x0017B7BF
-	public const string ArgumentOutOfRange_IndexCountBuffer = "Index and count must refer to a location within the buffer."; // Metadata: 0x0017B7FE
-	public const string ArgumentOutOfRange_IndexLength = "Index and length must refer to a location within the string."; // Metadata: 0x0017B83D
-	public const string ArgumentOutOfRange_IndexString = "Index was out of range. Must be non-negative and less than the length of the string."; // Metadata: 0x0017B87D
-	public const string ArgumentOutOfRange_InvalidEraValue = "Era value was not valid."; // Metadata: 0x0017B8D5
-	public const string ArgumentOutOfRange_InvalidHighSurrogate = "A valid high surrogate character is between 0xd800 and 0xdbff, inclusive."; // Metadata: 0x0017B8F1
-	public const string ArgumentOutOfRange_InvalidLowSurrogate = "A valid low surrogate character is between 0xdc00 and 0xdfff, inclusive."; // Metadata: 0x0017B93E
-	public const string ArgumentOutOfRange_InvalidUTF32 = "A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff)."; // Metadata: 0x0017B98A
-	public const string ArgumentOutOfRange_LengthGreaterThanCapacity = "The length cannot be greater than the capacity."; // Metadata: 0x0017BA17
-	public const string ArgumentOutOfRange_ListInsert = "Index must be within the bounds of the List."; // Metadata: 0x0017BA4A
-	public const string ArgumentOutOfRange_ListItem = "Index was out of range. Must be non-negative and less than the size of the list."; // Metadata: 0x0017BA7A
-	public const string ArgumentOutOfRange_ListRemoveAt = "Index was out of range. Must be non-negative and less than the size of the list."; // Metadata: 0x0017BACE
-	public const string ArgumentOutOfRange_Month = "Month must be between one and twelve."; // Metadata: 0x0017BB22
-	public const string ArgumentOutOfRange_MonthParam = "The Month parameter must be in the range 1 through 12."; // Metadata: 0x0017BB4B
-	public const string ArgumentOutOfRange_MustBeNonNegInt32 = "Value must be non-negative and less than or equal to Int32.MaxValue."; // Metadata: 0x0017BB85
-	public const string ArgumentOutOfRange_MustBeNonNegNum = "\'{0}\' must be non-negative."; // Metadata: 0x0017BBCD
-	public const string ArgumentOutOfRange_MustBePositive = "\'{0}\' must be greater than zero."; // Metadata: 0x0017BBEC
-	public const string ArgumentOutOfRange_NeedNonNegOrNegative1 = "Number must be either non-negative and less than or equal to Int32.MaxValue or -1."; // Metadata: 0x0017BC10
-	public const string ArgumentOutOfRange_NeedPosNum = "Positive number required."; // Metadata: 0x0017BC66
-	public const string ArgumentOutOfRange_NegativeCapacity = "Capacity must be positive."; // Metadata: 0x0017BC83
-	public const string ArgumentOutOfRange_NegativeCount = "Count cannot be less than zero."; // Metadata: 0x0017BCA1
-	public const string ArgumentOutOfRange_NegativeLength = "Length cannot be less than zero."; // Metadata: 0x0017BCC4
-	public const string ArgumentOutOfRange_OffsetLength = "Offset and length must refer to a position in the string."; // Metadata: 0x0017BCE8
-	public const string ArgumentOutOfRange_OffsetOut = "Either offset did not refer to a position in the string, or there is an insufficient length of destination character array."; // Metadata: 0x0017BD25
-	public const string ArgumentOutOfRange_PartialWCHAR = "Pointer startIndex and length do not refer to a valid string."; // Metadata: 0x0017BDA4
-	public const string ArgumentOutOfRange_Range = "Valid values are between {0} and {1}, inclusive."; // Metadata: 0x0017BDE5
-	public const string ArgumentOutOfRange_RoundingDigits = "Rounding digits must be between 0 and 15, inclusive."; // Metadata: 0x0017BE19
-	public const string ArgumentOutOfRange_SmallCapacity = "capacity was less than the current size."; // Metadata: 0x0017BE51
-	public const string ArgumentOutOfRange_SmallMaxCapacity = "MaxCapacity must be one or greater."; // Metadata: 0x0017BE7D
-	public const string ArgumentOutOfRange_StartIndex = "StartIndex cannot be less than zero."; // Metadata: 0x0017BEA4
-	public const string ArgumentOutOfRange_StartIndexLargerThanLength = "startIndex cannot be larger than length of string."; // Metadata: 0x0017BECC
-	public const string ArgumentOutOfRange_StartIndexLessThanLength = "startIndex must be less than length of string."; // Metadata: 0x0017BF02
-	public const string ArgumentOutOfRange_UtcOffset = "The TimeSpan parameter must be within plus or minus 14.0 hours."; // Metadata: 0x0017BF34
-	public const string ArgumentOutOfRange_UtcOffsetAndDaylightDelta = "The sum of the BaseUtcOffset and DaylightDelta properties must within plus or minus 14.0 hours."; // Metadata: 0x0017BF77
-	public const string ArgumentOutOfRange_Version = "Version\'s parameters must be greater than or equal to zero."; // Metadata: 0x0017BFDA
-	public const string ArgumentOutOfRange_Week = "The Week parameter must be in the range 1 through 5."; // Metadata: 0x0017C019
-	public const string ArgumentOutOfRange_Year = "Year must be between 1 and 9999."; // Metadata: 0x0017C051
-	public const string Arithmetic_NaN = "Function does not accept floating point Not-a-Number values."; // Metadata: 0x0017C075
-	public const string ArrayTypeMismatch_CantAssignType = "Source array type cannot be assigned to destination array type."; // Metadata: 0x0017C0B5
-	public const string BadImageFormatException_CouldNotLoadFileOrAssembly = "Could not load file or assembly \'{0}\'. An attempt was made to load a program with an incorrect format."; // Metadata: 0x0017C0F8
-	public const string CollectionCorrupted = "A prior operation on this collection was interrupted by an exception. Collection\'s state is no longer trusted."; // Metadata: 0x0017C162
-	public const string Exception_EndOfInnerExceptionStack = "--- End of inner exception stack trace ---"; // Metadata: 0x0017C1D4
-	public const string Exception_WasThrown = "Exception of type \'{0}\' was thrown."; // Metadata: 0x0017C202
-	public const string Format_BadBase64Char = "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters."; // Metadata: 0x0017C229
-	public const string Format_BadBase64CharArrayLength = "Invalid length for a Base-64 char array or string."; // Metadata: 0x0017C2D4
-	public const string Format_BadBoolean = "String was not recognized as a valid Boolean."; // Metadata: 0x0017C30A
-	public const string Format_BadFormatSpecifier = "Format specifier was invalid."; // Metadata: 0x0017C33B
-	public const string Format_BadQuote = "Cannot find a matching quote character for the character \'{0}\'."; // Metadata: 0x0017C35C
-	public const string Format_EmptyInputString = "Input string was either empty or contained only whitespace."; // Metadata: 0x0017C39F
-	public const string Format_GuidHexPrefix = "Expected hex 0x in \'{0}\'."; // Metadata: 0x0017C3DE
-	public const string Format_GuidInvLen = "Guid should contain 32 digits with 4 dashes (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)."; // Metadata: 0x0017C3FB
-	public const string Format_GuidInvalidChar = "Guid string should only contain hexadecimal characters."; // Metadata: 0x0017C452
-	public const string Format_GuidBrace = "Expected {0xdddddddd, etc}."; // Metadata: 0x0017C48D
-	public const string Format_GuidComma = "Could not find a comma, or the length between the previous token and the comma was zero (i.e., \'0x,\'etc.)."; // Metadata: 0x0017C4AC
-	public const string Format_GuidBraceAfterLastNumber = "Could not find a brace, or the length between the previous token and the brace was zero (i.e., \'0x,\'etc.)."; // Metadata: 0x0017C51A
-	public const string Format_GuidDashes = "Dashes are in the wrong position for GUID parsing."; // Metadata: 0x0017C588
-	public const string Format_GuidEndBrace = "Could not find the ending brace."; // Metadata: 0x0017C5BE
-	public const string Format_ExtraJunkAtEnd = "Additional non-parsable characters are at the end of the string."; // Metadata: 0x0017C5E2
-	public const string Format_GuidUnrecognized = "Unrecognized Guid format."; // Metadata: 0x0017C626
-	public const string Format_IndexOutOfRange = "Index (zero based) must be greater than or equal to zero and less than the size of the argument list."; // Metadata: 0x0017C643
-	public const string Format_InvalidGuidFormatSpecification = "Format String can be only \'D\', \'d\', \'N\', \'n\', \'P\', \'p\', \'B\', \'b\', \'X\' or \'x\'."; // Metadata: 0x0017C6AC
-	public const string Format_InvalidString = "Input string was not in a correct format."; // Metadata: 0x0017C6FD
-	public const string Format_NeedSingleChar = "String must be exactly one character long."; // Metadata: 0x0017C72A
-	public const string Format_NoParsibleDigits = "Could not find any recognizable digits."; // Metadata: 0x0017C758
-	public const string Format_BadTimeSpan = "String was not recognized as a valid TimeSpan."; // Metadata: 0x0017C783
-	public const string InsufficientMemory_MemFailPoint = "Insufficient available memory to meet the expected demands of an operation at this time.  Please try again later."; // Metadata: 0x0017C7B5
-	public const string InsufficientMemory_MemFailPoint_TooBig = "Insufficient memory to meet the expected demands of an operation, and this system is likely to never satisfy this request.  If this is a 32 bit system, consider booting in 3 GB mode."; // Metadata: 0x0017C82A
-	public const string InsufficientMemory_MemFailPoint_VAFrag = "Insufficient available memory to meet the expected demands of an operation at this time, possibly due to virtual address space fragmentation.  Please try again later."; // Metadata: 0x0017C8E4
-	public const string InvalidCast_CannotCastNullToValueType = "Null object cannot be converted to a value type."; // Metadata: 0x0017C98E
-	public const string InvalidCast_DownCastArrayElement = "At least one element in the source array could not be cast down to the destination array type."; // Metadata: 0x0017C9C2
-	public const string InvalidCast_FromTo = "Invalid cast from \'{0}\' to \'{1}\'."; // Metadata: 0x0017CA24
-	public const string InvalidCast_IConvertible = "Object must implement IConvertible."; // Metadata: 0x0017CA49
-	public const string InvalidCast_StoreArrayElement = "Object cannot be stored in an array of this type."; // Metadata: 0x0017CA70
-	public const string InvalidOperation_Calling = "WinRT Interop has already been initialized and cannot be initialized again."; // Metadata: 0x0017CAA5
-	public const string InvalidOperation_DateTimeParsing = "Internal Error in DateTime and Calendar operations."; // Metadata: 0x0017CAF4
-	public const string InvalidOperation_EnumEnded = "Enumeration already finished."; // Metadata: 0x0017CB2B
-	public const string InvalidOperation_EnumFailedVersion = "Collection was modified; enumeration operation may not execute."; // Metadata: 0x0017CB4C
-	public const string InvalidOperation_EnumNotStarted = "Enumeration has not started. Call MoveNext."; // Metadata: 0x0017CB8F
-	public const string InvalidOperation_EnumOpCantHappen = "Enumeration has either not started or has already finished."; // Metadata: 0x0017CBBE
-	public const string InvalidOperation_HandleIsNotInitialized = "Handle is not initialized."; // Metadata: 0x0017CBFD
-	public const string InvalidOperation_IComparerFailed = "Failed to compare two elements in the array."; // Metadata: 0x0017CC1B
-	public const string InvalidOperation_NoValue = "Nullable object must have a value."; // Metadata: 0x0017CC4B
-	public const string InvalidOperation_NullArray = "The underlying array is null."; // Metadata: 0x0017CC71
-	public const string InvalidOperation_Overlapped_Pack = "Cannot pack a packed Overlapped again."; // Metadata: 0x0017CC92
-	public const string InvalidOperation_ReadOnly = "Instance is read-only."; // Metadata: 0x0017CCBC
-	public const string InvalidOperation_ThreadWrongThreadStart = "The thread was created with a ThreadStart delegate that does not accept a parameter."; // Metadata: 0x0017CCD6
-	public const string InvalidOperation_UnknownEnumType = "Unknown enum type."; // Metadata: 0x0017CD2E
-	public const string InvalidOperation_WriteOnce = "This property has already been set and cannot be modified."; // Metadata: 0x0017CD44
-	public const string InvalidOperation_ArrayCreateInstance_NotARuntimeType = "Array.CreateInstance() can only accept Type objects created by the runtime."; // Metadata: 0x0017CD82
-	public const string InvalidOperation_TooEarly = "Internal Error: This operation cannot be invoked in an eager class constructor."; // Metadata: 0x0017CDD1
-	public const string InvalidOperation_NullContext = "Cannot call Set on a null context"; // Metadata: 0x0017CE24
-	public const string InvalidOperation_CannotUseAFCOtherThread = "AsyncFlowControl object must be used on the thread where it was created."; // Metadata: 0x0017CE49
-	public const string InvalidOperation_CannotRestoreUnsupressedFlow = "Cannot restore context flow when it is not suppressed."; // Metadata: 0x0017CE95
-	public const string InvalidOperation_CannotSupressFlowMultipleTimes = "Context flow is already suppressed."; // Metadata: 0x0017CECF
-	public const string InvalidOperation_CannotUseAFCMultiple = "AsyncFlowControl object can be used only once to call Undo()."; // Metadata: 0x0017CEF6
-	public const string InvalidOperation_AsyncFlowCtrlCtxMismatch = "AsyncFlowControl objects can be used to restore flow only on a Context that had its flow suppressed."; // Metadata: 0x0017CF37
-	public const string InvalidProgram_Default = "Common Language Runtime detected an invalid program."; // Metadata: 0x0017CF9F
-	public const string InvalidProgram_Specific = "Common Language Runtime detected an invalid program. The body of method \'{0}\' is invalid."; // Metadata: 0x0017CFD7
-	public const string InvalidProgram_Vararg = "Method \'{0}\' has a variable argument list. Variable argument lists are not supported in .NET Core."; // Metadata: 0x0017D034
-	public const string InvalidProgram_CallVirtFinalize = "Object.Finalize() can not be called directly. It is only callable by the runtime."; // Metadata: 0x0017D09A
-	public const string InvalidTimeZone_InvalidRegistryData = "The time zone ID \'{0}\' was found on the local computer, but the registry information was corrupt."; // Metadata: 0x0017D0EF
-	public const string IO_FileExists_Name = "The file \'{0}\' already exists."; // Metadata: 0x0017D154
-	public const string IO_FileName_Name = "File name: \'{0}\'"; // Metadata: 0x0017D176
-	public const string IO_FileNotFound = "Unable to find the specified file."; // Metadata: 0x0017D18A
-	public const string IO_FileNotFound_FileName = "Could not load file or assembly \'{0}\'. The system cannot find the file specified."; // Metadata: 0x0017D1B0
-	public const string IO_FileLoad = "Could not load the specified file."; // Metadata: 0x0017D205
-	public const string IO_FileLoad_FileName = "Could not load the file \'{0}\'."; // Metadata: 0x0017D22B
-	public const string IO_PathNotFound_NoPathName = "Could not find a part of the path."; // Metadata: 0x0017D24D
-	public const string IO_PathNotFound_Path = "Could not find a part of the path \'{0}\'."; // Metadata: 0x0017D273
-	public const string IO_PathTooLong = "The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters."; // Metadata: 0x0017D29F
-	public const string IO_SharingViolation_File = "The process cannot access the file \'{0}\' because it is being used by another process."; // Metadata: 0x0017D350
-	public const string IO_SharingViolation_NoFileName = "The process cannot access the file because it is being used by another process."; // Metadata: 0x0017D3A9
-	public const string IO_AlreadyExists_Name = "Cannot create \'{0}\' because a file or directory with the same name already exists."; // Metadata: 0x0017D3FC
-	public const string UnauthorizedAccess_IODenied_NoPathName = "Access to the path is denied."; // Metadata: 0x0017D452
-	public const string UnauthorizedAccess_IODenied_Path = "Access to the path \'{0}\' is denied."; // Metadata: 0x0017D473
-	public const string Lazy_CreateValue_NoParameterlessCtorForT = "The lazily-initialized type does not have a public, parameterless constructor."; // Metadata: 0x0017D49A
-	public const string Lazy_ctor_ModeInvalid = "The mode argument specifies an invalid value."; // Metadata: 0x0017D4EC
-	public const string Lazy_StaticInit_InvalidOperation = "ValueFactory returned null."; // Metadata: 0x0017D51D
-	public const string Lazy_ToString_ValueNotCreated = "Value is not created."; // Metadata: 0x0017D53C
-	public const string Lazy_Value_RecursiveCallsToValue = "ValueFactory attempted to access the Value property of this instance."; // Metadata: 0x0017D555
-	public const string MissingConstructor_Name = "Constructor on type \'{0}\' not found."; // Metadata: 0x0017D59E
-	public const string MustUseCCRewrite = "An assembly (probably \'{1}\') must be rewritten using the code contracts binary rewriter (CCRewrite) because it is calling Contract.{0} and the CONTRACTS_FULL symbol is defined.  Remove any explicit definitions of the CONTRACTS_FULL symbol from your project and rebuild.  CCRewrite can be downloaded from http://go.microsoft.com/fwlink/?LinkID=169180. \\r\\nAfter the rewriter is installed, it can be enabled in Visual Studio from the project\'s Properties page on the Code Contracts pane.  Ensure that \'Perform Runtime Contract Checking\' is enabled, which will define CONTRACTS_FULL."; // Metadata: 0x0017D5C6
-	public const string NotSupported_FixedSizeCollection = "Collection was of a fixed size."; // Metadata: 0x0017D80E
-	public const string NotSupported_MaxWaitHandles = "The number of WaitHandles must be less than or equal to 64."; // Metadata: 0x0017D831
-	public const string NotSupported_NoCodepageData = "No data is available for encoding {0}. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method."; // Metadata: 0x0017D870
-	public const string NotSupported_ReadOnlyCollection = "Collection is read-only."; // Metadata: 0x0017D909
-	public const string NotSupported_StringComparison = "The string comparison type passed in is currently not supported."; // Metadata: 0x0017D925
-	public const string NotSupported_VoidArray = "Arrays of System.Void are not supported."; // Metadata: 0x0017D969
-	public const string NotSupported_ByRefLike = "Cannot create boxed ByRef-like values."; // Metadata: 0x0017D995
-	public const string NotSupported_Type = "Type is not supported."; // Metadata: 0x0017D9BF
-	public const string NotSupported_WaitAllSTAThread = "WaitAll for multiple handles on a STA thread is not supported."; // Metadata: 0x0017D9D9
-	public const string ObjectDisposed_Generic = "Cannot access a disposed object."; // Metadata: 0x0017DA1B
-	public const string ObjectDisposed_ObjectName_Name = "Object name: \'{0}\'."; // Metadata: 0x0017DA3F
-	public const string Overflow_Byte = "Value was either too large or too small for an unsigned byte."; // Metadata: 0x0017DA56
-	public const string Overflow_Char = "Value was either too large or too small for a character."; // Metadata: 0x0017DA97
-	public const string Overflow_Decimal = "Value was either too large or too small for a Decimal."; // Metadata: 0x0017DAD3
-	public const string Overflow_Double = "Value was either too large or too small for a Double."; // Metadata: 0x0017DB0D
-	public const string Overflow_TimeSpanElementTooLarge = "The TimeSpan could not be parsed because at least one of the numeric components is out of range or contains too many digits."; // Metadata: 0x0017DB46
-	public const string Overflow_Duration = "The duration cannot be returned for TimeSpan.MinValue because the absolute value of TimeSpan.MinValue exceeds the value of TimeSpan.MaxValue."; // Metadata: 0x0017DBC6
-	public const string Overflow_Int16 = "Value was either too large or too small for an Int16."; // Metadata: 0x0017DC57
-	public const string Overflow_Int32 = "Value was either too large or too small for an Int32."; // Metadata: 0x0017DC90
-	public const string Overflow_Int64 = "Value was either too large or too small for an Int64."; // Metadata: 0x0017DCC9
-	public const string Overflow_NegateTwosCompNum = "Negating the minimum value of a twos complement number is invalid."; // Metadata: 0x0017DD02
-	public const string Overflow_NegativeUnsigned = "The string was being parsed as an unsigned number and could not have a negative sign."; // Metadata: 0x0017DD48
-	public const string Overflow_SByte = "Value was either too large or too small for a signed byte."; // Metadata: 0x0017DDA1
-	public const string Overflow_Single = "Value was either too large or too small for a Single."; // Metadata: 0x0017DDDF
-	public const string Overflow_TimeSpanTooLong = "TimeSpan overflowed because the duration is too long."; // Metadata: 0x0017DE18
-	public const string Overflow_UInt16 = "Value was either too large or too small for a UInt16."; // Metadata: 0x0017DE51
-	public const string Overflow_UInt32 = "Value was either too large or too small for a UInt32."; // Metadata: 0x0017DE8A
-	public const string Overflow_UInt64 = "Value was either too large or too small for a UInt64."; // Metadata: 0x0017DEC3
-	public const string Rank_MultiDimNotSupported = "Only single dimension arrays are supported here."; // Metadata: 0x0017DEFC
-	public const string RuntimeWrappedException = "An object that does not derive from System.Exception has been wrapped in a RuntimeWrappedException."; // Metadata: 0x0017DF30
-	public const string SpinWait_SpinUntil_ArgumentNull = "The condition argument is null."; // Metadata: 0x0017DF97
-	public const string Serialization_CorruptField = "The value of the field \'{0}\' is invalid.  The serialized data is corrupt."; // Metadata: 0x0017DFBA
-	public const string Serialization_InvalidData = "An error occurred while deserializing the object.  The serialized data is corrupt."; // Metadata: 0x0017E007
-	public const string Serialization_InvalidEscapeSequence = "The serialized data contained an invalid escape sequence \'\\\\{0}\'."; // Metadata: 0x0017E05D
-	public const string Serialization_InvalidType = "Only system-provided types can be passed to the GetUninitializedObject method. \'{0}\' is not a valid instance of a type."; // Metadata: 0x0017E0A2
-	public const string SpinWait_SpinUntil_TimeoutWrong = "The timeout must represent a value between -1 and Int32.MaxValue, inclusive."; // Metadata: 0x0017E11D
-	public const string Threading_AbandonedMutexException = "The wait completed due to an abandoned mutex."; // Metadata: 0x0017E16D
-	public const string Threading_SemaphoreFullException = "Adding the specified count to the semaphore would cause it to exceed its maximum count."; // Metadata: 0x0017E19E
-	public const string Threading_ThreadInterrupted = "Thread was interrupted from a waiting state."; // Metadata: 0x0017E1F9
-	public const string Threading_WaitHandleCannotBeOpenedException = "No handle of the given name exists."; // Metadata: 0x0017E229
-	public const string Threading_WaitHandleCannotBeOpenedException_InvalidHandle = "A WaitHandle with system-wide name \'{0}\' cannot be created. A WaitHandle of a different type might have the same name."; // Metadata: 0x0017E250
-	public const string TimeZoneNotFound_MissingRegistryData = "The time zone ID \'{0}\' was not found on the local computer."; // Metadata: 0x0017E2CA
-	public const string TypeInitialization_Default = "Type constructor threw an exception."; // Metadata: 0x0017E309
-	public const string TypeInitialization_Type = "The type initializer for \'{0}\' threw an exception."; // Metadata: 0x0017E331
-	public const string TypeInitialization_Type_NoTypeAvailable = "A type initializer threw an exception. To determine which type, inspect the InnerException\'s StackTrace property."; // Metadata: 0x0017E367
-	public const string Verification_Exception = "Operation could destabilize the runtime."; // Metadata: 0x0017E3DC
-	public const string Arg_EnumFormatUnderlyingTypeAndObjectMustBeSameType = "Enum underlying type and the object must be same type or object. Type passed in was \'{0}\'; the enum underlying type was \'{1}\'."; // Metadata: 0x0017E408
-	public const string Format_InvalidEnumFormatSpecification = "Format String can be only \'G\', \'g\', \'X\', \'x\', \'F\', \'f\', \'D\' or \'d\'."; // Metadata: 0x0017E48A
-	public const string Arg_MustBeEnumBaseTypeOrEnum = "The value passed in must be an enum base or an underlying type for an enum, such as an Int32."; // Metadata: 0x0017E4D1
-	public const string Arg_EnumUnderlyingTypeAndObjectMustBeSameType = "Enum underlying type and the object must be same type or object must be a String. Type passed in was \'{0}\'; the enum underlying type was \'{1}\'."; // Metadata: 0x0017E532
-	public const string Arg_MustBeType = "Type must be a type provided by the runtime."; // Metadata: 0x0017E5C5
-	public const string Arg_MustContainEnumInfo = "Must specify valid information for parsing in the string."; // Metadata: 0x0017E5F5
-	public const string Arg_EnumValueNotFound = "Requested value \'{0}\' was not found."; // Metadata: 0x0017E632
-	public const string Argument_StringZeroLength = "String cannot be of zero length."; // Metadata: 0x0017E65A
-	public const string Argument_StringFirstCharIsZero = "The first char in the string is the null character."; // Metadata: 0x0017E67E
-	public const string Argument_LongEnvVarValue = "Environment variable name or value is too long."; // Metadata: 0x0017E6B5
-	public const string Argument_IllegalEnvVarName = "Environment variable name cannot contain equal character."; // Metadata: 0x0017E6E8
-	public const string AssumptionFailed = "Assumption failed."; // Metadata: 0x0017E725
-	public const string AssumptionFailed_Cnd = "Assumption failed: {0}"; // Metadata: 0x0017E73B
-	public const string AssertionFailed = "Assertion failed."; // Metadata: 0x0017E755
-	public const string AssertionFailed_Cnd = "Assertion failed: {0}"; // Metadata: 0x0017E76A
-	public const string PreconditionFailed = "Precondition failed."; // Metadata: 0x0017E783
-	public const string PreconditionFailed_Cnd = "Precondition failed: {0}"; // Metadata: 0x0017E79B
-	public const string PostconditionFailed = "Postcondition failed."; // Metadata: 0x0017E7B7
-	public const string PostconditionFailed_Cnd = "Postcondition failed: {0}"; // Metadata: 0x0017E7D0
-	public const string PostconditionOnExceptionFailed = "Postcondition failed after throwing an exception."; // Metadata: 0x0017E7ED
-	public const string PostconditionOnExceptionFailed_Cnd = "Postcondition failed after throwing an exception: {0}"; // Metadata: 0x0017E822
-	public const string InvariantFailed = "Invariant failed."; // Metadata: 0x0017E85B
-	public const string InvariantFailed_Cnd = "Invariant failed: {0}"; // Metadata: 0x0017E870
-	public const string MissingEncodingNameResource = "Could not find a resource entry for the encoding codepage \'{0} - {1}\'"; // Metadata: 0x0017E889
-	public const string Globalization_cp_1200 = "Unicode"; // Metadata: 0x0017E8D2
-	public const string Globalization_cp_1201 = "Unicode (Big-Endian)"; // Metadata: 0x0017E8DD
-	public const string Globalization_cp_12000 = "Unicode (UTF-32)"; // Metadata: 0x0017E8F5
-	public const string Globalization_cp_12001 = "Unicode (UTF-32 Big-Endian)"; // Metadata: 0x0017E909
-	public const string Globalization_cp_20127 = "US-ASCII"; // Metadata: 0x0017E928
-	public const string Globalization_cp_28591 = "Western European (ISO)"; // Metadata: 0x0017E934
-	public const string Globalization_cp_65000 = "Unicode (UTF-7)"; // Metadata: 0x0017E94E
-	public const string Globalization_cp_65001 = "Unicode (UTF-8)"; // Metadata: 0x0017E961
-	public const string DebugAssertBanner = "---- DEBUG ASSERTION FAILED ----"; // Metadata: 0x0017E974
-	public const string DebugAssertLongMessage = "---- Assert Long Message ----"; // Metadata: 0x0017E998
-	public const string DebugAssertShortMessage = "---- Assert Short Message ----"; // Metadata: 0x0017E9B9
-	public const string InvalidCast_Empty = "Object cannot be cast to Empty."; // Metadata: 0x0017E9DB
-	public const string Arg_UnknownTypeCode = "Unknown TypeCode value."; // Metadata: 0x0017E9FE
-	public const string Format_BadDatePattern = "Could not determine the order of year, month, and date from \'{0}\'."; // Metadata: 0x0017EA19
-	public const string Format_BadDateTime = "String was not recognized as a valid DateTime."; // Metadata: 0x0017EA5F
-	public const string Format_BadDateTimeCalendar = "The DateTime represented by the string is not supported in calendar {0}."; // Metadata: 0x0017EA91
-	public const string Format_BadDayOfWeek = "String was not recognized as a valid DateTime because the day of week was incorrect."; // Metadata: 0x0017EADD
-	public const string Format_DateOutOfRange = "The DateTime represented by the string is out of range."; // Metadata: 0x0017EB35
-	public const string Format_MissingIncompleteDate = "There must be at least a partial date with a year present in the input."; // Metadata: 0x0017EB70
-	public const string Format_OffsetOutOfRange = "The time zone offset must be within plus or minus 14 hours."; // Metadata: 0x0017EBBB
-	public const string Format_RepeatDateTimePattern = "DateTime pattern \'{0}\' appears more than once with different values."; // Metadata: 0x0017EBFA
-	public const string Format_UnknowDateTimeWord = "The string was not recognized as a valid DateTime. There is an unknown word starting at index {0}."; // Metadata: 0x0017EC42
-	public const string Format_UTCOutOfRange = "The UTC representation of the date falls outside the year range 1-9999."; // Metadata: 0x0017ECA8
-	public const string RFLCT_Ambiguous = "Ambiguous match found."; // Metadata: 0x0017ECF3
-	public const string AggregateException_ctor_DefaultMessage = "One or more errors occurred."; // Metadata: 0x0017ED0D
-	public const string AggregateException_ctor_InnerExceptionNull = "An element of innerExceptions was null."; // Metadata: 0x0017ED2D
-	public const string AggregateException_DeserializationFailure = "The serialization stream contains no inner exceptions."; // Metadata: 0x0017ED58
-	public const string AggregateException_InnerException = "(Inner Exception #{0}) "; // Metadata: 0x0017ED92
-	public const string ArgumentOutOfRange_TimeoutTooLarge = "Time-out interval must be less than 2^32-2."; // Metadata: 0x0017EDAD
-	public const string ArgumentOutOfRange_PeriodTooLarge = "Period must be less than 2^32-2."; // Metadata: 0x0017EDDC
-	public const string TaskScheduler_FromCurrentSynchronizationContext_NoCurrent = "The current SynchronizationContext may not be used as a TaskScheduler."; // Metadata: 0x0017EE00
-	public const string TaskScheduler_ExecuteTask_WrongTaskScheduler = "ExecuteTask may not be called for a task which was previously queued to a different TaskScheduler."; // Metadata: 0x0017EE4A
-	public const string TaskScheduler_InconsistentStateAfterTryExecuteTaskInline = "The TryExecuteTaskInline call to the underlying scheduler succeeded, but the task body was not invoked."; // Metadata: 0x0017EEB0
-	public const string TaskSchedulerException_ctor_DefaultMessage = "An exception was thrown by a TaskScheduler."; // Metadata: 0x0017EF1B
-	public const string Task_MultiTaskContinuation_FireOptions = "It is invalid to exclude specific continuation kinds for continuations off of multiple tasks."; // Metadata: 0x0017EF4A
-	public const string Task_ContinueWith_ESandLR = "The specified TaskContinuationOptions combined LongRunning and ExecuteSynchronously.  Synchronous continuations should not be long running."; // Metadata: 0x0017EFAB
-	public const string Task_MultiTaskContinuation_EmptyTaskList = "The tasks argument contains no tasks."; // Metadata: 0x0017F03A
-	public const string Task_MultiTaskContinuation_NullTask = "The tasks argument included a null value."; // Metadata: 0x0017F063
-	public const string Task_FromAsync_PreferFairness = "It is invalid to specify TaskCreationOptions.PreferFairness in calls to FromAsync."; // Metadata: 0x0017F090
-	public const string Task_FromAsync_LongRunning = "It is invalid to specify TaskCreationOptions.LongRunning in calls to FromAsync."; // Metadata: 0x0017F0E6
-	public const string AsyncMethodBuilder_InstanceNotInitialized = "The builder was not properly initialized."; // Metadata: 0x0017F139
-	public const string TaskT_TransitionToFinal_AlreadyCompleted = "An attempt was made to transition a task to a final state when it had already completed."; // Metadata: 0x0017F166
-	public const string TaskT_DebuggerNoResult = "{Not yet computed}"; // Metadata: 0x0017F1C2
-	public const string OperationCanceled = "The operation was canceled."; // Metadata: 0x0017F1D8
-	public const string CancellationToken_CreateLinkedToken_TokensIsEmpty = "No tokens were supplied."; // Metadata: 0x0017F1F7
-	public const string CancellationTokenSource_Disposed = "The CancellationTokenSource has been disposed."; // Metadata: 0x0017F213
-	public const string CancellationToken_SourceDisposed = "The CancellationTokenSource associated with this CancellationToken has been disposed."; // Metadata: 0x0017F245
-	public const string TaskExceptionHolder_UnknownExceptionType = "(Internal)Expected an Exception or an IEnumerable<Exception>"; // Metadata: 0x0017F29E
-	public const string TaskExceptionHolder_UnhandledException = "A Task\'s exception(s) were not observed either by Waiting on the Task or accessing its Exception property. As a result, the unobserved exception was rethrown by the finalizer thread."; // Metadata: 0x0017F2DE
-	public const string Task_Delay_InvalidMillisecondsDelay = "The value needs to be either -1 (signifying an infinite timeout), 0 or a positive integer."; // Metadata: 0x0017F398
-	public const string Task_Delay_InvalidDelay = "The value needs to translate in milliseconds to -1 (signifying an infinite timeout), 0 or a positive integer less than or equal to Int32.MaxValue."; // Metadata: 0x0017F3F6
-	public const string Task_Dispose_NotCompleted = "A task may only be disposed if it is in a completion state (RanToCompletion, Faulted or Canceled)."; // Metadata: 0x0017F48C
-	public const string Task_WaitMulti_NullTask = "The tasks array included at least one null element."; // Metadata: 0x0017F4F2
-	public const string Task_ContinueWith_NotOnAnything = "The specified TaskContinuationOptions excluded all continuation kinds."; // Metadata: 0x0017F529
-	public const string Task_RunSynchronously_AlreadyStarted = "RunSynchronously may not be called on a task that was already started."; // Metadata: 0x0017F573
-	public const string Task_ThrowIfDisposed = "The task has been disposed."; // Metadata: 0x0017F5BD
-	public const string Task_RunSynchronously_TaskCompleted = "RunSynchronously may not be called on a task that has already completed."; // Metadata: 0x0017F5DC
-	public const string Task_RunSynchronously_Promise = "RunSynchronously may not be called on a task not bound to a delegate, such as the task returned from an asynchronous method."; // Metadata: 0x0017F628
-	public const string Task_RunSynchronously_Continuation = "RunSynchronously may not be called on a continuation task."; // Metadata: 0x0017F6A8
-	public const string Task_Start_AlreadyStarted = "Start may not be called on a task that was already started."; // Metadata: 0x0017F6E6
-	public const string Task_Start_ContinuationTask = "Start may not be called on a continuation task."; // Metadata: 0x0017F725
-	public const string Task_Start_Promise = "Start may not be called on a promise-style task."; // Metadata: 0x0017F758
-	public const string Task_Start_TaskCompleted = "Start may not be called on a task that has completed."; // Metadata: 0x0017F78C
-	public const string TaskCanceledException_ctor_DefaultMessage = "A task was canceled."; // Metadata: 0x0017F7C5
-	public const string TaskCompletionSourceT_TrySetException_NoExceptions = "The exceptions collection was empty."; // Metadata: 0x0017F7DD
-	public const string TaskCompletionSourceT_TrySetException_NullException = "The exceptions collection included at least one null element."; // Metadata: 0x0017F805
-	public const string Argument_MinMaxValue = "\'{0}\' cannot be greater than {1}."; // Metadata: 0x0017F846
-	public const string ExecutionContext_ExceptionInAsyncLocalNotification = "An exception was not handled in an AsyncLocal<T> notification callback."; // Metadata: 0x0017F86B
-	public const string InvalidOperation_WrongAsyncResultOrEndCalledMultiple = "Either the IAsyncResult object did not come from the corresponding async method on this type, or the End method was called multiple times with the same IAsyncResult."; // Metadata: 0x0017F8B6
-	public const string SpinLock_IsHeldByCurrentThread = "Thread tracking is disabled."; // Metadata: 0x0017F95F
-	public const string SpinLock_TryEnter_LockRecursionException = "The calling thread already holds the lock."; // Metadata: 0x0017F97F
-	public const string SpinLock_Exit_SynchronizationLockException = "The calling thread does not hold the lock."; // Metadata: 0x0017F9AD
-	public const string SpinLock_TryReliableEnter_ArgumentException = "The tookLock argument must be set to false before calling this method."; // Metadata: 0x0017F9DB
-	public const string SpinLock_TryEnter_ArgumentOutOfRange = "The timeout must be a value between -1 and Int32.MaxValue, inclusive."; // Metadata: 0x0017FA25
-	public const string ManualResetEventSlim_Disposed = "The event has been disposed."; // Metadata: 0x0017FA6E
-	public const string ManualResetEventSlim_ctor_SpinCountOutOfRange = "The spinCount argument must be in the range 0 to {0}, inclusive."; // Metadata: 0x0017FA8E
-	public const string ManualResetEventSlim_ctor_TooManyWaiters = "There are too many threads currently waiting on the event. A maximum of {0} waiting threads are supported."; // Metadata: 0x0017FAD2
-	public const string InvalidOperation_SendNotSupportedOnWindowsRTSynchronizationContext = "Send is not supported in the Windows Runtime SynchronizationContext"; // Metadata: 0x0017FB40
-	public const string InvalidOperation_SetData_OnlyOnce = "SetData can only be used to set the value of a given name once."; // Metadata: 0x0017FB87
-	public const string SemaphoreSlim_Disposed = "The semaphore has been disposed."; // Metadata: 0x0017FBCA
-	public const string SemaphoreSlim_Release_CountWrong = "The releaseCount argument must be greater than zero."; // Metadata: 0x0017FBEE
-	public const string SemaphoreSlim_Wait_TimeoutWrong = "The timeout must represent a value between -1 and Int32.MaxValue, inclusive."; // Metadata: 0x0017FC26
-	public const string SemaphoreSlim_ctor_MaxCountWrong = "The maximumCount argument must be a positive number. If a maximum is not required, use the constructor without a maxCount parameter."; // Metadata: 0x0017FC76
-	public const string SemaphoreSlim_ctor_InitialCountWrong = "The initialCount argument must be non-negative and less than or equal to the maximumCount."; // Metadata: 0x0017FCFE
-	public const string ThreadLocal_ValuesNotAvailable = "The ThreadLocal object is not tracking values. To use the Values property, use a ThreadLocal constructor that accepts the trackAllValues parameter and set the parameter to true."; // Metadata: 0x0017FD5C
-	public const string ThreadLocal_Value_RecursiveCallsToValue = "ValueFactory attempted to access the Value property of this instance."; // Metadata: 0x0017FE11
-	public const string ThreadLocal_Disposed = "The ThreadLocal object has been disposed."; // Metadata: 0x0017FE5A
-	public const string LockRecursionException_WriteAfterReadNotAllowed = "Write lock may not be acquired with read lock held. This pattern is prone to deadlocks. Please ensure that read locks are released before taking a write lock. If an upgrade is necessary, use an upgrade lock in place of the read lock."; // Metadata: 0x0017FE87
-	public const string LockRecursionException_RecursiveWriteNotAllowed = "Recursive write lock acquisitions not allowed in this mode."; // Metadata: 0x0017FF74
-	public const string LockRecursionException_ReadAfterWriteNotAllowed = "A read lock may not be acquired with the write lock held in this mode."; // Metadata: 0x0017FFB3
-	public const string LockRecursionException_RecursiveUpgradeNotAllowed = "Recursive upgradeable lock acquisitions not allowed in this mode."; // Metadata: 0x0017FFFD
-	public const string LockRecursionException_RecursiveReadNotAllowed = "Recursive read lock acquisitions not allowed in this mode."; // Metadata: 0x00180042
-	public const string SynchronizationLockException_IncorrectDispose = "The lock is being disposed while still being used. It either is being held by a thread and/or has active waiters waiting to acquire the lock."; // Metadata: 0x00180080
-	public const string SynchronizationLockException_MisMatchedWrite = "The write lock is being released without being held."; // Metadata: 0x00180111
-	public const string LockRecursionException_UpgradeAfterReadNotAllowed = "Upgradeable lock may not be acquired with read lock held."; // Metadata: 0x00180149
-	public const string LockRecursionException_UpgradeAfterWriteNotAllowed = "Upgradeable lock may not be acquired with write lock held in this mode. Acquiring Upgradeable lock gives the ability to read along with an option to upgrade to a writer."; // Metadata: 0x00180186
-	public const string SynchronizationLockException_MisMatchedUpgrade = "The upgradeable lock is being released without being held."; // Metadata: 0x00180233
-	public const string SynchronizationLockException_MisMatchedRead = "The read lock is being released without being held."; // Metadata: 0x00180271
-	public const string InvalidOperation_TimeoutsNotSupported = "Timeouts are not supported on this stream."; // Metadata: 0x001802A8
-	public const string NotSupported_UnreadableStream = "Stream does not support reading."; // Metadata: 0x001802D6
-	public const string NotSupported_UnwritableStream = "Stream does not support writing."; // Metadata: 0x001802FA
-	public const string ObjectDisposed_StreamClosed = "Cannot access a closed Stream."; // Metadata: 0x0018031E
-	public const string NotSupported_SubclassOverride = "Derived classes must provide an implementation."; // Metadata: 0x00180340
-	public const string InvalidOperation_NoPublicRemoveMethod = "Cannot remove the event handler since no public remove method exists for the event."; // Metadata: 0x00180373
-	public const string InvalidOperation_NoPublicAddMethod = "Cannot add the event handler since no public add method exists for the event."; // Metadata: 0x001803CA
-	public const string SerializationException = "Serialization error."; // Metadata: 0x0018041B
-	public const string Serialization_NotFound = "Member \'{0}\' was not found."; // Metadata: 0x00180433
-	public const string Serialization_OptionalFieldVersionValue = "Version value must be positive."; // Metadata: 0x00180452
-	public const string Serialization_SameNameTwice = "Cannot add the same member twice to a SerializationInfo object."; // Metadata: 0x00180475
-	public const string NotSupported_AbstractNonCLS = "This non-CLS method is not implemented."; // Metadata: 0x001804B8
-	public const string NotSupported_NoTypeInfo = "Cannot resolve {0} to a TypeInfo object."; // Metadata: 0x001804E3
-	public const string Arg_CustomAttributeFormatException = "Binary format of the specified custom attribute was invalid."; // Metadata: 0x0018050F
-	public const string Argument_InvalidMemberForNamedArgument = "The member must be either a field or a property."; // Metadata: 0x0018054F
-	public const string Arg_InvalidFilterCriteriaException = "Specified filter criteria was invalid."; // Metadata: 0x00180583
-	public const string Arg_ParmArraySize = "Must specify one or more parameters."; // Metadata: 0x001805AD
-	public const string Arg_MustBePointer = "Type must be a Pointer."; // Metadata: 0x001805D5
-	public const string Arg_InvalidHandle = "Invalid handle."; // Metadata: 0x001805F0
-	public const string Argument_InvalidEnum = "The Enum type should contain one and only one instance field."; // Metadata: 0x00180603
-	public const string Argument_MustHaveAttributeBaseClass = "Type passed in must be derived from System.Attribute or System.Attribute itself."; // Metadata: 0x00180644
-	public const string InvalidFilterCriteriaException_CritString = "A String must be provided for the filter criteria."; // Metadata: 0x00180698
-	public const string InvalidFilterCriteriaException_CritInt = "An Int32 must be provided for the filter criteria."; // Metadata: 0x001806CE
-	public const string InvalidOperation_NotSupportedOnWinRTEvent = "Adding or removing event handlers dynamically is not supported on WinRT events."; // Metadata: 0x00180704
-	public const string PlatformNotSupported_ReflectionOnly = "ReflectionOnly loading is not supported on this platform."; // Metadata: 0x00180757
-	public const string PlatformNotSupported_OSXFileLocking = "Locking/unlocking file regions is not supported on this platform. Use FileShare on the entire file instead."; // Metadata: 0x00180794
-	public const string MissingMember_Name = "Member \'{0}\' not found."; // Metadata: 0x00180803
-	public const string MissingMethod_Name = "Method \'{0}\' not found."; // Metadata: 0x0018081E
-	public const string MissingField_Name = "Field \'{0}\' not found."; // Metadata: 0x00180839
-	public const string Format_StringZeroLength = "String cannot have zero length."; // Metadata: 0x00180853
-	public const string Security_CannotReadRegistryData = "The time zone ID \'{0}\' was found on the local computer, but the application does not have permission to read the registry information."; // Metadata: 0x00180876
-	public const string Security_InvalidAssemblyPublicKey = "Invalid assembly public key."; // Metadata: 0x00180900
-	public const string Security_RegistryPermission = "Requested registry access is not allowed."; // Metadata: 0x00180920
-	public const string ClassLoad_General = "Could not load type \'{0}\' from assembly \'{1}\'."; // Metadata: 0x0018094D
-	public const string ClassLoad_RankTooLarge = "\'{0}\' from assembly \'{1}\' has too many dimensions."; // Metadata: 0x0018097F
-	public const string ClassLoad_ExplicitGeneric = "Could not load type \'{0}\' from assembly \'{1}\' because generic types cannot have explicit layout."; // Metadata: 0x001809B5
-	public const string ClassLoad_BadFormat = "Could not load type \'{0}\' from assembly \'{1}\' because the format is invalid."; // Metadata: 0x00180A19
-	public const string ClassLoad_ValueClassTooLarge = "Array of type \'{0}\' from assembly \'{1}\' cannot be created because base value type is too large."; // Metadata: 0x00180A69
-	public const string ClassLoad_ExplicitLayout = "Could not load type \'{0}\' from assembly \'{1}\' because it contains an object field at offset \'{2}\' that is incorrectly aligned or overlapped by a non-object field."; // Metadata: 0x00180ACC
-	public const string EE_MissingMethod = "Method not found: \'{0}\'."; // Metadata: 0x00180B72
-	public const string EE_MissingField = "Field not found: \'{0}\'."; // Metadata: 0x00180B8E
-	public const string UnauthorizedAccess_RegistryKeyGeneric_Key = "Access to the registry key \'{0}\' is denied."; // Metadata: 0x00180BA9
-	public const string UnknownError_Num = "Unknown error \'{0}\'."; // Metadata: 0x00180BD8
-	public const string Argument_NeedStructWithNoRefs = "The specified Type must be a struct containing no references."; // Metadata: 0x00180BF0
-	public const string ArgumentNull_Buffer = "Buffer cannot be null."; // Metadata: 0x00180C31
-	public const string ArgumentOutOfRange_AddressSpace = "The number of bytes cannot exceed the virtual address space on a 32 bit machine."; // Metadata: 0x00180C4B
-	public const string ArgumentOutOfRange_UIntPtrMaxMinusOne = "The length of the buffer must be less than the maximum UIntPtr value for your platform."; // Metadata: 0x00180C9F
-	public const string Arg_BufferTooSmall = "Not enough space available in the buffer."; // Metadata: 0x00180CFA
-	public const string InvalidOperation_MustCallInitialize = "You must call Initialize on this object instance before using it."; // Metadata: 0x00180D27
-	public const string ArgumentException_BufferNotFromPool = "The buffer is not associated with this pool and may not be returned to it."; // Metadata: 0x00180D6C
-	public const string Argument_InvalidSafeBufferOffLen = "Offset and length were greater than the size of the SafeBuffer."; // Metadata: 0x00180DBA
-	public const string Argument_InvalidSeekOrigin = "Invalid seek origin."; // Metadata: 0x00180DFD
-	public const string Argument_NotEnoughBytesToRead = "There are not enough bytes remaining in the accessor to read at this position."; // Metadata: 0x00180E15
-	public const string Argument_NotEnoughBytesToWrite = "There are not enough bytes remaining in the accessor to write at this position."; // Metadata: 0x00180E67
-	public const string Argument_OffsetAndCapacityOutOfBounds = "Offset and capacity were greater than the size of the view."; // Metadata: 0x00180EBA
-	public const string ArgumentOutOfRange_UnmanagedMemStreamLength = "UnmanagedMemoryStream length must be non-negative and less than 2^63 - 1 - baseAddress."; // Metadata: 0x00180EF9
-	public const string Argument_UnmanagedMemAccessorWrapAround = "The UnmanagedMemoryAccessor capacity and offset would wrap around the high end of the address space."; // Metadata: 0x00180F54
-	public const string ArgumentOutOfRange_StreamLength = "Stream length must be non-negative and less than 2^31 - 1 - origin."; // Metadata: 0x00180FBC
-	public const string ArgumentOutOfRange_UnmanagedMemStreamWrapAround = "The UnmanagedMemoryStream capacity would wrap around the high end of the address space."; // Metadata: 0x00181003
-	public const string InvalidOperation_CalledTwice = "The method cannot be called twice on the same instance."; // Metadata: 0x0018105E
-	public const string IO_FixedCapacity = "Unable to expand length of this stream beyond its capacity."; // Metadata: 0x00181099
-	public const string IO_SeekBeforeBegin = "An attempt was made to move the position before the beginning of the stream."; // Metadata: 0x001810D8
-	public const string IO_StreamTooLong = "Stream was too long."; // Metadata: 0x00181128
-	public const string Arg_BadDecimal = "Read an invalid decimal value from the buffer."; // Metadata: 0x00181140
-	public const string NotSupported_Reading = "Accessor does not support reading."; // Metadata: 0x00181172
-	public const string NotSupported_UmsSafeBuffer = "This operation is not supported for an UnmanagedMemoryStream created from a SafeBuffer."; // Metadata: 0x00181198
-	public const string NotSupported_Writing = "Accessor does not support writing."; // Metadata: 0x001811F3
-	public const string NotSupported_UnseekableStream = "Stream does not support seeking."; // Metadata: 0x00181219
-	public const string IndexOutOfRange_UMSPosition = "Unmanaged memory stream position was beyond the capacity of the stream."; // Metadata: 0x0018123D
-	public const string ObjectDisposed_StreamIsClosed = "Cannot access a closed Stream."; // Metadata: 0x00181288
-	public const string ObjectDisposed_ViewAccessorClosed = "Cannot access a closed accessor."; // Metadata: 0x001812AA
-	public const string ArgumentOutOfRange_PositionLessThanCapacityRequired = "The position may not be greater or equal to the capacity of the accessor."; // Metadata: 0x001812CE
-	public const string IO_EOF_ReadBeyondEOF = "Unable to read beyond the end of the stream."; // Metadata: 0x0018131B
-	public const string Arg_EndOfStreamException = "Attempted to read past the end of the stream."; // Metadata: 0x0018134B
-	public const string ObjectDisposed_FileClosed = "Cannot access a closed file."; // Metadata: 0x0018137C
-	public const string Arg_InvalidSearchPattern = "Search pattern cannot contain \\\"..\\\" to move up directories and can be contained only internally in file/directory names, as in \\\"a..b\\\"."; // Metadata: 0x0018139C
-	public const string ArgumentOutOfRange_FileLengthTooBig = "Specified file length was too large for the file system."; // Metadata: 0x00181429
-	public const string Argument_InvalidHandle = "\'handle\' has been disposed or is an invalid handle."; // Metadata: 0x00181465
-	public const string Argument_AlreadyBoundOrSyncHandle = "\'handle\' has already been bound to the thread pool, or was not opened for asynchronous I/O."; // Metadata: 0x0018149C
-	public const string Argument_PreAllocatedAlreadyAllocated = "\'preAllocated\' is already in use."; // Metadata: 0x001814FB
-	public const string Argument_NativeOverlappedAlreadyFree = "\'overlapped\' has already been freed."; // Metadata: 0x00181520
-	public const string Argument_NativeOverlappedWrongBoundHandle = "\'overlapped\' was not allocated by this ThreadPoolBoundHandle instance."; // Metadata: 0x00181548
-	public const string Arg_HandleNotAsync = "Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O)."; // Metadata: 0x00181592
-	public const string ArgumentNull_Path = "Path cannot be null."; // Metadata: 0x00181670
-	public const string Argument_EmptyPath = "Empty path name is not legal."; // Metadata: 0x00181688
-	public const string Argument_InvalidFileModeAndAccessCombo = "Combining FileMode: {0} with FileAccess: {1} is invalid."; // Metadata: 0x001816A9
-	public const string Argument_InvalidAppendMode = "Append access can be requested only in write-only mode."; // Metadata: 0x001816E5
-	public const string IO_UnknownFileName = "[Unknown]"; // Metadata: 0x00181720
-	public const string IO_FileStreamHandlePosition = "The OS handle\'s position is not what FileStream expected. Do not use a handle simultaneously in one FileStream and in Win32 code or another FileStream. This may cause data loss."; // Metadata: 0x0018172D
-	public const string NotSupported_FileStreamOnNonFiles = "FileStream was asked to open a device that was not a file. For support for devices like \'com1:\' or \'lpt1:\', call CreateFile, then use the FileStream constructors that take an OS handle as an IntPtr."; // Metadata: 0x001817E2
-	public const string IO_BindHandleFailed = "BindHandle for ThreadPool failed on this handle."; // Metadata: 0x001818AC
-	public const string Arg_HandleNotSync = "Handle does not support synchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened asynchronously (that is, it was opened explicitly for overlapped I/O)."; // Metadata: 0x001818E0
-	public const string IO_SetLengthAppendTruncate = "Unable to truncate data that previously existed in a file opened in Append mode."; // Metadata: 0x001819C5
-	public const string IO_SeekAppendOverwrite = "Unable seek backward to overwrite data that previously existed in a file opened in Append mode."; // Metadata: 0x00181A19
-	public const string IO_FileTooLongOrHandleNotSync = "IO operation will not work. Most likely the file will become too long or the handle was not opened to support synchronous IO operations."; // Metadata: 0x00181A7C
-	public const string IndexOutOfRange_IORaceCondition = "Probable I/O race condition detected while copying memory. The I/O package is not thread safe by default. In multithreaded applications, a stream must be accessed in a thread-safe way, such as a thread-safe wrapper returned by TextReader\'s or TextWriter\'s Synchronized methods. This also applies to classes like StreamWriter and StreamReader."; // Metadata: 0x00181B08
-	public const string Arg_ResourceFileUnsupportedVersion = "The ResourceReader class does not know how to read this version of .resources files."; // Metadata: 0x00181C62
-	public const string Resources_StreamNotValid = "Stream is not a valid resource file."; // Metadata: 0x00181CBA
-	public const string BadImageFormat_ResourcesHeaderCorrupted = "Corrupt .resources file. Unable to read resources from this file because of invalid header information. Try regenerating the .resources file."; // Metadata: 0x00181CE2
-	public const string Argument_StreamNotReadable = "Stream was not readable."; // Metadata: 0x00181D73
-	public const string BadImageFormat_NegativeStringLength = "Corrupt .resources file. String length must be non-negative."; // Metadata: 0x00181D8F
-	public const string BadImageFormat_ResourcesNameInvalidOffset = "Corrupt .resources file. The Invalid offset into name section is ."; // Metadata: 0x00181DCF
-	public const string BadImageFormat_TypeMismatch = "Corrupt .resources file.  The specified type doesn\'t match the available data in the stream."; // Metadata: 0x00181E15
-	public const string BadImageFormat_ResourceNameCorrupted_NameIndex = "Corrupt .resources file. The resource name for name index that extends past the end of the stream is "; // Metadata: 0x00181E75
-	public const string BadImageFormat_ResourcesDataInvalidOffset = "Corrupt .resources file. Invalid offset  into data section is "; // Metadata: 0x00181EDE
-	public const string Format_Bad7BitInt32 = "Too many bytes in what should have been a 7 bit encoded Int32."; // Metadata: 0x00181F20
-	public const string BadImageFormat_InvalidType = "Corrupt .resources file.  The specified type doesn\'t exist."; // Metadata: 0x00181F62
-	public const string ResourceReaderIsClosed = "ResourceReader is closed."; // Metadata: 0x00181FA1
-	public const string Arg_MissingManifestResourceException = "Unable to find manifest resource."; // Metadata: 0x00181FBE
-	public const string Serialization_MissingKeys = "The keys for this dictionary are missing."; // Metadata: 0x00181FE3
-	public const string Serialization_NullKey = "One of the serialized keys is null."; // Metadata: 0x00182010
-	public const string NotSupported_KeyCollectionSet = "Mutating a key collection derived from a dictionary is not allowed."; // Metadata: 0x00182037
-	public const string NotSupported_ValueCollectionSet = "Mutating a value collection derived from a dictionary is not allowed."; // Metadata: 0x0018207E
-	public const string IO_IO_StreamTooLong = "Stream was too long."; // Metadata: 0x001820C7
-	public const string UnauthorizedAccess_MemStreamBuffer = "MemoryStream\'s internal buffer cannot be accessed."; // Metadata: 0x001820DF
-	public const string NotSupported_MemStreamNotExpandable = "Memory stream is not expandable."; // Metadata: 0x00182115
-	public const string IO_IO_SeekBeforeBegin = "An attempt was made to move the position before the beginning of the stream."; // Metadata: 0x00182139
-	public const string ArgumentNull_Stream = "Stream cannot be null."; // Metadata: 0x00182189
-	public const string IO_IO_InvalidStringLen_Len = "BinaryReader encountered an invalid string length of {0} characters."; // Metadata: 0x001821A3
-	public const string ArgumentOutOfRange_BinaryReaderFillBuffer = "The number of bytes requested does not fit into BinaryReader\'s internal buffer."; // Metadata: 0x001821EB
-	public const string Serialization_InsufficientDeserializationState = "Insufficient state to deserialize the object. Missing field \'{0}\'."; // Metadata: 0x0018223E
-	public const string NotSupported_UnitySerHolder = "The UnitySerializationHolder object is designed to transmit information about other types and is not serializable itself."; // Metadata: 0x00182284
-	public const string Serialization_UnableToFindModule = "The given module {0} cannot be found within the assembly {1}."; // Metadata: 0x00182301
-	public const string Argument_InvalidUnity = "Invalid Unity type."; // Metadata: 0x00182342
-	public const string InvalidOperation_InvalidHandle = "The handle is invalid."; // Metadata: 0x00182359
-	public const string PlatformNotSupported_NamedSynchronizationPrimitives = "The named version of this synchronization primitive is not supported on this platform."; // Metadata: 0x00182373
-	public const string InvalidOperation_EmptyQueue = "Queue empty."; // Metadata: 0x001823CD
-	public const string Overflow_MutexReacquireCount = "The current thread attempted to reacquire a mutex that has reached its maximum acquire count."; // Metadata: 0x001823DD
-	public const string Serialization_InsufficientState = "Insufficient state to return the real object."; // Metadata: 0x0018243E
-	public const string Serialization_UnknownMember = "Cannot get the member \'{0}\'."; // Metadata: 0x0018246F
-	public const string Serialization_NullSignature = "The method signature cannot be null."; // Metadata: 0x0018248F
-	public const string Serialization_MemberTypeNotRecognized = "Unknown member type."; // Metadata: 0x001824B7
-	public const string Serialization_BadParameterInfo = "Non existent ParameterInfo. Position bigger than member\'s parameters length."; // Metadata: 0x001824CF
-	public const string Serialization_NoParameterInfo = "Serialized member does not have a ParameterInfo."; // Metadata: 0x0018251F
-	public const string ArgumentNull_Assembly = "Assembly cannot be null."; // Metadata: 0x00182553
-	public const string Arg_InvalidNeutralResourcesLanguage_Asm_Culture = "The NeutralResourcesLanguageAttribute on the assembly \"{0}\" specifies an invalid culture name: \"{1}\"."; // Metadata: 0x0018256F
-	public const string Arg_InvalidNeutralResourcesLanguage_FallbackLoc = "The NeutralResourcesLanguageAttribute specifies an invalid or unrecognized ultimate resource fallback location: \"{0}\"."; // Metadata: 0x001825D8
-	public const string Arg_InvalidSatelliteContract_Asm_Ver = "Satellite contract version attribute on the assembly \'{0}\' specifies an invalid version: {1}."; // Metadata: 0x00182652
-	public const string Arg_ResMgrNotResSet = "Type parameter must refer to a subclass of ResourceSet."; // Metadata: 0x001826B3
-	public const string BadImageFormat_ResourceNameCorrupted = "Corrupt .resources file. A resource name extends past the end of the stream."; // Metadata: 0x001826EE
-	public const string BadImageFormat_ResourcesNameTooLong = "Corrupt .resources file. Resource name extends past the end of the file."; // Metadata: 0x0018273E
-	public const string InvalidOperation_ResMgrBadResSet_Type = "\'{0}\': ResourceSet derived classes must provide a constructor that takes a String file name and a constructor that takes a Stream."; // Metadata: 0x0018278A
-	public const string InvalidOperation_ResourceNotStream_Name = "Resource \'{0}\' was not a Stream - call GetObject instead."; // Metadata: 0x00182810
-	public const string MissingManifestResource_MultipleBlobs = "A case-insensitive lookup for resource file \"{0}\" in assembly \"{1}\" found multiple entries. Remove the duplicates or specify the exact case."; // Metadata: 0x0018284D
-	public const string MissingManifestResource_NoNeutralAsm = "Could not find any resources appropriate for the specified culture or the neutral culture.  Make sure \"{0}\" was correctly embedded or linked into assembly \"{1}\" at compile time, or that all the satellite assemblies required are loadable and fully signed."; // Metadata: 0x001828DD
-	public const string MissingManifestResource_NoNeutralDisk = "Could not find any resources appropriate for the specified culture (or the neutral culture) on disk."; // Metadata: 0x001829DF
-	public const string MissingManifestResource_NoPRIresources = "Unable to open Package Resource Index."; // Metadata: 0x00182A47
-	public const string MissingManifestResource_ResWFileNotLoaded = "Unable to load resources for resource file \"{0}\" in package \"{1}\"."; // Metadata: 0x00182A71
-	public const string MissingSatelliteAssembly_Culture_Name = "The satellite assembly named \"{1}\" for fallback culture \"{0}\" either could not be found or could not be loaded. This is generally a setup problem. Please consider reinstalling or repairing the application."; // Metadata: 0x00182AB7
-	public const string MissingSatelliteAssembly_Default = "Resource lookup fell back to the ultimate fallback resources in a satellite assembly, but that satellite either was not found or could not be loaded. Please consider reinstalling or repairing the application."; // Metadata: 0x00182B88
-	public const string NotSupported_ObsoleteResourcesFile = "Found an obsolete .resources file in assembly \'{0}\'. Rebuild that .resources file then rebuild that assembly."; // Metadata: 0x00182C5C
-	public const string NotSupported_ResourceObjectSerialization = "Cannot read resources that depend on serialization."; // Metadata: 0x00182CCD
-	public const string ObjectDisposed_ResourceSet = "Cannot access a closed resource set."; // Metadata: 0x00182D04
-	public const string Arg_ResourceNameNotExist = "The specified resource name \"{0}\" does not exist in the resource file."; // Metadata: 0x00182D2C
-	public const string BadImageFormat_ResourceDataLengthInvalid = "Corrupt .resources file.  The specified data length \'{0}\' is not a valid position in the stream."; // Metadata: 0x00182D76
-	public const string BadImageFormat_ResourcesIndexTooLong = "Corrupt .resources file. String for name index \'{0}\' extends past the end of the file."; // Metadata: 0x00182DDA
-	public const string InvalidOperation_ResourceNotString_Name = "Resource \'{0}\' was not a String - call GetObject instead."; // Metadata: 0x00182E34
-	public const string InvalidOperation_ResourceNotString_Type = "Resource was of type \'{0}\' instead of String - call GetObject instead."; // Metadata: 0x00182E71
-	public const string NotSupported_WrongResourceReader_Type = "This .resources file should not be read with this reader. The resource reader type is \"{0}\"."; // Metadata: 0x00182EBB
-	public const string Arg_MustBeDelegate = "Type must derive from Delegate."; // Metadata: 0x00182F1B
-	public const string NotSupported_GlobalMethodSerialization = "Serialization of global methods (including implicit serialization via the use of asynchronous delegates) is not supported."; // Metadata: 0x00182F3E
-	public const string NotSupported_DelegateSerHolderSerial = "DelegateSerializationHolder objects are designed to represent a delegate during serialization and are not serializable themselves."; // Metadata: 0x00182FBC
-	public const string DelegateSer_InsufficientMetadata = "The delegate cannot be serialized properly due to missing metadata for the target method."; // Metadata: 0x00183042
-	public const string Argument_NoUninitializedStrings = "Uninitialized Strings cannot be created."; // Metadata: 0x0018309F
-	public const string ArgumentOutOfRangeException_NoGCRegionSizeTooLarge = "totalSize is too large. For more information about setting the maximum size, see \\\"Latency Modes\\\" in http://go.microsoft.com/fwlink/?LinkId=522706."; // Metadata: 0x001830CB
-	public const string InvalidOperationException_AlreadyInNoGCRegion = "The NoGCRegion mode was already in progress."; // Metadata: 0x00183163
-	public const string InvalidOperationException_NoGCRegionAllocationExceeded = "Allocated memory exceeds specified memory for NoGCRegion mode."; // Metadata: 0x00183193
-	public const string InvalidOperationException_NoGCRegionInduced = "Garbage collection was induced in NoGCRegion mode."; // Metadata: 0x001831D5
-	public const string InvalidOperationException_NoGCRegionNotInProgress = "NoGCRegion mode must be set."; // Metadata: 0x0018320B
-	public const string InvalidOperationException_SetLatencyModeNoGC = "The NoGCRegion mode is in progress. End it and then set a different mode."; // Metadata: 0x0018322B
-	public const string InvalidOperation_NotWithConcurrentGC = "This API is not available when the concurrent GC is enabled."; // Metadata: 0x00183278
-	public const string ThreadState_AlreadyStarted = "Thread is running or terminated; it cannot restart."; // Metadata: 0x001832B8
-	public const string ThreadState_Dead_Priority = "Thread is dead; priority cannot be accessed."; // Metadata: 0x001832EF
-	public const string ThreadState_Dead_State = "Thread is dead; state cannot be accessed."; // Metadata: 0x0018331F
-	public const string ThreadState_NotStarted = "Thread has not been started."; // Metadata: 0x0018334C
-	public const string ThreadState_SetPriorityFailed = "Unable to set thread priority."; // Metadata: 0x0018336C
-	public const string Serialization_InvalidFieldState = "Object fields may not be properly initialized."; // Metadata: 0x0018338E
-	public const string Acc_CreateAbst = "Cannot create an abstract class."; // Metadata: 0x001833C0
-	public const string Acc_CreateGeneric = "Cannot create a type for which Type.ContainsGenericParameters is true."; // Metadata: 0x001833E4
-	public const string Argument_InvalidValue = "Value was invalid."; // Metadata: 0x0018342E
-	public const string NotSupported_ManagedActivation = "Cannot create uninitialized instances of types requiring managed activation."; // Metadata: 0x00183444
-	public const string PlatformNotSupported_ResourceManager_ResWFileUnsupportedMethod = "ResourceManager method \'{0}\' is not supported when reading from .resw resource files."; // Metadata: 0x00183494
-	public const string PlatformNotSupported_ResourceManager_ResWFileUnsupportedProperty = "ResourceManager property \'{0}\' is not supported when reading from .resw resource files."; // Metadata: 0x001834ED
-	public const string Serialization_NonSerType = "Type \'{0}\' in Assembly \'{1}\' is not marked as serializable."; // Metadata: 0x00183548
-	public const string InvalidCast_DBNull = "Object cannot be cast to DBNull."; // Metadata: 0x00183587
-	public const string NotSupported_NYI = "This feature is not currently implemented."; // Metadata: 0x001835AB
-	public const string Delegate_GarbageCollected = "The corresponding delegate has been garbage collected. Please make sure the delegate is still referenced by managed code when you are using the marshalled native function pointer."; // Metadata: 0x001835D9
-	public const string Arg_AmbiguousMatchException = "Ambiguous match found."; // Metadata: 0x00183690
-	public const string NotSupported_ChangeType = "ChangeType operation is not supported."; // Metadata: 0x001836AA
-	public const string Arg_EmptyArray = "Array may not be empty."; // Metadata: 0x001836D4
-	public const string MissingMember = "Member not found."; // Metadata: 0x001836EF
-	public const string MissingField = "Field not found."; // Metadata: 0x00183704
-	public const string InvalidCast_FromDBNull = "Object cannot be cast from DBNull to other types."; // Metadata: 0x00183718
-	public const string NotSupported_DBNullSerial = "Only one DBNull instance may exist, and calls to DBNull deserialization methods are not allowed."; // Metadata: 0x0018374D
-	public const string Serialization_StringBuilderCapacity = "The serialized Capacity property of StringBuilder must be positive, less than or equal to MaxCapacity and greater than or equal to the String length."; // Metadata: 0x001837B1
-	public const string Serialization_StringBuilderMaxCapacity = "The serialized MaxCapacity property of StringBuilder must be positive and greater than or equal to the String length."; // Metadata: 0x0018384A
-	public const string PlatformNotSupported_Remoting = "Remoting is not supported on this platform."; // Metadata: 0x001838C3
-	public const string PlatformNotSupported_StrongNameSigning = "Strong-name signing is not supported on this platform."; // Metadata: 0x001838F2
-	public const string Serialization_MissingDateTimeData = "Invalid serialized DateTime data. Unable to find \'ticks\' or \'dateData\'."; // Metadata: 0x0018392C
-	public const string Serialization_DateTimeTicksOutOfRange = "Invalid serialized DateTime data. Ticks must be between DateTime.MinValue.Ticks and DateTime.MaxValue.Ticks."; // Metadata: 0x00183977
-	public const string Arg_InvalidANSIString = "The ANSI string passed in could not be converted from the default ANSI code page to Unicode."; // Metadata: 0x001839E7
-	public const string Arg_ExpectedNulTermination = "The value passed was not NUL terminated."; // Metadata: 0x00183A47
-	public const string PlatformNotSupported_ArgIterator = "ArgIterator is not supported on this platform."; // Metadata: 0x00183A73
-	public const string Arg_TypeUnloadedException = "Type had been unloaded."; // Metadata: 0x00183AA5
-	public const string Overflow_Currency = "Value was either too large or too small for a Currency."; // Metadata: 0x00183AC0
-	public const string PlatformNotSupported_SecureBinarySerialization = "Secure binary serialization is not supported on this platform."; // Metadata: 0x00183AFB
-	public const string Serialization_InvalidPtrValue = "An IntPtr or UIntPtr with an eight byte value cannot be deserialized on a machine with a four byte word size."; // Metadata: 0x00183B3D
-	public const string EventSource_ListenerNotFound = "Listener not found."; // Metadata: 0x00183BAE
-	public const string EventSource_ToString = "EventSource({0}, {1})"; // Metadata: 0x00183BC5
-	public const string EventSource_ImplementGetMetadata = "Please implement the GetMetadata method in your derived class"; // Metadata: 0x00183BDE
-	public const string EventSource_NeedGuid = "The Guid of an EventSource must be non zero."; // Metadata: 0x00183C1F
-	public const string EventSource_NeedName = "The name of an EventSource must not be null."; // Metadata: 0x00183C4F
-	public const string EventSource_NeedDescriptors = "The descriptor of an EventSource must be non-null."; // Metadata: 0x00183C7F
-	public const string EventSource_NeedManifest = "The manifest of an EventSource must be non-null."; // Metadata: 0x00183CB5
-	public const string EventSource_EventSourceGuidInUse = "An instance of EventSource with Guid {0} already exists."; // Metadata: 0x00183CE9
-	public const string EventSource_ListenerWriteFailure = "An error occurred when writing to a listener."; // Metadata: 0x00183D25
-	public const string EventSource_NoManifest = "A manifest could not be generated for this EventSource because it contains one or more ill-formed event methods."; // Metadata: 0x00183D56
-	public const string Argument_StreamNotWritable = "Stream was not writable."; // Metadata: 0x00183DCA
-	public const string Arg_SurrogatesNotAllowedAsSingleChar = "Unicode surrogate characters must be written out as pairs together in the same call, not individually. Consider passing in a character array instead."; // Metadata: 0x00183DE6
-	public const string CustomAttributeFormat_InvalidFieldFail = "\'{0}\' field specified was not found."; // Metadata: 0x00183E7F
-	public const string CustomAttributeFormat_InvalidPropertyFail = "\'{0}\' property specified was not found."; // Metadata: 0x00183EA7
-	public const string NotSupported_CannotCallEqualsOnSpan = "Equals() on Span and ReadOnlySpan is not supported. Use operator== instead."; // Metadata: 0x00183ED2
-	public const string NotSupported_CannotCallGetHashCodeOnSpan = "GetHashCode() on Span and ReadOnlySpan is not supported."; // Metadata: 0x00183F21
-	public const string Argument_DestinationTooShort = "Destination is too short."; // Metadata: 0x00183F5D
-	public const string Argument_InvalidTypeWithPointersNotSupported = "Cannot use type \'{0}\'. Only value types without pointers or references are supported."; // Metadata: 0x00183F7A
-	public const string ArrayTypeMismatch_ConstrainedCopy = "Array.ConstrainedCopy will only work on array types that are provably compatible, without any form of boxing, unboxing, widening, or casting of each array element.  Change the array types (i.e., copy a Derived[] to a Base[]), or use a mitigation strategy in the CER for Array.Copy\'s less powerful reliability contract, such as cloning the array or throwing away the potentially corrupt destination array."; // Metadata: 0x00183FD3
-	public const string Arg_DllNotFoundException = "Dll was not found."; // Metadata: 0x0018416B
-	public const string Arg_DllNotFoundExceptionParameterized = "Unable to load DLL \'{0}\': The specified module could not be found."; // Metadata: 0x00184181
-	public const string WrongSizeArrayInNStruct = "Type could not be marshaled because the length of an embedded array instance does not match the declared length in the layout."; // Metadata: 0x001841C7
-	public const string Arg_InteropMarshalUnmappableChar = "Cannot marshal: Encountered unmappable character."; // Metadata: 0x00184249
-	public const string Arg_MarshalDirectiveException = "Marshaling directives are invalid."; // Metadata: 0x0018427E
-	public const string BlockingCollection_Add_ConcurrentCompleteAdd = "CompleteAdding may not be used concurrently with additions to the collection."; // Metadata: 0x001842A4
-	public const string BlockingCollection_Add_Failed = "The underlying collection didn\'t accept the item."; // Metadata: 0x001842F5
-	public const string BlockingCollection_CantAddAnyWhenCompleted = "At least one of the specified collections is marked as complete with regards to additions."; // Metadata: 0x0018432A
-	public const string BlockingCollection_CantTakeAnyWhenAllDone = "All collections are marked as complete with regards to additions."; // Metadata: 0x00184388
-	public const string BlockingCollection_CantTakeWhenDone = "The collection argument is empty and has been marked as complete with regards to additions."; // Metadata: 0x001843CD
-	public const string BlockingCollection_Completed = "The collection has been marked as complete with regards to additions."; // Metadata: 0x0018442C
-	public const string BlockingCollection_CopyTo_IncorrectType = "The array argument is of the incorrect type."; // Metadata: 0x00184475
-	public const string BlockingCollection_CopyTo_MultiDim = "The array argument is multidimensional."; // Metadata: 0x001844A5
-	public const string BlockingCollection_CopyTo_NonNegative = "The index argument must be greater than or equal zero."; // Metadata: 0x001844D0
-	public const string Collection_CopyTo_TooManyElems = "The number of elements in the collection is greater than the available space from index to the end of the destination array."; // Metadata: 0x0018450A
-	public const string BlockingCollection_ctor_BoundedCapacityRange = "The boundedCapacity argument must be positive."; // Metadata: 0x0018458A
-	public const string BlockingCollection_ctor_CountMoreThanCapacity = "The collection argument contains more items than are allowed by the boundedCapacity."; // Metadata: 0x001845BC
-	public const string BlockingCollection_Disposed = "The collection has been disposed."; // Metadata: 0x00184614
-	public const string BlockingCollection_Take_CollectionModified = "The underlying collection was modified from outside of the BlockingCollection<T>."; // Metadata: 0x00184639
-	public const string BlockingCollection_TimeoutInvalid = "The specified timeout must represent a value between -1 and {0}, inclusive."; // Metadata: 0x0018468E
-	public const string BlockingCollection_ValidateCollectionsArray_DispElems = "The collections argument contains at least one disposed element."; // Metadata: 0x001846DD
-	public const string BlockingCollection_ValidateCollectionsArray_LargeSize = "The collections length is greater than the supported range for 32 bit machine."; // Metadata: 0x00184721
-	public const string BlockingCollection_ValidateCollectionsArray_NullElems = "The collections argument contains at least one null element."; // Metadata: 0x00184773
-	public const string BlockingCollection_ValidateCollectionsArray_ZeroSize = "The collections argument is a zero-length array."; // Metadata: 0x001847B3
-	public const string Common_OperationCanceled = "The operation was canceled."; // Metadata: 0x001847E7
-	public const string ConcurrentBag_Ctor_ArgumentNullException = "The collection argument is null."; // Metadata: 0x00184806
-	public const string ConcurrentBag_CopyTo_ArgumentNullException = "The array argument is null."; // Metadata: 0x0018482A
-	public const string Collection_CopyTo_ArgumentOutOfRangeException = "The index argument must be greater than or equal zero."; // Metadata: 0x00184849
-	public const string ConcurrentCollection_SyncRoot_NotSupported = "The SyncRoot property may not be used for the synchronization of concurrent collections."; // Metadata: 0x00184883
-	public const string ConcurrentDictionary_ArrayIncorrectType = "The array is multidimensional, or the type parameter for the set cannot be cast automatically to the type of the destination array."; // Metadata: 0x001848DF
-	public const string ConcurrentDictionary_SourceContainsDuplicateKeys = "The source argument contains duplicate keys."; // Metadata: 0x00184966
-	public const string ConcurrentDictionary_ConcurrencyLevelMustBePositive = "The concurrencyLevel argument must be positive."; // Metadata: 0x00184996
-	public const string ConcurrentDictionary_CapacityMustNotBeNegative = "The capacity argument must be greater than or equal to zero."; // Metadata: 0x001849C9
-	public const string ConcurrentDictionary_IndexIsNegative = "The index argument is less than zero."; // Metadata: 0x00184A09
-	public const string ConcurrentDictionary_ArrayNotLargeEnough = "The index is equal to or greater than the length of the array, or the number of elements in the dictionary is greater than the available space from index to the end of the destination array."; // Metadata: 0x00184A32
-	public const string ConcurrentDictionary_KeyAlreadyExisted = "The key already existed in the dictionary."; // Metadata: 0x00184AF4
-	public const string ConcurrentDictionary_ItemKeyIsNull = "TKey is a reference type and item.Key is null."; // Metadata: 0x00184B22
-	public const string ConcurrentDictionary_TypeOfKeyIncorrect = "The key was of an incorrect type for this dictionary."; // Metadata: 0x00184B54
-	public const string ConcurrentDictionary_TypeOfValueIncorrect = "The value was of an incorrect type for this dictionary."; // Metadata: 0x00184B8D
-	public const string ConcurrentStack_PushPopRange_CountOutOfRange = "The count argument must be greater than or equal to zero."; // Metadata: 0x00184BC8
-	public const string ConcurrentStack_PushPopRange_InvalidCount = "The sum of the startIndex and count arguments must be less than or equal to the collection\'s Count."; // Metadata: 0x00184C05
-	public const string ConcurrentStack_PushPopRange_StartOutOfRange = "The startIndex argument must be greater than or equal to zero."; // Metadata: 0x00184C6C
-	public const string Partitioner_DynamicPartitionsNotSupported = "Dynamic partitions are not supported by this partitioner."; // Metadata: 0x00184CAE
-	public const string PartitionerStatic_CanNotCallGetEnumeratorAfterSourceHasBeenDisposed = "Can not call GetEnumerator on partitions after the source enumerable is disposed"; // Metadata: 0x00184CEB
-	public const string PartitionerStatic_CurrentCalledBeforeMoveNext = "MoveNext must be called at least once before calling Current."; // Metadata: 0x00184D3F
-	public const string ConcurrentBag_Enumerator_EnumerationNotStartedOrAlreadyFinished = "Enumeration has either not started or has already finished."; // Metadata: 0x00184D80
-	public const string ArrayTypeMustBeExactMatch = "The array type must be exactly {0}."; // Metadata: 0x00184DBF
-	public const string CannotCallEqualsOnSpan = "Equals() on Span and ReadOnlySpan is not supported. Use operator== instead."; // Metadata: 0x00184DE6
-	public const string CannotCallGetHashCodeOnSpan = "GetHashCode() on Span and ReadOnlySpan is not supported."; // Metadata: 0x00184E35
-	public const string Argument_EmptyValue = "Value cannot be empty."; // Metadata: 0x00184E71
-	public const string PlatformNotSupported_RuntimeInformation = "RuntimeInformation is not supported for Portable Class Libraries."; // Metadata: 0x00184E8B
-	public const string MemoryDisposed = "Memory<T> has been disposed."; // Metadata: 0x00184ED0
-	public const string OutstandingReferences = "Release all references before disposing this instance."; // Metadata: 0x00184EF0
+	public const string Arg_AccessException = "Cannot access member."; // Metadata: 0x00177A1D
+	public const string Arg_AccessViolationException = "Attempted to read or write protected memory. This is often an indication that other memory is corrupt."; // Metadata: 0x00177A36
+	public const string Arg_ApplicationException = "Error in the application."; // Metadata: 0x00177AA0
+	public const string Arg_ArgumentException = "Value does not fall within the expected range."; // Metadata: 0x00177ABD
+	public const string Arg_ArgumentOutOfRangeException = "Specified argument was out of the range of valid values."; // Metadata: 0x00177AEF
+	public const string Arg_ArithmeticException = "Overflow or underflow in the arithmetic operation."; // Metadata: 0x00177B2B
+	public const string Arg_ArrayPlusOffTooSmall = "Destination array is not long enough to copy all the items in the collection. Check array index and length."; // Metadata: 0x00177B61
+	public const string Arg_ArrayTypeMismatchException = "Attempted to access an element as a type incompatible with the array."; // Metadata: 0x00177BD0
+	public const string Arg_ArrayZeroError = "Array must not be of length zero."; // Metadata: 0x00177C19
+	public const string Arg_BadImageFormatException = "Format of the executable (.exe) or library (.dll) is invalid."; // Metadata: 0x00177C3E
+	public const string Arg_BogusIComparer = "Unable to sort because the IComparer.Compare() method returns inconsistent results. Either a value does not compare equal to itself, or one value repeatedly compared to another value yields different results. IComparer: \'{0}\'."; // Metadata: 0x00177C7F
+	public const string Arg_CannotBeNaN = "TimeSpan does not accept floating point Not-a-Number values."; // Metadata: 0x00177D65
+	public const string Arg_CannotHaveNegativeValue = "String cannot contain a minus sign if the base is not 10."; // Metadata: 0x00177DA5
+	public const string Arg_CopyNonBlittableArray = "Arrays must contain only blittable data in order to be copied to unmanaged memory."; // Metadata: 0x00177DE2
+	public const string Arg_CopyOutOfRange = "Requested range extends past the end of the array."; // Metadata: 0x00177E38
+	public const string Arg_CryptographyException = "Error occurred during a cryptographic operation."; // Metadata: 0x00177E6E
+	public const string Arg_DataMisalignedException = "A datatype misalignment was detected in a load or store instruction."; // Metadata: 0x00177EA2
+	public const string Arg_DateTimeRange = "Combination of arguments to the DateTime constructor is out of the legal range."; // Metadata: 0x00177EEA
+	public const string Arg_DirectoryNotFoundException = "Attempted to access a path that is not on the disk."; // Metadata: 0x00177F3D
+	public const string Arg_DecBitCtor = "Decimal byte array constructor requires an array of length four containing valid decimal bytes."; // Metadata: 0x00177F74
+	public const string Arg_DivideByZero = "Attempted to divide by zero."; // Metadata: 0x00177FD7
+	public const string Arg_DlgtNullInst = "Delegate to an instance method cannot have null \'this\'."; // Metadata: 0x00177FF7
+	public const string Arg_DlgtTypeMis = "Delegates must be of the same type."; // Metadata: 0x00178032
+	public const string Arg_DuplicateWaitObjectException = "Duplicate objects in argument."; // Metadata: 0x00178059
+	public const string Arg_EnumAndObjectMustBeSameType = "Object must be the same type as the enum. The type passed in was \'{0}\'; the enum type was \'{1}\'."; // Metadata: 0x0017807B
+	public const string Arg_EntryPointNotFoundException = "Entry point was not found."; // Metadata: 0x001780DF
+	public const string Arg_EntryPointNotFoundExceptionParameterized = "Unable to find an entry point named \'{0}\' in DLL \'{1}\'."; // Metadata: 0x001780FD
+	public const string Arg_EnumIllegalVal = "Illegal enum value: {0}."; // Metadata: 0x00178138
+	public const string Arg_ExecutionEngineException = "Internal error in the runtime."; // Metadata: 0x00178154
+	public const string Arg_ExternalException = "External component has thrown an exception."; // Metadata: 0x00178176
+	public const string Arg_FieldAccessException = "Attempted to access a field that is not accessible by the caller."; // Metadata: 0x001781A5
+	public const string Arg_FormatException = "One of the identified items was in an invalid format."; // Metadata: 0x001781EA
+	public const string Arg_GuidArrayCtor = "Byte array for GUID must be exactly {0} bytes long."; // Metadata: 0x00178223
+	public const string Arg_HexStyleNotSupported = "The number style AllowHexSpecifier is not supported on floating point data types."; // Metadata: 0x0017825A
+	public const string Arg_HTCapacityOverflow = "Hashtable\'s capacity overflowed and went negative. Check load factor, capacity and the current size of the table."; // Metadata: 0x001782AF
+	public const string Arg_IndexOutOfRangeException = "Index was outside the bounds of the array."; // Metadata: 0x00178324
+	public const string Arg_InsufficientExecutionStackException = "Insufficient stack to continue executing the program safely. This can happen from having too many functions on the call stack or function on the stack using too much stack space."; // Metadata: 0x00178352
+	public const string Arg_InvalidBase = "Invalid Base."; // Metadata: 0x00178408
+	public const string Arg_InvalidCastException = "Specified cast is not valid."; // Metadata: 0x00178419
+	public const string Arg_InvalidHexStyle = "With the AllowHexSpecifier bit set in the enum bit field, the only other valid bits that can be combined into the enum value must be a subset of those in HexNumber."; // Metadata: 0x00178439
+	public const string Arg_InvalidOperationException = "Operation is not valid due to the current state of the object."; // Metadata: 0x001784E1
+	public const string Arg_OleAutDateInvalid = " Not a legal OleAut date."; // Metadata: 0x00178523
+	public const string Arg_OleAutDateScale = "OleAut date did not convert to a DateTime correctly."; // Metadata: 0x00178540
+	public const string Arg_InvalidRuntimeTypeHandle = "Invalid RuntimeTypeHandle."; // Metadata: 0x00178578
+	public const string Arg_IOException = "I/O error occurred."; // Metadata: 0x00178596
+	public const string Arg_KeyNotFound = "The given key was not present in the dictionary."; // Metadata: 0x001785AD
+	public const string Arg_LongerThanSrcString = "Source string was not long enough. Check sourceIndex and count."; // Metadata: 0x001785E1
+	public const string Arg_LowerBoundsMustMatch = "The arrays\' lower bounds must be identical."; // Metadata: 0x00178624
+	public const string Arg_MissingFieldException = "Attempted to access a non-existing field."; // Metadata: 0x00178653
+	public const string Arg_MethodAccessException = "Attempt to access the method failed."; // Metadata: 0x00178680
+	public const string Arg_MissingMemberException = "Attempted to access a missing member."; // Metadata: 0x001786A8
+	public const string Arg_MissingMethodException = "Attempted to access a missing method."; // Metadata: 0x001786D1
+	public const string Arg_MulticastNotSupportedException = "Attempted to add multiple callbacks to a delegate that does not support multicast."; // Metadata: 0x001786FA
+	public const string Arg_MustBeBoolean = "Object must be of type Boolean."; // Metadata: 0x00178750
+	public const string Arg_MustBeByte = "Object must be of type Byte."; // Metadata: 0x00178773
+	public const string Arg_MustBeChar = "Object must be of type Char."; // Metadata: 0x00178793
+	public const string Arg_MustBeDateTime = "Object must be of type DateTime."; // Metadata: 0x001787B3
+	public const string Arg_MustBeDateTimeOffset = "Object must be of type DateTimeOffset."; // Metadata: 0x001787D7
+	public const string Arg_MustBeDecimal = "Object must be of type Decimal."; // Metadata: 0x00178801
+	public const string Arg_MustBeDouble = "Object must be of type Double."; // Metadata: 0x00178824
+	public const string Arg_MustBeEnum = "Type provided must be an Enum."; // Metadata: 0x00178846
+	public const string Arg_MustBeGuid = "Object must be of type GUID."; // Metadata: 0x00178868
+	public const string Arg_MustBeInt16 = "Object must be of type Int16."; // Metadata: 0x00178888
+	public const string Arg_MustBeInt32 = "Object must be of type Int32."; // Metadata: 0x001788A9
+	public const string Arg_MustBeInt64 = "Object must be of type Int64."; // Metadata: 0x001788CA
+	public const string Arg_MustBePrimArray = "Object must be an array of primitives."; // Metadata: 0x001788EB
+	public const string Arg_MustBeSByte = "Object must be of type SByte."; // Metadata: 0x00178915
+	public const string Arg_MustBeSingle = "Object must be of type Single."; // Metadata: 0x00178936
+	public const string Arg_MustBeStatic = "Method must be a static method."; // Metadata: 0x00178958
+	public const string Arg_MustBeString = "Object must be of type String."; // Metadata: 0x0017897B
+	public const string Arg_MustBeStringPtrNotAtom = "The pointer passed in as a String must not be in the bottom 64K of the process\'s address space."; // Metadata: 0x0017899D
+	public const string Arg_MustBeTimeSpan = "Object must be of type TimeSpan."; // Metadata: 0x00178A00
+	public const string Arg_MustBeUInt16 = "Object must be of type UInt16."; // Metadata: 0x00178A24
+	public const string Arg_MustBeUInt32 = "Object must be of type UInt32."; // Metadata: 0x00178A46
+	public const string Arg_MustBeUInt64 = "Object must be of type UInt64."; // Metadata: 0x00178A68
+	public const string Arg_MustBeVersion = "Object must be of type Version."; // Metadata: 0x00178A8A
+	public const string Arg_NeedAtLeast1Rank = "Must provide at least one rank."; // Metadata: 0x00178AAD
+	public const string Arg_Need2DArray = "Array was not a two-dimensional array."; // Metadata: 0x00178AD0
+	public const string Arg_Need3DArray = "Array was not a three-dimensional array."; // Metadata: 0x00178AFA
+	public const string Arg_NegativeArgCount = "Argument count must not be negative."; // Metadata: 0x00178B26
+	public const string Arg_NotFiniteNumberException = "Arg_NotFiniteNumberException = Number encountered was not a finite quantity."; // Metadata: 0x00178B4E
+	public const string Arg_NonZeroLowerBound = "The lower bound of target array must be zero."; // Metadata: 0x00178B9E
+	public const string Arg_NotGenericParameter = "Method may only be called on a Type for which Type.IsGenericParameter is true."; // Metadata: 0x00178BCF
+	public const string Arg_NotImplementedException = "The method or operation is not implemented."; // Metadata: 0x00178C21
+	public const string Arg_NotSupportedException = "Specified method is not supported."; // Metadata: 0x00178C50
+	public const string Arg_NotSupportedNonZeroLowerBound = "Arrays with non-zero lower bounds are not supported."; // Metadata: 0x00178C76
+	public const string Arg_NullReferenceException = "Object reference not set to an instance of an object."; // Metadata: 0x00178CAE
+	public const string Arg_ObjObjEx = "Object of type \'{0}\' cannot be converted to type \'{1}\'."; // Metadata: 0x00178CE7
+	public const string Arg_OverflowException = "Arithmetic operation resulted in an overflow."; // Metadata: 0x00178D22
+	public const string Arg_OutOfMemoryException = "Insufficient memory to continue the execution of the program."; // Metadata: 0x00178D53
+	public const string Arg_PlatformNotSupported = "Operation is not supported on this platform."; // Metadata: 0x00178D94
+	public const string Arg_ParamName_Name = "Parameter name: {0}"; // Metadata: 0x00178DC4
+	public const string Arg_PathIllegal = "The path is not of a legal form."; // Metadata: 0x00178DDB
+	public const string Arg_PathIllegalUNC = "The UNC path should be of the form \\\\\\\\server\\\\share."; // Metadata: 0x00178DFF
+	public const string Arg_RankException = "Attempted to operate on an array with the incorrect number of dimensions."; // Metadata: 0x00178E38
+	public const string Arg_RankIndices = "Indices length does not match the array rank."; // Metadata: 0x00178E85
+	public const string Arg_RankMultiDimNotSupported = "Only single dimensional arrays are supported for the requested action."; // Metadata: 0x00178EB6
+	public const string Arg_RanksAndBounds = "Number of lengths and lowerBounds must match."; // Metadata: 0x00178F00
+	public const string Arg_RegGetOverflowBug = "RegistryKey.GetValue does not allow a String that has a length greater than Int32.MaxValue."; // Metadata: 0x00178F31
+	public const string Arg_RegKeyNotFound = "The specified registry key does not exist."; // Metadata: 0x00178F90
+	public const string Arg_SecurityException = "Security error."; // Metadata: 0x00178FBE
+	public const string Arg_StackOverflowException = "Operation caused a stack overflow."; // Metadata: 0x00178FD1
+	public const string Arg_SynchronizationLockException = "Object synchronization method was called from an unsynchronized block of code."; // Metadata: 0x00178FF7
+	public const string Arg_SystemException = "System error."; // Metadata: 0x00179049
+	public const string Arg_TargetInvocationException = "Exception has been thrown by the target of an invocation."; // Metadata: 0x0017905A
+	public const string Arg_TargetParameterCountException = "Number of parameters specified does not match the expected number."; // Metadata: 0x00179097
+	public const string Arg_DefaultValueMissingException = "Missing parameter does not have a default value."; // Metadata: 0x001790DD
+	public const string Arg_ThreadStartException = "Thread failed to start."; // Metadata: 0x00179111
+	public const string Arg_ThreadStateException = "Thread was in an invalid state for the operation being executed."; // Metadata: 0x0017912C
+	public const string Arg_TimeoutException = "The operation has timed out."; // Metadata: 0x00179170
+	public const string Arg_TypeAccessException = "Attempt to access the type failed."; // Metadata: 0x00179190
+	public const string Arg_TypeLoadException = "Failure has occurred while loading a type."; // Metadata: 0x001791B6
+	public const string Arg_UnauthorizedAccessException = "Attempted to perform an unauthorized operation."; // Metadata: 0x001791E4
+	public const string Arg_VersionString = "Version string portion was too short or too long."; // Metadata: 0x00179217
+	public const string Arg_WrongType = "The value \'{0}\' is not of type \'{1}\' and cannot be used in this generic collection."; // Metadata: 0x0017924C
+	public const string Argument_AbsolutePathRequired = "Absolute path information is required."; // Metadata: 0x001792A3
+	public const string Argument_AddingDuplicate = "An item with the same key has already been added. Key: {0}"; // Metadata: 0x001792CD
+	public const string Argument_AddingDuplicate__ = "Item has already been added. Key in dictionary: \'{0}\'  Key being added: \'{1}\'"; // Metadata: 0x0017930B
+	public const string Argument_AdjustmentRulesNoNulls = "The AdjustmentRule array cannot contain null elements."; // Metadata: 0x0017935C
+	public const string Argument_AdjustmentRulesOutOfOrder = "The elements of the AdjustmentRule array must be in chronological order and must not overlap."; // Metadata: 0x00179396
+	public const string Argument_BadFormatSpecifier = "Format specifier was invalid."; // Metadata: 0x001793F7
+	public const string Argument_CodepageNotSupported = "{0} is not a supported code page."; // Metadata: 0x00179418
+	public const string Argument_CompareOptionOrdinal = "CompareOption.Ordinal cannot be used with other options."; // Metadata: 0x0017943D
+	public const string Argument_ConflictingDateTimeRoundtripStyles = "The DateTimeStyles value RoundtripKind cannot be used with the values AssumeLocal, AssumeUniversal or AdjustToUniversal."; // Metadata: 0x00179479
+	public const string Argument_ConflictingDateTimeStyles = "The DateTimeStyles values AssumeLocal and AssumeUniversal cannot be used together."; // Metadata: 0x001794F5
+	public const string Argument_ConversionOverflow = "Conversion buffer overflow."; // Metadata: 0x0017954B
+	public const string Argument_ConvertMismatch = "The conversion could not be completed because the supplied DateTime did not have the Kind property set correctly.  For example, when the Kind property is DateTimeKind.Local, the source time zone must be TimeZoneInfo.Local."; // Metadata: 0x0017956A
+	public const string Argument_CultureInvalidIdentifier = "{0} is an invalid culture identifier."; // Metadata: 0x0017964C
+	public const string Argument_CultureIetfNotSupported = "Culture IETF Name {0} is not a recognized IETF name."; // Metadata: 0x00179675
+	public const string Argument_CultureIsNeutral = "Culture ID {0} (0x{0:X4}) is a neutral culture; a region cannot be created from it."; // Metadata: 0x001796AD
+	public const string Argument_CultureNotSupported = "Culture is not supported."; // Metadata: 0x00179704
+	public const string Argument_CustomCultureCannotBePassedByNumber = "Customized cultures cannot be passed by LCID, only by name."; // Metadata: 0x00179721
+	public const string Argument_DateTimeBadBinaryData = "The binary data must result in a DateTime with ticks between DateTime.MinValue.Ticks and DateTime.MaxValue.Ticks."; // Metadata: 0x00179760
+	public const string Argument_DateTimeHasTicks = "The supplied DateTime must have the Year, Month, and Day properties set to 1.  The time cannot be specified more precisely than whole milliseconds."; // Metadata: 0x001797D5
+	public const string Argument_DateTimeHasTimeOfDay = "The supplied DateTime includes a TimeOfDay setting.   This is not supported."; // Metadata: 0x0017986C
+	public const string Argument_DateTimeIsInvalid = "The supplied DateTime represents an invalid time.  For example, when the clock is adjusted forward, any time in the period that is skipped is invalid."; // Metadata: 0x001798BC
+	public const string Argument_DateTimeIsNotAmbiguous = "The supplied DateTime is not in an ambiguous time range."; // Metadata: 0x00179956
+	public const string Argument_DateTimeKindMustBeUnspecified = "The supplied DateTime must have the Kind property set to DateTimeKind.Unspecified."; // Metadata: 0x00179992
+	public const string Argument_DateTimeOffsetInvalidDateTimeStyles = "The DateTimeStyles value \'NoCurrentDateDefault\' is not allowed when parsing DateTimeOffset."; // Metadata: 0x001799E8
+	public const string Argument_DateTimeOffsetIsNotAmbiguous = "The supplied DateTimeOffset is not in an ambiguous time range."; // Metadata: 0x00179A47
+	public const string Argument_EmptyDecString = "Decimal separator cannot be the empty string."; // Metadata: 0x00179A89
+	public const string Argument_EmptyName = "Empty name is not legal."; // Metadata: 0x00179ABA
+	public const string Argument_EmptyWaithandleArray = "Waithandle array may not be empty."; // Metadata: 0x00179AD6
+	public const string Argument_EncoderFallbackNotEmpty = "Must complete Convert() operation or call Encoder.Reset() before calling GetBytes() or GetByteCount(). Encoder \'{0}\' fallback \'{1}\'."; // Metadata: 0x00179AFC
+	public const string Argument_EncodingConversionOverflowBytes = "The output byte buffer is too small to contain the encoded data, encoding \'{0}\' fallback \'{1}\'."; // Metadata: 0x00179B84
+	public const string Argument_EncodingConversionOverflowChars = "The output char buffer is too small to contain the decoded characters, encoding \'{0}\' fallback \'{1}\'."; // Metadata: 0x00179BE7
+	public const string Argument_EncodingNotSupported = "\'{0}\' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method."; // Metadata: 0x00179C50
+	public const string Argument_EnumTypeDoesNotMatch = "The argument type, \'{0}\', is not the same as the enum type \'{1}\'."; // Metadata: 0x00179CEA
+	public const string Argument_FallbackBufferNotEmpty = "Cannot change fallback when buffer is not empty. Previous Convert() call left data in the fallback buffer."; // Metadata: 0x00179D2F
+	public const string Argument_IdnBadLabelSize = "IDN labels must be between 1 and 63 characters long."; // Metadata: 0x00179D9D
+	public const string Argument_IdnBadPunycode = "Invalid IDN encoded string."; // Metadata: 0x00179DD5
+	public const string Argument_IdnIllegalName = "Decoded string is not a valid IDN name."; // Metadata: 0x00179DF4
+	public const string Argument_ImplementIComparable = "At least one object must implement IComparable."; // Metadata: 0x00179E1F
+	public const string Argument_InvalidArgumentForComparison = "Type of argument is not compatible with the generic comparer."; // Metadata: 0x00179E52
+	public const string Argument_InvalidArrayLength = "Length of the array must be {0}."; // Metadata: 0x00179E93
+	public const string Argument_InvalidArrayType = "Target array type is not compatible with the type of items in the collection."; // Metadata: 0x00179EB7
+	public const string Argument_InvalidCalendar = "Not a valid calendar for the given culture."; // Metadata: 0x00179F08
+	public const string Argument_InvalidCharSequence = "Invalid Unicode code point found at index {0}."; // Metadata: 0x00179F37
+	public const string Argument_InvalidCharSequenceNoIndex = "String contains invalid Unicode code points."; // Metadata: 0x00179F69
+	public const string Argument_InvalidCodePageBytesIndex = "Unable to translate bytes {0} at index {1} from specified code page to Unicode."; // Metadata: 0x00179F99
+	public const string Argument_InvalidCodePageConversionIndex = "Unable to translate Unicode character \\\\u{0:X4} at index {1} to specified code page."; // Metadata: 0x00179FEC
+	public const string Argument_InvalidCultureName = "Culture name \'{0}\' is not supported."; // Metadata: 0x0017A044
+	public const string Argument_InvalidDateTimeKind = "Invalid DateTimeKind value."; // Metadata: 0x0017A06C
+	public const string Argument_InvalidDateTimeStyles = "An undefined DateTimeStyles value is being used."; // Metadata: 0x0017A08B
+	public const string Argument_InvalidDigitSubstitution = "The DigitSubstitution property must be of a valid member of the DigitShapes enumeration. Valid entries include Context, NativeNational or None."; // Metadata: 0x0017A0BF
+	public const string Argument_InvalidEnumValue = "The value \'{0}\' is not valid for this usage of the type {1}."; // Metadata: 0x0017A152
+	public const string Argument_InvalidFlag = "Value of flags is invalid."; // Metadata: 0x0017A192
+	public const string Argument_InvalidGroupSize = "Every element in the value array should be between one and nine, except for the last element, which can be zero."; // Metadata: 0x0017A1B0
+	public const string Argument_InvalidHighSurrogate = "Found a high surrogate char without a following low surrogate at index: {0}. The input may not be in this encoding, or may not contain valid Unicode (UTF-16) characters."; // Metadata: 0x0017A224
+	public const string Argument_InvalidId = "The specified ID parameter \'{0}\' is not supported."; // Metadata: 0x0017A2D1
+	public const string Argument_InvalidLowSurrogate = "Found a low surrogate char without a preceding high surrogate at index: {0}. The input may not be in this encoding, or may not contain valid Unicode (UTF-16) characters."; // Metadata: 0x0017A307
+	public const string Argument_InvalidNativeDigitCount = "The NativeDigits array must contain exactly ten members."; // Metadata: 0x0017A3B4
+	public const string Argument_InvalidNativeDigitValue = "Each member of the NativeDigits array must be a single text element (one or more UTF16 code points) with a Unicode Nd (Number, Decimal Digit) property indicating it is a digit."; // Metadata: 0x0017A3F0
+	public const string Argument_InvalidNeutralRegionName = "The region name {0} should not correspond to neutral culture; a specific culture name is required."; // Metadata: 0x0017A4A4
+	public const string Argument_InvalidNormalizationForm = "Invalid normalization form."; // Metadata: 0x0017A50A
+	public const string Argument_InvalidNumberStyles = "An undefined NumberStyles value is being used."; // Metadata: 0x0017A529
+	public const string Argument_InvalidOffLen = "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."; // Metadata: 0x0017A55B
+	public const string Argument_InvalidPathChars = "Illegal characters in path."; // Metadata: 0x0017A5F1
+	public const string Argument_InvalidREG_TZI_FORMAT = "The REG_TZI_FORMAT structure is corrupt."; // Metadata: 0x0017A610
+	public const string Argument_InvalidResourceCultureName = "The given culture name \'{0}\' cannot be used to locate a resource file. Resource filenames must consist of only letters, numbers, hyphens or underscores."; // Metadata: 0x0017A63C
+	public const string Argument_InvalidSerializedString = "The specified serialized string \'{0}\' is not supported."; // Metadata: 0x0017A6D8
+	public const string Argument_InvalidTimeSpanStyles = "An undefined TimeSpanStyles value is being used."; // Metadata: 0x0017A713
+	public const string Argument_MustBeFalse = "Argument must be initialized to false"; // Metadata: 0x0017A747
+	public const string Argument_NoEra = "No Era was supplied."; // Metadata: 0x0017A770
+	public const string Argument_NoRegionInvariantCulture = "There is no region associated with the Invariant Culture (Culture ID: 0x7F)."; // Metadata: 0x0017A788
+	public const string Argument_NotIsomorphic = "Object contains non-primitive or non-blittable data."; // Metadata: 0x0017A7D8
+	public const string Argument_OffsetLocalMismatch = "The UTC Offset of the local dateTime parameter does not match the offset argument."; // Metadata: 0x0017A810
+	public const string Argument_OffsetPrecision = "Offset must be specified in whole minutes."; // Metadata: 0x0017A866
+	public const string Argument_OffsetOutOfRange = "Offset must be within plus or minus 14 hours."; // Metadata: 0x0017A894
+	public const string Argument_OffsetUtcMismatch = "The UTC Offset for Utc DateTime instances must be 0."; // Metadata: 0x0017A8C5
+	public const string Argument_OneOfCulturesNotSupported = "Culture name {0} or {1} is not supported."; // Metadata: 0x0017A8FD
+	public const string Argument_OnlyMscorlib = "Only mscorlib\'s assembly is valid."; // Metadata: 0x0017A92A
+	public const string Argument_OutOfOrderDateTimes = "The DateStart property must come before the DateEnd property."; // Metadata: 0x0017A950
+	public const string ArgumentOutOfRange_HugeArrayNotSupported = "Arrays larger than 2GB are not supported."; // Metadata: 0x0017A991
+	public const string ArgumentOutOfRange_Index = "Index was out of range. Must be non-negative and less than the size of the collection."; // Metadata: 0x0017A9BE
+	public const string ArgumentOutOfRange_Length = "The specified length exceeds maximum capacity of SecureString."; // Metadata: 0x0017AA18
+	public const string ArgumentOutOfRange_LengthTooLarge = "The specified length exceeds the maximum value of {0}."; // Metadata: 0x0017AA5A
+	public const string ArgumentOutOfRange_NeedNonNegNum = "Non-negative number required."; // Metadata: 0x0017AA94
+	public const string ArgumentOutOfRange_NeedNonNegNumRequired = "Non-negative number required."; // Metadata: 0x0017AAB5
+	public const string Argument_PathFormatNotSupported = "The given path\'s format is not supported."; // Metadata: 0x0017AAD6
+	public const string Argument_RecursiveFallback = "Recursive fallback not allowed for character \\\\u{0:X4}."; // Metadata: 0x0017AB03
+	public const string Argument_RecursiveFallbackBytes = "Recursive fallback not allowed for bytes {0}."; // Metadata: 0x0017AB3E
+	public const string Argument_ResultCalendarRange = "The result is out of the supported range for this calendar. The result should be between {0} (Gregorian date) and {1} (Gregorian date), inclusive."; // Metadata: 0x0017AB6F
+	public const string Argument_SemaphoreInitialMaximum = "The initial count for the semaphore must be greater than or equal to zero and less than the maximum count."; // Metadata: 0x0017AC05
+	public const string Argument_TimeSpanHasSeconds = "The TimeSpan parameter cannot be specified more precisely than whole minutes."; // Metadata: 0x0017AC73
+	public const string Argument_TimeZoneNotFound = "The time zone ID \'{0}\' was not found on the local computer."; // Metadata: 0x0017ACC4
+	public const string Argument_TimeZoneInfoBadTZif = "The tzfile does not begin with the magic characters \'TZif\'.  Please verify that the file is not corrupt."; // Metadata: 0x0017AD03
+	public const string Argument_TimeZoneInfoInvalidTZif = "The TZif data structure is corrupt."; // Metadata: 0x0017AD6F
+	public const string Argument_ToExclusiveLessThanFromExclusive = "fromInclusive must be less than or equal to toExclusive."; // Metadata: 0x0017AD96
+	public const string Argument_TransitionTimesAreIdentical = "The DaylightTransitionStart property must not equal the DaylightTransitionEnd property."; // Metadata: 0x0017ADD2
+	public const string Argument_UTCOutOfRange = "The UTC time represented when the offset is applied must be between year 0 and 10,000."; // Metadata: 0x0017AE2D
+	public const string Argument_WaitHandleNameTooLong = "The name can be no more than {0} characters in length."; // Metadata: 0x0017AE87
+	public const string ArgumentException_OtherNotArrayOfCorrectLength = "Object is not a array with the same number of elements as the array to compare it to."; // Metadata: 0x0017AEC1
+	public const string ArgumentException_TupleIncorrectType = "Argument must be of type {0}."; // Metadata: 0x0017AF1A
+	public const string ArgumentException_TupleLastArgumentNotATuple = "The last element of an eight element tuple must be a Tuple."; // Metadata: 0x0017AF3B
+	public const string ArgumentException_ValueTupleIncorrectType = "Argument must be of type {0}."; // Metadata: 0x0017AF7A
+	public const string ArgumentException_ValueTupleLastArgumentNotAValueTuple = "The last element of an eight element ValueTuple must be a ValueTuple."; // Metadata: 0x0017AF9B
+	public const string ArgumentNull_Array = "Array cannot be null."; // Metadata: 0x0017AFE4
+	public const string ArgumentNull_ArrayElement = "At least one element in the specified array was null."; // Metadata: 0x0017AFFD
+	public const string ArgumentNull_ArrayValue = "Found a null value within an array."; // Metadata: 0x0017B036
+	public const string ArgumentNull_Generic = "Value cannot be null."; // Metadata: 0x0017B05D
+	public const string ArgumentNull_Key = "Key cannot be null."; // Metadata: 0x0017B076
+	public const string ArgumentNull_Obj = "Object cannot be null."; // Metadata: 0x0017B08D
+	public const string ArgumentNull_String = "String reference not set to an instance of a String."; // Metadata: 0x0017B0A7
+	public const string ArgumentNull_Type = "Type cannot be null."; // Metadata: 0x0017B0DF
+	public const string ArgumentNull_Waithandles = "The waitHandles parameter cannot be null."; // Metadata: 0x0017B0F7
+	public const string ArgumentNull_WithParamName = "Parameter \'{0}\' cannot be null."; // Metadata: 0x0017B124
+	public const string ArgumentOutOfRange_AddValue = "Value to add was out of range."; // Metadata: 0x0017B147
+	public const string ArgumentOutOfRange_ActualValue = "Actual value was {0}."; // Metadata: 0x0017B169
+	public const string ArgumentOutOfRange_BadYearMonthDay = "Year, Month, and Day parameters describe an un-representable DateTime."; // Metadata: 0x0017B182
+	public const string ArgumentOutOfRange_BadHourMinuteSecond = "Hour, Minute, and Second parameters describe an un-representable DateTime."; // Metadata: 0x0017B1CC
+	public const string ArgumentOutOfRange_BiggerThanCollection = "Must be less than or equal to the size of the collection."; // Metadata: 0x0017B21A
+	public const string ArgumentOutOfRange_Bounds_Lower_Upper = "Argument must be between {0} and {1}."; // Metadata: 0x0017B257
+	public const string ArgumentOutOfRange_CalendarRange = "Specified time is not supported in this calendar. It should be between {0} (Gregorian date) and {1} (Gregorian date), inclusive."; // Metadata: 0x0017B280
+	public const string ArgumentOutOfRange_Capacity = "Capacity exceeds maximum capacity."; // Metadata: 0x0017B304
+	public const string ArgumentOutOfRange_Count = "Count must be positive and count must refer to a location within the string/array/collection."; // Metadata: 0x0017B32A
+	public const string ArgumentOutOfRange_DateArithmetic = "The added or subtracted value results in an un-representable DateTime."; // Metadata: 0x0017B38B
+	public const string ArgumentOutOfRange_DateTimeBadMonths = "Months value must be between +/-120000."; // Metadata: 0x0017B3D5
+	public const string ArgumentOutOfRange_DateTimeBadTicks = "Ticks must be between DateTime.MinValue.Ticks and DateTime.MaxValue.Ticks."; // Metadata: 0x0017B400
+	public const string ArgumentOutOfRange_DateTimeBadYears = "Years value must be between +/-10000."; // Metadata: 0x0017B44E
+	public const string ArgumentOutOfRange_Day = "Day must be between 1 and {0} for month {1}."; // Metadata: 0x0017B477
+	public const string ArgumentOutOfRange_DayOfWeek = "The DayOfWeek enumeration must be in the range 0 through 6."; // Metadata: 0x0017B4A7
+	public const string ArgumentOutOfRange_DayParam = "The Day parameter must be in the range 1 through 31."; // Metadata: 0x0017B4E6
+	public const string ArgumentOutOfRange_DecimalRound = "Decimal can only round to between 0 and 28 digits of precision."; // Metadata: 0x0017B51E
+	public const string ArgumentOutOfRange_DecimalScale = "Decimal\'s scale value must be between 0 and 28, inclusive."; // Metadata: 0x0017B561
+	public const string ArgumentOutOfRange_EndIndexStartIndex = "endIndex cannot be greater than startIndex."; // Metadata: 0x0017B59F
+	public const string ArgumentOutOfRange_Enum = "Enum value was out of legal range."; // Metadata: 0x0017B5CE
+	public const string ArgumentOutOfRange_Era = "Time value was out of era range."; // Metadata: 0x0017B5F4
+	public const string ArgumentOutOfRange_FileTimeInvalid = "Not a valid Win32 FileTime."; // Metadata: 0x0017B618
+	public const string ArgumentOutOfRange_GenericPositive = "Value must be positive."; // Metadata: 0x0017B637
+	public const string ArgumentOutOfRange_GetByteCountOverflow = "Too many characters. The resulting number of bytes is larger than what can be returned as an int."; // Metadata: 0x0017B652
+	public const string ArgumentOutOfRange_GetCharCountOverflow = "Too many bytes. The resulting number of chars is larger than what can be returned as an int."; // Metadata: 0x0017B6B7
+	public const string ArgumentOutOfRange_IndexCount = "Index and count must refer to a location within the string."; // Metadata: 0x0017B717
+	public const string ArgumentOutOfRange_IndexCountBuffer = "Index and count must refer to a location within the buffer."; // Metadata: 0x0017B756
+	public const string ArgumentOutOfRange_IndexLength = "Index and length must refer to a location within the string."; // Metadata: 0x0017B795
+	public const string ArgumentOutOfRange_IndexString = "Index was out of range. Must be non-negative and less than the length of the string."; // Metadata: 0x0017B7D5
+	public const string ArgumentOutOfRange_InvalidEraValue = "Era value was not valid."; // Metadata: 0x0017B82D
+	public const string ArgumentOutOfRange_InvalidHighSurrogate = "A valid high surrogate character is between 0xd800 and 0xdbff, inclusive."; // Metadata: 0x0017B849
+	public const string ArgumentOutOfRange_InvalidLowSurrogate = "A valid low surrogate character is between 0xdc00 and 0xdfff, inclusive."; // Metadata: 0x0017B896
+	public const string ArgumentOutOfRange_InvalidUTF32 = "A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff)."; // Metadata: 0x0017B8E2
+	public const string ArgumentOutOfRange_LengthGreaterThanCapacity = "The length cannot be greater than the capacity."; // Metadata: 0x0017B96F
+	public const string ArgumentOutOfRange_ListInsert = "Index must be within the bounds of the List."; // Metadata: 0x0017B9A2
+	public const string ArgumentOutOfRange_ListItem = "Index was out of range. Must be non-negative and less than the size of the list."; // Metadata: 0x0017B9D2
+	public const string ArgumentOutOfRange_ListRemoveAt = "Index was out of range. Must be non-negative and less than the size of the list."; // Metadata: 0x0017BA26
+	public const string ArgumentOutOfRange_Month = "Month must be between one and twelve."; // Metadata: 0x0017BA7A
+	public const string ArgumentOutOfRange_MonthParam = "The Month parameter must be in the range 1 through 12."; // Metadata: 0x0017BAA3
+	public const string ArgumentOutOfRange_MustBeNonNegInt32 = "Value must be non-negative and less than or equal to Int32.MaxValue."; // Metadata: 0x0017BADD
+	public const string ArgumentOutOfRange_MustBeNonNegNum = "\'{0}\' must be non-negative."; // Metadata: 0x0017BB25
+	public const string ArgumentOutOfRange_MustBePositive = "\'{0}\' must be greater than zero."; // Metadata: 0x0017BB44
+	public const string ArgumentOutOfRange_NeedNonNegOrNegative1 = "Number must be either non-negative and less than or equal to Int32.MaxValue or -1."; // Metadata: 0x0017BB68
+	public const string ArgumentOutOfRange_NeedPosNum = "Positive number required."; // Metadata: 0x0017BBBE
+	public const string ArgumentOutOfRange_NegativeCapacity = "Capacity must be positive."; // Metadata: 0x0017BBDB
+	public const string ArgumentOutOfRange_NegativeCount = "Count cannot be less than zero."; // Metadata: 0x0017BBF9
+	public const string ArgumentOutOfRange_NegativeLength = "Length cannot be less than zero."; // Metadata: 0x0017BC1C
+	public const string ArgumentOutOfRange_OffsetLength = "Offset and length must refer to a position in the string."; // Metadata: 0x0017BC40
+	public const string ArgumentOutOfRange_OffsetOut = "Either offset did not refer to a position in the string, or there is an insufficient length of destination character array."; // Metadata: 0x0017BC7D
+	public const string ArgumentOutOfRange_PartialWCHAR = "Pointer startIndex and length do not refer to a valid string."; // Metadata: 0x0017BCFC
+	public const string ArgumentOutOfRange_Range = "Valid values are between {0} and {1}, inclusive."; // Metadata: 0x0017BD3D
+	public const string ArgumentOutOfRange_RoundingDigits = "Rounding digits must be between 0 and 15, inclusive."; // Metadata: 0x0017BD71
+	public const string ArgumentOutOfRange_SmallCapacity = "capacity was less than the current size."; // Metadata: 0x0017BDA9
+	public const string ArgumentOutOfRange_SmallMaxCapacity = "MaxCapacity must be one or greater."; // Metadata: 0x0017BDD5
+	public const string ArgumentOutOfRange_StartIndex = "StartIndex cannot be less than zero."; // Metadata: 0x0017BDFC
+	public const string ArgumentOutOfRange_StartIndexLargerThanLength = "startIndex cannot be larger than length of string."; // Metadata: 0x0017BE24
+	public const string ArgumentOutOfRange_StartIndexLessThanLength = "startIndex must be less than length of string."; // Metadata: 0x0017BE5A
+	public const string ArgumentOutOfRange_UtcOffset = "The TimeSpan parameter must be within plus or minus 14.0 hours."; // Metadata: 0x0017BE8C
+	public const string ArgumentOutOfRange_UtcOffsetAndDaylightDelta = "The sum of the BaseUtcOffset and DaylightDelta properties must within plus or minus 14.0 hours."; // Metadata: 0x0017BECF
+	public const string ArgumentOutOfRange_Version = "Version\'s parameters must be greater than or equal to zero."; // Metadata: 0x0017BF32
+	public const string ArgumentOutOfRange_Week = "The Week parameter must be in the range 1 through 5."; // Metadata: 0x0017BF71
+	public const string ArgumentOutOfRange_Year = "Year must be between 1 and 9999."; // Metadata: 0x0017BFA9
+	public const string Arithmetic_NaN = "Function does not accept floating point Not-a-Number values."; // Metadata: 0x0017BFCD
+	public const string ArrayTypeMismatch_CantAssignType = "Source array type cannot be assigned to destination array type."; // Metadata: 0x0017C00D
+	public const string BadImageFormatException_CouldNotLoadFileOrAssembly = "Could not load file or assembly \'{0}\'. An attempt was made to load a program with an incorrect format."; // Metadata: 0x0017C050
+	public const string CollectionCorrupted = "A prior operation on this collection was interrupted by an exception. Collection\'s state is no longer trusted."; // Metadata: 0x0017C0BA
+	public const string Exception_EndOfInnerExceptionStack = "--- End of inner exception stack trace ---"; // Metadata: 0x0017C12C
+	public const string Exception_WasThrown = "Exception of type \'{0}\' was thrown."; // Metadata: 0x0017C15A
+	public const string Format_BadBase64Char = "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters."; // Metadata: 0x0017C181
+	public const string Format_BadBase64CharArrayLength = "Invalid length for a Base-64 char array or string."; // Metadata: 0x0017C22C
+	public const string Format_BadBoolean = "String was not recognized as a valid Boolean."; // Metadata: 0x0017C262
+	public const string Format_BadFormatSpecifier = "Format specifier was invalid."; // Metadata: 0x0017C293
+	public const string Format_BadQuote = "Cannot find a matching quote character for the character \'{0}\'."; // Metadata: 0x0017C2B4
+	public const string Format_EmptyInputString = "Input string was either empty or contained only whitespace."; // Metadata: 0x0017C2F7
+	public const string Format_GuidHexPrefix = "Expected hex 0x in \'{0}\'."; // Metadata: 0x0017C336
+	public const string Format_GuidInvLen = "Guid should contain 32 digits with 4 dashes (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)."; // Metadata: 0x0017C353
+	public const string Format_GuidInvalidChar = "Guid string should only contain hexadecimal characters."; // Metadata: 0x0017C3AA
+	public const string Format_GuidBrace = "Expected {0xdddddddd, etc}."; // Metadata: 0x0017C3E5
+	public const string Format_GuidComma = "Could not find a comma, or the length between the previous token and the comma was zero (i.e., \'0x,\'etc.)."; // Metadata: 0x0017C404
+	public const string Format_GuidBraceAfterLastNumber = "Could not find a brace, or the length between the previous token and the brace was zero (i.e., \'0x,\'etc.)."; // Metadata: 0x0017C472
+	public const string Format_GuidDashes = "Dashes are in the wrong position for GUID parsing."; // Metadata: 0x0017C4E0
+	public const string Format_GuidEndBrace = "Could not find the ending brace."; // Metadata: 0x0017C516
+	public const string Format_ExtraJunkAtEnd = "Additional non-parsable characters are at the end of the string."; // Metadata: 0x0017C53A
+	public const string Format_GuidUnrecognized = "Unrecognized Guid format."; // Metadata: 0x0017C57E
+	public const string Format_IndexOutOfRange = "Index (zero based) must be greater than or equal to zero and less than the size of the argument list."; // Metadata: 0x0017C59B
+	public const string Format_InvalidGuidFormatSpecification = "Format String can be only \'D\', \'d\', \'N\', \'n\', \'P\', \'p\', \'B\', \'b\', \'X\' or \'x\'."; // Metadata: 0x0017C604
+	public const string Format_InvalidString = "Input string was not in a correct format."; // Metadata: 0x0017C655
+	public const string Format_NeedSingleChar = "String must be exactly one character long."; // Metadata: 0x0017C682
+	public const string Format_NoParsibleDigits = "Could not find any recognizable digits."; // Metadata: 0x0017C6B0
+	public const string Format_BadTimeSpan = "String was not recognized as a valid TimeSpan."; // Metadata: 0x0017C6DB
+	public const string InsufficientMemory_MemFailPoint = "Insufficient available memory to meet the expected demands of an operation at this time.  Please try again later."; // Metadata: 0x0017C70D
+	public const string InsufficientMemory_MemFailPoint_TooBig = "Insufficient memory to meet the expected demands of an operation, and this system is likely to never satisfy this request.  If this is a 32 bit system, consider booting in 3 GB mode."; // Metadata: 0x0017C782
+	public const string InsufficientMemory_MemFailPoint_VAFrag = "Insufficient available memory to meet the expected demands of an operation at this time, possibly due to virtual address space fragmentation.  Please try again later."; // Metadata: 0x0017C83C
+	public const string InvalidCast_CannotCastNullToValueType = "Null object cannot be converted to a value type."; // Metadata: 0x0017C8E6
+	public const string InvalidCast_DownCastArrayElement = "At least one element in the source array could not be cast down to the destination array type."; // Metadata: 0x0017C91A
+	public const string InvalidCast_FromTo = "Invalid cast from \'{0}\' to \'{1}\'."; // Metadata: 0x0017C97C
+	public const string InvalidCast_IConvertible = "Object must implement IConvertible."; // Metadata: 0x0017C9A1
+	public const string InvalidCast_StoreArrayElement = "Object cannot be stored in an array of this type."; // Metadata: 0x0017C9C8
+	public const string InvalidOperation_Calling = "WinRT Interop has already been initialized and cannot be initialized again."; // Metadata: 0x0017C9FD
+	public const string InvalidOperation_DateTimeParsing = "Internal Error in DateTime and Calendar operations."; // Metadata: 0x0017CA4C
+	public const string InvalidOperation_EnumEnded = "Enumeration already finished."; // Metadata: 0x0017CA83
+	public const string InvalidOperation_EnumFailedVersion = "Collection was modified; enumeration operation may not execute."; // Metadata: 0x0017CAA4
+	public const string InvalidOperation_EnumNotStarted = "Enumeration has not started. Call MoveNext."; // Metadata: 0x0017CAE7
+	public const string InvalidOperation_EnumOpCantHappen = "Enumeration has either not started or has already finished."; // Metadata: 0x0017CB16
+	public const string InvalidOperation_HandleIsNotInitialized = "Handle is not initialized."; // Metadata: 0x0017CB55
+	public const string InvalidOperation_IComparerFailed = "Failed to compare two elements in the array."; // Metadata: 0x0017CB73
+	public const string InvalidOperation_NoValue = "Nullable object must have a value."; // Metadata: 0x0017CBA3
+	public const string InvalidOperation_NullArray = "The underlying array is null."; // Metadata: 0x0017CBC9
+	public const string InvalidOperation_Overlapped_Pack = "Cannot pack a packed Overlapped again."; // Metadata: 0x0017CBEA
+	public const string InvalidOperation_ReadOnly = "Instance is read-only."; // Metadata: 0x0017CC14
+	public const string InvalidOperation_ThreadWrongThreadStart = "The thread was created with a ThreadStart delegate that does not accept a parameter."; // Metadata: 0x0017CC2E
+	public const string InvalidOperation_UnknownEnumType = "Unknown enum type."; // Metadata: 0x0017CC86
+	public const string InvalidOperation_WriteOnce = "This property has already been set and cannot be modified."; // Metadata: 0x0017CC9C
+	public const string InvalidOperation_ArrayCreateInstance_NotARuntimeType = "Array.CreateInstance() can only accept Type objects created by the runtime."; // Metadata: 0x0017CCDA
+	public const string InvalidOperation_TooEarly = "Internal Error: This operation cannot be invoked in an eager class constructor."; // Metadata: 0x0017CD29
+	public const string InvalidOperation_NullContext = "Cannot call Set on a null context"; // Metadata: 0x0017CD7C
+	public const string InvalidOperation_CannotUseAFCOtherThread = "AsyncFlowControl object must be used on the thread where it was created."; // Metadata: 0x0017CDA1
+	public const string InvalidOperation_CannotRestoreUnsupressedFlow = "Cannot restore context flow when it is not suppressed."; // Metadata: 0x0017CDED
+	public const string InvalidOperation_CannotSupressFlowMultipleTimes = "Context flow is already suppressed."; // Metadata: 0x0017CE27
+	public const string InvalidOperation_CannotUseAFCMultiple = "AsyncFlowControl object can be used only once to call Undo()."; // Metadata: 0x0017CE4E
+	public const string InvalidOperation_AsyncFlowCtrlCtxMismatch = "AsyncFlowControl objects can be used to restore flow only on a Context that had its flow suppressed."; // Metadata: 0x0017CE8F
+	public const string InvalidProgram_Default = "Common Language Runtime detected an invalid program."; // Metadata: 0x0017CEF7
+	public const string InvalidProgram_Specific = "Common Language Runtime detected an invalid program. The body of method \'{0}\' is invalid."; // Metadata: 0x0017CF2F
+	public const string InvalidProgram_Vararg = "Method \'{0}\' has a variable argument list. Variable argument lists are not supported in .NET Core."; // Metadata: 0x0017CF8C
+	public const string InvalidProgram_CallVirtFinalize = "Object.Finalize() can not be called directly. It is only callable by the runtime."; // Metadata: 0x0017CFF2
+	public const string InvalidTimeZone_InvalidRegistryData = "The time zone ID \'{0}\' was found on the local computer, but the registry information was corrupt."; // Metadata: 0x0017D047
+	public const string IO_FileExists_Name = "The file \'{0}\' already exists."; // Metadata: 0x0017D0AC
+	public const string IO_FileName_Name = "File name: \'{0}\'"; // Metadata: 0x0017D0CE
+	public const string IO_FileNotFound = "Unable to find the specified file."; // Metadata: 0x0017D0E2
+	public const string IO_FileNotFound_FileName = "Could not load file or assembly \'{0}\'. The system cannot find the file specified."; // Metadata: 0x0017D108
+	public const string IO_FileLoad = "Could not load the specified file."; // Metadata: 0x0017D15D
+	public const string IO_FileLoad_FileName = "Could not load the file \'{0}\'."; // Metadata: 0x0017D183
+	public const string IO_PathNotFound_NoPathName = "Could not find a part of the path."; // Metadata: 0x0017D1A5
+	public const string IO_PathNotFound_Path = "Could not find a part of the path \'{0}\'."; // Metadata: 0x0017D1CB
+	public const string IO_PathTooLong = "The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters."; // Metadata: 0x0017D1F7
+	public const string IO_SharingViolation_File = "The process cannot access the file \'{0}\' because it is being used by another process."; // Metadata: 0x0017D2A8
+	public const string IO_SharingViolation_NoFileName = "The process cannot access the file because it is being used by another process."; // Metadata: 0x0017D301
+	public const string IO_AlreadyExists_Name = "Cannot create \'{0}\' because a file or directory with the same name already exists."; // Metadata: 0x0017D354
+	public const string UnauthorizedAccess_IODenied_NoPathName = "Access to the path is denied."; // Metadata: 0x0017D3AA
+	public const string UnauthorizedAccess_IODenied_Path = "Access to the path \'{0}\' is denied."; // Metadata: 0x0017D3CB
+	public const string Lazy_CreateValue_NoParameterlessCtorForT = "The lazily-initialized type does not have a public, parameterless constructor."; // Metadata: 0x0017D3F2
+	public const string Lazy_ctor_ModeInvalid = "The mode argument specifies an invalid value."; // Metadata: 0x0017D444
+	public const string Lazy_StaticInit_InvalidOperation = "ValueFactory returned null."; // Metadata: 0x0017D475
+	public const string Lazy_ToString_ValueNotCreated = "Value is not created."; // Metadata: 0x0017D494
+	public const string Lazy_Value_RecursiveCallsToValue = "ValueFactory attempted to access the Value property of this instance."; // Metadata: 0x0017D4AD
+	public const string MissingConstructor_Name = "Constructor on type \'{0}\' not found."; // Metadata: 0x0017D4F6
+	public const string MustUseCCRewrite = "An assembly (probably \'{1}\') must be rewritten using the code contracts binary rewriter (CCRewrite) because it is calling Contract.{0} and the CONTRACTS_FULL symbol is defined.  Remove any explicit definitions of the CONTRACTS_FULL symbol from your project and rebuild.  CCRewrite can be downloaded from http://go.microsoft.com/fwlink/?LinkID=169180. \\r\\nAfter the rewriter is installed, it can be enabled in Visual Studio from the project\'s Properties page on the Code Contracts pane.  Ensure that \'Perform Runtime Contract Checking\' is enabled, which will define CONTRACTS_FULL."; // Metadata: 0x0017D51E
+	public const string NotSupported_FixedSizeCollection = "Collection was of a fixed size."; // Metadata: 0x0017D766
+	public const string NotSupported_MaxWaitHandles = "The number of WaitHandles must be less than or equal to 64."; // Metadata: 0x0017D789
+	public const string NotSupported_NoCodepageData = "No data is available for encoding {0}. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method."; // Metadata: 0x0017D7C8
+	public const string NotSupported_ReadOnlyCollection = "Collection is read-only."; // Metadata: 0x0017D861
+	public const string NotSupported_StringComparison = "The string comparison type passed in is currently not supported."; // Metadata: 0x0017D87D
+	public const string NotSupported_VoidArray = "Arrays of System.Void are not supported."; // Metadata: 0x0017D8C1
+	public const string NotSupported_ByRefLike = "Cannot create boxed ByRef-like values."; // Metadata: 0x0017D8ED
+	public const string NotSupported_Type = "Type is not supported."; // Metadata: 0x0017D917
+	public const string NotSupported_WaitAllSTAThread = "WaitAll for multiple handles on a STA thread is not supported."; // Metadata: 0x0017D931
+	public const string ObjectDisposed_Generic = "Cannot access a disposed object."; // Metadata: 0x0017D973
+	public const string ObjectDisposed_ObjectName_Name = "Object name: \'{0}\'."; // Metadata: 0x0017D997
+	public const string Overflow_Byte = "Value was either too large or too small for an unsigned byte."; // Metadata: 0x0017D9AE
+	public const string Overflow_Char = "Value was either too large or too small for a character."; // Metadata: 0x0017D9EF
+	public const string Overflow_Decimal = "Value was either too large or too small for a Decimal."; // Metadata: 0x0017DA2B
+	public const string Overflow_Double = "Value was either too large or too small for a Double."; // Metadata: 0x0017DA65
+	public const string Overflow_TimeSpanElementTooLarge = "The TimeSpan could not be parsed because at least one of the numeric components is out of range or contains too many digits."; // Metadata: 0x0017DA9E
+	public const string Overflow_Duration = "The duration cannot be returned for TimeSpan.MinValue because the absolute value of TimeSpan.MinValue exceeds the value of TimeSpan.MaxValue."; // Metadata: 0x0017DB1E
+	public const string Overflow_Int16 = "Value was either too large or too small for an Int16."; // Metadata: 0x0017DBAF
+	public const string Overflow_Int32 = "Value was either too large or too small for an Int32."; // Metadata: 0x0017DBE8
+	public const string Overflow_Int64 = "Value was either too large or too small for an Int64."; // Metadata: 0x0017DC21
+	public const string Overflow_NegateTwosCompNum = "Negating the minimum value of a twos complement number is invalid."; // Metadata: 0x0017DC5A
+	public const string Overflow_NegativeUnsigned = "The string was being parsed as an unsigned number and could not have a negative sign."; // Metadata: 0x0017DCA0
+	public const string Overflow_SByte = "Value was either too large or too small for a signed byte."; // Metadata: 0x0017DCF9
+	public const string Overflow_Single = "Value was either too large or too small for a Single."; // Metadata: 0x0017DD37
+	public const string Overflow_TimeSpanTooLong = "TimeSpan overflowed because the duration is too long."; // Metadata: 0x0017DD70
+	public const string Overflow_UInt16 = "Value was either too large or too small for a UInt16."; // Metadata: 0x0017DDA9
+	public const string Overflow_UInt32 = "Value was either too large or too small for a UInt32."; // Metadata: 0x0017DDE2
+	public const string Overflow_UInt64 = "Value was either too large or too small for a UInt64."; // Metadata: 0x0017DE1B
+	public const string Rank_MultiDimNotSupported = "Only single dimension arrays are supported here."; // Metadata: 0x0017DE54
+	public const string RuntimeWrappedException = "An object that does not derive from System.Exception has been wrapped in a RuntimeWrappedException."; // Metadata: 0x0017DE88
+	public const string SpinWait_SpinUntil_ArgumentNull = "The condition argument is null."; // Metadata: 0x0017DEEF
+	public const string Serialization_CorruptField = "The value of the field \'{0}\' is invalid.  The serialized data is corrupt."; // Metadata: 0x0017DF12
+	public const string Serialization_InvalidData = "An error occurred while deserializing the object.  The serialized data is corrupt."; // Metadata: 0x0017DF5F
+	public const string Serialization_InvalidEscapeSequence = "The serialized data contained an invalid escape sequence \'\\\\{0}\'."; // Metadata: 0x0017DFB5
+	public const string Serialization_InvalidType = "Only system-provided types can be passed to the GetUninitializedObject method. \'{0}\' is not a valid instance of a type."; // Metadata: 0x0017DFFA
+	public const string SpinWait_SpinUntil_TimeoutWrong = "The timeout must represent a value between -1 and Int32.MaxValue, inclusive."; // Metadata: 0x0017E075
+	public const string Threading_AbandonedMutexException = "The wait completed due to an abandoned mutex."; // Metadata: 0x0017E0C5
+	public const string Threading_SemaphoreFullException = "Adding the specified count to the semaphore would cause it to exceed its maximum count."; // Metadata: 0x0017E0F6
+	public const string Threading_ThreadInterrupted = "Thread was interrupted from a waiting state."; // Metadata: 0x0017E151
+	public const string Threading_WaitHandleCannotBeOpenedException = "No handle of the given name exists."; // Metadata: 0x0017E181
+	public const string Threading_WaitHandleCannotBeOpenedException_InvalidHandle = "A WaitHandle with system-wide name \'{0}\' cannot be created. A WaitHandle of a different type might have the same name."; // Metadata: 0x0017E1A8
+	public const string TimeZoneNotFound_MissingRegistryData = "The time zone ID \'{0}\' was not found on the local computer."; // Metadata: 0x0017E222
+	public const string TypeInitialization_Default = "Type constructor threw an exception."; // Metadata: 0x0017E261
+	public const string TypeInitialization_Type = "The type initializer for \'{0}\' threw an exception."; // Metadata: 0x0017E289
+	public const string TypeInitialization_Type_NoTypeAvailable = "A type initializer threw an exception. To determine which type, inspect the InnerException\'s StackTrace property."; // Metadata: 0x0017E2BF
+	public const string Verification_Exception = "Operation could destabilize the runtime."; // Metadata: 0x0017E334
+	public const string Arg_EnumFormatUnderlyingTypeAndObjectMustBeSameType = "Enum underlying type and the object must be same type or object. Type passed in was \'{0}\'; the enum underlying type was \'{1}\'."; // Metadata: 0x0017E360
+	public const string Format_InvalidEnumFormatSpecification = "Format String can be only \'G\', \'g\', \'X\', \'x\', \'F\', \'f\', \'D\' or \'d\'."; // Metadata: 0x0017E3E2
+	public const string Arg_MustBeEnumBaseTypeOrEnum = "The value passed in must be an enum base or an underlying type for an enum, such as an Int32."; // Metadata: 0x0017E429
+	public const string Arg_EnumUnderlyingTypeAndObjectMustBeSameType = "Enum underlying type and the object must be same type or object must be a String. Type passed in was \'{0}\'; the enum underlying type was \'{1}\'."; // Metadata: 0x0017E48A
+	public const string Arg_MustBeType = "Type must be a type provided by the runtime."; // Metadata: 0x0017E51D
+	public const string Arg_MustContainEnumInfo = "Must specify valid information for parsing in the string."; // Metadata: 0x0017E54D
+	public const string Arg_EnumValueNotFound = "Requested value \'{0}\' was not found."; // Metadata: 0x0017E58A
+	public const string Argument_StringZeroLength = "String cannot be of zero length."; // Metadata: 0x0017E5B2
+	public const string Argument_StringFirstCharIsZero = "The first char in the string is the null character."; // Metadata: 0x0017E5D6
+	public const string Argument_LongEnvVarValue = "Environment variable name or value is too long."; // Metadata: 0x0017E60D
+	public const string Argument_IllegalEnvVarName = "Environment variable name cannot contain equal character."; // Metadata: 0x0017E640
+	public const string AssumptionFailed = "Assumption failed."; // Metadata: 0x0017E67D
+	public const string AssumptionFailed_Cnd = "Assumption failed: {0}"; // Metadata: 0x0017E693
+	public const string AssertionFailed = "Assertion failed."; // Metadata: 0x0017E6AD
+	public const string AssertionFailed_Cnd = "Assertion failed: {0}"; // Metadata: 0x0017E6C2
+	public const string PreconditionFailed = "Precondition failed."; // Metadata: 0x0017E6DB
+	public const string PreconditionFailed_Cnd = "Precondition failed: {0}"; // Metadata: 0x0017E6F3
+	public const string PostconditionFailed = "Postcondition failed."; // Metadata: 0x0017E70F
+	public const string PostconditionFailed_Cnd = "Postcondition failed: {0}"; // Metadata: 0x0017E728
+	public const string PostconditionOnExceptionFailed = "Postcondition failed after throwing an exception."; // Metadata: 0x0017E745
+	public const string PostconditionOnExceptionFailed_Cnd = "Postcondition failed after throwing an exception: {0}"; // Metadata: 0x0017E77A
+	public const string InvariantFailed = "Invariant failed."; // Metadata: 0x0017E7B3
+	public const string InvariantFailed_Cnd = "Invariant failed: {0}"; // Metadata: 0x0017E7C8
+	public const string MissingEncodingNameResource = "Could not find a resource entry for the encoding codepage \'{0} - {1}\'"; // Metadata: 0x0017E7E1
+	public const string Globalization_cp_1200 = "Unicode"; // Metadata: 0x0017E82A
+	public const string Globalization_cp_1201 = "Unicode (Big-Endian)"; // Metadata: 0x0017E835
+	public const string Globalization_cp_12000 = "Unicode (UTF-32)"; // Metadata: 0x0017E84D
+	public const string Globalization_cp_12001 = "Unicode (UTF-32 Big-Endian)"; // Metadata: 0x0017E861
+	public const string Globalization_cp_20127 = "US-ASCII"; // Metadata: 0x0017E880
+	public const string Globalization_cp_28591 = "Western European (ISO)"; // Metadata: 0x0017E88C
+	public const string Globalization_cp_65000 = "Unicode (UTF-7)"; // Metadata: 0x0017E8A6
+	public const string Globalization_cp_65001 = "Unicode (UTF-8)"; // Metadata: 0x0017E8B9
+	public const string DebugAssertBanner = "---- DEBUG ASSERTION FAILED ----"; // Metadata: 0x0017E8CC
+	public const string DebugAssertLongMessage = "---- Assert Long Message ----"; // Metadata: 0x0017E8F0
+	public const string DebugAssertShortMessage = "---- Assert Short Message ----"; // Metadata: 0x0017E911
+	public const string InvalidCast_Empty = "Object cannot be cast to Empty."; // Metadata: 0x0017E933
+	public const string Arg_UnknownTypeCode = "Unknown TypeCode value."; // Metadata: 0x0017E956
+	public const string Format_BadDatePattern = "Could not determine the order of year, month, and date from \'{0}\'."; // Metadata: 0x0017E971
+	public const string Format_BadDateTime = "String was not recognized as a valid DateTime."; // Metadata: 0x0017E9B7
+	public const string Format_BadDateTimeCalendar = "The DateTime represented by the string is not supported in calendar {0}."; // Metadata: 0x0017E9E9
+	public const string Format_BadDayOfWeek = "String was not recognized as a valid DateTime because the day of week was incorrect."; // Metadata: 0x0017EA35
+	public const string Format_DateOutOfRange = "The DateTime represented by the string is out of range."; // Metadata: 0x0017EA8D
+	public const string Format_MissingIncompleteDate = "There must be at least a partial date with a year present in the input."; // Metadata: 0x0017EAC8
+	public const string Format_OffsetOutOfRange = "The time zone offset must be within plus or minus 14 hours."; // Metadata: 0x0017EB13
+	public const string Format_RepeatDateTimePattern = "DateTime pattern \'{0}\' appears more than once with different values."; // Metadata: 0x0017EB52
+	public const string Format_UnknowDateTimeWord = "The string was not recognized as a valid DateTime. There is an unknown word starting at index {0}."; // Metadata: 0x0017EB9A
+	public const string Format_UTCOutOfRange = "The UTC representation of the date falls outside the year range 1-9999."; // Metadata: 0x0017EC00
+	public const string RFLCT_Ambiguous = "Ambiguous match found."; // Metadata: 0x0017EC4B
+	public const string AggregateException_ctor_DefaultMessage = "One or more errors occurred."; // Metadata: 0x0017EC65
+	public const string AggregateException_ctor_InnerExceptionNull = "An element of innerExceptions was null."; // Metadata: 0x0017EC85
+	public const string AggregateException_DeserializationFailure = "The serialization stream contains no inner exceptions."; // Metadata: 0x0017ECB0
+	public const string AggregateException_InnerException = "(Inner Exception #{0}) "; // Metadata: 0x0017ECEA
+	public const string ArgumentOutOfRange_TimeoutTooLarge = "Time-out interval must be less than 2^32-2."; // Metadata: 0x0017ED05
+	public const string ArgumentOutOfRange_PeriodTooLarge = "Period must be less than 2^32-2."; // Metadata: 0x0017ED34
+	public const string TaskScheduler_FromCurrentSynchronizationContext_NoCurrent = "The current SynchronizationContext may not be used as a TaskScheduler."; // Metadata: 0x0017ED58
+	public const string TaskScheduler_ExecuteTask_WrongTaskScheduler = "ExecuteTask may not be called for a task which was previously queued to a different TaskScheduler."; // Metadata: 0x0017EDA2
+	public const string TaskScheduler_InconsistentStateAfterTryExecuteTaskInline = "The TryExecuteTaskInline call to the underlying scheduler succeeded, but the task body was not invoked."; // Metadata: 0x0017EE08
+	public const string TaskSchedulerException_ctor_DefaultMessage = "An exception was thrown by a TaskScheduler."; // Metadata: 0x0017EE73
+	public const string Task_MultiTaskContinuation_FireOptions = "It is invalid to exclude specific continuation kinds for continuations off of multiple tasks."; // Metadata: 0x0017EEA2
+	public const string Task_ContinueWith_ESandLR = "The specified TaskContinuationOptions combined LongRunning and ExecuteSynchronously.  Synchronous continuations should not be long running."; // Metadata: 0x0017EF03
+	public const string Task_MultiTaskContinuation_EmptyTaskList = "The tasks argument contains no tasks."; // Metadata: 0x0017EF92
+	public const string Task_MultiTaskContinuation_NullTask = "The tasks argument included a null value."; // Metadata: 0x0017EFBB
+	public const string Task_FromAsync_PreferFairness = "It is invalid to specify TaskCreationOptions.PreferFairness in calls to FromAsync."; // Metadata: 0x0017EFE8
+	public const string Task_FromAsync_LongRunning = "It is invalid to specify TaskCreationOptions.LongRunning in calls to FromAsync."; // Metadata: 0x0017F03E
+	public const string AsyncMethodBuilder_InstanceNotInitialized = "The builder was not properly initialized."; // Metadata: 0x0017F091
+	public const string TaskT_TransitionToFinal_AlreadyCompleted = "An attempt was made to transition a task to a final state when it had already completed."; // Metadata: 0x0017F0BE
+	public const string TaskT_DebuggerNoResult = "{Not yet computed}"; // Metadata: 0x0017F11A
+	public const string OperationCanceled = "The operation was canceled."; // Metadata: 0x0017F130
+	public const string CancellationToken_CreateLinkedToken_TokensIsEmpty = "No tokens were supplied."; // Metadata: 0x0017F14F
+	public const string CancellationTokenSource_Disposed = "The CancellationTokenSource has been disposed."; // Metadata: 0x0017F16B
+	public const string CancellationToken_SourceDisposed = "The CancellationTokenSource associated with this CancellationToken has been disposed."; // Metadata: 0x0017F19D
+	public const string TaskExceptionHolder_UnknownExceptionType = "(Internal)Expected an Exception or an IEnumerable<Exception>"; // Metadata: 0x0017F1F6
+	public const string TaskExceptionHolder_UnhandledException = "A Task\'s exception(s) were not observed either by Waiting on the Task or accessing its Exception property. As a result, the unobserved exception was rethrown by the finalizer thread."; // Metadata: 0x0017F236
+	public const string Task_Delay_InvalidMillisecondsDelay = "The value needs to be either -1 (signifying an infinite timeout), 0 or a positive integer."; // Metadata: 0x0017F2F0
+	public const string Task_Delay_InvalidDelay = "The value needs to translate in milliseconds to -1 (signifying an infinite timeout), 0 or a positive integer less than or equal to Int32.MaxValue."; // Metadata: 0x0017F34E
+	public const string Task_Dispose_NotCompleted = "A task may only be disposed if it is in a completion state (RanToCompletion, Faulted or Canceled)."; // Metadata: 0x0017F3E4
+	public const string Task_WaitMulti_NullTask = "The tasks array included at least one null element."; // Metadata: 0x0017F44A
+	public const string Task_ContinueWith_NotOnAnything = "The specified TaskContinuationOptions excluded all continuation kinds."; // Metadata: 0x0017F481
+	public const string Task_RunSynchronously_AlreadyStarted = "RunSynchronously may not be called on a task that was already started."; // Metadata: 0x0017F4CB
+	public const string Task_ThrowIfDisposed = "The task has been disposed."; // Metadata: 0x0017F515
+	public const string Task_RunSynchronously_TaskCompleted = "RunSynchronously may not be called on a task that has already completed."; // Metadata: 0x0017F534
+	public const string Task_RunSynchronously_Promise = "RunSynchronously may not be called on a task not bound to a delegate, such as the task returned from an asynchronous method."; // Metadata: 0x0017F580
+	public const string Task_RunSynchronously_Continuation = "RunSynchronously may not be called on a continuation task."; // Metadata: 0x0017F600
+	public const string Task_Start_AlreadyStarted = "Start may not be called on a task that was already started."; // Metadata: 0x0017F63E
+	public const string Task_Start_ContinuationTask = "Start may not be called on a continuation task."; // Metadata: 0x0017F67D
+	public const string Task_Start_Promise = "Start may not be called on a promise-style task."; // Metadata: 0x0017F6B0
+	public const string Task_Start_TaskCompleted = "Start may not be called on a task that has completed."; // Metadata: 0x0017F6E4
+	public const string TaskCanceledException_ctor_DefaultMessage = "A task was canceled."; // Metadata: 0x0017F71D
+	public const string TaskCompletionSourceT_TrySetException_NoExceptions = "The exceptions collection was empty."; // Metadata: 0x0017F735
+	public const string TaskCompletionSourceT_TrySetException_NullException = "The exceptions collection included at least one null element."; // Metadata: 0x0017F75D
+	public const string Argument_MinMaxValue = "\'{0}\' cannot be greater than {1}."; // Metadata: 0x0017F79E
+	public const string ExecutionContext_ExceptionInAsyncLocalNotification = "An exception was not handled in an AsyncLocal<T> notification callback."; // Metadata: 0x0017F7C3
+	public const string InvalidOperation_WrongAsyncResultOrEndCalledMultiple = "Either the IAsyncResult object did not come from the corresponding async method on this type, or the End method was called multiple times with the same IAsyncResult."; // Metadata: 0x0017F80E
+	public const string SpinLock_IsHeldByCurrentThread = "Thread tracking is disabled."; // Metadata: 0x0017F8B7
+	public const string SpinLock_TryEnter_LockRecursionException = "The calling thread already holds the lock."; // Metadata: 0x0017F8D7
+	public const string SpinLock_Exit_SynchronizationLockException = "The calling thread does not hold the lock."; // Metadata: 0x0017F905
+	public const string SpinLock_TryReliableEnter_ArgumentException = "The tookLock argument must be set to false before calling this method."; // Metadata: 0x0017F933
+	public const string SpinLock_TryEnter_ArgumentOutOfRange = "The timeout must be a value between -1 and Int32.MaxValue, inclusive."; // Metadata: 0x0017F97D
+	public const string ManualResetEventSlim_Disposed = "The event has been disposed."; // Metadata: 0x0017F9C6
+	public const string ManualResetEventSlim_ctor_SpinCountOutOfRange = "The spinCount argument must be in the range 0 to {0}, inclusive."; // Metadata: 0x0017F9E6
+	public const string ManualResetEventSlim_ctor_TooManyWaiters = "There are too many threads currently waiting on the event. A maximum of {0} waiting threads are supported."; // Metadata: 0x0017FA2A
+	public const string InvalidOperation_SendNotSupportedOnWindowsRTSynchronizationContext = "Send is not supported in the Windows Runtime SynchronizationContext"; // Metadata: 0x0017FA98
+	public const string InvalidOperation_SetData_OnlyOnce = "SetData can only be used to set the value of a given name once."; // Metadata: 0x0017FADF
+	public const string SemaphoreSlim_Disposed = "The semaphore has been disposed."; // Metadata: 0x0017FB22
+	public const string SemaphoreSlim_Release_CountWrong = "The releaseCount argument must be greater than zero."; // Metadata: 0x0017FB46
+	public const string SemaphoreSlim_Wait_TimeoutWrong = "The timeout must represent a value between -1 and Int32.MaxValue, inclusive."; // Metadata: 0x0017FB7E
+	public const string SemaphoreSlim_ctor_MaxCountWrong = "The maximumCount argument must be a positive number. If a maximum is not required, use the constructor without a maxCount parameter."; // Metadata: 0x0017FBCE
+	public const string SemaphoreSlim_ctor_InitialCountWrong = "The initialCount argument must be non-negative and less than or equal to the maximumCount."; // Metadata: 0x0017FC56
+	public const string ThreadLocal_ValuesNotAvailable = "The ThreadLocal object is not tracking values. To use the Values property, use a ThreadLocal constructor that accepts the trackAllValues parameter and set the parameter to true."; // Metadata: 0x0017FCB4
+	public const string ThreadLocal_Value_RecursiveCallsToValue = "ValueFactory attempted to access the Value property of this instance."; // Metadata: 0x0017FD69
+	public const string ThreadLocal_Disposed = "The ThreadLocal object has been disposed."; // Metadata: 0x0017FDB2
+	public const string LockRecursionException_WriteAfterReadNotAllowed = "Write lock may not be acquired with read lock held. This pattern is prone to deadlocks. Please ensure that read locks are released before taking a write lock. If an upgrade is necessary, use an upgrade lock in place of the read lock."; // Metadata: 0x0017FDDF
+	public const string LockRecursionException_RecursiveWriteNotAllowed = "Recursive write lock acquisitions not allowed in this mode."; // Metadata: 0x0017FECC
+	public const string LockRecursionException_ReadAfterWriteNotAllowed = "A read lock may not be acquired with the write lock held in this mode."; // Metadata: 0x0017FF0B
+	public const string LockRecursionException_RecursiveUpgradeNotAllowed = "Recursive upgradeable lock acquisitions not allowed in this mode."; // Metadata: 0x0017FF55
+	public const string LockRecursionException_RecursiveReadNotAllowed = "Recursive read lock acquisitions not allowed in this mode."; // Metadata: 0x0017FF9A
+	public const string SynchronizationLockException_IncorrectDispose = "The lock is being disposed while still being used. It either is being held by a thread and/or has active waiters waiting to acquire the lock."; // Metadata: 0x0017FFD8
+	public const string SynchronizationLockException_MisMatchedWrite = "The write lock is being released without being held."; // Metadata: 0x00180069
+	public const string LockRecursionException_UpgradeAfterReadNotAllowed = "Upgradeable lock may not be acquired with read lock held."; // Metadata: 0x001800A1
+	public const string LockRecursionException_UpgradeAfterWriteNotAllowed = "Upgradeable lock may not be acquired with write lock held in this mode. Acquiring Upgradeable lock gives the ability to read along with an option to upgrade to a writer."; // Metadata: 0x001800DE
+	public const string SynchronizationLockException_MisMatchedUpgrade = "The upgradeable lock is being released without being held."; // Metadata: 0x0018018B
+	public const string SynchronizationLockException_MisMatchedRead = "The read lock is being released without being held."; // Metadata: 0x001801C9
+	public const string InvalidOperation_TimeoutsNotSupported = "Timeouts are not supported on this stream."; // Metadata: 0x00180200
+	public const string NotSupported_UnreadableStream = "Stream does not support reading."; // Metadata: 0x0018022E
+	public const string NotSupported_UnwritableStream = "Stream does not support writing."; // Metadata: 0x00180252
+	public const string ObjectDisposed_StreamClosed = "Cannot access a closed Stream."; // Metadata: 0x00180276
+	public const string NotSupported_SubclassOverride = "Derived classes must provide an implementation."; // Metadata: 0x00180298
+	public const string InvalidOperation_NoPublicRemoveMethod = "Cannot remove the event handler since no public remove method exists for the event."; // Metadata: 0x001802CB
+	public const string InvalidOperation_NoPublicAddMethod = "Cannot add the event handler since no public add method exists for the event."; // Metadata: 0x00180322
+	public const string SerializationException = "Serialization error."; // Metadata: 0x00180373
+	public const string Serialization_NotFound = "Member \'{0}\' was not found."; // Metadata: 0x0018038B
+	public const string Serialization_OptionalFieldVersionValue = "Version value must be positive."; // Metadata: 0x001803AA
+	public const string Serialization_SameNameTwice = "Cannot add the same member twice to a SerializationInfo object."; // Metadata: 0x001803CD
+	public const string NotSupported_AbstractNonCLS = "This non-CLS method is not implemented."; // Metadata: 0x00180410
+	public const string NotSupported_NoTypeInfo = "Cannot resolve {0} to a TypeInfo object."; // Metadata: 0x0018043B
+	public const string Arg_CustomAttributeFormatException = "Binary format of the specified custom attribute was invalid."; // Metadata: 0x00180467
+	public const string Argument_InvalidMemberForNamedArgument = "The member must be either a field or a property."; // Metadata: 0x001804A7
+	public const string Arg_InvalidFilterCriteriaException = "Specified filter criteria was invalid."; // Metadata: 0x001804DB
+	public const string Arg_ParmArraySize = "Must specify one or more parameters."; // Metadata: 0x00180505
+	public const string Arg_MustBePointer = "Type must be a Pointer."; // Metadata: 0x0018052D
+	public const string Arg_InvalidHandle = "Invalid handle."; // Metadata: 0x00180548
+	public const string Argument_InvalidEnum = "The Enum type should contain one and only one instance field."; // Metadata: 0x0018055B
+	public const string Argument_MustHaveAttributeBaseClass = "Type passed in must be derived from System.Attribute or System.Attribute itself."; // Metadata: 0x0018059C
+	public const string InvalidFilterCriteriaException_CritString = "A String must be provided for the filter criteria."; // Metadata: 0x001805F0
+	public const string InvalidFilterCriteriaException_CritInt = "An Int32 must be provided for the filter criteria."; // Metadata: 0x00180626
+	public const string InvalidOperation_NotSupportedOnWinRTEvent = "Adding or removing event handlers dynamically is not supported on WinRT events."; // Metadata: 0x0018065C
+	public const string PlatformNotSupported_ReflectionOnly = "ReflectionOnly loading is not supported on this platform."; // Metadata: 0x001806AF
+	public const string PlatformNotSupported_OSXFileLocking = "Locking/unlocking file regions is not supported on this platform. Use FileShare on the entire file instead."; // Metadata: 0x001806EC
+	public const string MissingMember_Name = "Member \'{0}\' not found."; // Metadata: 0x0018075B
+	public const string MissingMethod_Name = "Method \'{0}\' not found."; // Metadata: 0x00180776
+	public const string MissingField_Name = "Field \'{0}\' not found."; // Metadata: 0x00180791
+	public const string Format_StringZeroLength = "String cannot have zero length."; // Metadata: 0x001807AB
+	public const string Security_CannotReadRegistryData = "The time zone ID \'{0}\' was found on the local computer, but the application does not have permission to read the registry information."; // Metadata: 0x001807CE
+	public const string Security_InvalidAssemblyPublicKey = "Invalid assembly public key."; // Metadata: 0x00180858
+	public const string Security_RegistryPermission = "Requested registry access is not allowed."; // Metadata: 0x00180878
+	public const string ClassLoad_General = "Could not load type \'{0}\' from assembly \'{1}\'."; // Metadata: 0x001808A5
+	public const string ClassLoad_RankTooLarge = "\'{0}\' from assembly \'{1}\' has too many dimensions."; // Metadata: 0x001808D7
+	public const string ClassLoad_ExplicitGeneric = "Could not load type \'{0}\' from assembly \'{1}\' because generic types cannot have explicit layout."; // Metadata: 0x0018090D
+	public const string ClassLoad_BadFormat = "Could not load type \'{0}\' from assembly \'{1}\' because the format is invalid."; // Metadata: 0x00180971
+	public const string ClassLoad_ValueClassTooLarge = "Array of type \'{0}\' from assembly \'{1}\' cannot be created because base value type is too large."; // Metadata: 0x001809C1
+	public const string ClassLoad_ExplicitLayout = "Could not load type \'{0}\' from assembly \'{1}\' because it contains an object field at offset \'{2}\' that is incorrectly aligned or overlapped by a non-object field."; // Metadata: 0x00180A24
+	public const string EE_MissingMethod = "Method not found: \'{0}\'."; // Metadata: 0x00180ACA
+	public const string EE_MissingField = "Field not found: \'{0}\'."; // Metadata: 0x00180AE6
+	public const string UnauthorizedAccess_RegistryKeyGeneric_Key = "Access to the registry key \'{0}\' is denied."; // Metadata: 0x00180B01
+	public const string UnknownError_Num = "Unknown error \'{0}\'."; // Metadata: 0x00180B30
+	public const string Argument_NeedStructWithNoRefs = "The specified Type must be a struct containing no references."; // Metadata: 0x00180B48
+	public const string ArgumentNull_Buffer = "Buffer cannot be null."; // Metadata: 0x00180B89
+	public const string ArgumentOutOfRange_AddressSpace = "The number of bytes cannot exceed the virtual address space on a 32 bit machine."; // Metadata: 0x00180BA3
+	public const string ArgumentOutOfRange_UIntPtrMaxMinusOne = "The length of the buffer must be less than the maximum UIntPtr value for your platform."; // Metadata: 0x00180BF7
+	public const string Arg_BufferTooSmall = "Not enough space available in the buffer."; // Metadata: 0x00180C52
+	public const string InvalidOperation_MustCallInitialize = "You must call Initialize on this object instance before using it."; // Metadata: 0x00180C7F
+	public const string ArgumentException_BufferNotFromPool = "The buffer is not associated with this pool and may not be returned to it."; // Metadata: 0x00180CC4
+	public const string Argument_InvalidSafeBufferOffLen = "Offset and length were greater than the size of the SafeBuffer."; // Metadata: 0x00180D12
+	public const string Argument_InvalidSeekOrigin = "Invalid seek origin."; // Metadata: 0x00180D55
+	public const string Argument_NotEnoughBytesToRead = "There are not enough bytes remaining in the accessor to read at this position."; // Metadata: 0x00180D6D
+	public const string Argument_NotEnoughBytesToWrite = "There are not enough bytes remaining in the accessor to write at this position."; // Metadata: 0x00180DBF
+	public const string Argument_OffsetAndCapacityOutOfBounds = "Offset and capacity were greater than the size of the view."; // Metadata: 0x00180E12
+	public const string ArgumentOutOfRange_UnmanagedMemStreamLength = "UnmanagedMemoryStream length must be non-negative and less than 2^63 - 1 - baseAddress."; // Metadata: 0x00180E51
+	public const string Argument_UnmanagedMemAccessorWrapAround = "The UnmanagedMemoryAccessor capacity and offset would wrap around the high end of the address space."; // Metadata: 0x00180EAC
+	public const string ArgumentOutOfRange_StreamLength = "Stream length must be non-negative and less than 2^31 - 1 - origin."; // Metadata: 0x00180F14
+	public const string ArgumentOutOfRange_UnmanagedMemStreamWrapAround = "The UnmanagedMemoryStream capacity would wrap around the high end of the address space."; // Metadata: 0x00180F5B
+	public const string InvalidOperation_CalledTwice = "The method cannot be called twice on the same instance."; // Metadata: 0x00180FB6
+	public const string IO_FixedCapacity = "Unable to expand length of this stream beyond its capacity."; // Metadata: 0x00180FF1
+	public const string IO_SeekBeforeBegin = "An attempt was made to move the position before the beginning of the stream."; // Metadata: 0x00181030
+	public const string IO_StreamTooLong = "Stream was too long."; // Metadata: 0x00181080
+	public const string Arg_BadDecimal = "Read an invalid decimal value from the buffer."; // Metadata: 0x00181098
+	public const string NotSupported_Reading = "Accessor does not support reading."; // Metadata: 0x001810CA
+	public const string NotSupported_UmsSafeBuffer = "This operation is not supported for an UnmanagedMemoryStream created from a SafeBuffer."; // Metadata: 0x001810F0
+	public const string NotSupported_Writing = "Accessor does not support writing."; // Metadata: 0x0018114B
+	public const string NotSupported_UnseekableStream = "Stream does not support seeking."; // Metadata: 0x00181171
+	public const string IndexOutOfRange_UMSPosition = "Unmanaged memory stream position was beyond the capacity of the stream."; // Metadata: 0x00181195
+	public const string ObjectDisposed_StreamIsClosed = "Cannot access a closed Stream."; // Metadata: 0x001811E0
+	public const string ObjectDisposed_ViewAccessorClosed = "Cannot access a closed accessor."; // Metadata: 0x00181202
+	public const string ArgumentOutOfRange_PositionLessThanCapacityRequired = "The position may not be greater or equal to the capacity of the accessor."; // Metadata: 0x00181226
+	public const string IO_EOF_ReadBeyondEOF = "Unable to read beyond the end of the stream."; // Metadata: 0x00181273
+	public const string Arg_EndOfStreamException = "Attempted to read past the end of the stream."; // Metadata: 0x001812A3
+	public const string ObjectDisposed_FileClosed = "Cannot access a closed file."; // Metadata: 0x001812D4
+	public const string Arg_InvalidSearchPattern = "Search pattern cannot contain \\\"..\\\" to move up directories and can be contained only internally in file/directory names, as in \\\"a..b\\\"."; // Metadata: 0x001812F4
+	public const string ArgumentOutOfRange_FileLengthTooBig = "Specified file length was too large for the file system."; // Metadata: 0x00181381
+	public const string Argument_InvalidHandle = "\'handle\' has been disposed or is an invalid handle."; // Metadata: 0x001813BD
+	public const string Argument_AlreadyBoundOrSyncHandle = "\'handle\' has already been bound to the thread pool, or was not opened for asynchronous I/O."; // Metadata: 0x001813F4
+	public const string Argument_PreAllocatedAlreadyAllocated = "\'preAllocated\' is already in use."; // Metadata: 0x00181453
+	public const string Argument_NativeOverlappedAlreadyFree = "\'overlapped\' has already been freed."; // Metadata: 0x00181478
+	public const string Argument_NativeOverlappedWrongBoundHandle = "\'overlapped\' was not allocated by this ThreadPoolBoundHandle instance."; // Metadata: 0x001814A0
+	public const string Arg_HandleNotAsync = "Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O)."; // Metadata: 0x001814EA
+	public const string ArgumentNull_Path = "Path cannot be null."; // Metadata: 0x001815C8
+	public const string Argument_EmptyPath = "Empty path name is not legal."; // Metadata: 0x001815E0
+	public const string Argument_InvalidFileModeAndAccessCombo = "Combining FileMode: {0} with FileAccess: {1} is invalid."; // Metadata: 0x00181601
+	public const string Argument_InvalidAppendMode = "Append access can be requested only in write-only mode."; // Metadata: 0x0018163D
+	public const string IO_UnknownFileName = "[Unknown]"; // Metadata: 0x00181678
+	public const string IO_FileStreamHandlePosition = "The OS handle\'s position is not what FileStream expected. Do not use a handle simultaneously in one FileStream and in Win32 code or another FileStream. This may cause data loss."; // Metadata: 0x00181685
+	public const string NotSupported_FileStreamOnNonFiles = "FileStream was asked to open a device that was not a file. For support for devices like \'com1:\' or \'lpt1:\', call CreateFile, then use the FileStream constructors that take an OS handle as an IntPtr."; // Metadata: 0x0018173A
+	public const string IO_BindHandleFailed = "BindHandle for ThreadPool failed on this handle."; // Metadata: 0x00181804
+	public const string Arg_HandleNotSync = "Handle does not support synchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened asynchronously (that is, it was opened explicitly for overlapped I/O)."; // Metadata: 0x00181838
+	public const string IO_SetLengthAppendTruncate = "Unable to truncate data that previously existed in a file opened in Append mode."; // Metadata: 0x0018191D
+	public const string IO_SeekAppendOverwrite = "Unable seek backward to overwrite data that previously existed in a file opened in Append mode."; // Metadata: 0x00181971
+	public const string IO_FileTooLongOrHandleNotSync = "IO operation will not work. Most likely the file will become too long or the handle was not opened to support synchronous IO operations."; // Metadata: 0x001819D4
+	public const string IndexOutOfRange_IORaceCondition = "Probable I/O race condition detected while copying memory. The I/O package is not thread safe by default. In multithreaded applications, a stream must be accessed in a thread-safe way, such as a thread-safe wrapper returned by TextReader\'s or TextWriter\'s Synchronized methods. This also applies to classes like StreamWriter and StreamReader."; // Metadata: 0x00181A60
+	public const string Arg_ResourceFileUnsupportedVersion = "The ResourceReader class does not know how to read this version of .resources files."; // Metadata: 0x00181BBA
+	public const string Resources_StreamNotValid = "Stream is not a valid resource file."; // Metadata: 0x00181C12
+	public const string BadImageFormat_ResourcesHeaderCorrupted = "Corrupt .resources file. Unable to read resources from this file because of invalid header information. Try regenerating the .resources file."; // Metadata: 0x00181C3A
+	public const string Argument_StreamNotReadable = "Stream was not readable."; // Metadata: 0x00181CCB
+	public const string BadImageFormat_NegativeStringLength = "Corrupt .resources file. String length must be non-negative."; // Metadata: 0x00181CE7
+	public const string BadImageFormat_ResourcesNameInvalidOffset = "Corrupt .resources file. The Invalid offset into name section is ."; // Metadata: 0x00181D27
+	public const string BadImageFormat_TypeMismatch = "Corrupt .resources file.  The specified type doesn\'t match the available data in the stream."; // Metadata: 0x00181D6D
+	public const string BadImageFormat_ResourceNameCorrupted_NameIndex = "Corrupt .resources file. The resource name for name index that extends past the end of the stream is "; // Metadata: 0x00181DCD
+	public const string BadImageFormat_ResourcesDataInvalidOffset = "Corrupt .resources file. Invalid offset  into data section is "; // Metadata: 0x00181E36
+	public const string Format_Bad7BitInt32 = "Too many bytes in what should have been a 7 bit encoded Int32."; // Metadata: 0x00181E78
+	public const string BadImageFormat_InvalidType = "Corrupt .resources file.  The specified type doesn\'t exist."; // Metadata: 0x00181EBA
+	public const string ResourceReaderIsClosed = "ResourceReader is closed."; // Metadata: 0x00181EF9
+	public const string Arg_MissingManifestResourceException = "Unable to find manifest resource."; // Metadata: 0x00181F16
+	public const string Serialization_MissingKeys = "The keys for this dictionary are missing."; // Metadata: 0x00181F3B
+	public const string Serialization_NullKey = "One of the serialized keys is null."; // Metadata: 0x00181F68
+	public const string NotSupported_KeyCollectionSet = "Mutating a key collection derived from a dictionary is not allowed."; // Metadata: 0x00181F8F
+	public const string NotSupported_ValueCollectionSet = "Mutating a value collection derived from a dictionary is not allowed."; // Metadata: 0x00181FD6
+	public const string IO_IO_StreamTooLong = "Stream was too long."; // Metadata: 0x0018201F
+	public const string UnauthorizedAccess_MemStreamBuffer = "MemoryStream\'s internal buffer cannot be accessed."; // Metadata: 0x00182037
+	public const string NotSupported_MemStreamNotExpandable = "Memory stream is not expandable."; // Metadata: 0x0018206D
+	public const string IO_IO_SeekBeforeBegin = "An attempt was made to move the position before the beginning of the stream."; // Metadata: 0x00182091
+	public const string ArgumentNull_Stream = "Stream cannot be null."; // Metadata: 0x001820E1
+	public const string IO_IO_InvalidStringLen_Len = "BinaryReader encountered an invalid string length of {0} characters."; // Metadata: 0x001820FB
+	public const string ArgumentOutOfRange_BinaryReaderFillBuffer = "The number of bytes requested does not fit into BinaryReader\'s internal buffer."; // Metadata: 0x00182143
+	public const string Serialization_InsufficientDeserializationState = "Insufficient state to deserialize the object. Missing field \'{0}\'."; // Metadata: 0x00182196
+	public const string NotSupported_UnitySerHolder = "The UnitySerializationHolder object is designed to transmit information about other types and is not serializable itself."; // Metadata: 0x001821DC
+	public const string Serialization_UnableToFindModule = "The given module {0} cannot be found within the assembly {1}."; // Metadata: 0x00182259
+	public const string Argument_InvalidUnity = "Invalid Unity type."; // Metadata: 0x0018229A
+	public const string InvalidOperation_InvalidHandle = "The handle is invalid."; // Metadata: 0x001822B1
+	public const string PlatformNotSupported_NamedSynchronizationPrimitives = "The named version of this synchronization primitive is not supported on this platform."; // Metadata: 0x001822CB
+	public const string InvalidOperation_EmptyQueue = "Queue empty."; // Metadata: 0x00182325
+	public const string Overflow_MutexReacquireCount = "The current thread attempted to reacquire a mutex that has reached its maximum acquire count."; // Metadata: 0x00182335
+	public const string Serialization_InsufficientState = "Insufficient state to return the real object."; // Metadata: 0x00182396
+	public const string Serialization_UnknownMember = "Cannot get the member \'{0}\'."; // Metadata: 0x001823C7
+	public const string Serialization_NullSignature = "The method signature cannot be null."; // Metadata: 0x001823E7
+	public const string Serialization_MemberTypeNotRecognized = "Unknown member type."; // Metadata: 0x0018240F
+	public const string Serialization_BadParameterInfo = "Non existent ParameterInfo. Position bigger than member\'s parameters length."; // Metadata: 0x00182427
+	public const string Serialization_NoParameterInfo = "Serialized member does not have a ParameterInfo."; // Metadata: 0x00182477
+	public const string ArgumentNull_Assembly = "Assembly cannot be null."; // Metadata: 0x001824AB
+	public const string Arg_InvalidNeutralResourcesLanguage_Asm_Culture = "The NeutralResourcesLanguageAttribute on the assembly \"{0}\" specifies an invalid culture name: \"{1}\"."; // Metadata: 0x001824C7
+	public const string Arg_InvalidNeutralResourcesLanguage_FallbackLoc = "The NeutralResourcesLanguageAttribute specifies an invalid or unrecognized ultimate resource fallback location: \"{0}\"."; // Metadata: 0x00182530
+	public const string Arg_InvalidSatelliteContract_Asm_Ver = "Satellite contract version attribute on the assembly \'{0}\' specifies an invalid version: {1}."; // Metadata: 0x001825AA
+	public const string Arg_ResMgrNotResSet = "Type parameter must refer to a subclass of ResourceSet."; // Metadata: 0x0018260B
+	public const string BadImageFormat_ResourceNameCorrupted = "Corrupt .resources file. A resource name extends past the end of the stream."; // Metadata: 0x00182646
+	public const string BadImageFormat_ResourcesNameTooLong = "Corrupt .resources file. Resource name extends past the end of the file."; // Metadata: 0x00182696
+	public const string InvalidOperation_ResMgrBadResSet_Type = "\'{0}\': ResourceSet derived classes must provide a constructor that takes a String file name and a constructor that takes a Stream."; // Metadata: 0x001826E2
+	public const string InvalidOperation_ResourceNotStream_Name = "Resource \'{0}\' was not a Stream - call GetObject instead."; // Metadata: 0x00182768
+	public const string MissingManifestResource_MultipleBlobs = "A case-insensitive lookup for resource file \"{0}\" in assembly \"{1}\" found multiple entries. Remove the duplicates or specify the exact case."; // Metadata: 0x001827A5
+	public const string MissingManifestResource_NoNeutralAsm = "Could not find any resources appropriate for the specified culture or the neutral culture.  Make sure \"{0}\" was correctly embedded or linked into assembly \"{1}\" at compile time, or that all the satellite assemblies required are loadable and fully signed."; // Metadata: 0x00182835
+	public const string MissingManifestResource_NoNeutralDisk = "Could not find any resources appropriate for the specified culture (or the neutral culture) on disk."; // Metadata: 0x00182937
+	public const string MissingManifestResource_NoPRIresources = "Unable to open Package Resource Index."; // Metadata: 0x0018299F
+	public const string MissingManifestResource_ResWFileNotLoaded = "Unable to load resources for resource file \"{0}\" in package \"{1}\"."; // Metadata: 0x001829C9
+	public const string MissingSatelliteAssembly_Culture_Name = "The satellite assembly named \"{1}\" for fallback culture \"{0}\" either could not be found or could not be loaded. This is generally a setup problem. Please consider reinstalling or repairing the application."; // Metadata: 0x00182A0F
+	public const string MissingSatelliteAssembly_Default = "Resource lookup fell back to the ultimate fallback resources in a satellite assembly, but that satellite either was not found or could not be loaded. Please consider reinstalling or repairing the application."; // Metadata: 0x00182AE0
+	public const string NotSupported_ObsoleteResourcesFile = "Found an obsolete .resources file in assembly \'{0}\'. Rebuild that .resources file then rebuild that assembly."; // Metadata: 0x00182BB4
+	public const string NotSupported_ResourceObjectSerialization = "Cannot read resources that depend on serialization."; // Metadata: 0x00182C25
+	public const string ObjectDisposed_ResourceSet = "Cannot access a closed resource set."; // Metadata: 0x00182C5C
+	public const string Arg_ResourceNameNotExist = "The specified resource name \"{0}\" does not exist in the resource file."; // Metadata: 0x00182C84
+	public const string BadImageFormat_ResourceDataLengthInvalid = "Corrupt .resources file.  The specified data length \'{0}\' is not a valid position in the stream."; // Metadata: 0x00182CCE
+	public const string BadImageFormat_ResourcesIndexTooLong = "Corrupt .resources file. String for name index \'{0}\' extends past the end of the file."; // Metadata: 0x00182D32
+	public const string InvalidOperation_ResourceNotString_Name = "Resource \'{0}\' was not a String - call GetObject instead."; // Metadata: 0x00182D8C
+	public const string InvalidOperation_ResourceNotString_Type = "Resource was of type \'{0}\' instead of String - call GetObject instead."; // Metadata: 0x00182DC9
+	public const string NotSupported_WrongResourceReader_Type = "This .resources file should not be read with this reader. The resource reader type is \"{0}\"."; // Metadata: 0x00182E13
+	public const string Arg_MustBeDelegate = "Type must derive from Delegate."; // Metadata: 0x00182E73
+	public const string NotSupported_GlobalMethodSerialization = "Serialization of global methods (including implicit serialization via the use of asynchronous delegates) is not supported."; // Metadata: 0x00182E96
+	public const string NotSupported_DelegateSerHolderSerial = "DelegateSerializationHolder objects are designed to represent a delegate during serialization and are not serializable themselves."; // Metadata: 0x00182F14
+	public const string DelegateSer_InsufficientMetadata = "The delegate cannot be serialized properly due to missing metadata for the target method."; // Metadata: 0x00182F9A
+	public const string Argument_NoUninitializedStrings = "Uninitialized Strings cannot be created."; // Metadata: 0x00182FF7
+	public const string ArgumentOutOfRangeException_NoGCRegionSizeTooLarge = "totalSize is too large. For more information about setting the maximum size, see \\\"Latency Modes\\\" in http://go.microsoft.com/fwlink/?LinkId=522706."; // Metadata: 0x00183023
+	public const string InvalidOperationException_AlreadyInNoGCRegion = "The NoGCRegion mode was already in progress."; // Metadata: 0x001830BB
+	public const string InvalidOperationException_NoGCRegionAllocationExceeded = "Allocated memory exceeds specified memory for NoGCRegion mode."; // Metadata: 0x001830EB
+	public const string InvalidOperationException_NoGCRegionInduced = "Garbage collection was induced in NoGCRegion mode."; // Metadata: 0x0018312D
+	public const string InvalidOperationException_NoGCRegionNotInProgress = "NoGCRegion mode must be set."; // Metadata: 0x00183163
+	public const string InvalidOperationException_SetLatencyModeNoGC = "The NoGCRegion mode is in progress. End it and then set a different mode."; // Metadata: 0x00183183
+	public const string InvalidOperation_NotWithConcurrentGC = "This API is not available when the concurrent GC is enabled."; // Metadata: 0x001831D0
+	public const string ThreadState_AlreadyStarted = "Thread is running or terminated; it cannot restart."; // Metadata: 0x00183210
+	public const string ThreadState_Dead_Priority = "Thread is dead; priority cannot be accessed."; // Metadata: 0x00183247
+	public const string ThreadState_Dead_State = "Thread is dead; state cannot be accessed."; // Metadata: 0x00183277
+	public const string ThreadState_NotStarted = "Thread has not been started."; // Metadata: 0x001832A4
+	public const string ThreadState_SetPriorityFailed = "Unable to set thread priority."; // Metadata: 0x001832C4
+	public const string Serialization_InvalidFieldState = "Object fields may not be properly initialized."; // Metadata: 0x001832E6
+	public const string Acc_CreateAbst = "Cannot create an abstract class."; // Metadata: 0x00183318
+	public const string Acc_CreateGeneric = "Cannot create a type for which Type.ContainsGenericParameters is true."; // Metadata: 0x0018333C
+	public const string Argument_InvalidValue = "Value was invalid."; // Metadata: 0x00183386
+	public const string NotSupported_ManagedActivation = "Cannot create uninitialized instances of types requiring managed activation."; // Metadata: 0x0018339C
+	public const string PlatformNotSupported_ResourceManager_ResWFileUnsupportedMethod = "ResourceManager method \'{0}\' is not supported when reading from .resw resource files."; // Metadata: 0x001833EC
+	public const string PlatformNotSupported_ResourceManager_ResWFileUnsupportedProperty = "ResourceManager property \'{0}\' is not supported when reading from .resw resource files."; // Metadata: 0x00183445
+	public const string Serialization_NonSerType = "Type \'{0}\' in Assembly \'{1}\' is not marked as serializable."; // Metadata: 0x001834A0
+	public const string InvalidCast_DBNull = "Object cannot be cast to DBNull."; // Metadata: 0x001834DF
+	public const string NotSupported_NYI = "This feature is not currently implemented."; // Metadata: 0x00183503
+	public const string Delegate_GarbageCollected = "The corresponding delegate has been garbage collected. Please make sure the delegate is still referenced by managed code when you are using the marshalled native function pointer."; // Metadata: 0x00183531
+	public const string Arg_AmbiguousMatchException = "Ambiguous match found."; // Metadata: 0x001835E8
+	public const string NotSupported_ChangeType = "ChangeType operation is not supported."; // Metadata: 0x00183602
+	public const string Arg_EmptyArray = "Array may not be empty."; // Metadata: 0x0018362C
+	public const string MissingMember = "Member not found."; // Metadata: 0x00183647
+	public const string MissingField = "Field not found."; // Metadata: 0x0018365C
+	public const string InvalidCast_FromDBNull = "Object cannot be cast from DBNull to other types."; // Metadata: 0x00183670
+	public const string NotSupported_DBNullSerial = "Only one DBNull instance may exist, and calls to DBNull deserialization methods are not allowed."; // Metadata: 0x001836A5
+	public const string Serialization_StringBuilderCapacity = "The serialized Capacity property of StringBuilder must be positive, less than or equal to MaxCapacity and greater than or equal to the String length."; // Metadata: 0x00183709
+	public const string Serialization_StringBuilderMaxCapacity = "The serialized MaxCapacity property of StringBuilder must be positive and greater than or equal to the String length."; // Metadata: 0x001837A2
+	public const string PlatformNotSupported_Remoting = "Remoting is not supported on this platform."; // Metadata: 0x0018381B
+	public const string PlatformNotSupported_StrongNameSigning = "Strong-name signing is not supported on this platform."; // Metadata: 0x0018384A
+	public const string Serialization_MissingDateTimeData = "Invalid serialized DateTime data. Unable to find \'ticks\' or \'dateData\'."; // Metadata: 0x00183884
+	public const string Serialization_DateTimeTicksOutOfRange = "Invalid serialized DateTime data. Ticks must be between DateTime.MinValue.Ticks and DateTime.MaxValue.Ticks."; // Metadata: 0x001838CF
+	public const string Arg_InvalidANSIString = "The ANSI string passed in could not be converted from the default ANSI code page to Unicode."; // Metadata: 0x0018393F
+	public const string Arg_ExpectedNulTermination = "The value passed was not NUL terminated."; // Metadata: 0x0018399F
+	public const string PlatformNotSupported_ArgIterator = "ArgIterator is not supported on this platform."; // Metadata: 0x001839CB
+	public const string Arg_TypeUnloadedException = "Type had been unloaded."; // Metadata: 0x001839FD
+	public const string Overflow_Currency = "Value was either too large or too small for a Currency."; // Metadata: 0x00183A18
+	public const string PlatformNotSupported_SecureBinarySerialization = "Secure binary serialization is not supported on this platform."; // Metadata: 0x00183A53
+	public const string Serialization_InvalidPtrValue = "An IntPtr or UIntPtr with an eight byte value cannot be deserialized on a machine with a four byte word size."; // Metadata: 0x00183A95
+	public const string EventSource_ListenerNotFound = "Listener not found."; // Metadata: 0x00183B06
+	public const string EventSource_ToString = "EventSource({0}, {1})"; // Metadata: 0x00183B1D
+	public const string EventSource_ImplementGetMetadata = "Please implement the GetMetadata method in your derived class"; // Metadata: 0x00183B36
+	public const string EventSource_NeedGuid = "The Guid of an EventSource must be non zero."; // Metadata: 0x00183B77
+	public const string EventSource_NeedName = "The name of an EventSource must not be null."; // Metadata: 0x00183BA7
+	public const string EventSource_NeedDescriptors = "The descriptor of an EventSource must be non-null."; // Metadata: 0x00183BD7
+	public const string EventSource_NeedManifest = "The manifest of an EventSource must be non-null."; // Metadata: 0x00183C0D
+	public const string EventSource_EventSourceGuidInUse = "An instance of EventSource with Guid {0} already exists."; // Metadata: 0x00183C41
+	public const string EventSource_ListenerWriteFailure = "An error occurred when writing to a listener."; // Metadata: 0x00183C7D
+	public const string EventSource_NoManifest = "A manifest could not be generated for this EventSource because it contains one or more ill-formed event methods."; // Metadata: 0x00183CAE
+	public const string Argument_StreamNotWritable = "Stream was not writable."; // Metadata: 0x00183D22
+	public const string Arg_SurrogatesNotAllowedAsSingleChar = "Unicode surrogate characters must be written out as pairs together in the same call, not individually. Consider passing in a character array instead."; // Metadata: 0x00183D3E
+	public const string CustomAttributeFormat_InvalidFieldFail = "\'{0}\' field specified was not found."; // Metadata: 0x00183DD7
+	public const string CustomAttributeFormat_InvalidPropertyFail = "\'{0}\' property specified was not found."; // Metadata: 0x00183DFF
+	public const string NotSupported_CannotCallEqualsOnSpan = "Equals() on Span and ReadOnlySpan is not supported. Use operator== instead."; // Metadata: 0x00183E2A
+	public const string NotSupported_CannotCallGetHashCodeOnSpan = "GetHashCode() on Span and ReadOnlySpan is not supported."; // Metadata: 0x00183E79
+	public const string Argument_DestinationTooShort = "Destination is too short."; // Metadata: 0x00183EB5
+	public const string Argument_InvalidTypeWithPointersNotSupported = "Cannot use type \'{0}\'. Only value types without pointers or references are supported."; // Metadata: 0x00183ED2
+	public const string ArrayTypeMismatch_ConstrainedCopy = "Array.ConstrainedCopy will only work on array types that are provably compatible, without any form of boxing, unboxing, widening, or casting of each array element.  Change the array types (i.e., copy a Derived[] to a Base[]), or use a mitigation strategy in the CER for Array.Copy\'s less powerful reliability contract, such as cloning the array or throwing away the potentially corrupt destination array."; // Metadata: 0x00183F2B
+	public const string Arg_DllNotFoundException = "Dll was not found."; // Metadata: 0x001840C3
+	public const string Arg_DllNotFoundExceptionParameterized = "Unable to load DLL \'{0}\': The specified module could not be found."; // Metadata: 0x001840D9
+	public const string WrongSizeArrayInNStruct = "Type could not be marshaled because the length of an embedded array instance does not match the declared length in the layout."; // Metadata: 0x0018411F
+	public const string Arg_InteropMarshalUnmappableChar = "Cannot marshal: Encountered unmappable character."; // Metadata: 0x001841A1
+	public const string Arg_MarshalDirectiveException = "Marshaling directives are invalid."; // Metadata: 0x001841D6
+	public const string BlockingCollection_Add_ConcurrentCompleteAdd = "CompleteAdding may not be used concurrently with additions to the collection."; // Metadata: 0x001841FC
+	public const string BlockingCollection_Add_Failed = "The underlying collection didn\'t accept the item."; // Metadata: 0x0018424D
+	public const string BlockingCollection_CantAddAnyWhenCompleted = "At least one of the specified collections is marked as complete with regards to additions."; // Metadata: 0x00184282
+	public const string BlockingCollection_CantTakeAnyWhenAllDone = "All collections are marked as complete with regards to additions."; // Metadata: 0x001842E0
+	public const string BlockingCollection_CantTakeWhenDone = "The collection argument is empty and has been marked as complete with regards to additions."; // Metadata: 0x00184325
+	public const string BlockingCollection_Completed = "The collection has been marked as complete with regards to additions."; // Metadata: 0x00184384
+	public const string BlockingCollection_CopyTo_IncorrectType = "The array argument is of the incorrect type."; // Metadata: 0x001843CD
+	public const string BlockingCollection_CopyTo_MultiDim = "The array argument is multidimensional."; // Metadata: 0x001843FD
+	public const string BlockingCollection_CopyTo_NonNegative = "The index argument must be greater than or equal zero."; // Metadata: 0x00184428
+	public const string Collection_CopyTo_TooManyElems = "The number of elements in the collection is greater than the available space from index to the end of the destination array."; // Metadata: 0x00184462
+	public const string BlockingCollection_ctor_BoundedCapacityRange = "The boundedCapacity argument must be positive."; // Metadata: 0x001844E2
+	public const string BlockingCollection_ctor_CountMoreThanCapacity = "The collection argument contains more items than are allowed by the boundedCapacity."; // Metadata: 0x00184514
+	public const string BlockingCollection_Disposed = "The collection has been disposed."; // Metadata: 0x0018456C
+	public const string BlockingCollection_Take_CollectionModified = "The underlying collection was modified from outside of the BlockingCollection<T>."; // Metadata: 0x00184591
+	public const string BlockingCollection_TimeoutInvalid = "The specified timeout must represent a value between -1 and {0}, inclusive."; // Metadata: 0x001845E6
+	public const string BlockingCollection_ValidateCollectionsArray_DispElems = "The collections argument contains at least one disposed element."; // Metadata: 0x00184635
+	public const string BlockingCollection_ValidateCollectionsArray_LargeSize = "The collections length is greater than the supported range for 32 bit machine."; // Metadata: 0x00184679
+	public const string BlockingCollection_ValidateCollectionsArray_NullElems = "The collections argument contains at least one null element."; // Metadata: 0x001846CB
+	public const string BlockingCollection_ValidateCollectionsArray_ZeroSize = "The collections argument is a zero-length array."; // Metadata: 0x0018470B
+	public const string Common_OperationCanceled = "The operation was canceled."; // Metadata: 0x0018473F
+	public const string ConcurrentBag_Ctor_ArgumentNullException = "The collection argument is null."; // Metadata: 0x0018475E
+	public const string ConcurrentBag_CopyTo_ArgumentNullException = "The array argument is null."; // Metadata: 0x00184782
+	public const string Collection_CopyTo_ArgumentOutOfRangeException = "The index argument must be greater than or equal zero."; // Metadata: 0x001847A1
+	public const string ConcurrentCollection_SyncRoot_NotSupported = "The SyncRoot property may not be used for the synchronization of concurrent collections."; // Metadata: 0x001847DB
+	public const string ConcurrentDictionary_ArrayIncorrectType = "The array is multidimensional, or the type parameter for the set cannot be cast automatically to the type of the destination array."; // Metadata: 0x00184837
+	public const string ConcurrentDictionary_SourceContainsDuplicateKeys = "The source argument contains duplicate keys."; // Metadata: 0x001848BE
+	public const string ConcurrentDictionary_ConcurrencyLevelMustBePositive = "The concurrencyLevel argument must be positive."; // Metadata: 0x001848EE
+	public const string ConcurrentDictionary_CapacityMustNotBeNegative = "The capacity argument must be greater than or equal to zero."; // Metadata: 0x00184921
+	public const string ConcurrentDictionary_IndexIsNegative = "The index argument is less than zero."; // Metadata: 0x00184961
+	public const string ConcurrentDictionary_ArrayNotLargeEnough = "The index is equal to or greater than the length of the array, or the number of elements in the dictionary is greater than the available space from index to the end of the destination array."; // Metadata: 0x0018498A
+	public const string ConcurrentDictionary_KeyAlreadyExisted = "The key already existed in the dictionary."; // Metadata: 0x00184A4C
+	public const string ConcurrentDictionary_ItemKeyIsNull = "TKey is a reference type and item.Key is null."; // Metadata: 0x00184A7A
+	public const string ConcurrentDictionary_TypeOfKeyIncorrect = "The key was of an incorrect type for this dictionary."; // Metadata: 0x00184AAC
+	public const string ConcurrentDictionary_TypeOfValueIncorrect = "The value was of an incorrect type for this dictionary."; // Metadata: 0x00184AE5
+	public const string ConcurrentStack_PushPopRange_CountOutOfRange = "The count argument must be greater than or equal to zero."; // Metadata: 0x00184B20
+	public const string ConcurrentStack_PushPopRange_InvalidCount = "The sum of the startIndex and count arguments must be less than or equal to the collection\'s Count."; // Metadata: 0x00184B5D
+	public const string ConcurrentStack_PushPopRange_StartOutOfRange = "The startIndex argument must be greater than or equal to zero."; // Metadata: 0x00184BC4
+	public const string Partitioner_DynamicPartitionsNotSupported = "Dynamic partitions are not supported by this partitioner."; // Metadata: 0x00184C06
+	public const string PartitionerStatic_CanNotCallGetEnumeratorAfterSourceHasBeenDisposed = "Can not call GetEnumerator on partitions after the source enumerable is disposed"; // Metadata: 0x00184C43
+	public const string PartitionerStatic_CurrentCalledBeforeMoveNext = "MoveNext must be called at least once before calling Current."; // Metadata: 0x00184C97
+	public const string ConcurrentBag_Enumerator_EnumerationNotStartedOrAlreadyFinished = "Enumeration has either not started or has already finished."; // Metadata: 0x00184CD8
+	public const string ArrayTypeMustBeExactMatch = "The array type must be exactly {0}."; // Metadata: 0x00184D17
+	public const string CannotCallEqualsOnSpan = "Equals() on Span and ReadOnlySpan is not supported. Use operator== instead."; // Metadata: 0x00184D3E
+	public const string CannotCallGetHashCodeOnSpan = "GetHashCode() on Span and ReadOnlySpan is not supported."; // Metadata: 0x00184D8D
+	public const string Argument_EmptyValue = "Value cannot be empty."; // Metadata: 0x00184DC9
+	public const string PlatformNotSupported_RuntimeInformation = "RuntimeInformation is not supported for Portable Class Libraries."; // Metadata: 0x00184DE3
+	public const string MemoryDisposed = "Memory<T> has been disposed."; // Metadata: 0x00184E28
+	public const string OutstandingReferences = "Release all references before disposing this instance."; // Metadata: 0x00184E48
 
 	// Methods
-	internal static string GetString(string name, params /* 0x10003130-0x10003150 */ object[] args) => default; // 0x101596B0-0x10159710
-	internal static string GetString(CultureInfo culture, string name, params /* 0x10003130-0x10003150 */ object[] args) => default; // 0x10159720-0x10159730
-	internal static string GetString(string name) => default; // 0x101163D0-0x101163E0
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x10159710-0x10159720
-	internal static string Format(string resourceFormat, params /* 0x10003130-0x10003150 */ object[] args) => default; // 0x10159580-0x101595F0
-	internal static string Format(string resourceFormat, object p1) => default; // 0x10159650-0x101596B0
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x10159520-0x10159580
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x101595F0-0x10159650
+	internal static string GetString(string name, params /* 0x10003570-0x10003590 */ object[] args) => default; // 0x10265F10-0x10265F70
+	internal static string GetString(CultureInfo culture, string name, params /* 0x10003570-0x10003590 */ object[] args) => default; // 0x10265F70-0x10265F80
+	internal static string GetString(string name) => default; // 0x1012C590-0x1012C5A0
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x10178F80-0x10178F90
+	internal static string Format(string resourceFormat, params /* 0x10003570-0x10003590 */ object[] args) => default; // 0x10265D80-0x10265DF0
+	internal static string Format(string resourceFormat, object p1) => default; // 0x10265DF0-0x10265E50
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x10265E50-0x10265EB0
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x10265EB0-0x10265F10
 }
 
 namespace Il2CppTests.TestSources
 {
-	public enum SkillCastType : uint // TypeDefIndex: 2873
+	public enum EnumOfSize1 : byte // TypeDefIndex: 2873
 	{
-		Passive = 0,
-		Active = 1,
-		AutoCast = 2,
-		OnDemandPassive = 3,
-		AutoCastOnGetHit = 4,
-		Custom = 5
+		Option1 = 0,
+		Option2 = 1,
+		Option3 = 2
 	}
 
-	public enum ElementType // TypeDefIndex: 2874
+	public enum EnumOfSize2 : ushort // TypeDefIndex: 2874
 	{
-		NONE = -1,
-		NEUTRAL = 0,
-		FIRE = 1,
-		WATER = 2,
-		THUNDER = 3,
-		EARTH = 4
+		Option1 = 0,
+		Option2 = 1,
+		Option3 = 2
 	}
 
-	public interface IBattleObject // TypeDefIndex: 2875
+	public enum EnumOfSize4 // TypeDefIndex: 2875
 	{
-		// Methods
-		void OnTick();
+		Option1 = 0,
+		Option2 = 1,
+		Option3 = 2
 	}
 
-	public class SkillBase : IBattleObject // TypeDefIndex: 2876
+	public enum EnumOfSize8 : ulong // TypeDefIndex: 2876
+	{
+		Option1 = 0,
+		Option2 = 1,
+		Option3 = 2
+	}
+
+	public struct StructWithEnumFields // TypeDefIndex: 2877
 	{
 		// Fields
-		public SkillCastType skillCastType; // 0x08
-		public bool testb1; // 0x0C
-		public string codeName; // 0x14
-		public int level; // 0x18
-		public string skillNameInCombo; // 0x1C
-		public string customProjectileName; // 0x20
-		public float channelingTime; // 0x24
-		public bool noPause; // 0x28
-		public float cooldown; // 0x2C
-		public float castTime; // 0x30
-		public float delayActiveTime; // 0x34
-		public float projectileSpeed; // 0x38
-		public float range; // 0x3C
-		public float[] param1; // 0x40
-		public float[] param2; // 0x44
-		public float[] param3; // 0x48
-		public float[] param4; // 0x4C
-		public float[] param5; // 0x50
-		public float[] param6; // 0x54
-		public float[] param7; // 0x58
-		public int[] levelUp; // 0x5C
-		public float radiusAOE; // 0x60
-		public int maxTarget; // 0x64
-		public float manaCost; // 0x68
-		public bool isAttached; // 0x6C
-		protected int cooldownTick; // 0x70
-		protected bool isApplying; // 0x74
-		protected bool isChanneling; // 0x75
-		public bool IsCallAfterOtherSkill; // 0x76
-		protected int applyTick; // 0x78
-		protected int channelingTick; // 0x7C
-		protected int activeTick; // 0x80
-		protected bool isActived; // 0x84
-		protected float mskillFactor; // 0x88
-		public string OnFinishUseSkillAction; // 0x8C
-		private SkillBase skillInCombo; // 0x90
-		private bool onDemandPassiveActived; // 0x94
-	
-		// Properties
-		public ElementType Element { get; set; } // 0x100F6410-0x100F6420 0x100F9660-0x100F9670
-		public int LevelIndex1 { get => default; } // 0x105F2380-0x105F23A0 
-		public bool IsCooldown { get; set; } // 0x105F2370-0x105F2380 0x105F23A0-0x105F23A0
+		private ushort a; // 0x00
+		private EnumOfSize1 b; // 0x02
+		private ushort c; // 0x04
+		private EnumOfSize2 d; // 0x06
+		private ushort e; // 0x08
+		private EnumOfSize4 f; // 0x0C
+		private ushort g; // 0x10
+		private EnumOfSize8 h; // 0x18
+		private ushort i; // 0x20
+	}
+
+	public class ClassWithEnumFields // TypeDefIndex: 2878
+	{
+		// Fields
+		private ushort a; // 0x08
+		private EnumOfSize1 b; // 0x0A
+		private ushort c; // 0x0C
+		private EnumOfSize2 d; // 0x0E
+		private ushort e; // 0x10
+		private EnumOfSize4 f; // 0x14
+		private ushort g; // 0x18
+		private EnumOfSize8 h; // 0x20
+		private ushort i; // 0x28
 	
 		// Constructors
-		public SkillBase() {} // 0x105F2350-0x105F2370
+		public ClassWithEnumFields() {} // 0x101403B0-0x101403C0
+	}
+
+	public class ClassWithEnumAutoProperties // TypeDefIndex: 2879
+	{
+		// Properties
+		private ushort a { get; } // 0x1061E2E0-0x1061E2F0 
+		private EnumOfSize1 b { get; } // 0x1012F200-0x1012F210 
+		private ushort c { get; } // 0x1011CB80-0x1011CB90 
+		private EnumOfSize2 d { get; } // 0x1061E2F0-0x1061E300 
+		private ushort e { get; } // 0x1061E300-0x1061E310 
+		private EnumOfSize4 f { get; } // 0x1011E290-0x1011E2A0 
+		private ushort g { get; } // 0x1061E310-0x1061E320 
+		private EnumOfSize8 h { get; } // 0x102105E0-0x102105F0 
+		private ushort i { get; } // 0x1061E320-0x1061E320 
 	
-		// Methods
-		public void OnTick() {} // 0x100F6980-0x100F6990
+		// Constructors
+		public ClassWithEnumAutoProperties() {} // 0x101403B0-0x101403C0
 	}
 }
