@@ -122,6 +122,11 @@ namespace Il2CppInspector.Model
         // (via the constructor of CppDeclarationGenerator, in InheritanceStyle)
         // If no target C++ compiler is specified, it will be set to match the one assumed to have been used to compile the binary
         public AppModel Build(UnityVersion unityVersion = null, CppCompilerType compiler = CppCompilerType.BinaryFormat, bool silent = false) {
+            // Don't re-build if not necessary
+            var targetCompiler = compiler == CppCompilerType.BinaryFormat ? CppCompiler.GuessFromImage(Image) : compiler;
+            if (UnityVersion == unityVersion && TargetCompiler == targetCompiler)
+                return this;
+
             // Silent operation if requested
             var stdout = Console.Out;
             if (silent)
@@ -133,7 +138,7 @@ namespace Il2CppInspector.Model
             Strings.Clear();
 
             // Set target compiler
-            TargetCompiler = compiler == CppCompilerType.BinaryFormat ? CppCompiler.GuessFromImage(Image) : compiler;
+            TargetCompiler = targetCompiler;
 
             // Determine Unity version and get headers
             UnityHeaders = unityVersion != null ? UnityHeaders.GetHeadersForVersion(unityVersion) : UnityHeaders.GuessHeadersForBinary(TypeModel.Package.Binary).Last();
