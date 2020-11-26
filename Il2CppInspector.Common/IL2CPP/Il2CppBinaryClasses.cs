@@ -41,9 +41,9 @@ namespace Il2CppInspector
         public ulong invokerPointers;
 
         // Removed in metadata v27
-        [Version(Max = 24.3)]
+        [Version(Max = 24.4)]
         public long customAttributeCount;
-        [Version(Max = 24.3)]
+        [Version(Max = 24.4)]
         public ulong customAttributeGenerators;
 
         // Removed in metadata v23
@@ -199,7 +199,7 @@ namespace Il2CppInspector
 
     public class Il2CppGenericClass
     {
-        [Version(Max = 24.3)]
+        [Version(Max = 24.4)]
         public long typeDefinitionIndex;    /* the generic type definition */
         [Version(Min = 27)]
         public ulong type; // Il2CppType*   /* the generic type definition */

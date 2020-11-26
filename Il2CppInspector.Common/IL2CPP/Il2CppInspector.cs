@@ -137,7 +137,7 @@ namespace Il2CppInspector
             if (Version >= 27)
                 return buildLateBindingMetadataUsages();
 
-            // Version >= 19 && <= 24.3
+            // Version >= 19 && < 27
             var usages = new Dictionary<uint, MetadataUsage>();
             foreach (var metadataUsageList in Metadata.MetadataUsageLists)
             {

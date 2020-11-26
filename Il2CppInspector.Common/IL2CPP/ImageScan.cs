@@ -162,7 +162,7 @@ namespace Il2CppInspector
             var mrSize = (ulong) Metadata.Sizeof(typeof(Il2CppMetadataRegistration), Image.Version, Image.Bits / 8);
             vas = FindAllMappedWords(imageBytes, (ulong) metadata.Types.Length).Select(a => a - mrSize + ptrSize * 4);
 
-            // >= 19 && <= 24.3
+            // >= 19 && < 27
             if (Image.Version < 27)
                 foreach (var va in vas) {
                     var mr = Image.ReadMappedObject<Il2CppMetadataRegistration>(va);

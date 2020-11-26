@@ -119,7 +119,14 @@ namespace Il2CppInspector
             VTableMethodIndices = ReadArray<uint>(Header.vtableMethodsOffset, Header.vtableMethodsCount / sizeof(uint));
 
             if (Version >= 16) {
-                Assemblies = ReadArray<Il2CppAssemblyDefinition>(Header.assembliesOffset, Header.assembliesCount / Sizeof(typeof(Il2CppAssemblyDefinition)));
+                // In v24.4 hashValueIndex was removed from Il2CppAssemblyNameDefinition, which is a field in Il2CppAssemblyDefinition
+                // The number of images and assemblies should be the same. If they are not, we deduce that we are using v24.4
+                // Note the version comparison matches both 24.2 and 24.3 here since 24.3 is tested for during binary loading
+                var assemblyCount = Header.assembliesCount / Sizeof(typeof(Il2CppAssemblyDefinition));
+                if (Version == 24.2 && assemblyCount < Images.Length)
+                    Version = 24.4;
+
+                Assemblies = ReadArray<Il2CppAssemblyDefinition>(Header.assembliesOffset, Images.Length);
                 ParameterDefaultValues = ReadArray<Il2CppParameterDefaultValue>(Header.parameterDefaultValuesOffset, Header.parameterDefaultValuesCount / Sizeof(typeof(Il2CppParameterDefaultValue)));
             }
             if (Version >= 19 && Version < 27) {

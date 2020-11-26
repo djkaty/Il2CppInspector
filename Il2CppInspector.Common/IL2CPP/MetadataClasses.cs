@@ -27,6 +27,9 @@ namespace Il2CppInspector
     // Unity 2019.1.0f2 -> v24.2
     // Unity 2019.2.8f1 -> v24.2
     // Unity 2019.3.7f1 -> v24.3
+    // Unity 2019.4.15f1 -> v24.4
+    // Unity 2020.1.0f1 -> v24.3
+    // Unity 2020.1.11f1 -> v24.4
     // Unity 2020.2.0f1 -> v27
     // https://unity3d.com/get-unity/download/archive
     // Metadata version is written at the end of Unity.IL2CPP.MetadataCacheWriter.WriteLibIl2CppMetadata or WriteMetadata (Unity.IL2CPP.dll)
@@ -100,13 +103,13 @@ namespace Il2CppInspector
         [Version(Min = 16)]
         public int assembliesCount;
 
-        [Version(Min = 19, Max = 24.3)]
+        [Version(Min = 19, Max = 24.4)]
         public int metadataUsageListsOffset; // Il2CppMetadataUsageList
-        [Version(Min = 19, Max = 24.3)]
+        [Version(Min = 19, Max = 24.4)]
         public int metadataUsageListsCount;
-        [Version(Min = 19, Max = 24.3)]
+        [Version(Min = 19, Max = 24.4)]
         public int metadataUsagePairsOffset; // Il2CppMetadataUsagePair
-        [Version(Min = 19, Max = 24.3)]
+        [Version(Min = 19, Max = 24.4)]
         public int metadataUsagePairsCount;
         [Version(Min = 19)]
         public int fieldRefsOffset; // Il2CppFieldRef
@@ -214,6 +217,7 @@ namespace Il2CppInspector
 
         public int nameIndex;
         public int cultureIndex;
+        [Version(Max = 24.3)]
         public int hashValueIndex;
         public int publicKeyIndex;
         [Version(Max = 15), ArrayLength(FixedSize = 8)]
@@ -239,7 +243,7 @@ namespace Il2CppInspector
         public int customAttributeIndex;
 
         public int byvalTypeIndex;
-        [Version(Max = 24.3)]
+        [Version(Max = 24.4)]
         public int byrefTypeIndex;
 
         public int declaringTypeIndex;

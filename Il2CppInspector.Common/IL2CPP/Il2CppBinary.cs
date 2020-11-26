@@ -48,7 +48,7 @@ namespace Il2CppInspector
         public long[] FieldOffsetPointers { get; private set; }
 
         // Generated functions which call constructors on custom attributes
-        // Only for <=24.3
+        // Only for < 27
         public ulong[] CustomAttributeGenerators { get; private set; }
 
         // IL2CPP-generated functions which implement MethodBase.Invoke with a unique signature per invoker, defined in Il2CppInvokerTable.cpp
