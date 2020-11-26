@@ -22,7 +22,9 @@
 # gci $env:ProgramFiles\Unity\Hub\Editor | % { ./il2cpp.ps1 <source-file-without-extension> $_.Name }
 
 param (
-	# Which source files in TestSources to generate aseemblies, C++ and IL2CPP binaries for (comma-separated)
+	[switch] $help,
+
+	# Which source files in TestSources to generate aseemblies, C++ and IL2CPP binaries for (comma-separated, without .cs extension)
 	[string[]] $assemblies = "*",
 
 	# Which Unity version to use; uses the latest installed if not specified
@@ -35,6 +37,11 @@ param (
 echo "Universal IL2CPP Build Utility"
 echo "(c) 2019-2020 Katy Coe - www.djkaty.com - www.github.com/djkaty"
 echo ""
+
+if ($help) {
+	echo "Usage: il2cpp.ps1 [TestSources-source-file-without-extension,...] [Unity-version-with-wildcard|Unity-path-with-wildcard]"
+	Exit
+}
 
 $ErrorActionPreference = "SilentlyContinue"
 
