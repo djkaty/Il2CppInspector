@@ -1,4 +1,4 @@
-# Il2CppInspector 2020.2.1 beta
+# Il2CppInspector 2020.2.1
 
 Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the most complete analysis currently available.
 
@@ -16,13 +16,13 @@ Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the
 
 * Create **[JSON metadata](#generating-json-metadata)** with a complete address map directly from IL2CPP Files.
 
-* Create **[IL2CPP binaries from arbitrary C# source code without a Unity project](#generating-il2cpp-binaries-without-a-unity-project)**
+* Create **[IL2CPP binaries from arbitrary C# source code without a Unity project](#universal-il2cpp-build-utility)**
 
 * **[Three major APIs](#using-the-apis-for-programmatic-analysis)** for use in your own custom static analysis projects for querying low level binary metadata, the .NET type model and the whole C++ application. These are also available as a [NuGet Package](https://www.nuget.org/packages/NoisyCowStudios.Il2CppInspector/).
 
 * Supports **all major file formats and processor architectures**
 
-* Defeats certain types of basic obfuscation
+* Defeats certain types of obfuscation
 
 * Works on Windows, MacOS X and Linux. **Integrated GUI** for Windows users with drag & drop support
 
@@ -300,6 +300,7 @@ The following files are generated:
 
     - `il2cpp-functions.h`:
       - The function pointer signature and offset from the image base address to every C#-equivalent method
+      - The offset from the image base address to every method information class (`MethodInfo **`)
 
     - `il2cpp-types-ptr.h`:
       - The offset from the image base address to every type information class (`Il2CppClass **`)
@@ -344,6 +345,8 @@ For Visual Studio users, the following files are also generated:
 The default `main.cpp` includes commented code to allow you to write to a log or open a new console using the functions from `helpers.h`. To specify a log file target in your source code, use `extern const LPCWSTR LOG_FILE = L"my_log_file.txt"`.
 
 **Tip:** When a new version of the target application is released, you can re-output the C++ scaffolding project in-place. The `appdata` and `framework` folders will be overwritten but the `user` folder and project/solution files will not be changed. This makes it easy to update your project when the target application has been updated!
+
+**Compatibility:** It is recommended to use Visual Studio 2019 (MSVC++ Build Tools v142 or later). The scaffolding projects have been tested with Visual Studio 2019 and Visual Studio 2017 (MSVC++ Build Tools v141), however some helper code is omitted when using Visual Studio 2017 in order to enable compilation to succeed.
 
 #### DLL Injection workflow
 
@@ -455,11 +458,18 @@ The output schema is as follows:
     - `symbols` (array)
       The virtual address, name and symbol type of every named (non-zero name length) and non-zero address function definition, type, field name and import (for ELF) defined in the binary. Not currently supported for PE files.
 
-### Generating IL2CPP binaries without a Unity project
+### Universal IL2CPP Build Utility
 
 Three Powershell scripts are provided to enable easy building and testing of IL2CPP binaries:
 
-* `il2cpp.ps1` is the main workhorse and compiles each specified C# source file in `TestSources` (or all of them if none supplied) as a separate assembly, and outputs them to `TestAssemblies`. It then takes every specified assembly in `TestAssemblies` and compiles each one as a separate IL2CPP project for each of these architectures: Windows x86 standalone, Windows x64 standalone, Android ARMv7 (32-bit) and Android ARMv8-A (64-bit). These are placed into the `TestBinaries` folder. The C++ source code for each build is placed into the `TestCpp` folder. It then calls `generate-tests.ps1`.
+* `il2cpp.ps1` is the main workhorse and compiles each specified C# source file in `TestSources` (or all of them if none supplied) as a separate assembly, and outputs them to `TestAssemblies`. It then takes every specified assembly in `TestAssemblies` and compiles each one as a separate IL2CPP project for each of these architectures:
+
+  - Windows x86 standalone
+  - Windows x64 standalone
+  - Android ARMv7 (32-bit)
+  - Android ARMv8-A (64-bit)
+   
+  These are placed into the `TestBinaries` folder. The C++ source code for each build is placed into the `TestCpp` folder. It then calls `generate-tests.ps1`.
 
   Specify a comma-separated list of source files (without the `.cs` extension) to process as the first argument (or `-assemblies`).
 
@@ -559,8 +569,12 @@ Unity version | IL2CPP version | Support
 2017.1.x-2018.2.x | 24.0 | Working
 2018.3.x-2018.4.x | 24.1 | Working
 2019.1.x-2019.3.6 | 24.2 | Working
-2019.3.7-2020.1.x | 24.3 | Working
+2019.3.7-2019.4.14 | 24.3 | Working
+2019.4.15+ | 24.4 | Working
+2020.1.0-2020.1.10 | 24.3 | Working
+2020.1.11+ | 24.4 | Working
 2020.2.0 (beta) | 27 | Working
+2021.1 (alpha) | 27 | Partial
 
 Please refer to the companion repository https://github.com/nneonneo/Il2CppVersions if you would like to track the changes between each IL2CPP release version.
 

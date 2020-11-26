@@ -8,7 +8,7 @@
     <PublishTrimmed>true</PublishTrimmed>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>2020.2</Version>
+    <Version>2020.2.1</Version>
     <Company>Noisy Cow Studios</Company>
     <Product>Il2CppInspector Command-Line Edition</Product>
     <Copyright>(c) 2017-2020 Katy Coe - www.djkaty.com - www.github.com/djkaty</Copyright>

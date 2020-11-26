@@ -8,7 +8,7 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <UseWPF>true</UseWPF>
     <AssemblyName>Il2CppInspector</AssemblyName>
-    <Version>2020.2</Version>
+    <Version>2020.2.1</Version>
     <Authors>Katy Coe</Authors>
     <Company>Noisy Cow Studios</Company>
     <Product>Il2CppInspector Windows Edition</Product>
