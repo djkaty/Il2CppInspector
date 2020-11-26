@@ -556,6 +556,10 @@ namespace Il2CppInspector.Cpp
                 "Mask", "Region", "Pointer", "GC" }) {
                 ns.ReserveName(keyword);
             }
+            /* Reserve builtin keywords for Ghidra */
+            foreach (var keyword in new [] { "_extension" }) {
+                ns.ReserveName(keyword);
+            }
             return ns;
         }
 
