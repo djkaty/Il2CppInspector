@@ -764,7 +764,7 @@ typedef struct Il2CppClass
  Il2CppRuntimeInterfaceOffsetPair* interfaceOffsets;
  void* static_fields;
  const Il2CppRGCTXData* rgctx_data;
- Il2CppClass** typeHierarchy;
+ struct Il2CppClass** typeHierarchy;
  uint32_t cctor_started;
  uint32_t cctor_finished;
  __attribute__((aligned(8))) uint64_t cctor_thread;
@@ -827,7 +827,7 @@ typedef struct Il2CppClass_0 {
 } Il2CppClass_0;
 
 typedef struct Il2CppClass_1 {
-    Il2CppClass** typeHierarchy;
+    struct Il2CppClass** typeHierarchy;
     uint32_t cctor_started;
     uint32_t cctor_finished;
 #ifdef IS_32BIT
@@ -1670,7 +1670,7 @@ typedef enum Il2CppVarType
  IL2CPP_VT_ILLEGALMASKED = 0xfff,
  IL2CPP_VT_TYPEMASK = 0xfff,
 } Il2CppVarType;
-struct Il2CppVariant
+typedef struct Il2CppVariant
 {
  union
  {
@@ -1710,7 +1710,7 @@ struct Il2CppVariant
     Il2CppIUnknown** ppunkVal;
     void** ppdispVal;
     Il2CppSafeArray** pparray;
-    Il2CppVariant* pvarVal;
+    struct Il2CppVariant* pvarVal;
     void* byref;
     char cVal;
     uint16_t uiVal;

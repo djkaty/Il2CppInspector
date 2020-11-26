@@ -574,7 +574,7 @@ typedef struct Il2CppVariant
                 Il2CppIUnknown** ppunkVal;
                 void** ppdispVal;
                 Il2CppSafeArray** pparray;
-                Il2CppVariant* pvarVal;
+                struct Il2CppVariant* pvarVal;
                 void* byref;
                 char cVal;
                 uint16_t uiVal;
@@ -876,8 +876,8 @@ typedef struct Il2CppCatchPoint
     MethodIndex __methodDefinitionIndex;
     TypeIndex catchTypeIndex;
     int32_t ilOffset;
-    int8_t tryId;
-    int8_t parentTryId;
+    int32_t tryId;
+    int32_t parentTryId;
 } Il2CppCatchPoint;
 typedef struct Il2CppDebuggerMetadataRegistration
 {
@@ -959,7 +959,7 @@ typedef struct Il2CppClass
     Il2CppRuntimeInterfaceOffsetPair* interfaceOffsets;
     void* static_fields;
     const Il2CppRGCTXData* rgctx_data;
-    Il2CppClass** typeHierarchy;
+    struct Il2CppClass** typeHierarchy;
     void *unity_user_data;
     uint32_t initializationExceptionGCHandle;
     uint32_t cctor_started;
@@ -1030,7 +1030,7 @@ typedef struct Il2CppClass_0 {
 } Il2CppClass_0;
 
 typedef struct Il2CppClass_1 {
-    Il2CppClass** typeHierarchy;
+    struct Il2CppClass** typeHierarchy;
     void * unity_user_data;
     uint32_t initializationExceptionGCHandle;
     uint32_t cctor_started;
@@ -1610,7 +1610,7 @@ typedef struct Il2CppException
     Il2CppString* className;
     Il2CppString* message;
     Il2CppObject* _data;
-    Il2CppException* inner_ex;
+    struct Il2CppException* inner_ex;
     Il2CppString* _helpURL;
     Il2CppArray* trace_ips;
     Il2CppString* stack_trace;
@@ -1861,7 +1861,7 @@ typedef struct Il2CppStringBuilder
 {
     Il2CppObject object;
     Il2CppArray* chunkChars;
-    Il2CppStringBuilder* chunkPrevious;
+    struct Il2CppStringBuilder* chunkPrevious;
     int chunkLength;
     int chunkOffset;
     int maxCapacity;

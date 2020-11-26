@@ -865,7 +865,7 @@ typedef struct Il2CppClass
     Il2CppRuntimeInterfaceOffsetPair* interfaceOffsets;
     void* static_fields;
     const Il2CppRGCTXData* rgctx_data;
-    Il2CppClass** typeHierarchy;
+    struct Il2CppClass** typeHierarchy;
     uint32_t cctor_started;
     uint32_t cctor_finished;
     __attribute__((aligned(8))) uint64_t cctor_thread;
@@ -932,7 +932,7 @@ typedef struct Il2CppClass_0 {
 } Il2CppClass_0;
 
 typedef struct Il2CppClass_1 {
-    Il2CppClass** typeHierarchy;
+    struct Il2CppClass** typeHierarchy;
     uint32_t cctor_started;
     uint32_t cctor_finished;
 #ifdef IS_32BIT
@@ -1481,7 +1481,7 @@ typedef struct Il2CppException
     Il2CppString* className;
     Il2CppString* message;
     Il2CppObject* _data;
-    Il2CppException* inner_ex;
+    struct Il2CppException* inner_ex;
     Il2CppString* _helpURL;
     Il2CppArray* trace_ips;
     Il2CppString* stack_trace;
@@ -1730,7 +1730,7 @@ typedef struct Il2CppStringBuilder
 {
     Il2CppObject object;
     Il2CppArray* chunkChars;
-    Il2CppStringBuilder* chunkPrevious;
+    struct Il2CppStringBuilder* chunkPrevious;
     int chunkLength;
     int chunkOffset;
     int maxCapacity;
@@ -2030,7 +2030,7 @@ typedef struct Il2CppVariant
                 Il2CppIUnknown** ppunkVal;
                 void** ppdispVal;
                 Il2CppSafeArray** pparray;
-                Il2CppVariant* pvarVal;
+                struct Il2CppVariant* pvarVal;
                 void* byref;
                 char cVal;
                 uint16_t uiVal;
