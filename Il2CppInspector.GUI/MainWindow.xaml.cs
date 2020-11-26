@@ -439,7 +439,7 @@ namespace Il2CppInspectorGUI
                     var selectedPyUnityVersion = ((UnityHeaders) cboPyUnityVersion.SelectedItem)?.VersionRange.Min;
                     var selectedPyTarget = (string) cboPyTarget.SelectedItem;
                     await Task.Run(() => {
-                        OnStatusUpdate(this, "Building application model");
+                        OnStatusUpdate(this, $"Building application model for Unity {selectedPyUnityVersion}/GCC");
                         model.Build(selectedPyUnityVersion, CppCompilerType.GCC);
 
                         OnStatusUpdate(this, $"Generating {selectedPyTarget} Python script");
@@ -464,7 +464,7 @@ namespace Il2CppInspectorGUI
                     var selectedCppUnityVersion = ((UnityHeaders) cboCppUnityVersion.SelectedItem)?.VersionRange.Min;
                     var cppCompiler = (CppCompilerType) Enum.Parse(typeof(CppCompilerType), cboCppCompiler.SelectionBoxItem.ToString());
                     await Task.Run(() => {
-                        OnStatusUpdate(this, "Building application model");
+                        OnStatusUpdate(this, $"Building application model for Unity {selectedCppUnityVersion}/{cppCompiler}");
                         model.Build(selectedCppUnityVersion, cppCompiler);
 
                         OnStatusUpdate(this, "Generating C++ scaffolding");
@@ -490,7 +490,7 @@ namespace Il2CppInspectorGUI
                     areaBusyIndicator.Visibility = Visibility.Visible;
                     var selectedJsonUnityVersion = ((UnityHeaders) cboJsonUnityVersion.SelectedItem)?.VersionRange.Min;
                     await Task.Run(() => {
-                        OnStatusUpdate(this, "Building application model");
+                        OnStatusUpdate(this, $"Building application model for Unity {selectedJsonUnityVersion}/GCC");
                         model.Build(selectedJsonUnityVersion, CppCompilerType.GCC);
 
                         OnStatusUpdate(this, "Generating JSON metadata file");
