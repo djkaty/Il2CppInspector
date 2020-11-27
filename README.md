@@ -31,9 +31,11 @@ Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the
 
 ### Tutorials and Guides
 
-You can read more about IL2CPP in my series [IL2CPP Reverse Engineering](https://katyscode.wordpress.com/category/reverse-engineering/il2cpp/).
+You can read more about how IL2CPP works in my series [IL2CPP Reverse Engineering](https://katyscode.wordpress.com/category/reverse-engineering/il2cpp/).
 
 [Using Il2CppInspector's type model to extract protobuf-net definitions (Case Study: Fall Guys)](https://katyscode.wordpress.com/2020/08/10/practical-il2cpp-protobuf/)
+
+[How to create, use and debug IL2CPP DLL injection projects](https://katyscode.wordpress.com/2020/11/27/il2cppinspector-tutorial-how-to-create-use-and-debug-il2cpp-dll-injection-projects/)
 
 
 ### Other features
@@ -376,6 +378,9 @@ void Run()
     il2cppi_log_write(to_string(myVector3->fields.y));
 }
 ```
+
+A more detailed tutorial can be found here: 
+[How to create, use and debug IL2CPP DLL injection projects](https://katyscode.wordpress.com/2020/11/27/il2cppinspector-tutorial-how-to-create-use-and-debug-il2cpp-dll-injection-projects/)
 
 ### Creating a Visual Studio C# code stubs solution
 
