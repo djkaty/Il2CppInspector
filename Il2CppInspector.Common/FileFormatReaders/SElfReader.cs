@@ -124,5 +124,7 @@ namespace Il2CppInspector
             var segment = pht.First(x => offset >= x.p_offset && offset < x.p_offset + x.p_filesz);
             return segment.p_vaddr + offset - segment.p_offset;
         }
+
+        // TODO: SElfReader.GetSections()
     }
 }

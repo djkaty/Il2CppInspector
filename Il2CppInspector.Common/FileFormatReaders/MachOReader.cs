@@ -25,12 +25,12 @@ namespace Il2CppInspector
         protected override MachO lc_Segment => MachO.LC_SEGMENT;
 
         public override uint MapVATR(ulong uiAddr) {
-            var section = sections.First(x => uiAddr >= x.Address && uiAddr <= x.Address + x.Size);
+            var section = machoSections.First(x => uiAddr >= x.Address && uiAddr <= x.Address + x.Size);
             return (uint) uiAddr - (section.Address - section.ImageOffset);
         }
 
         public override ulong MapFileOffsetToVA(uint offset) {
-            var section = sections.First(x => offset >= x.ImageOffset && offset < x.ImageOffset + x.Size);
+            var section = machoSections.First(x => offset >= x.ImageOffset && offset < x.ImageOffset + x.Size);
             return section.Address + offset - section.ImageOffset;
         }
     }
@@ -47,12 +47,12 @@ namespace Il2CppInspector
         protected override MachO lc_Segment => MachO.LC_SEGMENT_64;
 
         public override uint MapVATR(ulong uiAddr) {
-            var section = sections.First(x => uiAddr >= x.Address && uiAddr <= x.Address + x.Size);
+            var section = machoSections.First(x => uiAddr >= x.Address && uiAddr <= x.Address + x.Size);
             return (uint) (uiAddr - (section.Address - section.ImageOffset));
         }
 
         public override ulong MapFileOffsetToVA(uint offset) {
-            var section = sections.First(x => offset >= x.ImageOffset && offset < x.ImageOffset + x.Size);
+            var section = machoSections.First(x => offset >= x.ImageOffset && offset < x.ImageOffset + x.Size);
             return section.Address + offset - section.ImageOffset;
         }
     }
@@ -67,7 +67,9 @@ namespace Il2CppInspector
         private readonly TConvert conv = new TConvert();
 
         private MachOHeader<TWord> header;
-        protected readonly List<MachOSection<TWord>> sections = new List<MachOSection<TWord>>();
+        protected readonly List<MachOSection<TWord>> machoSections = new List<MachOSection<TWord>>();
+        private List<Section> sections = new List<Section>();
+
         private MachOSection<TWord> funcTab;
         private MachOSymtabCommand symTab;
 
@@ -121,7 +123,23 @@ namespace Il2CppInspector
                         if (segment.Name == "__TEXT" || segment.Name == "__DATA") {
                             for (int s = 0; s < segment.NumSections; s++) {
                                 var section = ReadObject<MachOSection<TWord>>();
-                                sections.Add(section);
+                                machoSections.Add(section);
+
+                                // Create universal section
+                                sections.Add(new Section {
+                                    VirtualStart = conv.ULong(section.Address),
+                                    VirtualEnd = conv.ULong(section.Address) + conv.ULong(section.Size) - 1,
+                                    ImageStart = section.ImageOffset,
+                                    ImageEnd = section.ImageOffset + (uint) conv.Int(section.Size) - 1,
+
+                                    IsData = segment.Name == "__DATA" && section.Name != "__bss",
+                                    IsExec = segment.Name == "__TEXT",
+                                    IsBSS =  segment.Name == "__DATA" && section.Name == "__bss",
+
+                                    Name = section.Name
+                                });
+
+                                // First code section
                                 if (section.Name == "__text") {
                                     GlobalOffset = (ulong) Convert.ChangeType(section.Address, typeof(ulong)) - section.ImageOffset;
                                 }
@@ -170,7 +188,7 @@ namespace Il2CppInspector
                 return false;
 
             // Process relocations
-            foreach (var section in sections) {
+            foreach (var section in machoSections) {
                 var rels = ReadArray<MachO_relocation_info>(section.ImageRelocOffset, section.NumRelocEntries);
 
                 // TODO: Implement Mach-O relocations
@@ -275,5 +293,7 @@ namespace Il2CppInspector
         }
 
         public override IEnumerable<Export> GetExports() => exports;
+
+        public override IEnumerable<Section> GetSections() => sections;
     }
 }

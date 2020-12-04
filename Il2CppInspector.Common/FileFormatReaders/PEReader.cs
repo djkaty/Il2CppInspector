@@ -167,5 +167,7 @@ namespace Il2CppInspector
 
             return pe.ImageBase + section.VirtualAddress + offset - section.PointerToRawData;
         }
+
+        // TODO: PEReader.GetSections()
     }
 }
