@@ -208,6 +208,8 @@ namespace Il2CppInspector
             CodeRegistration = Image.ReadMappedObject<Il2CppCodeRegistration>(codeRegistration);
             MetadataRegistration = Image.ReadMappedObject<Il2CppMetadataRegistration>(metadataRegistration);
 
+            Arrange();
+
             // Do basic validatation that MetadataRegistration and CodeRegistration are sane
             /*
              * TODO: Validation can be greatly expanded upon later, eg. pointers in these two structs should actually be pointers
