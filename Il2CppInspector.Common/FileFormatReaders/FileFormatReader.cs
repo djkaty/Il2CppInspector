@@ -31,6 +31,8 @@ namespace Il2CppInspector
         Dictionary<string, Symbol> GetSymbolTable();
         uint[] GetFunctionTable();
         IEnumerable<Export> GetExports();
+        IEnumerable<Section> GetSections();
+        bool TryGetSections(out IEnumerable<Section> sections);
 
         uint MapVATR(ulong uiAddr);
         bool TryMapVATR(ulong uiAddr, out uint fileOffset);
@@ -182,6 +184,19 @@ namespace Il2CppInspector
 
         // Find all symbol exports for the image
         public virtual IEnumerable<Export> GetExports() => null;
+
+        // Get all sections for the image in a universal format
+        public virtual IEnumerable<Section> GetSections() => throw new NotImplementedException();
+
+        public bool TryGetSections(out IEnumerable<Section> sections) {
+            try {
+                sections = GetSections();
+                return true;
+            } catch (NotImplementedException) {
+                sections = null;
+                return false;
+            }
+        }
 
         // Map an RVA to an offset into the file image
         // No mapping by default

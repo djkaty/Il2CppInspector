@@ -98,7 +98,7 @@ namespace Il2CppInspector
             foreach (var entry in dataEntries) {
                 pht[entry.SegmentIndex].f_p_filesz = entry.EncryptedCompressedSize;
                 pht[entry.SegmentIndex].f_p_offset = entry.FileOffset;
-                pht[entry.SegmentIndex].p_memsz = entry.MemorySize;
+                pht[entry.SegmentIndex].f_p_memsz = entry.MemorySize;
             }
 
             // Filter out unused phdr entries
