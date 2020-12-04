@@ -37,9 +37,11 @@ namespace Il2CppInspector
         PF_X = 1,
 
         // SHTs
+        SHT_PROGBITS = 1,
         SHT_SYMTAB = 2,
         SHT_STRTAB = 3,
         SHT_RELA = 4,
+        SHT_NOBITS = 8,
         SHT_REL = 9,
         SHT_DYNSYM = 11,
 
@@ -58,6 +60,10 @@ namespace Il2CppInspector
         STT_LOPROC = 13,
         STT_SPARC_REGISTER = 13,
         STT_HIPROC = 15,
+
+        // SHFs
+        SHF_ALLOC = 2,
+        SHF_EXECINSTR = 4,
 
         // dynamic sections
         DT_STRTAB = 5,
@@ -146,6 +152,7 @@ namespace Il2CppInspector
         uint p_type { get; }
         TWord p_offset { get; }
         TWord p_filesz { get; }
+        TWord p_memsz { get; }
         TWord p_vaddr { get; }
         uint p_flags { get; }
     }
@@ -157,13 +164,14 @@ namespace Il2CppInspector
         public uint p_filesz => f_p_filesz;
         public uint p_vaddr => f_p_vaddr;
         public uint p_flags => f_p_flags;
+        public uint p_memsz => f_p_memsz;
 
         public uint f_p_type;
         public uint f_p_offset;
         public uint f_p_vaddr;
         public uint p_paddr;
         public uint f_p_filesz;
-        public uint p_memsz;
+        public uint f_p_memsz;
         public uint f_p_flags;
         public uint p_align;
     }
@@ -173,6 +181,7 @@ namespace Il2CppInspector
         public uint p_type => f_p_type;
         public ulong p_offset => f_p_offset;
         public ulong p_filesz => f_p_filesz;
+        public ulong p_memsz => f_p_memsz;
         public ulong p_vaddr => f_p_vaddr;
         public uint p_flags => f_p_flags;
 
@@ -182,7 +191,7 @@ namespace Il2CppInspector
         public ulong f_p_vaddr;
         public ulong p_paddr;
         public ulong f_p_filesz;
-        public ulong p_memsz;
+        public ulong f_p_memsz;
         public ulong p_align;
     }
 

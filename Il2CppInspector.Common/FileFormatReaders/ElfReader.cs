@@ -463,6 +463,39 @@ namespace Il2CppInspector
             return init_array.Select(x => MapVATR(x)).ToArray();
         }
 
+        public override IEnumerable<Section> GetSections() {
+            // If the sections have been stripped, use the segment list from the PHT instead
+            if (section_header_table.All(s => conv.Int(s.sh_offset) == 0)) {
+                return program_header_table.Select(p => new Section {
+                    VirtualStart = conv.ULong(p.p_vaddr),
+                    VirtualEnd   = conv.ULong(p.p_vaddr) + conv.ULong(p.p_memsz) - 1,
+                    ImageStart   = (uint) conv.Int(p.p_offset),
+                    ImageEnd     = (uint) conv.Int(p.p_offset) + (uint) conv.Int(p.p_filesz) - 1,
+
+                    // Not correct but probably the best we can do
+                    IsData       = (Elf) p.p_type == Elf.PT_LOAD,
+                    IsExec       = (Elf) p.p_type == Elf.PT_LOAD,
+                    IsBSS        = (Elf) p.p_type == Elf.PT_LOAD,
+
+                    Name         = string.Empty
+                });
+            }
+
+            // Return sections list
+            return section_header_table.Select(s => new Section {
+                VirtualStart = conv.ULong(s.sh_addr),
+                VirtualEnd   = conv.ULong(s.sh_addr) + conv.ULong(s.sh_size) - 1,
+                ImageStart   = (uint) conv.Int(s.sh_offset),
+                ImageEnd     = (uint) conv.Int(s.sh_offset) + (uint) conv.Int(s.sh_size) - 1,
+
+                IsData = ((Elf) conv.Int(s.sh_flags) & Elf.SHF_ALLOC) == Elf.SHF_ALLOC && ((Elf) conv.Int(s.sh_flags) & Elf.SHF_EXECINSTR) == 0 && ((Elf) s.sh_type & Elf.SHT_PROGBITS) == Elf.SHT_PROGBITS,
+                IsExec = ((Elf) conv.Int(s.sh_flags) & Elf.SHF_EXECINSTR) == Elf.SHF_EXECINSTR && ((Elf) s.sh_type & Elf.SHT_PROGBITS) == Elf.SHT_PROGBITS,
+                IsBSS  = ((Elf) s.sh_type & Elf.SHT_NOBITS) == Elf.SHT_NOBITS,
+
+                Name = sectionByName.First(sbn => conv.Int(sbn.Value.sh_offset) == conv.Int(s.sh_offset)).Key
+            });
+        }
+
         // Map a virtual address to an offset into the image file. Throws an exception if the virtual address is not mapped into the file.
         // Note if uiAddr is a valid segment but filesz < memsz and the adjusted uiAddr falls between the range of filesz and memsz,
         // an exception will be thrown. This area of memory is assumed to contain all zeroes.
