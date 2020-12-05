@@ -105,12 +105,13 @@ namespace Il2CppInspector
             return (Il2CppBinary) Activator.CreateInstance(type, stream[0]);
         }
 
+        // Load binary without a global-metadata.dat available
         public static Il2CppBinary Load(IFileFormatReader stream, double metadataVersion) {
             var inst = LoadImpl(stream);
-            // Try to process the IL2CPP image; return the instance if succeeded, otherwise null
-            return inst.InitializeWithoutMetadata(metadataVersion) ? inst : null;
+            return inst.Initialize(metadataVersion) ? inst : null;
         }
 
+        // Load binary with a global-metadata.dat available
         // Supplying the Metadata class when loading a binary is optional
         // If it is specified and both symbol table and function scanning fail,
         // Metadata will be used to try to find the required structures with data analysis
@@ -120,32 +121,30 @@ namespace Il2CppInspector
             return inst.Initialize(metadata) ? inst : null;
         }
 
-        // Architecture-specific search function
-        protected abstract (ulong, ulong) ConsiderCode(IFileFormatReader image, uint loc);
+        // Initialize binary without a global-metadata.dat available
+        public bool Initialize(double metadataVersion) {
+            Image.Version = metadataVersion;
 
-        // Try to find data structures via symbol table lookup, init function analysis and data heuristics
-        public bool Initialize(Metadata metadata) {
-            Image.Version = metadata.Version;
-
-            if (InitializeWithoutMetadata(metadata.Version))
-                return true;
-
-            // Resort to a full scan of the file
-            var (codePtr, metadataPtr) = ImageScan(metadata);
-            if (codePtr == 0) {
-                Console.WriteLine("No matches via data heuristics");
+            if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode()) is var ptrs))
                 return false;
-            }
 
-            Console.WriteLine("Required structures acquired from data heuristics");
-            Configure(codePtr, metadataPtr);
+            Configure(ptrs.Value.Item1, ptrs.Value.Item2);
             return true;
         }
 
-        // Try to find data structures via symbol table lookup and init function code analysis
-        public bool InitializeWithoutMetadata(double version) {
-            Image.Version = version;
+        // Initialize binary with a global-metadata.dat available
+        public bool Initialize(Metadata metadata) {
+            Image.Version = metadata.Version;
 
+            if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode() ?? FindMetadataFromData(metadata)) is var ptrs))
+                return false;
+
+            Configure(ptrs.Value.Item1, ptrs.Value.Item2, metadata);
+            return true;
+        }
+
+        // Try to find data structures via symbol table lookup
+        private (ulong, ulong)? FindMetadataFromSymbols() {
             // Try searching the symbol table
             var symbols = Image.GetSymbolTable();
 
@@ -162,20 +161,20 @@ namespace Il2CppInspector
 
                 if (code != null && metadata != null) {
                     Console.WriteLine("Required structures acquired from symbol lookup");
-                    Configure(code.VirtualAddress, metadata.VirtualAddress);
-                    return true;
-                }
-                else {
+                    return (code.VirtualAddress, metadata.VirtualAddress);
+                } else {
                     Console.WriteLine("No matches in symbol table");
                 }
-            }
-            else if (symbols != null) {
+            } else if (symbols != null) {
                 Console.WriteLine("No symbol table present in binary file");
-            }
-            else {
+            } else {
                 Console.WriteLine("Symbol table search not implemented for this binary format");
             }
+            return null;
+        }
 
+        // Try to find data structures via init function code analysis
+        private (ulong, ulong)? FindMetadataFromCode() {
             // Try searching the function table
             var addrs = Image.GetFunctionTable();
 
@@ -187,16 +186,32 @@ namespace Il2CppInspector
                 if (code != 0) {
                     RegistrationFunctionPointer = loc + Image.GlobalOffset;
                     Console.WriteLine("Required structures acquired from code heuristics. Initialization function: 0x{0:X16}", RegistrationFunctionPointer);
-                    Configure(code, metadata); 
-                    return true;
+                    return (code, metadata);
                 }
             }
 
             Console.WriteLine("No matches via code heuristics");
-            return false;
+            return null;
         }
 
-        private void Configure(ulong codeRegistration, ulong metadataRegistration) {
+        // Try to find data structures via data heuristics
+        // Requires succeesful global-metadata.dat analysis first
+        private (ulong, ulong)? FindMetadataFromData(Metadata metadata) {
+            var (codePtr, metadataPtr) = ImageScan(metadata);
+            if (codePtr == 0) {
+                Console.WriteLine("No matches via data heuristics");
+                return null;
+            }
+
+            Console.WriteLine("Required structures acquired from data heuristics");
+            return (codePtr, metadataPtr);
+        }
+
+        // Architecture-specific search function
+        protected abstract (ulong, ulong) ConsiderCode(IFileFormatReader image, uint loc);
+
+        // Load all of the discovered metadata in the binary
+        private void Configure(ulong codeRegistration, ulong metadataRegistration, Metadata metadata = null) {
             // Store locations
             CodeRegistrationPointer = codeRegistration;
             MetadataRegistrationPointer = metadataRegistration;
@@ -209,7 +224,7 @@ namespace Il2CppInspector
             MetadataRegistration = Image.ReadMappedObject<Il2CppMetadataRegistration>(metadataRegistration);
 
             // Restore the field order in CodeRegistration and MetadataRegistration if they have been re-ordered for obfuscation
-            ReconstructMetadata();
+            ReconstructMetadata(metadata);
 
             // Do basic validatation that MetadataRegistration and CodeRegistration are sane
             /*
@@ -226,9 +241,7 @@ namespace Il2CppInspector
                 || CodeRegistration.unresolvedVirtualCallCount > 0x4000 // >= 22
                 || CodeRegistration.interopDataCount > 0x1000           // >= 23
                 || (Image.Version <= 24.1 && CodeRegistration.invokerPointersCount > CodeRegistration.methodPointersCount))
-                throw new NotSupportedException("The detected Il2CppCodeRegistration / Il2CppMetadataRegistration structs do not pass validation. This may mean that their fields have been re-ordered as a form of obfuscation - this scenario is not currently supported by Il2CppInspector. Consider re-ordering the fields in Il2CppBinaryClasses.cs and try again.");
-
-            // TODO: Determine the correct field order for MetadataRegistration and CodeRegistration (#44, #98)
+                throw new NotSupportedException("The detected Il2CppCodeRegistration / Il2CppMetadataRegistration structs do not pass validation. This may mean that their fields have been re-ordered as a form of obfuscation and Il2CppInspector has not been able to restore the original order automatically. Consider re-ordering the fields in Il2CppBinaryClasses.cs and try again.");
 
             // The global method pointer list was deprecated in v24.2 in favour of Il2CppCodeGenModule
             if (Image.Version <= 24.1)

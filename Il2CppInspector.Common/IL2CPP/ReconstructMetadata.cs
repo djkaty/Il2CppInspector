@@ -56,7 +56,7 @@ namespace Il2CppInspector
         }
 
         // Reconstruct Il2CppCodeRegistration and Il2CppMetadataRegistration into their original, unobfuscated field order
-        private void ReconstructMetadata() {
+        private void ReconstructMetadata(Metadata metadata) {
             // If the section table is not available, give up and do nothing
             if (!Image.TryGetSections(out var sections))
                 return;
@@ -201,6 +201,11 @@ namespace Il2CppInspector
             CodeRegistration.pmethodPointers            = methodPointers.Key;
             CodeRegistration.methodPointersCount        = (ulong) methodPointers.Value;
 
+            // Force CodeRegistration to pass validation in Il2CppBinary.Configure()
+            CodeRegistration.reversePInvokeWrapperCount = 0;
+            CodeRegistration.unresolvedVirtualCallCount = 0;
+            CodeRegistration.interopDataCount           = 0;
+
             // Things we need from Il2CppMetadataRegistration
 
             // genericInsts               -> list of Il2CppGenericInst* (argc is count of Il2CppType* at data pointer argv; datapoint = GenericParameterIndex)
@@ -210,6 +215,18 @@ namespace Il2CppInspector
             // methodReferences (<=16)    -> list of uint
             // fieldOffsets (fieldOffsetsArePointers) -> either a list of data pointers (some zero, some VAs not mappable) to list of uints, or a list of uints
             // metadataUsages (>=19, <27) -> list of unmappable data pointers
+
+            // We can only perform this re-ordering if we can refer to a loaded global-metadata.dat
+            if (metadata == null)
+                return;
+
+            // Perform substitution
+            // TODO
+
+            // Force MetadataRegistration to pass validation in Il2CppBinary.Configure()
+            MetadataRegistration.typeDefinitionsSizesCount = 0;
+            MetadataRegistration.genericClassesCount       = MetadataRegistration.genericInstsCount + 1;
+            MetadataRegistration.genericMethodTableCount   = MetadataRegistration.genericInstsCount + 1;
         }
     }
 }
