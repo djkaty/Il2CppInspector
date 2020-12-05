@@ -208,7 +208,8 @@ namespace Il2CppInspector
             CodeRegistration = Image.ReadMappedObject<Il2CppCodeRegistration>(codeRegistration);
             MetadataRegistration = Image.ReadMappedObject<Il2CppMetadataRegistration>(metadataRegistration);
 
-            Arrange();
+            // Restore the field order in CodeRegistration and MetadataRegistration if they have been re-ordered for obfuscation
+            ReconstructMetadata();
 
             // Do basic validatation that MetadataRegistration and CodeRegistration are sane
             /*
