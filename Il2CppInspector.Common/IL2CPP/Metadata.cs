@@ -154,7 +154,7 @@ namespace Il2CppInspector
                 StringLiterals[i] = ReadFixedLengthString(Header.stringLiteralDataOffset + stringLiteralList[i].dataIndex, stringLiteralList[i].length);
         }
 
-        private int Sizeof(Type type) => Sizeof(type, Version);
+        internal int Sizeof(Type type) => Sizeof(type, Version);
 
         public static int Sizeof(Type type, double metadataVersion, int longSizeBytes = 8) {
 

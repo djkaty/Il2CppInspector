@@ -251,6 +251,10 @@ namespace Il2CppInspector
             var types =        (ptr: 0ul, count: -1);
             var genericInsts = (ptr: 0ul, count: -1);
 
+            // Intermediary items
+            var typesData = new Dictionary<ulong, Il2CppType>();
+            var genericInstsCount = 0;
+
             // Determine what each pointer is
             // We need to do this in a certain order because validating some items relies on earlier items
             while (metaPtrData.Any()) {
@@ -270,38 +274,41 @@ namespace Il2CppInspector
                         if (foundMappableDataCount >= 0x1000) {
 
                             // This statement is quite slow. We could speed it up with a two-stage approach
-                            var testTypes = Image.ReadMappedObjectPointerArray<Il2CppType>(ptr, foundMappableDataCount);
+                            var testItems = Image.ReadMappedObjectPointerArray<Il2CppType>(ptr, foundMappableDataCount);
+                            var foundItems = 0;
 
-                            var foundTypes = 0;
-                            foreach (var testType in testTypes) {
+                            foreach (var item in testItems) {
                                 // TODO: v27 will fail this because of the bit shifting in Il2CppType.bits
-                                if (testType.num_mods != 0)
+                                if (item.num_mods != 0)
                                     break;
-                                if (!Enum.IsDefined(typeof(Il2CppTypeEnum), testType.type))
+                                if (!Enum.IsDefined(typeof(Il2CppTypeEnum), item.type))
                                     break;
-                                if (testType.type == Il2CppTypeEnum.IL2CPP_TYPE_END)
+                                if (item.type == Il2CppTypeEnum.IL2CPP_TYPE_END)
                                     break;
 
                                 // Test datapoint
-                                if (testType.type switch {
+                                if (item.type switch {
                                     var t when (t is Il2CppTypeEnum.IL2CPP_TYPE_VALUETYPE || t is Il2CppTypeEnum.IL2CPP_TYPE_CLASS)
-                                                && testType.datapoint >= (ulong) metadata.Types.Length => false,
+                                                && item.datapoint >= (ulong) metadata.Types.Length => false,
 
                                     var t when (t is Il2CppTypeEnum.IL2CPP_TYPE_VAR || t is Il2CppTypeEnum.IL2CPP_TYPE_MVAR)
-                                                && testType.datapoint >= (ulong) metadata.GenericParameters.Length => false,
+                                                && item.datapoint >= (ulong) metadata.GenericParameters.Length => false,
 
                                     var t when (t is Il2CppTypeEnum.IL2CPP_TYPE_PTR || t is Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY)
-                                                && !ptrsMappableData.Contains(testType.datapoint) => false,
+                                                && !ptrsMappableData.Contains(item.datapoint) => false,
 
                                     // Untested cases, we could add more here (IL2CPP_TYPE_ARRAY, IL2CPP_TYPE_GENERICINST)
                                     _ => true
                                 })
-                                    foundTypes++;
+                                    foundItems++;
                                 else
                                     break;
                             }
-                            if (foundTypes >= 0x1000) {
-                                types = (ptr, foundTypes);
+                            if (foundItems >= 0x1000) {
+                                types = (ptr, foundItems);
+                                typesData = ptrs.Take(foundItems)
+                                            .Zip(testItems.Take(foundItems),(p, t) => (Ptr: p, Type: t))
+                                            .ToDictionary(kv => kv.Ptr, kv => kv.Type);
                                 foundTarget = ptr;
                                 break;
                             }
@@ -310,7 +317,35 @@ namespace Il2CppInspector
 
                     // Test for Il2CppGenericInst**
                     // ----------------------------
+                    else if (genericInsts.ptr == 0) {
+                        var testItems = Image.ReadMappedObjectPointerArray<Il2CppGenericInst>(ptr, foundMappableDataCount);
+                        var foundItems = 0;
 
+                        foreach (var item in testItems) {
+                            // Let's pray no generic type has more than 32 type parameters
+                            if (item.type_argc > 32)
+                                break;
+
+                            // All the generic type paramters must be in the total list of types,
+                            // ie. typePtrs must be a subset of typesData.Keys
+                            try {
+                                var typePtrs = Image.ReadMappedArray<ulong>(item.type_argv, (int) item.type_argc);
+                                if (typePtrs.Except(typesData.Keys).Any())
+                                    break;
+                            // Pointers were invalid
+                            } catch (InvalidOperationException) {
+                                break;
+                            }
+
+                            foundItems++;
+                        }
+                        if (foundItems >= 0x100) {
+                            genericInsts = (ptr, foundItems);
+                            genericInstsCount = foundItems;
+                            foundTarget = ptr;
+                            break;
+                        }
+                    }
                 }
 
                 // Successfully found the item we were looking for; remove it from the list
@@ -323,13 +358,19 @@ namespace Il2CppInspector
             }
 
             #region Debugging validation checks
-#if DEBUG
+            #if DEBUG
             // Used on non-obfuscated binaries during development to confirm the output is correct
             if (types.ptr != MetadataRegistration.ptypes)
                 throw new Exception("Il2CppType** incorrect");
 
+            if (genericInsts.ptr != MetadataRegistration.genericInsts)
+                throw new Exception("Il2CppGenericInst** incorrect");
+
             if (types.count != MetadataRegistration.typesCount)
                 throw new Exception("Count of Il2CppType* incorrect");
+
+            if (genericInsts.count != MetadataRegistration.genericInstsCount)
+                throw new Exception("Count of Il2CppGenericInst* incorrect");
             #endif
             #endregion
 
