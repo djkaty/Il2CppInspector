@@ -13,7 +13,11 @@ namespace Il2CppInspector
     public enum PE : uint
     {
         IMAGE_NT_OPTIONAL_HDR32_MAGIC = 0x10b,
-        IMAGE_NT_OPTIONAL_HDR64_MAGIC = 0x20b
+        IMAGE_NT_OPTIONAL_HDR64_MAGIC = 0x20b,
+
+        IMAGE_SCN_CNT_CODE               = 0x00000020,
+        IMAGE_SCN_CNT_INITIALIZED_DATA   = 0x00000040,
+        IMAGE_SCN_CNT_UNINITIALIZED_DATA = 0x00000080
     }
 
 #pragma warning disable CS0649
@@ -132,6 +136,8 @@ namespace Il2CppInspector
     // _IMAGE_SECTION_HEADER
     internal class PESection
     {
+        public PE Characteristics => (PE) f_Characteristics;
+
         [String(FixedSize=8)]
         public string Name;
         public uint VirtualSize; // Size in memory
@@ -142,7 +148,7 @@ namespace Il2CppInspector
         public uint PointerToLinenumbers;
         public ushort NumberOfRelocations;
         public ushort NumberOfLinenumbers;
-        public uint Characteristics;
+        public uint f_Characteristics;
     }
 
     // _IMAGE_EXPORT_DIRECTORY

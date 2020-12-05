@@ -168,6 +168,19 @@ namespace Il2CppInspector
             return pe.ImageBase + section.VirtualAddress + offset - section.PointerToRawData;
         }
 
-        // TODO: PEReader.GetSections()
+        public override IEnumerable<Section> GetSections() {
+            return sections.Select(s => new Section {
+                VirtualStart = pe.ImageBase + s.VirtualAddress,
+                VirtualEnd = pe.ImageBase + s.VirtualAddress + s.VirtualSize - 1,
+                ImageStart = s.PointerToRawData,
+                ImageEnd = s.PointerToRawData + s.SizeOfRawData - 1,
+
+                IsData = (s.Characteristics & PE.IMAGE_SCN_CNT_INITIALIZED_DATA) != 0,
+                IsExec = (s.Characteristics & PE.IMAGE_SCN_CNT_CODE) != 0,
+                IsBSS = (s.Characteristics & PE.IMAGE_SCN_CNT_UNINITIALIZED_DATA) != 0 || s.PointerToRawData == 0u,
+
+                Name = s.Name
+            });
+        }
     }
 }
