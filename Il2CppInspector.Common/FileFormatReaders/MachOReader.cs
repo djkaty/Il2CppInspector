@@ -119,35 +119,33 @@ namespace Il2CppInspector
                     case MachO cmd when cmd == lc_Segment:
                         var segment = ReadObject<MachOSegmentCommand<TWord>>();
 
-                        // Code and data
-                        if (segment.Name == "__TEXT" || segment.Name == "__DATA") {
-                            for (int s = 0; s < segment.NumSections; s++) {
-                                var section = ReadObject<MachOSection<TWord>>();
-                                machoSections.Add(section);
+                        // Sections in each segment
+                        for (int s = 0; s < segment.NumSections; s++) {
+                            var section = ReadObject<MachOSection<TWord>>();
+                            machoSections.Add(section);
 
-                                // Create universal section
-                                sections.Add(new Section {
-                                    VirtualStart = conv.ULong(section.Address),
-                                    VirtualEnd = conv.ULong(section.Address) + conv.ULong(section.Size) - 1,
-                                    ImageStart = section.ImageOffset,
-                                    ImageEnd = section.ImageOffset + (uint) conv.Int(section.Size) - 1,
+                            // Create universal section
+                            sections.Add(new Section {
+                                VirtualStart = conv.ULong(section.Address),
+                                VirtualEnd = conv.ULong(section.Address) + conv.ULong(section.Size) - 1,
+                                ImageStart = section.ImageOffset,
+                                ImageEnd = section.ImageOffset + (uint) conv.Int(section.Size) - 1,
 
-                                    IsData = segment.Name == "__DATA" && section.Name != "__bss",
-                                    IsExec = segment.Name == "__TEXT",
-                                    IsBSS =  segment.Name == "__DATA" && section.Name == "__bss",
+                                IsData = segment.Name == "__TEXT" || segment.Name == "__DATA",
+                                IsExec = segment.Name == "__TEXT",
+                                IsBSS =  segment.Name == "__DATA" && (section.Name == "__bss" || section.Name == "__common"),
 
-                                    Name = section.Name
-                                });
+                                Name = section.Name
+                            });
 
-                                // First code section
-                                if (section.Name == "__text") {
-                                    GlobalOffset = (ulong) Convert.ChangeType(section.Address, typeof(ulong)) - section.ImageOffset;
-                                }
+                            // First code section
+                            if (section.Name == "__text") {
+                                GlobalOffset = (ulong) Convert.ChangeType(section.Address, typeof(ulong)) - section.ImageOffset;
+                            }
 
-                                // Initialization (pre-main) functions
-                                if (section.Name == "__mod_init_func") {
-                                    funcTab = section;
-                                }
+                            // Initialization (pre-main) functions
+                            if (section.Name == "__mod_init_func") {
+                                funcTab = section;
                             }
                         }
                         break;
