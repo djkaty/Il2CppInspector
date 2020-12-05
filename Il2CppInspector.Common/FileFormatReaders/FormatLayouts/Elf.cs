@@ -35,6 +35,8 @@ namespace Il2CppInspector
         DT_PLTGOT = 3,
 
         PF_X = 1,
+        PF_W = 2,
+        PF_R = 4,
 
         // SHTs
         SHT_PROGBITS = 1,

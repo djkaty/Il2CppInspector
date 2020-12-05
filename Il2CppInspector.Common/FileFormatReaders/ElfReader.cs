@@ -473,9 +473,9 @@ namespace Il2CppInspector
                     ImageEnd     = (uint) conv.Int(p.p_offset) + (uint) conv.Int(p.p_filesz) - 1,
 
                     // Not correct but probably the best we can do
-                    IsData       = (Elf) p.p_type == Elf.PT_LOAD,
-                    IsExec       = (Elf) p.p_type == Elf.PT_LOAD,
-                    IsBSS        = (Elf) p.p_type == Elf.PT_LOAD,
+                    IsData       = ((Elf) p.p_flags & Elf.PF_R) != 0,
+                    IsExec       = ((Elf) p.p_flags & Elf.PF_X) != 0,
+                    IsBSS        = conv.Int(p.p_filesz) == 0,
 
                     Name         = string.Empty
                 });
