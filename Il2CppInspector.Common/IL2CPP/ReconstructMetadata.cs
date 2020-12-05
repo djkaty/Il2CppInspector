@@ -159,6 +159,7 @@ namespace Il2CppInspector
                     methodPointers = new KeyValuePair<ulong, int>(0ul, 0);
 
                 // Assume this order is right most of the time
+                // TODO: generic and custom attribute might be the wrong way round (eg. #102)
                 (genericMethodPointers, customAttributeGenerators, invokerPointers) = (orderedPtrs[0], orderedPtrs[1], orderedPtrs[2]);
 
                 // customAttributeGenerators is removed in metadata >=27
@@ -220,8 +221,84 @@ namespace Il2CppInspector
             if (metadata == null)
                 return;
 
+            (ulong ptr, int count) types = (0, 0);
+
+            // Determine what each pointer is
+            for (var i = 0; i < metaPtrsOrdered.Count; i++) {
+
+                // Pointers in this list
+                var ptrs = Image.ReadMappedArray<ulong>(metaPtrsOrdered[i], metaCountLimits[i]);
+
+                // foundCount and foundMappableCount will generally be the same below
+                // except in PE files where data and bss can overlap in our interpretation of the sections
+
+                // First set of pointers that point to a data section virtual address
+                var foundCount = ptrs.TakeWhile(p => dataSections.Any(s => p >= s.VirtualStart && p <= s.VirtualEnd)).Count();
+
+                // First set of pointers that can be mapped anywhere into the image
+                var foundMappableCount = ptrs.TakeWhile(p => Image.TryMapVATR(p, out _)).Count();
+
+                // First set of pointers that can be mapped into a data section in the image
+                var ptrsMappableData = ptrs.Take(foundMappableCount)
+                    .TakeWhile(p => dataSections.Any(s => Image.MapVATR(p) >= s.ImageStart && Image.MapVATR(p) <= s.ImageEnd))
+                    .ToList();
+
+                var foundMappableDataCount = ptrsMappableData.Count;
+
+                // Test for Il2CppType**
+                // We don't ever expect there to be less than 0x1000 types
+                if (foundMappableDataCount >= 0x1000) {
+                    // This statement is quite slow. We could speed it up with a two-stage approach
+                    var testTypes = Image.ReadMappedObjectPointerArray<Il2CppType>(metaPtrsOrdered[i], foundMappableDataCount);
+
+                    var foundTypes = 0;
+                    foreach (var testType in testTypes) {
+                        // TODO: v27 will fail this because of the bit shifting in Il2CppType.bits
+                        if (testType.num_mods != 0)
+                            break;
+                        if (!Enum.IsDefined(typeof(Il2CppTypeEnum), testType.type))
+                            break;
+                        if (testType.type == Il2CppTypeEnum.IL2CPP_TYPE_END)
+                            break;
+
+                        // Test datapoint
+                        if (testType.type switch {
+                            var t when (t is Il2CppTypeEnum.IL2CPP_TYPE_VALUETYPE || t is Il2CppTypeEnum.IL2CPP_TYPE_CLASS)
+                                        && testType.datapoint >= (ulong) metadata.Types.Length => false,
+
+                            var t when (t is Il2CppTypeEnum.IL2CPP_TYPE_VAR || t is Il2CppTypeEnum.IL2CPP_TYPE_MVAR)
+                                        && testType.datapoint >= (ulong) metadata.GenericParameters.Length => false,
+
+                            var t when (t is Il2CppTypeEnum.IL2CPP_TYPE_PTR || t is Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY)
+                                        && !ptrsMappableData.Contains(testType.datapoint) => false,
+
+                            // Untested cases, we could add more here (IL2CPP_TYPE_ARRAY, IL2CPP_TYPE_GENERICINST)
+                            _ => true
+                        })
+                            foundTypes++;
+                        else
+                            break;
+                    }
+                    if (foundTypes >= 0x1000) {
+                        types = (metaPtrsOrdered[i], foundTypes);
+                    }
+                }
+            }
+
+            #region Debugging validation checks
+            #if DEBUG
+            // Used on non-obfuscated binaries during development to confirm the output is correct
+            if (types.ptr != MetadataRegistration.ptypes)
+                throw new Exception("Il2CppType** incorrect");
+
+            if (types.count != MetadataRegistration.typesCount)
+                throw new Exception("Count of Il2CppType* incorrect");
+            #endif
+            #endregion
+
             // Perform substitution
-            // TODO
+            MetadataRegistration.ptypes                    = types.ptr;
+            MetadataRegistration.typesCount                = types.count;
 
             // Force MetadataRegistration to pass validation in Il2CppBinary.Configure()
             MetadataRegistration.typeDefinitionsSizesCount = 0;
