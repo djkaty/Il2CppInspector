@@ -66,6 +66,18 @@ namespace Il2CppInspector
             var (codePtrsOrdered, codeCountLimits, codeCounts) = preparePointerList(typeof(Il2CppCodeRegistration), CodeRegistrationPointer, dataSections);
             var (metaPtrsOrdered, metaCountLimits, metaCounts) = preparePointerList(typeof(Il2CppMetadataRegistration), MetadataRegistrationPointer, dataSections);
 
+            // Progress updater
+            var maxProgress = codeCounts.Sum() + metaCounts.Sum();
+            var currentProgress = 0;
+
+            void UpdateProgress(int workDone) {
+                currentProgress += workDone;
+                StatusUpdate($"Reconstructing obfuscated core metadata ({currentProgress * 100 / maxProgress:F0}%)");
+            }
+
+            Console.WriteLine("Reconstructing obfuscated core metadata (this may take a while)...");
+            UpdateProgress(0);
+
             // Some heuristic constants
 
             // Counts from minimal compiles
@@ -152,6 +164,8 @@ namespace Il2CppInspector
                     foundCount--;
 
                 seqFnPtrs.Add(codePtrsOrdered[i], foundCount);
+
+                UpdateProgress(foundCount);
             }
 
             KeyValuePair<ulong, int> methodPointers, genericMethodPointers, customAttributeGenerators, invokerPointers;
@@ -372,7 +386,7 @@ namespace Il2CppInspector
                                 // ie. typePtrs must be a subset of typesData.Keys
                                 try {
                                     var typePtrs = Image.ReadMappedArray<ulong>(item.type_argv, (int) item.type_argc);
-                                    if (typePtrs.Except(typesPtrs).Any())
+                                    if (typePtrs.Any(p => !typePtrs.Contains(p)))
                                         break;
                                     // Pointers were invalid
                                 }
@@ -474,6 +488,8 @@ namespace Il2CppInspector
                 // If we just found the Il2CppTypes data, prune the pointer list to the correct length
                 if (foundItem == types && typesPtrs.Count != foundData.count)
                     typesPtrs = typesPtrs.Take(foundData.count).ToList();
+
+                UpdateProgress(foundData.count);
             }
 
             #region Debugging validation checks
