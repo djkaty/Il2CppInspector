@@ -178,7 +178,7 @@ namespace Il2CppInspector
                 Position = Header.stringOffset;
 
                 // Read in all of the strings as if they are fixed length rather than null-terminated
-                foreach (var offset in stringOffsets.Zip(stringOffsets.Skip(1), (a, b) => (current: a, next: b))) {
+                foreach (var offset in stringOffsets.Zip(stringOffsets.Skip(1).Append(Header.stringCount), (a, b) => (current: a, next: b))) {
                     var encryptedString = ReadBytes(offset.next - offset.current - 1);
 
                     // The null terminator is the XOR key
