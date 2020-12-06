@@ -11,8 +11,10 @@ namespace Il2CppInspector
 {
     internal class Il2CppBinaryX86 : Il2CppBinary
     {
-        public Il2CppBinaryX86(IFileFormatReader stream) : base(stream) { }
-        public Il2CppBinaryX86(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) : base(stream, codeRegistration, metadataRegistration) { }
+        public Il2CppBinaryX86(IFileFormatReader stream, EventHandler<string> statusCallback = null) : base(stream, statusCallback) { }
+
+        public Il2CppBinaryX86(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null)
+            : base(stream, codeRegistration, metadataRegistration, statusCallback) { }
 
         protected override (ulong, ulong) ConsiderCode(IFileFormatReader image, uint loc) {
             ulong metadata, code;

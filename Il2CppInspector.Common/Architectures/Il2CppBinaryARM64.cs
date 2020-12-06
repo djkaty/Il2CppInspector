@@ -12,9 +12,10 @@ namespace Il2CppInspector
     // A64 ISA reference: https://static.docs.arm.com/ddi0596/a/DDI_0596_ARM_a64_instruction_set_architecture.pdf
     internal class Il2CppBinaryARM64 : Il2CppBinary
     {
-        public Il2CppBinaryARM64(IFileFormatReader stream) : base(stream) { }
+        public Il2CppBinaryARM64(IFileFormatReader stream, EventHandler<string> statusCallback = null) : base(stream, statusCallback) { }
 
-        public Il2CppBinaryARM64(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) : base(stream, codeRegistration, metadataRegistration) { }
+        public Il2CppBinaryARM64(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null)
+            : base(stream, codeRegistration, metadataRegistration, statusCallback) { }
 
         private (uint reg, ulong page)? getAdrp(uint inst, ulong pc) {
             if ((inst.Bits(24, 8) & 0b_1000_1111) != 1 << 7)

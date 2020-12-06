@@ -45,7 +45,7 @@ namespace Il2CppInspector
 
         public Dictionary<int, string> Strings { get; } = new Dictionary<int, string>();
 
-        public Metadata(Stream stream) : base(stream)
+        public Metadata(Stream stream, EventHandler<string> statusCallback = null) : base(stream)
         {
             // Read magic bytes
             if (ReadUInt32() != 0xFAB11BAF) {
@@ -169,6 +169,9 @@ namespace Il2CppInspector
             // If they aren't, that means one or more of the null terminators wasn't null, indicating potential encryption
             // Only do this if we need to because it's very slow
             if (stringOffsets.Except(Strings.Keys).Any()) {
+
+                Console.WriteLine("Decrypting strings...");
+                statusCallback?.Invoke(this, "Decrypting strings");
 
                 // Start again
                 Strings.Clear();

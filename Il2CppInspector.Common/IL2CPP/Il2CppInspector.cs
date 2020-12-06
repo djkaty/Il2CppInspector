@@ -497,18 +497,18 @@ namespace Il2CppInspector
             var streams = GetStreamsFromPackage(packageFiles, silent);
             if (!streams.HasValue)
                 return null;
-            return LoadFromStream(streams.Value.Binary, streams.Value.Metadata, silent);
+            return LoadFromStream(streams.Value.Binary, streams.Value.Metadata, silent: silent);
         }
 
         // Load from a binary file and metadata file
         public static List<Il2CppInspector> LoadFromFile(string binaryFile, string metadataFile, bool silent = false)
             => LoadFromStream(new FileStream(binaryFile, FileMode.Open, FileAccess.Read, FileShare.Read),
                                 new MemoryStream(File.ReadAllBytes(metadataFile)),
-                                silent);
+                                silent: silent);
 
         // Load from a binary stream and metadata stream
         // Must be a seekable stream otherwise we catch a System.IO.NotSupportedException
-        public static List<Il2CppInspector> LoadFromStream(Stream binaryStream, Stream metadataStream, bool silent = false) {
+        public static List<Il2CppInspector> LoadFromStream(Stream binaryStream, Stream metadataStream, EventHandler<string> statusCallback = null, bool silent = false) {
 
             // Silent operation if requested
             var stdout = Console.Out;
@@ -518,7 +518,7 @@ namespace Il2CppInspector
             // Load the metadata file
             Metadata metadata;
             try {
-                metadata = new Metadata(metadataStream);
+                metadata = new Metadata(metadataStream, statusCallback);
             }
             catch (Exception ex) {
                 Console.Error.WriteLine(ex.Message);
@@ -531,7 +531,7 @@ namespace Il2CppInspector
             // Load the il2cpp code file (try all available file formats)
             IFileFormatReader stream;
             try {
-                stream = FileFormatReader.Load(binaryStream);
+                stream = FileFormatReader.Load(binaryStream, statusCallback);
 
                 if (stream == null)
                     throw new InvalidOperationException("Unsupported executable file format");
@@ -553,7 +553,7 @@ namespace Il2CppInspector
 
                 // Architecture-agnostic load attempt
                 try {
-                    if (Il2CppBinary.Load(image, metadata) is Il2CppBinary binary) {
+                    if (Il2CppBinary.Load(image, metadata, statusCallback) is Il2CppBinary binary) {
                         Console.WriteLine("IL2CPP binary version " + image.Version);
 
                         processors.Add(new Il2CppInspector(binary, metadata));

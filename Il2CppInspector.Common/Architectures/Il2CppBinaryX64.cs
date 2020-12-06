@@ -13,8 +13,10 @@ namespace Il2CppInspector
 {
     internal class Il2CppBinaryX64 : Il2CppBinary
     {
-        public Il2CppBinaryX64(IFileFormatReader stream) : base(stream) { }
-        public Il2CppBinaryX64(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) : base(stream, codeRegistration, metadataRegistration) { }
+        public Il2CppBinaryX64(IFileFormatReader stream, EventHandler<string> statusCallback = null) : base(stream, statusCallback) { }
+
+        public Il2CppBinaryX64(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null)
+            : base(stream, codeRegistration, metadataRegistration, statusCallback) { }
 
         // Format of 64-bit LEA:
         // 0x48/0x4C - REX prefix signifying 64-bit mode with 64-bit operand size (REX prefix bits: Volume 2A, page 2-9) (bit 2 is register bit 3)

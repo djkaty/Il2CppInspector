@@ -13,9 +13,10 @@ namespace Il2CppInspector
 {
     internal class Il2CppBinaryARM : Il2CppBinary
     {
-        public Il2CppBinaryARM(IFileFormatReader stream) : base(stream) { }
+        public Il2CppBinaryARM(IFileFormatReader stream, EventHandler<string> statusCallback = null) : base(stream, statusCallback) { }
 
-        public Il2CppBinaryARM(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) : base(stream, codeRegistration, metadataRegistration) { }
+        public Il2CppBinaryARM(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null)
+            : base(stream, codeRegistration, metadataRegistration, statusCallback) { }
 
         // ARMv7-A Architecture Reference Manual: https://static.docs.arm.com/ddi0406/c/DDI0406C_C_arm_architecture_reference_manual.pdf
 

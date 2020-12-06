@@ -80,17 +80,22 @@ namespace Il2CppInspector
         // One assembly may contain multiple modules
         public Dictionary<string, Il2CppCodeGenModule> Modules { get; private set; }
 
-        protected Il2CppBinary(IFileFormatReader stream) {
+        private EventHandler<string> OnStatusUpdate { get; set; }
+        private void StatusUpdate(string status) => OnStatusUpdate?.Invoke(this, status);
+
+        protected Il2CppBinary(IFileFormatReader stream, EventHandler<string> statusCallback = null) {
             Image = stream;
+            OnStatusUpdate = statusCallback;
         }
 
-        protected Il2CppBinary(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration) {
+        protected Il2CppBinary(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null) {
             Image = stream;
+            OnStatusUpdate = statusCallback;
             Configure(codeRegistration, metadataRegistration);
         }
 
         // Load and initialize a binary of any supported architecture
-        private static Il2CppBinary LoadImpl(IFileFormatReader stream) {
+        private static Il2CppBinary LoadImpl(IFileFormatReader stream, EventHandler<string> statusCallback) {
             // Get type from image architecture
             var type = Assembly.GetExecutingAssembly().GetType("Il2CppInspector.Il2CppBinary" + stream.Arch.ToUpper());
             if (type == null)
@@ -102,12 +107,12 @@ namespace Il2CppInspector
                 stream[0].Stream.PrimitiveMappings.Add(typeof(ulong), typeof(uint));
             }
             
-            return (Il2CppBinary) Activator.CreateInstance(type, stream[0]);
+            return (Il2CppBinary) Activator.CreateInstance(type, stream[0], statusCallback);
         }
 
         // Load binary without a global-metadata.dat available
-        public static Il2CppBinary Load(IFileFormatReader stream, double metadataVersion) {
-            var inst = LoadImpl(stream);
+        public static Il2CppBinary Load(IFileFormatReader stream, double metadataVersion, EventHandler<string> statusCallback = null) {
+            var inst = LoadImpl(stream, statusCallback);
             return inst.Initialize(metadataVersion) ? inst : null;
         }
 
@@ -116,13 +121,13 @@ namespace Il2CppInspector
         // If it is specified and both symbol table and function scanning fail,
         // Metadata will be used to try to find the required structures with data analysis
         // If it is not specified, data analysis will not be performed
-        public static Il2CppBinary Load(IFileFormatReader stream, Metadata metadata) {
-            var inst = LoadImpl(stream);
+        public static Il2CppBinary Load(IFileFormatReader stream, Metadata metadata, EventHandler<string> statusCallback = null) {
+            var inst = LoadImpl(stream, statusCallback);
             return inst.Initialize(metadata) ? inst : null;
         }
 
         // Initialize binary without a global-metadata.dat available
-        public bool Initialize(double metadataVersion) {
+        public bool Initialize(double metadataVersion, EventHandler<string> statusCallback = null) {
             Image.Version = metadataVersion;
 
             if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode()) is var ptrs))
@@ -133,7 +138,7 @@ namespace Il2CppInspector
         }
 
         // Initialize binary with a global-metadata.dat available
-        public bool Initialize(Metadata metadata) {
+        public bool Initialize(Metadata metadata, EventHandler<string> statusCallback = null) {
             Image.Version = metadata.Version;
 
             if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode() ?? FindMetadataFromData(metadata)) is var ptrs))
