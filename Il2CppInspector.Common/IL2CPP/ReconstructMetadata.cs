@@ -6,11 +6,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
 
 namespace Il2CppInspector
 {
@@ -69,6 +65,44 @@ namespace Il2CppInspector
             var (codePtrsOrdered, codeCountLimits) = preparePointerList(typeof(Il2CppCodeRegistration), CodeRegistrationPointer, dataSections);
             var (metaPtrsOrdered, metaCountLimits) = preparePointerList(typeof(Il2CppMetadataRegistration), MetadataRegistrationPointer, dataSections);
 
+            // Some heuristic constants
+
+            // Counts from minimal compiles
+
+            // v21 test project:
+            // genericMethodPointers - 0x07B5, customAttributeGenerators - 0x0747, invokerPointers - 0x04DB, methodPointers - 0x226A
+            // v24.1 empty Unity project:
+            // genericMethodPointers - 0x0C15, customAttributeGenerators - 0x0A21, invokerPointers - 0x0646, methodPointers - 0x268B
+            // v24.2 without Unity:
+            // genericMethodPointers - 0x2EC2, customAttributeGenerators - 0x15EC, invokerPointers - 0x0B65
+
+            // v21 test project:
+            // genericInsts - 0x0150, genericMethodTable - 0x0805, types - 0x1509, methodSpecs - 0x08D8, fieldOffsets - 0x0569, metadataUsages - 0x1370
+            // v24.1 empty Unity project:
+            // genericInsts - 0x025E, genericMethodTable - 0x0E3F, types - 0x2632, methodSpecs - 0x0FD4, fieldOffsets - 0x0839, metadataUsages - 0x1850
+            // v24.2 without Unity:
+            // genericInsts - 0x06D4, genericMethodTable - 0x31E8, types - 0x318A, methodSpecs - 0x3AD8, fieldOffsets - 0x0B3D, metadataUsages - 0x3BA8
+
+            // The maximum address gap in a sequential list of pointers before the sequence is considered to be 'broken'
+            const int MAX_SEQUENCE_GAP = 0x10000;
+
+            // The minimum number of Il2CppTypes we expect
+            const int MIN_TYPES = 0x1400;
+
+            // The maximum number of generic type parameters we expect for any class or method
+            const int MAX_GENERIC_TYPE_PARAMETERS = 32;
+
+            // The minimum number of Il2CppGenericInsts we expect
+            const int MIN_GENERIC_INSTANCES = 0x140;
+
+            // The maximum number of generic methods in generic classes we expect to find in a single sequence of Il2CppMethodSpec
+            // The highest we have seen in a production app is 3414; the next highest 2013, the next highest 1380
+            // 300-600 is typical
+            const int MAX_SEQUENTIAL_GENERIC_CLASS_METHODS = 5000;
+
+            // The minimum number of Il2CppMethodSpecs we expect
+            const int MIN_METHOD_SPECS = 0x0800;
+
             // Things we need from Il2CppCodeRegistration
 
             // methodPointers (<=24.1)         -> list of function pointers (1st count) (non-sequential)
@@ -81,7 +115,6 @@ namespace Il2CppInspector
             // Let's see how many valid pointers and sequential valid pointers we actually find at each address
             // Scan each pointer address for valid list of function pointers and sort into size order
             // Consider the sequence to be broken if there is a gap over a certain threshold
-            var sequenceThreshold = 0x10000;
             var fnPtrs = new SortedDictionary<ulong, int>();
             var seqFnPtrs = new SortedDictionary<ulong, int>();
             for (var i = 0; i < codePtrsOrdered.Count; i++) {
@@ -105,7 +138,7 @@ namespace Il2CppInspector
                 foundCount = ptrs.Take(foundCount)
                     .Zip(ptrs.Take(foundCount).Skip(1), (a, b) => (a, b))
                     .TakeWhile(t => ((long) t.b - (long) t.a >= 0 || t.b == 0)
-                                    && ((long) t.b - (long) t.a < sequenceThreshold || t.a == 0)
+                                    && ((long) t.b - (long) t.a < MAX_SEQUENCE_GAP || t.a == 0)
                                     // Disallow two zero pointers in a row
                                     && (t.a != 0 || t.b != 0))
                     .Count() + 1;
@@ -250,10 +283,12 @@ namespace Il2CppInspector
             // Items we need to search for
             var types =        (ptr: 0ul, count: -1);
             var genericInsts = (ptr: 0ul, count: -1);
+            var methodSpecs  = (ptr: 0ul, count: -1);
 
             // Intermediary items
             var typesData = new Dictionary<ulong, Il2CppType>();
             var genericInstsCount = 0;
+            var methodSpecsCount = 0;
 
             // Determine what each pointer is
             // We need to do this in a certain order because validating some items relies on earlier items
@@ -264,14 +299,14 @@ namespace Il2CppInspector
                 // We loop repeatedly through every set of data looking for our next target item,
                 // remove the matching set from the list and then repeat the outer while loop
                 // until there is nothing left to find
-                foreach (var (ptr, count, ptrs, ptrsMappableData, foundCount, foundMappableCount, foundMappableDataCount) in metaPtrData) {
+                foreach (var (ptr, limit, ptrs, ptrsMappableData, foundCount, foundMappableCount, foundMappableDataCount) in metaPtrData) {
 
                     // Test for Il2CppType**
                     // ---------------------
                     if (types.ptr == 0) {
 
-                        // We don't ever expect there to be less than 0x1000 types
-                        if (foundMappableDataCount >= 0x1000) {
+                        // We don't ever expect there to be less than MIN_TYPES types
+                        if (foundMappableDataCount >= MIN_TYPES) {
 
                             // This statement is quite slow. We could speed it up with a two-stage approach
                             var testItems = Image.ReadMappedObjectPointerArray<Il2CppType>(ptr, foundMappableDataCount);
@@ -304,7 +339,7 @@ namespace Il2CppInspector
                                 else
                                     break;
                             }
-                            if (foundItems >= 0x1000) {
+                            if (foundItems >= MIN_TYPES) {
                                 types = (ptr, foundItems);
                                 typesData = ptrs.Take(foundItems)
                                             .Zip(testItems.Take(foundItems),(p, t) => (Ptr: p, Type: t))
@@ -322,8 +357,8 @@ namespace Il2CppInspector
                         var foundItems = 0;
 
                         foreach (var item in testItems) {
-                            // Let's pray no generic type has more than 32 type parameters
-                            if (item.type_argc > 32)
+                            // Let's pray no generic type has more than this many type parameters
+                            if (item.type_argc > MAX_GENERIC_TYPE_PARAMETERS)
                                 break;
 
                             // All the generic type paramters must be in the total list of types,
@@ -339,9 +374,46 @@ namespace Il2CppInspector
 
                             foundItems++;
                         }
-                        if (foundItems >= 0x100) {
+                        if (foundItems >= MIN_GENERIC_INSTANCES) {
                             genericInsts = (ptr, foundItems);
                             genericInstsCount = foundItems;
+                            foundTarget = ptr;
+                            break;
+                        }
+                    }
+
+                    // Test for Il2CppMethodSpec*
+                    // --------------------------
+                    else if (methodSpecs.ptr == 0) {
+                        var max = Math.Max(limit * (Image.Bits / 8) / metadata.Sizeof(typeof(Il2CppMethodSpec)), limit);
+                        var testItems = Image.ReadMappedArray<Il2CppMethodSpec>(ptr, max);
+                        var foundItems = 0;
+                        var nonNegativePairs = 0;
+
+                        foreach (var item in testItems) {
+                            if (item.methodDefinitionIndex < 0 || item.methodDefinitionIndex >= metadata.Methods.Length)
+                                break;
+                            if (item.classIndexIndex < -1 || item.classIndexIndex >= genericInstsCount)
+                                break;
+                            if (item.methodIndexIndex < -1 || item.methodIndexIndex >= genericInstsCount)
+                                break;
+
+                            if (item.classIndexIndex != -1 && item.methodIndexIndex != -1)
+                                nonNegativePairs++;
+                            else
+                                nonNegativePairs = 0;
+
+                            if (nonNegativePairs > MAX_SEQUENTIAL_GENERIC_CLASS_METHODS)
+                                break;
+                            foundItems++;
+                        }
+
+                        // Assumes last methods are not generic methods in generic classes
+                        foundItems -= nonNegativePairs;
+
+                        if (foundItems >= MIN_METHOD_SPECS) {
+                            methodSpecs = (ptr, foundItems);
+                            methodSpecsCount = foundItems;
                             foundTarget = ptr;
                             break;
                         }
@@ -362,15 +434,18 @@ namespace Il2CppInspector
             // Used on non-obfuscated binaries during development to confirm the output is correct
             if (types.ptr != MetadataRegistration.ptypes)
                 throw new Exception("Il2CppType** incorrect");
-
             if (genericInsts.ptr != MetadataRegistration.genericInsts)
                 throw new Exception("Il2CppGenericInst** incorrect");
+            if (methodSpecs.ptr != MetadataRegistration.methodSpecs)
+                throw new Exception("Il2CppMethodSpec* incorrect");
 
             if (types.count != MetadataRegistration.typesCount)
                 throw new Exception("Count of Il2CppType* incorrect");
-
             if (genericInsts.count != MetadataRegistration.genericInstsCount)
                 throw new Exception("Count of Il2CppGenericInst* incorrect");
+            // We might be slightly off here, allow some tolerance
+            if (Math.Abs(methodSpecs.count - MetadataRegistration.methodSpecsCount) > 25)
+                throw new Exception("Count of Il2CppMethodSpec incorrect");
             #endif
             #endregion
 
@@ -379,6 +454,8 @@ namespace Il2CppInspector
             MetadataRegistration.typesCount                = types.count;
             MetadataRegistration.genericInsts              = genericInsts.ptr;
             MetadataRegistration.genericInstsCount         = genericInsts.count;
+            MetadataRegistration.methodSpecs               = methodSpecs.ptr;
+            MetadataRegistration.methodSpecsCount          = methodSpecs.count;
 
             // Force MetadataRegistration to pass validation in Il2CppBinary.Configure()
             MetadataRegistration.typeDefinitionsSizesCount = 0;
