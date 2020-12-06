@@ -488,9 +488,9 @@ namespace Il2CppInspector
                 ImageStart   = (uint) conv.Int(s.sh_offset),
                 ImageEnd     = (uint) conv.Int(s.sh_offset) + (uint) conv.Int(s.sh_size) - 1,
 
-                IsData = ((Elf) conv.Int(s.sh_flags) & Elf.SHF_ALLOC) == Elf.SHF_ALLOC && ((Elf) conv.Int(s.sh_flags) & Elf.SHF_EXECINSTR) == 0 && ((Elf) s.sh_type & Elf.SHT_PROGBITS) == Elf.SHT_PROGBITS,
-                IsExec = ((Elf) conv.Int(s.sh_flags) & Elf.SHF_EXECINSTR) == Elf.SHF_EXECINSTR && ((Elf) s.sh_type & Elf.SHT_PROGBITS) == Elf.SHT_PROGBITS,
-                IsBSS  = ((Elf) s.sh_type & Elf.SHT_NOBITS) == Elf.SHT_NOBITS,
+                IsData = ((Elf) conv.Int(s.sh_flags) & Elf.SHF_ALLOC) == Elf.SHF_ALLOC && ((Elf) conv.Int(s.sh_flags) & Elf.SHF_EXECINSTR) == 0 && (Elf) s.sh_type == Elf.SHT_PROGBITS,
+                IsExec = ((Elf) conv.Int(s.sh_flags) & Elf.SHF_EXECINSTR) == Elf.SHF_EXECINSTR && (Elf) s.sh_type == Elf.SHT_PROGBITS,
+                IsBSS  = (Elf) s.sh_type == Elf.SHT_NOBITS,
 
                 Name = sectionByName.First(sbn => conv.Int(sbn.Value.sh_offset) == conv.Int(s.sh_offset)).Key
             });
