@@ -25,7 +25,7 @@ namespace Il2CppInspector
         protected override MachO lc_Segment => MachO.LC_SEGMENT;
 
         public override uint MapVATR(ulong uiAddr) {
-            var section = machoSections.First(x => uiAddr >= x.Address && uiAddr <= x.Address + x.Size);
+            var section = machoSections.First(x => uiAddr >= x.Address && uiAddr <= x.Address + x.Size && x.Name != "__bss" && x.Name != "__common");
             return (uint) uiAddr - (section.Address - section.ImageOffset);
         }
 
@@ -47,7 +47,7 @@ namespace Il2CppInspector
         protected override MachO lc_Segment => MachO.LC_SEGMENT_64;
 
         public override uint MapVATR(ulong uiAddr) {
-            var section = machoSections.First(x => uiAddr >= x.Address && uiAddr <= x.Address + x.Size);
+            var section = machoSections.First(x => uiAddr >= x.Address && uiAddr <= x.Address + x.Size && x.Name != "__bss" && x.Name != "__common");
             return (uint) (uiAddr - (section.Address - section.ImageOffset));
         }
 
@@ -127,9 +127,9 @@ namespace Il2CppInspector
                             // Create universal section
                             sections.Add(new Section {
                                 VirtualStart = conv.ULong(section.Address),
-                                VirtualEnd = conv.ULong(section.Address) + conv.ULong(section.Size) - 1,
+                                VirtualEnd = conv.ULong(section.Address) + (uint) Math.Max(conv.Int(section.Size) - 1, 0),
                                 ImageStart = section.ImageOffset,
-                                ImageEnd = section.ImageOffset + (uint) conv.Int(section.Size) - 1,
+                                ImageEnd = section.ImageOffset + (uint) Math.Max(conv.Int(section.Size) - 1, 0),
 
                                 IsData = segment.Name == "__TEXT" || segment.Name == "__DATA",
                                 IsExec = segment.Name == "__TEXT",
