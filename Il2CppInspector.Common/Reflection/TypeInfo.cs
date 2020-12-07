@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Il2CppInspector.Reflection
 {
@@ -739,7 +740,7 @@ namespace Il2CppInspector.Reflection
 
             Definition = pkg.TypeDefinitions[typeIndex];
             Index = typeIndex;
-            Namespace = pkg.Strings[Definition.namespaceIndex];
+            Namespace = Regex.Replace(pkg.Strings[Definition.namespaceIndex], @"[^A-Za-z0-9_\-\.<>{}]", "");
             Name = pkg.Strings[Definition.nameIndex];
 
             // Nested type?

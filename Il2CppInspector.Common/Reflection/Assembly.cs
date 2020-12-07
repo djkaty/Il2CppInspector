@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Il2CppInspector.Reflection {
     public class Assembly
@@ -49,7 +50,7 @@ namespace Il2CppInspector.Reflection {
 
             // Get full assembly name
             var nameDef = AssemblyDefinition.aname;
-            var name = Model.Package.Strings[nameDef.nameIndex];
+            var name = Regex.Replace(Model.Package.Strings[nameDef.nameIndex], @"[^A-Za-z0-9_\-\.()]", "");
             var culture = Model.Package.Strings[nameDef.cultureIndex];
             if (string.IsNullOrEmpty(culture))
                 culture = "neutral";
