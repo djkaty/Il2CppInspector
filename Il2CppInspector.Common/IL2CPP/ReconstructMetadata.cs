@@ -111,8 +111,6 @@ namespace Il2CppInspector
             Console.WriteLine("Reconstructing obfuscated registration metadata...");
             UpdateProgress(0);
 
-            // Some heuristic constants
-
             // Counts from minimal compiles
 
             // v21 test project:
@@ -128,6 +126,8 @@ namespace Il2CppInspector
             // genericInsts - 0x025E, genericMethodTable - 0x0E3F, types - 0x2632, methodSpecs - 0x0FD4, fieldOffsets - 0x0839, metadataUsages - 0x1850
             // v24.2 without Unity:
             // genericInsts - 0x06D4, genericMethodTable - 0x31E8, types - 0x318A, methodSpecs - 0x3AD8, fieldOffsets - 0x0B3D, metadataUsages - 0x3BA8
+
+            // Some heuristic constants
 
             // The maximum address gap in a sequential list of pointers before the sequence is considered to be 'broken'
             const int MAX_SEQUENCE_GAP = 0x10000;
@@ -170,9 +170,13 @@ namespace Il2CppInspector
             const double MAX_FIELD_OFFSET_INVERSION = 0.6;
 
             // The minimum and maximum proportions of zeroes we expect in a non-pointer field offset list
-            // Example values: 0.303, 0.321, 0.385
-            const double MIN_FIELD_OFFSET_ZEROES = 0.2;
+            // Example values: 0.116, 0.179, 0.303, 0.321, 0.385
+            // The main thing is to force enough zeroes to prevent it being confused with a list with no zeroes (eg. genericClasses)
+            const double MIN_FIELD_OFFSET_ZEROES = 0.10;
             const double MAX_FIELD_OFFSET_ZEROES = 0.5;
+
+            // The maximum allowed gap between two field offsets
+            const int MAX_FIELD_OFFSET_GAP = 0x10000;
 
             // Things we need from Il2CppCodeRegistration
 
@@ -592,36 +596,94 @@ namespace Il2CppInspector
                         // for the binary's function calling convention, and never greater than the maximum heap offset of the last parameter
 
                         // Try as sequence of uints
-                        var max = limit / sizeof(uint);
+                        if (metadata.Version <= 21) {
+                            var max = limit / sizeof(uint);
 
-                        if (max >= MIN_FIELD_OFFSETS) {
+                            if (max >= MIN_FIELD_OFFSETS) {
 
-                            var testItems = Image.ReadMappedArray<uint>(ptr, max);
-                            var previousItem = 0u;
-                            var inversions = 0;
-                            var zeroes = 0;
+                                var testItems = Image.ReadMappedArray<uint>(ptr, max);
+                                var previousItem = 0u;
+                                var inversions = 0;
+                                var zeroes = 0;
 
-                            foreach (var item in testItems) {
-                                if (item > MAX_FIELD_OFFSET && item != 0xffffffff)
-                                    break;
-                                // Count zeroes and inversions (equality counts as inversion here since two arguments can't share a heap offset)
-                                if (item <= previousItem)
-                                    inversions++;
-                                if (item == 0)
-                                    zeroes++;
-                                previousItem = item;
+                                foreach (var item in testItems) {
+                                    if (item > MAX_FIELD_OFFSET && item != 0xffffffff)
+                                        break;
+                                    if (item > previousItem + MAX_FIELD_OFFSET_GAP && item != 0xffffffff)
+                                        break;
+                                    // Count zeroes and inversions (equality counts as inversion here since two arguments can't share a heap offset)
+                                    if (item <= previousItem)
+                                        inversions++;
+                                    if (item == 0)
+                                        zeroes++;
+                                    previousItem = item;
 
-                                foundData.count++;
+                                    foundData.count++;
+                                }
+
+                                if (foundData.count >= MIN_FIELD_OFFSETS) {
+                                    var inversionsPc = (double) inversions / foundData.count;
+                                    var zeroesPc = (double) zeroes / foundData.count;
+
+                                    if (inversionsPc >= MIN_FIELD_OFFSET_INVERSION && inversionsPc <= MAX_FIELD_OFFSET_INVERSION
+                                        && zeroesPc >= MIN_FIELD_OFFSET_ZEROES && zeroesPc <= MAX_FIELD_OFFSET_ZEROES) {
+                                        foundItem = ref fieldOffsets;
+                                        break;
+                                    }
+                                }
                             }
+                        }
 
-                            if (foundData.count >= MIN_FIELD_OFFSETS) {
-                                var inversionsPc = (double) inversions / foundData.count;
-                                var zeroesPc = (double) zeroes / foundData.count;
+                        // Try as a sequence of pointers to sets of uints
+                        if (metadata.Version >= 21) {
+                            foundData.count = 0;
+                            var max = limit / (Image.Bits / 8);
 
-                                if (inversionsPc >= MIN_FIELD_OFFSET_INVERSION && inversionsPc <= MAX_FIELD_OFFSET_INVERSION
-                                    && zeroesPc >= MIN_FIELD_OFFSET_ZEROES && zeroesPc <= MAX_FIELD_OFFSET_ZEROES) {
-                                    foundItem = ref fieldOffsets;
-                                    break;
+                            if (max >= MIN_FIELD_OFFSETS) {
+
+                                var testItems = Image.ReadMappedArray<ulong>(ptr, max);
+                                var zeroes = 0;
+
+                                foreach (var item in testItems) {
+                                    // Every pointer must either be zero or mappable into a data or BSS section
+                                    if (item != 0ul && !dataSections.Any(s => item >= s.VirtualStart && item < s.VirtualEnd)
+                                                    && !bssSections.Any(s => item >= s.VirtualStart && item < s.VirtualEnd))
+                                        break;
+
+                                    // Count zeroes
+                                    if (item == 0ul)
+                                        zeroes++;
+
+                                    // Every valid pointer must point to a series of incrementing offsets until an inversion or a large gap
+                                    else if (dataSections.Any(s => item >= s.VirtualStart && item < s.VirtualEnd)) {
+                                        Image.Position = Image.MapVATR(item);
+                                        var previous = 0u;
+                                        var offset = 0u;
+                                        var valid = true;
+                                        while (offset != 0xffffffff && offset > previous && valid) {
+                                            previous = offset;
+                                            offset = Image.ReadUInt32();
+                                            // Consider a large gap as the end of the sequence
+                                            if (offset > previous + MAX_FIELD_OFFSET_GAP && offset != 0xffffffff)
+                                                break;
+                                            // A few offsets seem to have the top bit set for some reason
+                                            if (offset >= previous && (offset & 0x7fffffff) > MAX_FIELD_OFFSET && offset != 0xffffffff)
+                                                valid = false;
+                                        }
+                                        if (!valid)
+                                            break;
+                                    }
+
+                                    foundData.count++;
+                                }
+
+                                if (foundData.count >= MIN_FIELD_OFFSETS) {
+                                    var zeroesPc = (double) zeroes / foundData.count;
+
+                                    if (zeroesPc >= MIN_FIELD_OFFSET_ZEROES && zeroesPc <= MAX_FIELD_OFFSET_ZEROES) {
+                                        foundItem = ref fieldOffsets;
+                                        break;
+                                    }
                                 }
                             }
                         }
