@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace Il2CppInspector
 {
@@ -18,10 +17,12 @@ namespace Il2CppInspector
     partial class Il2CppBinary
     {
         // Loads all the pointers and counts for the specified IL2CPP metadata type regardless of version or word size into two arrays
-        // Sorts the pointers and calculates the maximum number of words between each, constrained by the highest count in the IL2CPP metadata type
-        // and by the end of the nearest section in the image.
-        // Returns an array of the pointers in sorted order and an array of maximum word counts with corresponding indexes
-        private (List<ulong> ptrs, List<int> counts, List<int> originalCounts) preparePointerList(Type type, ulong typePtr, IEnumerable<Section> sections) {
+        // Sorts the pointers and calculates the maximum number of bytes between each,
+        // optinally constrained by the highest count in the IL2CPP metadata type and by the end of the nearest section in the image.
+        // Returns an array of the pointers in sorted order and an array of maximum byte/word counts with corresponding indexes
+        private (List<ulong> ptrs, List<int> limits, List<int> originalCounts)
+            preparePointerList(Type type, ulong typePtr, IEnumerable<Section> sections, bool itemsAreWords = false) {
+
             // Get number of pointer/count pairs in each structure
             var itemsCount = Metadata.Sizeof(type, Image.Version, Image.Bits / 8) / (Image.Bits / 8) / 2;
 
@@ -30,40 +31,72 @@ namespace Il2CppInspector
             var itemPtrs = Enumerable.Range(0, itemArray.Length / 2).Select(i => itemArray[i*2 + 1]).ToList();
             var itemCounts = Enumerable.Range(0, itemArray.Length / 2).Select(i => (int) itemArray[i*2]).ToList();
 
-            // Get maximum count between each pair of pointers
+            // Get maximum number of bytes/count between each pair of pointers
             // None of the maximums should be higher than the maximum count specified in the struct
             // Rule out zero pointers for no longer used fields (eg. customAttributeGenerators >=27)
-            var itemMaxCount = itemCounts.Max();
+            var itemMaxBytes = itemsAreWords? itemCounts.Max() * (Image.Bits / 8) : int.MaxValue;
             var itemPtrsOrdered = itemPtrs.Where(p => p != 0).OrderBy(p => p).ToList();
             var itemCountLimits = itemPtrsOrdered
-                                    .Zip(itemPtrsOrdered.Skip(1), (a, b) => Math.Min((int) (b - a) / (Image.Bits / 8), itemMaxCount))
-                                    .Append(itemMaxCount)
+                                    .Zip(itemPtrsOrdered.Skip(1), (a, b) => Math.Min((int) (b - a), itemMaxBytes))
+                                    .Append(itemMaxBytes)
                                     .ToList();
 
             // Prevent a pointer list from overrunning the end of a section
             for (var i = 0; i < itemPtrsOrdered.Count; i++) {
                 var section = sections.FirstOrDefault(s => s.VirtualStart <= itemPtrsOrdered[i] && s.VirtualEnd >= itemPtrsOrdered[i]);
                 if (section != null) {
-                    var maxSize = (int) (section.VirtualEnd + 1 - itemPtrsOrdered[i]) / (Image.Bits / 8);
+                    var maxSize = (int) (section.VirtualEnd + 1 - itemPtrsOrdered[i]);
                     itemCountLimits[i] = Math.Min(itemCountLimits[i], maxSize);
                 }
             }
+
+            // Convert byte sizes to words if applicable
+            if (itemsAreWords)
+                itemCountLimits = itemCountLimits.Select(i => i / (Image.Bits / 8)).ToList();
 
             return (itemPtrsOrdered, itemCountLimits, itemCounts);
         }
 
         // Reconstruct Il2CppCodeRegistration and Il2CppMetadataRegistration into their original, unobfuscated field order
+        // Supports metadata >=19, <27
         private void ReconstructMetadata(Metadata metadata) {
             // If the section table is not available, give up and do nothing
             if (!Image.TryGetSections(out var sections))
                 return;
 
             // Get relevant image sections
-            var codeSections = sections.Where(s => s.IsExec);
-            var dataSections = sections.Where(s => s.IsData);
+            var codeSections = sections.Where(s => s.IsExec).ToList();
+            var dataSections = sections.Where(s => s.IsData && !s.IsBSS).ToList();
+            var bssSections  = sections.Where(s => s.IsBSS).ToList();
+
+            // For PE files, data sections in memory can be larger than in the image
+            // The unmapped portion is BSS data so create fake sections for this and shrink the existing ones
+            foreach (var section in dataSections) {
+                var virtualSize = section.VirtualEnd - section.VirtualStart;
+                var imageSize   = section.ImageEnd   - section.ImageStart;
+
+                if (imageSize < virtualSize) {
+                    var bssEnd = section.VirtualEnd;
+                    section.VirtualEnd = section.VirtualStart + imageSize;
+
+                    bssSections.Add(new Section {
+                        VirtualStart = section.VirtualStart + imageSize + 1,
+                        VirtualEnd   = bssEnd,
+
+                        ImageStart   = 0,
+                        ImageEnd     = 0,
+
+                        IsExec       = false,
+                        IsData       = false,
+                        IsBSS        = true,
+
+                        Name         = ".bss"
+                    });
+                }
+            }
 
             // Fetch and sanitize our pointer and count lists
-            var (codePtrsOrdered, codeCountLimits, codeCounts) = preparePointerList(typeof(Il2CppCodeRegistration), CodeRegistrationPointer, dataSections);
+            var (codePtrsOrdered, codeCountLimits, codeCounts) = preparePointerList(typeof(Il2CppCodeRegistration), CodeRegistrationPointer, dataSections, true);
             var (metaPtrsOrdered, metaCountLimits, metaCounts) = preparePointerList(typeof(Il2CppMetadataRegistration), MetadataRegistrationPointer, dataSections);
 
             // Progress updater
@@ -72,10 +105,10 @@ namespace Il2CppInspector
 
             void UpdateProgress(int workDone) {
                 currentProgress += workDone;
-                StatusUpdate($"Reconstructing obfuscated core metadata ({currentProgress * 100 / maxProgress:F0}%)");
+                StatusUpdate($"Reconstructing obfuscated registration metadata ({currentProgress * 100 / maxProgress:F0}%)");
             }
 
-            Console.WriteLine("Reconstructing obfuscated core metadata (this may take a while)...");
+            Console.WriteLine("Reconstructing obfuscated registration metadata...");
             UpdateProgress(0);
 
             // Some heuristic constants
@@ -119,6 +152,28 @@ namespace Il2CppInspector
             // The minimum number of Il2CppGenericMethodFunctionsDefinitions we expect
             const int MIN_GENERIC_METHOD_TABLE = 0x600;
 
+            // The minimum spread of values in an instance of Il2CppGenericMethodFunctionsDefinitions under which the threshold counter is incremented
+            const int MIN_GENERIC_METHOD_TABLE_SPREAD = 100;
+
+            // The maximum number of instances in a row with a spread under the minimum we expect to find in a single sequence
+            const int MAX_SEQUENTIAL_GENERIC_METHOD_TABLE_LOW_SPREAD_INSTANCES = 100;
+
+            // The minimum number of field offsets we expect
+            const int MIN_FIELD_OFFSETS = 0x400;
+
+            // The maximum value for a field offset
+            const int MAX_FIELD_OFFSET = 0x100000;
+
+            // The minimum and maximum proportions of inversions we expect in a non-pointer field offset list
+            // Example values: 0.385, 0.415, 0.468
+            const double MIN_FIELD_OFFSET_INVERSION = 0.3;
+            const double MAX_FIELD_OFFSET_INVERSION = 0.6;
+
+            // The minimum and maximum proportions of zeroes we expect in a non-pointer field offset list
+            // Example values: 0.303, 0.321, 0.385
+            const double MIN_FIELD_OFFSET_ZEROES = 0.2;
+            const double MAX_FIELD_OFFSET_ZEROES = 0.5;
+
             // Things we need from Il2CppCodeRegistration
 
             // methodPointers (<=24.1)         -> list of function pointers (1st count) (non-sequential)
@@ -151,17 +206,19 @@ namespace Il2CppInspector
                     continue;
 
                 // Sequential valid pointers (a subset of non-sequential valid pointers)
-                foundCount = ptrs.Take(foundCount)
-                    .Zip(ptrs.Take(foundCount).Skip(1), (a, b) => (a, b))
-                    .TakeWhile(t => ((long) t.b - (long) t.a >= 0 || t.b == 0)
-                                    && ((long) t.b - (long) t.a < MAX_SEQUENCE_GAP || t.a == 0)
-                                    // Disallow two zero pointers in a row
-                                    && (t.a != 0 || t.b != 0))
-                    .Count() + 1;
+                if (foundCount > 0) {
+                    foundCount = ptrs.Take(foundCount)
+                        .Zip(ptrs.Take(foundCount).Skip(1), (a, b) => (a, b))
+                        .TakeWhile(t => ((long) t.b - (long) t.a >= 0 || t.b == 0)
+                                        && ((long) t.b - (long) t.a < MAX_SEQUENCE_GAP || t.a == 0)
+                                        // Disallow two zero pointers in a row
+                                        && (t.a != 0 || t.b != 0))
+                        .Count() + 1;
 
-                // Prune count of trailing zero pointers
-                while (foundCount > 0 && ptrs[foundCount - 1] == 0ul)
-                    foundCount--;
+                    // Prune count of trailing zero pointers
+                    while (foundCount > 0 && ptrs[foundCount - 1] == 0ul)
+                        foundCount--;
+                }
 
                 seqFnPtrs.Add(codePtrsOrdered[i], foundCount);
 
@@ -264,7 +321,7 @@ namespace Il2CppInspector
             // genericMethodTable         -> list of Il2CppGenericMethodFunctionsDefinitions (genericMethodIndex, methodIndex, invokerIndex)
             // types                      -> list of Il2CppType*
             // methodSpecs                -> list of Il2CppMethodSpec
-            // methodReferences (<=16)    -> list of uint
+            // methodReferences (<=16)    -> list of uint (ignored, we don't support <=16 here)
             // fieldOffsets (fieldOffsetsArePointers) -> either a list of data pointers (some zero, some VAs not mappable) to list of uints, or a list of uints
             // metadataUsages (>=19, <27) -> list of unmappable data pointers
 
@@ -273,29 +330,29 @@ namespace Il2CppInspector
                 return;
 
             // Read in all the required data once since we'll be using nested loops
-            var metaPtrData = new List<(ulong, int, ulong[], ulong[], int, int, int)>();
+            var metaPtrData = new List<(ulong, int, ulong[], int)>();
 
             for (var i = 0; i < metaPtrsOrdered.Count; i++) {
                 // Pointers in this list
-                var ptrs = Image.ReadMappedArray<ulong>(metaPtrsOrdered[i], metaCountLimits[i]);
-
-                // foundCount and foundMappableCount will generally be the same below
-                // except in PE files where data and bss can overlap in our interpretation of the sections
+                var ptrs = Image.ReadMappedArray<ulong>(metaPtrsOrdered[i], metaCountLimits[i] / (Image.Bits / 8));
 
                 // First set of pointers that point to a data section virtual address
-                var foundCount = ptrs.TakeWhile(p => dataSections.Any(s => p >= s.VirtualStart && p <= s.VirtualEnd)).Count();
+                var foundDataPtrsCount = ptrs.TakeWhile(p => dataSections.Any(s => p >= s.VirtualStart && p <= s.VirtualEnd)).Count();
 
                 // First set of pointers that can be mapped anywhere into the image
-                var foundMappableCount = ptrs.TakeWhile(p => Image.TryMapVATR(p, out _)).Count();
-
+                var foundImageMappablePtrsCount = ptrs.TakeWhile(p => Image.TryMapVATR(p, out _)).Count();
+#if DEBUG
                 // First set of pointers that can be mapped into a data section in the image
-                var ptrsMappableData = ptrs.Take(foundMappableCount)
+                var mappableDataPtrs = ptrs.Take(foundImageMappablePtrsCount)
                         .TakeWhile(p => dataSections.Any(s => Image.MapVATR(p) >= s.ImageStart && Image.MapVATR(p) <= s.ImageEnd))
                         .ToArray();
 
-                var foundMappableDataCount = ptrsMappableData.Length;
+                var foundNonBSSDataPtrsCount = mappableDataPtrs.Length;
 
-                metaPtrData.Add((metaPtrsOrdered[i], metaCountLimits[i], ptrs, ptrsMappableData, foundCount, foundMappableCount, foundMappableDataCount));
+                if (foundDataPtrsCount != foundNonBSSDataPtrsCount)
+                    throw new Exception($"Pointer count mismatch: {foundDataPtrsCount:x8} / {foundNonBSSDataPtrsCount:x8}");
+#endif
+                metaPtrData.Add((metaPtrsOrdered[i], metaCountLimits[i], ptrs, foundDataPtrsCount));
             }
 
             // Items we need to search for
@@ -303,11 +360,24 @@ namespace Il2CppInspector
             var genericInsts       = (ptr: 0ul, count: -1);
             var methodSpecs        = (ptr: 0ul, count: -1);
             var genericMethodTable = (ptr: 0ul, count: -1);
+            var metadataUsages     = (ptr: 0ul, count: -1);
+            var fieldOffsets       = (ptr: 0ul, count: -1);
 
             var NOT_FOUND          = (ptr: 0xfffffffful, count: -1);
 
             // Intermediary items
             var typesPtrs = new List<ulong>();
+            Il2CppMethodSpec[] methodSpec = null;
+
+            // IL2CPP doesn't calculate metadataUsagesCount correctly so we do it here
+            // Adapted from Il2CppInspector.buildMetadataUsages()
+            var usages = new HashSet<uint>();
+
+            // Only on supported metadata versions (>=19, <27)
+            if (metadata.MetadataUsageLists != null)
+                foreach (var metadataUsageList in metadata.MetadataUsageLists)
+                    for (var i = 0; i < metadataUsageList.count; i++)
+                        usages.Add(metadata.MetadataUsagePairs[metadataUsageList.start + i].destinationindex);
 
             // Determine what each pointer is
             // We need to do this in a certain order because validating some items relies on earlier items
@@ -319,19 +389,18 @@ namespace Il2CppInspector
                 // We loop repeatedly through every set of data looking for our next target item,
                 // remove the matching set from the list and then repeat the outer while loop
                 // until there is nothing left to find
-                foreach (var (ptr, limit, ptrs, ptrsMappableData, foundCount, foundMappableCount, foundMappableDataCount) in metaPtrData) {
+                foreach (var (ptr, limit, ptrs, dataPtrsCount) in metaPtrData) {
 
                     foundData = (ptr, 0);
 
                     // Test for Il2CppType**
                     // ---------------------
-                    if (types.ptr == 0) {
+                    if (types.count == -1) {
 
                         // We don't ever expect there to be less than MIN_TYPES types
-                        if (foundMappableDataCount >= MIN_TYPES) {
+                        if (dataPtrsCount >= MIN_TYPES) {
 
-                            // This statement is quite slow. We could speed it up with a two-stage approach
-                            var testItems = Image.ReadMappedObjectPointerArray<Il2CppType>(ptr, foundMappableDataCount);
+                            var testItems = Image.ReadMappedObjectPointerArray<Il2CppType>(ptr, dataPtrsCount);
 
                             foreach (var item in testItems) {
                                 // TODO: v27 will fail this because of the bit shifting in Il2CppType.bits
@@ -351,7 +420,7 @@ namespace Il2CppInspector
                                                 && item.datapoint >= (ulong) metadata.GenericParameters.Length => false,
 
                                     var t when (t is Il2CppTypeEnum.IL2CPP_TYPE_PTR || t is Il2CppTypeEnum.IL2CPP_TYPE_SZARRAY)
-                                                && !ptrsMappableData.Contains(item.datapoint) => false,
+                                                && !ptrs.Take(dataPtrsCount).Contains(item.datapoint) => false,
 
                                     // Untested cases, we could add more here (IL2CPP_TYPE_ARRAY, IL2CPP_TYPE_GENERICINST)
                                     _ => true
@@ -371,11 +440,11 @@ namespace Il2CppInspector
 
                     // Test for Il2CppGenericInst**
                     // ----------------------------
-                    else if (genericInsts.ptr == 0) {
+                    else if (genericInsts.count == -1) {
 
-                        if (foundMappableDataCount >= MIN_GENERIC_INSTANCES) {
+                        if (dataPtrsCount >= MIN_GENERIC_INSTANCES) {
 
-                            var testItems = Image.ReadMappedObjectPointerArray<Il2CppGenericInst>(ptr, foundMappableDataCount);
+                            var testItems = Image.ReadMappedObjectPointerArray<Il2CppGenericInst>(ptr, dataPtrsCount);
 
                             foreach (var item in testItems) {
                                 // Let's pray no generic type has more than this many type parameters
@@ -406,8 +475,8 @@ namespace Il2CppInspector
 
                     // Test for Il2CppMethodSpec*
                     // --------------------------
-                    else if (methodSpecs.ptr == 0) {
-                        var max = Math.Max(limit * (Image.Bits / 8) / metadata.Sizeof(typeof(Il2CppMethodSpec)), limit);
+                    else if (methodSpecs.count == -1) {
+                        var max = limit / metadata.Sizeof(typeof(Il2CppMethodSpec));
 
                         if (max >= MIN_METHOD_SPECS) {
 
@@ -422,13 +491,11 @@ namespace Il2CppInspector
                                 if (item.methodIndexIndex < -1 || item.methodIndexIndex >= genericInsts.count)
                                     break;
 
-                                if (item.classIndexIndex != -1 && item.methodIndexIndex != -1)
-                                    nonNegativePairs++;
-                                else
-                                    nonNegativePairs = 0;
-
+                                // Non-negative pairs shouldn't appear in large groups
+                                nonNegativePairs = item.classIndexIndex != -1 && item.methodIndexIndex != -1 ? nonNegativePairs + 1 : 0;
                                 if (nonNegativePairs > MAX_SEQUENTIAL_GENERIC_CLASS_METHODS)
                                     break;
+
                                 foundData.count++;
                             }
 
@@ -437,6 +504,7 @@ namespace Il2CppInspector
 
                             if (foundData.count >= MIN_METHOD_SPECS) {
                                 foundItem = ref methodSpecs;
+                                methodSpec = testItems;
                                 break;
                             }
                         }
@@ -444,12 +512,13 @@ namespace Il2CppInspector
 
                     // Test for Il2CppGenericMethodFunctionsDefinitions*
                     // -------------------------------------------------
-                    else if (genericMethodTable.ptr == 0) {
-                        var max = Math.Max(limit * (Image.Bits / 8) / metadata.Sizeof(typeof(Il2CppMethodSpec)), limit);
+                    else if (genericMethodTable.count == -1) {
+                        var max = limit / metadata.Sizeof(typeof(Il2CppGenericMethodFunctionsDefinitions));
 
                         if (max >= MIN_GENERIC_METHOD_TABLE) {
 
                             var testItems = Image.ReadMappedArray<Il2CppGenericMethodFunctionsDefinitions>(ptr, max);
+                            var lowSpreadCount = 0;
 
                             foreach (var item in testItems) {
                                 if (item.genericMethodIndex < 0 || item.genericMethodIndex >= methodSpecs.count)
@@ -458,8 +527,25 @@ namespace Il2CppInspector
                                     break;
                                 if (item.indices.invokerIndex < 0 || item.indices.invokerIndex >= invokerPointers.Value)
                                     break;
+                                // methodIndex is an index into the method pointer table
+                                // For generic type definitions, there is no concrete function so this must be 0xffffffff
+                                // TODO: For >=24.2, we need to use the method token to look up the value in an Il2CppCodeGenModule, not currently implemented
+                                if (Image.Version <= 24.1)
+                                    if (metadata.Methods[methodSpec[item.genericMethodIndex].methodDefinitionIndex].methodIndex != -1)
+                                        break;
                                 foundData.count++;
+
+                                // Instances where all the values are clustered should be rare
+                                var spread = Math.Max(Math.Max(item.indices.methodIndex, item.indices.invokerIndex), item.genericMethodIndex)
+                                           - Math.Min(Math.Min(item.indices.methodIndex, item.indices.invokerIndex), item.genericMethodIndex);
+                                
+                                lowSpreadCount = spread < MIN_GENERIC_METHOD_TABLE_SPREAD ? lowSpreadCount + 1 : 0;
+                                if (lowSpreadCount > MAX_SEQUENTIAL_GENERIC_METHOD_TABLE_LOW_SPREAD_INSTANCES)
+                                    break;
                             }
+
+                            // Assumes the last instances don't have clustered values
+                            foundData.count -= lowSpreadCount;
 
                             if (foundData.count >= MIN_GENERIC_METHOD_TABLE) {
                                 foundItem = ref genericMethodTable;
@@ -467,6 +553,80 @@ namespace Il2CppInspector
                             }
                         }
                     }
+
+                    // Test for metadata usages
+                    // ------------------------
+                    else if (metadataUsages.count == -1) {
+
+                        // No metadata usages for these versions
+                        if (Image.Version < 19 || Image.Version >= 27) {
+                            foundData.ptr = 0ul;
+                            foundItem = ref metadataUsages;
+                            break;
+                        }
+
+                        // Metadata usages always map to BSS sections and has only a maximum of a small number of null pointers
+                        if (dataPtrsCount == 0 && limit / (Image.Bits / 8) >= usages.Count) {
+
+                            // No null pointers allowed
+                            if (ptrs.Take(usages.Count).All(p => p != 0ul)) {
+
+                                // All the pointers must map to a BSS section
+                                // For PE files this relies on our section modding above
+                                var bssMappableCount = ptrs.Take(usages.Count).Count(p => bssSections.Any(s => p >= s.VirtualStart && p <= s.VirtualEnd));
+
+                                foundData.count = bssMappableCount;
+                                foundItem = ref metadataUsages;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Test for field offsets
+                    // ----------------------
+                    else if (fieldOffsets.count == -1) {
+                        // This could be a list of pointers to locally incrementing sequences of uints,
+                        // or it could be a sequence of uints
+
+                        // Some uints may be zero, but must otherwise never be less than the minimum heap offset of the first parameter
+                        // for the binary's function calling convention, and never greater than the maximum heap offset of the last parameter
+
+                        // Try as sequence of uints
+                        var max = limit / sizeof(uint);
+
+                        if (max >= MIN_FIELD_OFFSETS) {
+
+                            var testItems = Image.ReadMappedArray<uint>(ptr, max);
+                            var previousItem = 0u;
+                            var inversions = 0;
+                            var zeroes = 0;
+
+                            foreach (var item in testItems) {
+                                if (item > MAX_FIELD_OFFSET && item != 0xffffffff)
+                                    break;
+                                // Count zeroes and inversions (equality counts as inversion here since two arguments can't share a heap offset)
+                                if (item <= previousItem)
+                                    inversions++;
+                                if (item == 0)
+                                    zeroes++;
+                                previousItem = item;
+
+                                foundData.count++;
+                            }
+
+                            if (foundData.count >= MIN_FIELD_OFFSETS) {
+                                var inversionsPc = (double) inversions / foundData.count;
+                                var zeroesPc = (double) zeroes / foundData.count;
+
+                                if (inversionsPc >= MIN_FIELD_OFFSET_INVERSION && inversionsPc <= MAX_FIELD_OFFSET_INVERSION
+                                    && zeroesPc >= MIN_FIELD_OFFSET_ZEROES && zeroesPc <= MAX_FIELD_OFFSET_ZEROES) {
+                                    foundItem = ref fieldOffsets;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
                     foundData = (0ul, -1);
                 }
 
@@ -477,10 +637,14 @@ namespace Il2CppInspector
                 // Remove pointer from list of remaining pointers to test
                 metaPtrData = metaPtrData.Where(m => foundData.ptr != m.Item1).ToList();
 
-                // Find the nearest count in the original data in case we need to make a small adjustment
-                // Aggregate uses the first value for 'next' as the seed for 'nearest'
-                foundData.count = metaCounts.Aggregate((nearest, next) => Math.Abs(next - foundData.count) < Math.Abs(nearest - foundData.count) ? next : nearest);
-                metaCounts = metaCounts.Where(c => c != foundData.count).ToList();
+                // Select the highest count in the original data that is lower or equal to our found count
+                // Skip items not implemented by the specific metadata version we are analyzing (ptr == 0, count == 0)
+                // Skip metadataUsages because it is calculated incorrectly by IL2CPP and the count is wrong
+                if (foundData.count > 0 && foundData.count != usages.Count) {
+                    // Aggregate uses the first value for 'next' as the seed for 'nearest' unless we specify a starting seed
+                    foundData.count = metaCounts.Aggregate(0, (nearest, next) => next - foundData.count > nearest - foundData.count && next - foundData.count <= 0? next : nearest);
+                    metaCounts = metaCounts.Where(c => c != foundData.count).ToList();
+                }
 
                 // Set item via ref
                 foundItem = foundData;
@@ -503,16 +667,23 @@ namespace Il2CppInspector
                 throw new Exception("Il2CppMethodSpec* incorrect");
             if (genericMethodTable.ptr != MetadataRegistration.genericMethodTable)
                 throw new Exception("Il2CppGenericMethodFunctionsDefinitions* incorrect");
+            if (metadataUsages.ptr != MetadataRegistration.metadataUsages)
+                throw new Exception("Metadata usages pointer incorrect");
+            if (fieldOffsets.ptr != MetadataRegistration.pfieldOffsets)
+                throw new Exception("Field offsets pointer incorrect");
 
             if (types.count != MetadataRegistration.typesCount)
                 throw new Exception("Count of Il2CppType* incorrect");
             if (genericInsts.count != MetadataRegistration.genericInstsCount)
                 throw new Exception("Count of Il2CppGenericInst* incorrect");
-            // We might be slightly off here, allow some tolerance
-            if (Math.Abs(methodSpecs.count - MetadataRegistration.methodSpecsCount) > 25)
+            if (methodSpecs.count != MetadataRegistration.methodSpecsCount)
                 throw new Exception("Count of Il2CppMethodSpec incorrect");
             if (genericMethodTable.count != MetadataRegistration.genericMethodTableCount)
-                throw new Exception($"Count of Il2CppGenericMethodFunctionsDefinitions - Expected: 0x{MetadataRegistration.genericMethodTableCount:X4} - Actual: 0x{genericMethodTable.count:X4}");
+                throw new Exception("Count of Il2CppGenericMethodFunctionsDefinitions");
+            if (metadataUsages.count != usages.Count)
+                throw new Exception("Count of metadata usages incorrect");
+            if (fieldOffsets.count != MetadataRegistration.fieldOffsetsCount)
+                throw new Exception("Count of field offsets incorrect");
             #endif
             #endregion
 
@@ -525,11 +696,16 @@ namespace Il2CppInspector
             MetadataRegistration.methodSpecsCount          = methodSpecs.count;
             MetadataRegistration.genericMethodTable        = genericMethodTable.ptr;
             MetadataRegistration.genericMethodTableCount   = genericMethodTable.count;
+            MetadataRegistration.metadataUsages            = metadataUsages.ptr;
+            MetadataRegistration.metadataUsagesCount       = (ulong) metadataUsages.count;
+            MetadataRegistration.pfieldOffsets             = fieldOffsets.ptr;
+            MetadataRegistration.fieldOffsetsCount         = fieldOffsets.count;
 
             // Force MetadataRegistration to pass validation in Il2CppBinary.Configure()
             MetadataRegistration.typeDefinitionsSizesCount = 0;
             MetadataRegistration.genericClassesCount       = MetadataRegistration.genericInstsCount + 1;
-            MetadataRegistration.genericMethodTableCount   = MetadataRegistration.genericInstsCount + 1;
+
+            StatusUpdate("Analyzing IL2CPP image");
         }
     }
 }
