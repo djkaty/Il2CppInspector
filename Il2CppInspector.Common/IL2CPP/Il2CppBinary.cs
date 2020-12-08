@@ -228,9 +228,6 @@ namespace Il2CppInspector
             CodeRegistration = Image.ReadMappedObject<Il2CppCodeRegistration>(codeRegistration);
             MetadataRegistration = Image.ReadMappedObject<Il2CppMetadataRegistration>(metadataRegistration);
 
-            // Restore the field order in CodeRegistration and MetadataRegistration if they have been re-ordered for obfuscation
-            ReconstructMetadata(metadata);
-
             // Do basic validatation that MetadataRegistration and CodeRegistration are sane
             /*
              * TODO: Validation can be greatly expanded upon later, eg. pointers in these two structs should actually be pointers
@@ -239,14 +236,19 @@ namespace Il2CppInspector
              * typeRefPointers must be a series of pointers in __const
              * MethodInvokePointers must be a series of pointers in __text or .text, and in sequential order
              */
-            if (MetadataRegistration.typesCount < MetadataRegistration.typeDefinitionsSizesCount
-                || MetadataRegistration.genericClassesCount < MetadataRegistration.genericInstsCount
-                || MetadataRegistration.genericMethodTableCount < MetadataRegistration.genericInstsCount
-                || CodeRegistration.reversePInvokeWrapperCount > 0x1000
-                || CodeRegistration.unresolvedVirtualCallCount > 0x4000 // >= 22
-                || CodeRegistration.interopDataCount > 0x1000           // >= 23
-                || (Image.Version <= 24.1 && CodeRegistration.invokerPointersCount > CodeRegistration.methodPointersCount))
-                throw new NotSupportedException("The detected Il2CppCodeRegistration / Il2CppMetadataRegistration structs do not pass validation. This may mean that their fields have been re-ordered as a form of obfuscation and Il2CppInspector has not been able to restore the original order automatically. Consider re-ordering the fields in Il2CppBinaryClasses.cs and try again.");
+            for (var pass = 0; pass <= 1; pass++)
+                if (MetadataRegistration.typesCount < MetadataRegistration.typeDefinitionsSizesCount
+                    || MetadataRegistration.genericClassesCount < MetadataRegistration.genericInstsCount
+                    || MetadataRegistration.genericMethodTableCount < MetadataRegistration.genericInstsCount
+                    || CodeRegistration.reversePInvokeWrapperCount > 0x1000
+                    || CodeRegistration.unresolvedVirtualCallCount > 0x4000 // >= 22
+                    || CodeRegistration.interopDataCount > 0x1000           // >= 23
+                    || (Image.Version <= 24.1 && CodeRegistration.invokerPointersCount > CodeRegistration.methodPointersCount))
+                    // Restore the field order in CodeRegistration and MetadataRegistration if they have been re-ordered for obfuscation
+                    if (pass == 0)
+                        ReconstructMetadata(metadata);
+                    else
+                        throw new NotSupportedException("The detected Il2CppCodeRegistration / Il2CppMetadataRegistration structs do not pass validation. This may mean that their fields have been re-ordered as a form of obfuscation and Il2CppInspector has not been able to restore the original order automatically. Consider re-ordering the fields in Il2CppBinaryClasses.cs and try again.");
 
             // The global method pointer list was deprecated in v24.2 in favour of Il2CppCodeGenModule
             if (Image.Version <= 24.1)
