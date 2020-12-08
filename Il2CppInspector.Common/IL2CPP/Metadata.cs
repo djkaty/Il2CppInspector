@@ -153,6 +153,8 @@ namespace Il2CppInspector
                                 Images.Select(x => x.nameIndex)
                         .Concat(Assemblies.Select(x => x.aname.nameIndex))
                         .Concat(Assemblies.Select(x => x.aname.cultureIndex))
+                        .Concat(Assemblies.Select(x => x.aname.hashValueIndex)) // <=24.3
+                        .Concat(Assemblies.Select(x => x.aname.publicKeyIndex))
                         .Concat(Events.Select(x => x.nameIndex))
                         .Concat(Fields.Select(x => x.nameIndex))
                         .Concat(Methods.Select(x => x.nameIndex))
