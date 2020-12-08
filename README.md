@@ -492,7 +492,7 @@ Example uses:
 
 `./il2cpp.ps1`
 
-builds each C# source file ìnto a .NET assembly DLL, a C++ source folder and one IL2CPP binary per supported architecture
+builds each C# source file Ã¬nto a .NET assembly DLL, a C++ source folder and one IL2CPP binary per supported architecture
 
 `./il2cpp.ps1 MyFirstTest`
 
@@ -609,7 +609,7 @@ This project uses:
 - [MultiKeyDictionary](https://www.codeproject.com/Articles/32894/C-Multi-key-Generic-Dictionary) by Aron Weiler
 - [CxxDemangler](https://github.com/southpolenator/CxxDemangler) by Vuk Jovanovic
 - [CommandLineParser](https://github.com/commandlineparser/commandline) 
-- [Ookii Dialogs](http://www.ookii.org/software/dialogs/) by Sven Groot
+- [Ookii.Dialogs.Wpf](https://github.com/augustoproiete/ookii-dialogs-wpf)
 - [XamlAnimatedGif](https://github.com/XamlAnimatedGif/WpfAnimatedGif) by Thomas Levesque
 
 Thanks to the following individuals whose code and research helped me develop this tool:
