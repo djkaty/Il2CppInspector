@@ -383,15 +383,8 @@ namespace Il2CppInspector
         #region Loaders
         // Finds and extracts the metadata and IL2CPP binary from one or more APK files, or one AAB or IPA file into MemoryStreams
         // Returns null if package not recognized or does not contain an IL2CPP application
-        public static (MemoryStream Metadata, MemoryStream Binary)? GetStreamsFromPackage(IEnumerable<string> packageFiles, bool silent = false) {
+        public static (MemoryStream Metadata, MemoryStream Binary)? GetStreamsFromPackage(IEnumerable<ZipArchive> zipStreams, bool silent = false) {
             try {
-                // Check every item is a zip file first because ZipFile.OpenRead is extremely slow if it isn't
-                foreach (var file in packageFiles)
-                    using (BinaryReader zipTest = new BinaryReader(File.Open(file, FileMode.Open))) {
-                        if (zipTest.ReadUInt32() != 0x04034B50)
-                            return null;
-                    }
-
                 MemoryStream metadataMemoryStream = null, binaryMemoryStream = null;
                 ZipArchiveEntry androidAAB = null;
                 ZipArchiveEntry ipaBinaryFolder = null;
@@ -405,9 +398,9 @@ namespace Il2CppInspector
                 //   (we return the entire APK or AAB to be loaded by APKReader or AABReader)
                 // - Multiple APK files, one of which contains global-metadadata.dat and the others contain one binary each
                 //   (we return all of the binaries re-packed in memory to a new Zip file, to be loaded by APKReader)
-                foreach (var file in packageFiles) {
-                    // We can't close the files because we might have to read from them after the foreach
-                    var zip = ZipFile.OpenRead(file);
+
+                // We can't close the files because we might have to read from them after the foreach
+                foreach (var zip in zipStreams) {
 
                     // Check for Android APK (split APKs will only fill one of these two variables)
                     var metadataFile = zip.Entries.FirstOrDefault(f => f.FullName == "assets/bin/Data/Managed/Metadata/global-metadata.dat");
@@ -434,7 +427,7 @@ namespace Il2CppInspector
                     if (metadataFile != null) {
                         // Extract the metadata file to memory
                         if (!silent)
-                            Console.WriteLine($"Extracting metadata from {file}{Path.DirectorySeparatorChar}{metadataFile.FullName}");
+                            Console.WriteLine($"Extracting metadata from (archive){Path.DirectorySeparatorChar}{metadataFile.FullName}");
 
                         metadataMemoryStream = new MemoryStream();
                         using var metadataStream = metadataFile.Open();
@@ -452,7 +445,7 @@ namespace Il2CppInspector
                 // IPAs will only have one binary (which may or may not be a UB covering multiple architectures)
                 if (ipaBinaryFolder != null) {
                     if (!silent)
-                        Console.WriteLine($"Extracting binary from {packageFiles.First()}{Path.DirectorySeparatorChar}{binaryFiles.First().FullName}");
+                        Console.WriteLine($"Extracting binary from {zipStreams.First()}{Path.DirectorySeparatorChar}{binaryFiles.First().FullName}");
 
                     // Extract the binary file or package to memory
                     binaryMemoryStream = new MemoryStream();
@@ -462,13 +455,8 @@ namespace Il2CppInspector
                 }
 
                 // AABs or single APKs may have one or more binaries, one per architecture
-                // We'll read the entire AAB/APK and load those via AABReader/APKReader
-                else if (packageFiles.Count() == 1) {
-                    binaryMemoryStream = new MemoryStream(File.ReadAllBytes(packageFiles.First()));
-                }
-
                 // Split APKs will have one binary per APK
-                // Roll them up into a new in-memory zip file and load it via APKReader
+                // Roll them up into a new in-memory zip file and load it via AABReader/APKReader
                 else {
                     binaryMemoryStream = new MemoryStream();
                     using (var apkArchive = new ZipArchive(binaryMemoryStream, ZipArchiveMode.Create, true)) {
@@ -485,11 +473,45 @@ namespace Il2CppInspector
 
                 return (metadataMemoryStream, binaryMemoryStream);
             }
-
             // Not an archive
             catch (InvalidDataException) {
                 return null;
             }
+        }
+
+        public static (MemoryStream Metadata, MemoryStream Binary)? GetStreamsFromPackage(IEnumerable<string> packageFiles, bool silent = false) {
+            // Check every item is a zip file first because ZipFile.OpenRead is extremely slow if it isn't
+            foreach (var file in packageFiles)
+                using (BinaryReader zipTest = new BinaryReader(File.Open(file, FileMode.Open))) {
+                    if (zipTest.ReadUInt32() != 0x04034B50)
+                        return null;
+                }
+
+            // Check for an XAPK/Zip-style file
+            if (packageFiles.Count() == 1) {
+                try {
+                    var xapk = ZipFile.OpenRead(packageFiles.First());
+                    var apks = xapk.Entries.Where(f => f.FullName.EndsWith(".apk"));
+
+                    // An XAPK/Zip file containing one or more APKs. Extract them
+                    if (apks.Any()) {
+                        var apkFiles = new List<MemoryStream>();
+                        foreach (var apk in apks) {
+                            var bytes = new MemoryStream();
+                            using var apkStream = apk.Open();
+                            apkStream.CopyTo(bytes);
+                            apkFiles.Add(bytes);
+                        }
+                        return GetStreamsFromPackage(apkFiles.Select(f => new ZipArchive(f, ZipArchiveMode.Read)));
+                    }
+                }
+                // Not an archive
+                catch (InvalidDataException) {
+                    return null;
+                }
+            }
+
+            return GetStreamsFromPackage(packageFiles.Select(f => ZipFile.OpenRead(f)), silent);
         }
 
         // Load from an AAB, IPA or one or more APK files

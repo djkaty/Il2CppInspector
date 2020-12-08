@@ -141,7 +141,7 @@ namespace Il2CppInspectorGUI
         /// </summary>
         private async void BtnSelectPackageFile_OnClick(object sender, RoutedEventArgs e) {
             var openFileDialog = new OpenFileDialog {
-                Filter = "Android/iOS Application Package (*.apk;*.aab;*.ipa;*.zip)|*.apk;*.aab;*.ipa;*.zip|All files (*.*)|*.*",
+                Filter = "Android/iOS Application Package (*.apk;*.aab;*.ipa;*.xapk;*.zip)|*.apk;*.aab;*.ipa;*.xapk;*.zip|All files (*.*)|*.*",
                 CheckFileExists = true,
                 Multiselect = true
             };
@@ -552,7 +552,7 @@ namespace Il2CppInspectorGUI
                                 await LoadMetadataAsync(s);
                                 break;
 
-                            case var s when s.EndsWith(".apk") || s.EndsWith(".aab") || s.EndsWith(".ipa") || s.EndsWith(".zip"):
+                            case var s when s.EndsWith(".apk") || s.EndsWith(".aab") || s.EndsWith(".ipa") || s.EndsWith(".xapk") || s.EndsWith(".zip"):
                                 await LoadPackageAsync(s);
                                 break;
                         }
