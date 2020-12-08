@@ -292,7 +292,7 @@ namespace Il2CppInspector.Outputs
             var usings = nsRefs.OrderBy(n => (n.StartsWith("System.") || n == "System") ? "0" + n : "1" + n);
 
             // Ensure output directory exists and is not a file
-            var dir = Path.GetDirectoryName(outFile);
+            var dir = Regex.Replace(Path.GetDirectoryName(outFile), @"[<>:""\|\?\*]", "_");
             if (!string.IsNullOrEmpty(dir)) {
                 try {
                     Directory.CreateDirectory(dir);
