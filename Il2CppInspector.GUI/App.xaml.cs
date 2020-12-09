@@ -70,7 +70,7 @@ namespace Il2CppInspectorGUI
             return await LoadMetadataAsync(stream);
         }
 
-        public Task<bool> LoadMetadataAsync(Stream metadataStream) =>
+        public Task<bool> LoadMetadataAsync(MemoryStream metadataStream) =>
             Task.Run(() => {
                 try {
                     OnStatusUpdate?.Invoke(this, "Processing metadata");

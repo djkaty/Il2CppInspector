@@ -48,7 +48,7 @@ namespace Il2CppInspector
         // Set if something in the metadata has been modified / decrypted
         public bool IsModified { get; } = false;
 
-        public Metadata(Stream stream, EventHandler<string> statusCallback = null) : base(stream)
+        public Metadata(MemoryStream stream, EventHandler<string> statusCallback = null) : base(stream)
         {
             // Read magic bytes
             if (ReadUInt32() != 0xFAB11BAF) {
@@ -192,6 +192,15 @@ namespace Il2CppInspector
                     var decryptedString = Encoding.GetString(encryptedString.Select(b => (byte) (b ^ xorKey)).ToArray());
                     Strings.Add(offset.current, decryptedString);
                 }
+
+                // Write changes back in case the user wants to save the metadata file
+                using (var sw = new StreamWriter(BaseStream, System.Text.Encoding.UTF8, bufferSize: -1, leaveOpen: true)) {
+                    sw.BaseStream.Position = Header.stringOffset;
+                    foreach (var str in Strings.OrderBy(s => s.Key))
+                        sw.Write(str.Value + "\0");
+                    sw.Flush();
+                }
+
                 IsModified = true;
             }
 

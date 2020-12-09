@@ -530,7 +530,7 @@ namespace Il2CppInspector
 
         // Load from a binary stream and metadata stream
         // Must be a seekable stream otherwise we catch a System.IO.NotSupportedException
-        public static List<Il2CppInspector> LoadFromStream(Stream binaryStream, Stream metadataStream, EventHandler<string> statusCallback = null, bool silent = false) {
+        public static List<Il2CppInspector> LoadFromStream(Stream binaryStream, MemoryStream metadataStream, EventHandler<string> statusCallback = null, bool silent = false) {
 
             // Silent operation if requested
             var stdout = Console.Out;
