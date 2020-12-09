@@ -364,6 +364,8 @@ namespace Il2CppInspector
 
                     xorSection(".text", xorKey, stripeSize);
                     xorSection(".rodata", xorKey, stripeSize);
+
+                    IsModified = true;
                 }
             }
 

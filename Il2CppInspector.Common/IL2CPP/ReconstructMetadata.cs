@@ -320,7 +320,7 @@ namespace Il2CppInspector
             CodeRegistration.interopDataCount           = 0;
 
             // TODO: Write changes to stream
-            IsModified = true;
+            isModified = true;
 
             // Things we need from Il2CppMetadataRegistration
 

@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -85,7 +86,8 @@ namespace Il2CppInspector
         private void StatusUpdate(string status) => OnStatusUpdate?.Invoke(this, status);
 
         // Set if something in the binary has been modified / decrypted
-        public bool IsModified { get; private set; } = false;
+        private bool isModified = false;
+        public bool IsModified => Image.IsModified || isModified;
 
         protected Il2CppBinary(IFileFormatReader stream, EventHandler<string> statusCallback = null) {
             Image = stream;
@@ -128,6 +130,14 @@ namespace Il2CppInspector
         public static Il2CppBinary Load(IFileFormatReader stream, Metadata metadata, EventHandler<string> statusCallback = null) {
             var inst = LoadImpl(stream, statusCallback);
             return inst.Initialize(metadata) ? inst : null;
+        }
+
+        // Save binary to file, overwriting if necessary
+        // Save metadata to file, overwriting if necessary
+        public void SaveToFile(string pathname) {
+            Image.Position = 0;
+            using (var outFile = new FileStream(pathname, FileMode.Create, FileAccess.Write))
+                Image.Stream.BaseStream.CopyTo(outFile);
         }
 
         // Initialize binary without a global-metadata.dat available

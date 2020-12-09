@@ -203,6 +203,13 @@ namespace Il2CppInspector
                 StringLiterals[i] = ReadFixedLengthString(Header.stringLiteralDataOffset + stringLiteralList[i].dataIndex, stringLiteralList[i].length);
         }
 
+        // Save metadata to file, overwriting if necessary
+        public void SaveToFile(string pathname) {
+            Position = 0;
+            using (var outFile = new FileStream(pathname, FileMode.Create, FileAccess.Write))
+                BaseStream.CopyTo(outFile);
+        }
+
         internal int Sizeof(Type type) => Sizeof(type, Version);
 
         public static int Sizeof(Type type, double metadataVersion, int longSizeBytes = 8) {

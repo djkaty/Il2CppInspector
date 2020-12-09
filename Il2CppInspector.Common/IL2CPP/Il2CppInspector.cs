@@ -594,6 +594,10 @@ namespace Il2CppInspector
             Console.SetOut(stdout);
             return processors;
         }
+
+        // Savers
+        public void SaveMetadataToFile(string pathname) => Metadata.SaveToFile(pathname);
+        public void SaveBinaryToFile(string pathname) => Binary.SaveToFile(pathname);
         #endregion
     }
 }

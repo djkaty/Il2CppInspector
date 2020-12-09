@@ -21,6 +21,7 @@ namespace Il2CppInspector
         long Length { get; }
         uint NumImages { get; }
         string DefaultFilename { get; }
+        bool IsModified { get; }
         IEnumerable<IFileFormatReader> Images { get; }
         IFileFormatReader this[uint index] { get; }
         long Position { get; set; }
@@ -124,6 +125,8 @@ namespace Il2CppInspector
         public BinaryObjectReader Stream => this;
 
         public abstract string DefaultFilename { get; }
+
+        public bool IsModified { get; protected set; } = false;
 
         public long Length => BaseStream.Length;
 
