@@ -1,4 +1,4 @@
-# Il2CppInspector 2020.2.1
+# Il2CppInspector 2020.3 Preview
 
 Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the most complete analysis currently available.
 
@@ -23,6 +23,11 @@ Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the
 * Supports **all major file formats and processor architectures**
 
 * Defeats certain types of obfuscation
+  - XOR encryption style used in games such as [Arknights](https://play.google.com/store/apps/details?id=com.YoStarEN.Arknights&hl=en_US&gl=US) and [Call of Duty: Mobile](https://play.google.com/store/apps/details?id=com.activision.callofduty.shooter&hl=en_US&gl=US)
+  - Striped XOR encryption style used in games such as [Garena Free Fire](https://play.google.com/store/apps/details?id=com.dts.freefireth&hl=en_US&gl=US), [League of Legends: Wild Rift](https://play.google.com/store/apps/details?id=com.riotgames.league.wildrift&hl=en_US&gl=US) and [Legends of Runeterra](https://play.google.com/store/apps/details?id=com.riotgames.legendsofruneterra&hl=en_US&gl=US)
+  - String encryption style used in games such as [League of Legends: Wild Rift](https://play.google.com/store/apps/details?id=com.riotgames.league.wildrift&hl=en_US&gl=US)
+  - Reordering of registration metadata used in titles by Riot Games
+  - Deobfuscated metadata and binary files can be saved back to disk
 
 * Works on Windows, MacOS X and Linux. **Integrated GUI** for Windows users with drag & drop support
 
@@ -43,7 +48,7 @@ You can read more about how IL2CPP works in my series [IL2CPP Reverse Engineerin
 File format and architecture support:
 
 * Supports ELF (Android .so), PE (Windows .exe), Mach-O (Apple iOS/Mac), Universal Binary (Fat Mach-O) and FSELF (PlayStation 4 .prx/.sprx) file formats
-* Also supports single and split APK (Android), AAB (Android App Bundle) and decrypted IPA (iOS) application package files as input
+* Also supports single and split APK (Android), AAB (Android App Bundle), XAPK, Zip and decrypted IPA (iOS) application package files as input
 * 32-bit and 64-bit support for all file formats
 * Supports ARMv7, Thumb-2, ARMv8 (A64), x86 and x64 architectures regardless of file format
 * Supports applications created with Unity 5.3.0 onwards (full IL2CPP version table below)
@@ -59,7 +64,7 @@ Nice to have:
 * Automatically defeats certain basic obfuscation methods
 * Test chassis for automated integration testing of IL2CPP binaries
 
-Class library targets .NET Standard 2.1. Application targets .NET Core 3.0. Built with Visual Studio 2019.
+Class library targets .NET Standard 2.1. Application targets .NET Core 3.1. Built with Visual Studio 2019.
 
 **NOTE**: Il2CppInspector is not a decompiler. It can provide you with the structure of an application and function addresses for every method so that you can easily jump straight to methods of interest in your disassembler. It does not attempt to recover the entire source code of the application.
 
@@ -122,6 +127,10 @@ File format and architecture are automatically detected.
   -h, --cpp-out               (Default: cpp) C++ scaffolding / DLL injection project output path
 
   -o, --json-out              (Default: metadata.json) JSON metadata output file
+
+  --metadata-out              IL2CPP metadata file output (for extracted or decrypted metadata; ignored otherwise)
+
+  --binary-out                IL2CPP binary file output (for extracted or decrypted binaries; ignored otherwise; suffixes will be appended for multiple files)
 
   -e, --exclude-namespaces    (Default: System Mono Microsoft.Reflection Microsoft.Win32 Internal.Runtime Unity UnityEditor UnityEngine UnityEngineInternal AOT JetBrains.Annotations) Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces
 
