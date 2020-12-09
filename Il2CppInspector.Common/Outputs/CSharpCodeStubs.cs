@@ -292,8 +292,8 @@ namespace Il2CppInspector.Outputs
             var usings = nsRefs.OrderBy(n => (n.StartsWith("System.") || n == "System") ? "0" + n : "1" + n);
 
             // Ensure output directory exists and is not a file
-            var dir = Regex.Replace(Path.GetDirectoryName(outFile), @"[<>:""\|\?\*]", "_");
-            if (!string.IsNullOrEmpty(dir)) {
+            var dir = string.Join("_", Path.GetDirectoryName(outFile).Split(Path.GetInvalidPathChars()));
+             if (!string.IsNullOrEmpty(dir)) {
                 try {
                     Directory.CreateDirectory(dir);
                 }
@@ -304,7 +304,8 @@ namespace Il2CppInspector.Outputs
             }
 
             // Sanitize leafname (might be class name with invalid characters)
-            var leafname = Regex.Replace(Path.GetFileName(outFile), @"[<>:""\|\?\*]", "_");
+            var leafname = string.Join("_", Path.GetFileName(outFile).Split(Path.GetInvalidFileNameChars()));
+
             outFile = Path.Combine(dir, leafname);
 
             // Create output file
