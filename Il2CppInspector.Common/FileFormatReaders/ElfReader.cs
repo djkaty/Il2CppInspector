@@ -295,13 +295,15 @@ namespace Il2CppInspector
 
                 var (armNibbleB, armNibbleT, armValueB, armValueT) = testValues[Bits];
 
-                // We examine the bottom nibble of the 2nd byte and top nibble of 4th byte
-                // of the first 64 words (256 bytes) of .text. These values are expected to be primarily 0x0 and 0xE (ARM only)
-                var textFirstDWords = ReadArray<uint>(conv.Long(sectionByName[".text"].sh_offset), 256);
+                var instructionsToTest = 256;
+
+                // This gives us an idea of whether the code might be encrypted
+                var textFirstDWords = ReadArray<uint>(conv.Long(sectionByName[".text"].sh_offset), instructionsToTest);
                 var bottom = textFirstDWords.Select(w => (w >> armNibbleB) & 0xF).GroupBy(n => n).OrderByDescending(f => f.Count()).First().Key;
                 var top = textFirstDWords.Select(w => w >> armNibbleT).GroupBy(n => n).OrderByDescending(f => f.Count()).First().Key;
                 var xorKeyCandidateFromCode = (byte) (((top ^ armValueT) << 4) | (bottom ^ armValueB));
 
+                // If the first part of the data section is encrypted, proceed
                 if (xorKeyCandidateStriped != 0x00) {
 
                     // Some files may use a striped encryption whereby alternate blocks are encrypted and un-encrypted
@@ -317,8 +319,8 @@ namespace Il2CppInspector
                     var firstUnencrypted = 0xffffffff;
                     var stripeSize = 0xffffffff;
 
-                    // At least this many instructions must pass the threshold
-                    var threshold = (blockSize / 4) / 5;
+                    // At least this many instructions per block must pass the threshold to be considered unencrypted
+                    var threshold = (blockSize / 4) * 0.8;
 
                     // A stripe of encryption or non-encryption is considered to have ended when this many blocks in the opposite state are found
                     var maxBlocksInARow = 4;
@@ -333,9 +335,9 @@ namespace Il2CppInspector
                     for (var pos = start; pos < start + maxSearchLength && stripeSize == 0xffffffff; pos += blockSize) {
                         var size = Math.Min(blockSize, start + length - pos);
                         var dwords = ReadArray<uint>(pos, size / 4);
-                        var countB = dwords.Count(w => ((w >> armNibbleB) & 0xF) == armValueB);
-                        var countT = dwords.Count(w => (w >> armNibbleT) == armValueT);
-                        var probablyEncrypted = countT < threshold && countB < threshold;
+
+                        var commonInstructions = dwords.Count(w => Bits == 32? isCommonARMv7(w) : isCommonARMv8A(w));
+                        var probablyEncrypted = commonInstructions < threshold;
 
                         // Increment one or the other; reset the other one to zero
                         probablyEncryptedCount = probablyEncrypted? probablyEncryptedCount + 1 : 0;
@@ -356,8 +358,10 @@ namespace Il2CppInspector
                     var xorKey = bestKey.Key;
 
                     // Otherwise choose according to striped/full encryption
-                    if (bestKey.Count() == 1)
-                        xorKey = stripeSize != 0xffffffff ? xorKeyCandidateStriped : xorKeyCandidateFull;
+                    if (bestKey.Count() == 1) {
+                        xorKey = keys.OrderByDescending(k => textFirstDWords.Select(w => w ^ (k << 24) ^ (k << 16) ^ (k << 8) ^ k)
+                                        .Count(w => Bits == 32? isCommonARMv7((uint) w) : isCommonARMv8A((uint) w))).First();
+                    }
 
                     StatusUpdate("Decrypting");
                     Console.WriteLine($"Performing XOR decryption (key: 0x{xorKey:X2}, stripe size: 0x{stripeSize:X4})");
@@ -380,6 +384,72 @@ namespace Il2CppInspector
 
             // Build symbol and export tables
             processSymbols();
+
+            return true;
+        }
+
+        // https://developer.arm.com/documentation/ddi0406/cb/Application-Level-Architecture/ARM-Instruction-Set-Encoding/ARM-instruction-set-encoding
+        private bool isCommonARMv7(uint inst) {
+            var cond = inst >> 28; // We'll allow 0x1111 (for BL/BLX), AL, EQ, NE, GE, LT, GT, LE only
+
+            if (cond != 0b1111 && cond != 0b1110 && cond != 0b0000 && cond != 0b0001 && cond != 0b1010 && cond != 0b1011 && cond != 0b1100 && cond != 0b1101)
+                return false;
+
+            var op1  = (inst >> 25) & 7;
+
+            // Disallow media instructions
+            var op   = (inst >> 4) & 1;
+            if (op1 == 0b011 && op == 1)
+                return false;
+
+            // Disallow co-processor instructions
+            if (op1 == 0b110 || op1 == 0b111)
+                return false;
+
+            // Disallow 0b1111 cond except for BL and BLX
+            if (cond == 0b1111) {
+                var op1_1 = (inst >> 20) & 0b11111111;
+
+                if ((op1_1 >> 5) != 0b101)
+                    return false;
+            }
+
+            // Disallow MSR and other miscellaneous
+            if (op == 1) {
+                var op1_1 = (inst >> 20) & 0b11111;
+                var op2 = (inst >> 4) & 0b1111;
+
+                if (op1_1 == 0b10010 || op1_1 == 0b10110 || op1_1 == 0b10000 || op1_1 == 0b10100)
+                    return false;
+
+                // Disallow synchronization primitives
+                if ((op1_1 >> 4) == 1)
+                    return false;
+            }
+
+            // Probably a common instruction
+            return true;
+        }
+
+        // https://montcs.bloomu.edu/Information/ARMv8/ARMv8-A_Architecture_Reference_Manual_(Issue_A.a).pdf
+        private bool isCommonARMv8A(uint inst) {
+            var op = (inst >> 24) & 0b11111;
+
+            // Disallow unexpected, SIMD and FP
+            if ((op >> 3) == 0 || (op >> 1) == 0b0111 || (op >> 1) == 0b1111)
+                return false;
+
+            // Disallow exception generation and system instructions
+            if ((inst >> 24) == 0b11010100 || (inst >> 22) == 0b1101010100)
+                return false;
+
+            // Disallow bitfield and extract
+            if (op == 0b10011)
+                return false;
+
+            // Disallow conditional compare and data processing
+            if ((op >> 1) == 0b1101)
+                return false;
 
             return true;
         }
