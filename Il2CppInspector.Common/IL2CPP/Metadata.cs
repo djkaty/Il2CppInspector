@@ -45,6 +45,9 @@ namespace Il2CppInspector
 
         public Dictionary<int, string> Strings { get; } = new Dictionary<int, string>();
 
+        // Set if something in the metadata has been modified / decrypted
+        public bool IsModified { get; } = false;
+
         public Metadata(Stream stream, EventHandler<string> statusCallback = null) : base(stream)
         {
             // Read magic bytes
@@ -189,6 +192,7 @@ namespace Il2CppInspector
                     var decryptedString = Encoding.GetString(encryptedString.Select(b => (byte) (b ^ xorKey)).ToArray());
                     Strings.Add(offset.current, decryptedString);
                 }
+                IsModified = true;
             }
 
             // Get all managed code string literals

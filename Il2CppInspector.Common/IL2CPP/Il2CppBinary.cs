@@ -80,8 +80,12 @@ namespace Il2CppInspector
         // One assembly may contain multiple modules
         public Dictionary<string, Il2CppCodeGenModule> Modules { get; private set; }
 
+        // Status update callback
         private EventHandler<string> OnStatusUpdate { get; set; }
         private void StatusUpdate(string status) => OnStatusUpdate?.Invoke(this, status);
+
+        // Set if something in the binary has been modified / decrypted
+        public bool IsModified { get; private set; } = false;
 
         protected Il2CppBinary(IFileFormatReader stream, EventHandler<string> statusCallback = null) {
             Image = stream;

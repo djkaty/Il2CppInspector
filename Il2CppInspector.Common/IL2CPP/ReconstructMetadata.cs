@@ -319,6 +319,9 @@ namespace Il2CppInspector
             CodeRegistration.unresolvedVirtualCallCount = 0;
             CodeRegistration.interopDataCount           = 0;
 
+            // TODO: Write changes to stream
+            IsModified = true;
+
             // Things we need from Il2CppMetadataRegistration
 
             // genericInsts               -> list of Il2CppGenericInst* (argc is count of Il2CppType* at data pointer argv; datapoint = GenericParameterIndex)
@@ -766,6 +769,8 @@ namespace Il2CppInspector
             // Force MetadataRegistration to pass validation in Il2CppBinary.Configure()
             MetadataRegistration.typeDefinitionsSizesCount = 0;
             MetadataRegistration.genericClassesCount       = MetadataRegistration.genericInstsCount + 1;
+
+            // TODO: Write changes to stream
 
             StatusUpdate("Analyzing IL2CPP image");
         }
