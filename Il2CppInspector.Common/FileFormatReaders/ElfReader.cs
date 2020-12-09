@@ -275,49 +275,87 @@ namespace Il2CppInspector
             }
             Console.WriteLine($"Processed {rels.Count} relocations");
 
-            // Detect and defeat XOR encryption
+            // Detect and defeat various kinds of XOR encryption
             StatusUpdate("Detecting encryption");
 
             if (getDynamic(Elf.DT_INIT) != null && sectionByName.ContainsKey(".rodata")) {
-                // Use the data section to determine IF the file is obfuscated
-                var rodataFirstBytes = ReadBytes(conv.Long(sectionByName[".rodata"].sh_offset), 256);
-                var xorKeyCandidate = rodataFirstBytes.GroupBy(b => b).OrderByDescending(f => f.Count()).First().Key;
+                // Use the data section to determine some possible keys
+                // If the data section uses striped encryption, bucketing the whole section will not give the correct key
+                var roDataBytes = ReadBytes(conv.Long(sectionByName[".rodata"].sh_offset), conv.Int(sectionByName[".rodata"].sh_size));
+                var xorKeyCandidateStriped = roDataBytes.Take(1024).GroupBy(b => b).OrderByDescending(f => f.Count()).First().Key;
+                var xorKeyCandidateFull = roDataBytes.GroupBy(b => b).OrderByDescending(f => f.Count()).First().Key;
+
+                // Select test nibbles and values for ARM instructions depending on architecture (ARMv7 / AArch64)
+                var testValues = new Dictionary<int, (int, int, int, int)> {
+                    [32] = (8, 28, 0x0, 0xE),
+                    [64] = (4, 28, 0xE, 0xF)
+                };
+
+                var (armNibbleB, armNibbleT, armValueB, armValueT) = testValues[Bits];
 
                 // We examine the bottom nibble of the 2nd byte and top nibble of 4th byte
                 // of the first 64 words (256 bytes) of .text. These values are expected to be primarily 0x0 and 0xE (ARM only)
-                var textFirstDWords = ReadArray<uint>(conv.Long(sectionByName[".text"].sh_offset), 64);
-                var bottom = textFirstDWords.Select(w => (w >> 8) & 0xF).GroupBy(n => n).OrderByDescending(f => f.Count()).First().Key;
-                var top = textFirstDWords.Select(w => w >> 28).GroupBy(n => n).OrderByDescending(f => f.Count()).First().Key;
-                var xorKey = (byte) (((top << 4) ^ 0xE0) | bottom);
+                var textFirstDWords = ReadArray<uint>(conv.Long(sectionByName[".text"].sh_offset), 256);
+                var bottom = textFirstDWords.Select(w => (w >> armNibbleB) & 0xF).GroupBy(n => n).OrderByDescending(f => f.Count()).First().Key;
+                var top = textFirstDWords.Select(w => w >> armNibbleT).GroupBy(n => n).OrderByDescending(f => f.Count()).First().Key;
+                var xorKeyCandidateFromCode = (byte) (((top ^ armValueT) << 4) | (bottom ^ armValueB));
 
-                if (xorKeyCandidate != 0x00) {
+                if (xorKeyCandidateStriped != 0x00) {
 
                     // Some files may use a striped encryption whereby alternate blocks are encrypted and un-encrypted
                     // The first part of each section is always encrypted. Scan for the first unencrypted block and find its size
-                    // Limit ourselves to 128KB. If no stripe has been found by then, the whole section is probably encrypted
+                    // Limit ourselves to maxSearchLength. If no stripe has been found by then, the whole section is probably encrypted
 
                     // We refer to issue #96 where the code uses striped encryption in 4KB blocks
-                    // We perform heuristics for 128-byte blocks below
+                    // We perform heuristics for block of size blockSize below
                     var start = conv.Int(sectionByName[".text"].sh_offset);
                     var length = conv.Int(sectionByName[".text"].sh_size);
-                    var blockSize = 0x80;
+                    var blockSize = 0x100;
                     var maxSearchLength = 128 * 1024;
                     var firstUnencrypted = 0xffffffff;
                     var stripeSize = 0xffffffff;
-                    var threshold = (blockSize / 4) / 2;
+
+                    // At least this many instructions must pass the threshold
+                    var threshold = (blockSize / 4) / 5;
+
+                    // A stripe of encryption or non-encryption is considered to have ended when this many blocks in the opposite state are found
+                    var maxBlocksInARow = 4;
+                    
+                    // Align start position to search block size
+                    if (conv.Int(sectionByName[".text"].sh_addr) % blockSize != 0)
+                        start += blockSize - conv.Int(sectionByName[".text"].sh_addr) % blockSize;
+
+                    var probablyEncryptedCount = 0;
+                    var probablyUnencryptedCount = 0;
+
                     for (var pos = start; pos < start + maxSearchLength && stripeSize == 0xffffffff; pos += blockSize) {
                         var size = Math.Min(blockSize, start + length - pos);
                         var dwords = ReadArray<uint>(pos, size / 4);
-                        var count0 = dwords.Count(w => ((w >> 8) & 0xF) == 0x0);
-                        var countE = dwords.Count(w => (w >> 28) == 0xE);
-                        var encrypted = countE < threshold && count0 < threshold;
+                        var countB = dwords.Count(w => ((w >> armNibbleB) & 0xF) == armValueB);
+                        var countT = dwords.Count(w => (w >> armNibbleT) == armValueT);
+                        var probablyEncrypted = countT < threshold && countB < threshold;
 
-                        if (!encrypted && firstUnencrypted == 0xffffffff)
-                            firstUnencrypted = (uint) pos;
+                        // Increment one or the other; reset the other one to zero
+                        probablyEncryptedCount = probablyEncrypted? probablyEncryptedCount + 1 : 0;
+                        probablyUnencryptedCount = probablyEncryptedCount == 0 ? probablyUnencryptedCount + 1 : 0;
 
-                        if (encrypted && firstUnencrypted != 0xffffffff)
-                            stripeSize = (uint) pos - firstUnencrypted;
+                        if (probablyUnencryptedCount >= maxBlocksInARow && firstUnencrypted == 0xffffffff)
+                            firstUnencrypted = (uint) (pos - (probablyUnencryptedCount - 1) * blockSize);
+
+                        if (probablyEncryptedCount >= maxBlocksInARow && firstUnencrypted != 0xffffffff)
+                            stripeSize = (uint) (pos - firstUnencrypted - (probablyEncryptedCount - 1) * blockSize);
                     }
+
+                    // Select the key
+
+                    // If more than one key candidates are the same, select the most common candidate
+                    var keys = new [] { xorKeyCandidateFromCode, xorKeyCandidateStriped, xorKeyCandidateFull };
+                    var bestKey = keys.GroupBy(k => k).OrderByDescending(k => k.Count()).First();
+                    var xorKey = bestKey.Key;
+
+                    // Otherwise choose according to striped/full encryption
+                    if (bestKey.Count() == 1)
+                        xorKey = stripeSize != 0xffffffff ? xorKeyCandidateStriped : xorKeyCandidateFull;
 
                     StatusUpdate("Decrypting");
                     Console.WriteLine($"Performing XOR decryption (key: 0x{xorKey:X2}, stripe size: 0x{stripeSize:X4})");
