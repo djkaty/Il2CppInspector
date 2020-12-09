@@ -115,6 +115,8 @@ namespace Il2CppInspector
 
         public ElfReader(Stream stream) : base(stream) { }
 
+        public override string DefaultFilename => "libil2cpp.so";
+
         public override string Format => Bits == 32 ? "ELF" : "ELF64";
 
         public override string Arch => (Elf) elf_header.e_machine switch {

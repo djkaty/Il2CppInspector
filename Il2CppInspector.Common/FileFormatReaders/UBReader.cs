@@ -15,6 +15,8 @@ namespace Il2CppInspector
 
         public UBReader(Stream stream) : base(stream) { }
 
+        public override string DefaultFilename => "app";
+
         protected override bool Init() {
             // Fat headers are always big-endian regardless of architectures
             Endianness = Endianness.Big;

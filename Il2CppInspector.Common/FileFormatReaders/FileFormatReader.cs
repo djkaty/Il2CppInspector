@@ -20,6 +20,7 @@ namespace Il2CppInspector
         double Version { get; set; }
         long Length { get; }
         uint NumImages { get; }
+        string DefaultFilename { get; }
         IEnumerable<IFileFormatReader> Images { get; }
         IFileFormatReader this[uint index] { get; }
         long Position { get; set; }
@@ -121,6 +122,8 @@ namespace Il2CppInspector
         public FileFormatReader(Stream stream) : base(stream) { }
 
         public BinaryObjectReader Stream => this;
+
+        public abstract string DefaultFilename { get; }
 
         public long Length => BaseStream.Length;
 

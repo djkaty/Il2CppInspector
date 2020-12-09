@@ -20,6 +20,8 @@ namespace Il2CppInspector
 
         public APKReader(Stream stream) : base(stream) { }
 
+        public override string DefaultFilename => "Package.apk";
+
         protected override bool Init() {
 
             // Check if it's a zip file first because ZipFile.OpenRead is extremely slow if it isn't

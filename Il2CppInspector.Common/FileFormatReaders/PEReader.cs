@@ -23,6 +23,9 @@ namespace Il2CppInspector
 
         public PEReader(Stream stream) : base(stream) {}
 
+        public override string DefaultFilename => "GameAssembly.dll";
+
+
         public override string Format => pe is PEOptHeader32 ? "PE32" : "PE32+";
 
         public override string Arch => coff.Machine switch {

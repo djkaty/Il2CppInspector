@@ -28,6 +28,8 @@ namespace Il2CppInspector
     {
         public SElfReader(Stream stream) : base(stream) { }
 
+        public override string DefaultFilename => "libil2cpp.so";
+
         public override string Format => sceData.ProductType == (ulong) SElfExInfoTypes.PTYPE_FAKE? "FSELF" : "SELF";
 
         public override string Arch => "x64";
