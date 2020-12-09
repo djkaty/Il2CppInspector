@@ -31,6 +31,7 @@ using Il2CppInspector.Reflection;
 using Ookii.Dialogs.Wpf;
 using Path = System.IO.Path;
 using Il2CppInspector.Cpp.UnityHeaders;
+using System.IO.Packaging;
 
 namespace Il2CppInspectorGUI
 {
@@ -41,6 +42,9 @@ namespace Il2CppInspectorGUI
     {
         public MainWindow() {
             InitializeComponent();
+
+            // Allow XAML to access properties in the App class
+            DataContext = ((App) Application.Current);
 
             // Subscribe to status update events
             ((App) Application.Current).OnStatusUpdate += OnStatusUpdate;
@@ -312,6 +316,43 @@ namespace Il2CppInspectorGUI
                 return true;
             MessageBox.Show(this, "Could not find Unity assemblies in this folder. Ensure the selected folder contains UnityEngine.UI.dll and try again.", "Unity assemblies not found", MessageBoxButton.OK, MessageBoxImage.Error);
             return false;
+        }
+
+        /// <summary>
+        /// Save extracted or decrypted files
+        /// </summary>
+        private async void BtnSaveMetadata_OnClick(object sender, RoutedEventArgs e) {
+            var package = ((AppModel) lstImages.SelectedItem).TypeModel.Package;
+            var saveFileDialog = new SaveFileDialog {
+                Filter = "IL2CPP metadata files (*.dat)|*.dat|All files (*.*)|*.*",
+                FileName = "global-metadata.dat",
+                CheckFileExists = false,
+                OverwritePrompt = true
+            };
+
+            if (saveFileDialog.ShowDialog() == false)
+                return;
+
+            var outPath = saveFileDialog.FileName;
+            await Task.Run(() => package.SaveMetadataToFile(outPath));
+        }
+
+        private async void BtnSaveBinary_OnClick(object sender, RoutedEventArgs e) {
+            var package = ((AppModel) lstImages.SelectedItem).TypeModel.Package;
+            var binaryName = package.BinaryImage.DefaultFilename;
+
+            var saveFileDialog = new SaveFileDialog {
+                Filter = "All files (*.*)|*.*",
+                FileName = binaryName,
+                CheckFileExists = false,
+                OverwritePrompt = true
+            };
+
+            if (saveFileDialog.ShowDialog() == false)
+                return;
+
+            var outPath = saveFileDialog.FileName;
+            await Task.Run(() => package.SaveBinaryToFile(outPath));
         }
 
         /// <summary>

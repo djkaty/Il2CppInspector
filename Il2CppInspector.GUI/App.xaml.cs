@@ -3,8 +3,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using Il2CppInspector;
@@ -17,9 +19,20 @@ namespace Il2CppInspectorGUI
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : Application, INotifyPropertyChanged
     {
         private Metadata metadata;
+
+        // True if we extracted from an APK, IPA, zip file etc.
+        private bool isExtractedFromPackage;
+        public bool IsExtractedFromPackage {
+            get => isExtractedFromPackage;
+            set {
+                if (value == isExtractedFromPackage) return;
+                isExtractedFromPackage = value;
+                OnPropertyChanged();
+            }
+        }
 
         public List<AppModel> AppModels { get; } = new List<AppModel>();
 
@@ -32,6 +45,8 @@ namespace Il2CppInspectorGUI
 
         // Attempt to load an IL2CPP application package (APK or IPA)
         public async Task<bool> LoadPackageAsync(IEnumerable<string> packageFiles) {
+            IsExtractedFromPackage = false;
+
             try {
                 OnStatusUpdate?.Invoke(this, "Extracting package");
 
@@ -39,7 +54,8 @@ namespace Il2CppInspectorGUI
                 if (streams == null)
                     throw new InvalidOperationException("The supplied package is not an APK or IPA file, or does not contain a complete IL2CPP application");
 
-                return await LoadMetadataAsync(streams.Value.Metadata) && await LoadBinaryAsync(streams.Value.Binary);
+                IsExtractedFromPackage = await LoadMetadataAsync(streams.Value.Metadata) && await LoadBinaryAsync(streams.Value.Binary);
+                return IsExtractedFromPackage;
             }
             catch (Exception ex) {
                 LastException = ex;
@@ -49,6 +65,7 @@ namespace Il2CppInspectorGUI
 
         // Attempt to load an IL2CPP metadata file
         public async Task<bool> LoadMetadataAsync(string metadataFile) {
+            IsExtractedFromPackage = false;
             var stream = new MemoryStream(await File.ReadAllBytesAsync(metadataFile));
             return await LoadMetadataAsync(stream);
         }
@@ -120,5 +137,11 @@ namespace Il2CppInspectorGUI
                     return false;
                 }
             });
+
+        // Property change notifier for IsExtractedFromPackage binding
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

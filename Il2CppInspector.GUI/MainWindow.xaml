@@ -175,6 +175,45 @@
                     <Label Grid.Row="8" Grid.Column="0" Content="Il2CppCodeRegistration function"></Label>
                     <Label Grid.Row="8" Grid.Column="1" Content="{Binding Path=Binary.RegistrationFunctionPointer}" ContentStringFormat="0x{0:x8}"></Label>
                 </Grid>
+
+                <!-- Save file buttons -->
+                <Button Name="btnSaveMetadata" Click="BtnSaveMetadata_OnClick" DockPanel.Dock="Top" Margin="10" Padding="5" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Width="260" Content="Save extracted/decrypted metadata...">
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource LightBoxButton}" TargetType="{x:Type Button}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=areaBusyIndicator, Path=Visibility}" Value="Visible">
+                                    <Setter Property="Button.IsEnabled" Value="False"/>
+                                </DataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=lstImages, Path=SelectedItem.Package.Metadata.IsModified}" Value="False" />
+                                        <Condition Binding="{Binding Path=IsExtractedFromPackage}" Value="False" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Button.IsEnabled" Value="False"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Name="btnSaveBinary" Click="BtnSaveBinary_OnClick" DockPanel.Dock="Top" Margin="10,2,10,10" Padding="5" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Width="260" Content="Save extracted/decrypted binary...">
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource LightBoxButton}" TargetType="{x:Type Button}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=areaBusyIndicator, Path=Visibility}" Value="Visible">
+                                    <Setter Property="Button.IsEnabled" Value="False"/>
+                                </DataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=lstImages, Path=SelectedItem.Package.Binary.IsModified}" Value="False" />
+                                        <Condition Binding="{Binding Path=IsExtractedFromPackage}" Value="False" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Button.IsEnabled" Value="False"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </DockPanel>
             <Separator Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Margin="5,5,10,5">
                 <Separator.LayoutTransform>

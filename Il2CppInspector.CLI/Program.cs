@@ -38,6 +38,12 @@ namespace Il2CppInspector.CLI
             [Option('o', "json-out", Required = false, HelpText = "JSON metadata output file", Default = "metadata.json")]
             public string JsonOutPath { get; set; }
 
+            [Option("metadata-out", Required = false, HelpText = "IL2CPP metadata file output (for extracted or decrypted metadata; ignored otherwise)")]
+            public string MetadataFileOut { get; set; }
+
+            [Option("binary-out", Required = false, HelpText = "IL2CPP binary file output (for extracted or decrypted binaries; ignored otherwise; suffixes will be appended for multiple files)")]
+            public string BinaryFileOut { get; set; }
+
             [Option('e', "exclude-namespaces", Required = false, Separator = ',', HelpText = "Comma-separated list of namespaces to suppress in C# output, or 'none' to include all namespaces",
                 Default = new [] {
                     "System",
@@ -179,11 +185,13 @@ namespace Il2CppInspector.CLI
                 }
 
             // Check files exist and determine whether they're archives or not
+            bool isExtractedFromPackage = false;
             List<Il2CppInspector> il2cppInspectors;
             using (new Benchmark("Analyze IL2CPP data")) {
 
                 try {
                     il2cppInspectors = Il2CppInspector.LoadFromPackage(options.BinaryFiles);
+                    isExtractedFromPackage = true;
                 }
                 catch (Exception ex) {
                     Console.Error.WriteLine(ex.Message);
@@ -191,6 +199,8 @@ namespace Il2CppInspector.CLI
                 }
 
                 if (il2cppInspectors == null) {
+                    isExtractedFromPackage = false;
+
                     if (!File.Exists(options.MetadataFile)) {
                         Console.Error.WriteLine($"File {options.MetadataFile} does not exist");
                         return 1;
@@ -208,6 +218,36 @@ namespace Il2CppInspector.CLI
 
             if (il2cppInspectors == null)
                 Environment.Exit(1);
+
+            // Save metadata and binary if extracted or modified and save requested
+            if (!string.IsNullOrEmpty(options.MetadataFileOut)) {
+                if (isExtractedFromPackage || il2cppInspectors[0].Metadata.IsModified) {
+                    Console.WriteLine($"Saving metadata file to {options.MetadataFileOut}");
+
+                    il2cppInspectors[0].SaveMetadataToFile(options.MetadataFileOut);
+                } else
+                    Console.WriteLine("Metadata file was not modified - skipping save");
+            }
+
+            if (!string.IsNullOrEmpty(options.BinaryFileOut)) {
+                var outputIndex = 0;
+                foreach (var il2cpp in il2cppInspectors) {
+                    // If there's an extension, strip the leading period
+                    var ext = Path.GetExtension(options.BinaryFileOut);
+                    if (ext.Length > 0)
+                        ext = ext.Substring(1);
+                    var outPath = getOutputPath(options.BinaryFileOut, ext, outputIndex);
+
+                    if (isExtractedFromPackage || il2cpp.Binary.IsModified) {
+                        Console.WriteLine($"Saving binary file to {outPath}");
+
+                        il2cpp.SaveBinaryToFile(outPath);
+                    } else
+                        Console.WriteLine("Binary file was not modified - skipping save");
+
+                    outputIndex++;
+                }
+            }
 
             // Write output files for each binary
             int imageIndex = 0;
