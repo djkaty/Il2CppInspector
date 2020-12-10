@@ -162,7 +162,7 @@ namespace Il2CppInspector.Model
             // Populate AvailableAPIs with actual API symbols from Binary.GetAPIExports() and their matching header signatures
             // NOTE: This will only be filled with exports that actually exist in both the binary and the API header,
             // and have a mappable address. This prevents exceptions when cross-querying the header and binary APIs.
-            var exports = TypeModel.Package.Binary.GetAPIExports()
+            var exports = TypeModel.Package.Binary.APIExports
                 .Where(e => CppTypeCollection.TypedefAliases.ContainsKey(e.Key))
                 .Select(e => new {
                     VirtualAddress = e.Value,

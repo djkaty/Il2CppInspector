@@ -138,7 +138,7 @@ typedef size_t uintptr_t;
             // We could use model.AvailableAPIs here but that would exclude outputting the address
             // of API exports which for some reason aren't defined in our selected API header,
             // so although it doesn't affect the C++ compilation, we use GetAPIExports() instead for completeness
-            var exports = model.Package.Binary.GetAPIExports();
+            var exports = model.Package.Binary.APIExports;
 
             foreach (var export in exports) {
                 writeCode($"#define {export.Key}_ptr 0x{model.Package.BinaryImage.MapVATR(export.Value):X8}");

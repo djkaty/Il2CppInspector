@@ -19,6 +19,9 @@ namespace Il2CppInspector
     {
         public IFileFormatReader Image { get; }
 
+        // IL2CPP-only API exports with decrypted names
+        public Dictionary<string, ulong> APIExports { get; } = new Dictionary<string, ulong>();
+
         public Il2CppCodeRegistration CodeRegistration { get; protected set; }
         public Il2CppMetadataRegistration MetadataRegistration { get; protected set; }
 
@@ -92,12 +95,14 @@ namespace Il2CppInspector
         protected Il2CppBinary(IFileFormatReader stream, EventHandler<string> statusCallback = null) {
             Image = stream;
             OnStatusUpdate = statusCallback;
+            DiscoverAPIExports();
         }
 
         protected Il2CppBinary(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null) {
             Image = stream;
             OnStatusUpdate = statusCallback;
-            Configure(codeRegistration, metadataRegistration);
+            DiscoverAPIExports();
+            PrepareMetadata(codeRegistration, metadataRegistration);
         }
 
         // Load and initialize a binary of any supported architecture
@@ -119,7 +124,7 @@ namespace Il2CppInspector
         // Load binary without a global-metadata.dat available
         public static Il2CppBinary Load(IFileFormatReader stream, double metadataVersion, EventHandler<string> statusCallback = null) {
             var inst = LoadImpl(stream, statusCallback);
-            return inst.Initialize(metadataVersion) ? inst : null;
+            return inst.FindRegistrationStructs(metadataVersion) ? inst : null;
         }
 
         // Load binary with a global-metadata.dat available
@@ -129,7 +134,7 @@ namespace Il2CppInspector
         // If it is not specified, data analysis will not be performed
         public static Il2CppBinary Load(IFileFormatReader stream, Metadata metadata, EventHandler<string> statusCallback = null) {
             var inst = LoadImpl(stream, statusCallback);
-            return inst.Initialize(metadata) ? inst : null;
+            return inst.FindRegistrationStructs(metadata) ? inst : null;
         }
 
         // Save binary to file, overwriting if necessary
@@ -141,24 +146,24 @@ namespace Il2CppInspector
         }
 
         // Initialize binary without a global-metadata.dat available
-        public bool Initialize(double metadataVersion, EventHandler<string> statusCallback = null) {
+        public bool FindRegistrationStructs(double metadataVersion, EventHandler<string> statusCallback = null) {
             Image.Version = metadataVersion;
 
             if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode()) is var ptrs))
                 return false;
 
-            Configure(ptrs.Value.Item1, ptrs.Value.Item2);
+            PrepareMetadata(ptrs.Value.Item1, ptrs.Value.Item2);
             return true;
         }
 
         // Initialize binary with a global-metadata.dat available
-        public bool Initialize(Metadata metadata, EventHandler<string> statusCallback = null) {
+        public bool FindRegistrationStructs(Metadata metadata, EventHandler<string> statusCallback = null) {
             Image.Version = metadata.Version;
 
             if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode() ?? FindMetadataFromData(metadata)) is var ptrs))
                 return false;
 
-            Configure(ptrs.Value.Item1, ptrs.Value.Item2, metadata);
+            PrepareMetadata(ptrs.Value.Item1, ptrs.Value.Item2, metadata);
             return true;
         }
 
@@ -230,7 +235,7 @@ namespace Il2CppInspector
         protected abstract (ulong, ulong) ConsiderCode(IFileFormatReader image, uint loc);
 
         // Load all of the discovered metadata in the binary
-        private void Configure(ulong codeRegistration, ulong metadataRegistration, Metadata metadata = null) {
+        private void PrepareMetadata(ulong codeRegistration, ulong metadataRegistration, Metadata metadata = null) {
             // Store locations
             CodeRegistrationPointer = codeRegistration;
             MetadataRegistrationPointer = metadataRegistration;
@@ -367,22 +372,36 @@ namespace Il2CppInspector
         // This strips leading underscores and selects only il2cpp_* symbols which can be mapped into the binary
         // (therefore ignoring extern imports)
         // Some binaries have functions starting "il2cpp_z_" - ignore these too
-        public Dictionary<string, ulong> GetAPIExports() {
-            var exports = Image.GetExports()?
-                .Where(e => (e.Name.StartsWith("il2cpp_") || e.Name.StartsWith("_il2cpp_") || e.Name.StartsWith("__il2cpp_"))
-                    && !e.Name.Contains("il2cpp_z_"));
-
+        private void DiscoverAPIExports() {
+            var exports = Image.GetExports()?.ToList();
             if (exports == null)
-                return new Dictionary<string, ulong>();
+                return;
 
             var exportRgx = new Regex(@"^_+");
-            var il2cppExports = new Dictionary<string, ulong>();
-            
-            foreach (var export in exports)
-                if (Image.TryMapVATR(export.VirtualAddress, out _))
-                    il2cppExports.Add(exportRgx.Replace(export.Name, ""), export.VirtualAddress);
 
-            return il2cppExports;
+            // Handle name rot encryption found in some binaries
+            var anyEncrypted = false;
+
+            for (var rotKey = 0; rotKey <= 25; rotKey++) {
+                var possibleExports = exports.Select(e => new {
+                    Name = string.Join("", e.Name.Select(x => (char) (x >= 'a' && x <= 'z'? (x - 'a' + rotKey) % 26 + 'a' : x))),
+                    VirtualAddress = e.VirtualAddress
+                }).ToList();
+
+                var foundExports = possibleExports
+                    .Where(e => (e.Name.StartsWith("il2cpp_") || e.Name.StartsWith("_il2cpp_") || e.Name.StartsWith("__il2cpp_"))
+                        && !e.Name.Contains("il2cpp_z_"))
+                    .Select(e => e);
+
+                if (foundExports.Any() && rotKey != 0 && !anyEncrypted) {
+                    Console.WriteLine("Found encrypted export names - decrypting");
+                    anyEncrypted = true;
+                }
+
+                foreach (var export in foundExports)
+                    if (Image.TryMapVATR(export.VirtualAddress, out _))
+                        APIExports.Add(exportRgx.Replace(export.Name, ""), export.VirtualAddress);
+            }
         }
     }
 }

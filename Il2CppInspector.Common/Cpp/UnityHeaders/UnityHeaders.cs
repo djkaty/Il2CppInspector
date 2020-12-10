@@ -133,7 +133,7 @@ namespace Il2CppInspector.Cpp.UnityHeaders
             var apis = GetAllAPIHeaders().Where(a => a.VersionRange.Intersect(totalRange) != null).ToList();
 
             // Get the API exports for the binary
-            var exports = binary.GetAPIExports();
+            var exports = binary.APIExports;
 
             // No il2cpp exports? Just return the earliest version from the header range
             // The API version may be incorrect but should be a subset of the real API and won't cause C++ compile errors
