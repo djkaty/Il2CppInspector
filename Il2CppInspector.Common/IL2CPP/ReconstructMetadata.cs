@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
@@ -58,8 +59,12 @@ namespace Il2CppInspector
         }
 
         // Reconstruct Il2CppCodeRegistration and Il2CppMetadataRegistration into their original, unobfuscated field order
-        // Supports metadata >=19, <27
+        // Supports metadata >=19, <=24.1 (TODO: add CodeGenModules to support <27)
         private void ReconstructMetadata(Metadata metadata) {
+            // Don't cause corruption in unsupported versions
+            if (Image.Version < 19 || Image.Version > 24.1)
+                return;
+
             // If the section table is not available, give up and do nothing
             if (!Image.TryGetSections(out var sections))
                 return;
@@ -314,12 +319,37 @@ namespace Il2CppInspector
             CodeRegistration.pmethodPointers            = methodPointers.Key;
             CodeRegistration.methodPointersCount        = (ulong) methodPointers.Value;
 
-            // Force CodeRegistration to pass validation in Il2CppBinary.Configure()
-            CodeRegistration.reversePInvokeWrapperCount = 0;
-            CodeRegistration.unresolvedVirtualCallCount = 0;
-            CodeRegistration.interopDataCount           = 0;
+            // Zero out any unprocessed items
+            CodeRegistration.reversePInvokeWrapperCount    = 0;
+            CodeRegistration.reversePInvokeWrappers        = 0;
+            CodeRegistration.delegateWrappersFromManagedToNativeCount = 0;
+            CodeRegistration.delegateWrappersFromManagedToNative      = 0;
+            CodeRegistration.marshalingFunctionsCount      = 0;
+            CodeRegistration.marshalingFunctions           = 0;
+            CodeRegistration.ccwMarshalingFunctionsCount   = 0;
+            CodeRegistration.ccwMarshalingFunctions        = 0;
+            CodeRegistration.unresolvedVirtualCallCount    = 0;
+            CodeRegistration.unresolvedVirtualCallPointers = 0;
+            CodeRegistration.interopDataCount              = 0;
+            CodeRegistration.interopData                   = 0;
+            CodeRegistration.guidCount                     = 0;
+            CodeRegistration.guids                         = 0;
+            CodeRegistration.windowsRuntimeFactoryCount    = 0;
+            CodeRegistration.windowsRuntimeFactoryTable    = 0;
+            CodeRegistration.codeGenModulesCount           = 0;
+            CodeRegistration.pcodeGenModules               = 0;
 
-            // TODO: Write changes to stream
+            // Write changes to stream
+            using var sw = new BinaryObjectWriter(Image.Stream.BaseStream, Image.Stream.Endianness, true);
+            sw.Version = Image.Version;
+
+            // Set width of long (convert to sizeof(int) for 32-bit files)
+            if (Image.Bits == 32) {
+                sw.PrimitiveMappings.Add(typeof(long), typeof(int));
+                sw.PrimitiveMappings.Add(typeof(ulong), typeof(uint));
+            }
+
+            sw.WriteObject(Image.MapVATR(CodeRegistrationPointer), CodeRegistration);
             isModified = true;
 
             // Things we need from Il2CppMetadataRegistration
@@ -766,11 +796,16 @@ namespace Il2CppInspector
             MetadataRegistration.pfieldOffsets             = fieldOffsets.ptr;
             MetadataRegistration.fieldOffsetsCount         = fieldOffsets.count;
 
-            // Force MetadataRegistration to pass validation in Il2CppBinary.Configure()
+            // Zero out any unprocessed items
             MetadataRegistration.typeDefinitionsSizesCount = 0;
-            MetadataRegistration.genericClassesCount       = MetadataRegistration.genericInstsCount + 1;
+            MetadataRegistration.typeDefinitionsSizes      = 0;
+            MetadataRegistration.genericClassesCount       = 0;
+            MetadataRegistration.genericClasses            = 0;
+            MetadataRegistration.methodReferencesCount     = 0;
+            MetadataRegistration.methodReferences          = 0;
 
-            // TODO: Write changes to stream
+            // Write changes to stream
+            sw.WriteObject(Image.MapVATR(MetadataRegistrationPointer), MetadataRegistration);
 
             StatusUpdate("Analyzing IL2CPP image");
         }

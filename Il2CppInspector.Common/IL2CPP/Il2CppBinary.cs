@@ -244,7 +244,6 @@ namespace Il2CppInspector
 
             // Do basic validatation that MetadataRegistration and CodeRegistration are sane
             /*
-             * TODO: Validation can be greatly expanded upon later, eg. pointers in these two structs should actually be pointers
              * GlobalMethodPointers (<= 24.1) must be a series of pointers in il2cpp or .text, and in sequential order
              * FieldOffsetPointers (>= 21.1) must be a series of pointers in __const or zero, and in sequential order
              * typeRefPointers must be a series of pointers in __const
@@ -252,7 +251,6 @@ namespace Il2CppInspector
              */
             for (var pass = 0; pass <= 1; pass++)
                 if (MetadataRegistration.typesCount < MetadataRegistration.typeDefinitionsSizesCount
-                    || MetadataRegistration.genericClassesCount < MetadataRegistration.genericInstsCount
                     || MetadataRegistration.genericMethodTableCount < MetadataRegistration.genericInstsCount
                     || CodeRegistration.reversePInvokeWrapperCount > 0x1000
                     || CodeRegistration.unresolvedVirtualCallCount > 0x4000 // >= 22
