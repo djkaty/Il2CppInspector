@@ -194,10 +194,11 @@ namespace Il2CppInspector
                 }
 
                 // Write changes back in case the user wants to save the metadata file
-                using (var sw = new StreamWriter(BaseStream, System.Text.Encoding.UTF8, bufferSize: -1, leaveOpen: true)) {
-                    sw.BaseStream.Position = Header.stringOffset;
+                using (var sw = new BinaryObjectWriter(BaseStream, Endianness, leaveOpen: true)) {
+                    sw.Version = Version;
+                    sw.Position = Header.stringOffset;
                     foreach (var str in Strings.OrderBy(s => s.Key))
-                        sw.Write(str.Value + "\0");
+                        sw.WriteNullTerminatedString(str.Value);
                     sw.Flush();
                 }
 
