@@ -44,7 +44,7 @@ namespace Il2CppInspectorGUI
         private void StatusUpdate(object sender, string status) => OnStatusUpdate?.Invoke(sender, status);
 
         // Attempt to load an IL2CPP application package (APK or IPA)
-        public async Task<bool> LoadPackageAsync(IEnumerable<string> packageFiles) {
+        public async Task<bool> LoadPackageAsync(IEnumerable<string> packageFiles, LoadOptions loadOptions) {
             IsExtractedFromPackage = false;
 
             try {
@@ -54,7 +54,7 @@ namespace Il2CppInspectorGUI
                 if (streams == null)
                     throw new InvalidOperationException("The supplied package is not an APK or IPA file, or does not contain a complete IL2CPP application");
 
-                IsExtractedFromPackage = await LoadMetadataAsync(streams.Value.Metadata) && await LoadBinaryAsync(streams.Value.Binary);
+                IsExtractedFromPackage = await LoadMetadataAsync(streams.Value.Metadata) && await LoadBinaryAsync(streams.Value.Binary, loadOptions);
                 return IsExtractedFromPackage;
             }
             catch (Exception ex) {
@@ -85,18 +85,18 @@ namespace Il2CppInspectorGUI
             });
 
         // Attempt to load an IL2CPP binary file
-        public async Task<bool> LoadBinaryAsync(string binaryFile) {
+        public async Task<bool> LoadBinaryAsync(string binaryFile, LoadOptions loadOptions) {
             var stream = new MemoryStream(await File.ReadAllBytesAsync(binaryFile));
-            return await LoadBinaryAsync(stream);
+            return await LoadBinaryAsync(stream, loadOptions);
         }
 
-        public Task<bool> LoadBinaryAsync(Stream binaryStream) =>
+        public Task<bool> LoadBinaryAsync(Stream binaryStream, LoadOptions loadOptions) =>
             Task.Run(() => {
                 try {
                     OnStatusUpdate?.Invoke(this, "Processing binary");
 
                     // This may throw other exceptions from the individual loaders as well
-                    IFileFormatReader stream = FileFormatReader.Load(binaryStream, StatusUpdate);
+                    IFileFormatReader stream = FileFormatReader.Load(binaryStream, loadOptions, StatusUpdate);
                     if (stream == null) {
                         throw new InvalidOperationException("Could not determine the binary file format");
                     }

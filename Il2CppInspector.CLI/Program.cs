@@ -190,7 +190,7 @@ namespace Il2CppInspector.CLI
             using (new Benchmark("Analyze IL2CPP data")) {
 
                 try {
-                    il2cppInspectors = Il2CppInspector.LoadFromPackage(options.BinaryFiles);
+                    il2cppInspectors = Il2CppInspector.LoadFromPackage(options.BinaryFiles); // TODO: loadOptions
                     isExtractedFromPackage = true;
                 }
                 catch (Exception ex) {
@@ -207,7 +207,7 @@ namespace Il2CppInspector.CLI
                     }
 
                     try {
-                        il2cppInspectors = Il2CppInspector.LoadFromFile(options.BinaryFiles.First(), options.MetadataFile);
+                        il2cppInspectors = Il2CppInspector.LoadFromFile(options.BinaryFiles.First(), options.MetadataFile); // TODO: loadOptions
                     }
                     catch (Exception ex) {
                         Console.Error.WriteLine(ex.Message);

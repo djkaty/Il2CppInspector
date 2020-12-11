@@ -58,14 +58,14 @@ namespace Il2CppInspector
 
                 // ZipArchiveEntry does not support seeking so we have to close and re-open for each possible load format
                 var binary = binaryFiles[index].Open();
-                loaded = ElfReader32.Load(binary, OnStatusUpdate);
+                loaded = ElfReader32.Load(binary, LoadOptions, OnStatusUpdate);
                 binary.Close();
 
                 if (loaded != null)
                     return loaded;
 
                 binary = binaryFiles[index].Open();
-                loaded = ElfReader64.Load(binary, OnStatusUpdate);
+                loaded = ElfReader64.Load(binary, LoadOptions, OnStatusUpdate);
                 binary.Close();
 
                 return loaded;

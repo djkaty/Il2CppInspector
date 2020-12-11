@@ -97,17 +97,18 @@ namespace Il2CppInspector
     public class FileFormatReader
     {
         // Helper method to try all defined file formats when the contents of the binary is unknown
-        public static IFileFormatReader Load(string filename, EventHandler<string> statusCallback = null) => Load(new FileStream(filename, FileMode.Open, FileAccess.Read), statusCallback);
+        public static IFileFormatReader Load(string filename, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null)
+            => Load(new FileStream(filename, FileMode.Open, FileAccess.Read), loadOptions, statusCallback);
 
-        public static IFileFormatReader Load(Stream stream, EventHandler<string> statusCallback = null) {
+        public static IFileFormatReader Load(Stream stream, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null) {
             var types = Assembly.GetExecutingAssembly().DefinedTypes
                         .Where(x => x.ImplementedInterfaces.Contains(typeof(IFileFormatReader)) && !x.IsGenericTypeDefinition);
 
             foreach (var type in types) {
                 try {
                     if (type.GetMethod("Load", BindingFlags.FlattenHierarchy | BindingFlags.Static | BindingFlags.Public,
-                            null, new[] {typeof(Stream), typeof(EventHandler<string>)}, null)
-                        .Invoke(null, new object[] {stream, statusCallback}) is IFileFormatReader loaded)
+                            null, new[] {typeof(Stream), typeof(LoadOptions), typeof(EventHandler<string>)}, null)
+                        .Invoke(null, new object[] {stream, loadOptions, statusCallback}) is IFileFormatReader loaded)
                         return loaded;
                 }
                 catch (TargetInvocationException ex) {
@@ -142,6 +143,9 @@ namespace Il2CppInspector
 
         public virtual int Bits => throw new NotImplementedException();
 
+        // Extra parameters to be passed to a loader
+        protected LoadOptions LoadOptions;
+
         public EventHandler<string> OnStatusUpdate { get; set; }
 
         protected void StatusUpdate(string status) => OnStatusUpdate?.Invoke(this, status);
@@ -153,12 +157,12 @@ namespace Il2CppInspector
             }
         }
 
-        public static T Load(string filename, EventHandler<string> statusCallback = null) {
+        public static T Load(string filename, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null) {
             using var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-            return Load(stream, statusCallback);
+            return Load(stream, loadOptions, statusCallback);
         }
 
-        public static T Load(Stream stream, EventHandler<string> statusCallback = null) {
+        public static T Load(Stream stream, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null) {
             // Copy the original stream in case we modify it
             var ms = new MemoryStream();
 
@@ -168,10 +172,11 @@ namespace Il2CppInspector
             
             ms.Position = 0;
             var pe = (T) Activator.CreateInstance(typeof(T), ms);
-            return pe.InitImpl(statusCallback) ? pe : null;
+            return pe.InitImpl(loadOptions, statusCallback) ? pe : null;
         }
 
-        private bool InitImpl(EventHandler<string> statusCallback = null) {
+        private bool InitImpl(LoadOptions loadOptions, EventHandler<string> statusCallback) {
+            LoadOptions = loadOptions;
             OnStatusUpdate = statusCallback;
             return Init();
         }
