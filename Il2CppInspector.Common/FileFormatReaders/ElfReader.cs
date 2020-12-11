@@ -112,6 +112,8 @@ namespace Il2CppInspector
         private elf_header<TWord> elf_header;
         private Dictionary<string, elf_shdr<TWord>> sectionByName = new Dictionary<string, elf_shdr<TWord>>();
         private List<(uint Start, uint End)> reverseMapExclusions = new List<(uint Start, uint End)>();
+        private bool preferPHT = false;
+        private bool isDumpedImage = false;
 
         public ElfReader(Stream stream) : base(stream) { }
 
@@ -155,6 +157,45 @@ namespace Il2CppInspector
             // Get PHT and SHT
             program_header_table = ReadArray<TPHdr>(conv.Long(elf_header.e_phoff), elf_header.e_phnum);
             section_header_table = ReadArray<elf_shdr<TWord>>(conv.Long(elf_header.e_shoff), elf_header.e_shnum);
+
+            // Determine if SHT is valid
+
+            // These can happen as a result of conversions from other formats to ELF,
+            // or if the SHT has been deliberately stripped
+            if (!section_header_table.Any()) {
+                Console.WriteLine("ELF binary has no SHT - reverting to PHT");
+                preferPHT = true;
+            }
+            
+            else if (section_header_table.All(s => conv.ULong(s.sh_addr) == 0ul)) {
+                Console.WriteLine("ELF binary SHT is all-zero - reverting to PHT");
+                preferPHT = true;
+            }
+
+            // Check for overlaps in sections that are memory-allocated on load
+            else {
+                var shtShouldBeOrdered = section_header_table
+                    .Where(s => ((Elf) conv.Int(s.sh_flags) & Elf.SHF_ALLOC) == Elf.SHF_ALLOC)
+                    .OrderBy(s => s.sh_addr)
+                    .Select(s => new[] { conv.ULong(s.sh_addr), conv.ULong(s.sh_addr) + conv.ULong(s.sh_size) })
+                    .SelectMany(s => s);
+
+                // No sections that map into memory - this is probably a dumped image
+                if (!shtShouldBeOrdered.Any()) {
+                    Console.WriteLine("ELF binary appears to be a dumped memory image");
+                    isDumpedImage = true;
+                    preferPHT = true;
+                }
+
+                // Sections overlap - this can happen if the ELF has been improperly generated or processed by another tool
+                else {
+                    var shtOverlap = shtShouldBeOrdered.Aggregate((x, y) => x <= y? y : ulong.MaxValue) == ulong.MaxValue;
+                    if (shtOverlap) {
+                        Console.WriteLine("ELF binary SHT contains invalid ranges - reverting to PHT");
+                        preferPHT = true;
+                    }
+                }
+            }
 
             // Get section name mappings if there are any
             // This is currently only used to defeat the XOR obfuscation handled below
@@ -577,7 +618,7 @@ namespace Il2CppInspector
 
         public override IEnumerable<Section> GetSections() {
             // If the sections have been stripped, use the segment list from the PHT instead
-            if (section_header_table.All(s => conv.Int(s.sh_offset) == 0)) {
+            if (preferPHT)
                 return program_header_table.Select(p => new Section {
                     VirtualStart = conv.ULong(p.p_vaddr),
                     VirtualEnd   = conv.ULong(p.p_vaddr) + conv.ULong(p.p_memsz) - 1,
@@ -591,7 +632,6 @@ namespace Il2CppInspector
 
                     Name         = string.Empty
                 });
-            }
 
             // Return sections list
             return section_header_table.Select(s => new Section {
