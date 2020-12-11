@@ -559,15 +559,17 @@ namespace Il2CppInspector
                             break;
                         }
 
-                        // Metadata usages always map to BSS sections
-                        // TODO: For images dumped from memory, metadata usages must always map to data sections
-                        if (dataPtrsCount == 0 && limit / (Image.Bits / 8) >= usages.Count) {
+                        // Metadata usages always map to BSS sections (dataPtrsCount == 0)
+                        // For images dumped from memory, metadata usages must always map to data sections
+                        if ((dataPtrsCount == 0 && limit / (Image.Bits / 8) >= usages.Count)
+                            || dataPtrsCount >= usages.Count) {
 
-                            // No null pointers allowed
+                            // No null pointers allowed (this test only applies to non-dumped images)
                             if (ptrs.Take(usages.Count).All(p => p != 0ul)) {
 
-                                // All the pointers must map to a BSS section
+                                // For normal images, all the pointers must map to a BSS section
                                 // For PE files this relies on our section modding above
+                                // For dumped images, BSS sections are also data sections so we can use the same test
                                 var bssMappableCount = ptrs.Take(usages.Count).Count(p => bssSections.Any(s => p >= s.VirtualStart && p <= s.VirtualEnd));
 
                                 foundData.count = bssMappableCount;
