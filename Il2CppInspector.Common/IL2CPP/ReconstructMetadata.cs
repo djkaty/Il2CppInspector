@@ -309,49 +309,6 @@ namespace Il2CppInspector
             #endif
             #endregion
 
-            // Perform substitution
-            CodeRegistration.genericMethodPointers      = genericMethodPointers.Key;
-            CodeRegistration.genericMethodPointersCount = (ulong) genericMethodPointers.Value;
-            CodeRegistration.customAttributeGenerators  = customAttributeGenerators.Key;
-            CodeRegistration.customAttributeCount       = customAttributeGenerators.Value;
-            CodeRegistration.invokerPointers            = invokerPointers.Key;
-            CodeRegistration.invokerPointersCount       = (ulong) invokerPointers.Value;
-            CodeRegistration.pmethodPointers            = methodPointers.Key;
-            CodeRegistration.methodPointersCount        = (ulong) methodPointers.Value;
-
-            // Zero out any unprocessed items
-            CodeRegistration.reversePInvokeWrapperCount    = 0;
-            CodeRegistration.reversePInvokeWrappers        = 0;
-            CodeRegistration.delegateWrappersFromManagedToNativeCount = 0;
-            CodeRegistration.delegateWrappersFromManagedToNative      = 0;
-            CodeRegistration.marshalingFunctionsCount      = 0;
-            CodeRegistration.marshalingFunctions           = 0;
-            CodeRegistration.ccwMarshalingFunctionsCount   = 0;
-            CodeRegistration.ccwMarshalingFunctions        = 0;
-            CodeRegistration.unresolvedVirtualCallCount    = 0;
-            CodeRegistration.unresolvedVirtualCallPointers = 0;
-            CodeRegistration.interopDataCount              = 0;
-            CodeRegistration.interopData                   = 0;
-            CodeRegistration.guidCount                     = 0;
-            CodeRegistration.guids                         = 0;
-            CodeRegistration.windowsRuntimeFactoryCount    = 0;
-            CodeRegistration.windowsRuntimeFactoryTable    = 0;
-            CodeRegistration.codeGenModulesCount           = 0;
-            CodeRegistration.pcodeGenModules               = 0;
-
-            // Write changes to stream
-            using var sw = new BinaryObjectWriter(Image.Stream.BaseStream, Image.Stream.Endianness, true);
-            sw.Version = Image.Version;
-
-            // Set width of long (convert to sizeof(int) for 32-bit files)
-            if (Image.Bits == 32) {
-                sw.PrimitiveMappings.Add(typeof(long), typeof(int));
-                sw.PrimitiveMappings.Add(typeof(ulong), typeof(uint));
-            }
-
-            sw.WriteObject(Image.MapVATR(CodeRegistrationPointer), CodeRegistration);
-            isModified = true;
-
             // Things we need from Il2CppMetadataRegistration
 
             // genericInsts               -> list of Il2CppGenericInst* (argc is count of Il2CppType* at data pointer argv; datapoint = GenericParameterIndex)
@@ -602,7 +559,8 @@ namespace Il2CppInspector
                             break;
                         }
 
-                        // Metadata usages always map to BSS sections and has only a maximum of a small number of null pointers
+                        // Metadata usages always map to BSS sections
+                        // TODO: For images dumped from memory, metadata usages must always map to data sections
                         if (dataPtrsCount == 0 && limit / (Image.Bits / 8) >= usages.Count) {
 
                             // No null pointers allowed
@@ -752,7 +710,7 @@ namespace Il2CppInspector
             }
 
             #region Debugging validation checks
-            #if false
+#if false
             // Used on non-obfuscated binaries during development to confirm the output is correct
             if (types.ptr != MetadataRegistration.ptypes)
                 throw new Exception("Il2CppType** incorrect");
@@ -779,8 +737,44 @@ namespace Il2CppInspector
                 throw new Exception("Count of metadata usages incorrect");
             if (fieldOffsets.count != MetadataRegistration.fieldOffsetsCount)
                 throw new Exception("Count of field offsets incorrect");
-            #endif
+#endif
             #endregion
+
+            // Only update if we found everything
+            // On failure, Il2CppBinary will throw a NotSupportedException for us
+            if (types.count == -1 || genericInsts.count == -1 || methodSpecs.count == -1
+                || genericMethodTable.count == -1 || metadataUsages.count == -1 || fieldOffsets.count == -1)
+                return;
+
+            // Perform substitution
+            CodeRegistration.genericMethodPointers = genericMethodPointers.Key;
+            CodeRegistration.genericMethodPointersCount = (ulong) genericMethodPointers.Value;
+            CodeRegistration.customAttributeGenerators = customAttributeGenerators.Key;
+            CodeRegistration.customAttributeCount = customAttributeGenerators.Value;
+            CodeRegistration.invokerPointers = invokerPointers.Key;
+            CodeRegistration.invokerPointersCount = (ulong) invokerPointers.Value;
+            CodeRegistration.pmethodPointers = methodPointers.Key;
+            CodeRegistration.methodPointersCount = (ulong) methodPointers.Value;
+
+            // Zero out any unprocessed items
+            CodeRegistration.reversePInvokeWrapperCount = 0;
+            CodeRegistration.reversePInvokeWrappers = 0;
+            CodeRegistration.delegateWrappersFromManagedToNativeCount = 0;
+            CodeRegistration.delegateWrappersFromManagedToNative = 0;
+            CodeRegistration.marshalingFunctionsCount = 0;
+            CodeRegistration.marshalingFunctions = 0;
+            CodeRegistration.ccwMarshalingFunctionsCount = 0;
+            CodeRegistration.ccwMarshalingFunctions = 0;
+            CodeRegistration.unresolvedVirtualCallCount = 0;
+            CodeRegistration.unresolvedVirtualCallPointers = 0;
+            CodeRegistration.interopDataCount = 0;
+            CodeRegistration.interopData = 0;
+            CodeRegistration.guidCount = 0;
+            CodeRegistration.guids = 0;
+            CodeRegistration.windowsRuntimeFactoryCount = 0;
+            CodeRegistration.windowsRuntimeFactoryTable = 0;
+            CodeRegistration.codeGenModulesCount = 0;
+            CodeRegistration.pcodeGenModules = 0;
 
             // Perform substitution
             MetadataRegistration.ptypes                    = types.ptr;
@@ -805,7 +799,18 @@ namespace Il2CppInspector
             MetadataRegistration.methodReferences          = 0;
 
             // Write changes to stream
+            using var sw = new BinaryObjectWriter(Image.Stream.BaseStream, Image.Stream.Endianness, true);
+            sw.Version = Image.Version;
+
+            // Set width of long (convert to sizeof(int) for 32-bit files)
+            if (Image.Bits == 32) {
+                sw.PrimitiveMappings.Add(typeof(long), typeof(int));
+                sw.PrimitiveMappings.Add(typeof(ulong), typeof(uint));
+            }
+
+            sw.WriteObject(Image.MapVATR(CodeRegistrationPointer), CodeRegistration);
             sw.WriteObject(Image.MapVATR(MetadataRegistrationPointer), MetadataRegistration);
+            isModified = true;
 
             StatusUpdate("Analyzing IL2CPP image");
         }
