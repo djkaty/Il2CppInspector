@@ -178,12 +178,18 @@ namespace Il2CppInspector
                 Console.WriteLine("Decrypting strings...");
                 statusCallback?.Invoke(this, "Decrypting strings");
 
+                // There may be zero-padding at the end of the last string since counts seem to be word-aligned
+                // Find the true location one byte after the final character of the final string
+                var endOfStrings = Header.stringCount;
+                while (ReadByte(Header.stringOffset + endOfStrings - 1) == 0)
+                    endOfStrings--;
+
                 // Start again
                 Strings.Clear();
                 Position = Header.stringOffset;
 
                 // Read in all of the strings as if they are fixed length rather than null-terminated
-                foreach (var offset in stringOffsets.Zip(stringOffsets.Skip(1).Append(Header.stringCount), (a, b) => (current: a, next: b))) {
+                foreach (var offset in stringOffsets.Zip(stringOffsets.Skip(1).Append(endOfStrings), (a, b) => (current: a, next: b))) {
                     var encryptedString = ReadBytes(offset.next - offset.current - 1);
 
                     // The null terminator is the XOR key
