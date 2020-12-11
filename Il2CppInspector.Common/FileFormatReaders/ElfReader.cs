@@ -7,7 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -197,6 +196,11 @@ namespace Il2CppInspector
                 }
             }
 
+            // Dumped images must be rebased
+            if (isDumpedImage && !(LoadOptions?.ImageBase is ulong newImageBase)) {
+                throw new InvalidOperationException("To load a dumped ELF image, you must specify the image base virtual address");
+            }
+            
             // Get section name mappings if there are any
             // This is currently only used to defeat the XOR obfuscation handled below
             // Note: There can be more than one section with the same name, or unnamed; we take the first section with a given name
