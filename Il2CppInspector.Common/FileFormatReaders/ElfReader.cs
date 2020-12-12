@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
@@ -112,7 +113,7 @@ namespace Il2CppInspector
         private Dictionary<string, elf_shdr<TWord>> sectionByName = new Dictionary<string, elf_shdr<TWord>>();
         private List<(uint Start, uint End)> reverseMapExclusions = new List<(uint Start, uint End)>();
         private bool preferPHT = false;
-        private bool isDumpedImage = false;
+        private bool isMemoryImage = false;
 
         public ElfReader(Stream stream) : base(stream) { }
 
@@ -153,6 +154,10 @@ namespace Il2CppInspector
             if ((Elf) elf_header.m_arch != ArchClass)
                 return false;
 
+            // Relocations and rebasing will modify the stream - ensure it is non-destructive
+            if (!(BaseStream is MemoryStream))
+                throw new InvalidOperationException("Input stream to ElfReader must be a MemoryStream.");
+
             // Get PHT and SHT
             program_header_table = ReadArray<TPHdr>(conv.Long(elf_header.e_phoff), elf_header.e_phnum);
             section_header_table = ReadArray<elf_shdr<TWord>>(conv.Long(elf_header.e_shoff), elf_header.e_shnum);
@@ -182,7 +187,7 @@ namespace Il2CppInspector
                 // No sections that map into memory - this is probably a dumped image
                 if (!shtShouldBeOrdered.Any()) {
                     Console.WriteLine("ELF binary appears to be a dumped memory image");
-                    isDumpedImage = true;
+                    isMemoryImage = true;
                     preferPHT = true;
                 }
 
@@ -197,10 +202,25 @@ namespace Il2CppInspector
             }
 
             // Dumped images must be rebased
-            if (isDumpedImage && !(LoadOptions?.ImageBase is ulong newImageBase)) {
-                throw new InvalidOperationException("To load a dumped ELF image, you must specify the image base virtual address");
+            if (isMemoryImage) {
+                if (!(LoadOptions?.ImageBase is ulong newImageBase))
+                    throw new InvalidOperationException("To load a dumped ELF image, you must specify the image base virtual address");
+
+                rebase(conv.FromULong(newImageBase));
             }
             
+            // Get dynamic table if it exists (must be done after rebasing)
+            if (getProgramHeader(Elf.PT_DYNAMIC) is TPHdr PT_DYNAMIC)
+                dynamic_table = ReadArray<elf_dynamic<TWord>>(conv.Long(PT_DYNAMIC.p_offset), (int) (conv.Long(PT_DYNAMIC.p_filesz) / Sizeof(typeof(elf_dynamic<TWord>))));
+
+            // Get offset of code section
+            var codeSegment = program_header_table.First(x => ((Elf) x.p_flags & Elf.PF_X) == Elf.PF_X);
+            GlobalOffset = conv.ULong(conv.Sub(codeSegment.p_vaddr, codeSegment.p_offset));
+
+            // Nothing more to do if the image is a memory dump (no section names, relocations or decryption)
+            if (isMemoryImage)
+                return true;
+
             // Get section name mappings if there are any
             // This is currently only used to defeat the XOR obfuscation handled below
             // Note: There can be more than one section with the same name, or unnamed; we take the first section with a given name
@@ -211,14 +231,6 @@ namespace Il2CppInspector
                     sectionByName.TryAdd(name, section);
                 }
             }
-
-            // Get dynamic table if it exists
-            if (getProgramHeader(Elf.PT_DYNAMIC) is TPHdr PT_DYNAMIC)
-                dynamic_table = ReadArray<elf_dynamic<TWord>>(conv.Long(PT_DYNAMIC.p_offset), (int) (conv.Long(PT_DYNAMIC.p_filesz) / Sizeof(typeof(elf_dynamic<TWord>))));
-
-            // Get offset of code section
-            var codeSegment = program_header_table.First(x => ((Elf) x.p_flags & Elf.PF_X) == Elf.PF_X);
-            GlobalOffset = conv.ULong(conv.Sub(codeSegment.p_vaddr, codeSegment.p_offset));
 
             // Find all relocations; target address => (rela header (rels are converted to rela), symbol table base address, is rela?)
             var rels = new HashSet<ElfReloc>();
@@ -262,10 +274,6 @@ namespace Il2CppInspector
             }
 
             // Process relocations
-            // WARNING: This modifies the stream passed in the constructor
-            if (BaseStream is FileStream)
-                throw new InvalidOperationException("Input stream to ElfReader is a file. Please supply a mutable stream source.");
-
             using var writer = new BinaryWriter(BaseStream, Encoding.Default, true);
             var relsz = Sizeof(typeof(TSym));
 
@@ -536,8 +544,42 @@ namespace Il2CppInspector
             }
         }
 
-        public override Dictionary<string, Symbol> GetSymbolTable() => symbolTable;
-        public override IEnumerable<Export> GetExports() => exports;
+        // Rebase the image to a new virtual address
+        private void rebase(TWord imageBase) {
+            // Rebase PHT
+            foreach (var segment in program_header_table) {
+                segment.p_offset = segment.p_vaddr;
+                segment.p_vaddr = conv.Add(segment.p_vaddr, imageBase);
+                segment.p_filesz = segment.p_memsz;
+            }
+
+            // Rewrite to stream
+            using var writer = new BinaryObjectWriter(BaseStream, Endianness, true);
+            writer.WriteArray(conv.Long(elf_header.e_phoff), program_header_table);
+            IsModified = true;
+
+            // Rebase dynamic table if it exists
+            // Note we have to rebase the PHT first to get the correct location to read this
+            if (!(getProgramHeader(Elf.PT_DYNAMIC) is TPHdr PT_DYNAMIC))
+                return;
+
+            var dt = ReadArray<elf_dynamic<TWord>>(conv.Long(PT_DYNAMIC.p_offset), (int) (conv.Long(PT_DYNAMIC.p_filesz) / Sizeof(typeof(elf_dynamic<TWord>))));
+
+            // Every table containing virtual address pointers
+            // https://docs.oracle.com/cd/E19683-01/817-3677/chapter6-42444/index.html
+            var tablesToRebase = new [] {
+                Elf.DT_PLTGOT, Elf.DT_HASH, Elf.DT_STRTAB, Elf.DT_SYMTAB, Elf.DT_RELA,
+                Elf.DT_INIT, Elf.DT_FINI, Elf.DT_REL, Elf.DT_JMPREL, Elf.DT_INIT_ARRAY, Elf.DT_FINI_ARRAY,
+                Elf.DT_PREINIT_ARRAY, Elf.DT_MOVETAB, Elf.DT_VERDEF, Elf.DT_VERNEED, Elf.DT_SYMINFO
+            };
+
+            // Rebase dynamic tables
+            foreach (var section in dt.Where(x => tablesToRebase.Contains((Elf) conv.ULong(x.d_tag))))
+                section.d_un = conv.Add(section.d_un, imageBase);
+
+            // Rewrite to stream
+            writer.WriteArray(conv.Long(PT_DYNAMIC.p_offset), dt);
+        }
 
         private void processSymbols() {
             StatusUpdate("Processing symbols");
@@ -604,9 +646,14 @@ namespace Il2CppInspector
             exports = exportTable.Values.ToList();
         }
 
+        public override Dictionary<string, Symbol> GetSymbolTable() => symbolTable;
+        public override IEnumerable<Export> GetExports() => exports;
+
         public override uint[] GetFunctionTable() {
             // INIT_ARRAY contains a list of pointers to initialization functions (not all functions in the binary)
             // INIT_ARRAYSZ contains the size of INIT_ARRAY
+            if (getDynamic(Elf.DT_INIT_ARRAY) == null || getDynamic(Elf.DT_INIT_ARRAYSZ) == null)
+                return Array.Empty<uint>();
 
             var init = MapVATR(conv.ULong(getDynamic(Elf.DT_INIT_ARRAY).d_un));
             var size = getDynamic(Elf.DT_INIT_ARRAYSZ).d_un;

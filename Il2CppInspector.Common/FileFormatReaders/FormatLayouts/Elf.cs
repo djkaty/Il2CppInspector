@@ -32,7 +32,6 @@ namespace Il2CppInspector
         // PHTs
         PT_LOAD = 1,
         PT_DYNAMIC = 2,
-        DT_PLTGOT = 3,
 
         PF_X = 1,
         PF_W = 2,
@@ -68,17 +67,27 @@ namespace Il2CppInspector
         SHF_EXECINSTR = 4,
 
         // dynamic sections
+        DT_PLTGOT = 3,
+        DT_HASH = 4,
         DT_STRTAB = 5,
         DT_SYMTAB = 6,
         DT_RELA = 7,
         DT_RELASZ = 8,
         DT_RELAENT = 9,
         DT_INIT = 12,
+        DT_FINI = 13,
         DT_REL = 17,
         DT_RELSZ = 18,
         DT_RELENT = 19,
+        DT_JMPREL = 23,
         DT_INIT_ARRAY = 25,
+        DT_FINI_ARRAY = 26,
         DT_INIT_ARRAYSZ = 27,
+        DT_PREINIT_ARRAY = 32,
+        DT_MOVETAB = 0x6ffffefe,
+        DT_VERDEF = 0x6ffffffc,
+        DT_VERNEED = 0x6ffffffe,
+        DT_SYMINFO = 0x6ffffeff,
 
         // relocation types
         R_ARM_ABS32 = 2,
@@ -152,19 +161,18 @@ namespace Il2CppInspector
     internal interface Ielf_phdr<TWord> where TWord : struct
     {
         uint p_type { get; }
-        TWord p_offset { get; }
-        TWord p_filesz { get; }
+        TWord p_offset { get; set; }
+        TWord p_filesz { get; set; }
         TWord p_memsz { get; }
-        TWord p_vaddr { get; }
+        TWord p_vaddr { get; set; }
         uint p_flags { get; }
     }
 
-    internal class elf_32_phdr : Ielf_phdr<uint>
-    {
+    internal class elf_32_phdr : Ielf_phdr<uint> {
         public uint p_type => f_p_type;
-        public uint p_offset => f_p_offset;
-        public uint p_filesz => f_p_filesz;
-        public uint p_vaddr => f_p_vaddr;
+        public uint p_offset { get => f_p_offset; set => f_p_offset = value; }
+        public uint p_filesz { get => f_p_filesz; set => f_p_filesz = value; }
+        public uint p_vaddr { get => f_p_vaddr; set => f_p_vaddr = value; }
         public uint p_flags => f_p_flags;
         public uint p_memsz => f_p_memsz;
 
@@ -181,10 +189,10 @@ namespace Il2CppInspector
     internal class elf_64_phdr : Ielf_phdr<ulong>
     {
         public uint p_type => f_p_type;
-        public ulong p_offset => f_p_offset;
-        public ulong p_filesz => f_p_filesz;
+        public ulong p_offset { get => f_p_offset; set => f_p_offset = value; }
+        public ulong p_filesz { get => f_p_filesz; set => f_p_filesz = value; }
         public ulong p_memsz => f_p_memsz;
-        public ulong p_vaddr => f_p_vaddr;
+        public ulong p_vaddr { get => f_p_vaddr; set => f_p_vaddr = value; }
         public uint p_flags => f_p_flags;
 
         public uint f_p_type;
