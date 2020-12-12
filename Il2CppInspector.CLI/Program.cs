@@ -26,6 +26,9 @@ namespace Il2CppInspector.CLI
             [Option('m', "metadata", Required = false, HelpText = "IL2CPP metadata file input (ignored for APK/AAB/IPA)", Default = "global-metadata.dat")]
             public string MetadataFile { get; set; }
 
+            [Option("image-base", Required = false, HelpText = "For ELF memory dumps, the image base address in hex (ignored for standard ELF files and other file formats)")]
+            public string ElfImageBaseString { get; set; }
+
             [Option('c', "cs-out", Required = false, HelpText = "C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)", Default = "types.cs")]
             public string CSharpOutPath { get; set; }
 
@@ -136,6 +139,18 @@ namespace Il2CppInspector.CLI
                 return 1;
             }
 
+            // Check image base
+            var loadOptions = new LoadOptions();
+
+            if (!string.IsNullOrEmpty(options.ElfImageBaseString)) {
+                try {
+                    loadOptions.ImageBase = Convert.ToUInt64(options.ElfImageBaseString, 16);
+                } catch (Exception ex) when (ex is ArgumentException || ex is FormatException || ex is OverflowException) {
+                    Console.Error.WriteLine("Image base must be a 32 or 64-bit hex value (optionally starting with '0x')");
+                    return 1;
+                }
+            }
+
             // Check excluded namespaces
             if (options.ExcludedNamespaces.Count() == 1 && options.ExcludedNamespaces.First().ToLower() == "none")
                 options.ExcludedNamespaces = new List<string>();
@@ -190,7 +205,7 @@ namespace Il2CppInspector.CLI
             using (new Benchmark("Analyze IL2CPP data")) {
 
                 try {
-                    il2cppInspectors = Il2CppInspector.LoadFromPackage(options.BinaryFiles); // TODO: loadOptions
+                    il2cppInspectors = Il2CppInspector.LoadFromPackage(options.BinaryFiles, loadOptions);
                     isExtractedFromPackage = true;
                 }
                 catch (Exception ex) {
@@ -207,7 +222,7 @@ namespace Il2CppInspector.CLI
                     }
 
                     try {
-                        il2cppInspectors = Il2CppInspector.LoadFromFile(options.BinaryFiles.First(), options.MetadataFile); // TODO: loadOptions
+                        il2cppInspectors = Il2CppInspector.LoadFromFile(options.BinaryFiles.First(), options.MetadataFile, loadOptions);
                     }
                     catch (Exception ex) {
                         Console.Error.WriteLine(ex.Message);
