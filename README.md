@@ -27,6 +27,7 @@ Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the
   - Striped XOR encryption style used in games such as [Garena Free Fire](https://play.google.com/store/apps/details?id=com.dts.freefireth&hl=en_US&gl=US), [League of Legends: Wild Rift](https://play.google.com/store/apps/details?id=com.riotgames.league.wildrift&hl=en_US&gl=US) and [Legends of Runeterra](https://play.google.com/store/apps/details?id=com.riotgames.legendsofruneterra&hl=en_US&gl=US)
   - String encryption style used in games such as [League of Legends: Wild Rift](https://play.google.com/store/apps/details?id=com.riotgames.league.wildrift&hl=en_US&gl=US)
   - Reordering of registration metadata used in titles by Riot Games
+  - ROT encryption of API export names
   - Deobfuscated metadata and binary files can be saved back to disk
 
 * Works on Windows, MacOS X and Linux. **Integrated GUI** for Windows users with drag & drop support
@@ -49,6 +50,7 @@ File format and architecture support:
 
 * Supports ELF (Android .so), PE (Windows .exe), Mach-O (Apple iOS/Mac), Universal Binary (Fat Mach-O) and FSELF (PlayStation 4 .prx/.sprx) file formats
 * Also supports single and split APK (Android), AAB (Android App Bundle), XAPK, Zip and decrypted IPA (iOS) application package files as input
+* Supports ELF files created from memory dumps
 * 32-bit and 64-bit support for all file formats
 * Supports ARMv7, Thumb-2, ARMv8 (A64), x86 and x64 architectures regardless of file format
 * Supports applications created with Unity 5.3.0 onwards (full IL2CPP version table below)
@@ -120,6 +122,8 @@ File format and architecture are automatically detected.
 
   -m, --metadata              (Default: global-metadata.dat) IL2CPP metadata file input (ignored for APK/AAB/IPA)
 
+  --image-base                For ELF memory dumps, the image base address in hex (ignored for standard ELF files and other file formats)
+
   -c, --cs-out                (Default: types.cs) C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)
 
   -p, --py-out                (Default: il2cpp.py) Python script output file
@@ -167,11 +171,15 @@ File format and architecture are automatically detected.
   --version                   Display version information.
 ```
 
-For Apple Universal Binaries and APKs with binaries for multiple architectures, multiple output files will be generated, with each filename besides the first suffixed by the index of the image in the binary. Unsupported images will be skipped.
+#### File format considerations
 
-For IPA packages, the executable must be decrypted first. Encrypted executable binaries are not supported.
+**Apple Universal Binaries and APKs/XAPKs with binaries for multiple architectures**: multiple output files will be generated, with each filename besides the first suffixed by the index of the image in the binary. Unsupported images will be skipped.
 
-For split APK packages, specify a list of APK files with a space between each filename.
+**IPA packages**: the executable must be decrypted first. Encrypted executable binaries are not supported.
+
+**Split APK packages**: specify a list of APK files with a space between each filename.
+
+**ELF binaries created from memory dumps**: specify the image base (in hex) using `--image-base`. If the supplied image base is incorrect, the application may crash.
 
 ### Creating C# prototypes
 
