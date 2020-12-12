@@ -186,8 +186,12 @@ namespace Il2CppInspector
 
                 // No sections that map into memory - this is probably a dumped image
                 if (!shtShouldBeOrdered.Any()) {
-                    Console.WriteLine("ELF binary appears to be a dumped memory image");
-                    isMemoryImage = true;
+
+                    // If the first file offset of the first PHT is zero, assume a dumped image
+                    if (conv.ULong(program_header_table[0].p_vaddr) == 0ul) {
+                        Console.WriteLine("ELF binary appears to be a dumped memory image");
+                        isMemoryImage = true;
+                    }
                     preferPHT = true;
                 }
 
@@ -227,8 +231,13 @@ namespace Il2CppInspector
             if (elf_header.e_shtrndx < section_header_table.Length) {
                 var pStrtab = section_header_table[elf_header.e_shtrndx].sh_offset;
                 foreach (var section in section_header_table) {
-                    var name = ReadNullTerminatedString(conv.Long(pStrtab) + section.sh_name);
-                    sectionByName.TryAdd(name, section);
+                    try {
+                        var name = ReadNullTerminatedString(conv.Long(pStrtab) + section.sh_name);
+                        sectionByName.TryAdd(name, section);
+                    } catch (ArgumentOutOfRangeException) {
+                        // Names have been stripped, maybe previously dumped image
+                        break;
+                    }
                 }
             }
 
@@ -626,7 +635,13 @@ namespace Il2CppInspector
                 var symbol_table = ReadArray<TSym>(conv.Long(pTab.offset), conv.Int(pTab.count));
 
                 foreach (var symbol in symbol_table) {
-                    var name = ReadNullTerminatedString(conv.Long(pTab.strings) + symbol.st_name);
+                    string name = string.Empty;
+                    try {
+                        name = ReadNullTerminatedString(conv.Long(pTab.strings) + symbol.st_name);
+                    } catch (ArgumentOutOfRangeException) {
+                        // Name has been stripped, maybe previously dumped image
+                        continue;
+                    }
 
                     var type = symbol.type == Elf.STT_FUNC? SymbolType.Function
                                : symbol.type == Elf.STT_OBJECT || symbol.type == Elf.STT_COMMON? SymbolType.Name
