@@ -72,6 +72,15 @@ namespace Il2CppInspectorGUI
         }
 
         /// <summary>
+        /// Open Load Options dialog
+        /// </summary>
+        private void BtnLoadOptions_Click(object sender, RoutedEventArgs e) {
+            var loadOptionsDlg = new LoadOptionsDialog();
+            loadOptionsDlg.Owner = this;
+            loadOptionsDlg.ShowDialog();
+        }
+
+        /// <summary>
         /// Select global metadata file
         /// </summary>
         private async void BtnSelectMetadataFile_OnClick(object sender, RoutedEventArgs e) {
@@ -114,19 +123,19 @@ namespace Il2CppInspectorGUI
             };
 
             if (openFileDialog.ShowDialog() == true) {
-                await LoadBinaryAsync(openFileDialog.FileName, null); // TODO: loadOptions
+                await LoadBinaryAsync(openFileDialog.FileName);
             }
         }
 
         // Load the binary file
-        private async Task LoadBinaryAsync(string filename, LoadOptions loadOptions) {
+        private async Task LoadBinaryAsync(string filename) {
             var app = (App) Application.Current;
 
             areaBusyIndicator.Visibility = Visibility.Visible;
             btnSelectBinaryFile.Visibility = Visibility.Hidden;
 
             // Load the binary file
-            if (await app.LoadBinaryAsync(filename, loadOptions)) {
+            if (await app.LoadBinaryAsync(filename)) {
                 // Binary loaded successfully
                 areaBusyIndicator.Visibility = Visibility.Hidden;
 
@@ -151,20 +160,20 @@ namespace Il2CppInspectorGUI
             };
 
             if (openFileDialog.ShowDialog() == true) {
-                await LoadPackageAsync(openFileDialog.FileNames, null); // TODO: loadOptions
+                await LoadPackageAsync(openFileDialog.FileNames);
             }
         }
 
         // Load the package file
-        private async Task LoadPackageAsync(string filename, LoadOptions loadOptions) => await LoadPackageAsync(new[] { filename }, loadOptions);
-        private async Task LoadPackageAsync(IEnumerable<string> filenames, LoadOptions loadOptions) {
+        private async Task LoadPackageAsync(string filename) => await LoadPackageAsync(new[] { filename });
+        private async Task LoadPackageAsync(IEnumerable<string> filenames) {
             var app = (App) Application.Current;
 
             areaBusyIndicator.Visibility = Visibility.Visible;
             grdFirstPage.Visibility = Visibility.Hidden;
 
             // Load the package
-            if (await app.LoadPackageAsync(filenames, loadOptions)) {
+            if (await app.LoadPackageAsync(filenames)) {
                 // Package loaded successfully
                 areaBusyIndicator.Visibility = Visibility.Hidden;
 
@@ -185,6 +194,7 @@ namespace Il2CppInspectorGUI
             lstImages.ItemsSource = null;
             btnSelectBinaryFile.Visibility = Visibility.Hidden;
             grdFirstPage.Visibility = Visibility.Visible;
+            ((App) Application.Current).ResetLoadOptions();
         }
 
         /// <summary>
@@ -594,7 +604,7 @@ namespace Il2CppInspectorGUI
                                 break;
 
                             case var s when s.EndsWith(".apk") || s.EndsWith(".aab") || s.EndsWith(".ipa") || s.EndsWith(".xapk") || s.EndsWith(".zip"):
-                                await LoadPackageAsync(s, null); // TODO: loadOptions
+                                await LoadPackageAsync(s);
                                 break;
                         }
                     }
@@ -607,17 +617,17 @@ namespace Il2CppInspectorGUI
 
                         // Only load binary if metadata was successful
                         if (btnSelectBinaryFile.Visibility == Visibility.Visible)
-                            await LoadBinaryAsync(files[binaryIndex], null); // TODO: loadOptions
+                            await LoadBinaryAsync(files[binaryIndex]);
                     }
                     // Split APK (files.Length >= 2)
                     else {
-                        await LoadPackageAsync(files, null); // TODO: loadOptions
+                        await LoadPackageAsync(files);
                     }
                 }
                 // Binary (on 2nd page)
                 else if (btnSelectBinaryFile.Visibility == Visibility.Visible)
                     if (files.Length == 1)
-                        await LoadBinaryAsync(files[0], null); // TODO: loadOptions
+                        await LoadBinaryAsync(files[0]);
             }
         }
 

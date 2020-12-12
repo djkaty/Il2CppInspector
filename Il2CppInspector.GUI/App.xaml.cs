@@ -34,6 +34,8 @@ namespace Il2CppInspectorGUI
             }
         }
 
+        public LoadOptions LoadOptions { get; private set; } = null;
+
         public List<AppModel> AppModels { get; } = new List<AppModel>();
 
         public Exception LastException { get; private set; }
@@ -43,8 +45,14 @@ namespace Il2CppInspectorGUI
 
         private void StatusUpdate(object sender, string status) => OnStatusUpdate?.Invoke(sender, status);
 
+        public void ResetLoadOptions() {
+            LoadOptions = new LoadOptions {
+                ImageBase = 0ul
+            };
+        }
+
         // Attempt to load an IL2CPP application package (APK or IPA)
-        public async Task<bool> LoadPackageAsync(IEnumerable<string> packageFiles, LoadOptions loadOptions) {
+        public async Task<bool> LoadPackageAsync(IEnumerable<string> packageFiles) {
             IsExtractedFromPackage = false;
 
             try {
@@ -54,7 +62,7 @@ namespace Il2CppInspectorGUI
                 if (streams == null)
                     throw new InvalidOperationException("The supplied package is not an APK or IPA file, or does not contain a complete IL2CPP application");
 
-                IsExtractedFromPackage = await LoadMetadataAsync(streams.Value.Metadata) && await LoadBinaryAsync(streams.Value.Binary, loadOptions);
+                IsExtractedFromPackage = await LoadMetadataAsync(streams.Value.Metadata) && await LoadBinaryAsync(streams.Value.Binary);
                 return IsExtractedFromPackage;
             }
             catch (Exception ex) {
@@ -85,18 +93,18 @@ namespace Il2CppInspectorGUI
             });
 
         // Attempt to load an IL2CPP binary file
-        public async Task<bool> LoadBinaryAsync(string binaryFile, LoadOptions loadOptions) {
+        public async Task<bool> LoadBinaryAsync(string binaryFile) {
             var stream = new MemoryStream(await File.ReadAllBytesAsync(binaryFile));
-            return await LoadBinaryAsync(stream, loadOptions);
+            return await LoadBinaryAsync(stream);
         }
 
-        public Task<bool> LoadBinaryAsync(Stream binaryStream, LoadOptions loadOptions) =>
+        public Task<bool> LoadBinaryAsync(Stream binaryStream) =>
             Task.Run(() => {
                 try {
                     OnStatusUpdate?.Invoke(this, "Processing binary");
 
                     // This may throw other exceptions from the individual loaders as well
-                    IFileFormatReader stream = FileFormatReader.Load(binaryStream, loadOptions, StatusUpdate);
+                    IFileFormatReader stream = FileFormatReader.Load(binaryStream, LoadOptions, StatusUpdate);
                     if (stream == null) {
                         throw new InvalidOperationException("Could not determine the binary file format");
                     }

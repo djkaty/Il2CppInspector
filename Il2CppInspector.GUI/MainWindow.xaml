@@ -6,74 +6,11 @@
         xmlns:local="clr-namespace:Il2CppInspectorGUI"
         xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
         mc:Ignorable="d"
-        Title="Il2CppInspector" Height="850" Width="1080" Background="White"
+        Title="Il2CppInspector" Height="850" Width="1100" Background="White"
         WindowStartupLocation="CenterScreen"
         ContentRendered="MainWindow_OnContentRendered"
         Drop="MainWindow_OnDrop">
     <Window.Resources>
-        <!-- Our favourite colours -->
-        <SolidColorBrush x:Key="MicrosoftBlue" Color="#00A2ED"/>
-        <SolidColorBrush x:Key="MicrosoftGreen" Color="#7DB700"/>
-        <SolidColorBrush x:Key="WindowsBlue" Color="#357EC7"/>
-
-        <!-- Light box button -->
-        <Style x:Key="FocusVisual">
-            <Setter Property="Control.Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Rectangle Margin="2" StrokeDashArray="1 2" SnapsToDevicePixels="true" StrokeThickness="1" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
-        <SolidColorBrush x:Key="Button.Static.Border" Color="Gray"/>
-        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
-        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
-        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
-        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
-        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
-        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
-        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
-        <Style x:Key="LightBoxButton" TargetType="{x:Type Button}">
-            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
-            <Setter Property="Foreground" Value="{StaticResource MicrosoftBlue}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="1"/>
-            <Setter Property="FontSize" Value="28"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border x:Name="border" Background="White" BorderThickness="2" CornerRadius="2" BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="true">
-                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsDefaulted" Value="true">
-                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="true">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <!-- Image list -->
         <DataTemplate x:Key="ImageListTemplate">
             <TextBlock>
@@ -116,7 +53,7 @@
                 <RowDefinition Height ="40" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300"></ColumnDefinition>
+                <ColumnDefinition Width="330"></ColumnDefinition>
                 <ColumnDefinition Width="25"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
@@ -475,9 +412,10 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height ="*" />
                 <RowDefinition Height ="*" />
+                <RowDefinition Height ="Auto" />
             </Grid.RowDefinitions>
 
-            <Button Grid.Row="0" Name="btnSelectMetadataFile" Style="{StaticResource LightBoxButton}" Margin="100,100,100,50" Click="BtnSelectMetadataFile_OnClick">
+            <Button Grid.Row="0" Name="btnSelectMetadataFile" Style="{StaticResource LightBoxButton}" Margin="100,100,100,25" Click="BtnSelectMetadataFile_OnClick">
                 <TextBlock TextAlignment="Center">
                     <TextBlock FontSize="22">Option 1</TextBlock>
                     <LineBreak/>
@@ -486,7 +424,7 @@
                     <TextBlock FontSize="16">You can drag &amp; drop both the metadata and binary together</TextBlock>
                 </TextBlock>
             </Button>
-            <Button Grid.Row="1" Name="btnSelectPackageFile" Style="{StaticResource LightBoxButton}" Margin="100,50,100,100" Click="BtnSelectPackageFile_OnClick">
+            <Button Grid.Row="1" Name="btnSelectPackageFile" Style="{StaticResource LightBoxButton}" Margin="100,75,100,50" Click="BtnSelectPackageFile_OnClick">
                 <TextBlock TextAlignment="Center">
                     <TextBlock FontSize="22">Option 2</TextBlock>
                     <LineBreak/>
@@ -495,11 +433,14 @@
                     <TextBlock FontSize="16">Encrypted IPA files are not supported</TextBlock>
                 </TextBlock>
             </Button>
+
+            <!-- Load options -->
+            <Button Grid.Row="2" Name="btnLoadOptions" Style="{StaticResource LightBoxButton}" Click="BtnLoadOptions_Click" Margin="0,0,10,10" Padding="5" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="18" Width="180" Content="Import options..."/>
         </Grid>
         <Button Name="btnSelectBinaryFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectBinaryFile_OnClick" Visibility="Hidden">Select or drag &amp; drop an IL2CPP binary file</Button>
 
         <!-- Back button -->
-        <Button Name="btnBack" Margin="7" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="18" Width="120" Click="BtnBack_OnClick" Content="&lt;&lt; Back">
+        <Button Name="btnBack" Margin="7" Padding="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="18" Width="120" Click="BtnBack_OnClick" Content="&lt;&lt; Back">
             <Button.Style>
                 <Style BasedOn="{StaticResource LightBoxButton}" TargetType="{x:Type Button}">
                     <Setter Property="Visibility" Value="Hidden"></Setter>

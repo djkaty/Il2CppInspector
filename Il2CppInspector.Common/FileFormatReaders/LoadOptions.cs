@@ -10,6 +10,6 @@ namespace Il2CppInspector
     public class LoadOptions
     {
         // For dumped ELF files, the virtual address to which we should rebase - ignored for other file types
-        public ulong? ImageBase;
+        public ulong? ImageBase { get; set; }
     }
 }
