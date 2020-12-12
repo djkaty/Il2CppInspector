@@ -18,7 +18,7 @@ namespace Il2CppInspector
     [TestFixture]
     public partial class TestRunner
     {
-        private void runTest(string testPath) {
+        private void runTest(string testPath, LoadOptions loadOptions = null) {
             // Android
             var testFile = testPath + @"\" + Path.GetFileName(testPath) + ".so";
             if (!File.Exists(testFile))
@@ -32,7 +32,7 @@ namespace Il2CppInspector
             if (!File.Exists(testFile))
                 testFile = testPath + @"\" + Path.GetFileName(testPath);
 
-            var inspectors = Il2CppInspector.LoadFromFile(testFile, testPath + @"\global-metadata.dat");
+            var inspectors = Il2CppInspector.LoadFromFile(testFile, testPath + @"\global-metadata.dat", loadOptions);
 
             // If null here, there was a problem parsing the files
             if (inspectors == null)
