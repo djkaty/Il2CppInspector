@@ -118,7 +118,7 @@ namespace Il2CppInspectorGUI
         /// </summary>
         private async void BtnSelectBinaryFile_OnClick(object sender, RoutedEventArgs e) {
             var openFileDialog = new OpenFileDialog {
-                Filter = "Binary executable file (*.exe;*.dll;*.so;*.bin;*.prx;*.sprx)|*.exe;*.dll;*.so;*.bin;*.prx;*.sprx|All files (*.*)|*.*",
+                Filter = "Binary executable file (*.exe;*.dll;*.so;*.bin;*.prx;*.sprx)|*.exe;*.dll;*.so;*.bin;*.prx;*.sprx|Linux process map file (*.txt)|*.txt|All files (*.*)|*.*",
                 CheckFileExists = true
             };
 
@@ -608,7 +608,7 @@ namespace Il2CppInspectorGUI
                                 break;
                         }
                     }
-                    // Metadata and binary
+                    // Metadata and binary/text
                     else if (files.Length == 2 && (files[0].ToLower().EndsWith(".dat") || files[1].ToLower().EndsWith(".dat"))) {
                         var metadataIndex = files[0].ToLower().EndsWith(".dat") ? 0 : 1;
                         var binaryIndex = 1 - metadataIndex;

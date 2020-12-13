@@ -437,7 +437,13 @@
             <!-- Load options -->
             <Button Grid.Row="2" Name="btnLoadOptions" Style="{StaticResource LightBoxButton}" Click="BtnLoadOptions_Click" Margin="0,0,10,10" Padding="5" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="18" Width="180" Content="Import options..."/>
         </Grid>
-        <Button Name="btnSelectBinaryFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectBinaryFile_OnClick" Visibility="Hidden">Select or drag &amp; drop an IL2CPP binary file</Button>
+        <Button Name="btnSelectBinaryFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectBinaryFile_OnClick" Visibility="Hidden">
+            <TextBlock TextAlignment="Center">
+                <TextBlock>Select or drag &amp; drop an IL2CPP binary file</TextBlock>
+                <LineBreak/>
+                <TextBlock FontSize="16">You can also use a Linux process map (eg. maps.txt from GameGuardian)</TextBlock>
+            </TextBlock>
+        </Button>
 
         <!-- Back button -->
         <Button Name="btnBack" Margin="7" Padding="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="18" Width="120" Click="BtnBack_OnClick" Content="&lt;&lt; Back">
