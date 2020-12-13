@@ -139,9 +139,13 @@ namespace Il2CppInspector.CLI
                 return 1;
             }
 
-            // Check image base
-            var loadOptions = new LoadOptions();
+            // Set load options
+            var loadOptions = new LoadOptions {
+                ImageBase = 0xffffffff_ffffffff,
+                BinaryFilePath = options.BinaryFiles.First()
+            };
 
+            // Check image base
             if (!string.IsNullOrEmpty(options.ElfImageBaseString)) {
                 try {
                     loadOptions.ImageBase = Convert.ToUInt64(options.ElfImageBaseString, 16);

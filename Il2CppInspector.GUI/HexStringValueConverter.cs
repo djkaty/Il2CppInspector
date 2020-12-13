@@ -20,7 +20,7 @@ namespace Il2CppInspector.GUI
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-            if (value == null || targetType != typeof(ulong?))
+            if (value == null || targetType != typeof(ulong))
                 return DependencyProperty.UnsetValue;
 
             try {

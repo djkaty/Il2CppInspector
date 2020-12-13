@@ -188,7 +188,7 @@ namespace Il2CppInspector
                 if (!shtShouldBeOrdered.Any()) {
 
                     // If the first file offset of the first PHT is zero, assume a dumped image
-                    if (conv.ULong(program_header_table[0].p_vaddr) == 0ul) {
+                    if (program_header_table.Any(t => conv.ULong(t.p_vaddr) == 0ul)) {
                         Console.WriteLine("ELF binary appears to be a dumped memory image");
                         isMemoryImage = true;
                     }
@@ -207,10 +207,10 @@ namespace Il2CppInspector
 
             // Dumped images must be rebased
             if (isMemoryImage) {
-                if (!(LoadOptions?.ImageBase is ulong newImageBase))
+                if (LoadOptions.ImageBase == 0xffffffff_ffffffff)
                     throw new InvalidOperationException("To load a dumped ELF image, you must specify the image base virtual address");
 
-                rebase(conv.FromULong(newImageBase));
+                rebase(conv.FromULong(LoadOptions.ImageBase));
             }
             
             // Get dynamic table if it exists (must be done after rebasing)
@@ -667,7 +667,8 @@ namespace Il2CppInspector
         public override uint[] GetFunctionTable() {
             // INIT_ARRAY contains a list of pointers to initialization functions (not all functions in the binary)
             // INIT_ARRAYSZ contains the size of INIT_ARRAY
-            if (getDynamic(Elf.DT_INIT_ARRAY) == null || getDynamic(Elf.DT_INIT_ARRAYSZ) == null)
+            // INIT_ARRAY is probably broken in dumped images and resaved dumped images
+            if (getDynamic(Elf.DT_INIT_ARRAY) == null || getDynamic(Elf.DT_INIT_ARRAYSZ) == null || isMemoryImage)
                 return Array.Empty<uint>();
 
             var init = MapVATR(conv.ULong(getDynamic(Elf.DT_INIT_ARRAY).d_un));

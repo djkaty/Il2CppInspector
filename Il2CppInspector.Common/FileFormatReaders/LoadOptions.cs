@@ -10,6 +10,10 @@ namespace Il2CppInspector
     public class LoadOptions
     {
         // For dumped ELF files, the virtual address to which we should rebase - ignored for other file types
-        public ulong? ImageBase { get; set; }
+        // Use 2^64-1 to prevent rebasing on a dumped file
+        public ulong ImageBase { get; set; }
+
+        // For Linux process memory map inputs, we need the full path so we can find the .bin files
+        public string BinaryFilePath { get; set; }
     }
 }

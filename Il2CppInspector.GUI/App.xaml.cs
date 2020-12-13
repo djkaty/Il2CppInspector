@@ -34,7 +34,7 @@ namespace Il2CppInspectorGUI
             }
         }
 
-        public LoadOptions LoadOptions { get; private set; } = null;
+        public LoadOptions LoadOptions { get; private set; }
 
         public List<AppModel> AppModels { get; } = new List<AppModel>();
 
@@ -45,9 +45,15 @@ namespace Il2CppInspectorGUI
 
         private void StatusUpdate(object sender, string status) => OnStatusUpdate?.Invoke(sender, status);
 
+        // Initialization entry point
+        protected override void OnStartup(StartupEventArgs e) {
+            ResetLoadOptions();
+        }
+
         public void ResetLoadOptions() {
             LoadOptions = new LoadOptions {
-                ImageBase = 0ul
+                ImageBase = 0xffffffff_ffffffff,
+                BinaryFilePath = null
             };
         }
 
@@ -94,6 +100,9 @@ namespace Il2CppInspectorGUI
 
         // Attempt to load an IL2CPP binary file
         public async Task<bool> LoadBinaryAsync(string binaryFile) {
+            // For loaders which require the file path to find additional files
+            LoadOptions.BinaryFilePath = binaryFile;
+
             var stream = new MemoryStream(await File.ReadAllBytesAsync(binaryFile));
             return await LoadBinaryAsync(stream);
         }

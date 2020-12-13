@@ -25,9 +25,6 @@ namespace Il2CppInspector.GUI
             InitializeComponent();
 
             var app = (App) Application.Current;
-            if (app.LoadOptions == null)
-                app.ResetLoadOptions();
-
             DataContext = app.LoadOptions;
         }
 
