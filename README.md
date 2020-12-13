@@ -51,6 +51,7 @@ File format and architecture support:
 * Supports ELF (Android .so), PE (Windows .exe), Mach-O (Apple iOS/Mac), Universal Binary (Fat Mach-O) and FSELF (PlayStation 4 .prx/.sprx) file formats
 * Also supports single and split APK (Android), AAB (Android App Bundle), XAPK, Zip and decrypted IPA (iOS) application package files as input
 * Supports ELF files created from memory dumps
+* Supports Linux process maps + corresponding .bin files - such as those produced by GameGuardian - without the need to manually extract the IL2CPP binary
 * 32-bit and 64-bit support for all file formats
 * Supports ARMv7, Thumb-2, ARMv8 (A64), x86 and x64 architectures regardless of file format
 * Supports applications created with Unity 5.3.0 onwards (full IL2CPP version table below)
@@ -118,9 +119,9 @@ Run `Il2CppInspector.exe` at the command prompt.
 File format and architecture are automatically detected.
 
 ```
-  -i, --bin                   (Default: libil2cpp.so) IL2CPP binary, APK, AAB or IPA input file(s) (single file or comma-separated list for split APKs)
+  -i, --bin                   (Default: libil2cpp.so) IL2CPP binary, APK, AAB, XAPK, IPA, Zip or Linux process map text input file(s) (single file or comma-separated list for split APKs)
 
-  -m, --metadata              (Default: global-metadata.dat) IL2CPP metadata file input (ignored for APK/AAB/IPA)
+  -m, --metadata              (Default: global-metadata.dat) IL2CPP metadata file input (ignored for APK/AAB/XAPK/IPA/Zip)
 
   --image-base                For ELF memory dumps, the image base address in hex (ignored for standard ELF files and other file formats)
 
@@ -180,6 +181,8 @@ File format and architecture are automatically detected.
 **Split APK packages**: specify a list of APK files with a space between each filename.
 
 **ELF binaries created from memory dumps**: specify the image base (in hex) using `--image-base`. If the supplied image base is incorrect, the application may crash.
+
+**GameGuardian dumps (and other Linux process map dumps)**: you can use a `*-maps.txt` file in place of an IL2CPP binary. Il2CppInspector will scan the folder containing the maps file for matching `.bin` files and reassemble and rebase `libil2cpp.so` automatically. You therefore don't need to create the file manually or provide an image base address when using this kind of dump. For this to work, neither the text file nor any of the binary files must be renamed, and all must be in the same folder.
 
 ### Creating C# prototypes
 

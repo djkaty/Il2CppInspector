@@ -20,10 +20,10 @@ namespace Il2CppInspector.CLI
     {
         private class Options
         {
-            [Option('i', "bin", Required = false, Separator = ',', HelpText = "IL2CPP binary, APK, AAB or IPA input file(s) (single file or comma-separated list for split APKs)", Default = new[] { "libil2cpp.so" })]
+            [Option('i', "bin", Required = false, Separator = ',', HelpText = "IL2CPP binary, APK, AAB, XAPK, IPA, Zip or Linux process map text input file(s) (single file or comma-separated list for split APKs)", Default = new[] { "libil2cpp.so" })]
             public IEnumerable<string> BinaryFiles { get; set; }
 
-            [Option('m', "metadata", Required = false, HelpText = "IL2CPP metadata file input (ignored for APK/AAB/IPA)", Default = "global-metadata.dat")]
+            [Option('m', "metadata", Required = false, HelpText = "IL2CPP metadata file input (ignored for APK/AAB/XAPK/IPA/Zip)", Default = "global-metadata.dat")]
             public string MetadataFile { get; set; }
 
             [Option("image-base", Required = false, HelpText = "For ELF memory dumps, the image base address in hex (ignored for standard ELF files and other file formats)")]
