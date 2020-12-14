@@ -31,6 +31,15 @@ namespace Il2CppInspector
             // iOS
             if (!File.Exists(testFile))
                 testFile = testPath + @"\" + Path.GetFileName(testPath);
+            // Linux process map
+            if (!File.Exists(testFile))
+                testFile = Directory.GetFiles(testPath, "*-maps.txt").FirstOrDefault();
+
+            // Set load options
+            if (loadOptions == null)
+                loadOptions = new LoadOptions();
+
+            loadOptions.BinaryFilePath = testFile;
 
             var inspectors = Il2CppInspector.LoadFromFile(testFile, testPath + @"\global-metadata.dat", loadOptions);
 
