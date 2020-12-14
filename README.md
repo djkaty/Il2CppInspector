@@ -23,6 +23,7 @@ Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the
 * Supports **all major file formats and processor architectures**
 
 * Defeats certain types of obfuscation
+  - Most types of packed PE files (Windows DLLs)
   - XOR encryption style used in games such as [Arknights](https://play.google.com/store/apps/details?id=com.YoStarEN.Arknights&hl=en_US&gl=US) and [Call of Duty: Mobile](https://play.google.com/store/apps/details?id=com.activision.callofduty.shooter&hl=en_US&gl=US)
   - Striped XOR encryption style used in games such as [Garena Free Fire](https://play.google.com/store/apps/details?id=com.dts.freefireth&hl=en_US&gl=US), [League of Legends: Wild Rift](https://play.google.com/store/apps/details?id=com.riotgames.league.wildrift&hl=en_US&gl=US) and [Legends of Runeterra](https://play.google.com/store/apps/details?id=com.riotgames.legendsofruneterra&hl=en_US&gl=US)
   - String encryption style used in games such as [League of Legends: Wild Rift](https://play.google.com/store/apps/details?id=com.riotgames.league.wildrift&hl=en_US&gl=US)
