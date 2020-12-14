@@ -1126,7 +1126,7 @@ namespace Il2CppTests.TestSources
 			public void secondGenericFunc(T1 t1, T2 t2) {}
 		}
 	
-		public delegate void callit(int x); // TypeDefIndex: 2889; 0x00000001804D2260-0x00000001804D98D0
+		public delegate void callit(int x); // TypeDefIndex: 2889; 0x00000001804D2260-0x00000001804D2540
 	
 		// Constructors
 		public TestVTable() {} // 0x0000000180124B10-0x0000000180124B20
