@@ -16,6 +16,10 @@ $cpp2 = (gci "$PSScriptRoot/TestBinaries/*/test-cpp-result-1/appdata/*" -Filter 
 # Get path to expected test results
 $results = "$PSScriptRoot/TestExpectedResults"
 
+# Wipe existing results
+rm -Recurse -Force $results >$null
+mkdir $results
+
 $cs | % {
 	$target = $results + "/" + (Split-Path -Path (Split-Path -Path $_) -Leaf) + ".cs"
 	cp $_ -Destination $target -Force
