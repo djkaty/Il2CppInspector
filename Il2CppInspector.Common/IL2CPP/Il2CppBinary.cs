@@ -95,12 +95,16 @@ namespace Il2CppInspector
         protected Il2CppBinary(IFileFormatReader stream, EventHandler<string> statusCallback = null) {
             Image = stream;
             OnStatusUpdate = statusCallback;
+
+            StatusUpdate($"Analyzing IL2CPP data for {Image.Format}/{Image.Arch} image");
             DiscoverAPIExports();
         }
 
         protected Il2CppBinary(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null) {
             Image = stream;
             OnStatusUpdate = statusCallback;
+
+            StatusUpdate($"Analyzing IL2CPP data for {Image.Format}/{Image.Arch} image");
             DiscoverAPIExports();
             PrepareMetadata(codeRegistration, metadataRegistration);
         }
@@ -123,8 +127,12 @@ namespace Il2CppInspector
 
         // Load binary without a global-metadata.dat available
         public static Il2CppBinary Load(IFileFormatReader stream, double metadataVersion, EventHandler<string> statusCallback = null) {
-            var inst = LoadImpl(stream, statusCallback);
-            return inst.FindRegistrationStructs(metadataVersion) ? inst : null;
+            foreach (var loadedImage in stream.TryNextLoadStrategy()) {
+                var inst = LoadImpl(stream, statusCallback);
+                if (inst.FindRegistrationStructs(metadataVersion))
+                    return inst;
+            }
+            return null;
         }
 
         // Load binary with a global-metadata.dat available
@@ -133,8 +141,12 @@ namespace Il2CppInspector
         // Metadata will be used to try to find the required structures with data analysis
         // If it is not specified, data analysis will not be performed
         public static Il2CppBinary Load(IFileFormatReader stream, Metadata metadata, EventHandler<string> statusCallback = null) {
-            var inst = LoadImpl(stream, statusCallback);
-            return inst.FindRegistrationStructs(metadata) ? inst : null;
+            foreach (var loadedImage in stream.TryNextLoadStrategy()) {
+                var inst = LoadImpl(stream, statusCallback);
+                if (inst.FindRegistrationStructs(metadata))
+                    return inst;
+            }
+            return null;
         }
 
         // Save binary to file, overwriting if necessary
@@ -146,24 +158,24 @@ namespace Il2CppInspector
         }
 
         // Initialize binary without a global-metadata.dat available
-        public bool FindRegistrationStructs(double metadataVersion, EventHandler<string> statusCallback = null) {
+        public bool FindRegistrationStructs(double metadataVersion) {
             Image.Version = metadataVersion;
 
-            if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode()) is var ptrs))
+            if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode()) is (ulong code, ulong meta)))
                 return false;
 
-            PrepareMetadata(ptrs.Value.Item1, ptrs.Value.Item2);
+            PrepareMetadata(code, meta);
             return true;
         }
 
         // Initialize binary with a global-metadata.dat available
-        public bool FindRegistrationStructs(Metadata metadata, EventHandler<string> statusCallback = null) {
+        public bool FindRegistrationStructs(Metadata metadata) {
             Image.Version = metadata.Version;
 
-            if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode() ?? FindMetadataFromData(metadata)) is var ptrs))
+            if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode() ?? FindMetadataFromData(metadata)) is (ulong code, ulong meta)))
                 return false;
 
-            PrepareMetadata(ptrs.Value.Item1, ptrs.Value.Item2, metadata);
+            PrepareMetadata(code, meta);
             return true;
         }
 

@@ -124,8 +124,6 @@ namespace Il2CppInspectorGUI
                     // Multi-image binaries may contain more than one Il2Cpp image
                     AppModels.Clear();
                     foreach (var image in stream.Images) {
-                        OnStatusUpdate?.Invoke(this, $"Analyzing IL2CPP data for {image.Format}/{image.Arch} image");
-
                         // Architecture-agnostic load attempt
                         try {
                             // If we can't load the IL2CPP data here, it's probably packed or obfuscated; ignore it

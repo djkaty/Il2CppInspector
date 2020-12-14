@@ -21,15 +21,16 @@ namespace Il2CppInspector
         long Length { get; }
         uint NumImages { get; }
         string DefaultFilename { get; }
-        bool IsModified { get; }
-        IEnumerable<IFileFormatReader> Images { get; }
-        IFileFormatReader this[uint index] { get; }
+        bool IsModified { get; } 
+        IEnumerable<IFileFormatReader> Images { get; } // Each child image of this object (eg. 32/64-bit versions in Fat MachO file)
+        IFileFormatReader this[uint index] { get; } // With no additional override, one object = one file, this[0] == this
         long Position { get; set; }
         string Format { get; }
         string Arch { get; }
         int Bits { get; }
         ulong GlobalOffset { get; } // The virtual address where the code section (.text) would be loaded in memory
         ulong ImageBase { get; } // The virtual address of where the image would be loaded in memory (same as GlobalOffset except for PE)
+        IEnumerable<IFileFormatReader> TryNextLoadStrategy(); // Some images can be loaded multiple ways, eg. default, packed
         Dictionary<string, Symbol> GetSymbolTable();
         uint[] GetFunctionTable();
         IEnumerable<Export> GetExports();
@@ -184,8 +185,11 @@ namespace Il2CppInspector
         // Confirm file is valid and set up RVA mappings
         protected virtual bool Init() => throw new NotImplementedException();
 
-        // Choose a sub-binary within the image for multi-architecture binaries
+        // Choose an image within the file for multi-architecture binaries
         public virtual IFileFormatReader this[uint index] => (index == 0)? this : throw new IndexOutOfRangeException("Binary image index out of bounds");
+
+        // For images that can be loaded and then tested with Il2CppBinary in multiple ways, get the next possible version of the image
+        public virtual IEnumerable<IFileFormatReader> TryNextLoadStrategy() { yield return this; }
 
         // Find search locations in the symbol table for Il2Cpp data
         public virtual Dictionary<string, Symbol> GetSymbolTable() => new Dictionary<string, Symbol>();
