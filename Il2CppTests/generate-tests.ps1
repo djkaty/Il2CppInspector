@@ -1,4 +1,4 @@
-﻿# Copyright 2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+﻿# Copyright 2019-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 # All rights reserved.
 
 # Generate Tests.cs
@@ -19,10 +19,15 @@ namespace Il2CppInspector
 "@ > $testGen
 
 gci -Directory $bin | % {
+	$loadOptionsFile = "$($_.FullName)\loadoptions.txt"
+	$loadOptions = ""
+	if (Test-Path $loadOptionsFile -PathType Leaf) {
+		$loadOptions = cat $loadOptionsFile
+	}
 	echo @"
 		[Test]
 		public void $($_.Name -Replace '\W','_')() {
-			runTest(@"$($_.FullName)");
+			runTest(@"$($_.FullName)", new LoadOptions { $loadOptions });
 		}
 
 "@ >> $testGen
