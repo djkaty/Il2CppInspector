@@ -1,44 +1,42 @@
-﻿using System;
-using System.Collections;
+﻿/*
+    Copyright 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+
+    All rights reserved.
+*/
+
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
     partial class Il2CppBinary
     {
         // Find a sequence of bytes
-        private int FindBytes(byte[] blob, byte[] signature, int step = 1, int startOffset = 0) {
-            int sigMatch = 0;
-            int foundOffset = -1;
+        // Adapted from https://stackoverflow.com/a/332667
+        private int FindBytes(byte[] blob, byte[] signature, int requiredAlignment = 1, int startOffset = 0) {
+            var firstMatchByte = Array.IndexOf(blob, signature[0], startOffset);
+            var test = new byte[signature.Length];
 
-            for (int p = startOffset; p < blob.Length - signature.Length && foundOffset == -1; p += sigMatch == 0? step : 1) {
-                sigMatch = blob[p] != signature[sigMatch] ? 0 : ++sigMatch;
+            while (firstMatchByte >= 0 && firstMatchByte <= blob.Length - signature.Length) {
+                Buffer.BlockCopy(blob, firstMatchByte, test, 0, signature.Length);
+                if (test.SequenceEqual(signature) && firstMatchByte % requiredAlignment == 0)
+                    return firstMatchByte;
 
-                if (sigMatch == 0)
-                    p = p - p % step + step;
-
-                if (sigMatch == 0 && blob[p] == signature[0])
-                    sigMatch++;
-
-                if (sigMatch == signature.Length)
-                    foundOffset = p + 1 - signature.Length;
+                firstMatchByte = Array.IndexOf(blob, signature[0], firstMatchByte + 1);
             }
-            return foundOffset;
+            return -1;
         }
 
-        // Find all occurrences of a sequence of bytes
-        private IEnumerable<uint> FindAllBytes(byte[] blob, byte[] signature, int step = 0) {
-            var ptrs = new List<uint>();
+        // Find all occurrences of a sequence of bytes, using word alignment by default
+        private IEnumerable<uint> FindAllBytes(byte[] blob, byte[] signature, int alignment = 0) {
             var offset = 0;
             while (offset != -1) {
-                offset = FindBytes(blob, signature, step != 0 ? step : Image.Bits / 4, offset);
+                offset = FindBytes(blob, signature, alignment != 0 ? alignment : Image.Bits / 8, offset);
                 if (offset != -1) {
                     yield return (uint) offset;
-                    offset += Image.Bits / 4;
+                    offset += Image.Bits / 8;
                 }
             }
         }
