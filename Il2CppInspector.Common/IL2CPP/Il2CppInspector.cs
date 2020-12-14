@@ -581,8 +581,8 @@ namespace Il2CppInspector
                         processors.Add(new Il2CppInspector(binary, metadata));
                     }
                     else {
-                        Console.Error.WriteLine("Could not process IL2CPP image. This may mean the binary file is packed, encrypted or obfuscated, that the file is not an IL2CPP image or that Il2CppInspector was not able to automatically find the required data.");
-                        Console.Error.WriteLine("Please check the binary file in a disassembler to ensure that it is an unencrypted IL2CPP binary before submitting a bug report!");
+                        Console.Error.WriteLine("Could not process IL2CPP image. This may mean the binary file is packed, encrypted or obfuscated in a way Il2CppInspector cannot process, that the file is not an IL2CPP image or that Il2CppInspector was not able to automatically find the required data.");
+                        Console.Error.WriteLine("Please check the binary file in a disassembler to ensure that it is a valid IL2CPP binary before submitting a bug report!");
                     }
                 }
                 // Unknown architecture

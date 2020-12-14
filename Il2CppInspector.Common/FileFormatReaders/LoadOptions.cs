@@ -14,6 +14,8 @@ namespace Il2CppInspector
         public ulong ImageBase { get; set; }
 
         // For Linux process memory map inputs, we need the full path so we can find the .bin files
+        // For packed PE files, we need the full path to reload the file via Win32 API
+        // Ignored for all other cases
         public string BinaryFilePath { get; set; }
     }
 }

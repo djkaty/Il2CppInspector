@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2019 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -17,7 +17,10 @@ namespace Il2CppInspector
 
         IMAGE_SCN_CNT_CODE               = 0x00000020,
         IMAGE_SCN_CNT_INITIALIZED_DATA   = 0x00000040,
-        IMAGE_SCN_CNT_UNINITIALIZED_DATA = 0x00000080
+        IMAGE_SCN_CNT_UNINITIALIZED_DATA = 0x00000080,
+        IMAGE_SCN_MEM_EXECUTE            = 0x20000000,
+        IMAGE_SCN_MEM_READ               = 0x40000000,
+        IMAGE_SCN_MEM_WRITE              = 0x80000000
     }
 
 #pragma warning disable CS0649
@@ -38,7 +41,7 @@ namespace Il2CppInspector
     {
         PE ExpectedMagic { get; }
         ushort Magic { get; }
-        ulong ImageBase { get; }
+        ulong ImageBase { get; set; }
         uint BaseOfCode { get; }
         RvaEntry[] DataDirectory { get; }
     }
@@ -47,7 +50,7 @@ namespace Il2CppInspector
     {
         public PE ExpectedMagic => PE.IMAGE_NT_OPTIONAL_HDR32_MAGIC;
         public ushort Magic => f_Magic;
-        public ulong ImageBase => f_ImageBase;
+        public ulong ImageBase { get => f_ImageBase; set => f_ImageBase = (uint) value; }
         public uint BaseOfCode => f_BaseOfCode;
         public RvaEntry[] DataDirectory => f_DataDirectory;
 
@@ -90,7 +93,7 @@ namespace Il2CppInspector
     {
         public PE ExpectedMagic => PE.IMAGE_NT_OPTIONAL_HDR64_MAGIC;
         public ushort Magic => f_Magic;
-        public ulong ImageBase => f_ImageBase;
+        public ulong ImageBase { get => f_ImageBase; set => f_ImageBase = value; }
         public uint BaseOfCode => f_BaseOfCode;
         public RvaEntry[] DataDirectory => f_DataDirectory;
 
