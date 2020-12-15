@@ -369,48 +369,56 @@ namespace Il2CppInspector
                 if (xorKeyCandidateStriped != 0x00) {
 
                     // Some files may use a striped encryption whereby alternate blocks are encrypted and un-encrypted
-                    // The first part of each section is always encrypted. Scan for the first unencrypted block and find its size
-                    // Limit ourselves to maxSearchLength. If no stripe has been found by then, the whole section is probably encrypted
+                    // The first part of each section is always encrypted.
 
                     // We refer to issue #96 where the code uses striped encryption in 4KB blocks
                     // We perform heuristics for block of size blockSize below
-                    var start = conv.Int(sectionByName[".text"].sh_offset);
-                    var length = conv.Int(sectionByName[".text"].sh_size);
-                    var blockSize = 0x100;
-                    var maxSearchLength = 128 * 1024;
-                    var firstUnencrypted = 0xffffffff;
-                    var stripeSize = 0xffffffff;
+                    const int blockSize = 0x100;
+                    const int maxBrokenRun = 4;
+                    const int minMultiplierInValid = 6;
+                    const int minTotalValidInBucket = 0x10;
 
-                    // At least this many instructions per block must pass the threshold to be considered unencrypted
-                    var threshold = (blockSize / 4) * 0.8;
-
-                    // A stripe of encryption or non-encryption is considered to have ended when this many blocks in the opposite state are found
-                    var maxBlocksInARow = 4;
-                    
-                    // Align start position to search block size
+                    // Take all of the instructions from the code section starting on a VA block boundary and determine which are valid
+                    var startSkip = 0;
                     if (conv.Int(sectionByName[".text"].sh_addr) % blockSize != 0)
-                        start += blockSize - conv.Int(sectionByName[".text"].sh_addr) % blockSize;
+                        startSkip = blockSize - conv.Int(sectionByName[".text"].sh_addr) % blockSize;
 
-                    var probablyEncryptedCount = 0;
-                    var probablyUnencryptedCount = 0;
+                    var insts = ReadArray<uint>(conv.Long(sectionByName[".text"].sh_offset) + startSkip, (conv.Int(sectionByName[".text"].sh_size) - startSkip) / 4);
+                    var instsValid = insts.Select(i => Bits == 32? isCommonARMv7(i) : isCommonARMv8A(i)).ToList();
 
-                    for (var pos = start; pos < start + maxSearchLength && stripeSize == 0xffffffff; pos += blockSize) {
-                        var size = Math.Min(blockSize, start + length - pos);
-                        var dwords = ReadArray<uint>(pos, size / 4);
+                    // Use RLE to produce frequency distribution of number of consecutive valid and invalid instructions,
+                    // allowing for maxBrokenRun breaks in valid instructions in a row before considering a run to have ended
+                    var freqValid = new SortedDictionary<int, int>();
+                    var runLength = 0;
+                    var brokenRun = 0;
+                    foreach (var i in instsValid) {
+                        if (i) {
+                            runLength = runLength + brokenRun + 1;
+                            brokenRun = 0;
+                        } else if (runLength > 0) {
+                            brokenRun++;
 
-                        var commonInstructions = dwords.Count(w => Bits == 32? isCommonARMv7(w) : isCommonARMv8A(w));
-                        var probablyEncrypted = commonInstructions < threshold;
-
-                        // Increment one or the other; reset the other one to zero
-                        probablyEncryptedCount = probablyEncrypted? probablyEncryptedCount + 1 : 0;
-                        probablyUnencryptedCount = probablyEncryptedCount == 0 ? probablyUnencryptedCount + 1 : 0;
-
-                        if (probablyUnencryptedCount >= maxBlocksInARow && firstUnencrypted == 0xffffffff)
-                            firstUnencrypted = (uint) (pos - (probablyUnencryptedCount - 1) * blockSize);
-
-                        if (probablyEncryptedCount >= maxBlocksInARow && firstUnencrypted != 0xffffffff)
-                            stripeSize = (uint) (pos - firstUnencrypted - (probablyEncryptedCount - 1) * blockSize);
+                            if (brokenRun > maxBrokenRun) {
+                                if (freqValid.ContainsKey(runLength))
+                                    freqValid[runLength]++;
+                                else
+                                    freqValid[runLength] = 1;
+                                runLength = 0;
+                            }
+                        }
                     }
+
+                    // Create a histogram of how often each range of valid instruction counts occurred
+                    // The uses of 4 refer to the size of an ARM instruction
+                    var histValid = freqValid.GroupBy(f => f.Key - (f.Key % (blockSize / 4)))
+                                        .Select(f => new {
+                                            Key = f.Key * 4,
+                                            Value = f.Sum(x => x.Value)
+                                        }).ToDictionary(x => x.Key, x => x.Value);
+
+                    // Find first point in the histogram where the number of valid instructions suddenly spikes
+                    var stripeSize = (uint) histValid.Zip(histValid.Skip(1), (p,c) => (p,c))
+                                        .FirstOrDefault(x => x.c.Value >= x.p.Value * minMultiplierInValid && x.c.Value >= minTotalValidInBucket).c.Key;
 
                     // Select the key
 
@@ -533,7 +541,7 @@ namespace Il2CppInspector
             var length = conv.Int(section.sh_size);
 
             // Non-striped
-            if (stripeSize == 0xffffffff) {
+            if (stripeSize == 0) {
                 xorRange(start, length, xorValue);
                 return;
             }
