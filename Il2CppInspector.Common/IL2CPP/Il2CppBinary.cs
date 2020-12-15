@@ -175,7 +175,7 @@ namespace Il2CppInspector
             if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode() ?? FindMetadataFromData(metadata)) is (ulong code, ulong meta)))
                 return false;
 
-            PrepareMetadata(code, meta);
+            PrepareMetadata(code, meta, metadata);
             return true;
         }
 
