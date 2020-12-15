@@ -151,7 +151,8 @@ namespace Il2CppInspector
             // Metadata usages (addresses)
             // Unfortunately the value supplied in MetadataRegistration.matadataUsagesCount seems to be incorrect,
             // so we have to calculate the correct number of usages above before reading the usage address list from the binary
-            var addresses = Binary.Image.ReadMappedArray<ulong>(Binary.MetadataRegistration.metadataUsages, usages.Count);
+            var count = usages.Keys.Max() + 1;
+            var addresses = Binary.Image.ReadMappedArray<ulong>(Binary.MetadataRegistration.metadataUsages, (int) count);
             foreach (var usage in usages)
                 usage.Value.SetAddress(addresses[usage.Key]);
 
