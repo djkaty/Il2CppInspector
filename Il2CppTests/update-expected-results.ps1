@@ -18,7 +18,7 @@ $results = "$PSScriptRoot/TestExpectedResults"
 
 # Wipe existing results
 rm -Recurse -Force $results >$null
-mkdir $results
+mkdir $results >$null
 
 $cs | % {
 	$target = $results + "/" + (Split-Path -Path (Split-Path -Path $_) -Leaf) + ".cs"
