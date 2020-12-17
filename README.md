@@ -557,7 +557,7 @@ See the source code for further details or the tutorials above.
 
 The current version of Il2CppInspector can output Python scripts targeting the IDA and Ghidra disassemblers.
 
-When Il2CppInspector generates such a script, it generates a concetenation of a shared block of code (`Outputs/ScriptResources/shared-main.py`) which parses the JSON metadata and dispatches it to a set of implementation-specific functions to be processed, and a block of code specific to the target application which implements these functions (a file from `Outputs/ScriptResources/Targets`).
+When Il2CppInspector generates such a script, it generates a concatenation of a shared block of code (`Outputs/ScriptResources/shared-main.py`) which parses the JSON metadata and dispatches it to a set of implementation-specific functions to be processed, and a block of code specific to the target application which implements these functions (a file from `Outputs/ScriptResources/Targets`).
 
 If you would like to add support for a new target application, create a new Python script in `Outputs/ScriptResources/Targets` with the nane `<target-name-without-whitespace>.py` and implement the following functions:
 
