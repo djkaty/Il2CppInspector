@@ -13,6 +13,7 @@
     <Company>Noisy Cow Studios</Company>
     <Product>Il2CppInspector Windows Edition</Product>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Il2CppInspector.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
