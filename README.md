@@ -173,17 +173,19 @@ File format and architecture are automatically detected.
   --version                   Display version information.
 ```
 
-#### File format considerations
+### File format considerations
 
-**Apple Universal Binaries and APKs/XAPKs with binaries for multiple architectures**: multiple output files will be generated, with each filename besides the first suffixed by the index of the image in the binary. Unsupported images will be skipped.
+**Apple Universal Binaries and APKs/XAPKs with binaries for multiple architectures**: when using the CLI, multiple output files will be generated, with each filename besides the first suffixed by the index of the image in the binary. Unsupported images will be skipped.
 
 **IPA packages**: the executable must be decrypted first. Encrypted executable binaries are not supported.
 
-**Split APK packages**: specify a list of APK files with a space between each filename.
+**Split APK packages**: when using the CLI, specify a list of APK files with a comma between each filename.
 
 **ELF binaries created from memory dumps**: specify the image base (in hex) using `--image-base`. If the supplied image base is incorrect, the application may crash.
 
 **GameGuardian dumps (and other Linux process map dumps)**: you can use a `*-maps.txt` file in place of an IL2CPP binary. Il2CppInspector will scan the folder containing the maps file for matching `.bin` files and reassemble and rebase `libil2cpp.so` automatically. You therefore don't need to create the file manually or provide an image base address when using this kind of dump. For this to work, neither the text file nor any of the binary files must be renamed, and all must be in the same folder.
+
+**Packed PE files (DLLs)**: **WARNING: Loading a packed PE file will cause the DLL's entry point and initialization functions to execute. Do not load malicious DLLs and never run Il2CppInspector as an administrator when handling packed PE files. USE AT YOUR OWN RISK.**
 
 ### Creating C# prototypes
 
