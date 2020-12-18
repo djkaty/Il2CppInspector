@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Markup;
 using Il2CppInspector;
 using Il2CppInspector.Model;
 using Il2CppInspector.Reflection;
@@ -21,6 +22,26 @@ namespace Il2CppInspectorGUI
     /// </summary>
     public partial class App : Application, INotifyPropertyChanged
     {
+        // Catch unhandled exceptions for debugging startup failures
+        public App() : base() {
+            var np = Environment.NewLine + Environment.NewLine;
+
+            Dispatcher.UnhandledException += (s, e) => {
+                MessageBox.Show(e.Exception.GetType() + ": " + e.Exception.Message
+                                + np + e.Exception.StackTrace
+                                + np + "More details may follow in subsequent error boxes",
+                                "Oopsie... Il2CppInspector could not start up");
+                var ex = e.Exception;
+                while (ex.InnerException != null) {
+                    MessageBox.Show(ex.GetType() + ": " + ex.Message + np
+                        + (ex is XamlParseException xpe ? $"BaseUri: {xpe.BaseUri}, LineNumber: {xpe.LineNumber}, LinePosition: {xpe.LinePosition}, NameContext: {xpe.NameContext}" + np : "")
+                        + (ex is TypeInitializationException tie ? "Type which failed to initialize: " + tie.TypeName + np : "")
+                        + ex.StackTrace, "Additional error information");
+                    ex = ex.InnerException;
+                }
+            };
+        }
+
         private Metadata metadata;
 
         // True if we extracted from an APK, IPA, zip file etc.
