@@ -16,7 +16,16 @@ namespace Il2CppInspector.GUI
             if (value == null || targetType != typeof(string))
                 return DependencyProperty.UnsetValue;
 
-            return ((ulong) value).ToString("x16");
+            return value switch {
+                ulong n => n.ToString("x16"),
+                long n => n.ToString("x16"),
+                uint n => n.ToString("x8"),
+                int n => n.ToString("x8"),
+                ushort n => n.ToString("x4"),
+                short n => n.ToString("x4"),
+                byte n => n.ToString("x2"),
+                _ => throw new NotImplementedException("Unknown number format")
+            };
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

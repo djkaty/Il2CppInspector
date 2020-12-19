@@ -1,5 +1,8 @@
-﻿// Copyright (c) 2020 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
-// All rights reserved
+﻿/*
+    Copyright 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+
+    All rights reserved.
+*/
 
 using System;
 using System.Collections.Generic;
@@ -72,6 +75,15 @@ namespace Il2CppInspectorGUI
         }
 
         /// <summary>
+        /// Open Manage Plugins dialog
+        /// </summary>
+        private void BtnPluginOptions_Click(object sender, RoutedEventArgs e) {
+            var configDlg = new PluginManagerDialog();
+            configDlg.Owner = this;
+            configDlg.ShowDialog();
+        }
+
+        /// <summary>
         /// Open Load Options dialog
         /// </summary>
         private void BtnLoadOptions_Click(object sender, RoutedEventArgs e) {
@@ -109,7 +121,7 @@ namespace Il2CppInspectorGUI
             else {
                 areaBusyIndicator.Visibility = Visibility.Hidden;
                 grdFirstPage.Visibility = Visibility.Visible;
-                MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(this, app.LastException.Message + Environment.NewLine + app.LastException.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -145,7 +157,7 @@ namespace Il2CppInspectorGUI
             else {
                 areaBusyIndicator.Visibility = Visibility.Hidden;
                 btnSelectBinaryFile.Visibility = Visibility.Visible;
-                MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(this, app.LastException.Message + Environment.NewLine + app.LastException.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -183,7 +195,7 @@ namespace Il2CppInspectorGUI
             else {
                 areaBusyIndicator.Visibility = Visibility.Hidden;
                 grdFirstPage.Visibility = Visibility.Visible;
-                MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(this, app.LastException.Message + Environment.NewLine + app.LastException.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

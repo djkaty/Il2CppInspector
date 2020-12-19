@@ -1,5 +1,8 @@
-﻿// Copyright (c) 2020 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
-// All rights reserved
+﻿/*
+    Copyright 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+
+    All rights reserved.
+*/
 
 using System;
 using System.Collections.Generic;

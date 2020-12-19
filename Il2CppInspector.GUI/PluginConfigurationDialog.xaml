@@ -1,0 +1,186 @@
+﻿<Window x:Class="Il2CppInspector.GUI.PluginConfigurationDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Il2CppInspector.GUI"
+        xmlns:pluginapi="clr-namespace:Il2CppInspector.PluginAPI.V100;assembly=Il2CppInspector.Common"
+        mc:Ignorable="d"
+        Title="{Binding Path=Plugin.Name, StringFormat=Configuration for {0}}" Height="400" Width="700"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="Height" MaxHeight="800">
+    <Window.Resources>
+        <local:OptionTemplateSelector x:Key="OptionTemplateSelector"/>
+        <local:HexStringValueConverter x:Key="HexStringValueConverter" />
+        <local:EqualityConverter x:Key="EqualityVisibilityConverter" TrueValue="{x:Static Visibility.Visible}" FalseValue="{x:Static Visibility.Collapsed}" />
+        <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
+
+        <!-- Option layouts -->
+        <DataTemplate x:Key="TextTemplate">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Left" Width="250" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Path=Description}"></TextBlock>
+                    <TextBlock Visibility="{Binding Required, Converter={StaticResource VisibleIfTrueConverter}}" Text="*" Foreground="Red"/>
+                </TextBlock>
+                <TextBox DockPanel.Dock="Right" VerticalAlignment="Center" Padding="2" Margin="0,4,4,4" Text="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FilePathTemplate">
+            <DockPanel>
+                <Button Name="btnFilePathSelector" DockPanel.Dock="Right" Width="70" Margin="4" Click="btnFilePathSelector_Click">Browse</Button>
+                <TextBlock DockPanel.Dock="Left" Width="250" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Description}"></TextBlock>
+                    <TextBlock Visibility="{Binding Required, Converter={StaticResource VisibleIfTrueConverter}}" Text="*" Foreground="Red"/>
+                </TextBlock>
+                <TextBlock Name="txtFilePathSelector" DockPanel.Dock="Right" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="3" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Text="{Binding Value}"/>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="NumberTemplate">
+            <StackPanel>
+                <!-- Decimal number -->
+                <DockPanel>
+                    <DockPanel.Visibility>
+                        <MultiBinding Converter="{StaticResource EqualityVisibilityConverter}">
+                            <Binding Path="Style" />
+                            <Binding Source="{x:Static pluginapi:PluginOptionNumberStyle.Decimal}" Mode="OneWay" />
+                        </MultiBinding>
+                    </DockPanel.Visibility>
+
+                    <TextBlock DockPanel.Dock="Left" Width="250" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Description}"></TextBlock>
+                        <TextBlock Visibility="{Binding Required, Converter={StaticResource VisibleIfTrueConverter}}" Text="*" Foreground="Red"/>
+                    </TextBlock>
+                    <TextBox Name="txtDecimalString" DockPanel.Dock="Right" VerticalAlignment="Center" Padding="2" Margin="0,4,4,4" Text="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                </DockPanel>
+
+                <!-- Hex number -->
+                <DockPanel>
+                    <DockPanel.Visibility>
+                        <MultiBinding Converter="{StaticResource EqualityVisibilityConverter}">
+                            <Binding Path="Style" />
+                            <Binding Source="{x:Static pluginapi:PluginOptionNumberStyle.Hex}" Mode="OneWay" />
+                        </MultiBinding>
+                    </DockPanel.Visibility>
+
+                    <TextBlock DockPanel.Dock="Left" Width="250" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Description}"></TextBlock>
+                        <TextBlock Visibility="{Binding Required, Converter={StaticResource VisibleIfTrueConverter}}" Text="*" Foreground="Red"/>
+                    </TextBlock>
+                    <DockPanel HorizontalAlignment="Stretch">
+                        <Label Margin="0,3,3,5">0x</Label>
+                        <TextBox Name="txtHexString" Padding="2" Margin="0,6,4,6" Text="{Binding Value, Converter={StaticResource HexStringValueConverter}, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="txtHexString_PreviewTextInput"/>
+                    </DockPanel>
+                </DockPanel>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="BooleanTemplate">
+            <DockPanel Margin="250,0,0,0">
+                <TextBlock DockPanel.Dock="Left" VerticalAlignment="Top" Margin="0,10,2,6"
+                            Visibility="{Binding Required, Converter={StaticResource VisibleIfTrueConverter}}" Text="*" Foreground="Red"/>
+                <CheckBox DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,10,2,6" IsChecked="{Binding Value}">
+                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Description}" />
+                </CheckBox>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ChoiceTemplate">
+            <StackPanel>
+                <!-- Drop-down box version -->
+                <DockPanel>
+                    <DockPanel.Visibility>
+                        <MultiBinding Converter="{StaticResource EqualityVisibilityConverter}">
+                            <Binding Path="Style" />
+                            <Binding Source="{x:Static pluginapi:PluginOptionChoiceStyle.Dropdown}" Mode="OneWay" />
+                        </MultiBinding>
+                    </DockPanel.Visibility>
+                    <TextBlock DockPanel.Dock="Left" Width="250" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Description}"></TextBlock>
+                        <TextBlock Visibility="{Binding Required, Converter={StaticResource VisibleIfTrueConverter}}" Text="*" Foreground="Red"/>
+                    </TextBlock>
+                    <ComboBox DockPanel.Dock="Right" Margin="4,8,4,8" ItemsSource="{Binding Choices}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Value}"></ComboBox>
+                </DockPanel>
+
+                <!-- Radio buttons version -->
+                <DockPanel>
+                    <DockPanel.Visibility>
+                        <MultiBinding Converter="{StaticResource EqualityVisibilityConverter}">
+                            <Binding Path="Style" />
+                            <Binding Source="{x:Static pluginapi:PluginOptionChoiceStyle.List}" Mode="OneWay" />
+                        </MultiBinding>
+                    </DockPanel.Visibility>
+                    <GroupBox Header="{Binding Description}" Margin="5" Padding="5">
+                        <ListBox ItemsSource="{Binding Choices}" SelectedItem="{Binding Value}" BorderBrush="Transparent">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <RadioButton GroupName="{Binding Header, RelativeSource={RelativeSource AncestorType=GroupBox}}"
+                                             Content="{Binding}"
+                                             IsChecked="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                             Focusable="False"
+                                             IsHitTestVisible="False"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </GroupBox>
+                </DockPanel>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- Configure ListBox to display configuration controls nicely -->
+        <Style TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Background" Value="Transparent"/>
+            
+            <!-- Force ListBox to width of window -->
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            
+            <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Padding" Value="2,0,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <Label Grid.Row="0" Foreground="{StaticResource WindowsBlue}" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"
+               Content="{Binding Plugin.Name}" ContentStringFormat="Configuration for {0}" Padding="8,0,0,0"/>
+
+        <!-- Options editor -->
+        <ListBox Grid.Row="1" Name="lstOptions" ItemsSource="{Binding Plugin.Options}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Padding="8" BorderBrush="Transparent">
+            <ListBox.ItemTemplateSelector>
+                <local:OptionTemplateSelector TextTemplate="{StaticResource TextTemplate}"
+                                              FilePathTemplate="{StaticResource FilePathTemplate}"
+                                              NumberTemplate="{StaticResource NumberTemplate}"
+                                              BooleanTemplate="{StaticResource BooleanTemplate}"
+                                              ChoiceTemplate="{StaticResource ChoiceTemplate}">
+                </local:OptionTemplateSelector>
+            </ListBox.ItemTemplateSelector>
+        </ListBox>
+        
+        <!-- Accept button -->
+        <StackPanel Grid.Row="2" VerticalAlignment="Bottom" Margin="10">
+            <Button Name="okButton" Click="okButton_Click" Style="{StaticResource LightBoxButton}" IsDefault="True" Width="150" FontSize="18">OK</Button>
+        </StackPanel>
+    </Grid>
+</Window>

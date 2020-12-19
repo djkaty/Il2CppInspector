@@ -434,8 +434,13 @@
                 </TextBlock>
             </Button>
 
-            <!-- Load options -->
-            <Button Grid.Row="2" Name="btnLoadOptions" Style="{StaticResource LightBoxButton}" Click="BtnLoadOptions_Click" Margin="0,0,10,10" Padding="5" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="18" Width="180" Content="Import options..."/>
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                <!-- Plugin options -->
+                <Button Name="btnPluginOptions" Style="{StaticResource LightBoxButton}" Click="BtnPluginOptions_Click" Margin="0,0,10,10" Padding="5" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="18" Width="180" Content="Manage plugins..."/>
+
+                <!-- Load options -->
+                <Button Name="btnLoadOptions" Style="{StaticResource LightBoxButton}" Click="BtnLoadOptions_Click" Margin="0,0,10,10" Padding="5" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="18" Width="180" Content="Import options..."/>
+            </StackPanel>
         </Grid>
         <Button Name="btnSelectBinaryFile" Style="{StaticResource LightBoxButton}" Margin="100" Click="BtnSelectBinaryFile_OnClick" Visibility="Hidden">
             <TextBlock TextAlignment="Center">

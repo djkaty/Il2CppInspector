@@ -1,0 +1,139 @@
+﻿<Window x:Class="Il2CppInspector.GUI.PluginManagerDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Il2CppInspector.GUI"
+        mc:Ignorable="d"
+        Title="Plugin Manager" Height="450" Width="800"
+        WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <!-- Configure ListBox to display plugins nicely -->
+        <Style x:Key="ConfigItemStyle" TargetType="{x:Type ListBoxItem}">
+
+            <!-- Alternating background colours -->
+            <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                    <Setter Property="Background" Value="AliceBlue" />
+                </Trigger>
+                <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                    <Setter Property="Background" Value="AliceBlue" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+            </Style.Triggers>
+
+            <!-- Force ListBox to width of window -->
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+
+            <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Padding" Value="2,0,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Remove highlight on hover and selection; set border on selection instead -->
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="BorderBrush" Value="{StaticResource MicrosoftBlue}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="70" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="60" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Title -->
+        <Label Grid.Row="0" Foreground="{StaticResource WindowsBlue}" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"
+               Content="Plugin Manager" Padding="8,0,0,0"/>
+
+        <!-- Plugins editor -->
+        <ListBox Grid.Row="1" Name="lstPlugins" ItemsSource="{Binding ManagedPlugins}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderBrush="Transparent" AlternationCount="2" SelectionChanged="lstPlugins_SelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="130" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" MinHeight="60" />
+                        </Grid.RowDefinitions>
+
+                        <CheckBox Grid.Column="0" Margin="6" VerticalAlignment="Center" IsChecked="{Binding Enabled}">
+                            <CheckBox.LayoutTransform>
+                                <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+                            </CheckBox.LayoutTransform>
+                        </CheckBox>
+                        <TextBlock Grid.Column="1" Margin="0,10,0,10" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Plugin.Name}" FontSize="14" Foreground="{StaticResource WindowsBlue}" />
+                            <TextBlock Text="{Binding Plugin.Author, StringFormat={}by {0}}" />
+                            <TextBlock Text="{Binding Plugin.Version, StringFormat={}[{0}]}" />
+                            <LineBreak/>
+                            <TextBlock Text="{Binding Plugin.Description}" TextWrapping="Wrap" />
+                        </TextBlock>
+                        <Button Grid.Column="2" Margin="15" Padding="5" VerticalAlignment="Center" Content="Configure..." Click="btnConfig_Click">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Plugin.Options}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Hidden"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+
+            <ListBox.ItemContainerStyle>
+                <Style BasedOn="{StaticResource ConfigItemStyle}" TargetType="{x:Type ListBoxItem}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Available}" Value="False">
+                            <Setter Property="ListBoxItem.IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+
+        <!-- Reordering controls -->
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,0">
+            <Button Name="btnTop" FontFamily="Segoe MDL2 Assets" Style="{StaticResource LightBoxButton}" FontSize="14" Padding="5,8,5,8" Margin="2" Content="&#xE110;&#xE110;" Click="btnTop_Click"/>
+            <Button Name="btnUp" FontFamily="Segoe MDL2 Assets" Style="{StaticResource LightBoxButton}" FontSize="20" Padding="5" Margin="2" Content="&#xE110;" Click="btnUp_Click"/>
+            <Button Name="btnDown" FontFamily="Segoe MDL2 Assets" Style="{StaticResource LightBoxButton}" FontSize="20" Padding="5" Margin="2" Content="&#xE1FD;" Click="btnDown_Click"/>
+            <Button Name="btnBottom" FontFamily="Segoe MDL2 Assets" Style="{StaticResource LightBoxButton}" FontSize="14" Padding="5,8,5,8" Margin="2" Content="&#xE1FD;&#xE1FD;" Click="btnBottom_Click"/>
+        </StackPanel>
+        
+        <!-- Bottom buttons -->
+        <DockPanel Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="10">
+            <!-- Accept button -->
+            <Button DockPanel.Dock="Right" Name="okButton" Click="okButton_Click" Style="{StaticResource LightBoxButton}" IsDefault="True" Width="150" FontSize="18" Padding="5">OK</Button>
+
+            <!-- Refresh button -->
+            <Button DockPanel.Dock="Left" Name="refreshButton" Click="refreshButton_Click" Style="{StaticResource LightBoxButton}" HorizontalAlignment="Left" Width="150" FontSize="18" Padding="5">Refresh</Button>
+
+            <!-- Get Plugins button -->
+            <Button DockPanel.Dock="Left" Name="getPluginsButton" Click="getPluginsButton_Click" Style="{StaticResource LightBoxButton}" HorizontalAlignment="Left" Margin="10,0,0,0" Width="150" FontSize="18" Padding="5">Get Plugins...</Button>
+        </DockPanel>
+    </Grid>
+</Window>

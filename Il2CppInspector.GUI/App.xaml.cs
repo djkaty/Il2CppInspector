@@ -1,5 +1,8 @@
-﻿// Copyright (c) 2020 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
-// All rights reserved
+﻿/*
+    Copyright 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+
+    All rights reserved.
+*/
 
 using System;
 using System.Collections.Generic;
@@ -22,7 +25,7 @@ namespace Il2CppInspectorGUI
     /// </summary>
     public partial class App : Application, INotifyPropertyChanged
     {
-        // Catch unhandled exceptions for debugging startup failures
+        // Catch unhandled exceptions for debugging startup failures and plugins
         public App() : base() {
             var np = Environment.NewLine + Environment.NewLine;
 
@@ -30,7 +33,11 @@ namespace Il2CppInspectorGUI
                 MessageBox.Show(e.Exception.GetType() + ": " + e.Exception.Message
                                 + np + e.Exception.StackTrace
                                 + np + "More details may follow in subsequent error boxes",
-                                "Oopsie... Il2CppInspector could not start up");
+                                "Il2CppInspector encountered a fatal error");
+
+                if (e.Exception is FileNotFoundException fe)
+                    MessageBox.Show("Missing file: " + fe.FileName, "Additional error information");
+
                 var ex = e.Exception;
                 while (ex.InnerException != null) {
                     MessageBox.Show(ex.GetType() + ": " + ex.Message + np
@@ -68,7 +75,16 @@ namespace Il2CppInspectorGUI
 
         // Initialization entry point
         protected override void OnStartup(StartupEventArgs e) {
+            // Set contents of load options window
             ResetLoadOptions();
+
+            // Set handlers for plugin manager
+            PluginManager.ErrorHandler += (s, e) => {
+                MessageBox.Show($"The plugin {e.Plugin.Name} encountered an error while executing {e.Operation}: {e.Exception.Message}."
+                                + Environment.NewLine + Environment.NewLine + "The application will continue but may not behave as expected.", "Plugin error");
+            };
+
+            PluginManager.StatusHandler += (s, e) => StatusUpdate(e.Plugin, "Plugin " + e.Plugin.Name + ": " + e.Text);
         }
 
         public void ResetLoadOptions() {
