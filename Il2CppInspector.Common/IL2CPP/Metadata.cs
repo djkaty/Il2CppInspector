@@ -16,7 +16,7 @@ namespace Il2CppInspector
 {
     public class Metadata : BinaryObjectReader
     {
-        public Il2CppGlobalMetadataHeader Header;
+        public Il2CppGlobalMetadataHeader Header { get; set; }
 
         public Il2CppAssemblyDefinition[] Assemblies { get; }
         public Il2CppImageDefinition[] Images { get; }
@@ -217,6 +217,9 @@ namespace Il2CppInspector
             StringLiterals = new string[stringLiteralList.Length];
             for (var i = 0; i < stringLiteralList.Length; i++)
                 StringLiterals[i] = ReadFixedLengthString(Header.stringLiteralDataOffset + stringLiteralList[i].dataIndex, stringLiteralList[i].length);
+
+            // Post-processing hook
+            PluginHooks.PostProcessMetadata(this);
         }
 
         // Save metadata to file, overwriting if necessary
