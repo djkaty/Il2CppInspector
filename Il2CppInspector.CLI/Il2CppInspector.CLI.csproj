@@ -5,7 +5,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <PublishSingleFile>true</PublishSingleFile>
-    <PublishTrimmed>true</PublishTrimmed>
+    <!-- Plugins may require bass class library assemblies we're not using so disable trimming -->
+    <PublishTrimmed>false</PublishTrimmed>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Version>2020.2.1</Version>

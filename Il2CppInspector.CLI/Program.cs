@@ -1,13 +1,20 @@
-﻿// Copyright (c) 2017-2020 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
-// All rights reserved
+﻿/*
+    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+
+    All rights reserved.
+*/
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+using System.Xml.Schema;
 using CommandLine;
+using CommandLine.Text;
 using Il2CppInspector.Cpp;
 using Il2CppInspector.Cpp.UnityHeaders;
 using Il2CppInspector.Model;
@@ -98,6 +105,9 @@ namespace Il2CppInspector.CLI
 
             [Option("unity-version", Required = false, HelpText = "Version of Unity used to create the input files, if known. Used to enhance Python, C++ and JSON output. If not specified, a close match will be inferred automatically.", Default = null)]
             public UnityVersion UnityVersion { get; set; }
+
+            [Option("plugins", Required = false, HelpText = "Specify options for plugins. Enclose each plugin's configuration in quotes as follows: --plugins \"pluginone --option1 value1 --option2 value2\" \"plugintwo --option...\". Use --plugins <name> to get help on a specific plugin")]
+            public IEnumerable<string> PluginOptions { get; set; }
         }
 
         // Adapted from: https://stackoverflow.com/questions/16376191/measuring-code-execution-time
@@ -119,19 +129,44 @@ namespace Il2CppInspector.CLI
             }
         }
 
-        public static int Main(string[] args) =>
-            Parser.Default.ParseArguments<Options>(args).MapResult(
-                options => Run(options),
-                _ => 1);
+        public static void Main(string[] args) {
+            var parser = new Parser(config => config.HelpWriter = null);
+            var result = parser.ParseArguments<Options>(args);
+            result.WithParsed(options => Run(options))
+                  .WithNotParsed(errors => DisplayHelp(result, errors));
+        }
+
+        private static int DisplayHelp(ParserResult<Options> result, IEnumerable<Error> errors) {
+            Console.Error.WriteLine(HelpText.AutoBuild(result));
+
+            var help = new HelpText();
+            help.Heading = "Available plugins:";
+            help.Copyright = string.Empty;
+            help.AddDashesToOption = false;
+            help.AdditionalNewLineAfterOption = true;
+            help.MaximumDisplayWidth = 80;
+            help.AutoHelp = false;
+            help.AutoVersion = false;
+
+            var pluginOptions = PluginOptions.GetPluginOptionTypes();
+            if (pluginOptions.Any())
+                Console.Error.WriteLine(help.AddVerbs(PluginOptions.GetPluginOptionTypes()));
+            return 1;
+        }
 
         private static int Run(Options options) {
+
             // Banner
             var asmInfo = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetEntryAssembly().Location);
             Console.WriteLine(asmInfo.ProductName);
             Console.WriteLine("Version " + asmInfo.ProductVersion);
             Console.WriteLine(asmInfo.LegalCopyright);
             Console.WriteLine("");
-            
+
+            // Check plugin options are valid
+            if (!PluginOptions.ParsePluginOptions(options.PluginOptions, PluginOptions.GetPluginOptionTypes()))
+                return 1;
+
             // Check script target is valid
             if (!PythonScript.GetAvailableTargets().Contains(options.ScriptTarget)) {
                 Console.Error.WriteLine($"Script target {options.ScriptTarget} is invalid.");
@@ -195,6 +230,16 @@ namespace Il2CppInspector.CLI
                 Console.WriteLine("Using Unity editor at " + unityPath);
                 Console.WriteLine("Using Unity assemblies at " + unityAssembliesPath);
             }
+
+            // Set plugin handlers
+            PluginManager.ErrorHandler += (s, e) => {
+                Console.Error.WriteLine($"The plugin {e.Plugin.Name} encountered an error while executing {e.Operation}: {e.Exception.Message}."
+                                            + " The application will continue but may not behave as expected.");
+            };
+
+            PluginManager.StatusHandler += (s, e) => {
+                Console.WriteLine("Plugin " + e.Plugin.Name + ": " + e.Text);
+            };
 
             // Check that specified binary files exist
             foreach (var file in options.BinaryFiles)
