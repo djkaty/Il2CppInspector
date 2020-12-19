@@ -1,4 +1,4 @@
-# Il2CppInspector 2020.3 Preview
+# Il2CppInspector 2021.0 Preview
 
 Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the most complete analysis currently available.
 
@@ -20,7 +20,7 @@ Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the
 
 * **[Three major APIs](#using-the-apis-for-programmatic-analysis)** for use in your own custom static analysis projects for querying low level binary metadata, the .NET type model and the whole C++ application. These are also available as a [NuGet Package](https://www.nuget.org/packages/NoisyCowStudios.Il2CppInspector/).
 
-* Supports **all major file formats and processor architectures**
+* **[Plugin SDK](#creating-plugins)** allows you to create custom plugins to extend Il2CppInspector's capabilities
 
 * Defeats certain types of obfuscation
   - Most types of packed PE files (Windows DLLs)
@@ -30,6 +30,8 @@ Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the
   - Reordering of registration metadata used in titles by Riot Games
   - ROT encryption of API export names
   - Deobfuscated metadata and binary files can be saved back to disk
+
+* Supports **all major file formats and processor architectures**
 
 * Works on Windows, MacOS X and Linux. **Integrated GUI** for Windows users with drag & drop support
 
@@ -68,7 +70,7 @@ Nice to have:
 * Automatically defeats certain basic obfuscation methods
 * Test chassis for automated integration testing of IL2CPP binaries
 
-Class library targets .NET Standard 2.1. Application targets .NET Core 3.1. Built with Visual Studio 2019.
+Class library targets .NET Core 3.1. Built with Visual Studio 2019.
 
 **NOTE**: Il2CppInspector is not a decompiler. It can provide you with the structure of an application and function addresses for every method so that you can easily jump straight to methods of interest in your disassembler. It does not attempt to recover the entire source code of the application.
 
@@ -89,6 +91,12 @@ Build the CLI and Windows GUI versions:
 dotnet publish -c Release
 ```
 
+Get all current plugins (optional):
+
+```
+powershell -f get-plugins.ps1
+```
+
 ##### Mac OS X
 
 Build the CLI version:
@@ -96,6 +104,12 @@ Build the CLI version:
 ```
 cd Il2CppInspector.CLI
 dotnet publish -r osx-x64 -c Release
+```
+
+Get all current plugins (optional):
+
+```
+../get-plugins.sh
 ```
 
 ##### Linux
@@ -107,11 +121,20 @@ cd Il2CppInspector.CLI
 dotnet publish -r linux-x64 -c Release
 ```
 
+Get all current plugins (optional):
+
+```
+../get-plugins.sh
+```
+
 For other operating systems supporting .NET Core, add  `-r xxx` to the final command where `xxx` is a RID from https://docs.microsoft.com/en-us/dotnet/articles/core/rid-catalog
 
 The output binary for command-line usage is placed in `Il2CppInspector/Il2CppInspector.CLI/bin/Release/netcoreapp3.0/[win|osx|linux]-x64/publish/Il2CppInspector.exe`.
 
 The output binary for Windows GUI is placed in `Il2CppInspector/Il2CppInspector.GUI/bin/Release/netcoreapp3.1/[win|osx|linux]-x64/publish/Il2CppInspector.exe`.
+
+The `plugins` folder should be placed in the same folder as `Il2CppInspector.exe`.
+
 
 ### Command-line Usage
 
@@ -167,6 +190,8 @@ File format and architecture are automatically detected.
                               alphanumeric order
 
   --unity-version             Version of Unity used to create the input files, if known. Used to enhance Python, C++ and JSON output. If not specified, a close match will be inferred automatically.
+
+  --plugins                   Specify options for plugins. Enclose each plugin's configuration in quotes as follows: --plugins "pluginone --option1 value1 --option2 value2" "plugintwo --option...". Use --plugins <name> to get help on a specific plugin
 
   --help                      Display this help screen.
 
@@ -555,6 +580,40 @@ Include the following `using` directives:
 
 See the source code for further details or the tutorials above.
 
+### Using plugins
+
+Plugins should be placed in the `plugins` folder in the same folder as `Il2CppInspector.exe`.
+
+From the GUI you can enable and disable plugins, change the execution order and configure individual plugin settings via the _Manage plugins..._ button.
+
+From the CLI you can specify which plugins and settings to use as follows.
+
+For one plugin:
+
+`Il2CppInspector.exe --plugins "myplugin --firstOption value1 --secondOption value2"`
+
+For multiple plugins:
+
+`Il2CppInspector.exe --plugins "plugin1 --option1 ..." "plugin2 --option2 ..." ...`
+
+Plugins will be executed in the order specified.
+
+For help on a specific plugin, specify the plugin name with no arguments:
+
+`Il2CppInspector.exe --plugins myplugin`
+
+To get more plugins, click _Get Plugins_ in the Manage Plugins window in the GUI, visit the [Il2CppInspectorPlugins repository](https://github.com/djkaty/Il2CppInspectorPlugins) or use the `get-plugins.ps1` or `get-plugins.sh` scripts to update the latest plugin release.
+
+### Creating plugins
+
+Plugins let you extend the functionality of Il2CppInspector. For example you can pre and post-process metadata and binaries to enable inspection of IL2CPP applications that Il2CppInspector cannot handle automatically.
+
+Plugin support is currently experimental and has limited functionality.
+
+You can find out more about plugins, and browse the source code of current plugins and examples in the [Il2CppInspectorPlugins repository](https://github.com/djkaty/Il2CppInspectorPlugins).
+
+A tutorial on how to write plugiins is coming soon!
+
 ### Extending Il2CppInspector's Python output to support other targets
 
 The current version of Il2CppInspector can output Python scripts targeting the IDA and Ghidra disassemblers.
@@ -634,6 +693,7 @@ This project uses:
 - [CommandLineParser](https://github.com/commandlineparser/commandline) 
 - [Ookii.Dialogs.Wpf](https://github.com/augustoproiete/ookii-dialogs-wpf)
 - [XamlAnimatedGif](https://github.com/XamlAnimatedGif/WpfAnimatedGif) by Thomas Levesque
+- [.NET Core Plugins](https://github.com/natemcmaster/DotNetCorePlugins) by Nate McMaster
 
 Thanks to the following individuals whose code and research helped me develop this tool:
 
