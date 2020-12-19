@@ -21,6 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		docs\CSProj_Preview.png = docs\CSProj_Preview.png
 		get-plugins.ps1 = get-plugins.ps1
+		get-plugins.sh = get-plugins.sh
 		docs\Ghidra_Guide.png = docs\Ghidra_Guide.png
 		docs\Ghidra_Preview.png = docs\Ghidra_Preview.png
 		docs\GUI_Preview.png = docs\GUI_Preview.png
