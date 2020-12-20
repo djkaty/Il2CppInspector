@@ -121,7 +121,7 @@ namespace Il2CppInspectorGUI
             else {
                 areaBusyIndicator.Visibility = Visibility.Hidden;
                 grdFirstPage.Visibility = Visibility.Visible;
-                MessageBox.Show(this, app.LastException.Message + Environment.NewLine + app.LastException.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -157,7 +157,7 @@ namespace Il2CppInspectorGUI
             else {
                 areaBusyIndicator.Visibility = Visibility.Hidden;
                 btnSelectBinaryFile.Visibility = Visibility.Visible;
-                MessageBox.Show(this, app.LastException.Message + Environment.NewLine + app.LastException.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -195,7 +195,7 @@ namespace Il2CppInspectorGUI
             else {
                 areaBusyIndicator.Visibility = Visibility.Hidden;
                 grdFirstPage.Visibility = Visibility.Visible;
-                MessageBox.Show(this, app.LastException.Message + Environment.NewLine + app.LastException.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(this, app.LastException.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
