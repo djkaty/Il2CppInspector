@@ -38,7 +38,7 @@ namespace Il2CppInspector
 #pragma warning disable CS0649
     public class Il2CppGlobalMetadataHeader
     {
-        public uint sanity;
+        public uint signature;
         public int version;
         public int stringLiteralOffset; // string data for managed code
         public int stringLiteralCount;

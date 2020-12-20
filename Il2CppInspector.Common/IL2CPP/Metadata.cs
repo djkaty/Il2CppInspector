@@ -50,41 +50,50 @@ namespace Il2CppInspector
 
         public Metadata(MemoryStream stream, EventHandler<string> statusCallback = null) : base(stream)
         {
-            // Read magic bytes
-            if (ReadUInt32() != 0xFAB11BAF) {
+            // Pre-processing hook
+            var pluginResult = PluginHooks.PreProcessMetadata(stream);
+            IsModified = pluginResult.IsStreamModified;
+
+            // Read metadata header
+            Header = ReadObject<Il2CppGlobalMetadataHeader>(0);
+
+            // Check for correct magic bytes
+            if (Header.signature != Il2CppConstants.MetadataSignature) {
                 throw new InvalidOperationException("The supplied metadata file is not valid.");
             }
 
             // Set object versioning for Bin2Object from metadata version
-            Version = ReadInt32();
+            Version = Header.version;
 
-            // Rewind and read metadata header in full
-            Header = ReadObject<Il2CppGlobalMetadataHeader>(0);
-            if (Version < 16 || Version > 27)
-            {
+            if (Version < 16 || Version > 27) {
                 throw new InvalidOperationException($"The supplied metadata file is not of a supported version ({Header.version}).");
             }
+
+            // Rewind and read metadata header with the correct version settings
+            Header = ReadObject<Il2CppGlobalMetadataHeader>(0);
 
             // Sanity checking
             // Unity.IL2CPP.MetadataCacheWriter.WriteLibIl2CppMetadata always writes the metadata information in the same order it appears in the header,
             // with each block always coming directly after the previous block, 4-byte aligned. We can use this to check the integrity of the data and
             // detect sub-versions.
 
-            // For metadata v24, the header can either be either 0x110 (24.0, 24.1) or 0x108 (24.2) bytes long. Since 'stringLiteralOffset' is the first thing
+            // For metadata v24.0, the header can either be either 0x110 (24.0, 24.1) or 0x108 (24.2) bytes long. Since 'stringLiteralOffset' is the first thing
             // in the header after the sanity and version fields, and since it will always point directly to the first byte after the end of the header,
             // we can use this value to determine the actual header length and therefore narrow down the metadata version to 24.0/24.1 or 24.2.
 
-            var realHeaderLength = Header.stringLiteralOffset;
+            if (!pluginResult.AdditionalData.SkipValidation) {
+                var realHeaderLength = Header.stringLiteralOffset;
 
-            if (realHeaderLength != Sizeof(typeof(Il2CppGlobalMetadataHeader))) {
-                if (Version == 24.0) {
-                    Version = 24.2;
-                    Header = ReadObject<Il2CppGlobalMetadataHeader>(0);
+                if (realHeaderLength != Sizeof(typeof(Il2CppGlobalMetadataHeader))) {
+                    if (Version == 24.0) {
+                        Version = 24.2;
+                        Header = ReadObject<Il2CppGlobalMetadataHeader>(0);
+                    }
                 }
-            }
 
-            if (realHeaderLength != Sizeof(typeof(Il2CppGlobalMetadataHeader))) {
-                throw new InvalidOperationException("Could not verify the integrity of the metadata file or accurately identify the metadata sub-version");
+                if (realHeaderLength != Sizeof(typeof(Il2CppGlobalMetadataHeader))) {
+                    throw new InvalidOperationException("Could not verify the integrity of the metadata file or accurately identify the metadata sub-version");
+                }
             }
             
             // Load all the relevant metadata using offsets provided in the header
@@ -219,7 +228,7 @@ namespace Il2CppInspector
                 StringLiterals[i] = ReadFixedLengthString(Header.stringLiteralDataOffset + stringLiteralList[i].dataIndex, stringLiteralList[i].length);
 
             // Post-processing hook
-            PluginHooks.PostProcessMetadata(this);
+            IsModified |= PluginHooks.PostProcessMetadata(this).IsStreamModified;
         }
 
         // Save metadata to file, overwriting if necessary

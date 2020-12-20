@@ -5,6 +5,7 @@
 */
 
 // This is the ONLY line to update when the API version changes
+using System.IO;
 using Il2CppInspector.PluginAPI.V100;
 
 namespace Il2CppInspector
@@ -12,6 +13,13 @@ namespace Il2CppInspector
     // Hooks we provide to plugins which can choose whether or not to provide implementations
     internal static class PluginHooks
     {
-        public static void PostProcessMetadata(Metadata metadata) => PluginManager.Try<IPostProcessMetadata>(p => p.PostProcessMetadata(metadata));
+        public static PluginPostProcessMetadataEventInfo PostProcessMetadata(Metadata metadata)
+            => PluginManager.Try<IPostProcessMetadata, PluginPostProcessMetadataEventInfo>((p, e) => p.PostProcessMetadata(metadata, e));
+
+        public static PluginPreProcessMetadataEventInfo PreProcessMetadata(MemoryStream stream)
+            => PluginManager.Try<IPreProcessMetadata, PluginPreProcessMetadataEventInfo>((p, e) => {
+                    stream.Position = 0;
+                    p.PreProcessMetadata(stream, e);
+                });
     }
 }

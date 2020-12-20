@@ -209,15 +209,24 @@ namespace Il2CppInspector
 
         // Try to cast each enabled plugin to a specific interface type, and for those supporting the interface, execute the supplied delegate
         // Errors will be forwarded to the error handler
-        internal static void Try<I>(Action<I> action) {
+        internal static E Try<I, E>(Action<I, E> action) where E : IPluginEventInfo, new()
+        {
+            var eventInfo = new E();
+
             foreach (var plugin in EnabledPlugins)
                 if (plugin is I p)
                     try {
-                        action(p);
+                        action(p, eventInfo);
+
+                        if (eventInfo.IsHandled)
+                            break;
                     }
                     catch (Exception ex) {
-                        ErrorHandler?.Invoke(AsInstance, new PluginErrorEventArgs { Plugin = plugin, Exception = ex, Operation = typeof(I).Name });
+                        eventInfo.Error = new PluginErrorEventArgs { Plugin = plugin, Exception = ex, Operation = typeof(I).Name };
+                        ErrorHandler?.Invoke(AsInstance, eventInfo.Error);
                     }
+
+            return eventInfo;
         }
 
         // Process an incoming status update
