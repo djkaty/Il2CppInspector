@@ -205,7 +205,9 @@ namespace Il2CppInspector.Cpp.UnityHeaders
 
         public override bool Equals(object obj) => Equals(obj as UnityVersionRange);
 
-        public bool Equals(UnityVersionRange other) => Min.Equals(other?.Min) && Max.Equals(other?.Max);
+        public bool Equals(UnityVersionRange other) => Min.Equals(other?.Min)
+            && ((Max != null && Max.Equals(other?.Max))
+            || (Max == null && other != null && other.Max == null));
 
         public override int GetHashCode() => HashCode.Combine(Min, Max);
     }
