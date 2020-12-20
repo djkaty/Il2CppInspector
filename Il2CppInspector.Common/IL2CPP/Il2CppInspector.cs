@@ -170,9 +170,11 @@ namespace Il2CppInspector
             var threshold = 6000; // current versions of mscorlib generate about 6000-7000 metadata usages
             var usagesCount = 0;
 
+            var words = BinaryImage.ReadArray<ulong>(0, (int) BinaryImage.Length / (BinaryImage.Bits / 8));
+
             // Scan the image looking for a sequential block of at least 'threshold' valid metadata tokens
-            while (BinaryImage.Position < BinaryImage.Length && (usagesCount == 0 || sequenceLength > 0)) {
-                var word = BinaryImage.ReadObject<ulong>();
+            for (var pos = 0; pos < words.Length && (usagesCount == 0 || sequenceLength > 0); pos++) {
+                var word = words[pos];
 
                 if (word % 2 != 1 || word >> 32 != 0) {
                     sequenceLength = 0;
