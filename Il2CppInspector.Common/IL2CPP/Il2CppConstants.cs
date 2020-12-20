@@ -158,6 +158,9 @@ namespace Il2CppInspector
         public const int ASSEMBLYREF_ENABLEJITCOMPILE_TRACKING_FLAG = 0x00008000;
         public const int ASSEMBLYREF_DISABLEJITCOMPILE_OPTIMIZER_FLAG = 0x00004000;
 
+        // The signature that global-metadata.dat should start with
+        public const uint MetadataSignature = 0xFAB11BAF;
+
         // Naming conventions (follows order of Il2CppTypeEnum)
         public static List<string> CSharpTypeString = new List<string>
         {
