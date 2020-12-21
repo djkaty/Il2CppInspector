@@ -13,9 +13,9 @@ namespace Il2CppInspector
 {
     internal class Il2CppBinaryX64 : Il2CppBinary
     {
-        public Il2CppBinaryX64(IFileFormatReader stream, EventHandler<string> statusCallback = null) : base(stream, statusCallback) { }
+        public Il2CppBinaryX64(IFileFormatStream stream, EventHandler<string> statusCallback = null) : base(stream, statusCallback) { }
 
-        public Il2CppBinaryX64(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null)
+        public Il2CppBinaryX64(IFileFormatStream stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null)
             : base(stream, codeRegistration, metadataRegistration, statusCallback) { }
 
         // Format of 64-bit LEA:
@@ -94,7 +94,7 @@ namespace Il2CppInspector
             return ((buff[offset + 1] & 0b0011_1000) >> 3, buff[offset + 1] & 0b0000_0111);
         }
 
-        protected override (ulong, ulong) ConsiderCode(IFileFormatReader image, uint loc) {
+        protected override (ulong, ulong) ConsiderCode(IFileFormatStream image, uint loc) {
 
             // Setup
             var buffSize = 0x76; // minimum number of bytes to process the longest expected function

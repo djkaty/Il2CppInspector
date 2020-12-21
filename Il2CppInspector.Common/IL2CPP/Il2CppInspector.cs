@@ -66,7 +66,7 @@ namespace Il2CppInspector
         public Dictionary<Il2CppMethodSpec, int> GenericMethodInvokerIndices => Binary.GenericMethodInvokerIndices;
 
         // TODO: Finish all file access in the constructor and eliminate the need for this
-        public IFileFormatReader BinaryImage => Binary.Image;
+        public IFileFormatStream BinaryImage => Binary.Image;
 
         private (ulong MetadataAddress, object Value)? getDefaultValue(int typeIndex, int dataIndex) {
             // No default
@@ -543,7 +543,7 @@ namespace Il2CppInspector
             // Load the metadata file
             Metadata metadata;
             try {
-                metadata = new Metadata(metadataStream, statusCallback);
+                metadata = Metadata.FromStream(metadataStream, statusCallback);
             }
             catch (Exception ex) {
                 Console.Error.WriteLine(ex.Message);
@@ -554,9 +554,9 @@ namespace Il2CppInspector
             Console.WriteLine("Detected metadata version " + metadata.Version);
 
             // Load the il2cpp code file (try all available file formats)
-            IFileFormatReader stream;
+            IFileFormatStream stream;
             try {
-                stream = FileFormatReader.Load(binaryStream, loadOptions, statusCallback);
+                stream = FileFormatStream.Load(binaryStream, loadOptions, statusCallback);
 
                 if (stream == null)
                     throw new InvalidOperationException("Unsupported executable file format");
@@ -571,7 +571,7 @@ namespace Il2CppInspector
             var processors = new List<Il2CppInspector>();
             foreach (var image in stream.Images) {
                 Console.WriteLine("Container format: " + image.Format);
-                Console.WriteLine("Container endianness: " + ((BinaryObjectReader) image).Endianness);
+                Console.WriteLine("Container endianness: " + ((BinaryObjectStream) image).Endianness);
                 Console.WriteLine("Architecture word size: {0}-bit", image.Bits);
                 Console.WriteLine("Instruction set: " + image.Arch);
                 Console.WriteLine("Global offset: 0x{0:X16}", image.GlobalOffset);

@@ -13,12 +13,10 @@ using System.Linq;
 namespace Il2CppInspector
 {
     // This is a wrapper for multiple binary files of different architectures within a single APK
-    internal class APKReader : FileFormatReader<APKReader>
+    internal class APKReader : FileFormatStream<APKReader>
     {
         private ZipArchive zip;
         private ZipArchiveEntry[] binaryFiles;
-
-        public APKReader(Stream stream) : base(stream) { }
 
         public override string DefaultFilename => "Package.apk";
 
@@ -32,7 +30,7 @@ namespace Il2CppInspector
                 return false;
 
             try {
-                zip = new ZipArchive(BaseStream);
+                zip = new ZipArchive(this);
 
                 // Get list of binary files
                 binaryFiles = zip.Entries.Where(f => f.FullName.StartsWith("lib/") && f.Name == "libil2cpp.so").ToArray();
@@ -51,10 +49,10 @@ namespace Il2CppInspector
             return true;
         }
 
-        public override IFileFormatReader this[uint index] {
+        public override IFileFormatStream this[uint index] {
             get {
                 Console.WriteLine($"Extracting binary from {binaryFiles[index].FullName}");
-                IFileFormatReader loaded = null;
+                IFileFormatStream loaded = null;
 
                 // ZipArchiveEntry does not support seeking so we have to close and re-open for each possible load format
                 var binary = binaryFiles[index].Open();

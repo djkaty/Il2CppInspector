@@ -14,44 +14,60 @@ using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
-    public class Metadata : BinaryObjectReader
+    public class Metadata : BinaryObjectStream
     {
         public Il2CppGlobalMetadataHeader Header { get; set; }
 
-        public Il2CppAssemblyDefinition[] Assemblies { get; }
-        public Il2CppImageDefinition[] Images { get; }
-        public Il2CppTypeDefinition[] Types { get; }
-        public Il2CppMethodDefinition[] Methods { get; }
-        public Il2CppParameterDefinition[] Params { get; }
-        public Il2CppFieldDefinition[] Fields { get; }
-        public Il2CppFieldDefaultValue[] FieldDefaultValues { get; }
-        public Il2CppParameterDefaultValue[] ParameterDefaultValues { get; }
-        public Il2CppPropertyDefinition[] Properties { get; }
-        public Il2CppEventDefinition[] Events { get; }
-        public Il2CppGenericContainer[] GenericContainers { get; }
-        public Il2CppGenericParameter[] GenericParameters { get; }
-        public Il2CppCustomAttributeTypeRange[] AttributeTypeRanges { get; }
-        public Il2CppInterfaceOffsetPair[] InterfaceOffsets { get; }
-        public Il2CppMetadataUsageList[] MetadataUsageLists { get; }
-        public Il2CppMetadataUsagePair[] MetadataUsagePairs { get; }
-        public Il2CppFieldRef[] FieldRefs { get; }
+        public Il2CppAssemblyDefinition[] Assemblies { get; set; }
+        public Il2CppImageDefinition[] Images { get; set; }
+        public Il2CppTypeDefinition[] Types { get; set; }
+        public Il2CppMethodDefinition[] Methods { get; set; }
+        public Il2CppParameterDefinition[] Params { get; set; }
+        public Il2CppFieldDefinition[] Fields { get; set; }
+        public Il2CppFieldDefaultValue[] FieldDefaultValues { get; set; }
+        public Il2CppParameterDefaultValue[] ParameterDefaultValues { get; set; }
+        public Il2CppPropertyDefinition[] Properties { get; set; }
+        public Il2CppEventDefinition[] Events { get; set; }
+        public Il2CppGenericContainer[] GenericContainers { get; set; }
+        public Il2CppGenericParameter[] GenericParameters { get; set; }
+        public Il2CppCustomAttributeTypeRange[] AttributeTypeRanges { get; set; }
+        public Il2CppInterfaceOffsetPair[] InterfaceOffsets { get; set; }
+        public Il2CppMetadataUsageList[] MetadataUsageLists { get; set; }
+        public Il2CppMetadataUsagePair[] MetadataUsagePairs { get; set; }
+        public Il2CppFieldRef[] FieldRefs { get; set; }
 
-        public int[] InterfaceUsageIndices { get; }
-        public int[] NestedTypeIndices { get; }
-        public int[] AttributeTypeIndices { get; }
-        public int[] GenericConstraintIndices { get; }
-        public uint[] VTableMethodIndices { get; }
-        public string[] StringLiterals { get; }
+        public int[] InterfaceUsageIndices { get; set; }
+        public int[] NestedTypeIndices { get; set; }
+        public int[] AttributeTypeIndices { get; set; }
+        public int[] GenericConstraintIndices { get; set; }
+        public uint[] VTableMethodIndices { get; set; }
+        public string[] StringLiterals { get; set; }
 
         public Dictionary<int, string> Strings { get; } = new Dictionary<int, string>();
 
         // Set if something in the metadata has been modified / decrypted
-        public bool IsModified { get; } = false;
+        public bool IsModified { get; private set; } = false;
 
-        public Metadata(MemoryStream stream, EventHandler<string> statusCallback = null) : base(stream)
+        // Status update callback
+        private EventHandler<string> OnStatusUpdate { get; set; }
+        private void StatusUpdate(string status) => OnStatusUpdate?.Invoke(this, status);
+
+        // Initialize metadata object from a stream
+        public static Metadata FromStream(MemoryStream stream, EventHandler<string> statusCallback = null) {
+            var metadata = new Metadata(statusCallback);
+            stream.Position = 0;
+            stream.CopyTo(metadata);
+            metadata.Position = 0;
+            metadata.Initialize();
+            return metadata;
+        }
+
+        private Metadata(EventHandler<string> statusCallback = null) : base() => OnStatusUpdate = statusCallback;
+
+        private void Initialize()
         {
             // Pre-processing hook
-            var pluginResult = PluginHooks.PreProcessMetadata(stream);
+            var pluginResult = PluginHooks.PreProcessMetadata(this);
             IsModified = pluginResult.IsStreamModified;
 
             // Read metadata header
@@ -185,7 +201,7 @@ namespace Il2CppInspector
             if (stringOffsets.Except(Strings.Keys).Any()) {
 
                 Console.WriteLine("Decrypting strings...");
-                statusCallback?.Invoke(this, "Decrypting strings");
+                StatusUpdate("Decrypting strings");
 
                 // There may be zero-padding at the end of the last string since counts seem to be word-aligned
                 // Find the true location one byte after the final character of the final string
@@ -209,13 +225,10 @@ namespace Il2CppInspector
                 }
 
                 // Write changes back in case the user wants to save the metadata file
-                using (var sw = new BinaryObjectWriter(BaseStream, Endianness, leaveOpen: true)) {
-                    sw.Version = Version;
-                    sw.Position = Header.stringOffset;
-                    foreach (var str in Strings.OrderBy(s => s.Key))
-                        sw.WriteNullTerminatedString(str.Value);
-                    sw.Flush();
-                }
+                Position = Header.stringOffset;
+                foreach (var str in Strings.OrderBy(s => s.Key))
+                    WriteNullTerminatedString(str.Value);
+                Flush();
 
                 IsModified = true;
             }
@@ -235,7 +248,7 @@ namespace Il2CppInspector
         public void SaveToFile(string pathname) {
             Position = 0;
             using (var outFile = new FileStream(pathname, FileMode.Create, FileAccess.Write))
-                BaseStream.CopyTo(outFile);
+                CopyTo(outFile);
         }
 
         internal int Sizeof(Type type) => Sizeof(type, Version);

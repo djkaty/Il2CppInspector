@@ -14,23 +14,22 @@ using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
-    public interface IFileFormatReader
+    public interface IFileFormatStream
     {
-        BinaryObjectReader Stream { get; }
         double Version { get; set; }
         long Length { get; }
         uint NumImages { get; }
         string DefaultFilename { get; }
         bool IsModified { get; } 
-        IEnumerable<IFileFormatReader> Images { get; } // Each child image of this object (eg. 32/64-bit versions in Fat MachO file)
-        IFileFormatReader this[uint index] { get; } // With no additional override, one object = one file, this[0] == this
+        IEnumerable<IFileFormatStream> Images { get; } // Each child image of this object (eg. 32/64-bit versions in Fat MachO file)
+        IFileFormatStream this[uint index] { get; } // With no additional override, one object = one file, this[0] == this
         long Position { get; set; }
         string Format { get; }
         string Arch { get; }
         int Bits { get; }
         ulong GlobalOffset { get; } // The virtual address where the code section (.text) would be loaded in memory
         ulong ImageBase { get; } // The virtual address of where the image would be loaded in memory (same as GlobalOffset except for PE)
-        IEnumerable<IFileFormatReader> TryNextLoadStrategy(); // Some images can be loaded multiple ways, eg. default, packed
+        IEnumerable<IFileFormatStream> TryNextLoadStrategy(); // Some images can be loaded multiple ways, eg. default, packed
         Dictionary<string, Symbol> GetSymbolTable();
         uint[] GetFunctionTable();
         IEnumerable<Export> GetExports();
@@ -92,24 +91,52 @@ namespace Il2CppInspector
         long[] ReadMappedWordArray(ulong uiAddr, int count);
         List<U> ReadMappedObjectPointerArray<U>(ulong uiAddr, int count) where U : new();
 
+        void WriteEndianBytes(byte[] bytes);
+        void Write(long int64);
+        void Write(ulong uint64);
+        void Write(int int32);
+        void Write(uint uint32);
+        void Write(short int16);
+        void Write(ushort uint16);
+        void Write(long addr, byte[] bytes);
+        void Write(long addr, long int64);
+        void Write(long addr, ulong uint64);
+        void Write(long addr, int int32);
+        void Write(long addr, uint uint32);
+        void Write(long addr, short int16);
+        void Write(long addr, ushort uint16);
+        void Write(long addr, byte value);
+        void Write(long addr, bool value);
+        void WriteObject<T>(long addr, T obj);
+        void WriteObject<T>(T obj);
+        void WriteArray<T>(long addr, T[] array);
+        void WriteArray<T>(T[] array);
+        void WriteNullTerminatedString(long addr, string str, Encoding encoding = null);
+        void WriteNullTerminatedString(string str, Encoding encoding = null);
+        void WriteFixedLengthString(long addr, string str, int size = -1, Encoding encoding = null);
+        void WriteFixedLengthString(string str, int size = -1, Encoding encoding = null);
+
         EventHandler<string> OnStatusUpdate { get; set; }
+
+        public void AddPrimitiveMapping(Type objType, Type streamType);
+        public void CopyTo(Stream stream);
     }
 
-    public class FileFormatReader
+    public class FileFormatStream
     {
         // Helper method to try all defined file formats when the contents of the binary is unknown
-        public static IFileFormatReader Load(string filename, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null)
+        public static IFileFormatStream Load(string filename, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null)
             => Load(new FileStream(filename, FileMode.Open, FileAccess.Read), loadOptions, statusCallback);
 
-        public static IFileFormatReader Load(Stream stream, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null) {
+        public static IFileFormatStream Load(Stream stream, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null) {
             var types = Assembly.GetExecutingAssembly().DefinedTypes
-                        .Where(x => x.ImplementedInterfaces.Contains(typeof(IFileFormatReader)) && !x.IsGenericTypeDefinition);
+                        .Where(x => x.ImplementedInterfaces.Contains(typeof(IFileFormatStream)) && !x.IsGenericTypeDefinition);
 
             foreach (var type in types) {
                 try {
                     if (type.GetMethod("Load", BindingFlags.FlattenHierarchy | BindingFlags.Static | BindingFlags.Public,
                             null, new[] {typeof(Stream), typeof(LoadOptions), typeof(EventHandler<string>)}, null)
-                        .Invoke(null, new object[] {stream, loadOptions, statusCallback}) is IFileFormatReader loaded)
+                        .Invoke(null, new object[] {stream, loadOptions, statusCallback}) is IFileFormatStream loaded)
                         return loaded;
                 }
                 catch (TargetInvocationException ex) {
@@ -120,17 +147,11 @@ namespace Il2CppInspector
         }
     }
 
-    public abstract class FileFormatReader<T> : BinaryObjectReader, IFileFormatReader where T : FileFormatReader<T>
+    public abstract class FileFormatStream<T> : BinaryObjectStream, IFileFormatStream where T : FileFormatStream<T>
     {
-        public FileFormatReader(Stream stream) : base(stream) { }
-
-        public BinaryObjectReader Stream => this;
-
         public abstract string DefaultFilename { get; }
 
         public bool IsModified { get; protected set; } = false;
-
-        public long Length => BaseStream.Length;
 
         public uint NumImages { get; protected set; } = 1;
 
@@ -151,7 +172,7 @@ namespace Il2CppInspector
 
         protected void StatusUpdate(string status) => OnStatusUpdate?.Invoke(this, status);
 
-        public IEnumerable<IFileFormatReader> Images {
+        public IEnumerable<IFileFormatStream> Images {
             get {
                 for (uint i = 0; i < NumImages; i++)
                     yield return this[i];
@@ -165,15 +186,12 @@ namespace Il2CppInspector
 
         public static T Load(Stream stream, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null) {
             // Copy the original stream in case we modify it
-            var ms = new MemoryStream();
-
             if (stream.CanSeek)
                 stream.Position = 0;
-            stream.CopyTo(ms);
-            
-            ms.Position = 0;
-            var pe = (T) Activator.CreateInstance(typeof(T), ms);
-            return pe.InitImpl(loadOptions, statusCallback) ? pe : null;
+            var binary = (T) Activator.CreateInstance(typeof(T));
+            stream.CopyTo(binary);
+            binary.Position = 0;
+            return binary.InitImpl(loadOptions, statusCallback) ? binary : null;
         }
 
         private bool InitImpl(LoadOptions loadOptions, EventHandler<string> statusCallback) {
@@ -186,10 +204,10 @@ namespace Il2CppInspector
         protected virtual bool Init() => throw new NotImplementedException();
 
         // Choose an image within the file for multi-architecture binaries
-        public virtual IFileFormatReader this[uint index] => (index == 0)? this : throw new IndexOutOfRangeException("Binary image index out of bounds");
+        public virtual IFileFormatStream this[uint index] => (index == 0)? this : throw new IndexOutOfRangeException("Binary image index out of bounds");
 
         // For images that can be loaded and then tested with Il2CppBinary in multiple ways, get the next possible version of the image
-        public virtual IEnumerable<IFileFormatReader> TryNextLoadStrategy() { yield return this; }
+        public virtual IEnumerable<IFileFormatStream> TryNextLoadStrategy() { yield return this; }
 
         // Find search locations in the symbol table for Il2Cpp data
         public virtual Dictionary<string, Symbol> GetSymbolTable() => new Dictionary<string, Symbol>();

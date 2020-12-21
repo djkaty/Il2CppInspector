@@ -17,7 +17,7 @@ namespace Il2CppInspector
 {
     public abstract partial class Il2CppBinary
     {
-        public IFileFormatReader Image { get; }
+        public IFileFormatStream Image { get; }
 
         // IL2CPP-only API exports with decrypted names
         public Dictionary<string, ulong> APIExports { get; } = new Dictionary<string, ulong>();
@@ -92,7 +92,7 @@ namespace Il2CppInspector
         private bool isModified = false;
         public bool IsModified => Image.IsModified || isModified;
 
-        protected Il2CppBinary(IFileFormatReader stream, EventHandler<string> statusCallback = null) {
+        protected Il2CppBinary(IFileFormatStream stream, EventHandler<string> statusCallback = null) {
             Image = stream;
             OnStatusUpdate = statusCallback;
 
@@ -100,7 +100,7 @@ namespace Il2CppInspector
             DiscoverAPIExports();
         }
 
-        protected Il2CppBinary(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null) {
+        protected Il2CppBinary(IFileFormatStream stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null) {
             Image = stream;
             OnStatusUpdate = statusCallback;
 
@@ -110,7 +110,7 @@ namespace Il2CppInspector
         }
 
         // Load and initialize a binary of any supported architecture
-        private static Il2CppBinary LoadImpl(IFileFormatReader stream, EventHandler<string> statusCallback) {
+        private static Il2CppBinary LoadImpl(IFileFormatStream stream, EventHandler<string> statusCallback) {
             // Get type from image architecture
             var type = Assembly.GetExecutingAssembly().GetType("Il2CppInspector.Il2CppBinary" + stream.Arch.ToUpper());
             if (type == null)
@@ -118,15 +118,15 @@ namespace Il2CppInspector
 
             // Set width of long (convert to sizeof(int) for 32-bit files)
             if (stream[0].Bits == 32) {
-                stream[0].Stream.PrimitiveMappings.Add(typeof(long), typeof(int));
-                stream[0].Stream.PrimitiveMappings.Add(typeof(ulong), typeof(uint));
+                stream[0].AddPrimitiveMapping(typeof(long), typeof(int));
+                stream[0].AddPrimitiveMapping(typeof(ulong), typeof(uint));
             }
             
             return (Il2CppBinary) Activator.CreateInstance(type, stream[0], statusCallback);
         }
 
         // Load binary without a global-metadata.dat available
-        public static Il2CppBinary Load(IFileFormatReader stream, double metadataVersion, EventHandler<string> statusCallback = null) {
+        public static Il2CppBinary Load(IFileFormatStream stream, double metadataVersion, EventHandler<string> statusCallback = null) {
             foreach (var loadedImage in stream.TryNextLoadStrategy()) {
                 var inst = LoadImpl(stream, statusCallback);
                 if (inst.FindRegistrationStructs(metadataVersion))
@@ -140,7 +140,7 @@ namespace Il2CppInspector
         // If it is specified and both symbol table and function scanning fail,
         // Metadata will be used to try to find the required structures with data analysis
         // If it is not specified, data analysis will not be performed
-        public static Il2CppBinary Load(IFileFormatReader stream, Metadata metadata, EventHandler<string> statusCallback = null) {
+        public static Il2CppBinary Load(IFileFormatStream stream, Metadata metadata, EventHandler<string> statusCallback = null) {
             foreach (var loadedImage in stream.TryNextLoadStrategy()) {
                 var inst = LoadImpl(stream, statusCallback);
                 if (inst.FindRegistrationStructs(metadata))
@@ -154,7 +154,7 @@ namespace Il2CppInspector
         public void SaveToFile(string pathname) {
             Image.Position = 0;
             using (var outFile = new FileStream(pathname, FileMode.Create, FileAccess.Write))
-                Image.Stream.BaseStream.CopyTo(outFile);
+                Image.CopyTo(outFile);
         }
 
         // Initialize binary without a global-metadata.dat available
@@ -244,7 +244,7 @@ namespace Il2CppInspector
         }
 
         // Architecture-specific search function
-        protected abstract (ulong, ulong) ConsiderCode(IFileFormatReader image, uint loc);
+        protected abstract (ulong, ulong) ConsiderCode(IFileFormatStream image, uint loc);
 
         // Load all of the discovered metadata in the binary
         private void PrepareMetadata(ulong codeRegistration, ulong metadataRegistration, Metadata metadata = null) {

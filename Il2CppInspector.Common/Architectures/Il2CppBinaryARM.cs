@@ -13,9 +13,9 @@ namespace Il2CppInspector
 {
     internal class Il2CppBinaryARM : Il2CppBinary
     {
-        public Il2CppBinaryARM(IFileFormatReader stream, EventHandler<string> statusCallback = null) : base(stream, statusCallback) { }
+        public Il2CppBinaryARM(IFileFormatStream stream, EventHandler<string> statusCallback = null) : base(stream, statusCallback) { }
 
-        public Il2CppBinaryARM(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null)
+        public Il2CppBinaryARM(IFileFormatStream stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null)
             : base(stream, codeRegistration, metadataRegistration, statusCallback) { }
 
         // ARMv7-A Architecture Reference Manual: https://static.docs.arm.com/ddi0406/c/DDI0406C_C_arm_architecture_reference_manual.pdf
@@ -67,7 +67,7 @@ namespace Il2CppInspector
         }
 
         // Section 3.1
-        private uint getNextThumbInstruction(IFileFormatReader image) {
+        private uint getNextThumbInstruction(IFileFormatStream image) {
             // Assume 16-bit
             uint inst = image.ReadUInt16();
 
@@ -123,7 +123,7 @@ namespace Il2CppInspector
         private bool isBW(uint inst) => inst.Bits(27, 5) == 0b11110 && inst.Bits(14, 2) == 0b10 && inst.Bits(12, 1) == 1;
 
         // Sweep a Thumb function and return the register values at the end (register number => value)
-        private Dictionary<uint, uint> sweepThumbForAddressLoads(List<uint> func, uint baseAddress, IFileFormatReader image) {
+        private Dictionary<uint, uint> sweepThumbForAddressLoads(List<uint> func, uint baseAddress, IFileFormatStream image) {
             // List of registers and addresses loaded into them
             var regs = new Dictionary<uint, uint>();
 
@@ -200,7 +200,7 @@ namespace Il2CppInspector
         }
 
         // Get a Thumb function that ends in B.W
-        private List<uint> getThumbFunctionAtFileOffset(IFileFormatReader image, uint loc, uint maxLength) {
+        private List<uint> getThumbFunctionAtFileOffset(IFileFormatStream image, uint loc, uint maxLength) {
             // Read a function that ends in a hard branch (B.W) or exceeds maxLength instructions
             var func = new List<uint>();
             uint inst;
@@ -215,7 +215,7 @@ namespace Il2CppInspector
             return func;
         }
 
-        protected override (ulong, ulong) ConsiderCode(IFileFormatReader image, uint loc) {
+        protected override (ulong, ulong) ConsiderCode(IFileFormatStream image, uint loc) {
             // Assembly bytes to search for at start of each function
             ulong metadataRegistration, codeRegistration;
 
@@ -264,7 +264,7 @@ namespace Il2CppInspector
                 // - B
                 // R0 = CodeRegistration, R1 = MetadataRegistration, R2 = Il2CppCodeGenOptions
 
-                var insts = image.Stream.ReadArray<uint>(pCgr, 10); // 7 instructions + 3 pointers
+                var insts = image.ReadArray<uint>(pCgr, 10); // 7 instructions + 3 pointers
                 var ldrOffsets = new uint[3];
                 var pointers = new uint[3];
 

@@ -15,11 +15,9 @@ namespace Il2CppInspector
     // This is a wrapper for a Linux memory dump
     // The supplied file is a text file containing the output of "cat /proc/["self"|process-id]/maps"
     // We re-construct libil2cpp.so from the *.bin files and return it as the first image
-    internal class ProcessMapReader : FileFormatReader<ProcessMapReader>
+    internal class ProcessMapReader : FileFormatStream<ProcessMapReader>
     {
         private MemoryStream il2cpp;
-
-        public ProcessMapReader(Stream stream) : base(stream) { }
 
         public override string DefaultFilename => "maps.txt";
 
@@ -30,7 +28,7 @@ namespace Il2CppInspector
                 return false;
 
             // Get the entire stream as a string
-            var text = System.Text.Encoding.ASCII.GetString((BaseStream as MemoryStream).ToArray());
+            var text = System.Text.Encoding.ASCII.GetString(ToArray());
 
             // Line format is: https://stackoverflow.com/questions/1401359/understanding-linux-proc-id-maps
             // xxxxxxxx-yyyyyyyy ffff zzzzzzzz aa:bb c [whitespace] [image path]
@@ -105,10 +103,10 @@ namespace Il2CppInspector
             return true;
         }
 
-        public override IFileFormatReader this[uint index] {
+        public override IFileFormatStream this[uint index] {
             get {
                 // Get merged stream as ELF file
-                return (IFileFormatReader) ElfReader32.Load(il2cpp, LoadOptions, OnStatusUpdate) ?? ElfReader64.Load(il2cpp, LoadOptions, OnStatusUpdate);
+                return (IFileFormatStream) ElfReader32.Load(il2cpp, LoadOptions, OnStatusUpdate) ?? ElfReader64.Load(il2cpp, LoadOptions, OnStatusUpdate);
             }
         }
     }

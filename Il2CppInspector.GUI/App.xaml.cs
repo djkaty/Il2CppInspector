@@ -126,7 +126,7 @@ namespace Il2CppInspectorGUI
                 try {
                     OnStatusUpdate?.Invoke(this, "Processing metadata");
 
-                    metadata = new Metadata(metadataStream, StatusUpdate);
+                    metadata = Metadata.FromStream(metadataStream, StatusUpdate);
                     return true;
                 }
                 catch (Exception ex) {
@@ -150,7 +150,7 @@ namespace Il2CppInspectorGUI
                     OnStatusUpdate?.Invoke(this, "Processing binary");
 
                     // This may throw other exceptions from the individual loaders as well
-                    IFileFormatReader stream = FileFormatReader.Load(binaryStream, LoadOptions, StatusUpdate);
+                    IFileFormatStream stream = FileFormatStream.Load(binaryStream, LoadOptions, StatusUpdate);
                     if (stream == null) {
                         throw new InvalidOperationException("Could not determine the binary file format");
                     }

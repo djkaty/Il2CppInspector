@@ -17,7 +17,7 @@ namespace Il2CppInspector
     // References:
     // PE Header file: https://github.com/dotnet/llilc/blob/master/include/clr/ntimage.h
     // PE format specification: https://docs.microsoft.com/en-us/windows/win32/debug/pe-format?redirectedfrom=MSDN
-    internal class PEReader : FileFormatReader<PEReader>
+    internal class PEReader : FileFormatStream<PEReader>
     {
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private extern static IntPtr LoadLibrary(string lpLibFileName);
@@ -37,8 +37,6 @@ namespace Il2CppInspector
             [PE.IMAGE_SCN_MEM_READ                            | PE.IMAGE_SCN_CNT_INITIALIZED_DATA] = ".rdata",
             [PE.IMAGE_SCN_MEM_READ | PE.IMAGE_SCN_MEM_WRITE   | PE.IMAGE_SCN_CNT_INITIALIZED_DATA] = ".data"
         };
-
-        public PEReader(Stream stream) : base(stream) {}
 
         public override string DefaultFilename => "GameAssembly.dll";
 
@@ -187,22 +185,21 @@ namespace Il2CppInspector
 
             // Truncate memory stream at start of COFF header
             var endOfSignature = ReadUInt32(0x3C) + 4; // DOS header + 4-byte PE signature
-            BaseStream.SetLength(endOfSignature);
+            SetLength(endOfSignature);
 
             // Re-write the stream (the headers are only necessary in case the user wants to save)
-            using var writer = new BinaryObjectWriter(BaseStream, Endianness, true);
-            writer.Position = endOfSignature;
-            writer.WriteObject(coff);
-            if (Bits == 32) writer.WriteObject((PEOptHeader32) pe);
-                       else writer.WriteObject((PEOptHeader64) pe);
-            writer.WriteArray(sections);
-            writer.Write(peBytes, (int) Position, peBytes.Length - (int) Position);
+            Position = endOfSignature;
+            WriteObject(coff);
+            if (Bits == 32) WriteObject((PEOptHeader32) pe);
+                       else WriteObject((PEOptHeader64) pe);
+            WriteArray(sections);
+            Write(peBytes, (int) Position, peBytes.Length - (int) Position);
 
             IsModified = true;
         }
 
         // Raw file / unpacked file load strategies
-        public override IEnumerable<IFileFormatReader> TryNextLoadStrategy() {
+        public override IEnumerable<IFileFormatStream> TryNextLoadStrategy() {
             // First load strategy: the regular file
             yield return this;
 

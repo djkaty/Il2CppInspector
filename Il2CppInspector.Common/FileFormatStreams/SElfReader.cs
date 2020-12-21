@@ -24,10 +24,8 @@ namespace Il2CppInspector
     // https://www.psxhax.com/threads/ps4-self-spkg-file-format-documentation-detailed-for-scene-devs.6636/
     // https://wiki.henkaku.xyz/vita/images/a/a2/Vita_SDK_specifications.pdf
     // https://www.psxhax.com/threads/make-fself-gui-for-flat_zs-make_fself-py-script-by-cfwprophet.3494/
-    internal class SElfReader : FileFormatReader<SElfReader>
+    internal class SElfReader : FileFormatStream<SElfReader>
     {
-        public SElfReader(Stream stream) : base(stream) { }
-
         public override string DefaultFilename => "libil2cpp.so";
 
         public override string Format => sceData.ProductType == (ulong) SElfExInfoTypes.PTYPE_FAKE? "FSELF" : "SELF";

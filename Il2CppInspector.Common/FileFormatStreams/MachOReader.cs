@@ -15,8 +15,6 @@ namespace Il2CppInspector
 {
     internal class MachOReader32 : MachOReader<uint, MachOReader32, Convert32>
     {
-        public MachOReader32(Stream stream) : base(stream) { }
-
         public override int Bits => 32;
 
         protected override bool checkMagicLE(MachO magic) => magic == MachO.MH_MAGIC;
@@ -37,8 +35,6 @@ namespace Il2CppInspector
 
     internal class MachOReader64 : MachOReader<ulong, MachOReader64, Convert64>
     {
-        public MachOReader64(Stream stream) : base(stream) { }
-
         public override int Bits => 64;
 
         protected override bool checkMagicLE(MachO magic) => magic == MachO.MH_MAGIC_64;
@@ -59,9 +55,9 @@ namespace Il2CppInspector
 
     // We need this convoluted generic TReader declaration so that "static T FileFormatReader.Load(Stream)"
     // is inherited to MachOReader32/64 with a correct definition of T
-    internal abstract class MachOReader<TWord, TReader, TConvert> : FileFormatReader<TReader>
+    internal abstract class MachOReader<TWord, TReader, TConvert> : FileFormatStream<TReader>
         where TWord : struct
-        where TReader : FileFormatReader<TReader>
+        where TReader : FileFormatStream<TReader>
         where TConvert : IWordConverter<TWord>, new()
     {
         private readonly TConvert conv = new TConvert();
@@ -74,8 +70,6 @@ namespace Il2CppInspector
         private MachOSymtabCommand symTab;
 
         private List<Export> exports = new List<Export>();
-
-        protected MachOReader(Stream stream) : base(stream) { }
 
         public override string DefaultFilename => "app";
 

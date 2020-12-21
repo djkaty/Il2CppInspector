@@ -16,6 +16,6 @@ namespace Il2CppInspector.Cpp
     public static class CppCompiler
     {
         // Attempt to guess the compiler used to build the binary via its file type
-        public static CppCompilerType GuessFromImage(IFileFormatReader image) => (image is PEReader? CppCompilerType.MSVC : CppCompilerType.GCC);
+        public static CppCompilerType GuessFromImage(IFileFormatStream image) => (image is PEReader? CppCompilerType.MSVC : CppCompilerType.GCC);
     }
 }

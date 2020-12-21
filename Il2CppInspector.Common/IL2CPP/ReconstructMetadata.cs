@@ -801,17 +801,9 @@ namespace Il2CppInspector
             MetadataRegistration.methodReferences          = 0;
 
             // Write changes to stream
-            using var sw = new BinaryObjectWriter(Image.Stream.BaseStream, Image.Stream.Endianness, true);
-            sw.Version = Image.Version;
 
-            // Set width of long (convert to sizeof(int) for 32-bit files)
-            if (Image.Bits == 32) {
-                sw.PrimitiveMappings.Add(typeof(long), typeof(int));
-                sw.PrimitiveMappings.Add(typeof(ulong), typeof(uint));
-            }
-
-            sw.WriteObject(Image.MapVATR(CodeRegistrationPointer), CodeRegistration);
-            sw.WriteObject(Image.MapVATR(MetadataRegistrationPointer), MetadataRegistration);
+            Image.WriteObject(Image.MapVATR(CodeRegistrationPointer), CodeRegistration);
+            Image.WriteObject(Image.MapVATR(MetadataRegistrationPointer), MetadataRegistration);
             isModified = true;
 
             StatusUpdate("Analyzing IL2CPP image");

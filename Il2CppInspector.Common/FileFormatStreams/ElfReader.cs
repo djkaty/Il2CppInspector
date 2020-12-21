@@ -17,7 +17,7 @@ namespace Il2CppInspector
 {
     internal class ElfReader32 : ElfReader<uint, elf_32_phdr, elf_32_sym, ElfReader32, Convert32>
     {
-        public ElfReader32(Stream stream) : base(stream) {
+        public ElfReader32() : base() {
             ElfReloc.GetRelocType = info => (Elf) (info & 0xff);
             ElfReloc.GetSymbolIndex = info => info >> 8;
         }
@@ -25,12 +25,12 @@ namespace Il2CppInspector
         public override int Bits => 32;
         protected override Elf ArchClass => Elf.ELFCLASS32;
 
-        protected override void Write(BinaryWriter writer, uint value) => writer.Write(value);
+        protected override void WriteWord(uint value) => Write(value);
     }
 
     internal class ElfReader64 : ElfReader<ulong, elf_64_phdr, elf_64_sym, ElfReader64, Convert64>
     {
-        public ElfReader64(Stream stream) : base(stream) {
+        public ElfReader64() : base() {
             ElfReloc.GetRelocType = info => (Elf) (info & 0xffff_ffff);
             ElfReloc.GetSymbolIndex = info => info >> 32;
         }
@@ -38,7 +38,7 @@ namespace Il2CppInspector
         public override int Bits => 64;
         protected override Elf ArchClass => Elf.ELFCLASS64;
 
-        protected override void Write(BinaryWriter writer, ulong value) => writer.Write(value);
+        protected override void WriteWord(ulong value) => Write(value);
     }
 
     interface IElfReader
@@ -46,12 +46,12 @@ namespace Il2CppInspector
         uint GetPLTAddress();
     }
 
-    internal abstract class ElfReader<TWord, TPHdr, TSym, TReader, TConvert> : FileFormatReader<TReader>, IElfReader
+    internal abstract class ElfReader<TWord, TPHdr, TSym, TReader, TConvert> : FileFormatStream<TReader>, IElfReader
         where TWord : struct
         where TPHdr : Ielf_phdr<TWord>, new()
         where TSym : Ielf_sym<TWord>, new()
         where TConvert : IWordConverter<TWord>, new()
-        where TReader : FileFormatReader<TReader>
+        where TReader : FileFormatStream<TReader>
     {
         private readonly TConvert conv = new TConvert();
 
@@ -115,8 +115,6 @@ namespace Il2CppInspector
         private bool preferPHT = false;
         private bool isMemoryImage = false;
 
-        public ElfReader(Stream stream) : base(stream) { }
-
         public override string DefaultFilename => "libil2cpp.so";
 
         public override string Format => Bits == 32 ? "ELF" : "ELF64";
@@ -141,7 +139,7 @@ namespace Il2CppInspector
 
         protected abstract Elf ArchClass { get; }
 
-        protected abstract void Write(BinaryWriter writer, TWord value);
+        protected abstract void WriteWord(TWord value);
 
         protected override bool Init() {
             elf_header = ReadObject<elf_header<TWord>>();
@@ -153,10 +151,6 @@ namespace Il2CppInspector
             // Ensure supported architecture
             if ((Elf) elf_header.m_arch != ArchClass)
                 return false;
-
-            // Relocations and rebasing will modify the stream - ensure it is non-destructive
-            if (!(BaseStream is MemoryStream))
-                throw new InvalidOperationException("Input stream to ElfReader must be a MemoryStream.");
 
             // Get PHT and SHT
             program_header_table = ReadArray<TPHdr>(conv.Long(elf_header.e_phoff), elf_header.e_phnum);
@@ -283,7 +277,6 @@ namespace Il2CppInspector
             }
 
             // Process relocations
-            using var writer = new BinaryWriter(BaseStream, Encoding.Default, true);
             var relsz = Sizeof(typeof(TSym));
 
             var currentRel = 0;
@@ -334,7 +327,7 @@ namespace Il2CppInspector
 
                 if (result.recognized) {
                     Position = MapVATR(conv.ULong(rel.Offset));
-                    Write(writer, result.newValue);
+                    WriteWord(result.newValue);
                 }
             }
             Console.WriteLine($"Processed {rels.Count} relocations");
@@ -525,12 +518,9 @@ namespace Il2CppInspector
         }
 
         private void xorRange(int offset, int length, byte xorValue) {
-            using var writer = new BinaryWriter(BaseStream, Encoding.Default, true);
-
             var bytes = ReadBytes(offset, length);
             bytes = bytes.Select(b => (byte) (b ^ xorValue)).ToArray();
-            writer.Seek(offset, SeekOrigin.Begin);
-            writer.Write(bytes);
+            Write(offset, bytes);
         }
 
         private void xorSection(string sectionName, byte xorValue, uint stripeSize) {
@@ -571,8 +561,7 @@ namespace Il2CppInspector
             }
 
             // Rewrite to stream
-            using var writer = new BinaryObjectWriter(BaseStream, Endianness, true);
-            writer.WriteArray(conv.Long(elf_header.e_phoff), program_header_table);
+            WriteArray(conv.Long(elf_header.e_phoff), program_header_table);
             IsModified = true;
 
             // Rebase dynamic table if it exists
@@ -595,7 +584,7 @@ namespace Il2CppInspector
                 section.d_un = conv.Add(section.d_un, imageBase);
 
             // Rewrite to stream
-            writer.WriteArray(conv.Long(PT_DYNAMIC.p_offset), dt);
+            WriteArray(conv.Long(PT_DYNAMIC.p_offset), dt);
         }
 
         private void processSymbols() {

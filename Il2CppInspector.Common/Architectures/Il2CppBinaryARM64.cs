@@ -12,9 +12,9 @@ namespace Il2CppInspector
     // A64 ISA reference: https://static.docs.arm.com/ddi0596/a/DDI_0596_ARM_a64_instruction_set_architecture.pdf
     internal class Il2CppBinaryARM64 : Il2CppBinary
     {
-        public Il2CppBinaryARM64(IFileFormatReader stream, EventHandler<string> statusCallback = null) : base(stream, statusCallback) { }
+        public Il2CppBinaryARM64(IFileFormatStream stream, EventHandler<string> statusCallback = null) : base(stream, statusCallback) { }
 
-        public Il2CppBinaryARM64(IFileFormatReader stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null)
+        public Il2CppBinaryARM64(IFileFormatStream stream, uint codeRegistration, uint metadataRegistration, EventHandler<string> statusCallback = null)
             : base(stream, codeRegistration, metadataRegistration, statusCallback) { }
 
         private (uint reg, ulong page)? getAdrp(uint inst, ulong pc) {
@@ -70,7 +70,7 @@ namespace Il2CppInspector
 
         private bool isB(uint inst) => inst.Bits(26, 6) == 0b_000101;
 
-        private Dictionary<uint, ulong> sweepForAddressLoads(List<uint> func, ulong baseAddress, IFileFormatReader image) {
+        private Dictionary<uint, ulong> sweepForAddressLoads(List<uint> func, ulong baseAddress, IFileFormatStream image) {
             // List of registers and addresses loaded into them
             var regs = new Dictionary<uint, ulong>();
 
@@ -118,7 +118,7 @@ namespace Il2CppInspector
             return regs;
         }
 
-        private List<uint> getFunctionAtFileOffset(IFileFormatReader image, uint loc, uint maxLength) {
+        private List<uint> getFunctionAtFileOffset(IFileFormatStream image, uint loc, uint maxLength) {
             // Read a function that ends in a hard branch (B) or exceeds maxLength instructions
             var func = new List<uint>();
             uint inst;
@@ -141,7 +141,7 @@ namespace Il2CppInspector
         // - Loads can be done either with ADRP+ADD (loads the address of the wanted struct) or ADRP+LDR (loads a pointer to the address which must be de-referenced)
         // - Loads do not need to be pairs of sequential instructions
         // - We need to sweep the whole function from the ADRP to the next B to find an ADD or LDR with a corresponding register
-        protected override (ulong, ulong) ConsiderCode(IFileFormatReader image, uint loc) {
+        protected override (ulong, ulong) ConsiderCode(IFileFormatStream image, uint loc) {
             // Load function into memory
             // In practice, the longest function length we need is not generally longer than 7 instructions (0x1C bytes)
             var func = getFunctionAtFileOffset(image, loc, 7);

@@ -10,7 +10,7 @@ namespace Il2CppInspector
 {
     internal class ULEB128
     {
-        public static ulong Decode(IFileFormatReader next) {
+        public static ulong Decode(IFileFormatStream next) {
             ulong uleb = 0;
             byte b = 0x80;
             for (var shift = 0; b >> 7 == 1; shift += 7) {

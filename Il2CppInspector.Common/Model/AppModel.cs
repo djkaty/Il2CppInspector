@@ -82,7 +82,7 @@ namespace Il2CppInspector.Model
         public int WordSizeBytes => WordSizeBits / 8;
 
         // The binary image
-        public IFileFormatReader Image => Package.BinaryImage;
+        public IFileFormatStream Image => Package.BinaryImage;
 
         // The IL2CPP package for this application
         public Il2CppInspector Package => TypeModel.Package;
