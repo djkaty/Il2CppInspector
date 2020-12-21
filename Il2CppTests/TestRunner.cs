@@ -37,7 +37,7 @@ namespace Il2CppInspector
     [TestFixture]
     public partial class TestRunner
     {
-        private async void runTest(string testPath, LoadOptions loadOptions = null) {
+        private async Task runTest(string testPath, LoadOptions loadOptions = null) {
             // Android
             var testFile = testPath + @"\" + Path.GetFileName(testPath) + ".so";
             if (!File.Exists(testFile))
@@ -72,8 +72,8 @@ namespace Il2CppInspector
                 throw new Exception("Could not find any images in the IL2CPP binary");
 
             // Dump each image in the binary separately
-
-            Parallel.ForEach(inspectors, il2cpp => {
+            var imageTasks = inspectors.Select((il2cpp, i) => Task.Run(() =>
+            {
                 TypeModel model;
                 using (new Benchmark("Create .NET type model"))
                     model = new TypeModel(il2cpp);
@@ -81,8 +81,8 @@ namespace Il2CppInspector
                 AppModel appModel;
                 using (new Benchmark("Create application model"))
                     appModel = new AppModel(model, makeDefaultBuild: false).Build(compiler: CppCompilerType.MSVC);
-                
-                var nameSuffix = "-" + il2cpp.BinaryImage.Arch.ToLower();
+
+                var nameSuffix = i++ > 0 ? "-" + (i - 1) : "";
 
                 using (new Benchmark("Create C# code stubs"))
                     new CSharpCodeStubs(model) {
@@ -104,13 +104,14 @@ namespace Il2CppInspector
                     python.WriteScriptToFile(testPath + $@"\test-{target.ToLower()}{nameSuffix}.py", target,
                         testPath + $@"\test-cpp-result{nameSuffix}\appdata\il2cpp-types.h",
                         testPath + $@"\test-result{nameSuffix}.json");
-            });
+            }));
+            await Task.WhenAll(imageTasks);
 
             // Compare test results with expected results
             using (new Benchmark("Compare files")) {
                 var compareTasks = new List<Task>();
-                foreach (var il2cpp in inspectors) {
-                    var suffix = "-" + il2cpp.BinaryImage.Arch.ToLower();
+                for (var i = 0; i < inspectors.Count; i++) {
+                    var suffix = i++ > 0 ? "-" + (i - 1) : "";
 
                     compareTasks.Add(Task.Run(() => compareFiles(testPath, suffix + ".cs", $"test-result{suffix}.cs")));
                     compareTasks.Add(Task.Run(() => compareFiles(testPath, suffix + ".json", $"test-result{suffix}.json")));
