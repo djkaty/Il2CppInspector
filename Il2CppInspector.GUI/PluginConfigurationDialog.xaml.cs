@@ -60,6 +60,8 @@ namespace Il2CppInspector.GUI
         private void okButton_Click(object sender, RoutedEventArgs e) {
             // Closes dialog box automatically
             DialogResult = true;
+
+            // TODO: Plugin hook OptionsChanged (and make sure it works when clicking close icon as well)
         }
 
         // Select a file path

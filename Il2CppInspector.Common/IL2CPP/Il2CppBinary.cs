@@ -259,6 +259,8 @@ namespace Il2CppInspector
             CodeRegistration = Image.ReadMappedObject<Il2CppCodeRegistration>(codeRegistration);
             MetadataRegistration = Image.ReadMappedObject<Il2CppMetadataRegistration>(metadataRegistration);
 
+            // TODO: Plugin hook PreProcessBinary
+
             // Do basic validatation that MetadataRegistration and CodeRegistration are sane
             /*
              * GlobalMethodPointers (<= 24.1) must be a series of pointers in il2cpp or .text, and in sequential order
@@ -378,6 +380,8 @@ namespace Il2CppInspector
                 GenericMethodPointers.Add(MethodSpecs[tableEntry.genericMethodIndex], genericMethodPointers[tableEntry.indices.methodIndex]);
                 GenericMethodInvokerIndices.Add(MethodSpecs[tableEntry.genericMethodIndex], tableEntry.indices.invokerIndex);
             }
+
+            // TODO: Plugin hook PostProcessBinary
         }
 
         // IL2CPP API exports

@@ -197,7 +197,12 @@ namespace Il2CppInspector
         private bool InitImpl(LoadOptions loadOptions, EventHandler<string> statusCallback) {
             LoadOptions = loadOptions;
             OnStatusUpdate = statusCallback;
+
+            // TODO: Plugin hook PreProcessFile
+
             return Init();
+
+            // TODO: Plugin hook PostProcessFile
         }
 
         // Confirm file is valid and set up RVA mappings

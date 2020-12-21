@@ -313,6 +313,8 @@ namespace Il2CppInspector
 
             // Merge all metadata usage references into a single distinct list
             MetadataUsages = buildMetadataUsages();
+
+            // TODO: Plugin hook PostProcessPackage
         }
 
         // Get a method pointer if available

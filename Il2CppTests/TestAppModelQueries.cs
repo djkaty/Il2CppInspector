@@ -34,6 +34,7 @@ namespace Il2CppInspector
             // Assert
 
             // Check VTable offset is accurate
+            // Note: this is for 2020.1 and below; it changed to 0x138 in 2020.2
             Assert.AreEqual(0x130, app.GetVTableOffset());
 
             // BufferedStream.Flush()
