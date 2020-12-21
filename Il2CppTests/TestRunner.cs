@@ -5,6 +5,8 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +18,22 @@ using NUnit.Framework;
 
 namespace Il2CppInspector
 {
+    internal class Benchmark : IDisposable
+    {
+        private readonly Stopwatch timer = new Stopwatch();
+        private readonly string benchmarkName;
+
+        public Benchmark(string benchmarkName) {
+            this.benchmarkName = benchmarkName;
+            timer.Start();
+        }
+
+        public void Dispose() {
+            timer.Stop();
+            Console.WriteLine($"{benchmarkName}: {timer.Elapsed.TotalSeconds:N2} sec");
+        }
+    }
+
     [TestFixture]
     public partial class TestRunner
     {
@@ -42,7 +60,9 @@ namespace Il2CppInspector
 
             loadOptions.BinaryFilePath = testFile;
 
-            var inspectors = Il2CppInspector.LoadFromFile(testFile, testPath + @"\global-metadata.dat", loadOptions);
+            List<Il2CppInspector> inspectors;
+            using (new Benchmark("Load IL2CPP metadata and binary"))
+                inspectors = Il2CppInspector.LoadFromFile(testFile, testPath + @"\global-metadata.dat", loadOptions);
 
             // If null here, there was a problem parsing the files
             if (inspectors == null)
@@ -54,21 +74,30 @@ namespace Il2CppInspector
             // Dump each image in the binary separately
 
             Parallel.ForEach(inspectors, il2cpp => {
-                var model = new TypeModel(il2cpp);
-                var appModel = new AppModel(model, makeDefaultBuild: false).Build(compiler: CppCompilerType.MSVC);
+                TypeModel model;
+                using (new Benchmark("Create .NET type model"))
+                    model = new TypeModel(il2cpp);
+
+                AppModel appModel;
+                using (new Benchmark("Create application model"))
+                    appModel = new AppModel(model, makeDefaultBuild: false).Build(compiler: CppCompilerType.MSVC);
+                
                 var nameSuffix = "-" + il2cpp.BinaryImage.Arch.ToLower();
 
-                new CSharpCodeStubs(model) {
-                    ExcludedNamespaces = Constants.DefaultExcludedNamespaces,
-                    SuppressMetadata = false,
-                    MustCompile = true
-                }.WriteSingleFile(testPath + $@"\test-result{nameSuffix}.cs");
+                using (new Benchmark("Create C# code stubs"))
+                    new CSharpCodeStubs(model) {
+                        ExcludedNamespaces = Constants.DefaultExcludedNamespaces,
+                        SuppressMetadata = false,
+                        MustCompile = true
+                    }.WriteSingleFile(testPath + $@"\test-result{nameSuffix}.cs");
 
-                new JSONMetadata(appModel)
-                    .Write(testPath + $@"\test-result{nameSuffix}.json");
+                using (new Benchmark("Create JSON metadata"))
+                    new JSONMetadata(appModel)
+                        .Write(testPath + $@"\test-result{nameSuffix}.json");
 
-                new CppScaffolding(appModel)
-                    .Write(testPath + $@"\test-cpp-result{nameSuffix}");
+                using (new Benchmark("Create C++ scaffolding"))
+                    new CppScaffolding(appModel)
+                        .Write(testPath + $@"\test-cpp-result{nameSuffix}");
 
                 var python = new PythonScript(appModel);
                 foreach (var target in PythonScript.GetAvailableTargets())
@@ -78,8 +107,9 @@ namespace Il2CppInspector
             });
 
             // Compare test results with expected results
-            foreach (var il2cpp in inspectors) {
-                var suffix = "-" + il2cpp.BinaryImage.Arch.ToLower();
+            using var _ = new Benchmark("Compare files");
+            for (var i = 0; i < inspectors.Count; i++) {
+                var suffix = (i > 0 ? "-" + i : "");
 
                 compareFiles(testPath, suffix + ".cs", $"test-result{suffix}.cs");
                 compareFiles(testPath, suffix + ".json", $"test-result{suffix}.json");
