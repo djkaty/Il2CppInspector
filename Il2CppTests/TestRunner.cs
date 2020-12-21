@@ -72,38 +72,51 @@ namespace Il2CppInspector
                 throw new Exception("Could not find any images in the IL2CPP binary");
 
             // Dump each image in the binary separately
-            var imageTasks = inspectors.Select((il2cpp, i) => Task.Run(() =>
+            var imageTasks = inspectors.Select((il2cpp, i) => Task.Run(async () =>
             {
                 TypeModel model;
                 using (new Benchmark("Create .NET type model"))
                     model = new TypeModel(il2cpp);
 
-                AppModel appModel;
-                using (new Benchmark("Create application model"))
-                    appModel = new AppModel(model, makeDefaultBuild: false).Build(compiler: CppCompilerType.MSVC);
+                var appModelTask = Task.Run(() => {
+                    using (new Benchmark("Create application model"))
+                        return new AppModel(model, makeDefaultBuild: false).Build(compiler: CppCompilerType.MSVC);
+                });
 
                 var nameSuffix = i++ > 0 ? "-" + (i - 1) : "";
 
-                using (new Benchmark("Create C# code stubs"))
-                    new CSharpCodeStubs(model) {
-                        ExcludedNamespaces = Constants.DefaultExcludedNamespaces,
-                        SuppressMetadata = false,
-                        MustCompile = true
-                    }.WriteSingleFile(testPath + $@"\test-result{nameSuffix}.cs");
+                var csTask = Task.Run(() => {
+                    using (new Benchmark("Create C# code stubs"))
+                        new CSharpCodeStubs(model) {
+                            ExcludedNamespaces = Constants.DefaultExcludedNamespaces,
+                            SuppressMetadata = false,
+                            MustCompile = true
+                        }.WriteSingleFile(testPath + $@"\test-result{nameSuffix}.cs");
+                });
 
-                using (new Benchmark("Create JSON metadata"))
-                    new JSONMetadata(appModel)
+                var appModel = await appModelTask;
+
+                var jsonTask = Task.Run(() => {
+                    using (new Benchmark("Create JSON metadata"))
+                        new JSONMetadata(appModel)
                         .Write(testPath + $@"\test-result{nameSuffix}.json");
+                });
 
-                using (new Benchmark("Create C++ scaffolding"))
-                    new CppScaffolding(appModel)
+                var cppTask = Task.Run(() => {
+                    using (new Benchmark("Create C++ scaffolding"))
+                        new CppScaffolding(appModel)
                         .Write(testPath + $@"\test-cpp-result{nameSuffix}");
+                });
 
-                var python = new PythonScript(appModel);
-                foreach (var target in PythonScript.GetAvailableTargets())
-                    python.WriteScriptToFile(testPath + $@"\test-{target.ToLower()}{nameSuffix}.py", target,
+                var pyTask = Task.Run(() => {
+                    var python = new PythonScript(appModel);
+                    foreach (var target in PythonScript.GetAvailableTargets())
+                        python.WriteScriptToFile(testPath + $@"\test-{target.ToLower()}{nameSuffix}.py", target,
                         testPath + $@"\test-cpp-result{nameSuffix}\appdata\il2cpp-types.h",
                         testPath + $@"\test-result{nameSuffix}.json");
+                });
+
+                await Task.WhenAll(csTask, jsonTask, cppTask, pyTask);
             }));
             await Task.WhenAll(imageTasks);
 
