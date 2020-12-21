@@ -43,7 +43,7 @@ namespace Il2CppInspector
         public uint[] VTableMethodIndices { get; set; }
         public string[] StringLiterals { get; set; }
 
-        public Dictionary<int, string> Strings { get; } = new Dictionary<int, string>();
+        public Dictionary<int, string> Strings { get; private set; } = new Dictionary<int, string>();
 
         // Set if something in the metadata has been modified / decrypted
         public bool IsModified { get; private set; } = false;
@@ -97,7 +97,7 @@ namespace Il2CppInspector
             // in the header after the sanity and version fields, and since it will always point directly to the first byte after the end of the header,
             // we can use this value to determine the actual header length and therefore narrow down the metadata version to 24.0/24.1 or 24.2.
 
-            if (!pluginResult.AdditionalData.SkipValidation) {
+            if (!pluginResult.SkipValidation) {
                 var realHeaderLength = Header.stringLiteralOffset;
 
                 if (realHeaderLength != Sizeof(typeof(Il2CppGlobalMetadataHeader))) {
@@ -169,15 +169,20 @@ namespace Il2CppInspector
                 AttributeTypeRanges = ReadArray<Il2CppCustomAttributeTypeRange>(Header.attributesInfoOffset, Header.attributesInfoCount / Sizeof(typeof(Il2CppCustomAttributeTypeRange)));
             }
 
-            // Get all metadata string literals
-            Position = Header.stringOffset;
+            // Get all metadata strings
+            var pluginGetStringsResult = PluginHooks.GetStrings(this);
+            if (pluginGetStringsResult.IsHandled)
+                Strings = pluginGetStringsResult.Strings;
 
-            // Naive implementation: this works for normal IL2CPP metadata but isn't good enough when the strings are encrypted
-            while (Position < Header.stringOffset + Header.stringCount)
-                Strings.Add((int)Position - Header.stringOffset, ReadNullTerminatedString());
+            else {
+                Position = Header.stringOffset;
 
-            // To check for encryption, find every single string start position by scanning all of the definitions
-            var stringOffsets =
+                // Naive implementation: this works for normal IL2CPP metadata but isn't good enough when the strings are encrypted
+                while (Position < Header.stringOffset + Header.stringCount)
+                    Strings.Add((int) Position - Header.stringOffset, ReadNullTerminatedString());
+
+                // To check for encryption, find every single string start position by scanning all of the definitions
+                var stringOffsets =
                                 Images.Select(x => x.nameIndex)
                         .Concat(Assemblies.Select(x => x.aname.nameIndex))
                         .Concat(Assemblies.Select(x => x.aname.cultureIndex))
@@ -195,50 +200,57 @@ namespace Il2CppInspector
                         .Distinct()
                         .ToList();
 
-            // Now confirm that all the keys are present
-            // If they aren't, that means one or more of the null terminators wasn't null, indicating potential encryption
-            // Only do this if we need to because it's very slow
-            if (Header.stringCount > 0 && stringOffsets.Except(Strings.Keys).Any()) {
+                // Now confirm that all the keys are present
+                // If they aren't, that means one or more of the null terminators wasn't null, indicating potential encryption
+                // Only do this if we need to because it's very slow
+                if (Header.stringCount > 0 && stringOffsets.Except(Strings.Keys).Any()) {
 
-                Console.WriteLine("Decrypting strings...");
-                StatusUpdate("Decrypting strings");
+                    Console.WriteLine("Decrypting strings...");
+                    StatusUpdate("Decrypting strings");
 
-                // There may be zero-padding at the end of the last string since counts seem to be word-aligned
-                // Find the true location one byte after the final character of the final string
-                var endOfStrings = Header.stringCount;
-                while (ReadByte(Header.stringOffset + endOfStrings - 1) == 0)
-                    endOfStrings--;
+                    // There may be zero-padding at the end of the last string since counts seem to be word-aligned
+                    // Find the true location one byte after the final character of the final string
+                    var endOfStrings = Header.stringCount;
+                    while (ReadByte(Header.stringOffset + endOfStrings - 1) == 0)
+                        endOfStrings--;
 
-                // Start again
-                Strings.Clear();
-                Position = Header.stringOffset;
+                    // Start again
+                    Strings.Clear();
+                    Position = Header.stringOffset;
 
-                // Read in all of the strings as if they are fixed length rather than null-terminated
-                foreach (var offset in stringOffsets.Zip(stringOffsets.Skip(1).Append(endOfStrings), (a, b) => (current: a, next: b))) {
-                    var encryptedString = ReadBytes(offset.next - offset.current - 1);
+                    // Read in all of the strings as if they are fixed length rather than null-terminated
+                    foreach (var offset in stringOffsets.Zip(stringOffsets.Skip(1).Append(endOfStrings), (a, b) => (current: a, next: b))) {
+                        var encryptedString = ReadBytes(offset.next - offset.current - 1);
 
-                    // The null terminator is the XOR key
-                    var xorKey = ReadByte();
+                        // The null terminator is the XOR key
+                        var xorKey = ReadByte();
 
-                    var decryptedString = Encoding.GetString(encryptedString.Select(b => (byte) (b ^ xorKey)).ToArray());
-                    Strings.Add(offset.current, decryptedString);
+                        var decryptedString = Encoding.GetString(encryptedString.Select(b => (byte) (b ^ xorKey)).ToArray());
+                        Strings.Add(offset.current, decryptedString);
+                    }
+
+                    // Write changes back in case the user wants to save the metadata file
+                    Position = Header.stringOffset;
+                    foreach (var str in Strings.OrderBy(s => s.Key))
+                        WriteNullTerminatedString(str.Value);
+                    Flush();
+
+                    IsModified = true;
                 }
-
-                // Write changes back in case the user wants to save the metadata file
-                Position = Header.stringOffset;
-                foreach (var str in Strings.OrderBy(s => s.Key))
-                    WriteNullTerminatedString(str.Value);
-                Flush();
-
-                IsModified = true;
             }
 
-            // Get all managed code string literals
-            var stringLiteralList = ReadArray<Il2CppStringLiteral>(Header.stringLiteralOffset, Header.stringLiteralCount / Sizeof(typeof(Il2CppStringLiteral)));
+            // Get all string literals
+            var pluginGetStringLiteralsResult = PluginHooks.GetStringLiterals(this);
+            if (pluginGetStringLiteralsResult.IsHandled)
+                StringLiterals = pluginGetStringLiteralsResult.StringLiterals.ToArray();
 
-            StringLiterals = new string[stringLiteralList.Length];
-            for (var i = 0; i < stringLiteralList.Length; i++)
-                StringLiterals[i] = ReadFixedLengthString(Header.stringLiteralDataOffset + stringLiteralList[i].dataIndex, stringLiteralList[i].length);
+            else {
+                var stringLiteralList = ReadArray<Il2CppStringLiteral>(Header.stringLiteralOffset, Header.stringLiteralCount / Sizeof(typeof(Il2CppStringLiteral)));
+
+                StringLiterals = new string[stringLiteralList.Length];
+                for (var i = 0; i < stringLiteralList.Length; i++)
+                    StringLiterals[i] = ReadFixedLengthString(Header.stringLiteralDataOffset + stringLiteralList[i].dataIndex, stringLiteralList[i].length);
+            }
 
             // Post-processing hook
             IsModified |= PluginHooks.PostProcessMetadata(this).IsStreamModified;

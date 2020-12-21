@@ -15,16 +15,23 @@ namespace Il2CppInspector
     // Hooks we provide to plugins which can choose whether or not to provide implementations
     internal static class PluginHooks
     {
-        public static PluginPostProcessMetadataEventInfo PostProcessMetadata(Metadata metadata)
-            => PluginManager.Try<IPostProcessMetadata, PluginPostProcessMetadataEventInfo>((p, e) => p.PostProcessMetadata(metadata, e));
-
         public static PluginPreProcessMetadataEventInfo PreProcessMetadata(BinaryObjectStream stream)
             => PluginManager.Try<IPreProcessMetadata, PluginPreProcessMetadataEventInfo>((p, e) => {
                     stream.Position = 0;
                     p.PreProcessMetadata(stream, e);
                 });
 
+        public static PluginPostProcessMetadataEventInfo PostProcessMetadata(Metadata metadata)
+            => PluginManager.Try<IPostProcessMetadata, PluginPostProcessMetadataEventInfo>((p, e) => p.PostProcessMetadata(metadata, e));
+
+        public static PluginGetStringsEventInfo GetStrings(Metadata metadata)
+            => PluginManager.Try<IGetStrings, PluginGetStringsEventInfo>((p, e) => p.GetStrings(metadata, e));
+
+        public static PluginGetStringLiteralsEventInfo GetStringLiterals(Metadata metadata)
+            => PluginManager.Try<IGetStringLiterals, PluginGetStringLiteralsEventInfo>((p, e) => p.GetStringLiterals(metadata, e));
+
         public static PluginPostProcessTypeModelEventInfo PostProcessTypeModel(TypeModel typeModel)
             => PluginManager.Try<IPostProcessTypeModel, PluginPostProcessTypeModelEventInfo>((p, e) => p.PostProcessTypeModel(typeModel, e));
+
     }
 }

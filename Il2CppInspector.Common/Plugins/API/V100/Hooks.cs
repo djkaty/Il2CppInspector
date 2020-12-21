@@ -29,6 +29,22 @@ namespace Il2CppInspector.PluginAPI.V100
     }
 
     /// <summary>
+    /// Fetch all of the .NET identifier strings
+    /// </summary>
+    public interface IGetStrings
+    {
+        void GetStrings(Metadata metadata, PluginGetStringsEventInfo data);
+    }
+
+    /// <summary>
+    /// Fetch all of the (constant) string literals
+    /// </summary>
+    public interface IGetStringLiterals
+    {
+        void GetStringLiterals(Metadata metadata, PluginGetStringLiteralsEventInfo data);
+    }
+
+    /// <summary>
     /// Post-process the .NET type model to make changes after it has been fully created
     /// </summary>
     public interface IPostProcessTypeModel

@@ -209,7 +209,7 @@ namespace Il2CppInspector
 
         // Try to cast each enabled plugin to a specific interface type, and for those supporting the interface, execute the supplied delegate
         // Errors will be forwarded to the error handler
-        internal static E Try<I, E>(Action<I, E> action) where E : IPluginEventInfo, new()
+        internal static E Try<I, E>(Action<I, E> action) where E : PluginEventInfo, new()
         {
             var eventInfo = new E();
 

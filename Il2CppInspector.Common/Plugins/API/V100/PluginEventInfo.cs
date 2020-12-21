@@ -10,20 +10,11 @@ using System.Text;
 
 namespace Il2CppInspector.PluginAPI.V100
 {
-    public interface IPluginEventInfo
-    {
-        public bool IsHandled { get; set; }
-        public bool IsInvalid { get; set; }
-        public bool IsDataModified { get; set; }
-        public bool IsStreamModified { get; set; }
-        public PluginErrorEventArgs Error { get; set; }
-    }
-
     /// <summary>
     /// Object which allows plugins to report on what has happened during a call
     /// Changes made to this object propagate to the next plugin in the call chain until IsHandled is set to true
     /// </summary>
-    public class PluginEventInfo<T> : IPluginEventInfo where T : new()
+    public class PluginEventInfo
     {
         /// <summary>
         /// A plugin should set this if it has processed the supplied data in such a way that no further processing is required by other plugins
@@ -54,25 +45,21 @@ namespace Il2CppInspector.PluginAPI.V100
         public bool IsStreamModified { get; set; } = false;
 
         /// <summary>
-        /// Event-specific additional options and controls. See the documentation for each event for more details.
-        /// </summary>
-        public T AdditionalData { get; } = new T();
-
-        /// <summary>
         /// This wiil be set automatically by Il2CppInspector to the last exception thrown by a plugin for the current event
         /// </summary>
         public PluginErrorEventArgs Error { get; set; } = null;
     }
 
     /// <summary>
-    /// Generic event info with no additional paramters
-    /// </summary>
-    public class PluginEventInfo : PluginEventInfo<object> { }
-
-    /// <summary>
     /// Event info for PreProcessMetadata
     /// </summary>
-    public class PluginPreProcessMetadataEventInfo : PluginEventInfo<PluginPreProcessMetadataEventData> { }
+    public class PluginPreProcessMetadataEventInfo : PluginEventInfo
+    {
+        /// <summary>
+        /// Set to true to disable some validation checks by Il2CppInspector that the metadata is valid
+        /// </summary>
+        public bool SkipValidation { get; set; }
+    }
 
     /// <summary>
     /// Event info for PostProcessMetadata
@@ -80,18 +67,29 @@ namespace Il2CppInspector.PluginAPI.V100
     public class PluginPostProcessMetadataEventInfo : PluginEventInfo { }
 
     /// <summary>
+    /// Event info for GetStrings
+    /// </summary>
+    public class PluginGetStringsEventInfo : PluginEventInfo
+    {
+        /// <summary>
+        /// All of the fetched strings to be returned
+        /// </summary>
+        public Dictionary<int, string> Strings { get; set; } = new Dictionary<int, string>();
+    }
+
+    /// <summary>
+    /// Event info for GetStringLiterals
+    /// </summary>
+    public class PluginGetStringLiteralsEventInfo : PluginEventInfo
+    {
+        /// <summary>
+        /// All of the fetched string literals to be returned
+        /// </summary>
+        public List<string> StringLiterals { get; set; } = new List<string>();
+    }
+
+    /// <summary>
     /// Event info for PostProcessTypeModel
     /// </summary>
     public class PluginPostProcessTypeModelEventInfo : PluginEventInfo { }
-
-    /// <summary>
-    /// Additional data for PreProcessMetadata
-    /// </summary>
-    public class PluginPreProcessMetadataEventData
-    {
-        /// <summary>
-        /// Set to true to disable some validation checks by Il2CppInspector that the metadata is valid
-        /// </summary>
-        public bool SkipValidation { get; set; }
-    }
 }
