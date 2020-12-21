@@ -26,7 +26,7 @@ namespace Il2CppInspector.Reflection {
         public abstract MemberTypes MemberType { get; }
 
         // Name of the member
-        public virtual string Name { get; protected set; }
+        public virtual string Name { get; set; }
 
         // Name of the member with @ prepended if the name is a C# reserved keyword, plus invalid characters substituted
         public virtual string CSharpName => Constants.Keywords.Contains(Name) ? "@" + Name : Name.ToCIdentifier();

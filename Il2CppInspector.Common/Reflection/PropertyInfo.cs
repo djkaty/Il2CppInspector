@@ -29,8 +29,6 @@ namespace Il2CppInspector.Reflection {
 
         public bool IsAutoProperty => DeclaringType.DeclaredFields.Any(f => f.Name == $"<{Name}>k__BackingField");
 
-        public override string Name { get; protected set; }
-
         public override string CSharpName {
             get {
                 // Explicit interface implementation
