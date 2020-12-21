@@ -6,6 +6,7 @@
 
 using System;
 using System.IO;
+using NoisyCowStudios.Bin2Object;
 using Il2CppInspector.Reflection;
 
 namespace Il2CppInspector.PluginAPI.V100
@@ -16,7 +17,7 @@ namespace Il2CppInspector.PluginAPI.V100
     /// </summary>
     public interface IPreProcessMetadata
     {
-        void PreProcessMetadata(MemoryStream stream, PluginPreProcessMetadataEventInfo data);
+        void PreProcessMetadata(BinaryObjectStream stream, PluginPreProcessMetadataEventInfo data);
     }
 
     /// <summary>

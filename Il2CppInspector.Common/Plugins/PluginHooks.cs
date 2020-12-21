@@ -6,6 +6,7 @@
 
 // This is the ONLY line to update when the API version changes
 using System.IO;
+using NoisyCowStudios.Bin2Object;
 using Il2CppInspector.PluginAPI.V100;
 using Il2CppInspector.Reflection;
 
@@ -17,7 +18,7 @@ namespace Il2CppInspector
         public static PluginPostProcessMetadataEventInfo PostProcessMetadata(Metadata metadata)
             => PluginManager.Try<IPostProcessMetadata, PluginPostProcessMetadataEventInfo>((p, e) => p.PostProcessMetadata(metadata, e));
 
-        public static PluginPreProcessMetadataEventInfo PreProcessMetadata(MemoryStream stream)
+        public static PluginPreProcessMetadataEventInfo PreProcessMetadata(BinaryObjectStream stream)
             => PluginManager.Try<IPreProcessMetadata, PluginPreProcessMetadataEventInfo>((p, e) => {
                     stream.Position = 0;
                     p.PreProcessMetadata(stream, e);
