@@ -173,7 +173,8 @@ namespace Il2CppInspector
             var words = BinaryImage.ReadArray<ulong>(0, (int) BinaryImage.Length / (BinaryImage.Bits / 8));
 
             // Scan the image looking for a sequential block of at least 'threshold' valid metadata tokens
-            for (var pos = 0; pos < words.Length && (usagesCount == 0 || sequenceLength > 0); pos++) {
+            int pos;
+            for (pos = 0; pos < words.Length && (usagesCount == 0 || sequenceLength > 0); pos++) {
                 var word = words[pos];
 
                 if (word % 2 != 1 || word >> 32 != 0) {
@@ -203,7 +204,7 @@ namespace Il2CppInspector
             // If we found a block, read all the tokens and map them with their VAs to MetadataUsage objects
             if (usagesCount > 0) {
                 var wordSize = BinaryImage.Bits / 8;
-                var pMetadataUsages = (uint) (BinaryImage.Position - (usagesCount + 1) * wordSize);
+                var pMetadataUsages = (uint) (pos * wordSize - (usagesCount + 1) * wordSize);
                 var pMetadataUsagesVA = BinaryImage.MapFileOffsetToVA(pMetadataUsages);
                 var usageTokens = BinaryImage.ReadWordArray(pMetadataUsages, usagesCount);
                 var usages = usageTokens.Zip(Enumerable.Range(0, usagesCount)
