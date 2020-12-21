@@ -6,6 +6,7 @@
 
 using System;
 using System.IO;
+using Il2CppInspector.Reflection;
 
 namespace Il2CppInspector.PluginAPI.V100
 {
@@ -24,5 +25,13 @@ namespace Il2CppInspector.PluginAPI.V100
     public interface IPostProcessMetadata
     {
         void PostProcessMetadata(Metadata metadata, PluginPostProcessMetadataEventInfo data);
+    }
+
+    /// <summary>
+    /// Post-process the .NET type model to make changes after it has been fully created
+    /// </summary>
+    public interface IPostProcessTypeModel
+    {
+        void PostProcessTypeModel(TypeModel model, PluginPostProcessTypeModelEventInfo data);
     }
 }

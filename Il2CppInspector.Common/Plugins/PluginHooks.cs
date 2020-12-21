@@ -7,6 +7,7 @@
 // This is the ONLY line to update when the API version changes
 using System.IO;
 using Il2CppInspector.PluginAPI.V100;
+using Il2CppInspector.Reflection;
 
 namespace Il2CppInspector
 {
@@ -21,5 +22,8 @@ namespace Il2CppInspector
                     stream.Position = 0;
                     p.PreProcessMetadata(stream, e);
                 });
+
+        public static PluginPostProcessTypeModelEventInfo PostProcessTypeModel(TypeModel typeModel)
+            => PluginManager.Try<IPostProcessTypeModel, PluginPostProcessTypeModelEventInfo>((p, e) => p.PostProcessTypeModel(typeModel, e));
     }
 }

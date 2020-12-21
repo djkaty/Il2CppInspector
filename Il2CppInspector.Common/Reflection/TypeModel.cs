@@ -166,6 +166,9 @@ namespace Il2CppInspector.Reflection
                     GenericMethods[spec].Invoker = MethodInvokers[index];
                 }
             }
+
+            // Post-processing hook
+            PluginHooks.PostProcessTypeModel(this);
         }
 
         // Get generic arguments from either a type or method instanceIndex from a MethodSpec
