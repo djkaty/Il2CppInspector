@@ -7,6 +7,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Il2CppInspector.Cpp;
 using Il2CppInspector.Model;
 using Il2CppInspector.Outputs;
@@ -51,11 +52,11 @@ namespace Il2CppInspector
                 throw new Exception("Could not find any images in the IL2CPP binary");
 
             // Dump each image in the binary separately
-            int i = 0;
-            foreach (var il2cpp in inspectors) {
+
+            Parallel.ForEach(inspectors, il2cpp => {
                 var model = new TypeModel(il2cpp);
                 var appModel = new AppModel(model, makeDefaultBuild: false).Build(compiler: CppCompilerType.MSVC);
-                var nameSuffix = i++ > 0 ? "-" + (i - 1) : "";
+                var nameSuffix = "-" + il2cpp.BinaryImage.Arch.ToLower();
 
                 new CSharpCodeStubs(model) {
                     ExcludedNamespaces = Constants.DefaultExcludedNamespaces,
@@ -74,11 +75,11 @@ namespace Il2CppInspector
                     python.WriteScriptToFile(testPath + $@"\test-{target.ToLower()}{nameSuffix}.py", target,
                         testPath + $@"\test-cpp-result{nameSuffix}\appdata\il2cpp-types.h",
                         testPath + $@"\test-result{nameSuffix}.json");
-            }
+            });
 
             // Compare test results with expected results
-            for (i = 0; i < inspectors.Count; i++) {
-                var suffix = (i > 0 ? "-" + i : "");
+            foreach (var il2cpp in inspectors) {
+                var suffix = "-" + il2cpp.BinaryImage.Arch.ToLower();
 
                 compareFiles(testPath, suffix + ".cs", $"test-result{suffix}.cs");
                 compareFiles(testPath, suffix + ".json", $"test-result{suffix}.json");
