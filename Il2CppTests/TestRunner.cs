@@ -37,7 +37,7 @@ namespace Il2CppInspector
     [TestFixture]
     public partial class TestRunner
     {
-        private void runTest(string testPath, LoadOptions loadOptions = null) {
+        private async void runTest(string testPath, LoadOptions loadOptions = null) {
             // Android
             var testFile = testPath + @"\" + Path.GetFileName(testPath) + ".so";
             if (!File.Exists(testFile))
@@ -107,13 +107,16 @@ namespace Il2CppInspector
             });
 
             // Compare test results with expected results
-            using var _ = new Benchmark("Compare files");
-            for (var i = 0; i < inspectors.Count; i++) {
-                var suffix = (i > 0 ? "-" + i : "");
+            using (new Benchmark("Compare files")) {
+                var compareTasks = new List<Task>();
+                foreach (var il2cpp in inspectors) {
+                    var suffix = "-" + il2cpp.BinaryImage.Arch.ToLower();
 
-                compareFiles(testPath, suffix + ".cs", $"test-result{suffix}.cs");
-                compareFiles(testPath, suffix + ".json", $"test-result{suffix}.json");
-                compareFiles(testPath, suffix + ".h", $@"test-cpp-result{suffix}\appdata\il2cpp-types.h");
+                    compareTasks.Add(Task.Run(() => compareFiles(testPath, suffix + ".cs", $"test-result{suffix}.cs")));
+                    compareTasks.Add(Task.Run(() => compareFiles(testPath, suffix + ".json", $"test-result{suffix}.json")));
+                    compareTasks.Add(Task.Run(() => compareFiles(testPath, suffix + ".h", $@"test-cpp-result{suffix}\appdata\il2cpp-types.h")));
+                }
+                await Task.WhenAll(compareTasks);
             }
         }
 
