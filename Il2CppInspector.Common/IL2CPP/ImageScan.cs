@@ -116,7 +116,7 @@ namespace Il2CppInspector
                     throw new InvalidOperationException("More than one valid pointer chain found during data heuristics");
 
                 // pCodeGenModules is the last field in CodeRegistration so we subtract the size of one pointer from the struct size
-                codeRegistration = codeRegVas.First() - ((ulong) Metadata.Sizeof(typeof(Il2CppCodeRegistration), Image.Version, Image.Bits / 8) - ptrSize);
+                codeRegistration = codeRegVas.First() - ((ulong) metadata.Sizeof(typeof(Il2CppCodeRegistration), Image.Version, Image.Bits / 8) - ptrSize);
 
                 // In v24.3, windowsRuntimeFactoryTable collides with codeGenModules. So far no samples have had windowsRuntimeFactoryCount > 0;
                 // if this changes we'll have to get smarter about disambiguating these two.
@@ -157,7 +157,7 @@ namespace Il2CppInspector
 
             // Find TypeDefinitionsSizesCount (4th last field) then work back to the start of the struct
             // This saves us from guessing where metadataUsagesCount is later
-            var mrSize = (ulong) Metadata.Sizeof(typeof(Il2CppMetadataRegistration), Image.Version, Image.Bits / 8);
+            var mrSize = (ulong) metadata.Sizeof(typeof(Il2CppMetadataRegistration), Image.Version, Image.Bits / 8);
             vas = FindAllMappedWords(imageBytes, (ulong) metadata.Types.Length).Select(a => a - mrSize + ptrSize * 4);
 
             // >= 19 && < 27

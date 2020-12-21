@@ -22,10 +22,10 @@ namespace Il2CppInspector
         // optinally constrained by the highest count in the IL2CPP metadata type and by the end of the nearest section in the image.
         // Returns an array of the pointers in sorted order and an array of maximum byte/word counts with corresponding indexes
         private (List<ulong> ptrs, List<int> limits, List<int> originalCounts)
-            preparePointerList(Type type, ulong typePtr, IEnumerable<Section> sections, bool itemsAreWords = false) {
+            preparePointerList(Metadata metadata, Type type, ulong typePtr, IEnumerable<Section> sections, bool itemsAreWords = false) {
 
             // Get number of pointer/count pairs in each structure
-            var itemsCount = Metadata.Sizeof(type, Image.Version, Image.Bits / 8) / (Image.Bits / 8) / 2;
+            var itemsCount = metadata.Sizeof(type, Image.Version, Image.Bits / 8) / (Image.Bits / 8) / 2;
 
             // Read pointers and counts as two lists
             var itemArray = Image.ReadMappedArray<ulong>(typePtr, itemsCount * 2);
@@ -101,8 +101,8 @@ namespace Il2CppInspector
             }
 
             // Fetch and sanitize our pointer and count lists
-            var (codePtrsOrdered, codeCountLimits, codeCounts) = preparePointerList(typeof(Il2CppCodeRegistration), CodeRegistrationPointer, dataSections, true);
-            var (metaPtrsOrdered, metaCountLimits, metaCounts) = preparePointerList(typeof(Il2CppMetadataRegistration), MetadataRegistrationPointer, dataSections);
+            var (codePtrsOrdered, codeCountLimits, codeCounts) = preparePointerList(metadata, typeof(Il2CppCodeRegistration), CodeRegistrationPointer, dataSections, true);
+            var (metaPtrsOrdered, metaCountLimits, metaCounts) = preparePointerList(metadata, typeof(Il2CppMetadataRegistration), MetadataRegistrationPointer, dataSections);
 
             // Progress updater
             var maxProgress = codeCounts.Sum() + metaCounts.Sum();

@@ -198,7 +198,7 @@ namespace Il2CppInspector
             // Now confirm that all the keys are present
             // If they aren't, that means one or more of the null terminators wasn't null, indicating potential encryption
             // Only do this if we need to because it's very slow
-            if (stringOffsets.Except(Strings.Keys).Any()) {
+            if (Header.stringCount > 0 && stringOffsets.Except(Strings.Keys).Any()) {
 
                 Console.WriteLine("Decrypting strings...");
                 StatusUpdate("Decrypting strings");
@@ -251,9 +251,12 @@ namespace Il2CppInspector
                 CopyTo(outFile);
         }
 
-        internal int Sizeof(Type type) => Sizeof(type, Version);
+        public int Sizeof(Type type) => Sizeof(type, Version);
+        
+        public int Sizeof(Type type, double metadataVersion, int longSizeBytes = 8) {
 
-        public static int Sizeof(Type type, double metadataVersion, int longSizeBytes = 8) {
+            if (Reader.ObjectMappings.TryGetValue(type, out var streamType))
+                type = streamType;
 
             int size = 0;
             foreach (var i in type.GetTypeInfo().GetFields())
