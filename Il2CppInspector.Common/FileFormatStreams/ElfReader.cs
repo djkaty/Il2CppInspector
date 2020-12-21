@@ -367,7 +367,7 @@ namespace Il2CppInspector
                     // We refer to issue #96 where the code uses striped encryption in 4KB blocks
                     // We perform heuristics for block of size blockSize below
                     const int blockSize = 0x100;
-                    const int maxBrokenRun = 4;
+                    const int maxBrokenRun = 2;
                     const int minMultiplierInValid = 6;
                     const int minTotalValidInBucket = 0x10;
 
