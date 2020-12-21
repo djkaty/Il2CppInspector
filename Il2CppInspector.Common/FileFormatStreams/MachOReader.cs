@@ -65,6 +65,7 @@ namespace Il2CppInspector
         private MachOHeader<TWord> header;
         protected readonly List<MachOSection<TWord>> machoSections = new List<MachOSection<TWord>>();
         private List<Section> sections = new List<Section>();
+        private Dictionary<string, Symbol> symbolTable;
 
         private MachOSection<TWord> funcTab;
         private MachOSymtabCommand symTab;
@@ -191,6 +192,10 @@ namespace Il2CppInspector
                     break;
                 }
             }
+
+            // Build symbol table
+            processSymbols();
+
             return true;
         }
 
@@ -239,13 +244,13 @@ namespace Il2CppInspector
             }
         }
 
-        public override uint[] GetFunctionTable() => ReadArray<TWord>(funcTab.ImageOffset, conv.Int(funcTab.Size) / (Bits / 8)).Select(x => MapVATR(conv.ULong(x)) & 0xffff_fffe).ToArray();
-
-        public override Dictionary<string, Symbol> GetSymbolTable() {
-            var symbols = new Dictionary<string, Symbol>();
-
+        private void processSymbols() {
             // https://opensource.apple.com/source/cctools/cctools-795/include/mach-o/nlist.h
             // n_sect: https://opensource.apple.com/source/cctools/cctools-795/include/mach-o/stab.h
+
+            StatusUpdate("Processing symbols");
+
+            symbolTable = new Dictionary<string, Symbol>();
 
             var symbolList = ReadArray<MachO_nlist<TWord>>(symTab.SymOffset, (int) symTab.NumSyms);
 
@@ -281,10 +286,13 @@ namespace Il2CppInspector
                 }
 
                 // Ignore duplicates
-                symbols.TryAdd(name, new Symbol { Name = name, VirtualAddress = value, Type = type });
+                symbolTable.TryAdd(name, new Symbol { Name = name, VirtualAddress = value, Type = type });
             }
-            return symbols;
         }
+
+        public override uint[] GetFunctionTable() => ReadArray<TWord>(funcTab.ImageOffset, conv.Int(funcTab.Size) / (Bits / 8)).Select(x => MapVATR(conv.ULong(x)) & 0xffff_fffe).ToArray();
+
+        public override Dictionary<string, Symbol> GetSymbolTable() => symbolTable;
 
         public override IEnumerable<Export> GetExports() => exports;
 
