@@ -489,7 +489,7 @@ namespace Il2CppInspector
         public static (MemoryStream Metadata, MemoryStream Binary)? GetStreamsFromPackage(IEnumerable<string> packageFiles, bool silent = false) {
             // Check every item is a zip file first because ZipFile.OpenRead is extremely slow if it isn't
             foreach (var file in packageFiles)
-                using (BinaryReader zipTest = new BinaryReader(File.Open(file, FileMode.Open))) {
+                using (BinaryReader zipTest = new BinaryReader(File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))) {
                     if (zipTest.ReadUInt32() != 0x04034B50)
                         return null;
                 }
