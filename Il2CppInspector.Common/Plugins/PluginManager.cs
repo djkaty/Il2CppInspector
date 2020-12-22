@@ -29,6 +29,12 @@ namespace Il2CppInspector
 
         // The plugin is valid and compatible with this version of the host
         public bool Available { get; set; }
+
+        // Programmatic access to options
+        public object this[string s] {
+            get => Plugin.Options.Single(o => o.Name == s).Value;
+            set => Plugin.Options.Single(o => o.Name == s).Value = value;
+        }
     }
 
     // Event arguments for error handler
@@ -65,6 +71,10 @@ namespace Il2CppInspector
 
         // All of the plugins that are currently enabled and will be called into
         public static IEnumerable<IPlugin> EnabledPlugins => AsInstance.ManagedPlugins.Where(p => p.Enabled).Select(p => p.Plugin);
+
+        // All of the plugins that are loaded and available for use, indexed by plugin ID
+        public static Dictionary<string, ManagedPlugin> Plugins
+            => AsInstance.ManagedPlugins.Where(p => p.Available).ToDictionary(p => p.Plugin.Name, p => p);
 
         // The relative path from the executable that we'll search for plugins
         private static string pluginFolder = Path.GetFullPath(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + Path.DirectorySeparatorChar + "plugins");
