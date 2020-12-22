@@ -28,6 +28,7 @@ Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the
   - Striped XOR encryption style used in games such as [Garena Free Fire](https://play.google.com/store/apps/details?id=com.dts.freefireth&hl=en_US&gl=US), [League of Legends: Wild Rift](https://play.google.com/store/apps/details?id=com.riotgames.league.wildrift&hl=en_US&gl=US) and [Legends of Runeterra](https://play.google.com/store/apps/details?id=com.riotgames.legendsofruneterra&hl=en_US&gl=US)
   - String encryption style used in games such as [League of Legends: Wild Rift](https://play.google.com/store/apps/details?id=com.riotgames.league.wildrift&hl=en_US&gl=US)
   - Reordering of registration metadata used in titles by Riot Games
+  - Encryption/obfuscation used in titles by miHoYo ([Honkai Impact 3rd](https://honkaiimpact3.mihoyo.com/) and [Genshin Impact](https://genshin.mihoyo.com/) when using miHoYo plugin)
   - ROT encryption of API export names
   - Deobfuscated metadata and binary files can be saved back to disk
 
@@ -582,7 +583,7 @@ See the source code for further details or the tutorials above.
 
 ### Using plugins
 
-Plugins should be placed in the `plugins` folder in the same folder as `Il2CppInspector.exe`.
+Plugins should be placed in the `plugins` folder in the same folder as `Il2CppInspector.exe`. Each plugin should be placed into its own sub-folder with any dependencies or configuration files needed.
 
 From the GUI you can enable and disable plugins, change the execution order and configure individual plugin settings via the _Manage plugins..._ button.
 
@@ -602,7 +603,7 @@ For help on a specific plugin, specify the plugin name with no arguments:
 
 `Il2CppInspector.exe --plugins myplugin`
 
-To get more plugins, click _Get Plugins_ in the Manage Plugins window in the GUI, visit the [Il2CppInspectorPlugins repository](https://github.com/djkaty/Il2CppInspectorPlugins) or use the `get-plugins.ps1` or `get-plugins.sh` scripts to update the latest plugin release.
+To get more plugins, click _Get Plugins_ in the Manage Plugins window in the GUI, visit the [Il2CppInspectorPlugins repository](https://github.com/djkaty/Il2CppInspectorPlugins) or use the `get-plugins.ps1` or `get-plugins.sh` scripts to update to the latest plugin releases.
 
 ### Creating plugins
 
