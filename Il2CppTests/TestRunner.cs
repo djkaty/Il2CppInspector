@@ -66,6 +66,51 @@ namespace Il2CppInspector
 
             loadOptions.BinaryFilePath = testFile;
 
+            // Set up plugins - place desired plugins in 'plugins' sub-folder of test folder
+            PluginManager.Reload(testPath + @"\plugins");
+
+            // Handlers for debugging output
+            PluginManager.StatusHandler += (s, e) => {
+                Console.WriteLine("Plugin " + e.Plugin.Name + ": " + e.Text);
+            };
+
+            PluginManager.ErrorHandler += (s, e) => {
+                Assert.Fail($"{e.Plugin.Name} throw an exception during {e.Operation}: {e.Exception.Message}.", e);
+            };
+
+            // Get plugin options - place desired options in <plugins-id>.options.txt for each plugin in test folder
+            // in the format "key=value", one per line
+            // Use %TESTDIR% to refer to the directory containing the test files
+            foreach (var plugin in PluginManager.AvailablePlugins) {
+                Console.WriteLine("Using plugin: " + plugin.Name);
+
+                // Enable plugin
+                var ourPlugin = PluginManager.Plugins[plugin.Id];
+                ourPlugin.Enabled = true;
+
+                // Look for options
+                var optionsFile = $@"{testPath}\{plugin.Id}-options.txt";
+                if (File.Exists(optionsFile)) {
+                    var options = File.ReadAllLines(optionsFile);
+
+                    // Parse options
+                    foreach (var option in options) {
+                        var kv = option.Split('=', 2);
+                        if (kv.Length == 2) {
+                            var key = kv[0].Trim();
+                            var value = kv[1].Trim().Replace("%TESTDIR%", testPath);
+
+                            Console.WriteLine($"Setting option: {key} = {value}");
+
+                            // Null default values must be castable to object
+                            var targetType = ourPlugin[key]?.GetType() ?? typeof(object);
+                            ourPlugin[key] = Convert.ChangeType(value, targetType);
+                        }
+                    }
+                    // TODO: Plugin hook OptionsChanged
+                }
+            }
+
             List<Il2CppInspector> inspectors;
             using (new Benchmark("Load IL2CPP metadata and binary"))
                 try {
