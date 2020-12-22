@@ -45,6 +45,14 @@ namespace Il2CppInspector.PluginAPI.V100
     }
 
     /// <summary>
+    /// Post-process the entire IL2CPP application package after the metadata and binary have been loaded and merged
+    /// </summary>
+    public interface IPostProcessPackage
+    {
+        void PostProcessPackage(Il2CppInspector package, PluginPostProcessPackageEventInfo data);
+    }
+
+    /// <summary>
     /// Post-process the .NET type model to make changes after it has been fully created
     /// </summary>
     public interface IPostProcessTypeModel

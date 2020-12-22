@@ -159,7 +159,7 @@ namespace Il2CppInspector
             return usages.Values.ToList();
         }
 
-        public List<MetadataUsage> buildLateBindingMetadataUsages()
+        private List<MetadataUsage> buildLateBindingMetadataUsages()
         {
             // plagiarism. noun - https://www.lexico.com/en/definition/plagiarism
             //   the practice of taking someone else's work or ideas and passing them off as one's own.
@@ -314,7 +314,8 @@ namespace Il2CppInspector
             // Merge all metadata usage references into a single distinct list
             MetadataUsages = buildMetadataUsages();
 
-            // TODO: Plugin hook PostProcessPackage
+            // Plugin hook PostProcessPackage
+            PluginHooks.PostProcessPackage(this);
         }
 
         // Get a method pointer if available

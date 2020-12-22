@@ -30,6 +30,9 @@ namespace Il2CppInspector
         public static PluginGetStringLiteralsEventInfo GetStringLiterals(Metadata metadata)
             => PluginManager.Try<IGetStringLiterals, PluginGetStringLiteralsEventInfo>((p, e) => p.GetStringLiterals(metadata, e));
 
+        public static PluginPostProcessPackageEventInfo PostProcessPackage(Il2CppInspector package)
+            => PluginManager.Try<IPostProcessPackage, PluginPostProcessPackageEventInfo>((p, e) => p.PostProcessPackage(package, e));
+
         public static PluginPostProcessTypeModelEventInfo PostProcessTypeModel(TypeModel typeModel)
             => PluginManager.Try<IPostProcessTypeModel, PluginPostProcessTypeModelEventInfo>((p, e) => p.PostProcessTypeModel(typeModel, e));
 

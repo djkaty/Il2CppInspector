@@ -89,6 +89,11 @@ namespace Il2CppInspector.PluginAPI.V100
     }
 
     /// <summary>
+    /// Event info for PostProcessPackage
+    /// </summary>
+    public class PluginPostProcessPackageEventInfo : PluginEventInfo { }
+
+    /// <summary>
     /// Event info for PostProcessTypeModel
     /// </summary>
     public class PluginPostProcessTypeModelEventInfo : PluginEventInfo { }
