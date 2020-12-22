@@ -53,6 +53,12 @@ namespace Il2CppInspector
             // Linux process map
             if (!File.Exists(testFile))
                 testFile = Directory.GetFiles(testPath, "*-maps.txt").FirstOrDefault();
+            // XAPK (selects latest version assuming lexical order)
+            if (testFile == null)
+                testFile = Directory.GetFiles(testPath, "*.xapk").LastOrDefault();
+            // APK (selects latest version assuming lexical order) (prefer XAPKs)
+            if (testFile == null)
+                testFile = Directory.GetFiles(testPath, "*.apk").LastOrDefault();
 
             // Set load options
             if (loadOptions == null)
@@ -62,7 +68,11 @@ namespace Il2CppInspector
 
             List<Il2CppInspector> inspectors;
             using (new Benchmark("Load IL2CPP metadata and binary"))
-                inspectors = Il2CppInspector.LoadFromFile(testFile, testPath + @"\global-metadata.dat", loadOptions);
+                try {
+                    inspectors = Il2CppInspector.LoadFromFile(testFile, testPath + @"\global-metadata.dat", loadOptions);
+                } catch (FileNotFoundException) {
+                    inspectors = Il2CppInspector.LoadFromPackage(new[] { testFile }, loadOptions);
+                }
 
             // If null here, there was a problem parsing the files
             if (inspectors == null)
