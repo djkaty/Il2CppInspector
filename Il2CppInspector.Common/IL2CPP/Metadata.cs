@@ -70,6 +70,8 @@ namespace Il2CppInspector
             var pluginResult = PluginHooks.PreProcessMetadata(this);
             IsModified = pluginResult.IsStreamModified;
 
+            StatusUpdate("Processing metadata");
+
             // Read metadata header
             Header = ReadObject<Il2CppGlobalMetadataHeader>(0);
 

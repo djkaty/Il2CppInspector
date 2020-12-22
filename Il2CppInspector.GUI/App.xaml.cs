@@ -84,7 +84,7 @@ namespace Il2CppInspectorGUI
                                 + Environment.NewLine + Environment.NewLine + "The application will continue but may not behave as expected.", "Plugin error");
             };
 
-            PluginManager.StatusHandler += (s, e) => StatusUpdate(e.Plugin, "Plugin " + e.Plugin.Name + ": " + e.Text);
+            PluginManager.StatusHandler += (s, e) => StatusUpdate(e.Plugin, "[" + e.Plugin.Name + "]\n" + e.Text);
         }
 
         public void ResetLoadOptions() {
@@ -124,8 +124,6 @@ namespace Il2CppInspectorGUI
         public Task<bool> LoadMetadataAsync(MemoryStream metadataStream) =>
             Task.Run(() => {
                 try {
-                    OnStatusUpdate?.Invoke(this, "Processing metadata");
-
                     metadata = Metadata.FromStream(metadataStream, StatusUpdate);
                     return true;
                 }
