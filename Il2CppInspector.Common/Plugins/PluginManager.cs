@@ -74,7 +74,7 @@ namespace Il2CppInspector
 
         // All of the plugins that are loaded and available for use, indexed by plugin ID
         public static Dictionary<string, ManagedPlugin> Plugins
-            => AsInstance.ManagedPlugins.Where(p => p.Available).ToDictionary(p => p.Plugin.Name, p => p);
+            => AsInstance.ManagedPlugins.Where(p => p.Available).ToDictionary(p => p.Plugin.Id, p => p);
 
         // The relative path from the executable that we'll search for plugins
         private static string pluginFolder = Path.GetFullPath(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + Path.DirectorySeparatorChar + "plugins");
@@ -120,7 +120,10 @@ namespace Il2CppInspector
         public static event EventHandler<PluginStatusEventArgs> StatusHandler;
 
         // Find and load all available plugins from disk
-        public static void Reload() {
+        public static void Reload(string pluginPath = null) {
+            // Update plugin folder if requested, otherwise use current setting
+            pluginFolder = pluginPath ?? pluginFolder;
+
             AsInstance.ManagedPlugins.Clear();
 
             // Don't do anything if there's no plugins folder
