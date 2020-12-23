@@ -46,7 +46,7 @@ namespace Il2CppInspector.GUI
         private void btnConfig_Click(object sender, RoutedEventArgs e) {
             var plugin = (ManagedPlugin) ((Button) sender).DataContext;
 
-            var configDlg = new PluginConfigurationDialog(plugin.Plugin);
+            var configDlg = new Il2CppInspectorGUI.PluginConfigurationDialog(plugin.Plugin);
             configDlg.Owner = this;
             configDlg.ShowDialog();
         }
