@@ -47,6 +47,9 @@ namespace Il2CppInspectorGUI
                     ex = ex.InnerException;
                 }
             };
+
+            // Load plugins
+            PluginManager.EnsureInit();
         }
 
         private Metadata metadata;

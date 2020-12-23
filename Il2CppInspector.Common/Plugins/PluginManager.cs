@@ -119,6 +119,9 @@ namespace Il2CppInspector
         // If not used, all status updates are suppressed
         public static event EventHandler<PluginStatusEventArgs> StatusHandler;
 
+        // Force plugins to load if they haven't already
+        public static PluginManager EnsureInit() => AsInstance;
+
         // Find and load all available plugins from disk
         public static void Reload(string pluginPath = null) {
             // Update plugin folder if requested, otherwise use current setting
