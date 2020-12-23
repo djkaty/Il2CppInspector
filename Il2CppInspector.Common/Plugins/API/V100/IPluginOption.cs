@@ -4,7 +4,9 @@
     All rights reserved.
 */
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Il2CppInspector.PluginAPI.V100
 {
@@ -80,8 +82,30 @@ namespace Il2CppInspector.PluginAPI.V100
         /// When created, the default value of the option
         /// During plugin execution, the current value of the option
         /// </summary>
+        private T _value;
         object IPluginOption.Value { get => Value; set => Value = (T) value; }
-        public T Value { get; set; }
+        public T Value {
+            get => _value;
+            set {
+                // Perform internal validation
+                InternalValidate(value);
+
+                // Perform optional user-supplied validation
+                Validate?.Invoke(value);
+
+                // Save changes
+                _value = value;
+            }
+        }
+
+        /// <summary>
+        /// Optional validation function for the option in addition to basic automatic validation
+        /// Must either throw an exception or return true
+        /// </summary>
+        public Func<T, bool> Validate;
+
+        // Internal validation of each option (for internal use only)
+        protected abstract void InternalValidate(T value);
     }
 
     /// <summary>
@@ -103,17 +127,37 @@ namespace Il2CppInspector.PluginAPI.V100
     /// <summary>
     /// Option representing a text string
     /// </summary>
-    public class PluginOptionText : PluginOption<string> { }
+    public class PluginOptionText : PluginOption<string>
+    {
+        protected sealed override void InternalValidate(string text) {
+            // Don't allow required text to be empty
+            if (Required && string.IsNullOrWhiteSpace(text))
+                throw new ArgumentException("Text cannot be empty");
+        }
+    }
 
     /// <summary>
     /// Option representing a file path
     /// </summary>
-    public class PluginOptionFilePath : PluginOption<string> { }
+    public class PluginOptionFilePath : PluginOption<string>
+    {
+        // Don't asllow required path name to be empty
+        protected sealed override void InternalValidate(string path) {
+            if (Required && string.IsNullOrWhiteSpace(path))
+                throw new ArgumentException("Path name is required");
+
+            // Throws an exception if the path is invalid (file or folder may or may not exist)
+            System.IO.Path.GetFullPath(path ?? "");
+        }
+    }
 
     /// <summary>
     /// And option representing boolean true or false (yes/no, on/off etc.)
     /// </summary>
-    public class PluginOptionBoolean : PluginOption<bool> { }
+    public class PluginOptionBoolean : PluginOption<bool>
+    {
+        protected sealed override void InternalValidate(bool value) { }
+    }
 
     /// <summary>
     /// Option representing a number
@@ -131,6 +175,8 @@ namespace Il2CppInspector.PluginAPI.V100
         /// The value of the number
         /// </summary>
         object IPluginOptionNumber.Value { get => Value; set => Value = (T) value; }
+
+        protected sealed override void InternalValidate(T value) { }
     }
 
     /// <summary>
@@ -150,5 +196,11 @@ namespace Il2CppInspector.PluginAPI.V100
         /// List to display the list as a set of grouped radio buttons in the GUI
         /// </summary>
         public PluginOptionChoiceStyle Style { get; set; }
+
+        protected sealed override void InternalValidate(T value) {
+            // Allow Choices to be null so that setting Value first on init doesn't throw an exception
+            if (!Choices?.Keys.Contains(value) ?? false)
+                throw new ArgumentException("Specified choice is not one of the available choices");
+        }
     }
 }
