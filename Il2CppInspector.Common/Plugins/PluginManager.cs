@@ -220,6 +220,21 @@ namespace Il2CppInspector
             }
         }
 
+        // Commit options change for the specified plugin
+        public static PluginOptionsChangedEventInfo OptionsChanged(IPlugin plugin) {
+            var eventInfo = new PluginOptionsChangedEventInfo();
+
+            try {
+                plugin.OptionsChanged(eventInfo);
+            }
+            catch (Exception ex) {
+                eventInfo.Error = new PluginErrorEventArgs { Plugin = plugin, Exception = ex, Operation = "options update" };
+                ErrorHandler?.Invoke(AsInstance, eventInfo.Error);
+            }
+
+            return eventInfo;
+        }
+
         // Try to cast each enabled plugin to a specific interface type, and for those supporting the interface, execute the supplied delegate
         // Errors will be forwarded to the error handler
         internal static E Try<I, E>(Action<I, E> action) where E : PluginEventInfo, new()

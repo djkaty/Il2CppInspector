@@ -11,7 +11,7 @@ namespace Il2CppInspector.PluginAPI.V100
     /// <summary>
     /// Core interface that all plugins must implement
     /// </summary>
-    public interface IPlugin
+    public partial interface IPlugin
     {
         /// <summary>
         /// Plugin name for CLI and unique ID

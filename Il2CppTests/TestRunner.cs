@@ -107,8 +107,8 @@ namespace Il2CppInspector
                             ourPlugin[key] = Convert.ChangeType(value, targetType);
                         }
                     }
-                    // TODO: Plugin hook OptionsChanged
                 }
+                PluginManager.OptionsChanged(plugin);
             }
 
             List<Il2CppInspector> inspectors;

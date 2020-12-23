@@ -24,6 +24,7 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using Il2CppInspector.PluginAPI.V100;
 using Il2CppInspector.Reflection;
+using Il2CppInspector;
 
 namespace Il2CppInspectorGUI
 { 
@@ -126,8 +127,6 @@ namespace Il2CppInspectorGUI
         private void okButton_Click(object sender, RoutedEventArgs e) {
             // Close dialog box but call OnClosing first to validate all the options
             DialogResult = true;
-
-            // TODO: Plugin hook OptionsChanged (and make sure it works when clicking close icon as well)
         }
 
         // Select a file path
@@ -168,6 +167,7 @@ namespace Il2CppInspectorGUI
                 MessageBox.Show("One or more options are invalid.", "Il2CppInspector Plugin Configuration");
                 e.Cancel = true;
             }
+            PluginManager.OptionsChanged(Plugin);
         }
     }
 }

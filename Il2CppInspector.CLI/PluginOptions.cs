@@ -181,10 +181,9 @@ namespace Il2CppInspector.CLI
                     }
                 }
 
-                // Enable plugin
+                // Enable plugin and inform of options
                 PluginManager.AsInstance.ManagedPlugins.First(p => p.Plugin == plugin).Enabled = true;
-
-                // TODO: Plugin hook OptionsChanged
+                PluginManager.OptionsChanged(plugin);
             }
             return true;
         }

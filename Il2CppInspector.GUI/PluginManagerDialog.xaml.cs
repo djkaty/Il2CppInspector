@@ -107,6 +107,5 @@ namespace Il2CppInspector.GUI
         private void getPluginsButton_Click(object sender, RoutedEventArgs e) {
             Process.Start(new ProcessStartInfo { FileName = @"https://github.com/djkaty/Il2CppInspectorPlugins", UseShellExecute = true });
         }
-
     }
 }

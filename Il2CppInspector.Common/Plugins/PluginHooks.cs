@@ -12,7 +12,8 @@ using Il2CppInspector.Reflection;
 
 namespace Il2CppInspector
 {
-    // Hooks we provide to plugins which can choose whether or not to provide implementations
+    // Internal helpers to call the same hook on every plugin
+    // Does not include hooks that should be called individually, eg. OptionsChanged
     internal static class PluginHooks
     {
         public static PluginPreProcessMetadataEventInfo PreProcessMetadata(BinaryObjectStream stream)

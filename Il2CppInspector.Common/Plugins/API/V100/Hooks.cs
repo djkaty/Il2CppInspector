@@ -9,8 +9,20 @@ using System.IO;
 using NoisyCowStudios.Bin2Object;
 using Il2CppInspector.Reflection;
 
+// Hooks we provide to plugins which can choose whether or not to provide implementations
 namespace Il2CppInspector.PluginAPI.V100
 {
+    /// <summary>
+    /// Executes when the plugin's options are updated by the user
+    /// Not called on first load (with the default, possibly incomplete options provided by the plugin author)
+    /// Do not perform any long-running operations here
+    /// Implementation is optional - the default is to do nothing
+    /// </summary>
+    public partial interface IPlugin
+    {
+        void OptionsChanged(PluginOptionsChangedEventInfo e) { }
+    }
+
     /// <summary>
     /// Process global-metadata.dat when it is first opened as a sequence of bytes
     /// Seek cursor will be at the start of the file

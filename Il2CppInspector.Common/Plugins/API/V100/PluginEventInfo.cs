@@ -62,6 +62,11 @@ namespace Il2CppInspector.PluginAPI.V100
     }
 
     /// <summary>
+    /// Event info for OptionsChanged
+    /// </summary>
+    public class PluginOptionsChangedEventInfo : PluginEventInfo { }
+
+    /// <summary>
     /// Event info for PostProcessMetadata
     /// </summary>
     public class PluginPostProcessMetadataEventInfo : PluginEventInfo { }
