@@ -113,7 +113,7 @@ namespace Il2CppInspector
         // Error handler called when a plugin throws an exception
         // This should be hooked by the client consuming the Il2CppInspector class library
         // If not used, all exceptions are suppressed (which is probably really bad)
-        public static event EventHandler<PluginErrorEventArgs> ErrorHandler;
+        public static event EventHandler<PluginEventInfo> ErrorHandler;
 
         // Handler called when a plugin reports a status update
         // If not used, all status updates are suppressed
@@ -232,7 +232,7 @@ namespace Il2CppInspector
             }
             catch (Exception ex) {
                 eventInfo.Error = new PluginErrorEventArgs { Plugin = plugin, Exception = ex, Operation = "options update" };
-                ErrorHandler?.Invoke(AsInstance, eventInfo.Error);
+                ErrorHandler?.Invoke(AsInstance, eventInfo);
             }
 
             return eventInfo;
@@ -254,7 +254,7 @@ namespace Il2CppInspector
                     }
                     catch (Exception ex) {
                         eventInfo.Error = new PluginErrorEventArgs { Plugin = plugin, Exception = ex, Operation = typeof(I).Name };
-                        ErrorHandler?.Invoke(AsInstance, eventInfo.Error);
+                        ErrorHandler?.Invoke(AsInstance, eventInfo);
                     }
 
             return eventInfo;

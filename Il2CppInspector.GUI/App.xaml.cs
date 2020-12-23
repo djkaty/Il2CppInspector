@@ -15,6 +15,7 @@ using System.Windows;
 using System.Windows.Markup;
 using Il2CppInspector;
 using Il2CppInspector.Model;
+using Il2CppInspector.PluginAPI.V100;
 using Il2CppInspector.Reflection;
 using Inspector = Il2CppInspector.Il2CppInspector;
 
@@ -83,7 +84,10 @@ namespace Il2CppInspectorGUI
 
             // Set handlers for plugin manager
             PluginManager.ErrorHandler += (s, e) => {
-                MessageBox.Show($"The plugin {e.Plugin.Name} encountered an error while executing {e.Operation}: {e.Exception.Message}."
+                if (e is PluginOptionsChangedEventInfo)
+                    MessageBox.Show("Could not update plugin options. " + e.Error.Exception.Message, "Plugin error");
+                else
+                    MessageBox.Show($"The plugin {e.Error.Plugin.Name} encountered an error while executing {e.Error.Operation}: {e.Error.Exception.Message}."
                                 + Environment.NewLine + Environment.NewLine + "The application will continue but may not behave as expected.", "Plugin error");
             };
 

@@ -75,7 +75,7 @@ namespace Il2CppInspector
             };
 
             PluginManager.ErrorHandler += (s, e) => {
-                Assert.Fail($"{e.Plugin.Name} throw an exception during {e.Operation}: {e.Exception.Message}.", e);
+                Assert.Fail($"{e.Error.Plugin.Name} throw an exception during {e.Error.Operation}: {e.Error.Exception.Message}.", e);
             };
 
             // Get plugin options - place desired options in <plugins-id>.options.txt for each plugin in test folder

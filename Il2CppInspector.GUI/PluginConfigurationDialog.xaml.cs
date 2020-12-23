@@ -163,11 +163,16 @@ namespace Il2CppInspectorGUI
 
         // Check options validity before allowing the dialog to close either by clicking OK or the close icon
         private void Window_Closing(object sender, CancelEventArgs e) {
+            // Don't allow the window to close if any of the options are invalid
             if (!IsValid(lstOptions)) {
                 MessageBox.Show("One or more options are invalid.", "Il2CppInspector Plugin Configuration");
                 e.Cancel = true;
+                return;
             }
-            PluginManager.OptionsChanged(Plugin);
+
+            // Don't allow window to close if the options couldn't be updated
+            if (PluginManager.OptionsChanged(Plugin).Error != null)
+                e.Cancel = true;
         }
     }
 }
