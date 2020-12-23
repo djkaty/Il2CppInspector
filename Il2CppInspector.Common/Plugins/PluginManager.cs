@@ -215,7 +215,7 @@ namespace Il2CppInspector
                 catch (Exception ex) {
                     var name = Path.GetFileName(dll);
 
-                    throw new InvalidOperationException($"Fatal error loading plugin {name}: {ex.GetType()} - {ex.Message}");
+                    throw new InvalidOperationException($"Fatal error loading plugin {name}: {ex.GetType()} - {ex.Message}", ex);
                 }
             }
         }
