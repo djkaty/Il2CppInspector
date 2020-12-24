@@ -65,6 +65,7 @@ namespace Il2CppInspector.PluginAPI.V100
     {
         /// <summary>
         /// The name of the option as it will be supplied in an argument on the command-line
+        /// If you specify a single character, the single-dash syntax "-x" can be used instead of "--xxxxxx"
         /// </summary>
         public string Name { get; set; }
 

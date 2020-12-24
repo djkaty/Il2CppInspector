@@ -90,11 +90,22 @@ namespace Il2CppInspector.CLI
                 }
 
                 var pluginOptionProperty = CreateAutoProperty(pluginOptionClass, option.Name, optionType);
-                var optCtorInfo = typeof(OptionAttribute).GetConstructor(new Type[] { typeof(string) });
+
+                ConstructorInfo optCtorInfo;
+
+                // Single character
+                if (option.Name.Length == 1)
+                    optCtorInfo = typeof(OptionAttribute).GetConstructor(new Type[] { typeof(char) });
+
+                // Multiple characters
+                else
+                    optCtorInfo = typeof(OptionAttribute).GetConstructor(new Type[] { typeof(string) });
+
                 var optHelpPropInfo = typeof(OptionAttribute).GetProperty("HelpText");
                 var optDefaultInfo = typeof(OptionAttribute).GetProperty("Default");
                 var optRequiredInfo = typeof(OptionAttribute).GetProperty("Required");
-                var attBuilder = new CustomAttributeBuilder(optCtorInfo, new object[] { option.Name },
+                var attBuilder = new CustomAttributeBuilder(optCtorInfo,
+                                        new object[] { option.Name.Length == 1? (object) option.Name[0] : option.Name },
                                         new PropertyInfo[] { optHelpPropInfo, optDefaultInfo, optRequiredInfo },
                                         // Booleans are always optional
                                         new object[] { option.Description, optionValue, option.Value is bool? false : option.Required });
