@@ -271,7 +271,7 @@ namespace Il2CppInspector
             for (var pass = 0; pass <= 1; pass++)
                 if (MetadataRegistration.typesCount < MetadataRegistration.typeDefinitionsSizesCount
                     || MetadataRegistration.genericMethodTableCount < MetadataRegistration.genericInstsCount
-                    || CodeRegistration.reversePInvokeWrapperCount > 0x1000
+                    || CodeRegistration.reversePInvokeWrapperCount > 0x4000
                     || CodeRegistration.unresolvedVirtualCallCount > 0x4000 // >= 22
                     || CodeRegistration.interopDataCount > 0x1000           // >= 23
                     || (Image.Version <= 24.1 && CodeRegistration.invokerPointersCount > CodeRegistration.methodPointersCount))
