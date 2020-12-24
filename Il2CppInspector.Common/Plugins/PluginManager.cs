@@ -146,6 +146,13 @@ namespace Il2CppInspector
                         //typeof(PluginAPI.V101.IPlugin)
                    });
 
+                // Construct disabled plugin as a placeholder if loading fails (mainly for the GUI)
+                var disabledPlugin = new ManagedPlugin {
+                    Plugin = null,
+                    Available = false,
+                    Enabled = false
+                };
+
                 // Load plugin
                 try {
                     var asm = loader.LoadDefaultAssembly();
@@ -173,13 +180,7 @@ namespace Il2CppInspector
                 catch (ReflectionTypeLoadException ex) {
                     var name = Path.GetFileName(dll);
 
-                    // Construct disabled plugin
-                    var plugin = new ManagedPlugin {
-                        Plugin = null,
-                        Available = false,
-                        Enabled = false
-                    };
-                    AsInstance.ManagedPlugins.Add(plugin);
+                    AsInstance.ManagedPlugins.Add(disabledPlugin);
 
                     // Determine error
                     switch (ex.LoaderExceptions[0]) {
@@ -189,26 +190,34 @@ namespace Il2CppInspector
                             if (failedType.TypeName.StartsWith("Il2CppInspector.PluginAPI.")) {
 
                                 // Requires newer plugin API version
-                                plugin.Plugin = new InvalidPlugin { Name = name, Description = "This plugin requires a newer version of Il2CppInspector" };
-                                Console.Error.WriteLine($"Error loading plugin {plugin.Plugin.Name}: {plugin.Plugin.Description}");
+                                disabledPlugin.Plugin = new InvalidPlugin { Name = name, Description = "This plugin requires a newer version of Il2CppInspector" };
+                                Console.Error.WriteLine($"Error loading plugin {disabledPlugin.Plugin.Name}: {disabledPlugin.Plugin.Description}");
                             } else {
 
-                                // Missing dependencies
-                                plugin.Plugin = new InvalidPlugin { Name = name, Description = "This plugin has dependencies that could not be found. Check that all required DLLs are present in the plugins folder." };
-                                Console.Error.WriteLine($"Error loading plugin {plugin.Plugin.Name}: {plugin.Plugin.Description}");
+                                // Missing dependencies or some inherited interfaces not implemented
+                                disabledPlugin.Plugin = new InvalidPlugin { Name = name, Description = "This plugin has dependencies that could not be found or may require a newer version of Il2CppInspector. Check that all required DLLs are present in the plugins folder." };
+                                Console.Error.WriteLine($"Error loading plugin {disabledPlugin.Plugin.Name}: {disabledPlugin.Plugin.Description}");
                             }
                             break;
 
                         // Assembly could not be found
                         case FileNotFoundException failedFile:
-                            plugin.Plugin = new InvalidPlugin { Name = name, Description = $"This plugin needs {failedFile.FileName} but the file could not be found" };
-                            Console.Error.WriteLine($"Error loading plugin {plugin.Plugin.Name}: {plugin.Plugin.Description}");
+                            disabledPlugin.Plugin = new InvalidPlugin { Name = name, Description = $"This plugin needs {failedFile.FileName} but the file could not be found" };
+                            Console.Error.WriteLine($"Error loading plugin {disabledPlugin.Plugin.Name}: {disabledPlugin.Plugin.Description}");
                             break;
 
                         // Some other type loading error
                         default:
                             throw new InvalidOperationException($"Fatal error loading plugin {name}: {ex.LoaderExceptions[0].GetType()} - {ex.LoaderExceptions[0].Message}");
                     }
+                }
+
+                // Some field not implemented in class
+                catch (TargetInvocationException ex) when (ex.InnerException is MissingFieldException fEx) {
+                    var name = Path.GetFileName(dll);
+
+                    disabledPlugin.Plugin = new InvalidPlugin { Name = name, Description = fEx.Message };
+                    Console.Error.WriteLine($"Error loading plugin {disabledPlugin.Plugin.Name}: {disabledPlugin.Plugin.Description} - this plugin may require a newer version of Il2CppInspector");
                 }
 
                 // Ignore unmanaged DLLs
