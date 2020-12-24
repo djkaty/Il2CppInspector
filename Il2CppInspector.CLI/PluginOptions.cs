@@ -118,6 +118,8 @@ namespace Il2CppInspector.CLI
         // Parse all options for all plugins
         public static bool ParsePluginOptions(IEnumerable<string> pluginOptions, Type[] optionsTypes) {
 
+            var hasErrors = false;
+
             // Run CommandLine parser on each set of plugin options
             foreach (var options in pluginOptions) {
 
@@ -125,8 +127,9 @@ namespace Il2CppInspector.CLI
 
                 // Cause an error on the first plugin arguments if no plugins are loaded
                 if (optionsTypes.Length == 0) {
-                    Console.Error.WriteLine($"Plugin '{selectedPlugin}' does not exist or is not loaded");
-                    return false;
+                    Console.Error.WriteLine($"The requested plugin '{selectedPlugin}' does not exist or is not loaded");
+                    hasErrors = true;
+                    continue;
                 }
 
                 // Parse plugin arguments
@@ -150,9 +153,10 @@ namespace Il2CppInspector.CLI
                         }, e => e);
                         Console.Error.WriteLine(helpText);
                     } else {
-                        Console.Error.WriteLine($"Plugin '{selectedPlugin}' does not exist or is not loaded");
+                        Console.Error.WriteLine($"The requested plugin '{selectedPlugin}' does not exist or is not loaded");
                     }
-                    return false;
+                    hasErrors = true;
+                    continue;
                 }
 
                 // Get plugin arguments and write them to plugin options class
@@ -165,27 +169,33 @@ namespace Il2CppInspector.CLI
                     // Validate hex strings
                     if (targetProp is IPluginOptionNumber n && n.Style == PluginOptionNumberStyle.Hex) {
                         try {
-                            n.Value = Convert.ToUInt64((string) prop.GetValue(optionsObject), 16);
+                            n.Value = Convert.ChangeType(Convert.ToInt64((string) prop.GetValue(optionsObject), 16), n.Value.GetType());
                         }
                         catch (Exception ex) when (ex is ArgumentException || ex is FormatException || ex is OverflowException) {
-                            Console.Error.WriteLine($"{prop.Name} must be a 32 or 64-bit hex value (optionally starting with '0x')");
+                            Console.Error.WriteLine($"Plugin option error: {prop.Name} must be a hex value (optionally starting with '0x'), and less than the maximum value");
+                            hasErrors = true;
                         }
                     }
 
-                    // TODO: Validate choices
-                    // TODO: Validate path names - https://stackoverflow.com/questions/422090/in-c-sharp-check-that-filename-is-possibly-valid-not-that-it-exists
-
                     // All other input types
                     else {
-                        targetProp.Value = prop.GetValue(optionsObject);
+                        var value = prop.GetValue(optionsObject);
+                        try {
+                            targetProp.Value = value;
+                        } catch (Exception ex) {
+                            Console.Error.WriteLine($"Plugin option error: {ex.Message} when setting '{targetProp.Name}' to '{value}'");
+                            hasErrors = true;
+                        }
                     }
                 }
 
                 // Enable plugin and inform of options
-                PluginManager.AsInstance.ManagedPlugins.First(p => p.Plugin == plugin).Enabled = true;
-                PluginManager.OptionsChanged(plugin);
+                if (!hasErrors) {
+                    PluginManager.AsInstance.ManagedPlugins.First(p => p.Plugin == plugin).Enabled = true;
+                    PluginManager.OptionsChanged(plugin);
+                }
             }
-            return true;
+            return !hasErrors;
         }
     }
 }
