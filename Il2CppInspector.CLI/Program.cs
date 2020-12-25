@@ -234,7 +234,7 @@ namespace Il2CppInspector.CLI
             // Set plugin handlers
             PluginManager.ErrorHandler += (s, e) => {
                 Console.Error.WriteLine($"The plugin {e.Error.Plugin.Name} encountered an error while executing {e.Error.Operation}: {e.Error.Exception.Message}."
-                                            + " The application will continue but may not behave as expected.");
+                                            + " Plugin has been disabled.");
             };
 
             PluginManager.StatusHandler += (s, e) => {

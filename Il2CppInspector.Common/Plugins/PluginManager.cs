@@ -262,6 +262,10 @@ namespace Il2CppInspector
                             break;
                     }
                     catch (Exception ex) {
+                        // Disable failing plugin
+                        Plugins[plugin.Id].Enabled = false;
+
+                        // Forward error to error handler
                         eventInfo.Error = new PluginErrorEventArgs { Plugin = plugin, Exception = ex, Operation = typeof(I).Name };
                         ErrorHandler?.Invoke(AsInstance, eventInfo);
                     }
