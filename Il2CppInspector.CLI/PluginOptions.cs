@@ -83,6 +83,10 @@ namespace Il2CppInspector.CLI
                 var optionType = option.GetType().GetProperty("Value").PropertyType;
                 var optionValue = option.Value;
 
+                // We won't set the Required flag if there is a default option
+                var optionEmpty = (optionType.IsValueType && optionValue == Activator.CreateInstance(optionType))
+                                    || optionValue == null;
+
                 // Hex numbers are strings that will be validated later
                 if (option is IPluginOptionNumber n && n.Style == PluginOptionNumberStyle.Hex) {
                     optionType = typeof(string);
@@ -108,7 +112,7 @@ namespace Il2CppInspector.CLI
                                         new object[] { option.Name.Length == 1? (object) option.Name[0] : option.Name },
                                         new PropertyInfo[] { optHelpPropInfo, optDefaultInfo, optRequiredInfo },
                                         // Booleans are always optional
-                                        new object[] { option.Description, optionValue, option.Value is bool? false : option.Required });
+                                        new object[] { option.Description, optionValue, option.Value is bool? false : option.Required && optionEmpty });
                 pluginOptionProperty.SetCustomAttribute(attBuilder);
             }
             return pluginOptionClass.CreateTypeInfo().AsType();
