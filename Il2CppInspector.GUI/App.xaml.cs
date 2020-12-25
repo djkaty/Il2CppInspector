@@ -70,7 +70,15 @@ namespace Il2CppInspectorGUI
 
         public List<AppModel> AppModels { get; } = new List<AppModel>();
 
-        public Exception LastException { get; private set; }
+        private Exception _lastException;
+        public Exception LastException {
+            get {
+                var ex = _lastException;
+                _lastException = null;
+                return ex;
+            }
+            private set => _lastException = value;
+        }
 
         // Event to indicate current work status
         public event EventHandler<string> OnStatusUpdate;
@@ -84,8 +92,11 @@ namespace Il2CppInspectorGUI
 
             // Set handlers for plugin manager
             PluginManager.ErrorHandler += (s, e) => {
-                if (e is PluginOptionsChangedEventInfo)
-                    MessageBox.Show("Could not update plugin options. " + e.Error.Exception.Message, "Plugin error");
+                if (e is PluginOptionsChangedEventInfo oe)
+                    if (oe.Error is PluginOptionErrorEventArgs oea)
+                        MessageBox.Show($"Plugin option '{oea.Option.Description}' for {e.Error.Plugin.Name} is invalid: {e.Error.Exception.Message}", "Plugin error");
+                    else
+                        MessageBox.Show($"One or more plugin options for {e.Error.Plugin.Name} are invalid: {e.Error.Exception.Message}", "Plugin error");
                 else
                     MessageBox.Show($"The plugin {e.Error.Plugin.Name} encountered an error while executing {e.Error.Operation}: {e.Error.Exception.Message}."
                                 + Environment.NewLine + Environment.NewLine + "Plugin has been disabled.", "Plugin error");
@@ -131,6 +142,10 @@ namespace Il2CppInspectorGUI
         public Task<bool> LoadMetadataAsync(MemoryStream metadataStream) =>
             Task.Run(() => {
                 try {
+                    // Don't start unless every enabled plugin's options are valid
+                    if (PluginManager.ValidateAllOptions().Error != null)
+                        return false;
+
                     metadata = Metadata.FromStream(metadataStream, StatusUpdate);
                     return true;
                 }

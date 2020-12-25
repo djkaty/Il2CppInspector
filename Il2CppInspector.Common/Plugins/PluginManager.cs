@@ -50,6 +50,13 @@ namespace Il2CppInspector
         public string Operation { get; set; }
     }
 
+    // Event arguments for option handler
+    public class PluginOptionErrorEventArgs : PluginErrorEventArgs
+    {
+        // The option causing the problem
+        public IPluginOption Option { get; set; }
+    }
+
     // Event arguments for the status handler
     public class PluginStatusEventArgs : EventArgs
     {
@@ -244,6 +251,24 @@ namespace Il2CppInspector
                 ErrorHandler?.Invoke(AsInstance, eventInfo);
             }
 
+            return eventInfo;
+        }
+
+        // Validate all options for enabled plugins
+        public static PluginOptionsChangedEventInfo ValidateAllOptions() {
+            // Enforce this by causing each option's setter to run
+            var eventInfo = new PluginOptionsChangedEventInfo();
+
+            foreach (var plugin in EnabledPlugins)
+                foreach (var option in plugin.Options)
+                    try {
+                        option.Value = option.Value;
+                    }
+                    catch (Exception ex) {
+                        eventInfo.Error = new PluginOptionErrorEventArgs { Plugin = plugin, Exception = ex, Option = option, Operation = "options update" };
+                        ErrorHandler?.Invoke(AsInstance, eventInfo);
+                        break;
+                    }
             return eventInfo;
         }
 
