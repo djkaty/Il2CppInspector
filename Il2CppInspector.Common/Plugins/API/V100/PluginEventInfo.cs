@@ -12,7 +12,7 @@ namespace Il2CppInspector.PluginAPI.V100
 {
     /// <summary>
     /// Object which allows plugins to report on what has happened during a call
-    /// Changes made to this object propagate to the next plugin in the call chain until IsHandled is set to true
+    /// Changes made to this object propagate to the next plugin in the call chain until FullyProcessed is set to true
     /// </summary>
     public class PluginEventInfo
     {
@@ -21,25 +21,25 @@ namespace Il2CppInspector.PluginAPI.V100
         /// Generally, this will prevent other plugins from processing the data
         /// Note that this should be set even if the processed data was invalid (<seealso cref="IsInvalid"/>)
         /// If this is not set, the same event will be raised on the next available plugin
-        /// Note that you can still do processing but set IsHandled to false to allow additional processing from other plugins
+        /// Note that you can still do processing but set FullyProcessed to false to allow additional processing from other plugins
         /// </summary>
-        public bool IsHandled { get; set; } = false;
+        public bool FullyProcessed { get; set; } = false;
 
         /// <summary>
-        /// A plugin should set this when IsHandled = true but the data it processed was invalid, for example if the processing gave an unexpected result
+        /// A plugin should set this when the data it processed was invalid, for example if the processing gave an unexpected result
         /// </summary>
         public bool IsInvalid { get; set; } = false;
 
         /// <summary>
         /// A plugin should set this when it has directly modified the provided data structure (object)
-        /// This can be set even if IsHandled = false to indicate that changes have been made but more plugins can still be called
+        /// This can be set even if FullyProcessed = false to indicate that changes have been made but more plugins can still be called
         /// Should be set to false if you have only queried (performed reads) on the data without changing it
         /// </summary>
         public bool IsDataModified { get; set; } = false;
 
         /// <summary>
         /// A plugin should set this when it has directly modified the supplied or underlying stream for the metadata or binary
-        /// This can be set even if IsHandled = false to indicate that changes have been made but more plugins can still be called
+        /// This can be set even if FullyProcessed = false to indicate that changes have been made but more plugins can still be called
         /// Should be set to false if you have only queried (performed reads) on the stream without changing it
         /// </summary>
         public bool IsStreamModified { get; set; } = false;
@@ -49,6 +49,11 @@ namespace Il2CppInspector.PluginAPI.V100
         /// </summary>
         public PluginErrorEventArgs Error { get; set; } = null;
     }
+
+    /// <summary>
+    /// Event info for LoadPipelineStarting
+    /// </summary>
+    public class PluginLoadPipelineStartingEventInfo : PluginEventInfo { }
 
     /// <summary>
     /// Event info for PreProcessMetadata
@@ -102,4 +107,9 @@ namespace Il2CppInspector.PluginAPI.V100
     /// Event info for PostProcessTypeModel
     /// </summary>
     public class PluginPostProcessTypeModelEventInfo : PluginEventInfo { }
+
+    /// <summary>
+    /// Event info for LoadPipelineEnding
+    /// </summary>
+    public class PluginLoadPipelineEndingEventInfo : PluginEventInfo { }
 }

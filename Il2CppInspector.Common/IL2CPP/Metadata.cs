@@ -54,6 +54,10 @@ namespace Il2CppInspector
 
         // Initialize metadata object from a stream
         public static Metadata FromStream(MemoryStream stream, EventHandler<string> statusCallback = null) {
+            // TODO: This should really be placed before the Metadata object is created,
+            // but for now this ensures it is called regardless of which client is in use
+            PluginHooks.LoadPipelineStarting();
+
             var metadata = new Metadata(statusCallback);
             stream.Position = 0;
             stream.CopyTo(metadata);
@@ -173,7 +177,7 @@ namespace Il2CppInspector
 
             // Get all metadata strings
             var pluginGetStringsResult = PluginHooks.GetStrings(this);
-            if (pluginGetStringsResult.IsHandled)
+            if (pluginGetStringsResult.FullyProcessed && !pluginGetStringsResult.IsInvalid)
                 Strings = pluginGetStringsResult.Strings;
 
             else {
@@ -243,7 +247,7 @@ namespace Il2CppInspector
 
             // Get all string literals
             var pluginGetStringLiteralsResult = PluginHooks.GetStringLiterals(this);
-            if (pluginGetStringLiteralsResult.IsHandled)
+            if (pluginGetStringLiteralsResult.FullyProcessed)
                 StringLiterals = pluginGetStringLiteralsResult.StringLiterals.ToArray();
 
             else {

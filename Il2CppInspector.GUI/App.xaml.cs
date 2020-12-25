@@ -88,7 +88,7 @@ namespace Il2CppInspectorGUI
                     MessageBox.Show("Could not update plugin options. " + e.Error.Exception.Message, "Plugin error");
                 else
                     MessageBox.Show($"The plugin {e.Error.Plugin.Name} encountered an error while executing {e.Error.Operation}: {e.Error.Exception.Message}."
-                                + Environment.NewLine + Environment.NewLine + "The application will continue but may not behave as expected.", "Plugin error");
+                                + Environment.NewLine + Environment.NewLine + "Plugin has been disabled.", "Plugin error");
             };
 
             PluginManager.StatusHandler += (s, e) => StatusUpdate(e.Plugin, "[" + e.Plugin.Name + "]\n" + e.Text);
@@ -163,26 +163,19 @@ namespace Il2CppInspectorGUI
                         throw new InvalidOperationException("Could not find any binary images in the file");
                     }
 
-                    // Multi-image binaries may contain more than one Il2Cpp image
+                    // Get an Il2CppInspector for each image
+                    var inspectors = Inspector.LoadFromStream(stream, metadata, StatusUpdate);
+
                     AppModels.Clear();
-                    foreach (var image in stream.Images) {
-                        // Architecture-agnostic load attempt
-                        try {
-                            // If we can't load the IL2CPP data here, it's probably packed or obfuscated; ignore it
-                            if (Il2CppBinary.Load(image, metadata, StatusUpdate) is Il2CppBinary binary) {
-                                var inspector = new Inspector(binary, metadata);
 
-                                // Build type model
-                                OnStatusUpdate?.Invoke(this, $"Building .NET type model for {image.Format}/{image.Arch} image");
-                                var typeModel = new TypeModel(inspector);
+                    foreach (var inspector in inspectors) {
+                        // Build type model
+                        OnStatusUpdate?.Invoke(this, $"Building .NET type model for {inspector.BinaryImage.Format}/{inspector.BinaryImage.Arch} image");
+                        var typeModel = new TypeModel(inspector);
 
-                                // Initialize (but don't build) application model
-                                // We will build the model after the user confirms the Unity version and target compiler
-                                AppModels.Add(new AppModel(typeModel, makeDefaultBuild: false));
-                            }
-                        }
-                        // Unsupported architecture; ignore it
-                        catch (NotImplementedException) { }
+                        // Initialize (but don't build) application model
+                        // We will build the model after the user confirms the Unity version and target compiler
+                        AppModels.Add(new AppModel(typeModel, makeDefaultBuild: false));
                     }
                     if (!AppModels.Any()) {
                         throw new InvalidOperationException("Could not auto-detect any IL2CPP binary images in the file. This may mean the binary file is packed, encrypted or obfuscated, that the file is not an IL2CPP image or that Il2CppInspector was not able to automatically find the required data. Please check the binary file in a disassembler to ensure that it is an unencrypted IL2CPP binary before submitting a bug report!");

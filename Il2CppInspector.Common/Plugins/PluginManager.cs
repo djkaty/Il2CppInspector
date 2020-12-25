@@ -258,7 +258,7 @@ namespace Il2CppInspector
                     try {
                         action(p, eventInfo);
 
-                        if (eventInfo.IsHandled)
+                        if (eventInfo.FullyProcessed)
                             break;
                     }
                     catch (Exception ex) {

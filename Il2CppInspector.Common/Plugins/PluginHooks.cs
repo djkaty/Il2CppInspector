@@ -4,6 +4,7 @@
     All rights reserved.
 */
 
+using System.Collections.Generic;
 using Il2CppInspector.Reflection;
 using NoisyCowStudios.Bin2Object;
 
@@ -16,6 +17,9 @@ namespace Il2CppInspector
     // Does not include hooks that should be called individually, eg. OptionsChanged
     internal static class PluginHooks
     {
+        public static PluginLoadPipelineStartingEventInfo LoadPipelineStarting()
+            => PluginManager.Try<ILoadPipeline, PluginLoadPipelineStartingEventInfo>((p, e) => p.LoadPipelineStarting(e));
+
         public static PluginPreProcessMetadataEventInfo PreProcessMetadata(BinaryObjectStream stream)
             => PluginManager.Try<ILoadPipeline, PluginPreProcessMetadataEventInfo>((p, e) => {
                     stream.Position = 0;
@@ -34,8 +38,10 @@ namespace Il2CppInspector
         public static PluginPostProcessPackageEventInfo PostProcessPackage(Il2CppInspector package)
             => PluginManager.Try<ILoadPipeline, PluginPostProcessPackageEventInfo>((p, e) => p.PostProcessPackage(package, e));
 
+        public static PluginLoadPipelineEndingEventInfo LoadPipelineEnding(List<Il2CppInspector> packages)
+            => PluginManager.Try<ILoadPipeline, PluginLoadPipelineEndingEventInfo>((p, e) => p.LoadPipelineEnding(packages, e));
+
         public static PluginPostProcessTypeModelEventInfo PostProcessTypeModel(TypeModel typeModel)
             => PluginManager.Try<ILoadPipeline, PluginPostProcessTypeModelEventInfo>((p, e) => p.PostProcessTypeModel(typeModel, e));
-
     }
 }

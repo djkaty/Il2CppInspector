@@ -572,6 +572,15 @@ namespace Il2CppInspector
             }
 
             // Multi-image binaries may contain more than one Il2Cpp image
+            var inspectors = LoadFromStream(stream, metadata, statusCallback);
+
+            Console.SetOut(stdout);
+
+            return inspectors;
+        }
+
+        public static List<Il2CppInspector> LoadFromStream(IFileFormatStream stream, Metadata metadata, EventHandler<string> statusCallback = null) {
+
             var processors = new List<Il2CppInspector>();
             foreach (var image in stream.Images) {
                 Console.WriteLine("Container format: " + image.Format);
@@ -598,7 +607,9 @@ namespace Il2CppInspector
                 }
             }
 
-            Console.SetOut(stdout);
+            // Plugin hook LoadPipelineEnding
+            PluginHooks.LoadPipelineEnding(processors);
+
             return processors;
         }
 
