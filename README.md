@@ -28,7 +28,7 @@ Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the
   - Striped XOR encryption style used in games such as [Garena Free Fire](https://play.google.com/store/apps/details?id=com.dts.freefireth&hl=en_US&gl=US), [League of Legends: Wild Rift](https://play.google.com/store/apps/details?id=com.riotgames.league.wildrift&hl=en_US&gl=US) and [Legends of Runeterra](https://play.google.com/store/apps/details?id=com.riotgames.legendsofruneterra&hl=en_US&gl=US)
   - String encryption style used in games such as [League of Legends: Wild Rift](https://play.google.com/store/apps/details?id=com.riotgames.league.wildrift&hl=en_US&gl=US)
   - Reordering of registration metadata used in titles by Riot Games
-  - Encryption/obfuscation used in titles by miHoYo ([Honkai Impact 3rd](https://honkaiimpact3.mihoyo.com/) and [Genshin Impact](https://genshin.mihoyo.com/) when using miHoYo plugin)
+  - Encryption/obfuscation used in titles by miHoYo ([Honkai Impact 3rd](https://honkaiimpact3.mihoyo.com/) and [Genshin Impact](https://genshin.mihoyo.com/) when using [miHoYo plugin](https://github.com/djkaty/Il2CppInspectorPlugins/tree/master/Loaders/miHoYo))
   - ROT encryption of API export names
   - Deobfuscated metadata and binary files can be saved back to disk
 
