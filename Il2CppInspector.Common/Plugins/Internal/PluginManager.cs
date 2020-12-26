@@ -11,7 +11,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using McMaster.NETCore.Plugins;
+using Il2CppInspector.PluginAPI;
 
 // This is the ONLY line to update when the API version changes
 using Il2CppInspector.PluginAPI.V100;
@@ -35,6 +37,9 @@ namespace Il2CppInspector
             get => Plugin.Options.Single(o => o.Name == s).Value;
             set => Plugin.Options.Single(o => o.Name == s).Value = value;
         }
+
+        // The current stack trace of the plugin
+        internal Stack<string> StackTrace = new Stack<string>();
     }
 
     // Event arguments for error handler
@@ -46,7 +51,7 @@ namespace Il2CppInspector
         // The exception thrown
         public Exception Exception { get; set; }
 
-        // The name of the operation that was being performed
+        // The name of the method that was being executed
         public string Operation { get; set; }
     }
 
@@ -274,24 +279,34 @@ namespace Il2CppInspector
 
         // Try to cast each enabled plugin to a specific interface type, and for those supporting the interface, execute the supplied delegate
         // Errors will be forwarded to the error handler
-        internal static E Try<I, E>(Action<I, E> action) where E : PluginEventInfo, new()
+        internal static E Try<I, E>(Action<I, E> action, [CallerMemberName] string hookName = null) where E : PluginEventInfo, new()
         {
             var eventInfo = new E();
+            var enabledPlugins = AsInstance.ManagedPlugins.Where(p => p.Enabled);
 
-            foreach (var plugin in EnabledPlugins)
-                if (plugin is I p)
+            foreach (var plugin in enabledPlugins)
+                if (plugin.Plugin is I p)
                     try {
+                        // Silently disallow recursion unless [Reentrant] is set on the method
+                        if (plugin.StackTrace.Contains(hookName)) {
+                            var allowRecursion = p.GetType().GetMethod(hookName).GetCustomAttribute(typeof(ReentrantAttribute)) != null;
+                            if (!allowRecursion)
+                                continue;
+                        }
+
+                        plugin.StackTrace.Push(hookName);
                         action(p, eventInfo);
+                        plugin.StackTrace.Pop();
 
                         if (eventInfo.FullyProcessed)
                             break;
                     }
                     catch (Exception ex) {
                         // Disable failing plugin
-                        Plugins[plugin.Id].Enabled = false;
+                        plugin.Enabled = false;
 
                         // Forward error to error handler
-                        eventInfo.Error = new PluginErrorEventArgs { Plugin = plugin, Exception = ex, Operation = typeof(I).Name };
+                        eventInfo.Error = new PluginErrorEventArgs { Plugin = plugin.Plugin, Exception = ex, Operation = hookName };
                         ErrorHandler?.Invoke(AsInstance, eventInfo);
                     }
 

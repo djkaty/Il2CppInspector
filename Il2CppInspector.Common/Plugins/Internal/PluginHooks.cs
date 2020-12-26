@@ -15,6 +15,7 @@ namespace Il2CppInspector
 {
     // Internal helpers to call the same hook on every plugin
     // Does not include hooks that should be called individually, eg. OptionsChanged
+    // NOTE: The method names must be identical to the interface method names for stack tracing to work
     internal static class PluginHooks
     {
         public static PluginLoadPipelineStartingEventInfo LoadPipelineStarting()

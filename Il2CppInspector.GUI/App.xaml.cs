@@ -209,7 +209,7 @@ namespace Il2CppInspectorGUI
                         MessageBox.Show($"One or more plugin options for {e.Error.Plugin.Name} are invalid: {e.Error.Exception.Message}", "Plugin error");
                 else
                     MessageBox.Show($"The plugin {e.Error.Plugin.Name} encountered an error while executing {e.Error.Operation}: {e.Error.Exception.Message}."
-                                + Environment.NewLine + Environment.NewLine + "Plugin has been disabled.", "Plugin error");
+                                + Environment.NewLine + Environment.NewLine + "Plugin has been disabled for this session.", "Plugin error");
             };
 
             PluginManager.StatusHandler += (s, e) => StatusUpdate(e.Plugin, "[" + e.Plugin.Name + "]\n" + e.Text);
