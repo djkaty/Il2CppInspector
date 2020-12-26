@@ -4,10 +4,9 @@
     All rights reserved.
 */
 
-using System.Linq;
 using Il2CppInspector.PluginAPI.V100;
 
-namespace Il2CppInspector
+namespace Il2CppInspector.PluginAPI
 {
     /// <summary>
     /// Plugin-related services we provide to plugins that they can call upon
@@ -33,5 +32,10 @@ namespace Il2CppInspector
         /// </summary>
         /// <param name="text">The text to report</param>
         public void StatusUpdate(string text) => PluginManager.StatusUpdate(plugin, text);
+
+        /// <summary>
+        /// An overload of StatusUpdate that can be cast to EventHandler<string>
+        /// </summary>
+        public void StatusUpdate(object sender, string text) => StatusUpdate(text);
     }
 }
