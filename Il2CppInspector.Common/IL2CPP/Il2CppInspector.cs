@@ -522,18 +522,18 @@ namespace Il2CppInspector
         }
 
         // Load from an AAB, IPA or one or more APK files
-        public static List<Il2CppInspector> LoadFromPackage(IEnumerable<string> packageFiles, LoadOptions loadOptions = null, bool silent = false) {
+        public static List<Il2CppInspector> LoadFromPackage(IEnumerable<string> packageFiles, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null, bool silent = false) {
             var streams = GetStreamsFromPackage(packageFiles, silent);
             if (!streams.HasValue)
                 return null;
-            return LoadFromStream(streams.Value.Binary, streams.Value.Metadata, loadOptions, silent: silent);
+            return LoadFromStream(streams.Value.Binary, streams.Value.Metadata, loadOptions, statusCallback, silent);
         }
 
         // Load from a binary file and metadata file
-        public static List<Il2CppInspector> LoadFromFile(string binaryFile, string metadataFile, LoadOptions loadOptions = null, bool silent = false)
+        public static List<Il2CppInspector> LoadFromFile(string binaryFile, string metadataFile, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null, bool silent = false)
             => LoadFromStream(new FileStream(binaryFile, FileMode.Open, FileAccess.Read, FileShare.Read),
                                 new MemoryStream(File.ReadAllBytes(metadataFile)),
-                                loadOptions, silent: silent);
+                                loadOptions, statusCallback, silent);
 
         // Load from a binary stream and metadata stream
         // Must be a seekable stream otherwise we catch a System.IO.NotSupportedException
