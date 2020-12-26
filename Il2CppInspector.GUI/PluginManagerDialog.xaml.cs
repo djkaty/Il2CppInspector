@@ -35,6 +35,8 @@ namespace Il2CppInspector.GUI
 
         private void okButton_Click(object sender, RoutedEventArgs e) {
             DialogResult = true;
+
+            ((Il2CppInspectorGUI.App) Application.Current).SaveOptions();
         }
 
         // Reload list of plugins and reset settings

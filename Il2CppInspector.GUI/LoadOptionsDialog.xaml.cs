@@ -28,7 +28,7 @@ namespace Il2CppInspector.GUI
             InitializeComponent();
 
             var app = (App) Application.Current;
-            DataContext = app.LoadOptions;
+            DataContext = app.ImageLoadOptions;
         }
 
         private void okButton_Click(object sender, RoutedEventArgs e) {

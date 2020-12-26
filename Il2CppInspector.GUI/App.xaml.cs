@@ -10,6 +10,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Markup;
@@ -27,6 +29,55 @@ namespace Il2CppInspectorGUI
     /// </summary>
     public partial class App : Application, INotifyPropertyChanged
     {
+        // Converter for IPlugin for System.Text.Json
+        private class PluginConverter : JsonConverter<IPlugin>
+        {
+            public override IPlugin Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+                return (IPlugin) JsonSerializer.Deserialize(ref reader, typeof(PluginState), options);
+            }
+
+            public override void Write(Utf8JsonWriter writer, IPlugin value, JsonSerializerOptions options) {
+                JsonSerializer.Serialize(writer, value, value.GetType(), options);
+            }
+        }
+
+        private class PluginOptionConverter : JsonConverter<IPluginOption>
+        {
+            public override IPluginOption Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+                return (IPluginOption) JsonSerializer.Deserialize(ref reader, typeof(PluginOptionState), options);
+            }
+
+            public override void Write(Utf8JsonWriter writer, IPluginOption value, JsonSerializerOptions options) {
+                JsonSerializer.Serialize(writer, value, value.GetType(), options);
+            }
+        }
+
+        // Save state for plugins
+        private class PluginState : IPlugin
+        {
+            public string Id { get; set; }
+            [JsonIgnore]
+            public string Name { get; set; }
+            [JsonIgnore]
+            public string Author { get; set; }
+            [JsonIgnore]
+            public string Description { get; set; }
+            [JsonIgnore]
+            public string Version { get; set; }
+            public List<IPluginOption> Options { get; set; }
+        };
+
+        private class PluginOptionState : IPluginOption
+        {
+            public string Name { get; set; }
+            [JsonIgnore]
+            public string Description { get; set; }
+            [JsonIgnore]
+            public bool Required { get; set; }
+            public object Value { get; set; }
+        }
+
+        // Application startup
         public App() : base() {
             // Catch unhandled exceptions for debugging startup failures and plugins
             var np = Environment.NewLine + Environment.NewLine;
@@ -50,6 +101,12 @@ namespace Il2CppInspectorGUI
                 }
             };
 
+            // Load options
+            LoadOptions();
+        }
+
+        // Load options from user config
+        internal void LoadOptions() {
             // Migrate settings from previous version if necessary
             if (User.Default.UpgradeRequired) {
                 User.Default.Upgrade();
@@ -57,8 +114,53 @@ namespace Il2CppInspectorGUI
                 User.Default.Save();
             }
 
-            // Load plugins
+            // Load plugin state (enabled / execution order)
+            var savedPluginState = Array.Empty<ManagedPlugin>();
+            try {
+                savedPluginState = JsonSerializer.Deserialize<ManagedPlugin[]>(User.Default.PluginsState,
+                    new JsonSerializerOptions { Converters = { new PluginConverter(), new PluginOptionConverter() } });
+            }
+
+            // Not set or invalid - just create a new set
+            catch (JsonException) { }
+            catch (NotSupportedException) { }
+
+            // Load plugins if they aren't already
             PluginManager.EnsureInit();
+
+            // Arrange plugins
+            var loadedPlugins = PluginManager.AsInstance.ManagedPlugins;
+            foreach (var savedState in savedPluginState.Reverse()) {
+                if (loadedPlugins.FirstOrDefault(p => p.Plugin.Id == savedState.Plugin.Id) is ManagedPlugin managedPlugin) {
+                    // Re-order to match saved order
+                    loadedPlugins.Remove(managedPlugin);
+                    loadedPlugins.Insert(0, managedPlugin);
+
+                    // Enable/disable to match saved state
+                    managedPlugin.Enabled = savedState.Enabled;
+
+                    // Set options
+                    if (savedState.Plugin.Options != null)
+                        foreach (var savedOption in savedState.Plugin.Options)
+                            if (managedPlugin.Plugin.Options.FirstOrDefault(o => o.Name == savedOption.Name) is IPluginOption option) {
+                                // Ignore invalid values
+                                try {
+                                    option.Value = savedOption.Value is JsonElement ? savedOption.Value.ToString() : savedOption.Value;
+                                } catch { }
+                            }
+                }
+            }
+
+            // Save options in case no save exists or previous save is invalid
+            SaveOptions();
+        }
+
+        // Save options to user config
+        internal void SaveOptions() {
+            User.Default.PluginsState = JsonSerializer.Serialize(
+                PluginManager.Plugins.Values.Cast<ManagedPlugin>().Where(p => p.Available).ToArray(),
+                new JsonSerializerOptions { Converters = { new PluginConverter(), new PluginOptionConverter() } });
+            User.Default.Save();
         }
 
         private Metadata metadata;
@@ -74,7 +176,7 @@ namespace Il2CppInspectorGUI
             }
         }
 
-        public LoadOptions LoadOptions { get; private set; }
+        public LoadOptions ImageLoadOptions { get; private set; }
 
         public List<AppModel> AppModels { get; } = new List<AppModel>();
 
@@ -114,7 +216,7 @@ namespace Il2CppInspectorGUI
         }
 
         public void ResetLoadOptions() {
-            LoadOptions = new LoadOptions {
+            ImageLoadOptions = new LoadOptions {
                 ImageBase = 0xffffffff_ffffffff,
                 BinaryFilePath = null
             };
@@ -166,7 +268,7 @@ namespace Il2CppInspectorGUI
         // Attempt to load an IL2CPP binary file
         public async Task<bool> LoadBinaryAsync(string binaryFile) {
             // For loaders which require the file path to find additional files
-            LoadOptions.BinaryFilePath = binaryFile;
+            ImageLoadOptions.BinaryFilePath = binaryFile;
 
             var stream = new MemoryStream(await File.ReadAllBytesAsync(binaryFile));
             return await LoadBinaryAsync(stream);
@@ -178,7 +280,7 @@ namespace Il2CppInspectorGUI
                     OnStatusUpdate?.Invoke(this, "Processing binary");
 
                     // This may throw other exceptions from the individual loaders as well
-                    IFileFormatStream stream = FileFormatStream.Load(binaryStream, LoadOptions, StatusUpdate);
+                    IFileFormatStream stream = FileFormatStream.Load(binaryStream, ImageLoadOptions, StatusUpdate);
                     if (stream == null) {
                         throw new InvalidOperationException("Could not determine the binary file format");
                     }
