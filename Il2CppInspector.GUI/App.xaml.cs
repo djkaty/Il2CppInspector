@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Markup;
 using Il2CppInspector;
+using Il2CppInspector.GUI;
 using Il2CppInspector.Model;
 using Il2CppInspector.PluginAPI.V100;
 using Il2CppInspector.Reflection;
@@ -26,8 +27,8 @@ namespace Il2CppInspectorGUI
     /// </summary>
     public partial class App : Application, INotifyPropertyChanged
     {
-        // Catch unhandled exceptions for debugging startup failures and plugins
         public App() : base() {
+            // Catch unhandled exceptions for debugging startup failures and plugins
             var np = Environment.NewLine + Environment.NewLine;
 
             Dispatcher.UnhandledException += (s, e) => {
@@ -48,6 +49,13 @@ namespace Il2CppInspectorGUI
                     ex = ex.InnerException;
                 }
             };
+
+            // Migrate settings from previous version if necessary
+            if (User.Default.UpgradeRequired) {
+                User.Default.Upgrade();
+                User.Default.UpgradeRequired = false;
+                User.Default.Save();
+            }
 
             // Load plugins
             PluginManager.EnsureInit();
