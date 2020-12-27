@@ -121,13 +121,21 @@ namespace Il2CppInspector.CLI
         // Get plugin option classes
         public static Type[] GetPluginOptionTypes() {
             // Don't do anything if there are no loaded plugins
-            var plugins = PluginManager.AvailablePlugins;
+            try {
+                var plugins = PluginManager.AvailablePlugins;
 
-            if (!plugins.Any())
-                return Array.Empty<Type>();
+                if (!plugins.Any())
+                    return Array.Empty<Type>();
 
-            // Create CommandLine-friendly option classes for each plugin
-            return plugins.Select(p => CreateOptionsFromPlugin(p)).ToArray();
+                // Create CommandLine-friendly option classes for each plugin
+                return plugins.Select(p => CreateOptionsFromPlugin(p)).ToArray();
+            }
+            catch (InvalidOperationException ex) {
+                Console.Error.WriteLine(ex.Message);
+                Environment.Exit(1);
+
+                return null;
+            }
         }
 
         // Parse all options for all plugins

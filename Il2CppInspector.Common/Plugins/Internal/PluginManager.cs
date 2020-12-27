@@ -174,6 +174,11 @@ namespace Il2CppInspector
                         // Current version
                         if (typeof(IPlugin).IsAssignableFrom(type) && !type.IsAbstract) {
                             var plugin = (IPlugin) Activator.CreateInstance(type);
+
+                            // Don't allow multiple identical plugins to load
+                            if (AsInstance.ManagedPlugins.Any(p => p.Plugin.Id == plugin.Id))
+                                throw new Exception($"Multiple copies of {plugin.Name} were found. Please ensure the plugins folder only contains one copy of each plugin.");
+
                             AsInstance.ManagedPlugins.Add(new ManagedPlugin { Plugin = plugin, Available = true, Enabled = false });
                         }
 

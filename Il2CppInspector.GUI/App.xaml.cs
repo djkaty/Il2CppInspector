@@ -126,7 +126,12 @@ namespace Il2CppInspectorGUI
             catch (NotSupportedException) { }
 
             // Load plugins if they aren't already
-            PluginManager.EnsureInit();
+            try {
+                PluginManager.EnsureInit();
+            } catch (InvalidOperationException ex) {
+                MessageBox.Show(ex.Message, "Fatal error loading plugins");
+                Environment.Exit(1);
+            }
 
             // Arrange plugins
             var loadedPlugins = PluginManager.AsInstance.ManagedPlugins;
