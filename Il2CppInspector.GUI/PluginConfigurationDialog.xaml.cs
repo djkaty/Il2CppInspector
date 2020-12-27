@@ -25,6 +25,7 @@ using System.Linq;
 using Il2CppInspector.PluginAPI.V100;
 using Il2CppInspector.Reflection;
 using Il2CppInspector;
+using Ookii.Dialogs.Wpf;
 
 namespace Il2CppInspectorGUI
 { 
@@ -134,22 +135,49 @@ namespace Il2CppInspectorGUI
 
             var option = (PluginOptionFilePath) ((Button) sender).DataContext;
 
-            var openFileDialog = new OpenFileDialog {
-                Title = option.Description,
-                Filter = "All files (*.*)|*.*",
-                FileName = option.Value,
-                CheckFileExists = false,
-                CheckPathExists = false
-            };
+            string path = null;
 
-            if (openFileDialog.ShowDialog() == true) {
+            if (option.IsFolder && option.MustExist) {
+                var openFolderDialog = new VistaFolderBrowserDialog {
+                    SelectedPath = option.Value,
+                    Description = option.Description,
+                    UseDescriptionForTitle = true
+                };
+                if (openFolderDialog.ShowDialog() == true) {
+                    path = openFolderDialog.SelectedPath;
+                }
+            } else if (option.MustExist) {
+                var openFileDialog = new OpenFileDialog {
+                    Title = option.Description,
+                    Filter = "All files (*.*)|*.*",
+                    FileName = option.Value,
+                    CheckFileExists = true,
+                    CheckPathExists = true
+                };
+                if (openFileDialog.ShowDialog() == true) {
+                    path = openFileDialog.FileName;
+                }
+            } else {
+                var saveFileDialog = new SaveFileDialog {
+                    Title = option.Description,
+                    Filter = "All files (*.*)|*.*",
+                    FileName = option.Value,
+                    CheckFileExists = false,
+                    OverwritePrompt = false
+                };
+                if (saveFileDialog.ShowDialog() == true) {
+                    path = saveFileDialog.FileName;
+                }
+            }
+
+            if (path != null) {
                 // This spaghetti saves us from implementing INotifyPropertyChanged on Plugin.Options
                 // (we don't want to expose WPF stuff in our SDK)
                 // Will break if we change the format of the FilePathDataTemplate too much
                 var tb = ((DockPanel) ((Button) sender).Parent).Children.OfType<StackPanel>().First().Children.OfType<TextBox>().First(n => n.Name == "valueControl");
                 try {
                     tb.Clear();
-                    tb.AppendText(openFileDialog.FileName);
+                    tb.AppendText(path);
                     tb.GetBindingExpression(TextBox.TextProperty).UpdateSource();
                 }
                 catch { }

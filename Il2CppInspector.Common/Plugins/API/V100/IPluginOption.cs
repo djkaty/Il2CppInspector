@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Il2CppInspector.PluginAPI.V100
@@ -148,8 +149,37 @@ namespace Il2CppInspector.PluginAPI.V100
                 throw new ArgumentException("Path name is required");
 
             // Throws an exception if the path is invalid (file or folder may or may not exist)
-            System.IO.Path.GetFullPath(path ?? "");
+            var fullPath = Path.GetFullPath(path ?? "");
+            var fileName = Path.GetFileName(fullPath);
+
+            if (IsFolder) {
+                if (MustExist && !Directory.Exists(fullPath))
+                    throw new ArgumentException($"Directory {fileName} does not exist");
+                if (MustNotExist && Directory.Exists(fullPath))
+                    throw new ArgumentException($"Directory {fileName} already exists");
+            }
+            else {
+                if (MustExist && !File.Exists(fullPath))
+                    throw new ArgumentException($"File {fileName} does not exist");
+                if (MustNotExist && File.Exists(fullPath))
+                    throw new ArgumentException($"File {fileName} already exists");
+            }
         }
+
+        /// <summary>
+        /// Set this to true if you want the user to specify a folder rather than a file
+        /// </summary>
+        public bool IsFolder = false;
+
+        /// <summary>
+        /// Set this to true if the specified file or folder must exist
+        /// </summary>
+        public bool MustExist = false;
+
+        /// <summary>
+        /// Set this to true if the specified file or folder must not exist
+        /// </summary>
+        public bool MustNotExist = false;
     }
 
     /// <summary>

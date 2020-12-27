@@ -9,12 +9,14 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <UseWPF>true</UseWPF>
     <AssemblyName>Il2CppInspector</AssemblyName>
-    <Version>2020.2.1</Version>
+    <Version>2021.1</Version>
     <Authors>Katy Coe</Authors>
     <Company>Noisy Cow Studios</Company>
     <Product>Il2CppInspector Windows Edition</Product>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Il2CppInspector.ico</ApplicationIcon>
+    <AssemblyVersion>2021.1.0.0</AssemblyVersion>
+    <FileVersion>2021.1.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
