@@ -95,6 +95,12 @@ namespace Il2CppInspector.PluginAPI.V100
         public T Value {
             get => _value;
             set {
+                // Disabled options can be set to invalid values
+                if (!If()) {
+                    _value = value;
+                    return;
+                }
+
                 // Perform internal validation
                 InternalValidate(value);
 

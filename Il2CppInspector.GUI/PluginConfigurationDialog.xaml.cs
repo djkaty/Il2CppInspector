@@ -109,7 +109,11 @@ namespace Il2CppInspectorGUI
             // Remove event
             lstOptions.ItemContainerGenerator.StatusChanged -= OptionsListBoxStatusChanged;
 
-            // your items are now generated
+            // Validate all options
+            ValidateAllOptions();
+        }
+
+        private void ValidateAllOptions() {
             // Adapted from https://stackoverflow.com/a/18008545
             foreach (var item in lstOptions.Items) {
                 var listBoxItem = lstOptions.ItemContainerGenerator.ContainerFromItem(item);
@@ -236,14 +240,18 @@ namespace Il2CppInspectorGUI
             if (lstOptions.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
                 return;
 
-            foreach (var item in lstOptions.Items) {
+            // Update If binding for all options
+            foreach (IPluginOption item in lstOptions.Items) {
                 var listBoxItem = lstOptions.ItemContainerGenerator.ContainerFromItem(item);
                 var presenter = FindVisualChild<ContentPresenter>(listBoxItem);
                 var dataTemplate = presenter.ContentTemplateSelector.SelectTemplate(item, listBoxItem);
 
                 if (dataTemplate.FindName("optionPanel", presenter) is FrameworkElement boundControl)
-                    boundControl.IsEnabled = ((IPluginOption) item).If();
+                    boundControl.IsEnabled = item.If();
             }
+
+            // Remove validation errors for disabled options
+            ValidateAllOptions();
         }
     }
 }
