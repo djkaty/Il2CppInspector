@@ -55,7 +55,7 @@ namespace Il2CppInspectorGUI
     public partial class PluginConfigurationDialog : Window
     {
         // Item to configure
-        public IPlugin Plugin { get; }
+        public IPlugin Plugin { get; private set; }
 
         // This helps us find XAML elements withing a DataTemplate
         // Adapted from https://docs.microsoft.com/en-us/dotnet/desktop/wpf/data/how-to-find-datatemplate-generated-elements?view=netframeworkdesktop-4.8
@@ -85,7 +85,7 @@ namespace Il2CppInspectorGUI
         // then force WPF to try to update the source property to see if it raises an exception
         // and cause the DataTriggers to execute.
         // This relies on a 'valueControl' named element existing.
-        void OptionsListBoxStatusChanged(object sender, EventArgs e) {
+        private void OptionsListBoxStatusChanged(object sender, EventArgs e) {
             // Wait for items to be generated
             if (lstOptions.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
                 return;
@@ -94,7 +94,6 @@ namespace Il2CppInspectorGUI
             lstOptions.ItemContainerGenerator.StatusChanged -= OptionsListBoxStatusChanged;
 
             // your items are now generated
-
             // Adapted from https://stackoverflow.com/a/18008545
             foreach (var item in lstOptions.Items) {
                 var listBoxItem = lstOptions.ItemContainerGenerator.ContainerFromItem(item);
@@ -201,6 +200,18 @@ namespace Il2CppInspectorGUI
             // Don't allow window to close if the options couldn't be updated
             if (PluginManager.OptionsChanged(Plugin).Error != null)
                 e.Cancel = true;
+        }
+
+        // Reset a plugin's settings
+        private void resetButton_Click(object sender, RoutedEventArgs e) {
+            // Get new context
+            Plugin = PluginManager.Reset(Plugin);
+
+            // Validate options once they have loaded
+            lstOptions.ItemContainerGenerator.StatusChanged += OptionsListBoxStatusChanged;
+
+            // Replace options in ListBox
+            lstOptions.ItemsSource = Plugin.Options;
         }
     }
 }

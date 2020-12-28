@@ -249,6 +249,15 @@ namespace Il2CppInspector
             }
         }
 
+        // Reset a plugin to its default "factory" state
+        public static IPlugin Reset(IPlugin plugin) {
+            var managedPlugin = AsInstance.ManagedPlugins.Single(p => p.Plugin == plugin);
+
+            var replacement = (IPlugin) Activator.CreateInstance(plugin.GetType());
+            managedPlugin.Plugin = replacement;
+            return replacement;
+        }
+
         // Commit options change for the specified plugin
         public static PluginOptionsChangedEventInfo OptionsChanged(IPlugin plugin) {
             var eventInfo = new PluginOptionsChangedEventInfo();

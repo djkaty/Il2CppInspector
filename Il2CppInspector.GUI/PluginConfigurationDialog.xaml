@@ -175,7 +175,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="70" />
         </Grid.RowDefinitions>
 
         <!-- Title -->
@@ -197,8 +197,9 @@
         </ListBox>
         
         <!-- Accept button -->
-        <StackPanel Grid.Row="2" VerticalAlignment="Bottom" Margin="10">
-            <Button Name="okButton" Click="okButton_Click" Style="{StaticResource LightBoxButton}" IsDefault="True" Width="150" FontSize="18">OK</Button>
-        </StackPanel>
+        <DockPanel Grid.Row="2" VerticalAlignment="Bottom" Margin="10">
+            <Button Name="resetButton" DockPanel.Dock="Left" Click="resetButton_Click" Style="{StaticResource LightBoxButton}" Width="150" FontSize="18" Padding="5">Defaults</Button>
+            <Button Name="okButton" DockPanel.Dock="Right" HorizontalAlignment="Right" Click="okButton_Click" Style="{StaticResource LightBoxButton}" IsDefault="True" Width="150" FontSize="18" Padding="5">OK</Button>
+        </DockPanel>
     </Grid>
 </Window>
