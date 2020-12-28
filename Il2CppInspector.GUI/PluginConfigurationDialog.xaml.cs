@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,7 +31,7 @@ using Ookii.Dialogs.Wpf;
 namespace Il2CppInspectorGUI
 { 
     // Class which selects the correct control to display for each plugin option
-    public class OptionTemplateSelector : DataTemplateSelector
+    internal class OptionTemplateSelector : DataTemplateSelector
     {
         public DataTemplate TextTemplate { get; set; }
         public DataTemplate FilePathTemplate { get; set; }
@@ -46,6 +47,21 @@ namespace Il2CppInspectorGUI
             var option = (IPluginOption) item;
             var style = item.GetType().GetProperty("Style")?.GetValue(item).ToString() ?? string.Empty;
             return (DataTemplate) GetType().GetProperty(option.GetType().Name.Split("`")[0]["PluginOption".Length..] + style + "Template").GetValue(this);
+        }
+    }
+
+    // Process the 'If' property to enable/disable options
+    internal class OptionConditionConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            if (value == null || targetType != typeof(bool))
+                return DependencyProperty.UnsetValue;
+
+            return ((IPluginOption) value).If();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            throw new NotImplementedException();
         }
     }
 
@@ -212,6 +228,22 @@ namespace Il2CppInspectorGUI
 
             // Replace options in ListBox
             lstOptions.ItemsSource = Plugin.Options;
+        }
+
+        // Force all the If evaluations on each option to be re-evaluated each time an option is changed
+        private void valueControl_Changed(object sender, RoutedEventArgs e) {
+            // Ignore changes when listbox is first populated
+            if (lstOptions.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
+                return;
+
+            foreach (var item in lstOptions.Items) {
+                var listBoxItem = lstOptions.ItemContainerGenerator.ContainerFromItem(item);
+                var presenter = FindVisualChild<ContentPresenter>(listBoxItem);
+                var dataTemplate = presenter.ContentTemplateSelector.SelectTemplate(item, listBoxItem);
+
+                if (dataTemplate.FindName("optionPanel", presenter) is FrameworkElement boundControl)
+                    boundControl.IsEnabled = ((IPluginOption) item).If();
+            }
         }
     }
 }

@@ -48,7 +48,7 @@ namespace Il2CppInspectorGUI
             }
 
             public override void Write(Utf8JsonWriter writer, IPluginOption value, JsonSerializerOptions options) {
-                JsonSerializer.Serialize(writer, value, value.GetType(), options);
+                JsonSerializer.Serialize(writer, new PluginOptionState { Name = value.Name, Value = value.Value }, typeof(PluginOptionState), options);
             }
         }
 
@@ -75,6 +75,8 @@ namespace Il2CppInspectorGUI
             [JsonIgnore]
             public bool Required { get; set; }
             public object Value { get; set; }
+            [JsonIgnore]
+            public Func<bool> If { get; set; }
         }
 
         // Application startup

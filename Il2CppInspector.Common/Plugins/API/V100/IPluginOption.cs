@@ -37,6 +37,12 @@ namespace Il2CppInspector.PluginAPI.V100
         /// Becomes the current value of the option when supplied by the user
         /// </summary>
         public object Value { get; set; }
+
+        /// <summary>
+        /// A condition that determines whether the option is enabled,
+        /// based on the settings of other options or any other desired criteria
+        /// </summary>
+        public Func<bool> If { get; set; }
     }
 
     /// <summary>
@@ -99,6 +105,12 @@ namespace Il2CppInspector.PluginAPI.V100
                 _value = value;
             }
         }
+
+        /// <summary>
+        /// This can be set to a predicate that determines whether the option is enabled in the GUI
+        /// By default, enable all options unless overridden
+        /// </summary>
+        public Func<bool> If { get; set; } = () => true;
 
         /// <summary>
         /// Optional validation function for the option in addition to basic automatic validation
