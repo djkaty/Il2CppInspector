@@ -150,10 +150,24 @@ namespace Il2CppInspectorGUI
                     if (savedState.Plugin.Options != null)
                         foreach (var savedOption in savedState.Plugin.Options)
                             if (managedPlugin.Plugin.Options.FirstOrDefault(o => o.Name == savedOption.Name) is IPluginOption option) {
-                                // Ignore invalid values
                                 try {
-                                    option.Value = savedOption.Value is JsonElement ? savedOption.Value.ToString() : savedOption.Value;
-                                } catch { }
+                                    // Ignore validation
+                                    var cond = option.If;
+                                    option.If = () => false;
+                                    if (savedOption.Value == null)
+                                        option.Value = null;
+                                    else
+                                        option.Value = (savedOption.Value, ((JsonElement) savedOption.Value).ValueKind) switch {
+                                            (var v, JsonValueKind.String) => v.ToString(),
+                                            (var v, JsonValueKind.Number) => Convert.ChangeType(v.ToString(), option.Value.GetType()),
+                                            (var v, JsonValueKind.True) => true,
+                                            (var v, JsonValueKind.False) => false,
+                                            _ => throw new ArgumentException("Unsupported JSON type")
+                                        };
+                                    option.If = cond;
+                                }
+                                // Ignore invalid values
+                                catch { }
                             }
                 }
             }
