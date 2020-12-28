@@ -18,38 +18,38 @@ using Some.Namespace.Again.SameLeafName;
 using Some.Namespace.SameLeafName;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-2871
-[assembly: AllowPartiallyTrustedCallers] // 0x00291A40-0x00291E34
-// [assembly: AssemblyCompany] // 0x00291A40-0x00291E34
-// [assembly: AssemblyCopyright] // 0x00291A40-0x00291E34
-// [assembly: AssemblyDefaultAlias] // 0x00291A40-0x00291E34
-// [assembly: AssemblyDelaySign] // 0x00291A40-0x00291E34
-// [assembly: AssemblyDescription] // 0x00291A40-0x00291E34
-// [assembly: AssemblyFileVersion] // 0x00291A40-0x00291E34
-// [assembly: AssemblyInformationalVersion] // 0x00291A40-0x00291E34
-// [assembly: AssemblyKeyFile] // 0x00291A40-0x00291E34
-// [assembly: AssemblyProduct] // 0x00291A40-0x00291E34
-// [assembly: AssemblyTitle] // 0x00291A40-0x00291E34
-// [assembly: CLSCompliant] // 0x00291A40-0x00291E34
-// [assembly: ComCompatibleVersion] // 0x00291A40-0x00291E34
-// [assembly: CompilationRelaxations] // 0x00291A40-0x00291E34
-// [assembly: ComVisible] // 0x00291A40-0x00291E34
-// [assembly: Debuggable] // 0x00291A40-0x00291E34
-// [assembly: DefaultDependency] // 0x00291A40-0x00291E34
-// [assembly: Guid] // 0x00291A40-0x00291E34
-// [assembly: InternalsVisibleTo] // 0x00291A40-0x00291E34
-// [assembly: InternalsVisibleTo] // 0x00291A40-0x00291E34
-// [assembly: InternalsVisibleTo] // 0x00291A40-0x00291E34
-// [assembly: InternalsVisibleTo] // 0x00291A40-0x00291E34
-// [assembly: InternalsVisibleTo] // 0x00291A40-0x00291E34
-// [assembly: NeutralResourcesLanguage] // 0x00291A40-0x00291E34
-[assembly: RuntimeCompatibility] // 0x00291A40-0x00291E34
-// [assembly: SatelliteContractVersion] // 0x00291A40-0x00291E34
-[assembly: StringFreezing] // 0x00291A40-0x00291E34
+[assembly: AllowPartiallyTrustedCallers] // 0x0027A22C-0x0027A61C
+// [assembly: AssemblyCompany] // 0x0027A22C-0x0027A61C
+// [assembly: AssemblyCopyright] // 0x0027A22C-0x0027A61C
+// [assembly: AssemblyDefaultAlias] // 0x0027A22C-0x0027A61C
+// [assembly: AssemblyDelaySign] // 0x0027A22C-0x0027A61C
+// [assembly: AssemblyDescription] // 0x0027A22C-0x0027A61C
+// [assembly: AssemblyFileVersion] // 0x0027A22C-0x0027A61C
+// [assembly: AssemblyInformationalVersion] // 0x0027A22C-0x0027A61C
+// [assembly: AssemblyKeyFile] // 0x0027A22C-0x0027A61C
+// [assembly: AssemblyProduct] // 0x0027A22C-0x0027A61C
+// [assembly: AssemblyTitle] // 0x0027A22C-0x0027A61C
+// [assembly: CLSCompliant] // 0x0027A22C-0x0027A61C
+// [assembly: ComCompatibleVersion] // 0x0027A22C-0x0027A61C
+// [assembly: CompilationRelaxations] // 0x0027A22C-0x0027A61C
+// [assembly: ComVisible] // 0x0027A22C-0x0027A61C
+// [assembly: Debuggable] // 0x0027A22C-0x0027A61C
+// [assembly: DefaultDependency] // 0x0027A22C-0x0027A61C
+// [assembly: Guid] // 0x0027A22C-0x0027A61C
+// [assembly: InternalsVisibleTo] // 0x0027A22C-0x0027A61C
+// [assembly: InternalsVisibleTo] // 0x0027A22C-0x0027A61C
+// [assembly: InternalsVisibleTo] // 0x0027A22C-0x0027A61C
+// [assembly: InternalsVisibleTo] // 0x0027A22C-0x0027A61C
+// [assembly: InternalsVisibleTo] // 0x0027A22C-0x0027A61C
+// [assembly: NeutralResourcesLanguage] // 0x0027A22C-0x0027A61C
+[assembly: RuntimeCompatibility] // 0x0027A22C-0x0027A61C
+// [assembly: SatelliteContractVersion] // 0x0027A22C-0x0027A61C
+[assembly: StringFreezing] // 0x0027A22C-0x0027A61C
 
 // Image 1: Scope.dll - Assembly: Scope, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 2872-2894
-// [assembly: CompilationRelaxations] // 0x002FFDF4-0x003B5524
-// [assembly: Debuggable] // 0x002FFDF4-0x003B5524
-[assembly: RuntimeCompatibility] // 0x002FFDF4-0x003B5524
+// [assembly: CompilationRelaxations] // 0x002F8824-0x003B14D0
+// [assembly: Debuggable] // 0x002F8824-0x003B14D0
+[assembly: RuntimeCompatibility] // 0x002F8824-0x003B14D0
 
 internal static class Interop // TypeDefIndex: 3
 {
@@ -129,11 +129,11 @@ internal static class Consts // TypeDefIndex: 5
 internal sealed class Locale // TypeDefIndex: 6
 {
 	// Constructors
-	private Locale() {} // 0x00697C80-0x00697C88
+	private Locale() {} // 0x006DE5A8-0x006DE5B0
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x006883BC-0x006883C0
-	public static string GetText(string fmt, params /* 0x0028FEF4-0x0028FF04 */ object[] args) => default; // 0x00697C88-0x00697E04
+	public static string GetText(string msg) => default; // 0x006CF55C-0x006CF560
+	public static string GetText(string fmt, params /* 0x002786E0-0x002786F0 */ object[] args) => default; // 0x006DE5B0-0x006DE724
 }
 
 internal static class SR // TypeDefIndex: 7
@@ -962,20 +962,20 @@ internal static class SR // TypeDefIndex: 7
 	public const string OutstandingReferences = "Release all references before disposing this instance."; // Metadata: 0x00185300
 
 	// Methods
-	internal static string GetString(string name, params /* 0x0028FF04-0x0028FF14 */ object[] args) => default; // 0x005A2C10-0x005A2C8C
-	internal static string GetString(CultureInfo culture, string name, params /* 0x0028FF14-0x0028FF24 */ object[] args) => default; // 0x005A2C8C-0x005A2C94
-	internal static string GetString(string name) => default; // 0x005A2C94-0x005A2C98
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x005A2C98-0x005A2CA0
-	internal static string Format(string resourceFormat, params /* 0x0028FF24-0x0028FF34 */ object[] args) => default; // 0x005A2CA0-0x005A2D34
-	internal static string Format(string resourceFormat, object p1) => default; // 0x005A2D34-0x005A2DB0
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x005A2DB0-0x005A2E3C
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x005A2E3C-0x005A2ED0
+	internal static string GetString(string name, params /* 0x002786F0-0x00278700 */ object[] args) => default; // 0x005A59EC-0x005A5A68
+	internal static string GetString(CultureInfo culture, string name, params /* 0x00278700-0x00278710 */ object[] args) => default; // 0x005A5A68-0x005A5A70
+	internal static string GetString(string name) => default; // 0x005A5A70-0x005A5A74
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x005A5A74-0x005A5A7C
+	internal static string Format(string resourceFormat, params /* 0x00278710-0x00278720 */ object[] args) => default; // 0x005A5A7C-0x005A5B10
+	internal static string Format(string resourceFormat, object p1) => default; // 0x005A5B10-0x005A5B8C
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x005A5B8C-0x005A5C10
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x005A5C10-0x005A5CA4
 }
 
 public class TestGlobal // TypeDefIndex: 2873
 {
 	// Constructors
-	public TestGlobal() {} // 0x00A1F8F8-0x00A1F900
+	public TestGlobal() {} // 0x00A47F78-0x00A47F80
 }
 
 namespace Il2CppTests.TestSources
@@ -992,23 +992,23 @@ namespace Il2CppTests.TestSources
 				public class NestedSubSubInner // TypeDefIndex: 2874
 				{
 					// Constructors
-					public NestedSubSubInner() {} // 0x00A1F9F8-0x00A1FA00
+					public NestedSubSubInner() {} // 0x00A48078-0x00A48080
 	
 					// Methods
-					public NestedOuter Test1() => default; // 0x00A1F9D8-0x00A1F9E0
-					public NestedInner Test2() => default; // 0x00A1F9E0-0x00A1F9E8
-					public NestedSubInner Test3() => default; // 0x00A1F9E8-0x00A1F9F0
-					public NestedSubSubInner Test4() => default; // 0x00A1F9F0-0x00A1F9F8
+					public NestedOuter Test1() => default; // 0x00A48058-0x00A48060
+					public NestedInner Test2() => default; // 0x00A48060-0x00A48068
+					public NestedSubInner Test3() => default; // 0x00A48068-0x00A48070
+					public NestedSubSubInner Test4() => default; // 0x00A48070-0x00A48078
 				}
 	
 				// Constructors
-				public NestedSubInner() {} // 0x00A1F9A0-0x00A1F9A8
+				public NestedSubInner() {} // 0x00A48020-0x00A48028
 	
 				// Methods
-				public NestedOuter Test1() => default; // 0x00A1F980-0x00A1F988
-				public NestedInner Test2() => default; // 0x00A1F988-0x00A1F990
-				public NestedSubInner Test3() => default; // 0x00A1F990-0x00A1F998
-				public NestedSubSubInner Test4() => default; // 0x00A1F998-0x00A1F9A0
+				public NestedOuter Test1() => default; // 0x00A48000-0x00A48008
+				public NestedInner Test2() => default; // 0x00A48008-0x00A48010
+				public NestedSubInner Test3() => default; // 0x00A48010-0x00A48018
+				public NestedSubSubInner Test4() => default; // 0x00A48018-0x00A48020
 			}
 	
 			public class NestedGeneric<T> // TypeDefIndex: 2876
@@ -1022,13 +1022,13 @@ namespace Il2CppTests.TestSources
 			}
 	
 			// Constructors
-			public NestedInner() {} // 0x00A1F948-0x00A1F950
+			public NestedInner() {} // 0x00A47FC8-0x00A47FD0
 	
 			// Methods
-			public NestedOuter Test1() => default; // 0x00A1F928-0x00A1F930
-			public NestedInner Test2() => default; // 0x00A1F930-0x00A1F938
-			public NestedSubInner Test3() => default; // 0x00A1F938-0x00A1F940
-			public NestedSubInner.NestedSubSubInner Test4() => default; // 0x00A1F940-0x00A1F948
+			public NestedOuter Test1() => default; // 0x00A47FA8-0x00A47FB0
+			public NestedInner Test2() => default; // 0x00A47FB0-0x00A47FB8
+			public NestedSubInner Test3() => default; // 0x00A47FB8-0x00A47FC0
+			public NestedSubInner.NestedSubSubInner Test4() => default; // 0x00A47FC0-0x00A47FC8
 		}
 	
 		public class NestedInnerSibling // TypeDefIndex: 2880
@@ -1037,28 +1037,28 @@ namespace Il2CppTests.TestSources
 			public class NestedSubInnerSibling // TypeDefIndex: 2879
 			{
 				// Constructors
-				public NestedSubInnerSibling() {} // 0x00A1F9C0-0x00A1F9C8
+				public NestedSubInnerSibling() {} // 0x00A48040-0x00A48048
 	
 				// Methods
-				public NestedOuter Test1() => default; // 0x00A1F9A8-0x00A1F9B0
-				public NestedInner Test2() => default; // 0x00A1F9B0-0x00A1F9B8
-				public NestedInner.NestedSubInner Test3() => default; // 0x00A1F9B8-0x00A1F9C0
+				public NestedOuter Test1() => default; // 0x00A48028-0x00A48030
+				public NestedInner Test2() => default; // 0x00A48030-0x00A48038
+				public NestedInner.NestedSubInner Test3() => default; // 0x00A48038-0x00A48040
 			}
 	
 			// Constructors
-			public NestedInnerSibling() {} // 0x00A1F950-0x00A1F958
+			public NestedInnerSibling() {} // 0x00A47FD0-0x00A47FD8
 		}
 	
 		// Constructors
-		public NestedOuter() {} // 0x00A1F8D8-0x00A1F8E0
+		public NestedOuter() {} // 0x00A47F58-0x00A47F60
 	
 		// Methods
-		public NestedOuter Test1() => default; // 0x00A1F8A8-0x00A1F8B0
-		public NestedInner Test2() => default; // 0x00A1F8B0-0x00A1F8B8
-		public NestedInner.NestedSubInner Test3() => default; // 0x00A1F8B8-0x00A1F8C0
-		public NestedInner.NestedSubInner.NestedSubSubInner Test4() => default; // 0x00A1F8C0-0x00A1F8C8
-		public NestedInner.NestedGeneric<NestedInner.NestedSubInner.NestedSubSubInner> GenericNestingScopes() => default; // 0x00A1F8C8-0x00A1F8D0
-		public NestedInner.NestedStruct? NullableStruct() => default; // 0x00A1F8D0-0x00A1F8D8
+		public NestedOuter Test1() => default; // 0x00A47F28-0x00A47F30
+		public NestedInner Test2() => default; // 0x00A47F30-0x00A47F38
+		public NestedInner.NestedSubInner Test3() => default; // 0x00A47F38-0x00A47F40
+		public NestedInner.NestedSubInner.NestedSubSubInner Test4() => default; // 0x00A47F40-0x00A47F48
+		public NestedInner.NestedGeneric<NestedInner.NestedSubInner.NestedSubSubInner> GenericNestingScopes() => default; // 0x00A47F48-0x00A47F50
+		public NestedInner.NestedStruct? NullableStruct() => default; // 0x00A47F50-0x00A47F58
 	}
 }
 
@@ -1067,12 +1067,12 @@ namespace Il2CppTests.DifferentNamespace
 	public class NestedOuter // TypeDefIndex: 2882
 	{
 		// Constructors
-		public NestedOuter() {} // 0x00A1F8A0-0x00A1F8A8
+		public NestedOuter() {} // 0x00A47F20-0x00A47F28
 	
 		// Methods
-		public NestedOuter Test1() => default; // 0x00A1F888-0x00A1F890
-		public TestSources.NestedOuter Test2() => default; // 0x00A1F890-0x00A1F898
-		public TestSources.NestedOuter.NestedInner Test3() => default; // 0x00A1F898-0x00A1F8A0
+		public NestedOuter Test1() => default; // 0x00A47F08-0x00A47F10
+		public TestSources.NestedOuter Test2() => default; // 0x00A47F10-0x00A47F18
+		public TestSources.NestedOuter.NestedInner Test3() => default; // 0x00A47F18-0x00A47F20
 	}
 }
 
@@ -1087,26 +1087,26 @@ namespace DifferentNamespace
 			public class NestedInner // TypeDefIndex: 2883
 			{
 				// Constructors
-				public NestedInner() {} // 0x00A1F978-0x00A1F980
+				public NestedInner() {} // 0x00A47FF8-0x00A48000
 	
 				// Methods
-				public Il2CppTests.TestSources.NestedOuter Test1() => default; // 0x00A1F960-0x00A1F968
-				public Il2CppTests.TestSources.NestedOuter.NestedInner Test2() => default; // 0x00A1F968-0x00A1F970
-				public Il2CppTests.TestSources.NestedOuter.NestedInner.NestedSubInner Test3() => default; // 0x00A1F970-0x00A1F978
+				public Il2CppTests.TestSources.NestedOuter Test1() => default; // 0x00A47FE0-0x00A47FE8
+				public Il2CppTests.TestSources.NestedOuter.NestedInner Test2() => default; // 0x00A47FE8-0x00A47FF0
+				public Il2CppTests.TestSources.NestedOuter.NestedInner.NestedSubInner Test3() => default; // 0x00A47FF0-0x00A47FF8
 			}
 	
 			// Constructors
-			public NestedIntermediate() {} // 0x00A1F920-0x00A1F928
+			public NestedIntermediate() {} // 0x00A47FA0-0x00A47FA8
 		}
 	
 		// Constructors
-		public NestedOuter() {} // 0x00A1F880-0x00A1F888
+		public NestedOuter() {} // 0x00A47F00-0x00A47F08
 	
 		// Methods
-		public NestedOuter Test1() => default; // 0x00A1F860-0x00A1F868
-		public Il2CppTests.DifferentNamespace.NestedOuter Test2() => default; // 0x00A1F868-0x00A1F870
-		public Il2CppTests.TestSources.NestedOuter Test3() => default; // 0x00A1F870-0x00A1F878
-		public Il2CppTests.TestSources.NestedOuter.NestedInner Test4() => default; // 0x00A1F878-0x00A1F880
+		public NestedOuter Test1() => default; // 0x00A47EE0-0x00A47EE8
+		public Il2CppTests.DifferentNamespace.NestedOuter Test2() => default; // 0x00A47EE8-0x00A47EF0
+		public Il2CppTests.TestSources.NestedOuter Test3() => default; // 0x00A47EF0-0x00A47EF8
+		public Il2CppTests.TestSources.NestedOuter.NestedInner Test4() => default; // 0x00A47EF8-0x00A47F00
 	}
 
 	public class TwoLevelConflictingParentScope // TypeDefIndex: 2889
@@ -1121,22 +1121,22 @@ namespace DifferentNamespace
 				public class NestedSubInner // TypeDefIndex: 2886
 				{
 					// Constructors
-					public NestedSubInner() {} // 0x00A1FA00-0x00A1FA00
+					public NestedSubInner() {} // 0x00A48080-0x00A48080
 				}
 	
 				// Constructors
-				public NestedInner() {} // 0x00A1F9D0-0x00A1F9D8
+				public NestedInner() {} // 0x00A48050-0x00A48058
 	
 				// Methods
-				public Il2CppTests.TestSources.NestedOuter.NestedInner.NestedSubInner Test1() => default; // 0x00A1F9C8-0x00A1F9D0
+				public Il2CppTests.TestSources.NestedOuter.NestedInner.NestedSubInner Test1() => default; // 0x00A48048-0x00A48050
 			}
 	
 			// Constructors
-			public NestedOuter() {} // 0x00A1F958-0x00A1F960
+			public NestedOuter() {} // 0x00A47FD8-0x00A47FE0
 		}
 	
 		// Constructors
-		public TwoLevelConflictingParentScope() {} // 0x00A1F918-0x00A1F920
+		public TwoLevelConflictingParentScope() {} // 0x00A47F98-0x00A47FA0
 	}
 }
 
@@ -1148,7 +1148,7 @@ namespace Some.Namespace
 		public Again.SameLeafName.Test foo; // 0x10
 	
 		// Constructors
-		public Test() {} // 0x00A1F8E0-0x00A1F8E8
+		public Test() {} // 0x00A47F60-0x00A47F68
 	}
 }
 
@@ -1157,7 +1157,7 @@ namespace Some.Namespace.SameLeafName
 	public class AClassFromUsingDirective // TypeDefIndex: 2891
 	{
 		// Constructors
-		public AClassFromUsingDirective() {} // 0x00A1F858-0x00A1F860
+		public AClassFromUsingDirective() {} // 0x00A47ED8-0x00A47EE0
 	}
 }
 
@@ -1169,10 +1169,10 @@ namespace Some.Namespace.Again.SameLeafName
 		public Namespace.Test foo; // 0x10
 	
 		// Constructors
-		public Test() {} // 0x00A1F8F0-0x00A1F8F8
+		public Test() {} // 0x00A47F70-0x00A47F78
 	
 		// Methods
-		public AClassFromUsingDirective Test1() => default; // 0x00A1F8E8-0x00A1F8F0
+		public AClassFromUsingDirective Test1() => default; // 0x00A47F68-0x00A47F70
 	}
 }
 
@@ -1181,10 +1181,10 @@ namespace NotGlobalUsingNamespace
 	public class TestUsingNonGlobalNamespaceType // TypeDefIndex: 2893
 	{
 		// Constructors
-		public TestUsingNonGlobalNamespaceType() {} // 0x00A1F910-0x00A1F918
+		public TestUsingNonGlobalNamespaceType() {} // 0x00A47F90-0x00A47F98
 	
 		// Methods
-		public NotGlobalNamespace.TestGlobal Test() => default; // 0x00A1F908-0x00A1F910
+		public NotGlobalNamespace.TestGlobal Test() => default; // 0x00A47F88-0x00A47F90
 	}
 }
 
@@ -1193,6 +1193,6 @@ namespace NotGlobalNamespace
 	public class TestGlobal // TypeDefIndex: 2894
 	{
 		// Constructors
-		public TestGlobal() {} // 0x00A1F900-0x00A1F908
+		public TestGlobal() {} // 0x00A47F80-0x00A47F88
 	}
 }

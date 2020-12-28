@@ -12,38 +12,38 @@ using System.Runtime.InteropServices;
 using System.Security;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-2871
-[assembly: AllowPartiallyTrustedCallers] // 0x00290030-0x00290424
-// [assembly: AssemblyCompany] // 0x00290030-0x00290424
-// [assembly: AssemblyCopyright] // 0x00290030-0x00290424
-// [assembly: AssemblyDefaultAlias] // 0x00290030-0x00290424
-// [assembly: AssemblyDelaySign] // 0x00290030-0x00290424
-// [assembly: AssemblyDescription] // 0x00290030-0x00290424
-// [assembly: AssemblyFileVersion] // 0x00290030-0x00290424
-// [assembly: AssemblyInformationalVersion] // 0x00290030-0x00290424
-// [assembly: AssemblyKeyFile] // 0x00290030-0x00290424
-// [assembly: AssemblyProduct] // 0x00290030-0x00290424
-// [assembly: AssemblyTitle] // 0x00290030-0x00290424
-// [assembly: CLSCompliant] // 0x00290030-0x00290424
-// [assembly: ComCompatibleVersion] // 0x00290030-0x00290424
-// [assembly: CompilationRelaxations] // 0x00290030-0x00290424
-// [assembly: ComVisible] // 0x00290030-0x00290424
-// [assembly: Debuggable] // 0x00290030-0x00290424
-// [assembly: DefaultDependency] // 0x00290030-0x00290424
-// [assembly: Guid] // 0x00290030-0x00290424
-// [assembly: InternalsVisibleTo] // 0x00290030-0x00290424
-// [assembly: InternalsVisibleTo] // 0x00290030-0x00290424
-// [assembly: InternalsVisibleTo] // 0x00290030-0x00290424
-// [assembly: InternalsVisibleTo] // 0x00290030-0x00290424
-// [assembly: InternalsVisibleTo] // 0x00290030-0x00290424
-// [assembly: NeutralResourcesLanguage] // 0x00290030-0x00290424
-[assembly: RuntimeCompatibility] // 0x00290030-0x00290424
-// [assembly: SatelliteContractVersion] // 0x00290030-0x00290424
-[assembly: StringFreezing] // 0x00290030-0x00290424
+[assembly: AllowPartiallyTrustedCallers] // 0x0027980C-0x00279BFC
+// [assembly: AssemblyCompany] // 0x0027980C-0x00279BFC
+// [assembly: AssemblyCopyright] // 0x0027980C-0x00279BFC
+// [assembly: AssemblyDefaultAlias] // 0x0027980C-0x00279BFC
+// [assembly: AssemblyDelaySign] // 0x0027980C-0x00279BFC
+// [assembly: AssemblyDescription] // 0x0027980C-0x00279BFC
+// [assembly: AssemblyFileVersion] // 0x0027980C-0x00279BFC
+// [assembly: AssemblyInformationalVersion] // 0x0027980C-0x00279BFC
+// [assembly: AssemblyKeyFile] // 0x0027980C-0x00279BFC
+// [assembly: AssemblyProduct] // 0x0027980C-0x00279BFC
+// [assembly: AssemblyTitle] // 0x0027980C-0x00279BFC
+// [assembly: CLSCompliant] // 0x0027980C-0x00279BFC
+// [assembly: ComCompatibleVersion] // 0x0027980C-0x00279BFC
+// [assembly: CompilationRelaxations] // 0x0027980C-0x00279BFC
+// [assembly: ComVisible] // 0x0027980C-0x00279BFC
+// [assembly: Debuggable] // 0x0027980C-0x00279BFC
+// [assembly: DefaultDependency] // 0x0027980C-0x00279BFC
+// [assembly: Guid] // 0x0027980C-0x00279BFC
+// [assembly: InternalsVisibleTo] // 0x0027980C-0x00279BFC
+// [assembly: InternalsVisibleTo] // 0x0027980C-0x00279BFC
+// [assembly: InternalsVisibleTo] // 0x0027980C-0x00279BFC
+// [assembly: InternalsVisibleTo] // 0x0027980C-0x00279BFC
+// [assembly: InternalsVisibleTo] // 0x0027980C-0x00279BFC
+// [assembly: NeutralResourcesLanguage] // 0x0027980C-0x00279BFC
+[assembly: RuntimeCompatibility] // 0x0027980C-0x00279BFC
+// [assembly: SatelliteContractVersion] // 0x0027980C-0x00279BFC
+[assembly: StringFreezing] // 0x0027980C-0x00279BFC
 
 // Image 1: Properties.dll - Assembly: Properties, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 2872-2873
-// [assembly: CompilationRelaxations] // 0x002DD97C-0x003B48C8
-// [assembly: Debuggable] // 0x002DD97C-0x003B48C8
-[assembly: RuntimeCompatibility] // 0x002DD97C-0x003B48C8
+// [assembly: CompilationRelaxations] // 0x002D7BE8-0x003B175C
+// [assembly: Debuggable] // 0x002D7BE8-0x003B175C
+[assembly: RuntimeCompatibility] // 0x002D7BE8-0x003B175C
 
 internal static class Interop // TypeDefIndex: 3
 {
@@ -123,11 +123,11 @@ internal static class Consts // TypeDefIndex: 5
 internal sealed class Locale // TypeDefIndex: 6
 {
 	// Constructors
-	private Locale() {} // 0x0069C024-0x0069C02C
+	private Locale() {} // 0x006DD834-0x006DD83C
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x0068C760-0x0068C764
-	public static string GetText(string fmt, params /* 0x0028E4E4-0x0028E4F4 */ object[] args) => default; // 0x0069C02C-0x0069C1A8
+	public static string GetText(string msg) => default; // 0x006CE7E8-0x006CE7EC
+	public static string GetText(string fmt, params /* 0x00277CC0-0x00277CD0 */ object[] args) => default; // 0x006DD83C-0x006DD9B0
 }
 
 internal static class SR // TypeDefIndex: 7
@@ -956,14 +956,14 @@ internal static class SR // TypeDefIndex: 7
 	public const string OutstandingReferences = "Release all references before disposing this instance."; // Metadata: 0x00184DBC
 
 	// Methods
-	internal static string GetString(string name, params /* 0x0028E4F4-0x0028E504 */ object[] args) => default; // 0x005A5FB4-0x005A6030
-	internal static string GetString(CultureInfo culture, string name, params /* 0x0028E504-0x0028E514 */ object[] args) => default; // 0x005A6030-0x005A6038
-	internal static string GetString(string name) => default; // 0x005A6038-0x005A603C
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x005A603C-0x005A6044
-	internal static string Format(string resourceFormat, params /* 0x0028E514-0x0028E524 */ object[] args) => default; // 0x005A6044-0x005A60D8
-	internal static string Format(string resourceFormat, object p1) => default; // 0x005A60D8-0x005A6154
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x005A6154-0x005A61E0
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x005A61E0-0x005A6274
+	internal static string GetString(string name, params /* 0x00277CD0-0x00277CE0 */ object[] args) => default; // 0x005A6C78-0x005A6CF4
+	internal static string GetString(CultureInfo culture, string name, params /* 0x00277CE0-0x00277CF0 */ object[] args) => default; // 0x005A6CF4-0x005A6CFC
+	internal static string GetString(string name) => default; // 0x005A6CFC-0x005A6D00
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x005A6D00-0x005A6D08
+	internal static string Format(string resourceFormat, params /* 0x00277CF0-0x00277D00 */ object[] args) => default; // 0x005A6D08-0x005A6D9C
+	internal static string Format(string resourceFormat, object p1) => default; // 0x005A6D9C-0x005A6E18
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x005A6E18-0x005A6E9C
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x005A6E9C-0x005A6F30
 }
 
 namespace Il2CppTests.TestSources
@@ -971,17 +971,17 @@ namespace Il2CppTests.TestSources
 	internal class Test // TypeDefIndex: 2873
 	{
 		// Properties
-		private int prop1 { get; set; } // 0x00A206A8-0x00A206B0 0x00A206B0-0x00A206B8
-		protected int prop2 { get; private set; } // 0x00A206B8-0x00A206C0 0x00A206C0-0x00A206C8
-		protected int prop3 { private get; set; } // 0x00A206C8-0x00A206D0 0x00A206D0-0x00A206D8
-		public static int prop4 { private get; set; } // 0x00A206D8-0x00A20724 0x00A20724-0x00A2077C
-		public string this[int i] { get => default; } // 0x00A2077C-0x00A207C0 
-		public string this[double d] { get => default; } // 0x00A207C0-0x00A20804 
-		public string this[long l] { set {} } // 0x00A20804-0x00A20808
-		public string this[float f] { get => default; set {} } // 0x00A20808-0x00A2084C 0x00A2084C-0x00A20850
-		public bool this[int i, int j] { get => default; } // 0x00A20850-0x00A20858 
+		private int prop1 { get; set; } // 0x00A48BD0-0x00A48BD8 0x00A48BD8-0x00A48BE0
+		protected int prop2 { get; private set; } // 0x00A48BE0-0x00A48BE8 0x00A48BE8-0x00A48BF0
+		protected int prop3 { private get; set; } // 0x00A48BF0-0x00A48BF8 0x00A48BF8-0x00A48C00
+		public static int prop4 { private get; set; } // 0x00A48C00-0x00A48C4C 0x00A48C4C-0x00A48C9C
+		public string this[int i] { get => default; } // 0x00A48C9C-0x00A48CE0 
+		public string this[double d] { get => default; } // 0x00A48CE0-0x00A48D24 
+		public string this[long l] { set {} } // 0x00A48D24-0x00A48D28
+		public string this[float f] { get => default; set {} } // 0x00A48D28-0x00A48D6C 0x00A48D6C-0x00A48D70
+		public bool this[int i, int j] { get => default; } // 0x00A48D70-0x00A48D78 
 	
 		// Constructors
-		public Test() {} // 0x00A20858-0x00A20858
+		public Test() {} // 0x00A48D78-0x00A48D78
 	}
 }

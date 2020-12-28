@@ -12,38 +12,38 @@ using System.Runtime.InteropServices;
 using System.Security;
 
 // Image 0: mscorlib.dll - Assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 - Types 0-2871
-[assembly: AllowPartiallyTrustedCallers] // 0x10006DD0-0x100070A0
-// [assembly: AssemblyCompany] // 0x10006DD0-0x100070A0
-// [assembly: AssemblyCopyright] // 0x10006DD0-0x100070A0
-// [assembly: AssemblyDefaultAlias] // 0x10006DD0-0x100070A0
-// [assembly: AssemblyDelaySign] // 0x10006DD0-0x100070A0
-// [assembly: AssemblyDescription] // 0x10006DD0-0x100070A0
-// [assembly: AssemblyFileVersion] // 0x10006DD0-0x100070A0
-// [assembly: AssemblyInformationalVersion] // 0x10006DD0-0x100070A0
-// [assembly: AssemblyKeyFile] // 0x10006DD0-0x100070A0
-// [assembly: AssemblyProduct] // 0x10006DD0-0x100070A0
-// [assembly: AssemblyTitle] // 0x10006DD0-0x100070A0
-// [assembly: CLSCompliant] // 0x10006DD0-0x100070A0
-// [assembly: ComCompatibleVersion] // 0x10006DD0-0x100070A0
-// [assembly: CompilationRelaxations] // 0x10006DD0-0x100070A0
-// [assembly: ComVisible] // 0x10006DD0-0x100070A0
-// [assembly: Debuggable] // 0x10006DD0-0x100070A0
-// [assembly: DefaultDependency] // 0x10006DD0-0x100070A0
-// [assembly: Guid] // 0x10006DD0-0x100070A0
-// [assembly: InternalsVisibleTo] // 0x10006DD0-0x100070A0
-// [assembly: InternalsVisibleTo] // 0x10006DD0-0x100070A0
-// [assembly: InternalsVisibleTo] // 0x10006DD0-0x100070A0
-// [assembly: InternalsVisibleTo] // 0x10006DD0-0x100070A0
-// [assembly: InternalsVisibleTo] // 0x10006DD0-0x100070A0
-// [assembly: NeutralResourcesLanguage] // 0x10006DD0-0x100070A0
-[assembly: RuntimeCompatibility] // 0x10006DD0-0x100070A0
-// [assembly: SatelliteContractVersion] // 0x10006DD0-0x100070A0
-[assembly: StringFreezing] // 0x10006DD0-0x100070A0
+[assembly: AllowPartiallyTrustedCallers] // 0x10007110-0x100073E0
+// [assembly: AssemblyCompany] // 0x10007110-0x100073E0
+// [assembly: AssemblyCopyright] // 0x10007110-0x100073E0
+// [assembly: AssemblyDefaultAlias] // 0x10007110-0x100073E0
+// [assembly: AssemblyDelaySign] // 0x10007110-0x100073E0
+// [assembly: AssemblyDescription] // 0x10007110-0x100073E0
+// [assembly: AssemblyFileVersion] // 0x10007110-0x100073E0
+// [assembly: AssemblyInformationalVersion] // 0x10007110-0x100073E0
+// [assembly: AssemblyKeyFile] // 0x10007110-0x100073E0
+// [assembly: AssemblyProduct] // 0x10007110-0x100073E0
+// [assembly: AssemblyTitle] // 0x10007110-0x100073E0
+// [assembly: CLSCompliant] // 0x10007110-0x100073E0
+// [assembly: ComCompatibleVersion] // 0x10007110-0x100073E0
+// [assembly: CompilationRelaxations] // 0x10007110-0x100073E0
+// [assembly: ComVisible] // 0x10007110-0x100073E0
+// [assembly: Debuggable] // 0x10007110-0x100073E0
+// [assembly: DefaultDependency] // 0x10007110-0x100073E0
+// [assembly: Guid] // 0x10007110-0x100073E0
+// [assembly: InternalsVisibleTo] // 0x10007110-0x100073E0
+// [assembly: InternalsVisibleTo] // 0x10007110-0x100073E0
+// [assembly: InternalsVisibleTo] // 0x10007110-0x100073E0
+// [assembly: InternalsVisibleTo] // 0x10007110-0x100073E0
+// [assembly: InternalsVisibleTo] // 0x10007110-0x100073E0
+// [assembly: NeutralResourcesLanguage] // 0x10007110-0x100073E0
+[assembly: RuntimeCompatibility] // 0x10007110-0x100073E0
+// [assembly: SatelliteContractVersion] // 0x10007110-0x100073E0
+[assembly: StringFreezing] // 0x10007110-0x100073E0
 
 // Image 1: Enums.dll - Assembly: Enums, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null - Types 2872-2879
-// [assembly: CompilationRelaxations] // 0x1006D210-0x1006D260
-// [assembly: Debuggable] // 0x1006D210-0x1006D260
-[assembly: RuntimeCompatibility] // 0x1006D210-0x1006D260
+// [assembly: CompilationRelaxations] // 0x1006D270-0x1006D2C0
+// [assembly: Debuggable] // 0x1006D270-0x1006D2C0
+[assembly: RuntimeCompatibility] // 0x1006D270-0x1006D2C0
 
 internal static class Interop // TypeDefIndex: 3
 {
@@ -123,11 +123,11 @@ internal static class Consts // TypeDefIndex: 5
 internal sealed class Locale // TypeDefIndex: 6
 {
 	// Constructors
-	private Locale() {} // 0x101403B0-0x101403C0
+	private Locale() {} // 0x10141400-0x10141410
 
 	// Methods
-	public static string GetText(string msg) => default; // 0x1012C590-0x1012C5A0
-	public static string GetText(string fmt, params /* 0x10003570-0x10003590 */ object[] args) => default; // 0x10365D40-0x10365D70
+	public static string GetText(string msg) => default; // 0x1012D5F0-0x1012D600
+	public static string GetText(string fmt, params /* 0x10003570-0x10003590 */ object[] args) => default; // 0x10366D70-0x10366DA0
 }
 
 internal static class SR // TypeDefIndex: 7
@@ -956,14 +956,14 @@ internal static class SR // TypeDefIndex: 7
 	public const string OutstandingReferences = "Release all references before disposing this instance."; // Metadata: 0x00184E48
 
 	// Methods
-	internal static string GetString(string name, params /* 0x10003570-0x10003590 */ object[] args) => default; // 0x10265F10-0x10265F70
-	internal static string GetString(CultureInfo culture, string name, params /* 0x10003570-0x10003590 */ object[] args) => default; // 0x10265F70-0x10265F80
-	internal static string GetString(string name) => default; // 0x1012C590-0x1012C5A0
-	internal static string GetString(CultureInfo culture, string name) => default; // 0x10178F80-0x10178F90
-	internal static string Format(string resourceFormat, params /* 0x10003570-0x10003590 */ object[] args) => default; // 0x10265D80-0x10265DF0
-	internal static string Format(string resourceFormat, object p1) => default; // 0x10265DF0-0x10265E50
-	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x10265E50-0x10265EB0
-	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x10265EB0-0x10265F10
+	internal static string GetString(string name, params /* 0x10003570-0x10003590 */ object[] args) => default; // 0x10266EC0-0x10266F20
+	internal static string GetString(CultureInfo culture, string name, params /* 0x10003570-0x10003590 */ object[] args) => default; // 0x10266F20-0x10266F30
+	internal static string GetString(string name) => default; // 0x1012D5F0-0x1012D600
+	internal static string GetString(CultureInfo culture, string name) => default; // 0x10179FA0-0x10179FB0
+	internal static string Format(string resourceFormat, params /* 0x10003570-0x10003590 */ object[] args) => default; // 0x10266D30-0x10266DA0
+	internal static string Format(string resourceFormat, object p1) => default; // 0x10266DA0-0x10266E00
+	internal static string Format(string resourceFormat, object p1, object p2) => default; // 0x10266E00-0x10266E60
+	internal static string Format(string resourceFormat, object p1, object p2, object p3) => default; // 0x10266E60-0x10266EC0
 }
 
 namespace Il2CppTests.TestSources
@@ -1024,23 +1024,23 @@ namespace Il2CppTests.TestSources
 		private ushort i; // 0x28
 	
 		// Constructors
-		public ClassWithEnumFields() {} // 0x101403B0-0x101403C0
+		public ClassWithEnumFields() {} // 0x10141400-0x10141410
 	}
 
 	public class ClassWithEnumAutoProperties // TypeDefIndex: 2879
 	{
 		// Properties
-		private ushort a { get; } // 0x1061E2E0-0x1061E2F0 
-		private EnumOfSize1 b { get; } // 0x1012F200-0x1012F210 
-		private ushort c { get; } // 0x1011CB80-0x1011CB90 
-		private EnumOfSize2 d { get; } // 0x1061E2F0-0x1061E300 
-		private ushort e { get; } // 0x1061E300-0x1061E310 
-		private EnumOfSize4 f { get; } // 0x1011E290-0x1011E2A0 
-		private ushort g { get; } // 0x1061E310-0x1061E320 
-		private EnumOfSize8 h { get; } // 0x102105E0-0x102105F0 
-		private ushort i { get; } // 0x1061E320-0x1061E320 
+		private ushort a { get; } // 0x1061F150-0x1061F160 
+		private EnumOfSize1 b { get; } // 0x10130260-0x10130270 
+		private ushort c { get; } // 0x1011DB80-0x1011DB90 
+		private EnumOfSize2 d { get; } // 0x1061F160-0x1061F170 
+		private ushort e { get; } // 0x1061F170-0x1061F180 
+		private EnumOfSize4 f { get; } // 0x1011F2D0-0x1011F2E0 
+		private ushort g { get; } // 0x1061F180-0x1061F190 
+		private EnumOfSize8 h { get; } // 0x10211580-0x10211590 
+		private ushort i { get; } // 0x1061F190-0x1061F190 
 	
 		// Constructors
-		public ClassWithEnumAutoProperties() {} // 0x101403B0-0x101403C0
+		public ClassWithEnumAutoProperties() {} // 0x10141400-0x10141410
 	}
 }
