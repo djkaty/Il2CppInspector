@@ -20,7 +20,7 @@ namespace Il2CppInspector
         long Length { get; }
         uint NumImages { get; }
         string DefaultFilename { get; }
-        bool IsModified { get; } 
+        bool IsModified { get; internal set; } 
         IEnumerable<IFileFormatStream> Images { get; } // Each child image of this object (eg. 32/64-bit versions in Fat MachO file)
         IFileFormatStream this[uint index] { get; } // With no additional override, one object = one file, this[0] == this
         long Position { get; set; }
@@ -132,12 +132,24 @@ namespace Il2CppInspector
             var types = Assembly.GetExecutingAssembly().DefinedTypes
                         .Where(x => x.ImplementedInterfaces.Contains(typeof(IFileFormatStream)) && !x.IsGenericTypeDefinition);
 
+            // Copy to memory-based stream
+            var binaryObjectStream = new BinaryObjectStream();
+            stream.Position = 0;
+            stream.CopyTo(binaryObjectStream);
+            binaryObjectStream.Position = 0;
+
+            // Plugin hook to pre-process image before we determine its format
+            var preProcessResult = PluginHooks.PreProcessImage(binaryObjectStream);
+
             foreach (var type in types) {
                 try {
                     if (type.GetMethod("Load", BindingFlags.FlattenHierarchy | BindingFlags.Static | BindingFlags.Public,
-                            null, new[] {typeof(Stream), typeof(LoadOptions), typeof(EventHandler<string>)}, null)
-                        .Invoke(null, new object[] {stream, loadOptions, statusCallback}) is IFileFormatStream loaded)
+                            null, new[] { typeof(BinaryObjectStream), typeof(LoadOptions), typeof(EventHandler<string>) }, null)
+                        .Invoke(null, new object[] { binaryObjectStream, loadOptions, statusCallback }) is IFileFormatStream loaded) {
+
+                        loaded.IsModified |= preProcessResult.IsStreamModified;
                         return loaded;
+                    }
                 }
                 catch (TargetInvocationException ex) {
                     throw ex.InnerException;
@@ -151,6 +163,7 @@ namespace Il2CppInspector
     {
         public abstract string DefaultFilename { get; }
 
+        bool IFileFormatStream.IsModified { get => IsModified; set => IsModified = value; }
         public bool IsModified { get; protected set; } = false;
 
         public uint NumImages { get; protected set; } = 1;
@@ -180,25 +193,21 @@ namespace Il2CppInspector
         }
 
         public static T Load(string filename, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null) {
-            using var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-            return Load(stream, loadOptions, statusCallback);
+            return Load(new BinaryObjectStream(File.ReadAllBytes(filename)), loadOptions, statusCallback);
         }
 
         public static T Load(Stream stream, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null) {
-            // Copy the original stream in case we modify it
+            var binary = (T) Activator.CreateInstance(typeof(T));
             if (stream.CanSeek)
                 stream.Position = 0;
-            var binary = (T) Activator.CreateInstance(typeof(T));
             stream.CopyTo(binary);
-            binary.Position = 0;
             return binary.InitImpl(loadOptions, statusCallback) ? binary : null;
         }
 
         private bool InitImpl(LoadOptions loadOptions, EventHandler<string> statusCallback) {
             LoadOptions = loadOptions;
             OnStatusUpdate = statusCallback;
-
-            // TODO: Plugin hook PreProcessFile
+            Position = 0;
 
             return Init();
 

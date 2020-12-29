@@ -17,7 +17,7 @@ namespace Il2CppInspector
     // We re-construct libil2cpp.so from the *.bin files and return it as the first image
     internal class ProcessMapReader : FileFormatStream<ProcessMapReader>
     {
-        private MemoryStream il2cpp;
+        private BinaryObjectStream il2cpp;
 
         public override string DefaultFilename => "maps.txt";
 
@@ -81,7 +81,7 @@ namespace Il2CppInspector
             var lengthLast  = il2cppMemory.Last().End - neededFiles.Last().Start;
 
             // Merge the files
-            il2cpp = new MemoryStream();
+            il2cpp = new BinaryObjectStream();
 
             for (var i = 0; i < neededFiles.Count; i++) {
                 var offset = (i == 0)? offsetFirst : 0;
