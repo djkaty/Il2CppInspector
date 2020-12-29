@@ -259,7 +259,8 @@ namespace Il2CppInspector
             CodeRegistration = Image.ReadMappedObject<Il2CppCodeRegistration>(codeRegistration);
             MetadataRegistration = Image.ReadMappedObject<Il2CppMetadataRegistration>(metadataRegistration);
 
-            // TODO: Plugin hook PreProcessBinary
+            // Plugin hook to pre-process binary
+            isModified |= PluginHooks.PreProcessBinary(this).IsStreamModified;
 
             // Do basic validatation that MetadataRegistration and CodeRegistration are sane
             /*
@@ -381,7 +382,8 @@ namespace Il2CppInspector
                 GenericMethodInvokerIndices.Add(MethodSpecs[tableEntry.genericMethodIndex], tableEntry.indices.invokerIndex);
             }
 
-            // TODO: Plugin hook PostProcessBinary
+            // Plugin hook to pre-process binary
+            isModified |= PluginHooks.PostProcessBinary(this).IsStreamModified;
         }
 
         // IL2CPP API exports

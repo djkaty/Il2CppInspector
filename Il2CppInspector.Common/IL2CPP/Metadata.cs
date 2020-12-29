@@ -177,7 +177,7 @@ namespace Il2CppInspector
 
             // Get all metadata strings
             var pluginGetStringsResult = PluginHooks.GetStrings(this);
-            if (pluginGetStringsResult.FullyProcessed && !pluginGetStringsResult.IsInvalid)
+            if (pluginGetStringsResult.IsDataModified && !pluginGetStringsResult.IsInvalid)
                 Strings = pluginGetStringsResult.Strings;
 
             else {
@@ -247,7 +247,7 @@ namespace Il2CppInspector
 
             // Get all string literals
             var pluginGetStringLiteralsResult = PluginHooks.GetStringLiterals(this);
-            if (pluginGetStringLiteralsResult.FullyProcessed)
+            if (pluginGetStringLiteralsResult.IsDataModified)
                 StringLiterals = pluginGetStringLiteralsResult.StringLiterals.ToArray();
 
             else {

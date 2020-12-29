@@ -272,7 +272,8 @@ namespace Il2CppInspector.Model
             // Restore stdout
             Console.SetOut(stdout);
 
-            // TODO: Plugin hook PostProcessAppModel
+            // Plugin hook to post-process model
+            PluginHooks.PostProcessAppModel(this);
 
             // This is to allow this method to be chained after a new expression
             return this;
