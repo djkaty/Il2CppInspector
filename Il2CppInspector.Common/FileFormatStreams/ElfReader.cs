@@ -332,6 +332,9 @@ namespace Il2CppInspector
             }
             Console.WriteLine($"Processed {rels.Count} relocations");
 
+            // Build symbol and export tables
+            processSymbols();
+
             // Detect and defeat various kinds of XOR encryption
             StatusUpdate("Detecting encryption");
 
@@ -444,9 +447,6 @@ namespace Il2CppInspector
                 if (rodataBytes.All(b => b == 0x00))
                     throw new InvalidOperationException("This IL2CPP binary is packed in a way not currently supported by Il2CppInspector and cannot be loaded.");
             }
-
-            // Build symbol and export tables
-            processSymbols();
 
             return true;
         }
