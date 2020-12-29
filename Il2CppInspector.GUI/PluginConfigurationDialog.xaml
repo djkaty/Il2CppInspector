@@ -211,10 +211,15 @@
                 </local:OptionTemplateSelector>
             </ListBox.ItemTemplateSelector>
         </ListBox>
-        
-        <!-- Accept button -->
+
         <DockPanel Grid.Row="2" VerticalAlignment="Bottom" Margin="10">
+            <!-- Reset options to defaults -->
             <Button Name="resetButton" DockPanel.Dock="Left" Click="resetButton_Click" Style="{StaticResource LightBoxButton}" Width="150" FontSize="18" Padding="5">Defaults</Button>
+
+            <!-- Cancel button -->
+            <Button Name="cancelButton" DockPanel.Dock="Right" HorizontalAlignment="Right" Click="cancelButton_Click" Style="{StaticResource LightBoxButton}" IsDefault="True" Width="150" FontSize="18" Padding="5" Margin="10,0,0,0">Cancel</Button>
+            
+            <!-- Accept button -->
             <Button Name="okButton" DockPanel.Dock="Right" HorizontalAlignment="Right" Click="okButton_Click" Style="{StaticResource LightBoxButton}" IsDefault="True" Width="150" FontSize="18" Padding="5">OK</Button>
         </DockPanel>
     </Grid>

@@ -71,7 +71,11 @@ namespace Il2CppInspectorGUI
     public partial class PluginConfigurationDialog : Window
     {
         // Item to configure
-        public IPlugin Plugin { get; private set; }
+        private ManagedPlugin ManagedPlugin { get; set; }
+        public IPlugin Plugin => ManagedPlugin.Plugin;
+
+        // Options when window was opened
+        public Dictionary<string, object> OriginalOptions { get; private set; }
 
         // This helps us find XAML elements withing a DataTemplate
         // Adapted from https://docs.microsoft.com/en-us/dotnet/desktop/wpf/data/how-to-find-datatemplate-generated-elements?view=netframeworkdesktop-4.8
@@ -135,10 +139,13 @@ namespace Il2CppInspectorGUI
         }
 
         // Initialize configuration dialog window
-        public PluginConfigurationDialog(IPlugin plugin) {
+        public PluginConfigurationDialog(ManagedPlugin plugin) {
             InitializeComponent();
             DataContext = this;
-            Plugin = plugin;
+            ManagedPlugin = plugin;
+
+            // Copy current options
+            OriginalOptions = new Dictionary<string, object>(Plugin.Options.ToDictionary(o => o.Name, o => o.Value));
 
             // Validate options once they have loaded
             lstOptions.ItemContainerGenerator.StatusChanged += OptionsListBoxStatusChanged;
@@ -210,6 +217,11 @@ namespace Il2CppInspectorGUI
 
         // Check options validity before allowing the dialog to close either by clicking OK or the close icon
         private void Window_Closing(object sender, CancelEventArgs e) {
+
+            // Do nothing if user clicked Cancel
+            if (DialogResult == false)
+                return;
+
             // Don't allow the window to close if any of the options are invalid
             if (!IsValid(lstOptions)) {
                 MessageBox.Show("One or more options are invalid.", "Il2CppInspector Plugin Configuration");
@@ -224,8 +236,8 @@ namespace Il2CppInspectorGUI
 
         // Reset a plugin's settings
         private void resetButton_Click(object sender, RoutedEventArgs e) {
-            // Get new context
-            Plugin = PluginManager.Reset(Plugin);
+            // Get new context (updates ManagedPlugin)
+            PluginManager.Reset(Plugin);
 
             // Validate options once they have loaded
             lstOptions.ItemContainerGenerator.StatusChanged += OptionsListBoxStatusChanged;
@@ -252,6 +264,18 @@ namespace Il2CppInspectorGUI
 
             // Remove validation errors for disabled options
             ValidateAllOptions();
+        }
+
+        private void cancelButton_Click(object sender, RoutedEventArgs e) {
+
+            // Revert changes
+            foreach (var option in OriginalOptions)
+                ManagedPlugin[option.Key] = option.Value;
+
+            // Replace options in ListBox
+            lstOptions.ItemsSource = Plugin.Options;
+
+            DialogResult = false;
         }
     }
 }
