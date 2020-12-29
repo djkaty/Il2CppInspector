@@ -17,8 +17,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Il2CppInspector;
 
-namespace Il2CppInspector.GUI
+namespace Il2CppInspectorGUI
 {
     /// <summary>
     /// Interaction logic for PluginManagerDialog.xaml
@@ -33,10 +34,13 @@ namespace Il2CppInspector.GUI
             lstPlugins_SelectionChanged(null, null);
         }
 
+        // Save options whether the user clicked OK or the close icon
+        private void Window_Closing(object sender, CancelEventArgs e) {
+            ((Il2CppInspectorGUI.App) Application.Current).SaveOptions();
+        }
+
         private void okButton_Click(object sender, RoutedEventArgs e) {
             DialogResult = true;
-
-            ((Il2CppInspectorGUI.App) Application.Current).SaveOptions();
         }
 
         // Reload list of plugins and reset settings

@@ -67,6 +67,7 @@ namespace Il2CppInspectorGUI
             public List<IPluginOption> Options { get; set; }
         };
 
+        // Save state for plugin options
         private class PluginOptionState : IPluginOption
         {
             public string Name { get; set; }
@@ -139,6 +140,7 @@ namespace Il2CppInspectorGUI
             var loadedPlugins = PluginManager.AsInstance.ManagedPlugins;
             foreach (var savedState in savedPluginState.Reverse()) {
                 if (loadedPlugins.FirstOrDefault(p => p.Plugin.Id == savedState.Plugin.Id) is ManagedPlugin managedPlugin) {
+
                     // Re-order to match saved order
                     loadedPlugins.Remove(managedPlugin);
                     loadedPlugins.Insert(0, managedPlugin);
@@ -147,28 +149,24 @@ namespace Il2CppInspectorGUI
                     managedPlugin.Enabled = savedState.Enabled;
 
                     // Set options
-                    if (savedState.Plugin.Options != null)
+                    if (savedState.Plugin.Options != null) {
+                        var options = new Dictionary<string, object>();
+
                         foreach (var savedOption in savedState.Plugin.Options)
                             if (managedPlugin.Plugin.Options.FirstOrDefault(o => o.Name == savedOption.Name) is IPluginOption option) {
-                                try {
-                                    // Ignore validation
-                                    var cond = option.If;
-                                    option.If = () => false;
-                                    if (savedOption.Value == null)
-                                        option.Value = null;
-                                    else
-                                        option.Value = (savedOption.Value, ((JsonElement) savedOption.Value).ValueKind) switch {
-                                            (var v, JsonValueKind.String) => v.ToString(),
-                                            (var v, JsonValueKind.Number) => Convert.ChangeType(v.ToString(), option.Value.GetType()),
-                                            (var v, JsonValueKind.True) => true,
-                                            (var v, JsonValueKind.False) => false,
-                                            _ => throw new ArgumentException("Unsupported JSON type")
-                                        };
-                                    option.If = cond;
-                                }
-                                // Ignore invalid values
-                                catch { }
+                                if (savedOption.Value == null)
+                                    options.Add(option.Name, null);
+                                else
+                                    options.Add(option.Name, (savedOption.Value, ((JsonElement) savedOption.Value).ValueKind) switch {
+                                        (var v, JsonValueKind.String) => v.ToString(),
+                                        (var v, JsonValueKind.Number) => Convert.ChangeType(v.ToString(), option.Value.GetType()),
+                                        (var v, JsonValueKind.True) => true,
+                                        (var v, JsonValueKind.False) => false,
+                                        _ => throw new ArgumentException("Unsupported JSON type")
+                                    });
                             }
+                        managedPlugin.SetOptions(options, OptionBehaviour.NoValidation);
+                    }
                 }
             }
 
@@ -186,7 +184,7 @@ namespace Il2CppInspectorGUI
 
         private Metadata metadata;
 
-        // True if we extracted from an APK, IPA, zip file etc.
+        // True if we extracted the current workload from an APK, IPA, zip file etc.
         private bool isExtractedFromPackage;
         public bool IsExtractedFromPackage {
             get => isExtractedFromPackage;
@@ -197,10 +195,14 @@ namespace Il2CppInspectorGUI
             }
         }
 
+        // Load options for the current image
         public LoadOptions ImageLoadOptions { get; private set; }
 
+        // Application models for the current image
         public List<AppModel> AppModels { get; } = new List<AppModel>();
 
+        // The last exception thrown
+        // Reading the exception clears it
         private Exception _lastException;
         public Exception LastException {
             get {
@@ -236,6 +238,7 @@ namespace Il2CppInspectorGUI
             PluginManager.StatusHandler += (s, e) => StatusUpdate(e.Plugin, "[" + e.Plugin.Name + "]\n" + e.Text);
         }
 
+        // Reset image load options to their defaults
         public void ResetLoadOptions() {
             ImageLoadOptions = new LoadOptions {
                 ImageBase = 0xffffffff_ffffffff,

@@ -20,6 +20,13 @@ using Il2CppInspector.PluginAPI.V100;
 
 namespace Il2CppInspector
 {
+    public enum OptionBehaviour
+    {
+        None,
+        IgnoreInvalid,
+        NoValidation
+    }
+
     // Internal settings for a plugin
     public class ManagedPlugin
     {
@@ -40,6 +47,34 @@ namespace Il2CppInspector
 
         // The current stack trace of the plugin
         internal Stack<string> StackTrace = new Stack<string>();
+
+        // Get options as dictionary
+        public Dictionary<string, object> GetOptions()
+            => Plugin.Options.ToDictionary(o => o.Name, o => o.Value);
+
+        // Set options to values with optional validation behaviour
+        public void SetOptions(Dictionary<string, object> options, OptionBehaviour behaviour = OptionBehaviour.None) {
+            foreach (var option in options)
+                // Throw an exception on the first invalid option
+                if (behaviour == OptionBehaviour.None)
+                    this[option.Key] = option.Value;
+
+                // Don't set invalid options but don't throw an exception either
+                else if (behaviour == OptionBehaviour.IgnoreInvalid)
+                    try {
+                        this[option.Key] = option.Value;
+                    } catch { }
+
+                // Force set options with no validation
+                else if (behaviour == OptionBehaviour.NoValidation) {
+                    if (Plugin.Options.FirstOrDefault(o => o.Name == option.Key) is IPluginOption target) {
+                        var validationCondition = target.If;
+                        target.If = () => false;
+                        target.Value = option.Value;
+                        target.If = validationCondition;
+                    }
+                }
+        }
     }
 
     // Event arguments for error handler

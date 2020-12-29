@@ -117,6 +117,9 @@ namespace Il2CppInspectorGUI
             ValidateAllOptions();
         }
 
+        // Force each ListBoxItem to set its source property
+        // This will force errors to appear in the dialog box when exceptions are thrown
+        // Only needed when the window first opens or the plugin object changes
         private void ValidateAllOptions() {
             // Adapted from https://stackoverflow.com/a/18008545
             foreach (var item in lstOptions.Items) {
@@ -145,15 +148,10 @@ namespace Il2CppInspectorGUI
             ManagedPlugin = plugin;
 
             // Copy current options
-            OriginalOptions = new Dictionary<string, object>(Plugin.Options.ToDictionary(o => o.Name, o => o.Value));
+            OriginalOptions = plugin.GetOptions();
 
             // Validate options once they have loaded
             lstOptions.ItemContainerGenerator.StatusChanged += OptionsListBoxStatusChanged;
-        }
-
-        private void okButton_Click(object sender, RoutedEventArgs e) {
-            // Close dialog box but call OnClosing first to validate all the options
-            DialogResult = true;
         }
 
         // Select a file path
@@ -217,6 +215,34 @@ namespace Il2CppInspectorGUI
             e.Handled = !Regex.IsMatch(e.Text, @"[A-Fa-f0-9]");
         }
 
+        // Reset a plugin's settings
+        private void resetButton_Click(object sender, RoutedEventArgs e) {
+            // Replace plugin object with a new one (updates ManagedPlugin.Plugin)
+            PluginManager.Reset(Plugin);
+
+            // Validate options once they have loaded
+            lstOptions.ItemContainerGenerator.StatusChanged += OptionsListBoxStatusChanged;
+
+            // Replace options in ListBox
+            lstOptions.ItemsSource = Plugin.Options;
+        }
+
+        // Close dialog box but call OnClosing first to validate all the options
+        private void okButton_Click(object sender, RoutedEventArgs e) {
+            DialogResult = true;
+        }
+
+        // Close dialog box, reverting changes
+        private void cancelButton_Click(object sender, RoutedEventArgs e) {
+            // Revert changes
+            ManagedPlugin.SetOptions(OriginalOptions, OptionBehaviour.IgnoreInvalid);
+
+            // Replace options in ListBox
+            lstOptions.ItemsSource = Plugin.Options;
+
+            DialogResult = false;
+        }
+
         // Check options validity before allowing the dialog to close either by clicking OK or the close icon
         private void Window_Closing(object sender, CancelEventArgs e) {
 
@@ -234,18 +260,6 @@ namespace Il2CppInspectorGUI
             // Don't allow window to close if the options couldn't be updated
             if (PluginManager.OptionsChanged(Plugin).Error != null)
                 e.Cancel = true;
-        }
-
-        // Reset a plugin's settings
-        private void resetButton_Click(object sender, RoutedEventArgs e) {
-            // Get new context (updates ManagedPlugin)
-            PluginManager.Reset(Plugin);
-
-            // Validate options once they have loaded
-            lstOptions.ItemContainerGenerator.StatusChanged += OptionsListBoxStatusChanged;
-
-            // Replace options in ListBox
-            lstOptions.ItemsSource = Plugin.Options;
         }
 
         // Force all the If evaluations on each option to be re-evaluated each time an option is changed
@@ -268,18 +282,5 @@ namespace Il2CppInspectorGUI
             ValidateAllOptions();
         }
 
-        private void cancelButton_Click(object sender, RoutedEventArgs e) {
-
-            // Revert changes
-            foreach (var option in OriginalOptions)
-                try {
-                    ManagedPlugin[option.Key] = option.Value;
-                } catch { }
-
-            // Replace options in ListBox
-            lstOptions.ItemsSource = Plugin.Options;
-
-            DialogResult = false;
-        }
     }
 }
