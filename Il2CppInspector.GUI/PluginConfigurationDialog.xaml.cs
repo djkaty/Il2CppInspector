@@ -161,6 +161,8 @@ namespace Il2CppInspectorGUI
 
             var option = (PluginOptionFilePath) ((Button) sender).DataContext;
 
+            var filter = string.Join('|', option.AllowedExtensions.Select(e => $"{e.Value} (*.{e.Key.ToLower()})|*.{e.Key.ToLower()}"));
+
             string path = null;
 
             if (option.IsFolder && option.MustExist) {
@@ -175,7 +177,7 @@ namespace Il2CppInspectorGUI
             } else if (option.MustExist) {
                 var openFileDialog = new OpenFileDialog {
                     Title = option.Description,
-                    Filter = "All files (*.*)|*.*",
+                    Filter = filter,
                     FileName = option.Value,
                     CheckFileExists = true,
                     CheckPathExists = true
@@ -186,7 +188,7 @@ namespace Il2CppInspectorGUI
             } else {
                 var saveFileDialog = new SaveFileDialog {
                     Title = option.Description,
-                    Filter = "All files (*.*)|*.*",
+                    Filter = filter,
                     FileName = option.Value,
                     CheckFileExists = false,
                     OverwritePrompt = false
@@ -270,7 +272,9 @@ namespace Il2CppInspectorGUI
 
             // Revert changes
             foreach (var option in OriginalOptions)
-                ManagedPlugin[option.Key] = option.Value;
+                try {
+                    ManagedPlugin[option.Key] = option.Value;
+                } catch { }
 
             // Replace options in ListBox
             lstOptions.ItemsSource = Plugin.Options;

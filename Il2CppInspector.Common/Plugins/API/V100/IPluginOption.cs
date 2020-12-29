@@ -161,8 +161,8 @@ namespace Il2CppInspector.PluginAPI.V100
     /// </summary>
     public class PluginOptionFilePath : PluginOption<string>
     {
-        // Don't asllow required path name to be empty
         protected sealed override void InternalValidate(string path) {
+            // Don't allow required path name to be empty
             if (Required && string.IsNullOrWhiteSpace(path))
                 throw new ArgumentException("Path name is required");
 
@@ -182,6 +182,16 @@ namespace Il2CppInspector.PluginAPI.V100
                 if (MustNotExist && File.Exists(fullPath))
                     throw new ArgumentException($"File {fileName} already exists");
             }
+
+            // Check selected file has a valid extension
+            if (!IsFolder && !AllowedExtensions.ContainsKey("*")) {
+                var ext = Path.GetExtension(fullPath).ToLower();
+                if (ext.StartsWith('.'))
+                    ext = ext.Substring(1);
+
+                if (!AllowedExtensions.ContainsKey(ext))
+                    throw new ArgumentException($"File {fileName} has an invalid filename extension");
+            }
         }
 
         /// <summary>
@@ -198,6 +208,14 @@ namespace Il2CppInspector.PluginAPI.V100
         /// Set this to true if the specified file or folder must not exist
         /// </summary>
         public bool MustNotExist = false;
+
+        /// <summary>
+        /// List of file extensions to allow with descriptions for GUI, when selecting a file
+        /// Specify * to allow all extensions
+        /// </summary>
+        public Dictionary<string, string> AllowedExtensions = new Dictionary<string, string> {
+            ["*"] = "All files"
+        };
     }
 
     /// <summary>
