@@ -17,7 +17,7 @@ namespace Il2CppInspector
     // References:
     // PE Header file: https://github.com/dotnet/llilc/blob/master/include/clr/ntimage.h
     // PE format specification: https://docs.microsoft.com/en-us/windows/win32/debug/pe-format?redirectedfrom=MSDN
-    internal class PEReader : FileFormatStream<PEReader>
+    public class PEReader : FileFormatStream<PEReader>
     {
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private extern static IntPtr LoadLibrary(string lpLibFileName);

@@ -65,7 +65,7 @@ namespace Il2CppInspector
         N_OSO   = 0x66,
     }
 
-    internal class MachOHeader<TWord> where TWord : struct
+    public class MachOHeader<TWord> where TWord : struct
     {
         public uint Magic;
         public uint CPUType;
@@ -76,13 +76,13 @@ namespace Il2CppInspector
         public TWord Flags;
     }
 
-    internal class MachOLoadCommand
+    public class MachOLoadCommand
     {
         public uint Command;
         public uint Size;
     }
 
-    internal class MachOSegmentCommand<TWord> where TWord : struct
+    public class MachOSegmentCommand<TWord> where TWord : struct
     {
         // MachOLoadCommand
         [String(FixedSize = 16)]
@@ -97,7 +97,7 @@ namespace Il2CppInspector
         public uint Flags;
     }
 
-    internal class MachOSection<TWord> where TWord : struct
+    public class MachOSection<TWord> where TWord : struct
     {
         [String(FixedSize = 16)]
         public string Name;
@@ -114,14 +114,14 @@ namespace Il2CppInspector
         public TWord Reserved2;
     }
 
-    internal class MachOLinkEditDataCommand
+    public class MachOLinkEditDataCommand
     {
         // MachOLoadCommand
         public uint Offset;
         public uint Size;
     }
 
-    internal class MachODyldInfoCommand
+    public class MachODyldInfoCommand
     {
         public uint RebaseOffset;
         public uint RebaseSize;
@@ -135,7 +135,7 @@ namespace Il2CppInspector
         public uint ExportSize;
     }
 
-    internal class MachOSymtabCommand
+    public class MachOSymtabCommand
     {
         public uint SymOffset;
         public uint NumSyms;
@@ -143,7 +143,7 @@ namespace Il2CppInspector
         public uint StrSize;
     }
 
-    internal class MachOEncryptionInfo
+    public class MachOEncryptionInfo
     {
         // MachOLoadCommand
         public uint CryptOffset;
@@ -151,7 +151,7 @@ namespace Il2CppInspector
         public uint CryptID;
     }
 
-    internal class MachO_nlist<TWord> where TWord : struct
+    public class MachO_nlist<TWord> where TWord : struct
     {
         public MachO_NType n_type => (MachO_NType) f_n_type;
         public uint n_strx;
@@ -161,7 +161,7 @@ namespace Il2CppInspector
         public TWord n_value;
     }
 
-    internal class MachO_relocation_info
+    public class MachO_relocation_info
     {
         public int r_address;
         public uint r_data;

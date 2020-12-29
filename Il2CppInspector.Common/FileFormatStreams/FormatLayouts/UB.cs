@@ -15,14 +15,14 @@ namespace Il2CppInspector
     }
 
     // Big-endian
-    internal class FatHeader
+    public class FatHeader
     {
         public uint Magic;
         public uint NumArch;
     }
 
     // Big-endian
-    internal class FatArch
+    public class FatArch
     {
         public uint CPUType;
         public uint CPUSubType;

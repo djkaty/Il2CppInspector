@@ -15,7 +15,7 @@ using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
-    internal class ElfReader32 : ElfReader<uint, elf_32_phdr, elf_32_sym, ElfReader32, Convert32>
+    public class ElfReader32 : ElfReader<uint, elf_32_phdr, elf_32_sym, ElfReader32, Convert32>
     {
         public ElfReader32() : base() {
             ElfReloc.GetRelocType = info => (Elf) (info & 0xff);
@@ -28,7 +28,7 @@ namespace Il2CppInspector
         protected override void WriteWord(uint value) => Write(value);
     }
 
-    internal class ElfReader64 : ElfReader<ulong, elf_64_phdr, elf_64_sym, ElfReader64, Convert64>
+    public class ElfReader64 : ElfReader<ulong, elf_64_phdr, elf_64_sym, ElfReader64, Convert64>
     {
         public ElfReader64() : base() {
             ElfReloc.GetRelocType = info => (Elf) (info & 0xffff_ffff);
@@ -46,7 +46,7 @@ namespace Il2CppInspector
         uint GetPLTAddress();
     }
 
-    internal abstract class ElfReader<TWord, TPHdr, TSym, TReader, TConvert> : FileFormatStream<TReader>, IElfReader
+    public abstract class ElfReader<TWord, TPHdr, TSym, TReader, TConvert> : FileFormatStream<TReader>, IElfReader
         where TWord : struct
         where TPHdr : Ielf_phdr<TWord>, new()
         where TSym : Ielf_sym<TWord>, new()

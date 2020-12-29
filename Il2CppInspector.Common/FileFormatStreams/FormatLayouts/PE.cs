@@ -25,7 +25,7 @@ namespace Il2CppInspector
 
 #pragma warning disable CS0649
     // _IMAGE_FILE_HEADER
-    internal class COFFHeader
+    public class COFFHeader
     {
         public ushort Machine;
         public ushort NumberOfSections;
@@ -37,7 +37,7 @@ namespace Il2CppInspector
     }
 
     // _IMAGE_OPTIONAL_HEADER
-    internal interface IPEOptHeader
+    public interface IPEOptHeader
     {
         PE ExpectedMagic { get; }
         ushort Magic { get; }
@@ -46,7 +46,7 @@ namespace Il2CppInspector
         RvaEntry[] DataDirectory { get; }
     }
 
-    internal class PEOptHeader32 : IPEOptHeader
+    public class PEOptHeader32 : IPEOptHeader
     {
         public PE ExpectedMagic => PE.IMAGE_NT_OPTIONAL_HDR32_MAGIC;
         public ushort Magic => f_Magic;
@@ -89,7 +89,7 @@ namespace Il2CppInspector
     }
 
     // _IMAGE_OPTIONAL_HEADER64
-    internal class PEOptHeader64 : IPEOptHeader
+    public class PEOptHeader64 : IPEOptHeader
     {
         public PE ExpectedMagic => PE.IMAGE_NT_OPTIONAL_HDR64_MAGIC;
         public ushort Magic => f_Magic;
@@ -130,14 +130,14 @@ namespace Il2CppInspector
         public RvaEntry[] f_DataDirectory;
     }
 
-    internal class RvaEntry
+    public class RvaEntry
     {
         public uint VirtualAddress;
         public uint Size;
     }
 
     // _IMAGE_SECTION_HEADER
-    internal class PESection
+    public class PESection
     {
         public PE Characteristics => (PE) f_Characteristics;
 
@@ -155,7 +155,7 @@ namespace Il2CppInspector
     }
 
     // _IMAGE_EXPORT_DIRECTORY
-    internal class PEExportDirectory
+    public class PEExportDirectory
     {
         public uint Characteristics;
         public uint TimeDateStamp;

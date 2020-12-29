@@ -10,7 +10,7 @@ namespace Il2CppInspector
 {
     // NOTE: What we really should have done here is add a TWord type parameter to FileFormatReader<T>
     // then we could probably avoid most of this
-    interface IWordConverter<TWord> where TWord : struct
+    public interface IWordConverter<TWord> where TWord : struct
     {
         TWord Add(TWord a, TWord b);
         TWord Sub(TWord a, TWord b);
@@ -25,7 +25,7 @@ namespace Il2CppInspector
         uint[] UIntArray(TWord[] a);
     }
 
-    internal class Convert32 : IWordConverter<uint>
+    public class Convert32 : IWordConverter<uint>
     {
         public uint Add(uint a, uint b) => a + b;
         public uint Sub(uint a, uint b) => a - b;
@@ -40,7 +40,7 @@ namespace Il2CppInspector
         public uint[] UIntArray(uint[] a) => a;
     }
 
-    internal class Convert64 : IWordConverter<ulong>
+    public class Convert64 : IWordConverter<ulong>
     {
         public ulong Add(ulong a, ulong b) => a + b;
         public ulong Sub(ulong a, ulong b) => a - b;

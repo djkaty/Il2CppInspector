@@ -9,13 +9,13 @@ using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
-    internal enum SElfConsts : uint
+    public enum SElfConsts : uint
     {
         Magic = 0x1D3D154F
     }
 
     [Flags]
-    internal enum SElfEntryFlags : ulong
+    public enum SElfEntryFlags : ulong
     {
         Ordered = 0x1,
         Encrypted = 0x2,
@@ -30,7 +30,7 @@ namespace Il2CppInspector
     }
 
     // SCE-specific definitions for e_type
-    internal enum SElfETypes : ushort
+    public enum SElfETypes : ushort
     {
         ET_SCE_EXEC = 0xFE00,
         ET_SCE_RELEXEC = 0xFE04,
@@ -48,7 +48,7 @@ namespace Il2CppInspector
     }
 
     // SCE-specific definitions for program header type
-    internal enum SElfPTypes : uint
+    public enum SElfPTypes : uint
     {
         PT_SCE_RELA = 0x60000000,
         PT_SCE_DYNLIBDATA = 0x61000000,
@@ -60,7 +60,7 @@ namespace Il2CppInspector
     }
 
     // Extended info types
-    internal enum SElfExInfoTypes
+    public enum SElfExInfoTypes
     {
         PTYPE_FAKE = 0x1,
         PTYPE_NPDRM_EXEC = 0x4,
@@ -73,7 +73,7 @@ namespace Il2CppInspector
     }
 
 #pragma warning disable CS0649
-    internal class SElfHeader
+    public class SElfHeader
     {
         public uint Magic;
         public byte Version;
@@ -89,7 +89,7 @@ namespace Il2CppInspector
         public uint Padding;
     }
 
-    internal class SElfEntry
+    public class SElfEntry
     {
         public ulong Flags;
         public ulong FileOffset;
@@ -102,7 +102,7 @@ namespace Il2CppInspector
         public ushort SegmentIndex => (ushort) ((Flags & (ulong) SElfEntryFlags.SegmentIndexMask) >> 20);
     }
 
-    internal class SElfSCEData
+    public class SElfSCEData
     {
         public ulong ProductAuthID;
         public ulong ProductType;

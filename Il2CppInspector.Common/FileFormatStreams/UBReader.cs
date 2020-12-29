@@ -9,7 +9,7 @@ using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
-    internal class UBReader : FileFormatStream<UBReader>
+    public class UBReader : FileFormatStream<UBReader>
     {
         private FatHeader header;
 

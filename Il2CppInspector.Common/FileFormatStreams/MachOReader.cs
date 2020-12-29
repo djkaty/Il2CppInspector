@@ -13,7 +13,7 @@ using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
-    internal class MachOReader32 : MachOReader<uint, MachOReader32, Convert32>
+    public class MachOReader32 : MachOReader<uint, MachOReader32, Convert32>
     {
         public override int Bits => 32;
 
@@ -33,7 +33,7 @@ namespace Il2CppInspector
         }
     }
 
-    internal class MachOReader64 : MachOReader<ulong, MachOReader64, Convert64>
+    public class MachOReader64 : MachOReader<ulong, MachOReader64, Convert64>
     {
         public override int Bits => 64;
 
@@ -55,7 +55,7 @@ namespace Il2CppInspector
 
     // We need this convoluted generic TReader declaration so that "static T FileFormatReader.Load(Stream)"
     // is inherited to MachOReader32/64 with a correct definition of T
-    internal abstract class MachOReader<TWord, TReader, TConvert> : FileFormatStream<TReader>
+    public abstract class MachOReader<TWord, TReader, TConvert> : FileFormatStream<TReader>
         where TWord : struct
         where TReader : FileFormatStream<TReader>
         where TConvert : IWordConverter<TWord>, new()

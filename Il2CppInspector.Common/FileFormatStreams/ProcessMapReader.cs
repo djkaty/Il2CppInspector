@@ -15,7 +15,7 @@ namespace Il2CppInspector
     // This is a wrapper for a Linux memory dump
     // The supplied file is a text file containing the output of "cat /proc/["self"|process-id]/maps"
     // We re-construct libil2cpp.so from the *.bin files and return it as the first image
-    internal class ProcessMapReader : FileFormatStream<ProcessMapReader>
+    public class ProcessMapReader : FileFormatStream<ProcessMapReader>
     {
         private BinaryObjectStream il2cpp;
 

@@ -13,7 +13,7 @@ using System.Linq;
 namespace Il2CppInspector
 {
     // This is a wrapper for multiple binary files of different architectures within a single APK
-    internal class APKReader : FileFormatStream<APKReader>
+    public class APKReader : FileFormatStream<APKReader>
     {
         private ZipArchive zip;
         private ZipArchiveEntry[] binaryFiles;

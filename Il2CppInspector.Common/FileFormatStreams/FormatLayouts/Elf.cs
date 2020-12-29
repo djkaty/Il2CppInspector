@@ -109,7 +109,7 @@ namespace Il2CppInspector
     }
 
 #pragma warning disable CS0649
-    internal class elf_header<TWord> where TWord : struct
+    public class elf_header<TWord> where TWord : struct
     {
         // 0x7f followed by ELF in ascii
         public uint m_dwFormat;
@@ -158,7 +158,7 @@ namespace Il2CppInspector
         public ushort e_shtrndx;
     }
 
-    internal interface Ielf_phdr<TWord> where TWord : struct
+    public interface Ielf_phdr<TWord> where TWord : struct
     {
         uint p_type { get; }
         TWord p_offset { get; set; }
@@ -168,7 +168,7 @@ namespace Il2CppInspector
         uint p_flags { get; }
     }
 
-    internal class elf_32_phdr : Ielf_phdr<uint> {
+    public class elf_32_phdr : Ielf_phdr<uint> {
         public uint p_type => f_p_type;
         public uint p_offset { get => f_p_offset; set => f_p_offset = value; }
         public uint p_filesz { get => f_p_filesz; set => f_p_filesz = value; }
@@ -186,7 +186,7 @@ namespace Il2CppInspector
         public uint p_align;
     }
 
-    internal class elf_64_phdr : Ielf_phdr<ulong>
+    public class elf_64_phdr : Ielf_phdr<ulong>
     {
         public uint p_type => f_p_type;
         public ulong p_offset { get => f_p_offset; set => f_p_offset = value; }
@@ -205,7 +205,7 @@ namespace Il2CppInspector
         public ulong p_align;
     }
 
-    internal class elf_shdr<TWord> where TWord : struct
+    public class elf_shdr<TWord> where TWord : struct
     {
         public uint sh_name;
         public uint sh_type;
@@ -219,7 +219,7 @@ namespace Il2CppInspector
         public TWord sh_entsize;
     }
 
-    internal interface Ielf_sym<TWord> where TWord : struct
+    public interface Ielf_sym<TWord> where TWord : struct
     {
         uint st_name { get; }
         TWord st_value { get; }
@@ -228,7 +228,7 @@ namespace Il2CppInspector
         Elf type { get; }
     }
 
-    internal class elf_32_sym : Ielf_sym<uint>
+    public class elf_32_sym : Ielf_sym<uint>
     {
         public uint st_name => f_st_name;
         public uint st_value => f_st_value;
@@ -244,7 +244,7 @@ namespace Il2CppInspector
         public ushort f_st_shndx;
     }
 
-    internal class elf_64_sym : Ielf_sym<ulong>
+    public class elf_64_sym : Ielf_sym<ulong>
     {
         public uint st_name => f_st_name;
         public ulong st_value => f_st_value;
@@ -260,19 +260,19 @@ namespace Il2CppInspector
         public ulong st_size;
     }
 
-    internal class elf_dynamic<TWord> where TWord : struct
+    public class elf_dynamic<TWord> where TWord : struct
     {
         public TWord d_tag;
         public TWord d_un;
     }
 
-    internal class elf_rel<TWord> where TWord : struct
+    public class elf_rel<TWord> where TWord : struct
     {
         public TWord r_offset;
         public TWord r_info;
     }
 
-    internal class elf_rela<TWord> where TWord : struct
+    public class elf_rela<TWord> where TWord : struct
     {
         public TWord r_offset;
         public TWord r_info;

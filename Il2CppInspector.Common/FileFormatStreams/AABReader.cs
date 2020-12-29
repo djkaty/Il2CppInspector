@@ -13,7 +13,7 @@ using System.Linq;
 namespace Il2CppInspector
 {
     // This is a wrapper for multiple binary files of different architectures within a single AAB
-    internal class AABReader : FileFormatStream<AABReader>
+    public class AABReader : FileFormatStream<AABReader>
     {
         private ZipArchive zip;
         private ZipArchiveEntry[] binaryFiles;
