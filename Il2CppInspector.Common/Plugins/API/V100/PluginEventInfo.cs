@@ -51,6 +51,11 @@ namespace Il2CppInspector.PluginAPI.V100
     }
 
     /// <summary>
+    /// Event info for OptionsChanged
+    /// </summary>
+    public class PluginOptionsChangedEventInfo : PluginEventInfo { }
+
+    /// <summary>
     /// Event info for LoadPipelineStarting
     /// </summary>
     public class PluginLoadPipelineStartingEventInfo : PluginEventInfo { }
@@ -65,11 +70,6 @@ namespace Il2CppInspector.PluginAPI.V100
         /// </summary>
         public bool SkipValidation { get; set; }
     }
-
-    /// <summary>
-    /// Event info for OptionsChanged
-    /// </summary>
-    public class PluginOptionsChangedEventInfo : PluginEventInfo { }
 
     /// <summary>
     /// Event info for PostProcessMetadata
@@ -99,6 +99,26 @@ namespace Il2CppInspector.PluginAPI.V100
     }
 
     /// <summary>
+    /// Event info for PreProcessImage
+    /// </summary>
+    public class PluginPreProcessImageEventInfo : PluginEventInfo { }
+
+    /// <summary>
+    /// Event info for PostProcessImage
+    /// </summary>
+    public class PluginPostProcessImageEventInfo : PluginEventInfo { }
+
+    /// <summary>
+    /// Event info for PreProcessBinary
+    /// </summary>
+    public class PluginPreProcessBinaryEventInfo : PluginEventInfo { }
+
+    /// <summary>
+    /// Event info for PostProcessBinary
+    /// </summary>
+    public class PluginPostProcessBinaryEventInfo : PluginEventInfo { }
+
+    /// <summary>
     /// Event info for PostProcessPackage
     /// </summary>
     public class PluginPostProcessPackageEventInfo : PluginEventInfo { }
@@ -112,4 +132,9 @@ namespace Il2CppInspector.PluginAPI.V100
     /// Event info for LoadPipelineEnding
     /// </summary>
     public class PluginLoadPipelineEndingEventInfo : PluginEventInfo { }
+
+    /// <summary>
+    /// Event info for PostProcessAppModel
+    /// </summary>
+    public class PluginPostProcessAppModelEventInfo : PluginEventInfo { }
 }

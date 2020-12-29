@@ -4,9 +4,11 @@
     All rights reserved.
 */
 
-using NoisyCowStudios.Bin2Object;
-using Il2CppInspector.Reflection;
 using System.Collections.Generic;
+using System.IO;
+using Il2CppInspector.Model;
+using Il2CppInspector.Reflection;
+using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector.PluginAPI.V100
 {
@@ -44,6 +46,38 @@ namespace Il2CppInspector.PluginAPI.V100
         void PostProcessMetadata(Metadata metadata, PluginPostProcessMetadataEventInfo data) { }
 
         /// <summary>
+        /// Process the binary image before its format is detected or analyzed
+        /// For AAB, APK, split APK and ZIP files, this will be a generated zip file with just the IL2CPP binaries in their original paths
+        /// For Fat Mach-O (UB) files with multiple images, this will be the entire file
+        /// For Linux process maps (eg. GameGuardian dumps), this will be the maps.txt file
+        /// For all other files, this will be the IL2CPP binary image itself
+        /// The file is copied to memory before calling this function so you can make modifications without changing the original file(s)
+        /// This will be called once per load pipeline
+        /// </summary>
+        void PreProcessImage(BinaryObjectStream stream, PluginPreProcessImageEventInfo data) { }
+
+        /// <summary>
+        /// Process the binary image after format detection and loading but before it is analyzed
+        /// This will be one of the classes from the FileFormatStreams folder, ie. ElfReader32, PEReader etc.
+        /// This will be called once per IL2CPP binary image, so for multi-architecture images such as multi-targeting APKs and Fat Mach-Os,
+        /// you will receive multiple calls
+        /// </summary>
+        void PostProcessImage<T>(FileFormatStream<T> stream, PluginPostProcessImageEventInfo data) where T : FileFormatStream<T> { }
+
+        /// <summary>
+        /// Process the IL2CPP binary after Il2CppCodeRegistration and Il2CppMetadataRegistration have been found
+        /// but before any other structures are loaded
+        /// Called once per IL2CPP binary image
+        /// </summary>
+        void PreProcessBinary(Il2CppBinary binary, PluginPreProcessBinaryEventInfo data) { }
+
+        /// <summary>
+        /// Process the IL2CPP binary after all structures have been loaded
+        /// Called once per IL2CPP binary image
+        /// </summary>
+        void PostProcessBinary(Il2CppBinary binary, PluginPostProcessBinaryEventInfo data) { }
+
+        /// <summary>
         /// Post-process the entire IL2CPP application package after the metadata and binary have been loaded and merged
         /// </summary>
         void PostProcessPackage(Il2CppInspector package, PluginPostProcessPackageEventInfo data) { }
@@ -59,5 +93,10 @@ namespace Il2CppInspector.PluginAPI.V100
         /// Post-process the .NET type model to make changes after it has been fully created
         /// </summary>
         void PostProcessTypeModel(TypeModel model, PluginPostProcessTypeModelEventInfo data) { }
+
+        /// <summary>
+        /// Post-process a C++ application model to make changes after it has been fully created
+        /// </summary>
+        void PostProcessAppModel(AppModel appModel, PluginPostProcessAppModelEventInfo data) { }
     }
 }

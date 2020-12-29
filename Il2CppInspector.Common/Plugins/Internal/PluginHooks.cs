@@ -5,6 +5,8 @@
 */
 
 using System.Collections.Generic;
+using System.IO;
+using Il2CppInspector.Model;
 using Il2CppInspector.Reflection;
 using NoisyCowStudios.Bin2Object;
 
@@ -36,6 +38,18 @@ namespace Il2CppInspector
         public static PluginGetStringLiteralsEventInfo GetStringLiterals(Metadata metadata)
             => PluginManager.Try<ILoadPipeline, PluginGetStringLiteralsEventInfo>((p, e) => p.GetStringLiterals(metadata, e));
 
+        public static PluginPreProcessImageEventInfo PreProcessImage(BinaryObjectStream stream)
+            => PluginManager.Try<ILoadPipeline, PluginPreProcessImageEventInfo>((p, e) => p.PreProcessImage(stream, e));
+
+        public static PluginPostProcessImageEventInfo PostProcessImage<T>(FileFormatStream<T> stream) where T : FileFormatStream<T>
+            => PluginManager.Try<ILoadPipeline, PluginPostProcessImageEventInfo>((p, e) => p.PostProcessImage(stream, e));
+
+        public static PluginPreProcessBinaryEventInfo PreProcessBinary(Il2CppBinary binary)
+            => PluginManager.Try<ILoadPipeline, PluginPreProcessBinaryEventInfo>((p, e) => p.PreProcessBinary(binary, e));
+
+        public static PluginPostProcessBinaryEventInfo PostProcessBinary(Il2CppBinary binary)
+            => PluginManager.Try<ILoadPipeline, PluginPostProcessBinaryEventInfo>((p, e) => p.PostProcessBinary(binary, e));
+
         public static PluginPostProcessPackageEventInfo PostProcessPackage(Il2CppInspector package)
             => PluginManager.Try<ILoadPipeline, PluginPostProcessPackageEventInfo>((p, e) => p.PostProcessPackage(package, e));
 
@@ -44,5 +58,8 @@ namespace Il2CppInspector
 
         public static PluginPostProcessTypeModelEventInfo PostProcessTypeModel(TypeModel typeModel)
             => PluginManager.Try<ILoadPipeline, PluginPostProcessTypeModelEventInfo>((p, e) => p.PostProcessTypeModel(typeModel, e));
+
+        public static PluginPostProcessAppModelEventInfo PostProcessAppModel(AppModel appModel)
+            => PluginManager.Try<ILoadPipeline, PluginPostProcessAppModelEventInfo>((p, e) => p.PostProcessAppModel(appModel, e));
     }
 }
