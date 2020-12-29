@@ -209,9 +209,12 @@ namespace Il2CppInspector
             OnStatusUpdate = statusCallback;
             Position = 0;
 
-            return Init();
-
-            // TODO: Plugin hook PostProcessFile
+            if (Init()) {
+                // Call post-process plugin hook if load succeeded
+                IsModified |= PluginHooks.PostProcessImage(this).IsStreamModified;
+                return true;
+            }
+            return false;
         }
 
         // Confirm file is valid and set up RVA mappings
