@@ -64,14 +64,8 @@ namespace Il2CppInspector.Reflection
             }
         }
 
-        private static readonly object gcaLock = new object();
-        private static IList<CustomAttributeData> getCustomAttributes(Assembly asm, uint token, int customAttributeIndex) {
-            // Force the generation of the collection to be thread-safe
-            // Convert the result into a list for thread-safe enumeration
-            lock (gcaLock) {
-                return getCustomAttributes(asm, asm.Model.GetCustomAttributeIndex(asm, token, customAttributeIndex)).ToList();
-            }
-        }
+        private static IList<CustomAttributeData> getCustomAttributes(Assembly asm, uint token, int customAttributeIndex) =>
+                getCustomAttributes(asm, asm.Model.GetCustomAttributeIndex(asm, token, customAttributeIndex)).ToList();
             
         public static IList<CustomAttributeData> GetCustomAttributes(Assembly asm) => getCustomAttributes(asm, asm.AssemblyDefinition.token, asm.AssemblyDefinition.customAttributeIndex);
         public static IList<CustomAttributeData> GetCustomAttributes(EventInfo evt) => getCustomAttributes(evt.Assembly, evt.Definition.token, evt.Definition.customAttributeIndex);
