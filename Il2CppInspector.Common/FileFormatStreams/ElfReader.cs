@@ -201,9 +201,14 @@ namespace Il2CppInspector
 
             // Dumped images must be rebased
             if (isMemoryImage) {
-                if (LoadOptions.ImageBase == 0xffffffff_ffffffff)
+                if (LoadOptions.ImageBase == 0)
                     throw new InvalidOperationException("To load a dumped ELF image, you must specify the image base virtual address");
+            }
 
+            // Rebase if requested (whether dumped or not) and treat it as a memory image,
+            // disabling processing of relocations, symbols and decryption
+            if (LoadOptions.ImageBase != 0) {
+                isMemoryImage = true;
                 rebase(conv.FromULong(LoadOptions.ImageBase));
             }
             

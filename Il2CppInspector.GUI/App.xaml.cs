@@ -240,10 +240,7 @@ namespace Il2CppInspectorGUI
 
         // Reset image load options to their defaults
         public void ResetLoadOptions() {
-            ImageLoadOptions = new LoadOptions {
-                ImageBase = 0xffffffff_ffffffff,
-                BinaryFilePath = null
-            };
+            ImageLoadOptions = new LoadOptions();
         }
 
         // Attempt to load an IL2CPP application package (APK or IPA)

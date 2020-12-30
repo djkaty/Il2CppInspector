@@ -176,7 +176,6 @@ namespace Il2CppInspector.CLI
 
             // Set load options
             var loadOptions = new LoadOptions {
-                ImageBase = 0xffffffff_ffffffff,
                 BinaryFilePath = options.BinaryFiles.First()
             };
 

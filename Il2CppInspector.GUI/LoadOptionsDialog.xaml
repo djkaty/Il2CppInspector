@@ -60,7 +60,7 @@
                 <TextBox.ToolTip>
                     <ToolTip Background="LightYellow">
                         <TextBlock>
-                            For ELF binaries that have been dumped from memory, specify the base address of the dump<LineBreak/>Ignored for normal ELF binaries
+                            For ELF binaries that have been dumped from memory, specify the base address of the dump<LineBreak/>Use zero to disable rebasing
                         </TextBlock>
                     </ToolTip>
                 </TextBox.ToolTip>
