@@ -25,8 +25,15 @@ gci -Directory $bin | % {
 	if (Test-Path $loadOptionsFile -PathType Leaf) {
 		$loadOptions = cat $loadOptionsFile
 	}
+	$pluginsPath = "$($_.FullName)\plugins"
+	$attributes = ""
+	if (Test-Path $pluginsPath -PathType Container) {
+		$attributes = "[NonParallelizable]"
+	}
+
 	echo @"
 		[Test]
+		$attributes
 		public async Task $($_.Name -Replace '\W','_')() {
 			await runTest(@"$($_.FullName)", new LoadOptions { $loadOptions });
 		}
