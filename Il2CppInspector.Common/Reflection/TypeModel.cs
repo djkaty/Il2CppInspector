@@ -175,9 +175,9 @@ namespace Il2CppInspector.Reflection
         public TypeInfo[] ResolveGenericArguments(Il2CppGenericInst inst) {
 
             // Get list of pointers to type parameters (both unresolved and concrete)
-            var genericTypeArguments = Package.BinaryImage.ReadMappedWordArray(inst.type_argv, (int)inst.type_argc);
+            var genericTypeArguments = Package.BinaryImage.ReadMappedArray<ulong>(inst.type_argv, (int)inst.type_argc);
             
-            return genericTypeArguments.Select(a => GetTypeFromVirtualAddress((ulong) a)).ToArray();
+            return genericTypeArguments.Select(a => GetTypeFromVirtualAddress(a)).ToArray();
         }
 
         // Initialize type from type reference (TypeRef)
