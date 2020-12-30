@@ -140,6 +140,8 @@ namespace Il2CppInspector
 
                 var nameSuffix = i++ > 0 ? "-" + (i - 1) : "";
 
+                var compareTasks = new List<Task>();
+
                 var csTask = Task.Run(() => {
                     using (new Benchmark("Create C# code stubs"))
                         new CSharpCodeStubs(model) {
@@ -147,6 +149,8 @@ namespace Il2CppInspector
                             SuppressMetadata = false,
                             MustCompile = true
                         }.WriteSingleFile(testPath + $@"\test-result{nameSuffix}.cs");
+
+                    compareTasks.Add(Task.Run(() => compareFiles(testPath, nameSuffix + ".cs", $"test-result{nameSuffix}.cs")));
                 });
 
                 var appModel = await appModelTask;
@@ -155,12 +159,16 @@ namespace Il2CppInspector
                     using (new Benchmark("Create JSON metadata"))
                         new JSONMetadata(appModel)
                         .Write(testPath + $@"\test-result{nameSuffix}.json");
+
+                    compareTasks.Add(Task.Run(() => compareFiles(testPath, nameSuffix + ".json", $"test-result{nameSuffix}.json")));
                 });
 
                 var cppTask = Task.Run(() => {
                     using (new Benchmark("Create C++ scaffolding"))
                         new CppScaffolding(appModel)
                         .Write(testPath + $@"\test-cpp-result{nameSuffix}");
+
+                    compareTasks.Add(Task.Run(() => compareFiles(testPath, nameSuffix + ".h", $@"test-cpp-result{nameSuffix}\appdata\il2cpp-types.h")));
                 });
 
                 var pyTask = Task.Run(() => {
@@ -172,21 +180,9 @@ namespace Il2CppInspector
                 });
 
                 await Task.WhenAll(csTask, jsonTask, cppTask, pyTask);
+                await Task.WhenAll(compareTasks);
             }));
             await Task.WhenAll(imageTasks);
-
-            // Compare test results with expected results
-            using (new Benchmark("Compare files")) {
-                var compareTasks = new List<Task>();
-                for (var i = 0; i < inspectors.Count; i++) {
-                    var suffix = i++ > 0 ? "-" + (i - 1) : "";
-
-                    compareTasks.Add(Task.Run(() => compareFiles(testPath, suffix + ".cs", $"test-result{suffix}.cs")));
-                    compareTasks.Add(Task.Run(() => compareFiles(testPath, suffix + ".json", $"test-result{suffix}.json")));
-                    compareTasks.Add(Task.Run(() => compareFiles(testPath, suffix + ".h", $@"test-cpp-result{suffix}\appdata\il2cpp-types.h")));
-                }
-                await Task.WhenAll(compareTasks);
-            }
         }
 
         // We have to pass testPath rather than storing it as a field so that tests can be parallelized
