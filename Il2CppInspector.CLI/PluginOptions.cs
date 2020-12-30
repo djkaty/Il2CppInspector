@@ -79,6 +79,9 @@ namespace Il2CppInspector.CLI
             pluginOptionClass.SetCustomAttribute(verbAttBuilder);
 
             // Create auto-property for each option
+            if (plugin.Options == null)
+                return pluginOptionClass.CreateTypeInfo().AsType();
+
             foreach (var option in plugin.Options) {
                 var optionType = option.GetType().GetProperty("Value").PropertyType;
                 var optionValue = option.Value;
