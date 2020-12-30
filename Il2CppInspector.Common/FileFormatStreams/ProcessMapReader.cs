@@ -35,7 +35,7 @@ namespace Il2CppInspector
             // Where x = the start address
             // Where y = the end address
             // Where f = permission flags (rwxp or -)
-            // Where z = offset in file that the region was mapped from (NOTE: we ignore this and assume it's a contiguous run)
+            // Where z = offset in file that the region was mapped from (we ignore this and build a file based on the memory dump)
             // Where aa:bb = device ID
             // Where c = inode
 
@@ -44,8 +44,10 @@ namespace Il2CppInspector
             // Determine where libil2cpp.so was mapped into memory
             var il2cppMemory = rgxProc.Matches(text)
                                     .Where(m => m.Groups["path"].Value.EndsWith("libil2cpp.so"))
-                                    .Select(m => new { Start = Convert.ToUInt32(m.Groups["start"].Value, 16),
-                                                         End = Convert.ToUInt32(m.Groups["end"].Value, 16) }).ToList();
+                                    .Select(m => new {
+                                        Start = Convert.ToUInt32(m.Groups["start"].Value, 16),
+                                        End = Convert.ToUInt32(m.Groups["end"].Value, 16)
+                                    }).ToList();
 
             if (il2cppMemory.Count == 0)
                 return false;
@@ -73,33 +75,42 @@ namespace Il2CppInspector
                                         Name = m.Groups[0].Value
                                     }).OrderBy(m => m.Start).ToList();
 
-            // Determine which files contain libil2cpp.so
-            var neededFiles = files.Where(f => il2cppMemory.Any(m => f.Start < m.End && f.End > m.Start)).OrderBy(f => f.Start).ToList();
-
-            // Determine how much to trim from the start of the first file and the end of the last file
-            var offsetFirst = il2cppMemory.First().Start - neededFiles.First().Start;
-            var lengthLast  = il2cppMemory.Last().End - neededFiles.Last().Start;
-
-            // Merge the files
-            il2cpp = new BinaryObjectStream();
-
-            for (var i = 0; i < neededFiles.Count; i++) {
-                var offset = (i == 0)? offsetFirst : 0;
-                var length = ((i == neededFiles.Count - 1)? lengthLast : neededFiles[i].End - neededFiles[i].Start) - offset;
-
-                using var source = File.Open(neededFiles[i].Name, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-                // Can't use Stream.CopyTo as it doesn't support length parameter
-                var buffer = new byte[length];
-                source.Position = offset;
-                source.Read(buffer, 0, (int) length);
-                il2cpp.Write(buffer);
-            }
+            // Find which file(s) are needed for each chunk of libil2cpp.so
+            var chunks = il2cppMemory.Select(m => new {
+                                    Memory = m,
+                                    Files = files.Where(f => f.Start < m.End && f.End > m.Start).ToList()
+            });
 
             // Set image base address for ELF loader
             // ELF loader will rebase the image and mark it as modified for saving
             LoadOptions.ImageBase = il2cppMemory.First().Start;
 
+            // Merge the files, copying each chunk from one or more files to the specified offset in the merged file
+            il2cpp = new BinaryObjectStream();
+
+            foreach (var chunk in chunks) {
+                var memoryNext = chunk.Memory.Start;
+                il2cpp.Position = (long) (chunk.Memory.Start - LoadOptions.ImageBase);
+
+                foreach (var file in chunk.Files) {
+                    var fileStart = memoryNext - file.Start;
+
+                    using var source = File.Open(file.Name, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+                    // Get the entire remaining chunk, or to the end of the file if it doesn't contain the end of the chunk
+                    var length = (uint) Math.Min(chunk.Memory.End - memoryNext, source.Length);
+
+                    Console.WriteLine($"Writing {length:x8} bytes from {Path.GetFileName(file.Name)} +{fileStart:x8} ({memoryNext:x8}) to target {il2cpp.Position:x8}");
+
+                    // Can't use Stream.CopyTo as it doesn't support length parameter
+                    var buffer = new byte[length];
+                    source.Position = fileStart;
+                    source.Read(buffer, 0, (int) length);
+                    il2cpp.Write(buffer);
+
+                    memoryNext += length;
+                }
+            }
             return true;
         }
 
