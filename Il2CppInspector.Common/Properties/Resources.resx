@@ -185,7 +185,7 @@ void il2cppi_new_console() {
     freopen_s((FILE**) stdout, "CONOUT$", "w", stdout);
 }
 
-#if _MSC_VER >= 1920
+#if _MSC_VER &gt;= 1920
 // Helper function to convert Il2CppString to std::string
 std::string il2cppi_to_string(Il2CppString* str) {
     std::u16string u16(reinterpret_cast&lt;const char16_t*&gt;(str-&gt;chars));
@@ -194,8 +194,7 @@ std::string il2cppi_to_string(Il2CppString* str) {
 
 // Helper function to convert System.String to std::string
 std::string il2cppi_to_string(app::String* str) {
-    std::u16string u16(reinterpret_cast&lt;const char16_t*&gt;(&amp;str-&gt;fields.m_firstChar));
-    return std::wstring_convert&lt;std::codecvt_utf8_utf16&lt;char16_t&gt;, char16_t&gt;{}.to_bytes(u16);
+    return il2cppi_to_string(reinterpret_cast&lt;Il2CppString*&gt;(str));
 }
 #endif</value>
   </data>
@@ -220,7 +219,7 @@ void il2cppi_log_write(std::string text);
 // Helper function to open a new console window and redirect stdout there
 void il2cppi_new_console();
 
-#if _MSC_VER >= 1920
+#if _MSC_VER &gt;= 1920
 // Helper function to convert Il2CppString to std::string
 std::string il2cppi_to_string(Il2CppString* str);
 
