@@ -1145,7 +1145,7 @@ typedef struct MethodInfo
     {
         const Il2CppRGCTXData* rgctx_data;
         const Il2CppMethodDefinition* methodDefinition;
-    };
+    } Il2CppVariant;
     union
     {
         const Il2CppGenericMethod* genericMethod;
@@ -1546,7 +1546,7 @@ typedef struct Il2CppObject
     {
         Il2CppClass *klass;
         Il2CppVTable *vtable;
-    };
+    } Il2CppClass;
     MonitorData *monitor;
 } Il2CppObject;
 typedef int32_t il2cpp_array_lower_bound_t;
@@ -1841,7 +1841,7 @@ typedef struct Il2CppException
     Il2CppString* className;
     Il2CppString* message;
     Il2CppObject* _data;
-    struct Il2CppException* inner_ex;
+    Il2CppException* inner_ex;
     Il2CppString* _helpURL;
     Il2CppArray* trace_ips;
     Il2CppString* stack_trace;
@@ -2092,7 +2092,7 @@ typedef struct Il2CppStringBuilder
 {
     Il2CppObject object;
     Il2CppArray* chunkChars;
-    struct Il2CppStringBuilder* chunkPrevious;
+    Il2CppStringBuilder* chunkPrevious;
     int chunkLength;
     int chunkOffset;
     int maxCapacity;

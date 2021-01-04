@@ -1460,7 +1460,7 @@ typedef struct Il2CppException
  Il2CppString* className;
  Il2CppString* message;
  Il2CppObject* _data;
- struct Il2CppException* inner_ex;
+ Il2CppException* inner_ex;
  Il2CppString* _helpURL;
  Il2CppArray* trace_ips;
  Il2CppString* stack_trace;
@@ -1701,7 +1701,7 @@ typedef struct Il2CppStringBuilder
 {
  Il2CppObject object;
  Il2CppArray* chunkChars;
- struct Il2CppStringBuilder* chunkPrevious;
+ Il2CppStringBuilder* chunkPrevious;
  int chunkLength;
  int chunkOffset;
  int maxCapacity;
@@ -1824,7 +1824,7 @@ struct Il2CppDecimal {
   } v;
   uint64_t Lo64;
  } v;
-};
+} Il2CppClass;
 typedef struct Il2CppDouble
 {
  uint32_t mantLo : 32;
@@ -2015,7 +2015,7 @@ typedef struct Il2CppVariant
   } n2;
   Il2CppWin32Decimal decVal;
  } n1;
-};
+} Il2CppVariant;
 typedef struct Il2CppFileTime
 {
  uint32_t low;

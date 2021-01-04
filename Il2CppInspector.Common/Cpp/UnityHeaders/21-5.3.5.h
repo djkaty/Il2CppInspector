@@ -1629,7 +1629,7 @@ struct Il2CppDecimal
   } s2;
   uint64_t lo64;
  } u2;
-};
+} Il2CppClass;
 typedef int16_t IL2CPP_VARIANT_BOOL;
 typedef enum Il2CppVarType
 {
@@ -1750,7 +1750,7 @@ typedef struct Il2CppVariant
   } n2;
   Il2CppDecimal decVal;
  } n1;
-};
+} Il2CppVariant;
 typedef struct Il2CppFileTime
 {
  uint32_t low;
