@@ -428,14 +428,7 @@ namespace Il2CppInspector.Cpp
 
             // For the C-compatible definition, we have an alignment problem when the enum
             // does not derive from the architecture integer width.
-            return UnderlyingType.SizeBytes switch
-            {
-                1 => "uint8_t",
-                2 => "uint16_t",
-                4 => "uint32_t",
-                8 => "uint16_t",
-                _ => "enum " + Name
-            } + " " + fieldName;
+            return UnderlyingType.Name + " " + fieldName;
         }
 
         // Format specifier: 'c' = don't output C++-style enum with base type, use C-compatible code only
