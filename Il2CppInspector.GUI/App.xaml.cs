@@ -159,7 +159,9 @@ namespace Il2CppInspectorGUI
                                 else
                                     options.Add(option.Name, (savedOption.Value, ((JsonElement) savedOption.Value).ValueKind) switch {
                                         (var v, JsonValueKind.String) => v.ToString(),
-                                        (var v, JsonValueKind.Number) => Convert.ChangeType(v.ToString(), option.Value.GetType()),
+                                        (var v, JsonValueKind.Number) => option.Value.GetType().IsEnum?
+                                              Enum.TryParse(option.Value.GetType(), v.ToString(), out object e)? e : throw new InvalidCastException("Enum value removed")
+                                            : Convert.ChangeType(v.ToString(), option.Value.GetType()),
                                         (var v, JsonValueKind.True) => true,
                                         (var v, JsonValueKind.False) => false,
                                         _ => throw new ArgumentException("Unsupported JSON type")
