@@ -4,6 +4,8 @@
     All rights reserved.
 */
 
+using System;
+
 namespace Il2CppInspector.Cpp
 {
     // A field in a C++ type
@@ -83,6 +85,16 @@ namespace Il2CppInspector.Cpp
 
         // We output as hex to avoid unsigned value compiler errors for top bit set values in VS <= 2017
         // We'll get compiler warnings instead but it will still compile
-        public override string ToString(string format = "") => $"{Name} = 0x{Value:x8}";
+        public override string ToString(string format = "") {
+            var signed = Type.Name.StartsWith("int"); // int8/16/32/64_t or uint8/16/32/64_t/bool/float/double
+
+            // Signed number with top bit set (only perform cast if underlying type is signed)
+            var fieldIsNegative = signed && ((long) Convert.ChangeType(Value, typeof(long))) < 0;
+
+            if (fieldIsNegative)
+                return $"{Name} = {Value}";
+
+            return string.Format("{0} = 0x{1:x" + Type.SizeBytes * 2 + "}", Name, Value);
+        }
     }
 }
