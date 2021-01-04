@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+    Copyright 2017-2021 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
     Copyright 2020 Robert Xiao - https://robertxiao.ca
 
     All rights reserved.
@@ -152,11 +152,12 @@ namespace Il2CppInspector.Cpp
             if (ti.IsEnum) {
                 // Enums should be represented using enum syntax
                 // They otherwise behave like value types
+                var namer = CreateNamespace().MakeNamer<FieldInfo>((field) => field.Name.ToCIdentifier());
                 var underlyingType = AsCType(ti.GetEnumUnderlyingType());
                 valueType = types.Enum(underlyingType, name);
                 foreach (var field in ti.DeclaredFields) {
                     if (field.Name != "value__")
-                        ((CppEnumType)valueType).AddField(EnumNamer.GetName(field), field.DefaultValue);
+                        ((CppEnumType)valueType).AddField(namer.GetName(field), field.DefaultValue);
                 }
 
                 boxedType = GenerateObjectStruct(name + "__Boxed", ti);
@@ -530,7 +531,6 @@ namespace Il2CppInspector.Cpp
 
             GlobalsNamespace = CreateNamespace();
             GlobalNamer = GlobalsNamespace.MakeNamer<MethodBase>((method) => $"{TypeNamer.GetName(method.DeclaringType)}_{method.Name.ToCIdentifier()}");
-            EnumNamer = GlobalsNamespace.MakeNamer<FieldInfo>((field) => $"{TypeNamer.GetName(field.DeclaringType)}_{field.Name.ToCIdentifier()}");
         }
 
         // Reserve C/C++ keywords and built-in names
@@ -571,11 +571,10 @@ namespace Il2CppInspector.Cpp
         public CppNamespace.Namer<TypeInfo> TypeNamer { get; private set; }
 
         /// <summary>
-        /// Namespace for global variables, enum values and methods
+        /// Namespace for global variables and methods
         /// </summary>
         public CppNamespace GlobalsNamespace { get; private set; }
         public CppNamespace.Namer<MethodBase> GlobalNamer { get; private set; }
-        public CppNamespace.Namer<FieldInfo> EnumNamer { get; private set; }
         #endregion
     }
 }

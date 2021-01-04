@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+    Copyright 2020-2021 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -418,13 +418,13 @@ namespace Il2CppInspector.Cpp
 
         public CppEnumType(CppType underlyingType) : base(ComplexValueType.Enum) => UnderlyingType = underlyingType;
 
-        public void AddField(string name, object value) => AddField(new CppEnumField(name, UnderlyingType, value));
+        public void AddField(string name, object value) => AddField(new CppEnumField(this, name, UnderlyingType, value));
 
         // Return the type as a field
         public override string ToFieldString(string fieldName, string format = "") {
             // C++
             if (!format.Contains('c'))
-                return "enum " + Name + " " + fieldName;
+                return Name + " " + fieldName;
 
             // For the C-compatible definition, we have an alignment problem when the enum
             // does not derive from the architecture integer width.
@@ -439,7 +439,7 @@ namespace Il2CppInspector.Cpp
             if (format.Contains('c'))
                 sb.Append($"enum {Name} {{");
             else
-                sb.Append($"enum {Name} : {UnderlyingType.Name} {{");
+                sb.Append($"enum class {Name} : {UnderlyingType.Name} {{");
 
             foreach (var field in Fields.Values.SelectMany(f => f))
                 sb.Append("\n    " + string.Join("\n    ", field.ToString(format).Split('\n')) + ",");

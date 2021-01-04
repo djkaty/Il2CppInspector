@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+    Copyright 2020-2021 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */
@@ -78,10 +78,14 @@ namespace Il2CppInspector.Cpp
     // An enum key and value pair
     public class CppEnumField : CppField
     {
+        // The enum type this field belongs to
+        public CppEnumType DeclaringType { get; }
+
         // The value of this key name
         public object Value { get; }
 
-        public CppEnumField(string name, CppType type, object value) : base(name, type) => Value = value;
+        public CppEnumField(CppEnumType declType, string name, CppType type, object value) : base(name, type)
+            => (DeclaringType, Value) = (declType, value);
 
         // We output as hex to avoid unsigned value compiler errors for top bit set values in VS <= 2017
         // We'll get compiler warnings instead but it will still compile
@@ -91,10 +95,12 @@ namespace Il2CppInspector.Cpp
             // Signed number with top bit set (only perform cast if underlying type is signed)
             var fieldIsNegative = signed && ((long) Convert.ChangeType(Value, typeof(long))) < 0;
 
-            if (fieldIsNegative)
-                return $"{Name} = {Value}";
+            var fieldName = (format.Contains('c')? DeclaringType.Name + "_" : "") + Name;
 
-            return string.Format("{0} = 0x{1:x" + Type.SizeBytes * 2 + "}", Name, Value);
+            if (fieldIsNegative)
+                return $"{fieldName} = {Value}";
+
+            return string.Format("{0} = 0x{1:x" + Type.SizeBytes * 2 + "}", fieldName, Value);
         }
     }
 }
