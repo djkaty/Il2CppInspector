@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2019-2020 Carter Bush - https://github.com/carterbush
-// Copyright (c) 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+// Copyright (c) 2020-2021 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 // Copyright 2020 Robert Xiao - https://robertxiao.ca/
 // All rights reserved
 

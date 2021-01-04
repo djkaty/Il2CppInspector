@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+    Copyright 2020-2021 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */

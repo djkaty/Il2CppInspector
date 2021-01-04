@@ -1,5 +1,5 @@
 ﻿// Copyright 2020 Robert Xiao - https://robertxiao.ca/
-// Copyright (c) 2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+// Copyright (c) 2020-2021 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 // All rights reserved
 
 using System;

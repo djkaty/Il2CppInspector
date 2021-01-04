@@ -1,4 +1,4 @@
-# Il2CppInspector 2021.0 Preview
+# Il2CppInspector 2021.1 Preview
 
 Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the most complete analysis currently available.
 

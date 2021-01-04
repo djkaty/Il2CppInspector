@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017-2020 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
+﻿// Copyright (c) 2017-2021 Katy Coe - https://www.djkaty.com - https://github.com/djkaty
 // All rights reserved
 
 using System;

@@ -1,4 +1,4 @@
-﻿# Copyright 2019-2020 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
+﻿# Copyright 2019-2021 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 # All rights reserved.
 
 # Compile the specified .cs files in TestSources to produce a .NET assembly DLL, the transpiled C++ source code and an IL2CPP binary for each
@@ -35,7 +35,7 @@ param (
 )
 
 echo "Universal IL2CPP Build Utility"
-echo "(c) 2019-2020 Katy Coe - www.djkaty.com - www.github.com/djkaty"
+echo "(c) 2019-2021 Katy Coe - www.djkaty.com - www.github.com/djkaty"
 echo ""
 
 if ($help) {

@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2019-2020 Katy Coe - http://www.hearthcode.org - http://www.djkaty.com
+    Copyright 2019-2021 Katy Coe - http://www.djkaty.com - https://github.com/djkaty
 
     All rights reserved.
 */

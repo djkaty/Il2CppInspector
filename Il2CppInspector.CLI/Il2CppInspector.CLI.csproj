@@ -12,7 +12,7 @@
     <Version>2020.2.1</Version>
     <Company>Noisy Cow Studios</Company>
     <Product>Il2CppInspector Command-Line Edition</Product>
-    <Copyright>(c) 2017-2020 Katy Coe - www.djkaty.com - www.github.com/djkaty</Copyright>
+    <Copyright>(c) 2017-2021 Katy Coe - www.djkaty.com - www.github.com/djkaty</Copyright>
     <PackageId>Il2CppInspector.CLI</PackageId>
     <Authors>Katy Coe</Authors>
     <AssemblyName>Il2CppInspector</AssemblyName>
