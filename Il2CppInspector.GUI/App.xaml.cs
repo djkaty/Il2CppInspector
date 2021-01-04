@@ -165,7 +165,11 @@ namespace Il2CppInspectorGUI
                                         _ => throw new ArgumentException("Unsupported JSON type")
                                     });
                             }
-                        managedPlugin.SetOptions(options, OptionBehaviour.NoValidation);
+
+                        // An invalid cast will occur if a plugin author changes the type of one of its options
+                        try {
+                            managedPlugin.SetOptions(options, OptionBehaviour.NoValidation);
+                        } catch (InvalidCastException) { }
                     }
                 }
             }
