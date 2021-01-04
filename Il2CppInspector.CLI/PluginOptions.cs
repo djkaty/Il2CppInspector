@@ -86,6 +86,12 @@ namespace Il2CppInspector.CLI
                 var optionType = option.GetType().GetProperty("Value").PropertyType;
                 var optionValue = option.Value;
 
+                // Enum types aren't supported by CommandLineParser in dynamic assemblies
+                if (optionType.IsEnum) {
+                    optionType = typeof(string);
+                    optionValue = optionValue.ToString();
+                }
+
                 // We won't set the Required flag if there is a default option
                 var optionEmpty = (optionType.IsValueType && optionValue == Activator.CreateInstance(optionType))
                                     || optionValue == null;
@@ -97,7 +103,7 @@ namespace Il2CppInspector.CLI
                 }
 
                 var pluginOptionProperty = CreateAutoProperty(pluginOptionClass, option.Name, optionType);
-
+                
                 ConstructorInfo optCtorInfo;
 
                 // Single character
@@ -191,11 +197,12 @@ namespace Il2CppInspector.CLI
 
                 foreach (var prop in optionsObject.GetType().GetProperties()) {
                     var targetProp = plugin.Options.First(x => x.Name == prop.Name);
+                    var value = prop.GetValue(optionsObject);
 
                     // Validate hex strings
                     if (targetProp is IPluginOptionNumber n && n.Style == PluginOptionNumberStyle.Hex) {
                         try {
-                            n.Value = Convert.ChangeType(Convert.ToInt64((string) prop.GetValue(optionsObject), 16), n.Value.GetType());
+                            n.Value = Convert.ChangeType(Convert.ToInt64((string) value, 16), n.Value.GetType());
                         }
                         catch (Exception ex) when (ex is ArgumentException || ex is FormatException || ex is OverflowException) {
                             Console.Error.WriteLine($"Plugin option error: {prop.Name} must be a hex value (optionally starting with '0x'), and less than the maximum value");
@@ -203,9 +210,18 @@ namespace Il2CppInspector.CLI
                         }
                     }
 
+                    // Enums
+                    else if (targetProp.Value?.GetType().IsEnum ?? false) {
+                        if (Enum.TryParse(targetProp.Value.GetType(), value.ToString(), out var enumValue))
+                            targetProp.Value = enumValue;
+                        else {
+                            Console.Error.WriteLine($"Plugin option error: Invalid enum value when setting '{targetProp.Name}' to '{value}'");
+                            hasErrors = true;
+                        }
+                    }
+
                     // All other input types
                     else {
-                        var value = prop.GetValue(optionsObject);
                         try {
                             targetProp.Value = value;
                         } catch (Exception ex) {
