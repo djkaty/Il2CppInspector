@@ -43,9 +43,10 @@ namespace Il2CppInspectorGUI
             DialogResult = true;
         }
 
-        // Reload list of plugins and reset settings
+        // Reload list of plugins and reset settings to last save
         private void refreshButton_Click(object sender, RoutedEventArgs e) {
             PluginManager.Reload();
+            ((App) Application.Current).LoadOptions();
         }
 
         // Open configuration for specific plugin
