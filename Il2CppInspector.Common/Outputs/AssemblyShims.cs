@@ -32,34 +32,53 @@ namespace Il2CppInspector.Outputs
             type.Methods.Add(ctor);
             return ctor;
         }
+
+        // Generate custom attribute with named property arguments that calls default constructor
+        // 'module' is the module that owns 'type'; type.Module may still be null when this is called
+        public static CustomAttribute AddAttribute(this TypeDefUser type, ModuleDefUser module, TypeDefUser attrTypeDef, params (string prop, object value)[] args) {
+
+            // Resolution scope is the module that needs the reference
+            var attRef = new TypeRefUser(attrTypeDef.Module, attrTypeDef.Namespace, attrTypeDef.Name, module);
+            var attCtorRef = new MemberRefUser(attrTypeDef.Module, ".ctor", MethodSig.CreateInstance(module.CorLibTypes.Void), attRef);
+
+            // Attribute arguments
+            var attrArgs = args.Select(a =>
+                new CANamedArgument(false, module.CorLibTypes.String, a.prop, new CAArgument(module.CorLibTypes.String, a.value)));
+
+            var attr = new CustomAttribute(attCtorRef, null, attrArgs);
+
+            type.CustomAttributes.Add(attr);
+            return attr;
+        }
     }
 
     // Output module to create .NET DLLs containing type definitions
     public class AssemblyShims
     {
+        // .NET type model
         private readonly TypeModel model;
 
+        // Target folder for DLLs
         private string outputPath;
+
+        // Our custom attributes
+        private TypeDefUser addressAttribute;
+        private TypeDefUser fieldOffsetAttribute;
+        private TypeDefUser attributeAttribute;
+        private TypeDefUser metadataOffsetAttribute;
+        private TypeDefUser tokenAttribute;
+
+        // Resolver
+        private ModuleContext context;
+        private AssemblyResolver resolver;
 
         // The namespace for our custom types
         private const string rootNamespace = "Il2CppInspector.DLL"; // Il2CppDummyDll
 
         public AssemblyShims(TypeModel model) => this.model = model;
 
-        // Create a new DLL assembly definition
-        private ModuleDefUser CreateAssembly(string name) {
-            var module = new ModuleDefUser(name) { Kind = ModuleKind.Dll };
-
-            var ourVersion = Assembly.GetAssembly(typeof(Il2CppInspector)).GetName().Version;
-
-            var asm = new AssemblyDefUser(name.Replace(".dll", ""), ourVersion);
-            asm.Modules.Add(module);
-
-            return module;
-        }
-
         // Generate base DLL with our custom types
-        private void CreateBaseAssembly() {
+        private ModuleDef CreateBaseAssembly() {
             // Create DLL with our custom types
             var module = CreateAssembly("Il2CppInspector.dll");
 
@@ -80,33 +99,72 @@ namespace Il2CppInspector.Outputs
 
             // Create our custom attributes for compatibility with Il2CppDumper
             // TODO: New format with numeric values where applicable
-            var addressAttribute = createAttribute("AddressAttribute");
+            addressAttribute = createAttribute("AddressAttribute");
             addressAttribute.Fields.Add(new FieldDefUser("RVA", stringField, FieldAttributes.Public));
             addressAttribute.Fields.Add(new FieldDefUser("Offset", stringField, FieldAttributes.Public));
             addressAttribute.Fields.Add(new FieldDefUser("VA", stringField, FieldAttributes.Public));
             addressAttribute.Fields.Add(new FieldDefUser("Slot", stringField, FieldAttributes.Public));
             addressAttribute.AddDefaultConstructor(attributeCtorRef);
 
-            var fieldOffsetAttribute = createAttribute("FieldOffsetAttribute");
+            fieldOffsetAttribute = createAttribute("FieldOffsetAttribute");
             fieldOffsetAttribute.Fields.Add(new FieldDefUser("Offset", stringField, FieldAttributes.Public));
             fieldOffsetAttribute.AddDefaultConstructor(attributeCtorRef);
 
-            var attributeAttribute = createAttribute("AttributeAttribute");
+            attributeAttribute = createAttribute("AttributeAttribute");
             attributeAttribute.Fields.Add(new FieldDefUser("Name", stringField, FieldAttributes.Public));
             attributeAttribute.Fields.Add(new FieldDefUser("RVA", stringField, FieldAttributes.Public));
             attributeAttribute.Fields.Add(new FieldDefUser("Offset", stringField, FieldAttributes.Public));
             attributeAttribute.AddDefaultConstructor(attributeCtorRef);
 
-            var metadataOffsetAttribute = createAttribute("MetadataOffsetAttribute");
+            metadataOffsetAttribute = createAttribute("MetadataOffsetAttribute");
             metadataOffsetAttribute.Fields.Add(new FieldDefUser("Offset", stringField, FieldAttributes.Public));
             metadataOffsetAttribute.AddDefaultConstructor(attributeCtorRef);
 
-            var tokenAttribute = createAttribute("TokenAttribute");
+            tokenAttribute = createAttribute("TokenAttribute");
             tokenAttribute.Fields.Add(new FieldDefUser("Token", stringField, FieldAttributes.Public));
             tokenAttribute.AddDefaultConstructor(attributeCtorRef);
 
-            // Write DLL to disk
-            module.Write(Path.Combine(outputPath, module.Name));
+            return module;
+        }
+
+        // Create a new DLL assembly definition
+        private ModuleDefUser CreateAssembly(string name) {
+            // Create module
+            var module = new ModuleDefUser(name) { Kind = ModuleKind.Dll };
+
+            // Set resolution scope
+            //module.Context = context;
+
+            // Add module to resolver
+            //resolver.AddToCache(module);
+
+            // Create assembly
+            var ourVersion = Assembly.GetAssembly(typeof(Il2CppInspector)).GetName().Version;
+            var asm = new AssemblyDefUser(name.Replace(".dll", ""), ourVersion);
+            asm.Modules.Add(module);
+            return module;
+        }
+
+        // Generate type recursively with all nested types
+        private TypeDefUser AddType(ModuleDefUser module, TypeInfo type) {
+
+            // Generate type with all nested types
+             TypeDefUser CreateType(ModuleDefUser module, TypeInfo type) {
+                var mType = new TypeDefUser(type.Namespace, type.BaseName) { Attributes = (TypeAttributes) type.Attributes };
+
+                foreach (var nestedType in type.DeclaredNestedTypes)
+                    mType.NestedTypes.Add(CreateType(module, nestedType));
+
+                // Add token attribute
+                mType.AddAttribute(module, tokenAttribute, ("Token", $"0x{type.Definition.token}"));
+
+                return mType;
+            }
+
+            // Add type to module
+            var mType = CreateType(module, type);
+            module.Types.Add(mType);
+            return mType;
         }
 
         // Generate and save all DLLs
@@ -116,18 +174,15 @@ namespace Il2CppInspector.Outputs
             this.outputPath = outputPath;
             Directory.CreateDirectory(outputPath);
 
+            // Create resolver
+            //context = ModuleDef.CreateModuleContext();
+            //resolver = context.AssemblyResolver as AssemblyResolver;
+
             // Generate our custom types assembly
-            CreateBaseAssembly();
+            var baseDll = CreateBaseAssembly();
 
-            // Generate type recursively with all nested types
-            TypeDefUser createType(TypeInfo type) {
-                var mType = new TypeDefUser(type.Namespace, type.BaseName) { Attributes = (TypeAttributes) type.Attributes };
-
-                foreach (var nestedType in type.DeclaredNestedTypes)
-                    mType.NestedTypes.Add(createType(nestedType));
-
-                return mType;
-            }
+            // Write base assembly to disk
+            baseDll.Write(Path.Combine(outputPath, baseDll.Name));
 
             // Generate all application assemblies and types
             var assemblies = new List<ModuleDefUser>();
@@ -136,7 +191,7 @@ namespace Il2CppInspector.Outputs
                 var module = CreateAssembly(asm.ShortName);
 
                 foreach (var type in asm.DefinedTypes.Where(t => !t.IsNested))
-                    module.Types.Add(createType(type));
+                    AddType(module, type);
 
                 assemblies.Add(module);
             }
