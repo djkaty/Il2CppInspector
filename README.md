@@ -41,11 +41,23 @@ Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the
 
 ### Tutorials and Guides
 
-You can read more about how IL2CPP works in my series [IL2CPP Reverse Engineering](https://katyscode.wordpress.com/category/reverse-engineering/il2cpp/).
+You can read more about how IL2CPP works in my series IL2CPP Reverse Engineering:
 
-[Using Il2CppInspector's type model to extract protobuf-net definitions (Case Study: Fall Guys)](https://katyscode.wordpress.com/2020/08/10/practical-il2cpp-protobuf/)
+#### How IL2CPP works
+
+[Part 1: Hello World and the IL2CPP Toolchain](https://katyscode.wordpress.com/2020/06/24/il2cpp-part-1/)
+
+[Part 2: Structural Overview & Finding The Metadata](https://katyscode.wordpress.com/2020/12/27/il2cpp-part-2/)
+
+#### Il2CppInspector guides
 
 [How to create, use and debug IL2CPP DLL injection projects](https://katyscode.wordpress.com/2020/11/27/il2cppinspector-tutorial-how-to-create-use-and-debug-il2cpp-dll-injection-projects/)
+
+[Il2CppInspector Plugin Development Wiki](https://github.com/djkaty/Il2CppInspector/wiki/Plugins%3A-Getting-Started)
+
+#### Reverse engineering walkthroughs
+
+[Using Il2CppInspector's type model to extract protobuf-net definitions (Case Study: Fall Guys)](https://katyscode.wordpress.com/2020/08/10/practical-il2cpp-protobuf/)
 
 
 ### Other features
@@ -611,9 +623,9 @@ Plugins let you extend the functionality of Il2CppInspector. For example you can
 
 Plugin support is currently experimental and has limited functionality.
 
-You can find out more about plugins, and browse the source code of current plugins and examples in the [Il2CppInspectorPlugins repository](https://github.com/djkaty/Il2CppInspectorPlugins).
+Details on how to create your own plugins can be found in the [Il2CppInspector Plugin Development Wiki](https://github.com/djkaty/Il2CppInspector/wiki/Plugins%3A-Getting-Started).
 
-A tutorial on how to write plugiins is coming soon!
+You can find out more about plugins, and browse the source code of current plugins and examples in the [Il2CppInspectorPlugins repository](https://github.com/djkaty/Il2CppInspectorPlugins).
 
 ### Extending Il2CppInspector's Python output to support other targets
 
