@@ -6,7 +6,9 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 using Il2CppInspector.Reflection;
@@ -37,6 +39,8 @@ namespace Il2CppInspector.Outputs
     {
         private readonly TypeModel model;
 
+        private string outputPath;
+
         // The namespace for our custom types
         private const string rootNamespace = "Il2CppInspector.DLL"; // Il2CppDummyDll
 
@@ -44,22 +48,20 @@ namespace Il2CppInspector.Outputs
 
         // Create a new DLL assembly definition
         private ModuleDefUser CreateAssembly(string name) {
-            var module = new ModuleDefUser(name + ".dll") { Kind = ModuleKind.Dll };
+            var module = new ModuleDefUser(name) { Kind = ModuleKind.Dll };
 
             var ourVersion = Assembly.GetAssembly(typeof(Il2CppInspector)).GetName().Version;
 
-            var asm = new AssemblyDefUser(name, ourVersion);
+            var asm = new AssemblyDefUser(name.Replace(".dll", ""), ourVersion);
             asm.Modules.Add(module);
 
             return module;
         }
 
-        // Generate and save all DLLs
-        public void Write(string outputPath) {
-            Directory.CreateDirectory(outputPath);
-
+        // Generate base DLL with our custom types
+        private void CreateBaseAssembly() {
             // Create DLL with our custom types
-            var module = CreateAssembly("Il2CppInspector");
+            var module = CreateAssembly("Il2CppInspector.dll");
 
             var importer = new Importer(module);
             var attributeCtor = typeof(Attribute).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)[0];
@@ -77,6 +79,7 @@ namespace Il2CppInspector.Outputs
             }
 
             // Create our custom attributes for compatibility with Il2CppDumper
+            // TODO: New format with numeric values where applicable
             var addressAttribute = createAttribute("AddressAttribute");
             addressAttribute.Fields.Add(new FieldDefUser("RVA", stringField, FieldAttributes.Public));
             addressAttribute.Fields.Add(new FieldDefUser("Offset", stringField, FieldAttributes.Public));
@@ -104,6 +107,43 @@ namespace Il2CppInspector.Outputs
 
             // Write DLL to disk
             module.Write(Path.Combine(outputPath, module.Name));
+        }
+
+        // Generate and save all DLLs
+        public void Write(string outputPath) {
+            
+            // Create folder for DLLs
+            this.outputPath = outputPath;
+            Directory.CreateDirectory(outputPath);
+
+            // Generate our custom types assembly
+            CreateBaseAssembly();
+
+            // Generate type recursively with all nested types
+            TypeDefUser createType(TypeInfo type) {
+                var mType = new TypeDefUser(type.Namespace, type.BaseName) { Attributes = (TypeAttributes) type.Attributes };
+
+                foreach (var nestedType in type.DeclaredNestedTypes)
+                    mType.NestedTypes.Add(createType(nestedType));
+
+                return mType;
+            }
+
+            // Generate all application assemblies and types
+            var assemblies = new List<ModuleDefUser>();
+
+            foreach (var asm in model.Assemblies) {
+                var module = CreateAssembly(asm.ShortName);
+
+                foreach (var type in asm.DefinedTypes.Where(t => !t.IsNested))
+                    module.Types.Add(createType(type));
+
+                assemblies.Add(module);
+            }
+
+            // Write all assemblies to disk
+            foreach (var asm in assemblies)
+                asm.Write(Path.Combine(outputPath, asm.Name));
         }
     }
 }
