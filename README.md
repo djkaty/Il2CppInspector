@@ -707,6 +707,7 @@ This project uses:
 - [Ookii.Dialogs.Wpf](https://github.com/augustoproiete/ookii-dialogs-wpf)
 - [XamlAnimatedGif](https://github.com/XamlAnimatedGif/WpfAnimatedGif) by Thomas Levesque
 - [.NET Core Plugins](https://github.com/natemcmaster/DotNetCorePlugins) by Nate McMaster
+- [dnlib](https://github.com/0xd4d/dnlib) by 0xd4d
 
 Thanks to the following individuals whose code and research helped me develop this tool:
 
