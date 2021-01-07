@@ -166,6 +166,14 @@ namespace Il2CppInspector.Outputs
                 mType.GenericParameters.Add(p);
             }
 
+            // Base class
+            if (type.BaseType != null)
+                mType.BaseType = GetTypeRef(module, type.BaseType);
+
+            // Interfaces
+            foreach (var @interface in type.ImplementedInterfaces)
+                mType.Interfaces.Add(new InterfaceImplUser(GetTypeRef(module, @interface)));
+
             // Add nested types
             foreach (var nestedType in type.DeclaredNestedTypes)
                 mType.NestedTypes.Add(CreateType(module, nestedType));
