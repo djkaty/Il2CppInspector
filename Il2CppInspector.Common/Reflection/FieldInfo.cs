@@ -101,34 +101,8 @@ namespace Il2CppInspector.Reflection {
             fieldTypeReference = TypeRef.FromReferenceIndex(Assembly.Model, Definition.typeIndex);
             var fieldType = pkg.TypeReferences[Definition.typeIndex];
 
-            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_FIELD_ACCESS_MASK) == Il2CppConstants.FIELD_ATTRIBUTE_PRIVATE)
-                Attributes |= FieldAttributes.Private;
-            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_FIELD_ACCESS_MASK) == Il2CppConstants.FIELD_ATTRIBUTE_PUBLIC)
-                Attributes |= FieldAttributes.Public;
-            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_FIELD_ACCESS_MASK) == Il2CppConstants.FIELD_ATTRIBUTE_FAM_AND_ASSEM)
-                Attributes |= FieldAttributes.FamANDAssem;
-            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_FIELD_ACCESS_MASK) == Il2CppConstants.FIELD_ATTRIBUTE_ASSEMBLY)
-                Attributes |= FieldAttributes.Assembly;
-            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_FIELD_ACCESS_MASK) == Il2CppConstants.FIELD_ATTRIBUTE_FAMILY)
-                Attributes |= FieldAttributes.Family;
-            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_FIELD_ACCESS_MASK) == Il2CppConstants.FIELD_ATTRIBUTE_FAM_OR_ASSEM)
-                Attributes |= FieldAttributes.FamORAssem;
-            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_STATIC) == Il2CppConstants.FIELD_ATTRIBUTE_STATIC)
-                Attributes |= FieldAttributes.Static;
-            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_INIT_ONLY) == Il2CppConstants.FIELD_ATTRIBUTE_INIT_ONLY)
-                Attributes |= FieldAttributes.InitOnly;
-            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_LITERAL) == Il2CppConstants.FIELD_ATTRIBUTE_LITERAL)
-                Attributes |= FieldAttributes.Literal;
-            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_NOT_SERIALIZED) == Il2CppConstants.FIELD_ATTRIBUTE_NOT_SERIALIZED)
-                Attributes |= FieldAttributes.NotSerialized;
-            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_SPECIAL_NAME) == Il2CppConstants.FIELD_ATTRIBUTE_SPECIAL_NAME)
-                Attributes |= FieldAttributes.SpecialName;
-            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_PINVOKE_IMPL) == Il2CppConstants.FIELD_ATTRIBUTE_PINVOKE_IMPL)
-                Attributes |= FieldAttributes.PinvokeImpl;
-            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_HAS_DEFAULT) != 0)
-                Attributes |= FieldAttributes.HasDefault;
-            if ((fieldType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_HAS_FIELD_RVA) != 0)
-                Attributes |= FieldAttributes.HasFieldRVA;
+            // Copy attributes
+            Attributes = (FieldAttributes) fieldType.attrs;
 
             // Default initialization value if present
             if (pkg.FieldDefaultValue.TryGetValue(fieldIndex, out (ulong address, object variant) value)) {

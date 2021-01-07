@@ -48,8 +48,8 @@ namespace Il2CppInspector.Reflection
             eventTypeReference = TypeRef.FromReferenceIndex(Assembly.Model, Definition.typeIndex);
             var eventType = pkg.TypeReferences[Definition.typeIndex];
 
-            if ((eventType.attrs & Il2CppConstants.FIELD_ATTRIBUTE_SPECIAL_NAME) == Il2CppConstants.FIELD_ATTRIBUTE_SPECIAL_NAME)
-                Attributes |= EventAttributes.SpecialName;
+            // Copy attributes
+            Attributes = (EventAttributes) eventType.attrs;
 
             // NOTE: This relies on methods being added to TypeInfo.DeclaredMethods in the same order they are defined in the Il2Cpp metadata
             // add, remove and raise are method indices from the first method of the declaring type

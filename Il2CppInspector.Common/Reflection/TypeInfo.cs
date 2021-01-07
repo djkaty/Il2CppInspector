@@ -768,36 +768,8 @@ namespace Il2CppInspector.Reflection
             // TODO: Move this to after we've populated TypesByReferenceIndex, since FullName might touch that
             Assembly.Model.TypesByFullName[FullName] = this;
 
-            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_SERIALIZABLE) != 0)
-                Attributes |= TypeAttributes.Serializable;
-            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_PUBLIC)
-                Attributes |= TypeAttributes.Public;
-            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_NOT_PUBLIC)
-                Attributes |= TypeAttributes.NotPublic;
-            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_NESTED_PUBLIC)
-                Attributes |= TypeAttributes.NestedPublic;
-            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_NESTED_PRIVATE)
-                Attributes |= TypeAttributes.NestedPrivate;
-            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_NESTED_ASSEMBLY)
-                Attributes |= TypeAttributes.NestedAssembly;
-            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_NESTED_FAMILY)
-                Attributes |= TypeAttributes.NestedFamily;
-            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_NESTED_FAM_AND_ASSEM)
-                Attributes |= TypeAttributes.NestedFamANDAssem;
-            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_VISIBILITY_MASK) == Il2CppConstants.TYPE_ATTRIBUTE_NESTED_FAM_OR_ASSEM)
-                Attributes |= TypeAttributes.NestedFamORAssem;
-            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_ABSTRACT) != 0)
-                Attributes |= TypeAttributes.Abstract;
-            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_SEALED) != 0)
-                Attributes |= TypeAttributes.Sealed;
-            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_SPECIAL_NAME) != 0)
-                Attributes |= TypeAttributes.SpecialName;
-            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_IMPORT) != 0)
-                Attributes |= TypeAttributes.Import;
-
-            // TypeAttributes.Class == 0 so we only care about setting TypeAttributes.Interface (it's a non-interface class by default)
-            if ((Definition.flags & Il2CppConstants.TYPE_ATTRIBUTE_INTERFACE) != 0)
-                Attributes |= TypeAttributes.Interface;
+            // Copy attributes
+            Attributes = (TypeAttributes) Definition.flags;
 
             // Enumerations - bit 1 of bitfield indicates this (also the baseTypeReference will be System.Enum)
             if (((Definition.bitfield >> 1) & 1) == 1) {

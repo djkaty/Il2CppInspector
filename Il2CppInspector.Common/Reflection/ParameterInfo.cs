@@ -77,21 +77,8 @@ namespace Il2CppInspector.Reflection
 
             var paramType = pkg.TypeReferences[Definition.typeIndex];
 
-            if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_HAS_DEFAULT) != 0)
-                Attributes |= ParameterAttributes.HasDefault;
-            if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_OPTIONAL) != 0)
-                Attributes |= ParameterAttributes.Optional;
-            if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_IN) != 0)
-                Attributes |= ParameterAttributes.In;
-            if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_OUT) != 0)
-                Attributes |= ParameterAttributes.Out;
-            if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_RESERVED_MASK) != 0)
-                Attributes |= ParameterAttributes.ReservedMask;
-            if ((paramType.attrs & Il2CppConstants.PARAM_ATTRIBUTE_HAS_FIELD_MARSHAL) != 0)
-                Attributes |= ParameterAttributes.HasFieldMarshal;
-
-            if (Position == -1)
-                Attributes |= ParameterAttributes.Retval;
+            // Copy attributes
+            Attributes = (ParameterAttributes) paramType.attrs;
 
             // Default initialization value if present
             if (pkg.ParameterDefaultValue.TryGetValue(paramIndex, out (ulong address, object variant) value)) {
