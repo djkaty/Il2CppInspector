@@ -32,6 +32,8 @@ namespace Il2CppInspector.Reflection
         // Information/flags about the method
         public MethodAttributes Attributes { get; protected set; }
 
+        public MethodImplAttributes MethodImplementationFlags { get; protected set; }
+
         // Custom attributes for this member
         public override IEnumerable<CustomAttributeData> CustomAttributes => CustomAttributeData.GetCustomAttributes(rootDefinition);
 
@@ -140,6 +142,7 @@ namespace Il2CppInspector.Reflection
 
             // Copy attributes
             Attributes = (MethodAttributes) Definition.flags;
+            MethodImplementationFlags = (MethodImplAttributes) Definition.iflags;
             
             // Add arguments
             for (var p = Definition.parameterStart; p < Definition.parameterStart + Definition.parameterCount; p++)
@@ -153,6 +156,7 @@ namespace Il2CppInspector.Reflection
             rootDefinition = methodDef;
             Name = methodDef.Name;
             Attributes = methodDef.Attributes;
+            MethodImplementationFlags = methodDef.MethodImplementationFlags;
             VirtualAddress = methodDef.VirtualAddress;
 
             IsGenericMethod = methodDef.IsGenericMethod;
@@ -175,6 +179,7 @@ namespace Il2CppInspector.Reflection
             genericMethodDefinition = methodDef;
             Name = methodDef.Name;
             Attributes = methodDef.Attributes;
+            MethodImplementationFlags = methodDef.MethodImplementationFlags;
             VirtualAddress = methodDef.VirtualAddress;
 
             IsGenericMethod = true;
