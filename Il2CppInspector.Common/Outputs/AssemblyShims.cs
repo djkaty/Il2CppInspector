@@ -34,11 +34,9 @@ namespace Il2CppInspector.Outputs
             return ctor;
         }
 
-        // Generate custom attribute with named property arguments that calls default constructor
+        // Add custom attribute to type with named property arguments
         // 'module' is the module that owns 'type'; type.Module may still be null when this is called
         public static CustomAttribute AddAttribute(this TypeDef type, ModuleDef module, TypeDef attrTypeDef, params (string prop, object value)[] args) {
-
-            // Resolution scope is the module that needs the reference
             var attRef = module.Import(attrTypeDef);
             var attCtorRef = new MemberRefUser(attrTypeDef.Module, ".ctor", MethodSig.CreateInstance(module.CorLibTypes.Void), attRef);
 
@@ -153,7 +151,8 @@ namespace Il2CppInspector.Outputs
  
         // Generate type recursively with all nested types
         private TypeDefUser CreateType(ModuleDef module, TypeInfo type) {
-            var mType = new TypeDefUser(type.Namespace, type.BaseName) { Attributes = (TypeAttributes) type.Attributes };
+            // Initialize with base class
+            var mType = new TypeDefUser(type.Namespace, type.BaseName, GetTypeRef(module, type.BaseType)) { Attributes = (TypeAttributes) type.Attributes };
 
             // Generic parameters
             foreach (var gp in type.GenericTypeParameters) {
@@ -166,10 +165,6 @@ namespace Il2CppInspector.Outputs
                 mType.GenericParameters.Add(p);
             }
 
-            // Base class
-            if (type.BaseType != null)
-                mType.BaseType = GetTypeRef(module, type.BaseType);
-
             // Interfaces
             foreach (var @interface in type.ImplementedInterfaces)
                 mType.Interfaces.Add(new InterfaceImplUser(GetTypeRef(module, @interface)));
@@ -178,15 +173,26 @@ namespace Il2CppInspector.Outputs
             foreach (var nestedType in type.DeclaredNestedTypes)
                 mType.NestedTypes.Add(CreateType(module, nestedType));
 
-            // More processing if it's a TypeDef (rather than a TypeSpec)
-            if (type.Definition != null) {
+            // Add methods
+            foreach (var ctor in type.DeclaredConstructors) {
+                var s = MethodSig.CreateInstance(module.CorLibTypes.Void,
+                    ctor.DeclaredParameters.Select(p => GetTypeRef(module, p.ParameterType).ToTypeSig()).ToArray());
 
-                // Add token attribute
-                mType.AddAttribute(module, tokenAttribute, ("Token", $"0x{type.Definition.token}"));
+                var m = new MethodDefUser(ctor.Name, s, (MethodImplAttributes) ctor.MethodImplementationFlags, (MethodAttributes) ctor.Attributes);
 
-                // Add type mapping
-                //typeMap.Add(type, mType);
+                // TODO: Generic parameters
+                
+                // Method body
+                if (ctor.VirtualAddress.HasValue) {
+
+                }
+
+                mType.Methods.Add(m);
             }
+
+            // Add token attribute
+            if (type.Definition != null)
+                mType.AddAttribute(module, tokenAttribute, ("Token", $"0x{type.Definition.token}"));
 
             return mType;
         }
@@ -202,8 +208,11 @@ namespace Il2CppInspector.Outputs
 
         // Convert Il2CppInspector TypeInfo into type reference imported to specified module
         private TypeRef GetTypeRef(ModuleDef module, TypeInfo type) {
-            var typeModuleName = modules.First(a => a.Name == type.Assembly.ShortName);
-            return new TypeRefUser(typeModuleName, type.Namespace, type.Name, module);
+            if (type == null)
+                return null;
+
+            var typeOwnerModule = modules.First(a => a.Name == type.Assembly.ShortName);
+            return module.Import(new TypeRefUser(typeOwnerModule, type.Namespace, type.BaseName, typeOwnerModule));
         }
 
         // Generate and save all DLLs
