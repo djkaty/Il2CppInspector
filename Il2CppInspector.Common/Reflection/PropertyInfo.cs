@@ -18,6 +18,9 @@ namespace Il2CppInspector.Reflection {
         // Root definition: the property with Definition != null
         protected readonly PropertyInfo rootDefinition;
 
+        // Information/flags about the property
+        public PropertyAttributes Attributes { get; }
+
         public bool CanRead => GetMethod != null;
         public bool CanWrite => SetMethod != null;
 
@@ -51,6 +54,9 @@ namespace Il2CppInspector.Reflection {
             Definition = pkg.Properties[propIndex];
             Name = pkg.Strings[Definition.nameIndex];
             rootDefinition = this;
+
+            // Copy attributes
+            Attributes = (PropertyAttributes) Definition.attrs;
 
             // prop.get and prop.set are method indices from the first method of the declaring type
             if (Definition.get >= 0)
