@@ -207,12 +207,31 @@ namespace Il2CppInspector.Outputs
         }
 
         // Convert Il2CppInspector TypeInfo into type reference imported to specified module
-        private TypeRef GetTypeRef(ModuleDef module, TypeInfo type) {
+        private ITypeDefOrRef GetTypeRef(ModuleDef module, TypeInfo type) {
             if (type == null)
                 return null;
 
+            // Generic type parameter
+            if (type.IsGenericParameter)
+                return new GenericVar(type.GenericParameterPosition).ToTypeDefOrRef();
+
+            // Get module that owns the type
             var typeOwnerModule = modules.First(a => a.Name == type.Assembly.ShortName);
-            return module.Import(new TypeRefUser(typeOwnerModule, type.Namespace, type.BaseName, typeOwnerModule));
+
+            // Get reference to type
+            var typeRef = new TypeRefUser(typeOwnerModule, type.Namespace, type.BaseName, typeOwnerModule);
+
+            // Non-generic type
+            if (!type.GetGenericArguments().Any())
+                return module.Import(typeRef);
+
+            // Generic type requires generic arguments
+            var genericInstSig = new GenericInstSig(typeRef.ToTypeSig().ToClassOrValueTypeSig(), type.GenericTypeArguments.Length);
+
+            foreach (var gp in type.GenericTypeArguments)
+                genericInstSig.GenericArguments.Add(GetTypeRef(module, gp).ToTypeSig());
+
+            return module.Import(genericInstSig).ToTypeDefOrRef();
         }
 
         // Generate and save all DLLs
