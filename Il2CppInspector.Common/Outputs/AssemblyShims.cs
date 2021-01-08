@@ -211,7 +211,7 @@ namespace Il2CppInspector.Outputs
 
             // Add token attribute
             if (type.Definition != null)
-                mType.AddAttribute(module, tokenAttribute, ("Token", $"0x{type.Definition.token}"));
+                mType.AddAttribute(module, tokenAttribute, ("Token", $"0x{type.Definition.token:X8}"));
 
             return mType;
         }
