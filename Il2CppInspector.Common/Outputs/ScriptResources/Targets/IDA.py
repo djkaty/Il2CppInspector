@@ -32,6 +32,7 @@ def SetType(addr, cppType):
   if not cppType.endswith(';'):
     cppType += ';'
   tinfo = idc.parse_decl(cppType,idaapi.PT_RAWARGS)
+  ret = None
   if not(tinfo is None):
     ret = idc.apply_type(addr,tinfo)
   if ret is None:
