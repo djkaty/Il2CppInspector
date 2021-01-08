@@ -49,7 +49,9 @@ typedef __int64 int64_t;
 typedef __int{model.Package.BinaryImage.Bits} size_t;
 typedef size_t intptr_t;
 typedef size_t uintptr_t;
-#else
+#endif
+
+#if !defined(_GHIDRA_) && !defined(_IDA_)
 #define _CPLUSPLUS_
 #endif
 ");
