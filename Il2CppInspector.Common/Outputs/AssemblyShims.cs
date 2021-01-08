@@ -152,7 +152,9 @@ namespace Il2CppInspector.Outputs
         // Generate type recursively with all nested types
         private TypeDefUser CreateType(ModuleDef module, TypeInfo type) {
             // Initialize with base class
-            var mType = new TypeDefUser(type.Namespace, type.BaseName, GetTypeRef(module, type.BaseType)) { Attributes = (TypeAttributes) type.Attributes };
+            var mType = new TypeDefUser(type.Namespace, type.BaseName, GetTypeRef(module, type.BaseType)) {
+                Attributes = (TypeAttributes) type.Attributes
+            };
 
             // Generic parameters
             foreach (var gp in type.GenericTypeParameters) {
@@ -174,20 +176,37 @@ namespace Il2CppInspector.Outputs
                 mType.NestedTypes.Add(CreateType(module, nestedType));
 
             // Add methods
-            foreach (var ctor in type.DeclaredConstructors) {
-                var s = MethodSig.CreateInstance(module.CorLibTypes.Void,
-                    ctor.DeclaredParameters.Select(p => GetTypeRef(module, p.ParameterType).ToTypeSig()).ToArray());
+            foreach (var method in type.DeclaredConstructors.AsEnumerable<MethodBase>().Concat(type.DeclaredMethods)) {
+                // Return type and parameter signature
+                var s = MethodSig.CreateInstance(
+                    method is MethodInfo mi? GetTypeSig(module, mi.ReturnType) : module.CorLibTypes.Void,
+                    method.DeclaredParameters.Select(p => GetTypeSig(module, p.ParameterType))
+                    .ToArray());
 
-                var m = new MethodDefUser(ctor.Name, s, (MethodImplAttributes) ctor.MethodImplementationFlags, (MethodAttributes) ctor.Attributes);
+                // Definition
+                var mMethod = new MethodDefUser(method.Name, s, (MethodImplAttributes) method.MethodImplementationFlags, (MethodAttributes) method.Attributes);
 
-                // TODO: Generic parameters
-                
+                // Generic type parameters
+                foreach (var gp in method.GetGenericArguments()) {
+                    var p = new GenericParamUser((ushort) gp.GenericParameterPosition, (GenericParamAttributes) gp.GenericParameterAttributes, gp.Name);
+
+                    // Generic constraints (types and interfaces)
+                    foreach (var c in gp.GetGenericParameterConstraints())
+                        p.GenericParamConstraints.Add(new GenericParamConstraintUser(GetTypeRef(module, c)));
+
+                    mMethod.GenericParameters.Add(p);
+                }
+
+                // Parameter names
+                foreach (var param in method.DeclaredParameters)
+                    mMethod.ParamDefs.Add(new ParamDefUser(param.Name, (ushort) (param.Position + 1)));
+
                 // Method body
-                if (ctor.VirtualAddress.HasValue) {
+                if (method.VirtualAddress.HasValue) {
 
                 }
 
-                mType.Methods.Add(m);
+                mType.Methods.Add(mMethod);
             }
 
             // Add token attribute
@@ -207,31 +226,42 @@ namespace Il2CppInspector.Outputs
         }
 
         // Convert Il2CppInspector TypeInfo into type reference imported to specified module
-        private ITypeDefOrRef GetTypeRef(ModuleDef module, TypeInfo type) {
+        private ITypeDefOrRef GetTypeRef(ModuleDef module, TypeInfo type)
+            => module.Import(GetTypeSig(module, type)).ToTypeDefOrRef();
+
+        // Convert Il2CppInspector TypeInfo into type signature imported to specified module
+        private TypeSig GetTypeSig(ModuleDef module, TypeInfo type) {
             if (type == null)
                 return null;
 
             // Generic type parameter
-            if (type.IsGenericParameter)
-                return new GenericVar(type.GenericParameterPosition).ToTypeDefOrRef();
+            if (type.IsGenericTypeParameter)
+                return new GenericVar(type.GenericParameterPosition);
+
+            // Generic method parameter
+            if (type.IsGenericMethodParameter)
+                return new GenericMVar(type.GenericParameterPosition);
 
             // Get module that owns the type
             var typeOwnerModule = modules.First(a => a.Name == type.Assembly.ShortName);
+            var typeOwnerModuleRef = new ModuleRefUser(typeOwnerModule);
 
-            // Get reference to type
-            var typeRef = new TypeRefUser(typeOwnerModule, type.Namespace, type.BaseName, typeOwnerModule);
+            // Get reference to type; use nested type as resolution scope if applicable
+            var typeSig = new TypeRefUser(typeOwnerModule, type.Namespace, type.BaseName,
+                type.DeclaringType != null? (IResolutionScope) GetTypeRef(module, type.DeclaringType).ScopeType : typeOwnerModuleRef)
+                .ToTypeSig();
 
             // Non-generic type
             if (!type.GetGenericArguments().Any())
-                return module.Import(typeRef);
+                return typeSig;
 
             // Generic type requires generic arguments
-            var genericInstSig = new GenericInstSig(typeRef.ToTypeSig().ToClassOrValueTypeSig(), type.GenericTypeArguments.Length);
+            var genericInstSig = new GenericInstSig(typeSig.ToClassOrValueTypeSig(), type.GenericTypeArguments.Length);
 
-            foreach (var gp in type.GenericTypeArguments)
-                genericInstSig.GenericArguments.Add(GetTypeRef(module, gp).ToTypeSig());
+            foreach (var gp in type.GetGenericArguments())
+                genericInstSig.GenericArguments.Add(GetTypeSig(module, gp));
 
-            return module.Import(genericInstSig).ToTypeDefOrRef();
+            return genericInstSig;
         }
 
         // Generate and save all DLLs
