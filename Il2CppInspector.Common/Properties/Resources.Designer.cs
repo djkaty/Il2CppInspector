@@ -238,7 +238,8 @@ namespace Il2CppInspector.Properties {
         ///// Custom injected code entry point
         ///void Run()
         ///{
-        ///    // If you would like to write to a log file, specify the name above and u [rest of string was truncated]&quot;;.
+        ///    // Initialize thread data - DO NOT REMOVE
+        ///    il2cpp_thread_attach(il2cpp [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cpp_MainCpp {
             get {
