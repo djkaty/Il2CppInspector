@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using dnlib.DotNet;
@@ -169,10 +170,15 @@ namespace Il2CppInspector.Outputs
             foreach (var prop in type.DeclaredProperties)
                 AddProperty(module, mType, prop);
 
-            // Add methods that aren't properties
-            var props = type.DeclaredProperties.SelectMany(p => new[] { p.GetMethod, p.SetMethod }).Where(m => m != null);
+            // Add events
+            foreach (var evt in type.DeclaredEvents)
+                AddEvent(module, mType, evt);
 
-            foreach (var method in type.DeclaredConstructors.AsEnumerable<MethodBase>().Concat(type.DeclaredMethods).Except(props))
+            // Add methods that aren't properties or events
+            var props = type.DeclaredProperties.SelectMany(p => new[] { p.GetMethod, p.SetMethod }).Where(m => m != null);
+            var events = type.DeclaredEvents.SelectMany(p => new[] { p.AddMethod, p.RemoveMethod, p.RaiseMethod }).Where(m => m != null);
+
+            foreach (var method in type.DeclaredConstructors.AsEnumerable<MethodBase>().Concat(type.DeclaredMethods).Except(props).Except(events))
                 AddMethod(module, mType, method);
 
             // Add token attribute
@@ -219,10 +225,8 @@ namespace Il2CppInspector.Outputs
 
             var mProp = new PropertyDefUser(prop.Name, s, (PropertyAttributes) prop.Attributes);
 
-            if (prop.CanRead)
-                mProp.GetMethod = AddMethod(module, mType, prop.GetMethod);
-            if (prop.CanWrite)
-                mProp.SetMethod = AddMethod(module, mType, prop.SetMethod);
+            mProp.GetMethod = AddMethod(module, mType, prop.GetMethod);
+            mProp.SetMethod = AddMethod(module, mType, prop.SetMethod);
 
             // Add token attribute
             mProp.AddAttribute(module, tokenAttribute, ("Token", $"0x{prop.Definition.token:X8}"));
@@ -232,8 +236,28 @@ namespace Il2CppInspector.Outputs
             return mProp;
         }
 
+        // Add an event to a type
+        private EventDef AddEvent(ModuleDef module, TypeDef mType, EventInfo evt) {
+            var mEvent = new EventDefUser(evt.Name, GetTypeRef(module, evt.EventHandlerType), (EventAttributes) evt.Attributes);
+
+            mEvent.AddMethod = AddMethod(module, mType, evt.AddMethod);
+            mEvent.RemoveMethod = AddMethod(module, mType, evt.RemoveMethod);
+            mEvent.InvokeMethod = AddMethod(module, mType, evt.RaiseMethod);
+
+            // Add token attribute
+            mEvent.AddAttribute(module, tokenAttribute, ("Token", $"0x{evt.Definition.token:X8}"));
+
+            // Add property to type
+            mType.Events.Add(mEvent);
+            return mEvent;
+        }
+
         // Add a method to a type
         private MethodDef AddMethod(ModuleDef module, TypeDef mType, MethodBase method) {
+            // Undefined method
+            if (method == null)
+                return null;
+
             // Return type and parameter signature
             MethodSig s;
             
