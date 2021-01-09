@@ -67,9 +67,6 @@ namespace Il2CppInspector.Outputs
         // The namespace for our custom types
         private const string rootNamespace = "Il2CppInspector.DLL";
 
-        // Mapping of our type model to dnlib types
-        //private Dictionary<TypeInfo, TypeDef> typeMap = new Dictionary<TypeInfo, TypeDef>();
-
         // All modules (single-module assemblies)
         private List<ModuleDef> modules = new List<ModuleDef>();
 
@@ -164,6 +161,10 @@ namespace Il2CppInspector.Outputs
             foreach (var nestedType in type.DeclaredNestedTypes)
                 mType.NestedTypes.Add(CreateType(module, nestedType));
 
+            // Add fields
+            foreach (var field in type.DeclaredFields)
+                AddField(module, mType, field);
+
             // Add properties
             foreach (var prop in type.DeclaredProperties)
                 AddProperty(module, mType, prop);
@@ -181,8 +182,40 @@ namespace Il2CppInspector.Outputs
             return mType;
         }
 
+        // Add a field to a type
+        private FieldDef AddField(ModuleDef module, TypeDef mType, FieldInfo field) {
+            var s = new FieldSig(GetTypeSig(module, field.FieldType));
+
+            var mField = new FieldDefUser(field.Name, s, (FieldAttributes) field.Attributes);
+
+            // Default value
+            if (field.HasDefaultValue)
+                mField.Constant = new ConstantUser(field.DefaultValue);
+
+            // Add offset attribute if no default value but metadata present
+            else if (field.HasFieldRVA)
+                mField.AddAttribute(module, metadataOffsetAttribute, ("Offset", $"0x{field.DefaultValueMetadataAddress:X8}"));
+
+            // Field offset
+            if (!field.IsLiteral && field.Offset != 0)
+                mField.AddAttribute(module, fieldOffsetAttribute, ("Offset", $"0x{field.Offset:X}"));
+
+            // Add token attribute
+            mField.AddAttribute(module, tokenAttribute, ("Token", $"0x{field.Definition.token:X8}"));
+
+            mType.Fields.Add(mField);
+            return mField;
+        }
+
+        // Add a property to a type
         private PropertyDef AddProperty(ModuleDef module, TypeDef mType, PropertyInfo prop) {
-            var s = PropertySig.CreateInstance(GetTypeSig(module, prop.PropertyType));
+            PropertySig s;
+
+            // Static or instance
+            if (prop.GetMethod?.IsStatic ?? prop.SetMethod.IsStatic)
+                s = PropertySig.CreateStatic(GetTypeSig(module, prop.PropertyType));
+            else
+                s = PropertySig.CreateInstance(GetTypeSig(module, prop.PropertyType));
 
             var mProp = new PropertyDefUser(prop.Name, s, (PropertyAttributes) prop.Attributes);
 
@@ -199,9 +232,19 @@ namespace Il2CppInspector.Outputs
             return mProp;
         }
 
+        // Add a method to a type
         private MethodDef AddMethod(ModuleDef module, TypeDef mType, MethodBase method) {
             // Return type and parameter signature
-            var s = MethodSig.CreateInstance(
+            MethodSig s;
+            
+            // Static or instance
+            if (method.IsStatic)
+                s = MethodSig.CreateStatic(
+                    method is MethodInfo mi ? GetTypeSig(module, mi.ReturnType) : module.CorLibTypes.Void,
+                    method.DeclaredParameters.Select(p => GetTypeSig(module, p.ParameterType))
+                    .ToArray());
+            else
+                s = MethodSig.CreateInstance(
                     method is MethodInfo mi? GetTypeSig(module, mi.ReturnType) : module.CorLibTypes.Void,
                     method.DeclaredParameters.Select(p => GetTypeSig(module, p.ParameterType))
                     .ToArray());
