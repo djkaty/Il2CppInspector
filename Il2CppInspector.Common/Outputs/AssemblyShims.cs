@@ -337,10 +337,14 @@ namespace Il2CppInspector.Outputs
 
         // Convert Il2CppInspector TypeInfo into type reference and import to specified module
         private ITypeDefOrRef GetTypeRef(ModuleDef module, TypeInfo type)
-            => module.Import(GetTypeSig(module, type)).ToTypeDefOrRef();
+            => GetTypeSig(module, type).ToTypeDefOrRef();
+
+        // Convert Il2CppInspector TypeInfo into type signature and import to specified module
+        private TypeSig GetTypeSig(ModuleDef module, TypeInfo type)
+            => module.Import(GetTypeSigImpl(module, type));
 
         // Convert Il2CppInspector TypeInfo into type signature
-        private TypeSig GetTypeSig(ModuleDef module, TypeInfo type) {
+        private TypeSig GetTypeSigImpl(ModuleDef module, TypeInfo type) {
             if (type == null)
                 return null;
 
