@@ -35,7 +35,7 @@ namespace Il2CppInspector.Outputs
             return ctor;
         }
 
-        // Add custom attribute to type with named property arguments
+        // Add custom attribute to item with named property arguments
         // 'module' is the module that owns 'type'; type.Module may still be null when this is called
         public static CustomAttribute AddAttribute(this IHasCustomAttribute def, ModuleDef module, TypeDef attrTypeDef, params (string prop, object value)[] args) {
             var attRef = module.Import(attrTypeDef);
@@ -185,6 +185,10 @@ namespace Il2CppInspector.Outputs
             if (type.Definition != null)
                 mType.AddAttribute(module, tokenAttribute, ("Token", $"0x{type.Definition.token:X8}"));
 
+            // Add custom attribute attributes
+            foreach (var ca in type.CustomAttributes)
+                AddCustomAttribute(module, mType, ca);
+
             return mType;
         }
 
@@ -208,6 +212,10 @@ namespace Il2CppInspector.Outputs
 
             // Add token attribute
             mField.AddAttribute(module, tokenAttribute, ("Token", $"0x{field.Definition.token:X8}"));
+
+            // Add custom attribute attributes
+            foreach (var ca in field.CustomAttributes)
+                AddCustomAttribute(module, mField, ca);
 
             mType.Fields.Add(mField);
             return mField;
@@ -236,6 +244,10 @@ namespace Il2CppInspector.Outputs
             // Add token attribute
             mProp.AddAttribute(module, tokenAttribute, ("Token", $"0x{prop.Definition.token:X8}"));
 
+            // Add custom attribute attributes
+            foreach (var ca in prop.CustomAttributes)
+                AddCustomAttribute(module, mProp, ca);
+
             // Add property to type
             mType.Properties.Add(mProp);
             return mProp;
@@ -251,6 +263,10 @@ namespace Il2CppInspector.Outputs
 
             // Add token attribute
             mEvent.AddAttribute(module, tokenAttribute, ("Token", $"0x{evt.Definition.token:X8}"));
+
+            // Add custom attribute attributes
+            foreach (var ca in evt.CustomAttributes)
+                AddCustomAttribute(module, mEvent, ca);
 
             // Add property to type
             mType.Events.Add(mEvent);
@@ -309,6 +325,11 @@ namespace Il2CppInspector.Outputs
                     else
                         p.AddAttribute(module, metadataOffsetAttribute, ("Offset", $"0x{param.DefaultValueMetadataAddress:X8}"));
                 }
+
+                // Add custom attribute attributes
+                foreach (var ca in param.CustomAttributes)
+                    AddCustomAttribute(module, p, ca);
+
                 mMethod.ParamDefs.Add(p);
             }
 
@@ -356,10 +377,22 @@ namespace Il2CppInspector.Outputs
                 mMethod.AddAttribute(module, addressAttribute, args.ToArray());
             }
 
+            // Add custom attribute attributes
+            foreach (var ca in method.CustomAttributes)
+                AddCustomAttribute(module, mMethod, ca);
+
             // Add method to type
             mType.Methods.Add(mMethod);
             return mMethod;
         }
+
+        // Add a custom attributes attribute to an item
+        private CustomAttribute AddCustomAttribute(ModuleDef module, IHasCustomAttribute def, CustomAttributeData ca)
+            => def.AddAttribute(module, attributeAttribute,
+                ("Name", ca.AttributeType.Name),
+                ("RVA", (ca.VirtualAddress.Start - model.Package.BinaryImage.GlobalOffset).ToAddressString()),
+                ("Offset", string.Format("0x{0:X}", model.Package.BinaryImage.MapVATR(ca.VirtualAddress.Start)))
+            );
 
         // Generate type recursively with all nested types and add to module
         private TypeDefUser AddType(ModuleDef module, TypeInfo type) {
@@ -448,6 +481,10 @@ namespace Il2CppInspector.Outputs
                 // Create assembly and add primary module to list
                 var module = CreateAssembly(asm.ShortName);
                 modules.Add(module);
+
+                // Add custom attribute attributes
+                foreach (var ca in asm.CustomAttributes)
+                    AddCustomAttribute(module, module.Assembly, ca);
 
                 // Add all types
                 // Only references to previously-added modules will be resolved
