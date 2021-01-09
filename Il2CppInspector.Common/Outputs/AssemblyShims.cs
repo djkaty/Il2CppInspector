@@ -335,11 +335,11 @@ namespace Il2CppInspector.Outputs
             return mType;
         }
 
-        // Convert Il2CppInspector TypeInfo into type reference imported to specified module
+        // Convert Il2CppInspector TypeInfo into type reference and import to specified module
         private ITypeDefOrRef GetTypeRef(ModuleDef module, TypeInfo type)
             => module.Import(GetTypeSig(module, type)).ToTypeDefOrRef();
 
-        // Convert Il2CppInspector TypeInfo into type signature imported to specified module
+        // Convert Il2CppInspector TypeInfo into type signature
         private TypeSig GetTypeSig(ModuleDef module, TypeInfo type) {
             if (type == null)
                 return null;
@@ -351,6 +351,21 @@ namespace Il2CppInspector.Outputs
             // Generic method parameter (MVAR)
             if (type.IsGenericMethodParameter)
                 return new GenericMVar(type.GenericParameterPosition);
+
+            // Array and single-dimension zero-indexed array (ARRAY / SZARRAY)
+            if (type.IsArray)
+                if (type.GetArrayRank() == 1)
+                    return new SZArraySig(GetTypeSig(module, type.ElementType));
+                else
+                    return new ArraySig(GetTypeSig(module, type.ElementType), type.GetArrayRank());
+
+            // Pointer (PTR)
+            if (type.IsPointer)
+                return new PtrSig(GetTypeSig(module, type.ElementType));
+
+            // Reference (BYREF)
+            if (type.IsByRef)
+                return new ByRefSig(GetTypeSig(module, type.ElementType));
 
             // Get module that owns the type
             var typeOwnerModule = modules.First(a => a.Name == type.Assembly.ShortName);
