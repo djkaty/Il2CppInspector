@@ -197,7 +197,7 @@ namespace Il2CppInspector.Outputs
                 mField.AddAttribute(module, metadataOffsetAttribute, ("Offset", $"0x{field.DefaultValueMetadataAddress:X8}"));
 
             // Field offset
-            if (!field.IsLiteral && field.Offset != 0)
+            if (!field.IsLiteral && !field.IsStatic && field.Offset != 0)
                 mField.AddAttribute(module, fieldOffsetAttribute, ("Offset", $"0x{field.Offset:X}"));
 
             // Add token attribute
@@ -344,11 +344,11 @@ namespace Il2CppInspector.Outputs
             if (type == null)
                 return null;
 
-            // Generic type parameter
+            // Generic type parameter (VAR)
             if (type.IsGenericTypeParameter)
                 return new GenericVar(type.GenericParameterPosition);
 
-            // Generic method parameter
+            // Generic method parameter (MVAR)
             if (type.IsGenericMethodParameter)
                 return new GenericMVar(type.GenericParameterPosition);
 
@@ -361,11 +361,11 @@ namespace Il2CppInspector.Outputs
                 type.DeclaringType != null? (IResolutionScope) GetTypeRef(module, type.DeclaringType).ScopeType : typeOwnerModuleRef)
                 .ToTypeSig();
 
-            // Non-generic type
+            // Non-generic type (CLASS / VALUETYPE)
             if (!type.GetGenericArguments().Any())
                 return typeSig;
 
-            // Generic type requires generic arguments
+            // Generic type requires generic arguments (GENERICINST)
             var genericInstSig = new GenericInstSig(typeSig.ToClassOrValueTypeSig(), type.GenericTypeArguments.Length);
 
             foreach (var gp in type.GetGenericArguments())
