@@ -42,7 +42,7 @@ namespace Il2CppInspector.Outputs
 
             // Attribute arguments
             var attrArgs = args.Select(a =>
-                new CANamedArgument(false, module.CorLibTypes.String, a.prop, new CAArgument(module.CorLibTypes.String, a.value)));
+                new CANamedArgument(true, module.CorLibTypes.String, a.prop, new CAArgument(module.CorLibTypes.String, a.value)));
 
             var attr = new CustomAttribute(attCtorRef, null, attrArgs);
 
