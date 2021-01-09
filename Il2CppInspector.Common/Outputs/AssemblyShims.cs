@@ -14,7 +14,6 @@ using dnlib.DotNet.Emit;
 using Il2CppInspector.Reflection;
 using Assembly = System.Reflection.Assembly;
 using BindingFlags = System.Reflection.BindingFlags;
-using TypeRef = dnlib.DotNet.TypeRef;
 
 namespace Il2CppInspector.Outputs
 {
@@ -29,6 +28,7 @@ namespace Il2CppInspector.Outputs
             ctorBody.Instructions.Add(OpCodes.Ldarg_0.ToInstruction());
             ctorBody.Instructions.Add(OpCodes.Call.ToInstruction(@base));
             ctorBody.Instructions.Add(OpCodes.Ret.ToInstruction());
+            ctor.Body = ctorBody;
 
             type.Methods.Add(ctor);
             return ctor;
@@ -36,7 +36,7 @@ namespace Il2CppInspector.Outputs
 
         // Add custom attribute to type with named property arguments
         // 'module' is the module that owns 'type'; type.Module may still be null when this is called
-        public static CustomAttribute AddAttribute(this TypeDef type, ModuleDef module, TypeDef attrTypeDef, params (string prop, object value)[] args) {
+        public static CustomAttribute AddAttribute(this IHasCustomAttribute def, ModuleDef module, TypeDef attrTypeDef, params (string prop, object value)[] args) {
             var attRef = module.Import(attrTypeDef);
             var attCtorRef = new MemberRefUser(attrTypeDef.Module, ".ctor", MethodSig.CreateInstance(module.CorLibTypes.Void), attRef);
 
@@ -46,7 +46,7 @@ namespace Il2CppInspector.Outputs
 
             var attr = new CustomAttribute(attCtorRef, null, attrArgs);
 
-            type.CustomAttributes.Add(attr);
+            def.CustomAttributes.Add(attr);
             return attr;
         }
     }
@@ -57,19 +57,12 @@ namespace Il2CppInspector.Outputs
         // .NET type model
         private readonly TypeModel model;
 
-        // Target folder for DLLs
-        private string outputPath;
-
         // Our custom attributes
         private TypeDef addressAttribute;
         private TypeDef fieldOffsetAttribute;
         private TypeDef attributeAttribute;
         private TypeDef metadataOffsetAttribute;
         private TypeDef tokenAttribute;
-
-        // Resolver
-        private ModuleContext context;
-        private AssemblyResolver resolver;
 
         // The namespace for our custom types
         private const string rootNamespace = "Il2CppInspector.DLL";
@@ -136,15 +129,11 @@ namespace Il2CppInspector.Outputs
             // Create module
             var module = new ModuleDefUser(name) { Kind = ModuleKind.Dll };
 
-            // Set resolution scope
-            //module.Context = context;
-
-            // Add module to resolver
-            //resolver.AddToCache(module);
-
             // Create assembly
             var ourVersion = Assembly.GetAssembly(typeof(Il2CppInspector)).GetName().Version;
             var asm = new AssemblyDefUser(name.Replace(".dll", ""), ourVersion);
+
+            // Add module to assembly
             asm.Modules.Add(module);
             return module;
         }
@@ -176,44 +165,98 @@ namespace Il2CppInspector.Outputs
                 mType.NestedTypes.Add(CreateType(module, nestedType));
 
             // Add methods
-            foreach (var method in type.DeclaredConstructors.AsEnumerable<MethodBase>().Concat(type.DeclaredMethods)) {
-                // Return type and parameter signature
-                var s = MethodSig.CreateInstance(
-                    method is MethodInfo mi? GetTypeSig(module, mi.ReturnType) : module.CorLibTypes.Void,
-                    method.DeclaredParameters.Select(p => GetTypeSig(module, p.ParameterType))
-                    .ToArray());
-
-                // Definition
-                var mMethod = new MethodDefUser(method.Name, s, (MethodImplAttributes) method.MethodImplementationFlags, (MethodAttributes) method.Attributes);
-
-                // Generic type parameters
-                foreach (var gp in method.GetGenericArguments()) {
-                    var p = new GenericParamUser((ushort) gp.GenericParameterPosition, (GenericParamAttributes) gp.GenericParameterAttributes, gp.Name);
-
-                    // Generic constraints (types and interfaces)
-                    foreach (var c in gp.GetGenericParameterConstraints())
-                        p.GenericParamConstraints.Add(new GenericParamConstraintUser(GetTypeRef(module, c)));
-
-                    mMethod.GenericParameters.Add(p);
-                }
-
-                // Parameter names
-                foreach (var param in method.DeclaredParameters)
-                    mMethod.ParamDefs.Add(new ParamDefUser(param.Name, (ushort) (param.Position + 1)));
-
-                // Method body
-                if (method.VirtualAddress.HasValue) {
-
-                }
-
-                mType.Methods.Add(mMethod);
-            }
+            foreach (var method in type.DeclaredConstructors.AsEnumerable<MethodBase>().Concat(type.DeclaredMethods))
+                AddMethod(module, mType, method);
 
             // Add token attribute
             if (type.Definition != null)
                 mType.AddAttribute(module, tokenAttribute, ("Token", $"0x{type.Definition.token:X8}"));
 
             return mType;
+        }
+
+        private MethodDef AddMethod(ModuleDef module, TypeDef mType, MethodBase method) {
+            // Return type and parameter signature
+            var s = MethodSig.CreateInstance(
+                    method is MethodInfo mi? GetTypeSig(module, mi.ReturnType) : module.CorLibTypes.Void,
+                    method.DeclaredParameters.Select(p => GetTypeSig(module, p.ParameterType))
+                    .ToArray());
+
+            // Definition
+            var mMethod = new MethodDefUser(method.Name, s, (MethodImplAttributes) method.MethodImplementationFlags, (MethodAttributes) method.Attributes);
+
+            // Generic type parameters
+            foreach (var gp in method.GetGenericArguments()) {
+                var p = new GenericParamUser((ushort) gp.GenericParameterPosition, (GenericParamAttributes) gp.GenericParameterAttributes, gp.Name);
+
+                // Generic constraints (types and interfaces)
+                foreach (var c in gp.GetGenericParameterConstraints())
+                    p.GenericParamConstraints.Add(new GenericParamConstraintUser(GetTypeRef(module, c)));
+
+                mMethod.GenericParameters.Add(p);
+            }
+
+            // Parameter names and default values
+            foreach (var param in method.DeclaredParameters) {
+                var p = new ParamDefUser(param.Name, (ushort) (param.Position + 1));
+
+                if (param.DefaultValueMetadataAddress != 0) {
+                    if (param.HasDefaultValue)
+                        p.Constant = new ConstantUser(param.DefaultValue);
+
+                    // Add offset attribute if no default value but metadata present
+                    else
+                        p.AddAttribute(module, metadataOffsetAttribute, ("Offset", $"0x{param.DefaultValueMetadataAddress:X8}"));
+                }
+                mMethod.ParamDefs.Add(p);
+            }
+
+            // Method body
+            if (method.VirtualAddress.HasValue && method.DeclaringType.BaseType?.FullName != "System.MulticastDelegate") {
+                mMethod.Body = new CilBody();
+                var inst = mMethod.Body.Instructions;
+
+                // Return nothing if return type is void
+                if (mMethod.ReturnType.FullName == "System.Void")
+                    inst.Add(OpCodes.Ret.ToInstruction());
+
+                // Return default for value type
+                else if (mMethod.ReturnType.IsValueType) {
+                    var result = new Local(mMethod.ReturnType);
+                    mMethod.Body.Variables.Add(result);
+
+                    inst.Add(OpCodes.Ldloca_S.ToInstruction(result));
+                    inst.Add(OpCodes.Initobj.ToInstruction(mMethod.ReturnType.ToTypeDefOrRef()));
+                    inst.Add(OpCodes.Ldloc_0.ToInstruction());
+                    inst.Add(OpCodes.Ret.ToInstruction());
+                }
+
+                // Return null for reference types
+                else {
+                    inst.Add(OpCodes.Ldnull.ToInstruction());
+                    inst.Add(OpCodes.Ret.ToInstruction());
+                }
+            }
+
+            // Add token attribute
+            mMethod.AddAttribute(module, tokenAttribute, ("Token", $"0x{method.Definition.token:X8}"));
+
+            // Add method pointer attribute
+            if (method.VirtualAddress.HasValue) {
+                var args = new List<(string,object)> {
+                        ("RVA", (method.VirtualAddress.Value.Start - model.Package.BinaryImage.GlobalOffset).ToAddressString()),
+                        ("Offset", string.Format("0x{0:X}", model.Package.BinaryImage.MapVATR(method.VirtualAddress.Value.Start))),
+                        ("VA", method.VirtualAddress.Value.Start.ToAddressString())
+                    };
+                if (method.Definition.slot != ushort.MaxValue)
+                    args.Add(("Slot", method.Definition.slot));
+
+                mMethod.AddAttribute(module, addressAttribute, args.ToArray());
+            }
+
+            // Add method to type
+            mType.Methods.Add(mMethod);
+            return mMethod;
         }
 
         // Generate type recursively with all nested types and add to module
@@ -268,12 +311,7 @@ namespace Il2CppInspector.Outputs
         public void Write(string outputPath) {
 
             // Create folder for DLLs
-            this.outputPath = outputPath;
             Directory.CreateDirectory(outputPath);
-
-            // Create resolver
-            //context = ModuleDef.CreateModuleContext();
-            //resolver = context.AssemblyResolver as AssemblyResolver;
 
             // Generate our custom types assembly
             var baseDll = CreateBaseAssembly();
@@ -286,7 +324,7 @@ namespace Il2CppInspector.Outputs
             modules.Clear();
 
             foreach (var asm in model.Assemblies) {
-                // Create assembly and add to list
+                // Create assembly and add primary module to list
                 var module = CreateAssembly(asm.ShortName);
                 modules.Add(module);
 
