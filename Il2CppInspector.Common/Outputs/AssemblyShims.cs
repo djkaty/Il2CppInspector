@@ -164,8 +164,14 @@ namespace Il2CppInspector.Outputs
             foreach (var nestedType in type.DeclaredNestedTypes)
                 mType.NestedTypes.Add(CreateType(module, nestedType));
 
-            // Add methods
-            foreach (var method in type.DeclaredConstructors.AsEnumerable<MethodBase>().Concat(type.DeclaredMethods))
+            // Add properties
+            foreach (var prop in type.DeclaredProperties)
+                AddProperty(module, mType, prop);
+
+            // Add methods that aren't properties
+            var props = type.DeclaredProperties.SelectMany(p => new[] { p.GetMethod, p.SetMethod }).Where(m => m != null);
+
+            foreach (var method in type.DeclaredConstructors.AsEnumerable<MethodBase>().Concat(type.DeclaredMethods).Except(props))
                 AddMethod(module, mType, method);
 
             // Add token attribute
@@ -173,6 +179,24 @@ namespace Il2CppInspector.Outputs
                 mType.AddAttribute(module, tokenAttribute, ("Token", $"0x{type.Definition.token:X8}"));
 
             return mType;
+        }
+
+        private PropertyDef AddProperty(ModuleDef module, TypeDef mType, PropertyInfo prop) {
+            var s = PropertySig.CreateInstance(GetTypeSig(module, prop.PropertyType));
+
+            var mProp = new PropertyDefUser(prop.Name, s, (PropertyAttributes) prop.Attributes);
+
+            if (prop.CanRead)
+                mProp.GetMethod = AddMethod(module, mType, prop.GetMethod);
+            if (prop.CanWrite)
+                mProp.SetMethod = AddMethod(module, mType, prop.SetMethod);
+
+            // Add token attribute
+            mProp.AddAttribute(module, tokenAttribute, ("Token", $"0x{prop.Definition.token:X8}"));
+
+            // Add property to type
+            mType.Properties.Add(mProp);
+            return mProp;
         }
 
         private MethodDef AddMethod(ModuleDef module, TypeDef mType, MethodBase method) {
