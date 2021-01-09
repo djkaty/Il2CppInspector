@@ -278,8 +278,9 @@ namespace Il2CppInspector.Outputs
                 mMethod.ParamDefs.Add(p);
             }
 
-            // Method body
-            if (method.VirtualAddress.HasValue && method.DeclaringType.BaseType?.FullName != "System.MulticastDelegate") {
+            // Everything that's not extern or a delegate type should have a method body
+            if ((method.Attributes & System.Reflection.MethodAttributes.PinvokeImpl) == 0
+                && method.DeclaringType.BaseType?.FullName != "System.MulticastDelegate") {
                 mMethod.Body = new CilBody();
                 var inst = mMethod.Body.Instructions;
 
