@@ -333,9 +333,10 @@ namespace Il2CppInspector.Outputs
                 mMethod.ParamDefs.Add(p);
             }
 
-            // Everything that's not extern or a delegate type should have a method body
+            // Everything that's not extern, abstract or a delegate type should have a method body
             if ((method.Attributes & System.Reflection.MethodAttributes.PinvokeImpl) == 0
-                && method.DeclaringType.BaseType?.FullName != "System.MulticastDelegate") {
+                && method.DeclaringType.BaseType?.FullName != "System.MulticastDelegate"
+                && !method.IsAbstract) {
                 mMethod.Body = new CilBody();
                 var inst = mMethod.Body.Instructions;
 
