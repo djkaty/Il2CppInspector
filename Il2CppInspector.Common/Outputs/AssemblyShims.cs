@@ -376,7 +376,7 @@ namespace Il2CppInspector.Outputs
             // Add method pointer attribute
             if (method.VirtualAddress.HasValue) {
                 var args = new List<(string,object)> {
-                        ("RVA", (method.VirtualAddress.Value.Start - model.Package.BinaryImage.GlobalOffset).ToAddressString()),
+                        ("RVA", (method.VirtualAddress.Value.Start - model.Package.BinaryImage.ImageBase).ToAddressString()),
                         ("Offset", string.Format("0x{0:X}", model.Package.BinaryImage.MapVATR(method.VirtualAddress.Value.Start))),
                         ("VA", method.VirtualAddress.Value.Start.ToAddressString())
                     };
@@ -402,7 +402,7 @@ namespace Il2CppInspector.Outputs
 
             return def.AddAttribute(module, attributeAttribute,
                 ("Name", ca.AttributeType.Name),
-                ("RVA", (ca.VirtualAddress.Start - model.Package.BinaryImage.GlobalOffset).ToAddressString()),
+                ("RVA", (ca.VirtualAddress.Start - model.Package.BinaryImage.ImageBase).ToAddressString()),
                 ("Offset", string.Format("0x{0:X}", model.Package.BinaryImage.MapVATR(ca.VirtualAddress.Start)))
             );
         }
