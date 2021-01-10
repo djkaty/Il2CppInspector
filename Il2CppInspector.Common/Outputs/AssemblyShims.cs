@@ -357,8 +357,8 @@ namespace Il2CppInspector.Outputs
                 if (mMethod.ReturnType.FullName == "System.Void")
                     inst.Add(OpCodes.Ret.ToInstruction());
 
-                // Return default for value type
-                else if (mMethod.ReturnType.IsValueType) {
+                // Return default for value type or enum
+                else if (mMethod.ReturnType.IsValueType || ((MethodInfo) method).ReturnType.IsEnum) {
                     var result = new Local(mMethod.ReturnType);
                     mMethod.Body.Variables.Add(result);
 
