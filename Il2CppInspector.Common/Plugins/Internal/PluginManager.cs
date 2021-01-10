@@ -354,6 +354,9 @@ namespace Il2CppInspector
                         // Disable failing plugin
                         plugin.Enabled = false;
 
+                        // Clear stack trace
+                        plugin.StackTrace.Clear();
+
                         // Forward error to error handler
                         eventInfo.Error = new PluginErrorEventArgs { Plugin = plugin.Plugin, Exception = ex, Operation = hookName };
                         ErrorHandler?.Invoke(AsInstance, eventInfo);
