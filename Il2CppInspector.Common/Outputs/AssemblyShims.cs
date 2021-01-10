@@ -7,13 +7,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 using Il2CppInspector.Reflection;
-using Assembly = System.Reflection.Assembly;
 using BindingFlags = System.Reflection.BindingFlags;
 
 namespace Il2CppInspector.Outputs
@@ -70,7 +68,7 @@ namespace Il2CppInspector.Outputs
         private const string rootNamespace = "Il2CppInspector.DLL";
 
         // All modules (single-module assemblies)
-        private List<ModuleDef> modules = new List<ModuleDef>();
+        private Dictionary<Assembly, ModuleDef> modules = new Dictionary<Assembly, ModuleDef>();
 
         public AssemblyShims(TypeModel model) => this.model = model;
 
@@ -133,7 +131,7 @@ namespace Il2CppInspector.Outputs
             var module = new ModuleDefUser(name) { Kind = ModuleKind.Dll };
 
             // Create assembly
-            var ourVersion = Assembly.GetAssembly(typeof(Il2CppInspector)).GetName().Version;
+            var ourVersion = System.Reflection.Assembly.GetAssembly(typeof(Il2CppInspector)).GetName().Version;
             var asm = new AssemblyDefUser(name.Replace(".dll", ""), ourVersion);
 
             // Add module to assembly
@@ -454,7 +452,7 @@ namespace Il2CppInspector.Outputs
                 return new ByRefSig(GetTypeSig(module, type.ElementType));
 
             // Get module that owns the type
-            var typeOwnerModule = modules.First(a => a.Name == type.Assembly.ShortName);
+            var typeOwnerModule = modules[type.Assembly];
             var typeOwnerModuleRef = new ModuleRefUser(typeOwnerModule);
 
             // Get reference to type; use nested type as resolution scope if applicable
@@ -491,23 +489,25 @@ namespace Il2CppInspector.Outputs
             // We have to do this before adding anything else so we can reference every type
             modules.Clear();
 
+            // Create all assemblies
             foreach (var asm in model.Assemblies) {
                 // Create assembly and add primary module to list
                 var module = CreateAssembly(asm.ShortName);
-                modules.Add(module);
-
-                // Add custom attribute attributes
-                foreach (var ca in asm.CustomAttributes)
-                    AddCustomAttribute(module, module.Assembly, ca);
-
-                // Add all types
-                // Only references to previously-added modules will be resolved
-                foreach (var type in asm.DefinedTypes.Where(t => !t.IsNested))
-                    AddType(module, type);
+                modules.Add(asm, module);
             }
 
+            // Add custom attribute attributes (must do this after all assemblies are created due to type referencing)
+            foreach (var asm in model.Assemblies)
+                foreach (var ca in asm.CustomAttributes)
+                    AddCustomAttribute(modules[asm], modules[asm].Assembly, ca);
+
+            // Add all types
+            foreach (var asm in model.Assemblies)
+                foreach (var type in asm.DefinedTypes.Where(t => !t.IsNested))
+                    AddType(modules[asm], type);
+
             // Write all assemblies to disk
-            foreach (var asm in modules)
+            foreach (var asm in modules.Values)
                 asm.Write(Path.Combine(outputPath, asm.Name));
         }
     }
