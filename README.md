@@ -6,6 +6,8 @@ Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the
 
 * Output IL2CPP type definitions, metadata and method pointers as **[C# stub code](#creating-c-prototypes)**
 
+* Create **.NET assembly shim DLLs** containing the IL2CPP application structure and metadata for use in decompilers such as [ILSpy](https://github.com/icsharpcode/ILSpy), [dnSpy](https://github.com/dnSpy/dnSpy), Unity asset loading with [AssetStudio](https://github.com/Perfare/AssetStudio) or managed proxy generation with [Il2CppAssemblyUnhollower](https://github.com/knah/Il2CppAssemblyUnhollower)
+
 * Create **[C++ scaffolding](#creating-c-scaffolding-or-a-dll-injection-project)** for all types, methods, function pointers and API functions in an IL2CPP application for use in x64dbg, Cydia Substrate etc.
 
 * Create **[IDA](#adding-metadata-to-your-ida-workflow) and [Ghidra](#adding-metadata-to-your-ghidra-workflow) Python scripts** to populate symbol, function and type information; includes API hooks to [implement scripts for other targets](#extending-il2cppinspectors-python-output-to-support-other-targets)
@@ -169,6 +171,8 @@ File format and architecture are automatically detected.
   -h, --cpp-out               (Default: cpp) C++ scaffolding / DLL injection project output path
 
   -o, --json-out              (Default: metadata.json) JSON metadata output file
+
+  -d, --dll-out               (Default: dll) .NET assembly shim DLLs output path
 
   --metadata-out              IL2CPP metadata file output (for extracted or decrypted metadata; ignored otherwise)
 
