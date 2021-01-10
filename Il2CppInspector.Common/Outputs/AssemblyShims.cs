@@ -70,6 +70,9 @@ namespace Il2CppInspector.Outputs
         // All modules (single-module assemblies)
         private Dictionary<Assembly, ModuleDef> modules = new Dictionary<Assembly, ModuleDef>();
 
+        // Custom attributes we will apply directly instead of with a custom attribute function pointer
+        private Dictionary<TypeInfo, TypeDef> directApplyAttributes;
+
         public AssemblyShims(TypeModel model) => this.model = model;
 
         // Generate base DLL with our custom types
@@ -390,17 +393,25 @@ namespace Il2CppInspector.Outputs
             return mMethod;
         }
 
-        // Add a custom attributes attribute to an item
-        private CustomAttribute AddCustomAttribute(ModuleDef module, IHasCustomAttribute def, CustomAttributeData ca)
-            => def.AddAttribute(module, attributeAttribute,
+        // Add a custom attributes attribute to an item, or the attribute itself if it is in our direct apply list
+        private CustomAttribute AddCustomAttribute(ModuleDef module, IHasCustomAttribute def, CustomAttributeData ca) {
+            if (directApplyAttributes.TryGetValue(ca.AttributeType, out var attrDef) && attrDef != null)
+                return def.AddAttribute(module, attrDef);
+
+            return def.AddAttribute(module, attributeAttribute,
                 ("Name", ca.AttributeType.Name),
                 ("RVA", (ca.VirtualAddress.Start - model.Package.BinaryImage.GlobalOffset).ToAddressString()),
                 ("Offset", string.Format("0x{0:X}", model.Package.BinaryImage.MapVATR(ca.VirtualAddress.Start)))
             );
+        }
 
         // Generate type recursively with all nested types and add to module
         private TypeDefUser AddType(ModuleDef module, TypeInfo type) {
             var mType = CreateType(module, type);
+
+            // Add to attribute apply list if we're looking for it
+            if (directApplyAttributes.ContainsKey(type))
+                directApplyAttributes[type] = mType;
 
             // Add type to module
             module.Types.Add(mType);
@@ -477,6 +488,13 @@ namespace Il2CppInspector.Outputs
             // Write base assembly to disk
             baseDll.Write(Path.Combine(outputPath, baseDll.Name));
 
+            // Get all custom attributes with no parameters
+            // We'll add these directly to objects instead of the attribute generator function pointer
+            directApplyAttributes = model.TypesByDefinitionIndex
+                .Where(t => t.BaseType?.FullName == "System.Attribute"
+                        && !t.DeclaredFields.Any() && !t.DeclaredProperties.Any())
+                .ToDictionary(t => t, t => (TypeDef) null);
+
             // Generate all application assemblies and types
             // We have to do this before adding anything else so we can reference every type
             modules.Clear();
@@ -492,7 +510,7 @@ namespace Il2CppInspector.Outputs
                 module.Assembly.AddAttribute(module, tokenAttribute, ("Token", $"0x{asm.MetadataToken:X8}"));
             }
 
-            // Add custom attribute attributes (must do this after all assemblies are created due to type referencing)
+            // Add assembly custom attribute attributes (must do this after all assemblies are created due to type referencing)
             foreach (var asm in model.Assemblies)
                 foreach (var ca in asm.CustomAttributes)
                     AddCustomAttribute(modules[asm], modules[asm].Assembly, ca);
