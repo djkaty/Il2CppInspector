@@ -224,7 +224,7 @@ namespace Il2CppInspector.Outputs
             }
 
             // Field offset
-            if (!field.IsLiteral && !field.IsStatic && field.Offset != 0)
+            if (!field.IsStatic)
                 mField.AddAttribute(module, fieldOffsetAttribute, ("Offset", $"0x{field.Offset:X}"));
 
             // Add token attribute
