@@ -63,6 +63,7 @@ namespace Il2CppInspector.Outputs
         private TypeDef fieldOffsetAttribute;
         private TypeDef attributeAttribute;
         private TypeDef metadataOffsetAttribute;
+        private TypeDef metadataPreviewAttribute;
         private TypeDef tokenAttribute;
 
         // The namespace for our custom types
@@ -114,6 +115,10 @@ namespace Il2CppInspector.Outputs
             metadataOffsetAttribute = createAttribute("MetadataOffsetAttribute");
             metadataOffsetAttribute.Fields.Add(new FieldDefUser("Offset", stringField, FieldAttributes.Public));
             metadataOffsetAttribute.AddDefaultConstructor(attributeCtorRef);
+
+            metadataPreviewAttribute = createAttribute("MetadataPreviewAttribute");
+            metadataPreviewAttribute.Fields.Add(new FieldDefUser("Data", stringField, FieldAttributes.Public));
+            metadataPreviewAttribute.AddDefaultConstructor(attributeCtorRef);
 
             tokenAttribute = createAttribute("TokenAttribute");
             tokenAttribute.Fields.Add(new FieldDefUser("Token", stringField, FieldAttributes.Public));
@@ -203,8 +208,16 @@ namespace Il2CppInspector.Outputs
                 mField.Constant = new ConstantUser(field.DefaultValue);
 
             // Add offset attribute if no default value but metadata present
-            else if (field.HasFieldRVA)
+            else if (field.HasFieldRVA || field.IsLiteral)
                 mField.AddAttribute(module, metadataOffsetAttribute, ("Offset", $"0x{field.DefaultValueMetadataAddress:X8}"));
+
+            // Static array initializer preview
+            if (field.HasFieldRVA) {
+                var preview = model.Package.Metadata.ReadBytes((long) field.DefaultValueMetadataAddress, 8);
+                var previewText = string.Join(" ", preview.Select(b => $"{b:x2}"));
+
+                mField.AddAttribute(module, metadataPreviewAttribute, ("Data", previewText));
+            }
 
             // Field offset
             if (!field.IsLiteral && !field.IsStatic && field.Offset != 0)
@@ -215,7 +228,7 @@ namespace Il2CppInspector.Outputs
 
             // Add custom attribute attributes
             foreach (var ca in field.CustomAttributes)
-                AddCustomAttribute(module, mField, ca);
+            AddCustomAttribute(module, mField, ca);
 
             mType.Fields.Add(mField);
             return mField;
