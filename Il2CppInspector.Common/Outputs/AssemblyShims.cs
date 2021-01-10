@@ -486,6 +486,10 @@ namespace Il2CppInspector.Outputs
                 // Create assembly and add primary module to list
                 var module = CreateAssembly(asm.ShortName);
                 modules.Add(asm, module);
+
+                // Add token attributes
+                module.AddAttribute(module, tokenAttribute, ("Token", $"0x{asm.ImageDefinition.token:X8}"));
+                module.Assembly.AddAttribute(module, tokenAttribute, ("Token", $"0x{asm.AssemblyDefinition.token:X8}"));
             }
 
             // Add custom attribute attributes (must do this after all assemblies are created due to type referencing)
