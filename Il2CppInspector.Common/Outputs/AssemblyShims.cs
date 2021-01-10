@@ -318,7 +318,7 @@ namespace Il2CppInspector.Outputs
 
             // Parameter names and default values
             foreach (var param in method.DeclaredParameters) {
-                var p = new ParamDefUser(param.Name, (ushort) (param.Position + 1));
+                var p = new ParamDefUser(param.Name, (ushort) (param.Position + 1), (ParamAttributes) param.Attributes);
 
                 if (param.DefaultValueMetadataAddress != 0) {
                     if (param.HasDefaultValue)
