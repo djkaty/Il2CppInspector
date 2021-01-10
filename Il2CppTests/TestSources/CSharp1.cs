@@ -6,6 +6,7 @@
 */
 
 using System;
+using System.Runtime.InteropServices;
 
 /* C# 1.0 feature test */
 namespace Il2CppTests.TestSources
@@ -14,6 +15,9 @@ namespace Il2CppTests.TestSources
     {
         public SimpleStruct ss;
         public int i;
+        public const int fieldWithDefaultValue = 3;
+        public const LayoutKind fieldWithDefaultEnumValue = LayoutKind.Sequential;
+        public const SimpleClass fieldWithDefaultReferenceValue = null;
 
         public static SimpleStruct StaticFunc(SimpleStruct ss) {
             Console.WriteLine(ss);
@@ -28,6 +32,10 @@ namespace Il2CppTests.TestSources
         public int func(int val) {
             return val + 42;
         }
+
+        public void funcWithDefaultValue(int a, int b = 2) { }
+        public void funcWithDefaultEnumValue(int a, LayoutKind b = LayoutKind.Explicit) { }
+        public void funcWithDefaultReferenceValue(int a, SimpleClass b = null) { }
 
         public delegate SimpleStruct SimpleDelegate(SimpleStruct ss);
         public event SimpleDelegate SimpleEvent;
