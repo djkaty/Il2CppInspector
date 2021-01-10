@@ -80,9 +80,12 @@ namespace Il2CppInspector.Outputs
             // Create DLL with our custom types
             var module = CreateAssembly("Il2CppInspector.dll");
 
-            var attributeCtor = typeof(Attribute).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)[0];
-            var attributeTypeRef = module.Import(typeof(Attribute));
-            var attributeCtorRef = module.Import(attributeCtor);
+            // Import our IL2CPP application's copy of System.Attribute
+            // to avoid introducing a dependency on System.Private.CoreLib (.NET Core) from Il2CppInspector itself
+            var attributeType = model.TypesByFullName["System.Attribute"];
+            var attributeCtor = attributeType.DeclaredConstructors.First(c => !c.IsPublic && !c.IsStatic);
+            var attributeTypeRef = GetTypeRef(module, attributeType);
+            var attributeCtorRef = new MemberRefUser(attributeTypeRef.Module, ".ctor", MethodSig.CreateInstance(module.CorLibTypes.Void), attributeTypeRef);
 
             var stringField = new FieldSig(module.CorLibTypes.String);
 
@@ -354,6 +357,7 @@ namespace Il2CppInspector.Outputs
                     mMethod.Body.Variables.Add(result);
 
                     inst.Add(OpCodes.Ldloca_S.ToInstruction(result));
+                    // NOTE: This line creates a reference to an external mscorlib.dll, which we'd prefer to avoid
                     inst.Add(OpCodes.Initobj.ToInstruction(mMethod.ReturnType.ToTypeDefOrRef()));
                     inst.Add(OpCodes.Ldloc_0.ToInstruction());
                     inst.Add(OpCodes.Ret.ToInstruction());
@@ -480,12 +484,6 @@ namespace Il2CppInspector.Outputs
             // Create folder for DLLs
             Directory.CreateDirectory(outputPath);
 
-            // Generate our custom types assembly
-            var baseDll = CreateBaseAssembly();
-
-            // Write base assembly to disk
-            baseDll.Write(Path.Combine(outputPath, baseDll.Name));
-
             // Get all custom attributes with no parameters
             // We'll add these directly to objects instead of the attribute generator function pointer
             directApplyAttributes = model.TypesByDefinitionIndex
@@ -493,25 +491,33 @@ namespace Il2CppInspector.Outputs
                         && !t.DeclaredFields.Any() && !t.DeclaredProperties.Any())
                 .ToDictionary(t => t, t => (TypeDef) null);
 
-            // Generate all application assemblies and types
-            // We have to do this before adding anything else so we can reference every type
+            // Generate blank assemblies
+            // We have to do this before adding anything else so we can reference every module
             modules.Clear();
 
-            // Create all assemblies
             foreach (var asm in model.Assemblies) {
                 // Create assembly and add primary module to list
                 var module = CreateAssembly(asm.ShortName);
                 modules.Add(asm, module);
+            }
+
+            // Generate our custom types assembly (relies on mscorlib.dll being added above)
+            var baseDll = CreateBaseAssembly();
+
+            // Write base assembly to disk
+            baseDll.Write(Path.Combine(outputPath, baseDll.Name));
+
+            // Add assembly custom attribute attributes (must do this after all assemblies are created due to type referencing)
+            foreach (var asm in model.Assemblies) {
+                var module = modules[asm];
+
+                foreach (var ca in asm.CustomAttributes)
+                    AddCustomAttribute(module, module.Assembly, ca);
 
                 // Add token attributes
                 module.AddAttribute(module, tokenAttribute, ("Token", $"0x{asm.ImageDefinition.token:X8}"));
                 module.Assembly.AddAttribute(module, tokenAttribute, ("Token", $"0x{asm.MetadataToken:X8}"));
             }
-
-            // Add assembly custom attribute attributes (must do this after all assemblies are created due to type referencing)
-            foreach (var asm in model.Assemblies)
-                foreach (var ca in asm.CustomAttributes)
-                    AddCustomAttribute(modules[asm], modules[asm].Assembly, ca);
 
             // Add all types
             foreach (var asm in model.Assemblies) {
