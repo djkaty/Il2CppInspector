@@ -68,7 +68,7 @@ def CustomInitializer():
 	# Ghidra sets the image base for ELF to 0x100000 for some reason
 	# https://github.com/NationalSecurityAgency/ghidra/issues/1020
 	if currentProgram.getExecutableFormat().endswith('(ELF)'):
-		currentProgram.setImageBase(toAddr(0), True)
+		currentProgram.setImageBase(toAddr(%IMAGE_BASE%), True)
 
 def GetScriptDirectory():
 	return getSourceFile().getParentFile().toString()
