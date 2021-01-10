@@ -293,13 +293,13 @@ namespace Il2CppInspector.Reflection
         }
 
         // The attribute index is an index into AttributeTypeRanges, each of which is a start-end range index into AttributeTypeIndices, each of which is a TypeIndex
-        public int GetCustomAttributeIndex(Assembly asm, uint token, int customAttributeIndex) {
+        public int GetCustomAttributeIndex(Assembly asm, int token, int customAttributeIndex) {
             // Prior to v24.1, Type, Field, Parameter, Method, Event, Property, Assembly definitions had their own customAttributeIndex field
             if (Package.Version <= 24.0)
                 return customAttributeIndex;
 
             // From v24.1 onwards, token was added to Il2CppCustomAttributeTypeRange and each Il2CppImageDefinition noted the CustomAttributeTypeRanges for the image
-            if (!Package.AttributeIndicesByToken[asm.ImageDefinition.customAttributeStart].TryGetValue(token, out var index))
+            if (!Package.AttributeIndicesByToken[asm.ImageDefinition.customAttributeStart].TryGetValue((uint) token, out var index))
                 return -1;
             return index;
         }

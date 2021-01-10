@@ -739,6 +739,7 @@ namespace Il2CppInspector.Reflection
             var pkg = Assembly.Model.Package;
 
             Definition = pkg.TypeDefinitions[typeIndex];
+            MetadataToken = (int) Definition.token;
             Index = typeIndex;
             Namespace = Regex.Replace(pkg.Strings[Definition.namespaceIndex], @"[^A-Za-z0-9_\-\.<>{}]", "");
             Name = pkg.Strings[Definition.nameIndex];

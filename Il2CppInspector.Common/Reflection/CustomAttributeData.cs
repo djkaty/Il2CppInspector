@@ -64,16 +64,16 @@ namespace Il2CppInspector.Reflection
             }
         }
 
-        private static IList<CustomAttributeData> getCustomAttributes(Assembly asm, uint token, int customAttributeIndex) =>
+        private static IList<CustomAttributeData> getCustomAttributes(Assembly asm, int token, int customAttributeIndex) =>
                 getCustomAttributes(asm, asm.Model.GetCustomAttributeIndex(asm, token, customAttributeIndex)).ToList();
             
-        public static IList<CustomAttributeData> GetCustomAttributes(Assembly asm) => getCustomAttributes(asm, asm.AssemblyDefinition.token, asm.AssemblyDefinition.customAttributeIndex);
-        public static IList<CustomAttributeData> GetCustomAttributes(EventInfo evt) => getCustomAttributes(evt.Assembly, evt.Definition.token, evt.Definition.customAttributeIndex);
-        public static IList<CustomAttributeData> GetCustomAttributes(FieldInfo field) => getCustomAttributes(field.Assembly, field.Definition.token, field.Definition.customAttributeIndex);
-        public static IList<CustomAttributeData> GetCustomAttributes(MethodBase method) => getCustomAttributes(method.Assembly, method.Definition.token, method.Definition.customAttributeIndex);
-        public static IList<CustomAttributeData> GetCustomAttributes(ParameterInfo param) => getCustomAttributes(param.DeclaringMethod.Assembly, param.Definition.token, param.Definition.customAttributeIndex);
+        public static IList<CustomAttributeData> GetCustomAttributes(Assembly asm) => getCustomAttributes(asm, asm.MetadataToken, asm.AssemblyDefinition.customAttributeIndex);
+        public static IList<CustomAttributeData> GetCustomAttributes(EventInfo evt) => getCustomAttributes(evt.Assembly, evt.MetadataToken, evt.Definition.customAttributeIndex);
+        public static IList<CustomAttributeData> GetCustomAttributes(FieldInfo field) => getCustomAttributes(field.Assembly, field.MetadataToken, field.Definition.customAttributeIndex);
+        public static IList<CustomAttributeData> GetCustomAttributes(MethodBase method) => getCustomAttributes(method.Assembly, method.MetadataToken, method.Definition.customAttributeIndex);
+        public static IList<CustomAttributeData> GetCustomAttributes(ParameterInfo param) => getCustomAttributes(param.DeclaringMethod.Assembly, param.MetadataToken, param.Definition.customAttributeIndex);
         public static IList<CustomAttributeData> GetCustomAttributes(PropertyInfo prop)
-            => prop.Definition != null ? getCustomAttributes(prop.Assembly, prop.Definition.token, prop.Definition.customAttributeIndex) : new List<CustomAttributeData>();
-        public static IList<CustomAttributeData> GetCustomAttributes(TypeInfo type) => type.Definition != null? getCustomAttributes(type.Assembly, type.Definition.token, type.Definition.customAttributeIndex) : new List<CustomAttributeData>();
+            => prop.Definition != null ? getCustomAttributes(prop.Assembly, prop.MetadataToken, prop.Definition.customAttributeIndex) : new List<CustomAttributeData>();
+        public static IList<CustomAttributeData> GetCustomAttributes(TypeInfo type) => type.Definition != null? getCustomAttributes(type.Assembly, type.MetadataToken, type.Definition.customAttributeIndex) : new List<CustomAttributeData>();
     }
 }

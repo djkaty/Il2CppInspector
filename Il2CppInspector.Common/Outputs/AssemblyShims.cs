@@ -186,7 +186,7 @@ namespace Il2CppInspector.Outputs
 
             // Add token attribute
             if (type.Definition != null)
-                mType.AddAttribute(module, tokenAttribute, ("Token", $"0x{type.Definition.token:X8}"));
+                mType.AddAttribute(module, tokenAttribute, ("Token", $"0x{type.MetadataToken:X8}"));
 
             // Add custom attribute attributes
             foreach (var ca in type.CustomAttributes)
@@ -222,7 +222,7 @@ namespace Il2CppInspector.Outputs
                 mField.AddAttribute(module, fieldOffsetAttribute, ("Offset", $"0x{field.Offset:X}"));
 
             // Add token attribute
-            mField.AddAttribute(module, tokenAttribute, ("Token", $"0x{field.Definition.token:X8}"));
+            mField.AddAttribute(module, tokenAttribute, ("Token", $"0x{field.MetadataToken:X8}"));
 
             // Add custom attribute attributes
             foreach (var ca in field.CustomAttributes)
@@ -250,7 +250,7 @@ namespace Il2CppInspector.Outputs
             // Add token attribute
             // Generic properties and constructed properties (from disperate get/set methods) have no definition
             if (prop.Definition != null)
-                mProp.AddAttribute(module, tokenAttribute, ("Token", $"0x{prop.Definition.token:X8}"));
+                mProp.AddAttribute(module, tokenAttribute, ("Token", $"0x{prop.MetadataToken:X8}"));
 
             // Add custom attribute attributes
             foreach (var ca in prop.CustomAttributes)
@@ -270,7 +270,7 @@ namespace Il2CppInspector.Outputs
             mEvent.InvokeMethod = AddMethod(module, mType, evt.RaiseMethod);
 
             // Add token attribute
-            mEvent.AddAttribute(module, tokenAttribute, ("Token", $"0x{evt.Definition.token:X8}"));
+            mEvent.AddAttribute(module, tokenAttribute, ("Token", $"0x{evt.MetadataToken:X8}"));
 
             // Add custom attribute attributes
             foreach (var ca in evt.CustomAttributes)
@@ -366,7 +366,7 @@ namespace Il2CppInspector.Outputs
             }
 
             // Add token attribute
-            mMethod.AddAttribute(module, tokenAttribute, ("Token", $"0x{method.Definition.token:X8}"));
+            mMethod.AddAttribute(module, tokenAttribute, ("Token", $"0x{method.MetadataToken:X8}"));
 
             // Add method pointer attribute
             if (method.VirtualAddress.HasValue) {
@@ -489,7 +489,7 @@ namespace Il2CppInspector.Outputs
 
                 // Add token attributes
                 module.AddAttribute(module, tokenAttribute, ("Token", $"0x{asm.ImageDefinition.token:X8}"));
-                module.Assembly.AddAttribute(module, tokenAttribute, ("Token", $"0x{asm.AssemblyDefinition.token:X8}"));
+                module.Assembly.AddAttribute(module, tokenAttribute, ("Token", $"0x{asm.MetadataToken:X8}"));
             }
 
             // Add custom attribute attributes (must do this after all assemblies are created due to type referencing)

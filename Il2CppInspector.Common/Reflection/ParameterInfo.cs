@@ -41,6 +41,9 @@ namespace Il2CppInspector.Reflection
         // The method in which the parameter is defined
         public MethodBase DeclaringMethod { get; }
 
+        // Metadata token of the parameter
+        public int MetadataToken { get; }
+
         // Name of parameter
         public string Name { get; }
         public string CSharpName => Constants.Keywords.Contains(Name) ? "@" + Name : Name.ToCIdentifier();
@@ -65,6 +68,7 @@ namespace Il2CppInspector.Reflection
             }
 
             Definition = pkg.Params[Index];
+            MetadataToken = (int) Definition.token;
             Name = pkg.Strings[Definition.nameIndex];
             rootDefinition = this;
 

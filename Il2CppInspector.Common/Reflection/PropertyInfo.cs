@@ -52,6 +52,7 @@ namespace Il2CppInspector.Reflection {
             base(declaringType) {
             Index = propIndex;
             Definition = pkg.Properties[propIndex];
+            MetadataToken = (int) Definition.token;
             Name = pkg.Strings[Definition.nameIndex];
             rootDefinition = this;
 

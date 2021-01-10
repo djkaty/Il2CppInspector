@@ -91,6 +91,7 @@ namespace Il2CppInspector.Reflection {
         public FieldInfo(Il2CppInspector pkg, int fieldIndex, TypeInfo declaringType) :
             base(declaringType) {
             Definition = pkg.Fields[fieldIndex];
+            MetadataToken = (int) Definition.token;
             Index = fieldIndex;
             Name = pkg.Strings[Definition.nameIndex];
 

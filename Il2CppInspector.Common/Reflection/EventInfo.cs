@@ -41,6 +41,7 @@ namespace Il2CppInspector.Reflection
         public EventInfo(Il2CppInspector pkg, int eventIndex, TypeInfo declaringType) :
             base(declaringType) {
             Definition = pkg.Events[eventIndex];
+            MetadataToken = (int) Definition.token;
             Index = eventIndex;
             Name = pkg.Strings[Definition.nameIndex];
             rootDefinition = this;

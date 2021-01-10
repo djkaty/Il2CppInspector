@@ -27,6 +27,9 @@ namespace Il2CppInspector.Reflection {
         // Display name of the assembly
         public string ShortName { get; }
 
+        // Metadata token of the assembly
+        public int MetadataToken { get; }
+
         // Entry point method for the assembly
         public MethodInfo EntryPoint => throw new NotImplementedException();
 
@@ -45,6 +48,7 @@ namespace Il2CppInspector.Reflection {
             if (AssemblyDefinition.imageIndex != imageIndex)
                 throw new InvalidOperationException("Assembly/image index mismatch");
 
+            MetadataToken = (int) AssemblyDefinition.token;
             Index = ImageDefinition.assemblyIndex;
             ShortName = Model.Package.Strings[ImageDefinition.nameIndex];
 
