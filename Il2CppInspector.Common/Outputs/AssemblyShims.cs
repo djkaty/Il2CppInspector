@@ -242,12 +242,7 @@ namespace Il2CppInspector.Outputs
             else
                 s = PropertySig.CreateInstance(GetTypeSig(module, prop.PropertyType));
 
-            // Unmangle name of explicit interface instantiations
-            var name = prop.Name;
-            if (name.IndexOf('.') != -1)
-                name = name.Substring(name.LastIndexOf('.') + 1);
-
-            var mProp = new PropertyDefUser(name, s, (PropertyAttributes) prop.Attributes);
+            var mProp = new PropertyDefUser(prop.Name, s, (PropertyAttributes) prop.Attributes);
 
             mProp.GetMethod = AddMethod(module, mType, prop.GetMethod);
             mProp.SetMethod = AddMethod(module, mType, prop.SetMethod);
@@ -307,13 +302,8 @@ namespace Il2CppInspector.Outputs
                     method.DeclaredParameters.Select(p => GetTypeSig(module, p.ParameterType))
                     .ToArray());
 
-            // Unmangle name of explicit interface instantiations - don't touch .ctor or .cctor
-            var name = method.Name;
-            if (name.IndexOf('.') != -1 && !method.IsSpecialName)
-                name = name.Substring(name.LastIndexOf('.') + 1);
-
             // Definition
-            var mMethod = new MethodDefUser(name, s, (MethodImplAttributes) method.MethodImplementationFlags, (MethodAttributes) method.Attributes);
+            var mMethod = new MethodDefUser(method.Name, s, (MethodImplAttributes) method.MethodImplementationFlags, (MethodAttributes) method.Attributes);
 
             // Generic type parameters
             foreach (var gp in method.GetGenericArguments()) {
