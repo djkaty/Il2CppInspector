@@ -253,7 +253,9 @@ namespace Il2CppInspector.Outputs
             mProp.SetMethod = AddMethod(module, mType, prop.SetMethod);
 
             // Add token attribute
-            mProp.AddAttribute(module, tokenAttribute, ("Token", $"0x{prop.Definition.token:X8}"));
+            // Generic properties and constructed properties (from disperate get/set methods) have no definition
+            if (prop.Definition != null)
+                mProp.AddAttribute(module, tokenAttribute, ("Token", $"0x{prop.Definition.token:X8}"));
 
             // Add custom attribute attributes
             foreach (var ca in prop.CustomAttributes)
