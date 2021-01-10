@@ -71,7 +71,7 @@
                     <LineBreak/>
                     <Hyperlink NavigateUri="https://github.com/djkaty/Il2CppInspector" RequestNavigate="Hyperlink_OnRequestNavigate">Il2CppInspector on GitHub</Hyperlink><LineBreak/>
                     <Hyperlink NavigateUri="http://www.djkaty.com" RequestNavigate="Hyperlink_OnRequestNavigate">www.djkaty.com</Hyperlink><LineBreak/>
-                    &#169; Katy Coe 2017-2020
+                    &#169; Katy Coe 2017-2021
                 </TextBlock>
 
                 <!-- Image details view -->
@@ -342,6 +342,12 @@
                             <Label DockPanel.Dock="Left" Width="240" VerticalAlignment="Center">Unity script assemblies path:</Label>
                             <TextBlock Name="txtUnityScriptPath" DockPanel.Dock="Left" VerticalAlignment="Center" FlowDirection="RightToLeft" HorizontalAlignment="Right" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
                         </DockPanel>
+
+                        <Separator Margin="5,15,5,15"/>
+
+                        <!-- Assembly shim DLLs -->
+                        <RadioButton GroupName="grpOutputType" Name="rdoOutputDll" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">.NET assembly shim DLLs</RadioButton>
+                        <TextBlock TextWrapping="WrapWithOverflow">No configuration required for assembly shims</TextBlock>
 
                         <Separator Margin="5,15,5,15"/>
 

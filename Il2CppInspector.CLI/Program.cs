@@ -48,6 +48,9 @@ namespace Il2CppInspector.CLI
             [Option('o', "json-out", Required = false, HelpText = "JSON metadata output file", Default = "metadata.json")]
             public string JsonOutPath { get; set; }
 
+            [Option('d', "dll-out", Required = false, HelpText = ".NET assembly shim DLLs output path", Default = "dll")]
+            public string DllOutPath { get; set; }
+
             [Option("metadata-out", Required = false, HelpText = "IL2CPP metadata file output (for extracted or decrypted metadata; ignored otherwise)")]
             public string MetadataFileOut { get; set; }
 
@@ -394,6 +397,10 @@ namespace Il2CppInspector.CLI
                         Path.Combine(getOutputPath(options.CppOutPath, "", imageIndex), "appdata/il2cpp-types.h"),
                         getOutputPath(options.JsonOutPath, "json", imageIndex));
                 }
+
+                // DLL output
+                using (new Benchmark("Generate .NET assembly shim DLLs"))
+                    new AssemblyShims(model).Write(getOutputPath(options.DllOutPath, "", imageIndex));
 
                 imageIndex++;
             }

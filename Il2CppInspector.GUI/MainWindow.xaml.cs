@@ -563,6 +563,26 @@ namespace Il2CppInspectorGUI
                         new JSONMetadata(model).Write(jsonOutFile);
                     });
                     break;
+
+                // .NET assembly shim DLLs
+                case { rdoOutputDll: var r } when r.IsChecked == true:
+
+                    var dllSaveFolderDialog = new VistaFolderBrowserDialog {
+                        Description = "Select save location",
+                        UseDescriptionForTitle = true
+                    };
+
+                    if (dllSaveFolderDialog.ShowDialog() == false)
+                        return;
+
+                    var dllOutPath = dllSaveFolderDialog.SelectedPath;
+
+                    areaBusyIndicator.Visibility = Visibility.Visible;
+                    await Task.Run(() => {
+                        OnStatusUpdate(this, "Generating .NET assembly shim DLLs");
+                        new AssemblyShims(model.TypeModel).Write(dllOutPath, OnStatusUpdate);
+                    });
+                    break;
             }
 
             areaBusyIndicator.Visibility = Visibility.Hidden;

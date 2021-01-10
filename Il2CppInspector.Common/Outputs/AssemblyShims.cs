@@ -477,7 +477,7 @@ namespace Il2CppInspector.Outputs
         }
 
         // Generate and save all DLLs
-        public void Write(string outputPath) {
+        public void Write(string outputPath, EventHandler<string> statusCallback = null) {
 
             // Create folder for DLLs
             Directory.CreateDirectory(outputPath);
@@ -516,13 +516,17 @@ namespace Il2CppInspector.Outputs
                     AddCustomAttribute(modules[asm], modules[asm].Assembly, ca);
 
             // Add all types
-            foreach (var asm in model.Assemblies)
+            foreach (var asm in model.Assemblies) {
+                statusCallback?.Invoke(this, "Preparing " + asm.ShortName);
                 foreach (var type in asm.DefinedTypes.Where(t => !t.IsNested))
                     AddType(modules[asm], type);
+            }
 
             // Write all assemblies to disk
-            foreach (var asm in modules.Values)
+            foreach (var asm in modules.Values) {
+                statusCallback?.Invoke(this, "Generating " + asm.Name);
                 asm.Write(Path.Combine(outputPath, asm.Name));
+            }
         }
     }
 }
