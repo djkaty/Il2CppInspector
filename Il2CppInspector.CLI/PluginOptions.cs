@@ -5,16 +5,14 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
 using System.Reflection.Emit;
 using CommandLine;
-using Il2CppInspector.PluginAPI.V100;
 using CommandLine.Text;
-using System.IO;
+using Il2CppInspector.PluginAPI.V100;
 
 namespace Il2CppInspector.CLI
 {
@@ -103,7 +101,7 @@ namespace Il2CppInspector.CLI
                 }
 
                 var pluginOptionProperty = CreateAutoProperty(pluginOptionClass, option.Name, optionType);
-                
+
                 ConstructorInfo optCtorInfo;
 
                 // Single character
@@ -215,7 +213,8 @@ namespace Il2CppInspector.CLI
                         if (Enum.TryParse(targetProp.Value.GetType(), value.ToString(), out var enumValue))
                             targetProp.Value = enumValue;
                         else {
-                            Console.Error.WriteLine($"Plugin option error: Invalid enum value when setting '{targetProp.Name}' to '{value}'");
+                            Console.Error.Write($"Plugin option error: Invalid enum value when setting '{targetProp.Name}' to '{value}'; ");
+                            Console.Error.WriteLine("valid values are: " + string.Join(", ", Enum.GetNames(targetProp.Value.GetType())));
                             hasErrors = true;
                         }
                     }
@@ -224,8 +223,16 @@ namespace Il2CppInspector.CLI
                     else {
                         try {
                             targetProp.Value = value;
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex) {
                             Console.Error.WriteLine($"Plugin option error: {ex.Message} when setting '{targetProp.Name}' to '{value}'");
+
+                            // Output available choices if the failure is on an IPluginOptionChoice<T>
+                            if (targetProp.GetType().GetProperty("Choices") is PropertyInfo choiceProp) {
+                                var choiceDict = (IDictionary) choiceProp.GetValue(targetProp);
+                                Console.Error.WriteLine($"Valid values for '{targetProp.Name}' are: " + string.Join(", ", choiceDict.Keys.Cast<object>()));
+                            }
+
                             hasErrors = true;
                         }
                     }
