@@ -132,14 +132,12 @@ namespace Il2CppInspector
                 TypeModel model;
                 using (new Benchmark("Create .NET type model"))
                     model = new TypeModel(il2cpp);
-
                 var appModelTask = Task.Run(() => {
                     using (new Benchmark("Create application model"))
                         return new AppModel(model, makeDefaultBuild: false).Build(compiler: CppCompilerType.MSVC);
                 });
 
                 var nameSuffix = i++ > 0 ? "-" + (i - 1) : "";
-
                 var compareTasks = new List<Task>();
 
                 var csTask = Task.Run(() => {
@@ -151,6 +149,14 @@ namespace Il2CppInspector
                         }.WriteSingleFile(testPath + $@"\test-result{nameSuffix}.cs");
 
                     compareTasks.Add(Task.Run(() => compareFiles(testPath, nameSuffix + ".cs", $"test-result{nameSuffix}.cs")));
+                });
+                
+                var dllTask = Task.Run(() => {
+                    using (new Benchmark("Create .NET assembly shims"))
+                        new AssemblyShims(model).Write(testPath + $@"\test-dll-result{nameSuffix}");
+
+                    compareTasks.Add(Task.Run(() => compareBinaryFiles(testPath + $@"\test-dll-result{nameSuffix}",
+                        testPath + @"\..\..\TestExpectedResults\dll-" + Path.GetFileName(testPath) + nameSuffix)));
                 });
 
                 var appModel = await appModelTask;
@@ -179,10 +185,32 @@ namespace Il2CppInspector
                         testPath + $@"\test-result{nameSuffix}.json");
                 });
 
-                await Task.WhenAll(csTask, jsonTask, cppTask, pyTask);
+                await Task.WhenAll(csTask, dllTask, jsonTask, cppTask, pyTask);
                 await Task.WhenAll(compareTasks);
             }));
             await Task.WhenAll(imageTasks);
+        }
+
+        // Compare two folders full of binary files
+        private void compareBinaryFiles(string resultFolder, string expectedFolder) {
+            var expectedFiles = Directory.GetFiles(expectedFolder).Select(f => Path.GetFileName(f));
+
+            foreach (var file in expectedFiles) {
+                var resultPath = Path.Combine(resultFolder, file);
+                Assert.That(File.Exists(resultPath), $"File does not exist ({file})");
+
+                var resultData = File.ReadAllBytes(resultPath);
+                var expectedData = File.ReadAllBytes(Path.Combine(expectedFolder, file));
+
+                Assert.AreEqual(expectedData.Length, resultData.Length, $"File lengths do not match ({file})");
+
+                // A few bytes in the PE header and the end of the string table are changed each build
+                // so we have to allow for that; we can't use SequenceEqual
+                var differences = resultData.Zip(expectedData, (x, y) => x == y).Count(eq => !eq);
+
+                // If anything has really changed it will change more than this many bytes
+                Assert.LessOrEqual(differences, 18, $"File contents differ too much ({file} has {differences} differences)");
+            }
         }
 
         // We have to pass testPath rather than storing it as a field so that tests can be parallelized
