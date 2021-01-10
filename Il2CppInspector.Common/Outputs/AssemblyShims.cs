@@ -323,14 +323,12 @@ namespace Il2CppInspector.Outputs
             foreach (var param in method.DeclaredParameters) {
                 var p = new ParamDefUser(param.Name, (ushort) (param.Position + 1), (ParamAttributes) param.Attributes);
 
-                if (param.DefaultValueMetadataAddress != 0) {
-                    if (param.HasDefaultValue)
-                        p.Constant = new ConstantUser(param.DefaultValue);
+                if (param.HasDefaultValue)
+                    p.Constant = new ConstantUser(param.DefaultValue);
 
-                    // Add offset attribute if no default value but metadata present
-                    else
-                        p.AddAttribute(module, metadataOffsetAttribute, ("Offset", $"0x{param.DefaultValueMetadataAddress:X8}"));
-                }
+                // Add offset attribute if metadata present
+                if (param.DefaultValueMetadataAddress != 0)
+                    p.AddAttribute(module, metadataOffsetAttribute, ("Offset", $"0x{param.DefaultValueMetadataAddress:X8}"));
 
                 // Add custom attribute attributes
                 foreach (var ca in param.CustomAttributes)
