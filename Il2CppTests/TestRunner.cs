@@ -18,25 +18,10 @@ using NUnit.Framework;
 
 namespace Il2CppInspector
 {
-    internal class Benchmark : IDisposable
-    {
-        private readonly Stopwatch timer = new Stopwatch();
-        private readonly string benchmarkName;
-
-        public Benchmark(string benchmarkName) {
-            this.benchmarkName = benchmarkName;
-            timer.Start();
-        }
-
-        public void Dispose() {
-            timer.Stop();
-            Console.WriteLine($"{benchmarkName}: {timer.Elapsed.TotalSeconds:N2} sec");
-        }
-    }
-
     [TestFixture]
     public partial class TestRunner
     {
+        // Test runner
         private async Task runTest(string testPath, LoadOptions loadOptions = null) {
             // Android
             var testFile = testPath + @"\" + Path.GetFileName(testPath) + ".so";
@@ -126,66 +111,81 @@ namespace Il2CppInspector
             if (inspectors.Count == 0)
                 throw new Exception("Could not find any images in the IL2CPP binary");
 
+            // End if we were only testing file load
+            if (!GenerateCpp && !GenerateCS && !GenerateDLL && !GenerateJSON && !GeneratePython)
+                return;
+
             // Dump each image in the binary separately
             var imageTasks = inspectors.Select((il2cpp, i) => Task.Run(async () =>
             {
                 TypeModel model;
                 using (new Benchmark("Create .NET type model"))
                     model = new TypeModel(il2cpp);
-                var appModelTask = Task.Run(() => {
-                    using (new Benchmark("Create application model"))
-                        return new AppModel(model, makeDefaultBuild: false).Build(compiler: CppCompilerType.MSVC);
-                });
+
+                Task<AppModel> appModelTask = null;
+                if (GenerateCpp || GenerateJSON || GeneratePython)
+                    appModelTask = Task.Run(() => {
+                        using (new Benchmark("Create application model"))
+                            return new AppModel(model, makeDefaultBuild: false).Build(compiler: CppCompilerType.MSVC);
+                    });
 
                 var nameSuffix = i++ > 0 ? "-" + (i - 1) : "";
+                var generateTasks = new List<Task>();
                 var compareTasks = new List<Task>();
 
-                var csTask = Task.Run(() => {
-                    using (new Benchmark("Create C# code stubs"))
-                        new CSharpCodeStubs(model) {
-                            ExcludedNamespaces = Constants.DefaultExcludedNamespaces,
-                            SuppressMetadata = false,
-                            MustCompile = true
-                        }.WriteSingleFile(testPath + $@"\test-result{nameSuffix}.cs");
+                if (GenerateCS)
+                    generateTasks.Add(Task.Run(() => {
+                        using (new Benchmark("Create C# code stubs"))
+                            new CSharpCodeStubs(model) {
+                                ExcludedNamespaces = Constants.DefaultExcludedNamespaces,
+                                SuppressMetadata = false,
+                                MustCompile = true
+                            }.WriteSingleFile(testPath + $@"\test-result{nameSuffix}.cs");
 
-                    compareTasks.Add(Task.Run(() => compareFiles(testPath, nameSuffix + ".cs", $"test-result{nameSuffix}.cs")));
-                });
+                        compareTasks.Add(Task.Run(() => compareFiles(testPath, nameSuffix + ".cs", $"test-result{nameSuffix}.cs")));
+                    }));
                 
-                var dllTask = Task.Run(() => {
-                    using (new Benchmark("Create .NET assembly shims"))
-                        new AssemblyShims(model).Write(testPath + $@"\test-dll-result{nameSuffix}");
+                if (GenerateDLL)
+                    generateTasks.Add(Task.Run(() => {
+                        using (new Benchmark("Create .NET assembly shims"))
+                            new AssemblyShims(model).Write(testPath + $@"\test-dll-result{nameSuffix}");
 
-                    compareTasks.Add(Task.Run(() => compareBinaryFiles(testPath + $@"\test-dll-result{nameSuffix}",
-                        testPath + @"\..\..\TestExpectedResults\dll-" + Path.GetFileName(testPath) + nameSuffix)));
-                });
+                        compareTasks.Add(Task.Run(() => compareBinaryFiles(testPath + $@"\test-dll-result{nameSuffix}",
+                            testPath + @"\..\..\TestExpectedResults\dll-" + Path.GetFileName(testPath) + nameSuffix)));
+                    }));
 
-                var appModel = await appModelTask;
+                AppModel appModel = null;
+                if (appModelTask != null)
+                    appModel = await appModelTask;
 
-                var jsonTask = Task.Run(() => {
-                    using (new Benchmark("Create JSON metadata"))
-                        new JSONMetadata(appModel)
-                        .Write(testPath + $@"\test-result{nameSuffix}.json");
+                if (GenerateJSON || GeneratePython)
+                    generateTasks.Add(Task.Run(() => {
+                        using (new Benchmark("Create JSON metadata"))
+                            new JSONMetadata(appModel)
+                            .Write(testPath + $@"\test-result{nameSuffix}.json");
 
-                    compareTasks.Add(Task.Run(() => compareFiles(testPath, nameSuffix + ".json", $"test-result{nameSuffix}.json")));
-                });
+                        compareTasks.Add(Task.Run(() => compareFiles(testPath, nameSuffix + ".json", $"test-result{nameSuffix}.json")));
+                    }));
 
-                var cppTask = Task.Run(() => {
-                    using (new Benchmark("Create C++ scaffolding"))
-                        new CppScaffolding(appModel)
-                        .Write(testPath + $@"\test-cpp-result{nameSuffix}");
+                if (GenerateCpp || GeneratePython)
+                    generateTasks.Add(Task.Run(() => {
+                        using (new Benchmark("Create C++ scaffolding"))
+                            new CppScaffolding(appModel)
+                            .Write(testPath + $@"\test-cpp-result{nameSuffix}");
 
-                    compareTasks.Add(Task.Run(() => compareFiles(testPath, nameSuffix + ".h", $@"test-cpp-result{nameSuffix}\appdata\il2cpp-types.h")));
-                });
+                        compareTasks.Add(Task.Run(() => compareFiles(testPath, nameSuffix + ".h", $@"test-cpp-result{nameSuffix}\appdata\il2cpp-types.h")));
+                    }));
 
-                var pyTask = Task.Run(() => {
-                    var python = new PythonScript(appModel);
-                    foreach (var target in PythonScript.GetAvailableTargets())
-                        python.WriteScriptToFile(testPath + $@"\test-{target.ToLower()}{nameSuffix}.py", target,
-                        testPath + $@"\test-cpp-result{nameSuffix}\appdata\il2cpp-types.h",
-                        testPath + $@"\test-result{nameSuffix}.json");
-                });
+                if (GeneratePython)
+                    generateTasks.Add(Task.Run(() => {
+                        var python = new PythonScript(appModel);
+                        foreach (var target in PythonScript.GetAvailableTargets())
+                            python.WriteScriptToFile(testPath + $@"\test-{target.ToLower()}{nameSuffix}.py", target,
+                            testPath + $@"\test-cpp-result{nameSuffix}\appdata\il2cpp-types.h",
+                            testPath + $@"\test-result{nameSuffix}.json");
+                    }));
 
-                await Task.WhenAll(csTask, dllTask, jsonTask, cppTask, pyTask);
+                await Task.WhenAll(generateTasks);
                 await Task.WhenAll(compareTasks);
             }));
             await Task.WhenAll(imageTasks);
@@ -193,6 +193,10 @@ namespace Il2CppInspector
 
         // Compare two folders full of binary files
         private void compareBinaryFiles(string resultFolder, string expectedFolder) {
+
+            if (!EnableCompare)
+                return;
+
             var expectedFiles = Directory.GetFiles(expectedFolder).Select(f => Path.GetFileName(f));
 
             foreach (var file in expectedFiles) {
@@ -215,6 +219,10 @@ namespace Il2CppInspector
 
         // We have to pass testPath rather than storing it as a field so that tests can be parallelized
         private void compareFiles(string testPath, string expectedFilenameSuffix, string actualFilename) {
+
+            if (!EnableCompare)
+                return;
+
             var expected = File.ReadAllLines(testPath + @"\..\..\TestExpectedResults\" + Path.GetFileName(testPath) + expectedFilenameSuffix);
             var actual = File.ReadAllLines(testPath + @"\" + actualFilename);
 
@@ -238,6 +246,23 @@ namespace Il2CppInspector
                 if (expLine < expected.Length && actLine < actual.Length)
                     Assert.AreEqual(expected[expLine], actual[actLine], $"Mismatch at line {expLine + 1} / {actLine + 1} in {actualFilename}{failureMessage}\n");
             }
+        }
+    }
+
+    // Quick benchmarking tool
+    internal class Benchmark : IDisposable
+    {
+        private readonly Stopwatch timer = new Stopwatch();
+        private readonly string benchmarkName;
+
+        public Benchmark(string benchmarkName) {
+            this.benchmarkName = benchmarkName;
+            timer.Start();
+        }
+
+        public void Dispose() {
+            timer.Stop();
+            Console.WriteLine($"{benchmarkName}: {timer.Elapsed.TotalSeconds:N2} sec");
         }
     }
 }
