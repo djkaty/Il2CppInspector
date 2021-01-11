@@ -6,8 +6,11 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector.Cpp.UnityHeaders
 {
@@ -63,6 +66,26 @@ namespace Il2CppInspector.Cpp.UnityHeaders
             Update = match.Groups[3].Success ? int.Parse(match.Groups[3].Value) : 0;
             BuildType = match.Groups[4].Success ? StringToBuildType(match.Groups[4].Value) : BuildTypeEnum.Unspecified;
             BuildNumber = match.Groups[5].Success ? int.Parse(match.Groups[5].Value) : 0;
+        }
+
+        // Get a Unity version from a Unity asset file
+        public static UnityVersion FromAssetFile(string filePath) {
+            // Don't use BinaryObjectStream because we'd have to read the entire file into memory
+            using var file = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using var reader = new BinaryReader(file, System.Text.Encoding.UTF8);
+
+            // Position of Unity version string in asset files
+            file.Position = 0x14;
+
+            // Read null-terminated string
+            var bytes = new List<byte>();
+            var maxLength = 15;
+            byte b;
+            while ((b = reader.ReadByte()) != 0 && bytes.Count < maxLength)
+                bytes.Add(b);
+
+            var unityString = System.Text.Encoding.UTF8.GetString(bytes.ToArray());
+            return new UnityVersion(unityString);
         }
 
         public static implicit operator UnityVersion(string versionString) => new UnityVersion(versionString);

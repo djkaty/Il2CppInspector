@@ -112,6 +112,9 @@
                     <Label Grid.Row="8" Grid.Column="0" Content="Il2CppCodeRegistration function"></Label>
                     <Label Grid.Row="8" Grid.Column="1" Content="{Binding Path=Binary.RegistrationFunctionPointer}" ContentStringFormat="0x{0:x8}"></Label>
                 </Grid>
+                
+                <!-- Unity asset file button -->
+                <Button Name="btnUnityAsset" Click="BtnUnityAsset_Click" DockPanel.Dock="Top" Margin="10" Padding="5" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Width="260" Content="Get Unity version from asset file..." Style="{StaticResource LightBoxButton}"/>
 
                 <!-- Save file buttons -->
                 <Button Name="btnSaveMetadata" Click="BtnSaveMetadata_OnClick" DockPanel.Dock="Top" Margin="10" Padding="5" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Width="260" Content="Save extracted/decrypted metadata...">

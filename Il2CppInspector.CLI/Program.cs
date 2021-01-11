@@ -109,6 +109,9 @@ namespace Il2CppInspector.CLI
             [Option("unity-version", Required = false, HelpText = "Version of Unity used to create the input files, if known. Used to enhance Python, C++ and JSON output. If not specified, a close match will be inferred automatically.", Default = null)]
             public UnityVersion UnityVersion { get; set; }
 
+            [Option("unity-version-from-asset", Required = false, HelpText = "A Unity asset file used to determine the exact Unity version. Overrides --unity-version.", Default = null)]
+            public string UnityVersionAsset { get; set; }
+
             [Option("plugins", Required = false, HelpText = "Specify options for plugins. Enclose each plugin's configuration in quotes as follows: --plugins \"pluginone --option1 value1 --option2 value2\" \"plugintwo --option...\". Use --plugins <name> to get help on a specific plugin")]
             public IEnumerable<string> PluginOptions { get; set; }
         }
@@ -189,6 +192,21 @@ namespace Il2CppInspector.CLI
                 } catch (Exception ex) when (ex is ArgumentException || ex is FormatException || ex is OverflowException) {
                     Console.Error.WriteLine("Image base must be a 32 or 64-bit hex value (optionally starting with '0x')");
                     return 1;
+                }
+            }
+
+            // Check Unity asset
+            if (options.UnityVersionAsset != null) {
+                try {
+                    options.UnityVersion = UnityVersion.FromAssetFile(options.UnityVersionAsset);
+
+                    Console.WriteLine("Unity asset file has version " + options.UnityVersion);
+                }
+                catch (FileNotFoundException) {
+                    Console.Error.WriteLine($"Unity asset file {options.UnityVersionAsset} does not exist");
+                    return 1;
+                } catch (ArgumentException) {
+                    Console.Error.WriteLine("Could not determine Unity version from asset file - ignoring");
                 }
             }
 

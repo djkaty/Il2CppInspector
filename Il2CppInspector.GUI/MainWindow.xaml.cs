@@ -213,6 +213,42 @@ namespace Il2CppInspectorGUI
         }
 
         /// <summary>
+        /// Select Unity version from asset file
+        /// </summary>
+        private void BtnUnityAsset_Click(object sender, RoutedEventArgs e) {
+            var openFileDialog = new OpenFileDialog {
+                Filter = "Unity asset files (*.*)|*.*",
+                CheckFileExists = true
+            };
+
+            if (openFileDialog.ShowDialog() != true)
+                return;
+
+            try {
+                var unityVersion = UnityVersion.FromAssetFile(openFileDialog.FileName);
+
+                var done = false;
+                foreach (UnityHeaders header in cboPyUnityVersion.Items) {
+                    if (header.VersionRange.Contains(unityVersion)) {
+                        cboPyUnityVersion.SelectedItem = header;
+                        cboCppUnityVersion.SelectedItem = header;
+                        cboJsonUnityVersion.SelectedItem = header;
+                        done = true;
+                        break;
+                    }
+                }
+
+                if (done)
+                    MessageBox.Show(this, $"Selected Unity version {unityVersion}", "Unity version detected", MessageBoxButton.OK, MessageBoxImage.Information);
+                else
+                    MessageBox.Show(this, $"Asset file Unity version {unityVersion} is not compatible with the loaded IL2CPP application", "Incompatible Unity version", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (ArgumentException) {
+                MessageBox.Show(this, "Could not determine Unity version from this asset file", "Unity version could not be detected", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
         /// User has selected an image
         /// </summary>
         private void LstImages_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
