@@ -6,7 +6,7 @@
 
 namespace Il2CppInspector
 {
-    // A code file function export
+    // A code file function export - end addresses are inclusive
     public class Section
     {
         public ulong VirtualStart;
@@ -17,5 +17,8 @@ namespace Il2CppInspector
         public bool IsData;
         public bool IsBSS;
         public string Name;
+
+        public int ImageLength => (int) (ImageEnd - ImageStart) + 1;
+        public ulong VirtualLength => (VirtualEnd - VirtualStart) + 1;
     }
 }
