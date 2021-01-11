@@ -47,7 +47,7 @@ namespace Il2CppInspector.Reflection
             ParameterTypes = exampleMethod.DeclaredParameters.Select(p => mapParameterType(model, p.ParameterType)).ToArray();
 
             var start = Package.MethodInvokePointers[Index];
-            VirtualAddress = (start & 0xffff_ffff_ffff_fffe, Package.FunctionAddresses[start]);
+            VirtualAddress = (start, Package.FunctionAddresses[start]);
         }
 
         // The invokers use Object for all reference types, and SByte for booleans

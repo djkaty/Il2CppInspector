@@ -60,9 +60,9 @@ namespace Il2CppInspector
         public List<Il2CppGenericInst> GenericInstances => Binary.GenericInstances;
         public Dictionary<string, Il2CppCodeGenModule> Modules => Binary.Modules;
         public ulong[] CustomAttributeGenerators { get; }
-        public ulong[] MethodInvokePointers => Binary.MethodInvokePointers;
+        public ulong[] MethodInvokePointers { get; }
         public Il2CppMethodSpec[] MethodSpecs => Binary.MethodSpecs;
-        public Dictionary<Il2CppMethodSpec, ulong> GenericMethodPointers => Binary.GenericMethodPointers;
+        public Dictionary<Il2CppMethodSpec, ulong> GenericMethodPointers { get; }
         public Dictionary<Il2CppMethodSpec, int> GenericMethodInvokerIndices => Binary.GenericMethodInvokerIndices;
 
         // TODO: Finish all file access in the constructor and eliminate the need for this
@@ -218,6 +218,14 @@ namespace Il2CppInspector
             return null;
         }
 
+        // Thumb instruction pointers have the bottom bit set to signify a switch from ARM to Thumb when jumping
+        private ulong getDecodedAddress(ulong addr) {
+            if (BinaryImage.Arch != "ARM" && BinaryImage.Arch != "ARM64")
+                return addr;
+
+            return addr & 0xffff_ffff_ffff_fffe;
+        }
+
         public Il2CppInspector(Il2CppBinary binary, Metadata metadata) {
             // Store stream representations
             Binary = binary;
@@ -277,11 +285,16 @@ namespace Il2CppInspector
                 }
             }
 
+            // Decode addresses for Thumb etc. without altering the Il2CppBinary structure data
+            CustomAttributeGenerators = CustomAttributeGenerators.Select(a => getDecodedAddress(a)).ToArray();
+            MethodInvokePointers = Binary.MethodInvokePointers.Select(a => getDecodedAddress(a)).ToArray();
+            GenericMethodPointers = Binary.GenericMethodPointers.ToDictionary(a => a.Key, a => getDecodedAddress(a.Value));
+
             // Get sorted list of function pointers from all sources
             // TODO: This does not include IL2CPP API functions
             var sortedFunctionPointers = (Version <= 24.1)?
-            Binary.GlobalMethodPointers.ToList() :
-            Binary.ModuleMethodPointers.SelectMany(module => module.Value).ToList();
+            Binary.GlobalMethodPointers.Select(a => getDecodedAddress(a)).ToList() :
+            Binary.ModuleMethodPointers.SelectMany(module => module.Value).Select(a => getDecodedAddress(a)).ToList();
 
             sortedFunctionPointers.AddRange(CustomAttributeGenerators);
             sortedFunctionPointers.AddRange(MethodInvokePointers);
@@ -354,13 +367,14 @@ namespace Il2CppInspector
 
             // Consider the end of the method to be the start of the next method (or zero)
             // The last method end will be wrong but there is no way to calculate it
-            return (start & 0xffff_ffff_ffff_fffe, FunctionAddresses[start]);
+            start = getDecodedAddress(start);
+            return (start, FunctionAddresses[start]);
         }
 
         // Get a concrete generic method pointer if available
         public (ulong Start, ulong End)? GetGenericMethodPointer(Il2CppMethodSpec spec) {
             if (GenericMethodPointers.TryGetValue(spec, out var start)) {
-                return (start & 0xffff_ffff_ffff_fffe, FunctionAddresses[start]);
+                return (start, FunctionAddresses[start]);
             }
             return null;
         }
