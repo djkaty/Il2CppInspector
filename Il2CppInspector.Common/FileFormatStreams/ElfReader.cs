@@ -15,6 +15,12 @@ using NoisyCowStudios.Bin2Object;
 
 namespace Il2CppInspector
 {
+    public interface IElfReader : IFileFormatStream
+    {
+        // Get PLT address
+        uint GetPLTAddress();
+    }
+
     public class ElfReader32 : ElfReader<uint, elf_32_phdr, elf_32_sym, ElfReader32, Convert32>
     {
         public ElfReader32() : base() {
@@ -41,11 +47,6 @@ namespace Il2CppInspector
         protected override void WriteWord(ulong value) => Write(value);
     }
 
-    interface IElfReader
-    {
-        uint GetPLTAddress();
-    }
-
     public abstract class ElfReader<TWord, TPHdr, TSym, TReader, TConvert> : FileFormatStream<TReader>, IElfReader
         where TWord : struct
         where TPHdr : Ielf_phdr<TWord>, new()
@@ -53,6 +54,42 @@ namespace Il2CppInspector
         where TConvert : IWordConverter<TWord>, new()
         where TReader : FileFormatStream<TReader>
     {
+        public override string DefaultFilename => "libil2cpp.so";
+
+        public override string Format => Bits == 32 ? "ELF" : "ELF64";
+
+        public override string Arch => (Elf) ElfHeader.e_machine switch {
+            Elf.EM_386 => "x86",
+            Elf.EM_ARM => "ARM",
+            Elf.EM_X86_64 => "x64",
+            Elf.EM_AARCH64 => "ARM64",
+            _ => "Unsupported"
+        };
+
+        public override int Bits => (ElfHeader.m_arch == (uint) Elf.ELFCLASS64) ? 64 : 32;
+
+        public TPHdr[] PHT { get; private set; }
+        public elf_shdr<TWord>[] SHT { get; private set; }
+        public elf_dynamic<TWord>[] DynamicTable { get; private set; }
+        public elf_header<TWord> ElfHeader { get; private set; }
+        public Dictionary<string, elf_shdr<TWord>> SectionByName = new Dictionary<string, elf_shdr<TWord>>();
+
+        public elf_shdr<TWord> GetSection(Elf sectionIndex) => SHT.FirstOrDefault(x => x.sh_type == (uint) sectionIndex);
+        public IEnumerable<elf_shdr<TWord>> GetSections(Elf sectionIndex) => SHT.Where(x => x.sh_type == (uint) sectionIndex);
+        public TPHdr GetProgramHeader(Elf programIndex) => PHT.FirstOrDefault(x => x.p_type == (uint) programIndex);
+        public elf_dynamic<TWord> GetDynamicEntry(Elf dynamicIndex) => DynamicTable?.FirstOrDefault(x => (Elf) conv.ULong(x.d_tag) == dynamicIndex);
+
+        private Dictionary<string, Symbol> symbolTable = new Dictionary<string, Symbol>();
+        private List<Export> exports = new List<Export>();
+
+        private List<(uint Start, uint End)> reverseMapExclusions = new List<(uint Start, uint End)>();
+        private bool preferPHT = false;
+        private bool isMemoryImage = false;
+
+        protected abstract Elf ArchClass { get; }
+
+        protected abstract void WriteWord(TWord value);
+
         private readonly TConvert conv = new TConvert();
 
         // Internal relocation entry helper
@@ -106,73 +143,38 @@ namespace Il2CppInspector
             return size;
         }
 
-        private TPHdr[] program_header_table;
-        private elf_shdr<TWord>[] section_header_table;
-        private elf_dynamic<TWord>[] dynamic_table;
-        private elf_header<TWord> elf_header;
-        private Dictionary<string, elf_shdr<TWord>> sectionByName = new Dictionary<string, elf_shdr<TWord>>();
-        private List<(uint Start, uint End)> reverseMapExclusions = new List<(uint Start, uint End)>();
-        private bool preferPHT = false;
-        private bool isMemoryImage = false;
-
-        public override string DefaultFilename => "libil2cpp.so";
-
-        public override string Format => Bits == 32 ? "ELF" : "ELF64";
-
-        public override string Arch => (Elf) elf_header.e_machine switch {
-            Elf.EM_386 => "x86",
-            Elf.EM_ARM => "ARM",
-            Elf.EM_X86_64 => "x64",
-            Elf.EM_AARCH64 => "ARM64",
-            _ => "Unsupported"
-        };
-
-        public override int Bits => (elf_header.m_arch == (uint) Elf.ELFCLASS64) ? 64 : 32;
-
-        private elf_shdr<TWord> getSection(Elf sectionIndex) => section_header_table.FirstOrDefault(x => x.sh_type == (uint) sectionIndex);
-        private IEnumerable<elf_shdr<TWord>> getSections(Elf sectionIndex) => section_header_table.Where(x => x.sh_type == (uint) sectionIndex);
-        private TPHdr getProgramHeader(Elf programIndex) => program_header_table.FirstOrDefault(x => x.p_type == (uint) programIndex);
-        private elf_dynamic<TWord> getDynamic(Elf dynamicIndex) => dynamic_table?.FirstOrDefault(x => (Elf) conv.ULong(x.d_tag) == dynamicIndex);
-
-        private Dictionary<string, Symbol> symbolTable = new Dictionary<string, Symbol>();
-        private List<Export> exports = new List<Export>();
-
-        protected abstract Elf ArchClass { get; }
-
-        protected abstract void WriteWord(TWord value);
-
         protected override bool Init() {
-            elf_header = ReadObject<elf_header<TWord>>();
+            ElfHeader = ReadObject<elf_header<TWord>>();
 
             // Check for magic bytes
-            if ((Elf) elf_header.m_dwFormat != Elf.ELFMAG)
+            if ((Elf) ElfHeader.m_dwFormat != Elf.ELFMAG)
                 return false;
 
             // Ensure supported architecture
-            if ((Elf) elf_header.m_arch != ArchClass)
+            if ((Elf) ElfHeader.m_arch != ArchClass)
                 return false;
 
             // Get PHT and SHT
-            program_header_table = ReadArray<TPHdr>(conv.Long(elf_header.e_phoff), elf_header.e_phnum);
-            section_header_table = ReadArray<elf_shdr<TWord>>(conv.Long(elf_header.e_shoff), elf_header.e_shnum);
+            PHT = ReadArray<TPHdr>(conv.Long(ElfHeader.e_phoff), ElfHeader.e_phnum);
+            SHT = ReadArray<elf_shdr<TWord>>(conv.Long(ElfHeader.e_shoff), ElfHeader.e_shnum);
 
             // Determine if SHT is valid
 
             // These can happen as a result of conversions from other formats to ELF,
             // or if the SHT has been deliberately stripped
-            if (!section_header_table.Any()) {
+            if (!SHT.Any()) {
                 Console.WriteLine("ELF binary has no SHT - reverting to PHT");
                 preferPHT = true;
             }
             
-            else if (section_header_table.All(s => conv.ULong(s.sh_addr) == 0ul)) {
+            else if (SHT.All(s => conv.ULong(s.sh_addr) == 0ul)) {
                 Console.WriteLine("ELF binary SHT is all-zero - reverting to PHT");
                 preferPHT = true;
             }
 
             // Check for overlaps in sections that are memory-allocated on load
             else {
-                var shtShouldBeOrdered = section_header_table
+                var shtShouldBeOrdered = SHT
                     .Where(s => ((Elf) conv.Int(s.sh_flags) & Elf.SHF_ALLOC) == Elf.SHF_ALLOC)
                     .OrderBy(s => s.sh_addr)
                     .Select(s => new[] { conv.ULong(s.sh_addr), conv.ULong(s.sh_addr) + conv.ULong(s.sh_size) })
@@ -182,7 +184,7 @@ namespace Il2CppInspector
                 if (!shtShouldBeOrdered.Any()) {
 
                     // If the first file offset of the first PHT is zero, assume a dumped image
-                    if (program_header_table.Any(t => conv.ULong(t.p_vaddr) == 0ul)) {
+                    if (PHT.Any(t => conv.ULong(t.p_vaddr) == 0ul)) {
                         Console.WriteLine("ELF binary appears to be a dumped memory image");
                         isMemoryImage = true;
                     }
@@ -213,11 +215,11 @@ namespace Il2CppInspector
             }
             
             // Get dynamic table if it exists (must be done after rebasing)
-            if (getProgramHeader(Elf.PT_DYNAMIC) is TPHdr PT_DYNAMIC)
-                dynamic_table = ReadArray<elf_dynamic<TWord>>(conv.Long(PT_DYNAMIC.p_offset), (int) (conv.Long(PT_DYNAMIC.p_filesz) / Sizeof(typeof(elf_dynamic<TWord>))));
+            if (GetProgramHeader(Elf.PT_DYNAMIC) is TPHdr PT_DYNAMIC)
+                DynamicTable = ReadArray<elf_dynamic<TWord>>(conv.Long(PT_DYNAMIC.p_offset), (int) (conv.Long(PT_DYNAMIC.p_filesz) / Sizeof(typeof(elf_dynamic<TWord>))));
 
             // Get offset of code section
-            var codeSegment = program_header_table.First(x => ((Elf) x.p_flags & Elf.PF_X) == Elf.PF_X);
+            var codeSegment = PHT.First(x => ((Elf) x.p_flags & Elf.PF_X) == Elf.PF_X);
             GlobalOffset = conv.ULong(conv.Sub(codeSegment.p_vaddr, codeSegment.p_offset));
 
             // Nothing more to do if the image is a memory dump (no section names, relocations or decryption)
@@ -227,12 +229,12 @@ namespace Il2CppInspector
             // Get section name mappings if there are any
             // This is currently only used to defeat the XOR obfuscation handled below
             // Note: There can be more than one section with the same name, or unnamed; we take the first section with a given name
-            if (elf_header.e_shtrndx < section_header_table.Length) {
-                var pStrtab = section_header_table[elf_header.e_shtrndx].sh_offset;
-                foreach (var section in section_header_table) {
+            if (ElfHeader.e_shtrndx < SHT.Length) {
+                var pStrtab = SHT[ElfHeader.e_shtrndx].sh_offset;
+                foreach (var section in SHT) {
                     try {
                         var name = ReadNullTerminatedString(conv.Long(pStrtab) + section.sh_name);
-                        sectionByName.TryAdd(name, section);
+                        SectionByName.TryAdd(name, section);
                     } catch (ArgumentOutOfRangeException) {
                         // Names have been stripped, maybe previously dumped image
                         break;
@@ -246,37 +248,37 @@ namespace Il2CppInspector
             StatusUpdate("Finding relocations");
 
             // Two types: add value from offset in image, and add value from specified addend
-            foreach (var relSection in getSections(Elf.SHT_REL)) {
+            foreach (var relSection in GetSections(Elf.SHT_REL)) {
                 reverseMapExclusions.Add(((uint) conv.Int(relSection.sh_offset), (uint) (conv.Int(relSection.sh_offset) + conv.Int(relSection.sh_size) - 1)));
                 rels.UnionWith(
                     from rel in ReadArray<elf_rel<TWord>>(conv.Long(relSection.sh_offset), conv.Int(conv.Div(relSection.sh_size, relSection.sh_entsize)))
-                    select new ElfReloc(rel, section_header_table[relSection.sh_link].sh_offset));
+                    select new ElfReloc(rel, SHT[relSection.sh_link].sh_offset));
             }
 
-            foreach (var relaSection in getSections(Elf.SHT_RELA)) {
+            foreach (var relaSection in GetSections(Elf.SHT_RELA)) {
                 reverseMapExclusions.Add(((uint) conv.Int(relaSection.sh_offset), (uint) (conv.Int(relaSection.sh_offset) + conv.Int(relaSection.sh_size) - 1)));
                 rels.UnionWith(
                     from rela in ReadArray<elf_rela<TWord>>(conv.Long(relaSection.sh_offset), conv.Int(conv.Div(relaSection.sh_size, relaSection.sh_entsize)))
-                    select new ElfReloc(rela, section_header_table[relaSection.sh_link].sh_offset));
+                    select new ElfReloc(rela, SHT[relaSection.sh_link].sh_offset));
             }
 
             // Relocations in dynamic section
-            if (getDynamic(Elf.DT_REL) is elf_dynamic<TWord> dt_rel) {
-                var dt_rel_count = conv.Int(conv.Div(getDynamic(Elf.DT_RELSZ).d_un, getDynamic(Elf.DT_RELENT).d_un));
+            if (GetDynamicEntry(Elf.DT_REL) is elf_dynamic<TWord> dt_rel) {
+                var dt_rel_count = conv.Int(conv.Div(GetDynamicEntry(Elf.DT_RELSZ).d_un, GetDynamicEntry(Elf.DT_RELENT).d_un));
                 var dt_item_size = Sizeof(typeof(elf_rel<TWord>));
                 var dt_start = MapVATR(conv.ULong(dt_rel.d_un));
                 var dt_rel_list = ReadArray<elf_rel<TWord>>(dt_start, dt_rel_count);
-                var dt_symtab = getDynamic(Elf.DT_SYMTAB).d_un;
+                var dt_symtab = GetDynamicEntry(Elf.DT_SYMTAB).d_un;
                 reverseMapExclusions.Add((dt_start, (uint) (dt_start + dt_rel_count * dt_item_size - 1)));
                 rels.UnionWith(from rel in dt_rel_list select new ElfReloc(rel, dt_symtab));
             }
 
-            if (getDynamic(Elf.DT_RELA) is elf_dynamic<TWord> dt_rela) {
-                var dt_rela_count = conv.Int(conv.Div(getDynamic(Elf.DT_RELASZ).d_un, getDynamic(Elf.DT_RELAENT).d_un));
+            if (GetDynamicEntry(Elf.DT_RELA) is elf_dynamic<TWord> dt_rela) {
+                var dt_rela_count = conv.Int(conv.Div(GetDynamicEntry(Elf.DT_RELASZ).d_un, GetDynamicEntry(Elf.DT_RELAENT).d_un));
                 var dt_item_size = Sizeof(typeof(elf_rela<TWord>));
                 var dt_start = MapVATR(conv.ULong(dt_rela.d_un));
                 var dt_rela_list = ReadArray<elf_rela<TWord>>(dt_start, dt_rela_count);
-                var dt_symtab = getDynamic(Elf.DT_SYMTAB).d_un;
+                var dt_symtab = GetDynamicEntry(Elf.DT_SYMTAB).d_un;
                 reverseMapExclusions.Add((dt_start, (uint) (dt_start + dt_rela_count * dt_item_size - 1)));
                 rels.UnionWith(from rela in dt_rela_list select new ElfReloc(rela, dt_symtab));
             }
@@ -309,7 +311,7 @@ namespace Il2CppInspector
                 // Relocation types from https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter6-54839.html#scrolltoc
                 // and https://studfiles.net/preview/429210/page:18/
                 // and http://infocenter.arm.com/help/topic/com.arm.doc.ihi0056b/IHI0056B_aaelf64.pdf (AArch64)
-                (TWord newValue, bool recognized) result = (rel.Type, (Elf) elf_header.e_machine) switch {
+                (TWord newValue, bool recognized) result = (rel.Type, (Elf) ElfHeader.e_machine) switch {
                     (Elf.R_ARM_ABS32, Elf.EM_ARM) => (conv.Add(symValue, addend), true), // S + A
                     (Elf.R_ARM_REL32, Elf.EM_ARM) => (conv.Add(conv.Sub(symValue, rel.Offset), addend), true), // S - P + A
                     (Elf.R_ARM_COPY, Elf.EM_ARM) => (symValue, true), // S
@@ -343,10 +345,10 @@ namespace Il2CppInspector
             // Detect and defeat various kinds of XOR encryption
             StatusUpdate("Detecting encryption");
 
-            if (getDynamic(Elf.DT_INIT) != null && sectionByName.ContainsKey(".rodata")) {
+            if (GetDynamicEntry(Elf.DT_INIT) != null && SectionByName.ContainsKey(".rodata")) {
                 // Use the data section to determine some possible keys
                 // If the data section uses striped encryption, bucketing the whole section will not give the correct key
-                var roDataBytes = ReadBytes(conv.Long(sectionByName[".rodata"].sh_offset), conv.Int(sectionByName[".rodata"].sh_size));
+                var roDataBytes = ReadBytes(conv.Long(SectionByName[".rodata"].sh_offset), conv.Int(SectionByName[".rodata"].sh_size));
                 var xorKeyCandidateStriped = roDataBytes.Take(1024).GroupBy(b => b).OrderByDescending(f => f.Count()).First().Key;
                 var xorKeyCandidateFull = roDataBytes.GroupBy(b => b).OrderByDescending(f => f.Count()).First().Key;
 
@@ -361,7 +363,7 @@ namespace Il2CppInspector
                 var instructionsToTest = 256;
 
                 // This gives us an idea of whether the code might be encrypted
-                var textFirstDWords = ReadArray<uint>(conv.Long(sectionByName[".text"].sh_offset), instructionsToTest);
+                var textFirstDWords = ReadArray<uint>(conv.Long(SectionByName[".text"].sh_offset), instructionsToTest);
                 var bottom = textFirstDWords.Select(w => (w >> armNibbleB) & 0xF).GroupBy(n => n).OrderByDescending(f => f.Count()).First().Key;
                 var top = textFirstDWords.Select(w => w >> armNibbleT).GroupBy(n => n).OrderByDescending(f => f.Count()).First().Key;
                 var xorKeyCandidateFromCode = (byte) (((top ^ armValueT) << 4) | (bottom ^ armValueB));
@@ -381,10 +383,10 @@ namespace Il2CppInspector
 
                     // Take all of the instructions from the code section starting on a VA block boundary and determine which are valid
                     var startSkip = 0;
-                    if (conv.Int(sectionByName[".text"].sh_addr) % blockSize != 0)
-                        startSkip = blockSize - conv.Int(sectionByName[".text"].sh_addr) % blockSize;
+                    if (conv.Int(SectionByName[".text"].sh_addr) % blockSize != 0)
+                        startSkip = blockSize - conv.Int(SectionByName[".text"].sh_addr) % blockSize;
 
-                    var insts = ReadArray<uint>(conv.Long(sectionByName[".text"].sh_offset) + startSkip, (conv.Int(sectionByName[".text"].sh_size) - startSkip) / 4);
+                    var insts = ReadArray<uint>(conv.Long(SectionByName[".text"].sh_offset) + startSkip, (conv.Int(SectionByName[".text"].sh_size) - startSkip) / 4);
                     var instsValid = insts.Select(i => Bits == 32? isCommonARMv7(i) : isCommonARMv8A(i)).ToList();
 
                     // Use RLE to produce frequency distribution of number of consecutive valid and invalid instructions,
@@ -447,8 +449,8 @@ namespace Il2CppInspector
             // Detect more sophisticated packing
             // We have seen several examples (eg. #14 and #26) where most of the file is zeroed
             // and packed data is found in the latter third. So far these files always have zeroed .rodata sections
-            if (sectionByName.ContainsKey(".rodata")) {
-                var rodataBytes = ReadBytes(conv.Long(sectionByName[".rodata"].sh_offset), conv.Int(sectionByName[".rodata"].sh_size));
+            if (SectionByName.ContainsKey(".rodata")) {
+                var rodataBytes = ReadBytes(conv.Long(SectionByName[".rodata"].sh_offset), conv.Int(SectionByName[".rodata"].sh_size));
                 if (rodataBytes.All(b => b == 0x00))
                     throw new InvalidOperationException("This IL2CPP binary is packed in a way not currently supported by Il2CppInspector and cannot be loaded.");
             }
@@ -529,7 +531,7 @@ namespace Il2CppInspector
         }
 
         private void xorSection(string sectionName, byte xorValue, uint stripeSize) {
-            var section = sectionByName[sectionName];
+            var section = SectionByName[sectionName];
 
             // First part up to stripe size boundary is always encrypted, first full block is always encrypted
             var start = conv.Int(section.sh_offset);
@@ -559,19 +561,19 @@ namespace Il2CppInspector
         // Rebase the image to a new virtual address
         private void rebase(TWord imageBase) {
             // Rebase PHT
-            foreach (var segment in program_header_table) {
+            foreach (var segment in PHT) {
                 segment.p_offset = segment.p_vaddr;
                 segment.p_vaddr = conv.Add(segment.p_vaddr, imageBase);
                 segment.p_filesz = segment.p_memsz;
             }
 
             // Rewrite to stream
-            WriteArray(conv.Long(elf_header.e_phoff), program_header_table);
+            WriteArray(conv.Long(ElfHeader.e_phoff), PHT);
             IsModified = true;
 
             // Rebase dynamic table if it exists
             // Note we have to rebase the PHT first to get the correct location to read this
-            if (!(getProgramHeader(Elf.PT_DYNAMIC) is TPHdr PT_DYNAMIC))
+            if (!(GetProgramHeader(Elf.PT_DYNAMIC) is TPHdr PT_DYNAMIC))
                 return;
 
             var dt = ReadArray<elf_dynamic<TWord>>(conv.Long(PT_DYNAMIC.p_offset), (int) (conv.Long(PT_DYNAMIC.p_filesz) / Sizeof(typeof(elf_dynamic<TWord>))));
@@ -599,15 +601,15 @@ namespace Il2CppInspector
             var pTables = new List<(TWord offset, TWord count, TWord strings)>();
 
             // String table (a sequence of null-terminated strings, total length in sh_size
-            var SHT_STRTAB = getSection(Elf.SHT_STRTAB);
+            var SHT_STRTAB = GetSection(Elf.SHT_STRTAB);
 
             if (SHT_STRTAB != null) {
                 // Section header shared object symbol table (.symtab)
-                if (getSection(Elf.SHT_SYMTAB) is elf_shdr<TWord> SHT_SYMTAB)
+                if (GetSection(Elf.SHT_SYMTAB) is elf_shdr<TWord> SHT_SYMTAB)
                     pTables.Add((SHT_SYMTAB.sh_offset, conv.Div(SHT_SYMTAB.sh_size, SHT_SYMTAB.sh_entsize), SHT_STRTAB.sh_offset));
                 
                 // Section header executable symbol table (.dynsym)
-                if (getSection(Elf.SHT_DYNSYM) is elf_shdr<TWord> SHT_DYNSYM)
+                if (GetSection(Elf.SHT_DYNSYM) is elf_shdr<TWord> SHT_DYNSYM)
                     pTables.Add((SHT_DYNSYM.sh_offset, conv.Div(SHT_DYNSYM.sh_size, SHT_DYNSYM.sh_entsize), SHT_STRTAB.sh_offset));
             }
 
@@ -615,10 +617,10 @@ namespace Il2CppInspector
             // Normally the same as .dynsym except that .dynsym may be removed in stripped binaries
 
             // Dynamic string table
-            if (getDynamic(Elf.DT_STRTAB) is elf_dynamic<TWord> DT_STRTAB) {
-                if (getDynamic(Elf.DT_SYMTAB) is elf_dynamic<TWord> DT_SYMTAB) {
+            if (GetDynamicEntry(Elf.DT_STRTAB) is elf_dynamic<TWord> DT_STRTAB) {
+                if (GetDynamicEntry(Elf.DT_SYMTAB) is elf_dynamic<TWord> DT_SYMTAB) {
                     // Find the next pointer in the dynamic table to calculate the length of the symbol table
-                    var end = (from x in dynamic_table where conv.Gt(x.d_un, DT_SYMTAB.d_un) orderby x.d_un select x).First().d_un;
+                    var end = (from x in DynamicTable where conv.Gt(x.d_un, DT_SYMTAB.d_un) orderby x.d_un select x).First().d_un;
 
                     // Dynamic symbol table
                     pTables.Add((
@@ -670,17 +672,17 @@ namespace Il2CppInspector
             // INIT_ARRAY contains a list of pointers to initialization functions (not all functions in the binary)
             // INIT_ARRAYSZ contains the size of INIT_ARRAY
             // INIT_ARRAY is probably broken in dumped images and resaved dumped images
-            if (getDynamic(Elf.DT_INIT_ARRAY) == null || getDynamic(Elf.DT_INIT_ARRAYSZ) == null || isMemoryImage)
+            if (GetDynamicEntry(Elf.DT_INIT_ARRAY) == null || GetDynamicEntry(Elf.DT_INIT_ARRAYSZ) == null || isMemoryImage)
                 return Array.Empty<uint>();
 
-            var init = MapVATR(conv.ULong(getDynamic(Elf.DT_INIT_ARRAY).d_un));
-            var size = getDynamic(Elf.DT_INIT_ARRAYSZ).d_un;
+            var init = MapVATR(conv.ULong(GetDynamicEntry(Elf.DT_INIT_ARRAY).d_un));
+            var size = GetDynamicEntry(Elf.DT_INIT_ARRAYSZ).d_un;
 
             var init_array = conv.UIntArray(ReadArray<TWord>(init, conv.Int(size) / (Bits / 8)));
 
             // Additionally, check if there is an old-style DT_INIT function and include it in the list if so
-            if (getDynamic(Elf.DT_INIT) != null)
-                init_array = init_array.Concat(conv.UIntArray(new[] { getDynamic(Elf.DT_INIT).d_un })).ToArray();
+            if (GetDynamicEntry(Elf.DT_INIT) != null)
+                init_array = init_array.Concat(conv.UIntArray(new[] { GetDynamicEntry(Elf.DT_INIT).d_un })).ToArray();
 
             return init_array.Select(x => MapVATR(x)).ToArray();
         }
@@ -688,7 +690,7 @@ namespace Il2CppInspector
         public override IEnumerable<Section> GetSections() {
             // If the sections have been stripped, use the segment list from the PHT instead
             if (preferPHT)
-                return program_header_table.Select(p => new Section {
+                return PHT.Select(p => new Section {
                     VirtualStart = conv.ULong(p.p_vaddr),
                     VirtualEnd   = conv.ULong(p.p_vaddr) + conv.ULong(p.p_memsz) - 1,
                     ImageStart   = (uint) conv.Int(p.p_offset),
@@ -703,7 +705,7 @@ namespace Il2CppInspector
                 });
 
             // Return sections list
-            return section_header_table.Select(s => new Section {
+            return SHT.Select(s => new Section {
                 VirtualStart = conv.ULong(s.sh_addr),
                 VirtualEnd   = conv.ULong(s.sh_addr) + conv.ULong(s.sh_size) - 1,
                 ImageStart   = (uint) conv.Int(s.sh_offset),
@@ -713,7 +715,7 @@ namespace Il2CppInspector
                 IsExec = ((Elf) conv.Int(s.sh_flags) & Elf.SHF_EXECINSTR) == Elf.SHF_EXECINSTR && (Elf) s.sh_type == Elf.SHT_PROGBITS,
                 IsBSS  = (Elf) s.sh_type == Elf.SHT_NOBITS,
 
-                Name = sectionByName.First(sbn => conv.Int(sbn.Value.sh_offset) == conv.Int(s.sh_offset)).Key
+                Name = SectionByName.First(sbn => conv.Int(sbn.Value.sh_offset) == conv.Int(s.sh_offset)).Key
             });
         }
 
@@ -724,7 +726,7 @@ namespace Il2CppInspector
             // Additions in the argument to MapVATR may cause an overflow which should be discarded for 32-bit files
             if (Bits == 32)
                 uiAddr &= 0xffff_ffff;
-             var program_header_table = this.program_header_table.First(x => uiAddr >= conv.ULong(x.p_vaddr) && uiAddr <= conv.ULong(conv.Add(x.p_vaddr, x.p_filesz)));
+             var program_header_table = this.PHT.First(x => uiAddr >= conv.ULong(x.p_vaddr) && uiAddr <= conv.ULong(conv.Add(x.p_vaddr, x.p_filesz)));
             return (uint) (uiAddr - conv.ULong(conv.Sub(program_header_table.p_vaddr, program_header_table.p_offset)));
         }
 
@@ -733,11 +735,11 @@ namespace Il2CppInspector
             if (reverseMapExclusions.Any(r => offset >= r.Start && offset <= r.End))
                 throw new InvalidOperationException("Attempt to map to a relocation address");
 
-            var section = program_header_table.First(x => offset >= conv.Int(x.p_offset) && offset < conv.Int(x.p_offset) + conv.Int(x.p_filesz));
+            var section = PHT.First(x => offset >= conv.Int(x.p_offset) && offset < conv.Int(x.p_offset) + conv.Int(x.p_filesz));
             return conv.ULong(section.p_vaddr) + offset - conv.ULong(section.p_offset);
         }
         
         // Get the address of the procedure linkage table (.got.plt) which is needed for some disassemblies
-        public uint GetPLTAddress() => (uint) conv.ULong(getDynamic(Elf.DT_PLTGOT).d_un);
+        public uint GetPLTAddress() => (uint) conv.ULong(GetDynamicEntry(Elf.DT_PLTGOT).d_un);
     }
 }

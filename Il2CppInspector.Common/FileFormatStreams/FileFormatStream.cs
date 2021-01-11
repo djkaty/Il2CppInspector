@@ -130,7 +130,8 @@ namespace Il2CppInspector
 
         public static IFileFormatStream Load(Stream stream, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null) {
             var types = Assembly.GetExecutingAssembly().DefinedTypes
-                        .Where(x => x.ImplementedInterfaces.Contains(typeof(IFileFormatStream)) && !x.IsGenericTypeDefinition);
+                        .Where(x => x.ImplementedInterfaces.Contains(typeof(IFileFormatStream))
+                                && !x.IsGenericTypeDefinition && !x.IsAbstract && !x.IsInterface);
 
             // Copy to memory-based stream
             var binaryObjectStream = new BinaryObjectStream();
