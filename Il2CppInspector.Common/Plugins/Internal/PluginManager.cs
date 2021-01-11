@@ -214,7 +214,10 @@ namespace Il2CppInspector
                             if (AsInstance.ManagedPlugins.Any(p => p.Plugin.Id == plugin.Id))
                                 throw new Exception($"Multiple copies of {plugin.Name} were found. Please ensure the plugins folder only contains one copy of each plugin.");
 
-                            AsInstance.ManagedPlugins.Add(new ManagedPlugin { Plugin = plugin, Available = true, Enabled = false });
+                            // Enable internal plugins by default
+                            var enabled = typeof(ICorePlugin).IsAssignableFrom(type);
+
+                            AsInstance.ManagedPlugins.Add(new ManagedPlugin { Plugin = plugin, Available = true, Enabled = enabled });
                         }
 
                         // Add older versions here with adapters
