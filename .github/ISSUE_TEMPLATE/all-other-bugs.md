@@ -1,6 +1,6 @@
 ---
 name: All other bugs
-about: Any bug in Il2CppInspector not relating to loading IL2CPP file
+about: Any bug in Il2CppInspector not relating to loading IL2CPP files
 title: ''
 labels: bug
 assignees: ''
