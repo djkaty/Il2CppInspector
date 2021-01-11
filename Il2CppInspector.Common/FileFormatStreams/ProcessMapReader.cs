@@ -54,7 +54,7 @@ namespace Il2CppInspector
 
             // Get file path
             // This error should never occur with the bundled CLI and GUI; only when used as a library by a 3rd party tool
-            if (!(LoadOptions.BinaryFilePath is string mapsPath))
+            if (LoadOptions == null || !(LoadOptions.BinaryFilePath is string mapsPath))
                 throw new InvalidOperationException("To load a Linux process map, you must specify the maps file path in LoadOptions");
 
             if (!mapsPath.ToLower().EndsWith("-maps.txt"))

@@ -149,7 +149,7 @@ namespace Il2CppInspector
 
             // Get file path
             // This error should never occur with the bundled CLI and GUI; only when used as a library by a 3rd party tool
-            if (!(LoadOptions.BinaryFilePath is string dllPath))
+            if (LoadOptions == null || !(LoadOptions.BinaryFilePath is string dllPath))
                 throw new InvalidOperationException("To load a packed PE file, you must specify the DLL file path in LoadOptions");
 
             // Attempt to load DLL and run startup functions
