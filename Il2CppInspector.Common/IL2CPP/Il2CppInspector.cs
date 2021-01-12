@@ -612,7 +612,7 @@ namespace Il2CppInspector
                     }
                     else {
                         Console.Error.WriteLine("Could not process IL2CPP image. This may mean the binary file is packed, encrypted or obfuscated in a way Il2CppInspector cannot process, that the file is not an IL2CPP image or that Il2CppInspector was not able to automatically find the required data.");
-                        Console.Error.WriteLine("Please check the binary file in a disassembler to ensure that it is a valid IL2CPP binary before submitting a bug report!");
+                        Console.Error.WriteLine("Please ensure you have downloaded and installed the latest set of core plugins and try again. Check the binary file in a disassembler to ensure that it is a valid IL2CPP binary before submitting a bug report!");
                     }
                 }
                 // Unknown architecture
