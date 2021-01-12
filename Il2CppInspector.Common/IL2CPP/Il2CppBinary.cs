@@ -106,7 +106,7 @@ namespace Il2CppInspector
 
             StatusUpdate($"Analyzing IL2CPP data for {Image.Format}/{Image.Arch} image");
             DiscoverAPIExports();
-            PrepareMetadata(codeRegistration, metadataRegistration);
+            TryPrepareMetadata(codeRegistration, metadataRegistration);
         }
 
         // Load and initialize a binary of any supported architecture
@@ -164,7 +164,7 @@ namespace Il2CppInspector
             if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode()) is (ulong code, ulong meta)))
                 return false;
 
-            PrepareMetadata(code, meta);
+            TryPrepareMetadata(code, meta);
             return true;
         }
 
@@ -175,7 +175,7 @@ namespace Il2CppInspector
             if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode() ?? FindMetadataFromData(metadata)) is (ulong code, ulong meta)))
                 return false;
 
-            PrepareMetadata(code, meta, metadata);
+            TryPrepareMetadata(code, meta, metadata);
             return true;
         }
 
@@ -245,6 +245,17 @@ namespace Il2CppInspector
 
         // Architecture-specific search function
         protected abstract (ulong, ulong) ConsiderCode(IFileFormatStream image, uint loc);
+
+
+        // Load all of the discovered metadata in the binary
+        private void TryPrepareMetadata(ulong codeRegistration, ulong metadataRegistration, Metadata metadata = null) {
+            try {
+                PrepareMetadata(codeRegistration, metadataRegistration);
+            }
+            catch (Exception ex) when (!(ex is NotSupportedException)) {
+                throw new InvalidOperationException($"Could not analyze IL2CPP data. Ensure that the latest core plugins package is installed and all core plugins are enabled before filing a bug report. The error was: {ex.Message}", ex);
+            }
+        }
 
         // Load all of the discovered metadata in the binary
         private void PrepareMetadata(ulong codeRegistration, ulong metadataRegistration, Metadata metadata = null) {
