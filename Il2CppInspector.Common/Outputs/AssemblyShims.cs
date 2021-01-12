@@ -36,6 +36,11 @@ namespace Il2CppInspector.Outputs
         // Add custom attribute to item with named property arguments
         // 'module' is the module that owns 'type'; type.Module may still be null when this is called
         public static CustomAttribute AddAttribute(this IHasCustomAttribute def, ModuleDef module, TypeDef attrTypeDef, params (string prop, object value)[] args) {
+
+            // If SuppressMetadata is set, our own attributes will never be generated so attrTypeDef will be null
+            if (attrTypeDef == null)
+                return null;
+
             var attRef = module.Import(attrTypeDef);
             var attCtorRef = new MemberRefUser(attrTypeDef.Module, ".ctor", MethodSig.CreateInstance(module.CorLibTypes.Void), attRef);
 
@@ -53,6 +58,9 @@ namespace Il2CppInspector.Outputs
     // Output module to create .NET DLLs containing type definitions
     public class AssemblyShims
     {
+        // Suppress informational attributes
+        public bool SuppressMetadata { get; set; }
+
         // .NET type model
         private readonly TypeModel model;
 
@@ -502,10 +510,12 @@ namespace Il2CppInspector.Outputs
             }
 
             // Generate our custom types assembly (relies on mscorlib.dll being added above)
-            var baseDll = CreateBaseAssembly();
+            if (!SuppressMetadata) {
+                var baseDll = CreateBaseAssembly();
 
-            // Write base assembly to disk
-            baseDll.Write(Path.Combine(outputPath, baseDll.Name));
+                // Write base assembly to disk
+                baseDll.Write(Path.Combine(outputPath, baseDll.Name));
+            }
 
             // Add assembly custom attribute attributes (must do this after all assemblies are created due to type referencing)
             foreach (var asm in model.Assemblies) {

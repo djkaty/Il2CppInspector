@@ -350,7 +350,8 @@
 
                         <!-- Assembly shim DLLs -->
                         <RadioButton GroupName="grpOutputType" Name="rdoOutputDll" VerticalContentAlignment="Center" FontSize="18" Foreground="{StaticResource MicrosoftGreen}">.NET assembly shim DLLs</RadioButton>
-                        <TextBlock TextWrapping="WrapWithOverflow">No configuration required for assembly shims</TextBlock>
+
+                        <CheckBox Name="cbSuppressDllMetadata" Margin="2,10,2,2">Suppress output of all metadata attributes</CheckBox>
 
                         <Separator Margin="5,15,5,15"/>
 

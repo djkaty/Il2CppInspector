@@ -612,11 +612,15 @@ namespace Il2CppInspectorGUI
                         return;
 
                     var dllOutPath = dllSaveFolderDialog.SelectedPath;
+                    var suppressMetadata = cbSuppressDllMetadata.IsChecked == true;
 
                     areaBusyIndicator.Visibility = Visibility.Visible;
                     await Task.Run(() => {
                         OnStatusUpdate(this, "Generating .NET assembly shim DLLs");
-                        new AssemblyShims(model.TypeModel).Write(dllOutPath, OnStatusUpdate);
+                        new AssemblyShims(model.TypeModel) {
+                            SuppressMetadata = suppressMetadata
+                        }
+                        .Write(dllOutPath, OnStatusUpdate);
                     });
                     break;
             }
