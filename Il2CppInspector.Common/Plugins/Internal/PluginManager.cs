@@ -176,9 +176,13 @@ namespace Il2CppInspector
 
             AsInstance.ManagedPlugins.Clear();
 
-            // Don't do anything if there's no plugins folder
-            if (!Directory.Exists(pluginFolder))
-                return;
+            // Don't allow the user to start the application if there's no plugins folder
+            if (!Directory.Exists(pluginFolder)) {
+                throw new DirectoryNotFoundException(
+                    "Plugins folder not found. Please ensure you have installed the latest set of plugins before starting. "
+                  + "The plugins folder should be placed in the same directory as Il2CppInspector. "
+                  + "Use get-plugins.ps1 or get-plugins.sh to update your plugins. For more information, see the Il2CppInspector README.md file.");
+            }
 
             // Get every DLL
             // NOTE: Every plugin should be in its own folder together with its dependencies
@@ -317,15 +321,16 @@ namespace Il2CppInspector
             var eventInfo = new PluginOptionsChangedEventInfo();
 
             foreach (var plugin in EnabledPlugins)
-                foreach (var option in plugin.Options)
-                    try {
-                        option.Value = option.Value;
-                    }
-                    catch (Exception ex) {
-                        eventInfo.Error = new PluginOptionErrorEventArgs { Plugin = plugin, Exception = ex, Option = option, Operation = "options update" };
-                        ErrorHandler?.Invoke(AsInstance, eventInfo);
-                        break;
-                    }
+                if (plugin.Options != null)
+                    foreach (var option in plugin.Options)
+                        try {
+                            option.Value = option.Value;
+                        }
+                        catch (Exception ex) {
+                            eventInfo.Error = new PluginOptionErrorEventArgs { Plugin = plugin, Exception = ex, Option = option, Operation = "options update" };
+                            ErrorHandler?.Invoke(AsInstance, eventInfo);
+                            break;
+                        }
             return eventInfo;
         }
 

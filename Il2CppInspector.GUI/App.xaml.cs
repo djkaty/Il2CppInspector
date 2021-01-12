@@ -131,7 +131,7 @@ namespace Il2CppInspectorGUI
             // Load plugins if they aren't already
             try {
                 PluginManager.EnsureInit();
-            } catch (InvalidOperationException ex) {
+            } catch (Exception ex) when (ex is InvalidOperationException || ex is DirectoryNotFoundException) {
                 MessageBox.Show(ex.Message, "Fatal error loading plugins");
                 Environment.Exit(1);
             }

@@ -169,6 +169,15 @@ namespace Il2CppInspector.CLI
             Console.WriteLine(asmInfo.LegalCopyright);
             Console.WriteLine("");
 
+            // Safe plugin manager load
+            try {
+                PluginManager.EnsureInit();
+            }
+            catch (Exception ex) when (ex is InvalidOperationException || ex is DirectoryNotFoundException) {
+                Console.Error.WriteLine(ex.Message);
+                Environment.Exit(1);
+            }
+
             // Check plugin options are valid
             if (!PluginOptions.ParsePluginOptions(options.PluginOptions, PluginOptions.GetPluginOptionTypes()))
                 return 1;
