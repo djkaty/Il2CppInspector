@@ -389,7 +389,7 @@ namespace Il2CppInspector.Outputs
                         ("VA", method.VirtualAddress.Value.Start.ToAddressString())
                     };
                 if (method.Definition.slot != ushort.MaxValue)
-                    args.Add(("Slot", method.Definition.slot));
+                    args.Add(("Slot", method.Definition.slot.ToString()));
 
                 mMethod.AddAttribute(module, addressAttribute, args.ToArray());
             }
