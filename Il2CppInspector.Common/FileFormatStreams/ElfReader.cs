@@ -502,7 +502,7 @@ namespace Il2CppInspector
                 IsExec = ((Elf) conv.Int(s.sh_flags) & Elf.SHF_EXECINSTR) == Elf.SHF_EXECINSTR && (Elf) s.sh_type == Elf.SHT_PROGBITS,
                 IsBSS  = (Elf) s.sh_type == Elf.SHT_NOBITS,
 
-                Name = SectionByName.First(sbn => conv.Int(sbn.Value.sh_offset) == conv.Int(s.sh_offset)).Key
+                Name = SectionByName.FirstOrDefault(sbn => conv.Int(sbn.Value.sh_offset) == conv.Int(s.sh_offset)).Key ?? string.Empty
             });
         }
 
