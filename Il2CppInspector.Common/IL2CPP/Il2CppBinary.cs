@@ -96,7 +96,6 @@ namespace Il2CppInspector
             Image = stream;
             OnStatusUpdate = statusCallback;
 
-            StatusUpdate($"Analyzing IL2CPP data for {Image.Format}/{Image.Arch} image");
             DiscoverAPIExports();
         }
 
@@ -104,7 +103,6 @@ namespace Il2CppInspector
             Image = stream;
             OnStatusUpdate = statusCallback;
 
-            StatusUpdate($"Analyzing IL2CPP data for {Image.Format}/{Image.Arch} image");
             DiscoverAPIExports();
             TryPrepareMetadata(codeRegistration, metadataRegistration);
         }
@@ -273,6 +271,8 @@ namespace Il2CppInspector
             // Plugin hook to pre-process binary
             isModified |= PluginHooks.PreProcessBinary(this).IsStreamModified;
 
+            StatusUpdate($"Analyzing IL2CPP data for {Image.Format}/{Image.Arch} image");
+
             // Do basic validatation that MetadataRegistration and CodeRegistration are sane
             /*
              * GlobalMethodPointers (<= 24.1) must be a series of pointers in il2cpp or .text, and in sequential order
@@ -402,35 +402,18 @@ namespace Il2CppInspector
         // (therefore ignoring extern imports)
         // Some binaries have functions starting "il2cpp_z_" - ignore these too
         private void DiscoverAPIExports() {
-            var exports = Image.GetExports()?.ToList();
+             var exports = Image.GetExports()?
+                .Where(e => (e.Name.StartsWith("il2cpp_") || e.Name.StartsWith("_il2cpp_") || e.Name.StartsWith("__il2cpp_"))
+                    && !e.Name.Contains("il2cpp_z_"));
+
             if (exports == null)
                 return;
 
             var exportRgx = new Regex(@"^_+");
-
-            // Handle name rot encryption found in some binaries
-            var anyEncrypted = false;
-
-            for (var rotKey = 0; rotKey <= 25; rotKey++) {
-                var possibleExports = exports.Select(e => new {
-                    Name = string.Join("", e.Name.Select(x => (char) (x >= 'a' && x <= 'z'? (x - 'a' + rotKey) % 26 + 'a' : x))),
-                    VirtualAddress = e.VirtualAddress
-                }).ToList();
-
-                var foundExports = possibleExports
-                    .Where(e => (e.Name.StartsWith("il2cpp_") || e.Name.StartsWith("_il2cpp_") || e.Name.StartsWith("__il2cpp_"))
-                        && !e.Name.Contains("il2cpp_z_"))
-                    .Select(e => e);
-
-                if (foundExports.Any() && rotKey != 0 && !anyEncrypted) {
-                    Console.WriteLine("Found encrypted export names - decrypting");
-                    anyEncrypted = true;
-                }
-
-                foreach (var export in foundExports)
-                    if (Image.TryMapVATR(export.VirtualAddress, out _))
-                        APIExports.Add(exportRgx.Replace(export.Name, ""), export.VirtualAddress);
-            }
+            
+            foreach (var export in exports)
+                if (Image.TryMapVATR(export.VirtualAddress, out _))
+                    APIExports.Add(exportRgx.Replace(export.Name, ""), export.VirtualAddress);
         }
     }
 }
