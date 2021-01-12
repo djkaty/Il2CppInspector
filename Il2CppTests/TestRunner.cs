@@ -51,8 +51,13 @@ namespace Il2CppInspector
 
             loadOptions.BinaryFilePath = testFile;
 
-            // Set up plugins - place desired plugins in 'plugins' sub-folder of test folder
-            PluginManager.Reload(testPath + @"\plugins");
+            // Load core plugins
+            PluginManager.Reload(testPath + @"\..\plugins", coreOnly: true);
+
+            // Set up additional plugins - place desired plugins in 'plugins' sub-folder of test folder
+            try {
+                PluginManager.Reload(testPath + @"\plugins", reset: false);
+            } catch (DirectoryNotFoundException) { }
 
             // Handlers for debugging output
             PluginManager.StatusHandler += (s, e) => {

@@ -170,11 +170,12 @@ namespace Il2CppInspector
         public static PluginManager EnsureInit() => AsInstance;
 
         // Find and load all available plugins from disk
-        public static void Reload(string pluginPath = null) {
+        public static void Reload(string pluginPath = null, bool reset = true, bool coreOnly = false) {
             // Update plugin folder if requested, otherwise use current setting
             pluginFolder = pluginPath ?? pluginFolder;
 
-            AsInstance.ManagedPlugins.Clear();
+            if (reset)
+                AsInstance.ManagedPlugins.Clear();
 
             // Don't allow the user to start the application if there's no plugins folder
             if (!Directory.Exists(pluginFolder)) {
@@ -212,6 +213,12 @@ namespace Il2CppInspector
                     foreach (var type in asm.GetTypes()) {
                         // Current version
                         if (typeof(IPlugin).IsAssignableFrom(type) && !type.IsAbstract) {
+
+                            var isCorePlugin = typeof(ICorePlugin).IsAssignableFrom(type);
+
+                            if (coreOnly && !isCorePlugin)
+                                continue;
+
                             var plugin = (IPlugin) Activator.CreateInstance(type);
 
                             // Don't allow multiple identical plugins to load
@@ -219,9 +226,7 @@ namespace Il2CppInspector
                                 throw new Exception($"Multiple copies of {plugin.Name} were found. Please ensure the plugins folder only contains one copy of each plugin.");
 
                             // Enable internal plugins by default
-                            var enabled = typeof(ICorePlugin).IsAssignableFrom(type);
-
-                            AsInstance.ManagedPlugins.Add(new ManagedPlugin { Plugin = plugin, Available = true, Enabled = enabled });
+                            AsInstance.ManagedPlugins.Add(new ManagedPlugin { Plugin = plugin, Available = true, Enabled = isCorePlugin });
                         }
 
                         // Add older versions here with adapters
