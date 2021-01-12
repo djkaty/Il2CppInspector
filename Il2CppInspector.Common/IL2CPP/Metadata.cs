@@ -183,66 +183,8 @@ namespace Il2CppInspector
             else {
                 Position = Header.stringOffset;
 
-                // Naive implementation: this works for normal IL2CPP metadata but isn't good enough when the strings are encrypted
                 while (Position < Header.stringOffset + Header.stringCount)
                     Strings.Add((int) Position - Header.stringOffset, ReadNullTerminatedString());
-
-                // To check for encryption, find every single string start position by scanning all of the definitions
-                var stringOffsets =
-                                Images.Select(x => x.nameIndex)
-                        .Concat(Assemblies.Select(x => x.aname.nameIndex))
-                        .Concat(Assemblies.Select(x => x.aname.cultureIndex))
-                        .Concat(Assemblies.Select(x => x.aname.hashValueIndex)) // <=24.3
-                        .Concat(Assemblies.Select(x => x.aname.publicKeyIndex))
-                        .Concat(Events.Select(x => x.nameIndex))
-                        .Concat(Fields.Select(x => x.nameIndex))
-                        .Concat(Methods.Select(x => x.nameIndex))
-                        .Concat(Params.Select(x => x.nameIndex))
-                        .Concat(Properties.Select(x => x.nameIndex))
-                        .Concat(Types.Select(x => x.nameIndex))
-                        .Concat(Types.Select(x => x.namespaceIndex))
-                        .Concat(GenericParameters.Select(x => x.nameIndex))
-                        .OrderBy(x => x)
-                        .Distinct()
-                        .ToList();
-
-                // Now confirm that all the keys are present
-                // If they aren't, that means one or more of the null terminators wasn't null, indicating potential encryption
-                // Only do this if we need to because it's very slow
-                if (Header.stringCount > 0 && stringOffsets.Except(Strings.Keys).Any()) {
-
-                    Console.WriteLine("Decrypting strings...");
-                    StatusUpdate("Decrypting strings");
-
-                    // There may be zero-padding at the end of the last string since counts seem to be word-aligned
-                    // Find the true location one byte after the final character of the final string
-                    var endOfStrings = Header.stringCount;
-                    while (ReadByte(Header.stringOffset + endOfStrings - 1) == 0)
-                        endOfStrings--;
-
-                    // Start again
-                    Strings.Clear();
-                    Position = Header.stringOffset;
-
-                    // Read in all of the strings as if they are fixed length rather than null-terminated
-                    foreach (var offset in stringOffsets.Zip(stringOffsets.Skip(1).Append(endOfStrings), (a, b) => (current: a, next: b))) {
-                        var encryptedString = ReadBytes(offset.next - offset.current - 1);
-
-                        // The null terminator is the XOR key
-                        var xorKey = ReadByte();
-
-                        var decryptedString = Encoding.GetString(encryptedString.Select(b => (byte) (b ^ xorKey)).ToArray());
-                        Strings.Add(offset.current, decryptedString);
-                    }
-
-                    // Write changes back in case the user wants to save the metadata file
-                    Position = Header.stringOffset;
-                    foreach (var str in Strings.OrderBy(s => s.Key))
-                        WriteNullTerminatedString(str.Value);
-                    Flush();
-
-                    IsModified = true;
-                }
             }
 
             // Get all string literals
