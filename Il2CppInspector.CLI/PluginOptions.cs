@@ -240,7 +240,14 @@ namespace Il2CppInspector.CLI
 
                 // Enable plugin and inform of options
                 if (!hasErrors) {
-                    PluginManager.AsInstance.ManagedPlugins.First(p => p.Plugin == plugin).Enabled = true;
+                    var plugins = PluginManager.AsInstance.ManagedPlugins;
+                    var managedPlugin = plugins.First(p => p.Plugin == plugin);
+
+                    // Move plugin to end of execution order
+                    plugins.Remove(managedPlugin);
+                    plugins.Add(managedPlugin);
+                    managedPlugin.Enabled = true;
+
                     PluginManager.OptionsChanged(plugin);
                 }
             }
