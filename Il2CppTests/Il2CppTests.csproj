@@ -15,15 +15,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="samples\**" />
     <Compile Remove="TestAssemblies\**" />
     <Compile Remove="TestCpp\**" />
     <Compile Remove="TestBinaries\**" />
     <Compile Remove="TestExpectedResults\**" />
     <Compile Remove="TestSources\**" />
+    <EmbeddedResource Remove="samples\**" />
     <EmbeddedResource Remove="TestAssemblies\**" />
     <EmbeddedResource Remove="TestCpp\**" />
     <EmbeddedResource Remove="TestBinaries\**" />
     <EmbeddedResource Remove="TestExpectedResults\**" />
+    <None Remove="samples\**" />
     <None Remove="TestAssemblies\**" />
     <None Remove="TestCpp\**" />
     <None Remove="TestBinaries\**" />
