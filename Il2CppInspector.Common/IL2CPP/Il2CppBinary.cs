@@ -17,11 +17,16 @@ namespace Il2CppInspector
 {
     public abstract partial class Il2CppBinary
     {
+        // File image
         public IFileFormatStream Image { get; }
+
+        // The metadata associed with this binary - this is optional and may be null. Contents should not be modified
+        public Metadata Metadata { get; private set; }
 
         // IL2CPP-only API exports with decrypted names
         public Dictionary<string, ulong> APIExports { get; } = new Dictionary<string, ulong>();
 
+        // Binary metadata structures
         public Il2CppCodeRegistration CodeRegistration { get; protected set; }
         public Il2CppMetadataRegistration MetadataRegistration { get; protected set; }
 
@@ -159,7 +164,7 @@ namespace Il2CppInspector
         public bool FindRegistrationStructs(double metadataVersion) {
             Image.Version = metadataVersion;
 
-            if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode()) is (ulong code, ulong meta)))
+            if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode() ?? FindMetadataFromData()) is (ulong code, ulong meta)))
                 return false;
 
             TryPrepareMetadata(code, meta);
@@ -168,13 +173,8 @@ namespace Il2CppInspector
 
         // Initialize binary with a global-metadata.dat available
         public bool FindRegistrationStructs(Metadata metadata) {
-            Image.Version = metadata.Version;
-
-            if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode() ?? FindMetadataFromData(metadata)) is (ulong code, ulong meta)))
-                return false;
-
-            TryPrepareMetadata(code, meta, metadata);
-            return true;
+            Metadata = metadata;
+            return FindRegistrationStructs(metadata.Version);
         }
 
         // Try to find data structures via symbol table lookup
@@ -230,8 +230,11 @@ namespace Il2CppInspector
 
         // Try to find data structures via data heuristics
         // Requires succeesful global-metadata.dat analysis first
-        private (ulong, ulong)? FindMetadataFromData(Metadata metadata) {
-            var (codePtr, metadataPtr) = ImageScan(metadata);
+        private (ulong, ulong)? FindMetadataFromData() {
+            if (Metadata == null)
+                return null;
+
+            var (codePtr, metadataPtr) = ImageScan(Metadata);
             if (codePtr == 0) {
                 Console.WriteLine("No matches via data heuristics");
                 return null;
@@ -246,9 +249,9 @@ namespace Il2CppInspector
 
 
         // Load all of the discovered metadata in the binary
-        private void TryPrepareMetadata(ulong codeRegistration, ulong metadataRegistration, Metadata metadata = null) {
+        private void TryPrepareMetadata(ulong codeRegistration, ulong metadataRegistration) {
             try {
-                PrepareMetadata(codeRegistration, metadataRegistration, metadata);
+                PrepareMetadata(codeRegistration, metadataRegistration);
             }
             catch (Exception ex) when (!(ex is NotSupportedException)) {
                 throw new InvalidOperationException($"Could not analyze IL2CPP data. Ensure that the latest core plugins package is installed and all core plugins are enabled before filing a bug report. The error was: {ex.Message}", ex);
@@ -256,7 +259,7 @@ namespace Il2CppInspector
         }
 
         // Load all of the discovered metadata in the binary
-        private void PrepareMetadata(ulong codeRegistration, ulong metadataRegistration, Metadata metadata = null) {
+        private void PrepareMetadata(ulong codeRegistration, ulong metadataRegistration) {
             // Store locations
             CodeRegistrationPointer = codeRegistration;
             MetadataRegistrationPointer = metadataRegistration;
@@ -280,18 +283,13 @@ namespace Il2CppInspector
              * typeRefPointers must be a series of pointers in __const
              * MethodInvokePointers must be a series of pointers in __text or .text, and in sequential order
              */
-            for (var pass = 0; pass <= 1; pass++)
-                if (MetadataRegistration.typesCount < MetadataRegistration.typeDefinitionsSizesCount
-                    || MetadataRegistration.genericMethodTableCount < MetadataRegistration.genericInstsCount
-                    || CodeRegistration.reversePInvokeWrapperCount > 0x4000
-                    || CodeRegistration.unresolvedVirtualCallCount > 0x4000 // >= 22
-                    || CodeRegistration.interopDataCount > 0x1000           // >= 23
-                    || (Image.Version <= 24.1 && CodeRegistration.invokerPointersCount > CodeRegistration.methodPointersCount))
-                    // Restore the field order in CodeRegistration and MetadataRegistration if they have been re-ordered for obfuscation
-                    if (pass == 0)
-                        ReconstructMetadata(metadata);
-                    else
-                        throw new NotSupportedException("The detected Il2CppCodeRegistration / Il2CppMetadataRegistration structs do not pass validation. This may mean that their fields have been re-ordered as a form of obfuscation and Il2CppInspector has not been able to restore the original order automatically. Consider re-ordering the fields in Il2CppBinaryClasses.cs and try again.");
+            if (MetadataRegistration.typesCount < MetadataRegistration.typeDefinitionsSizesCount
+                || MetadataRegistration.genericMethodTableCount < MetadataRegistration.genericInstsCount
+                || CodeRegistration.reversePInvokeWrapperCount > 0x4000
+                || CodeRegistration.unresolvedVirtualCallCount > 0x4000 // >= 22
+                || CodeRegistration.interopDataCount > 0x1000           // >= 23
+                || (Image.Version <= 24.1 && CodeRegistration.invokerPointersCount > CodeRegistration.methodPointersCount))
+                throw new NotSupportedException("The detected Il2CppCodeRegistration / Il2CppMetadataRegistration structs do not pass validation. This may mean that their fields have been re-ordered as a form of obfuscation and Il2CppInspector has not been able to restore the original order automatically. Consider re-ordering the fields in Il2CppBinaryClasses.cs and try again.");
 
             // The global method pointer list was deprecated in v24.2 in favour of Il2CppCodeGenModule
             if (Image.Version <= 24.1)
