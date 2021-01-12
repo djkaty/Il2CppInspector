@@ -248,7 +248,7 @@ namespace Il2CppInspector
         // Load all of the discovered metadata in the binary
         private void TryPrepareMetadata(ulong codeRegistration, ulong metadataRegistration, Metadata metadata = null) {
             try {
-                PrepareMetadata(codeRegistration, metadataRegistration);
+                PrepareMetadata(codeRegistration, metadataRegistration, metadata);
             }
             catch (Exception ex) when (!(ex is NotSupportedException)) {
                 throw new InvalidOperationException($"Could not analyze IL2CPP data. Ensure that the latest core plugins package is installed and all core plugins are enabled before filing a bug report. The error was: {ex.Message}", ex);
