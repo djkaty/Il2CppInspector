@@ -218,7 +218,7 @@ namespace Il2CppInspector
                 var differences = resultData.Zip(expectedData, (x, y) => x == y).Count(eq => !eq);
 
                 // If anything has really changed it will change more than this many bytes
-                Assert.LessOrEqual(differences, 18, $"File contents differ too much ({file} has {differences} differences)");
+                Assert.LessOrEqual(differences, 25, $"File contents differ too much ({file} has {differences} differences)");
             }
         }
 
