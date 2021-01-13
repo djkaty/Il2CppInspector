@@ -1,6 +1,8 @@
-# Il2CppInspector 2021.1 Preview
+# Il2CppInspector 2021.1 Release Candidate 1
 
 Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the most complete analysis currently available.
+
+![Il2CppInspector GUI](docs/GUI_Preview.png)
 
 ### Main features
 
@@ -30,7 +32,8 @@ Il2CppInspector helps you to reverse engineer IL2CPP applications, providing the
   - Striped XOR encryption style used in games such as [Garena Free Fire](https://play.google.com/store/apps/details?id=com.dts.freefireth&hl=en_US&gl=US), [League of Legends: Wild Rift](https://play.google.com/store/apps/details?id=com.riotgames.league.wildrift&hl=en_US&gl=US) and [Legends of Runeterra](https://play.google.com/store/apps/details?id=com.riotgames.legendsofruneterra&hl=en_US&gl=US)
   - String encryption style used in games such as [League of Legends: Wild Rift](https://play.google.com/store/apps/details?id=com.riotgames.league.wildrift&hl=en_US&gl=US)
   - Reordering of registration metadata used in titles by Riot Games
-  - Encryption/obfuscation used in titles by miHoYo ([Honkai Impact 3rd](https://honkaiimpact3.mihoyo.com/) and [Genshin Impact](https://genshin.mihoyo.com/) when using [miHoYo plugin](https://github.com/djkaty/Il2CppInspectorPlugins/tree/master/Loaders/miHoYo))
+  - Encryption/obfuscation used in titles by miHoYo ([Honkai Impact 3rd](https://honkaiimpact3.mihoyo.com/) and [Genshin Impact](https://genshin.mihoyo.com/) (requires [miHoYo plugin](https://github.com/djkaty/Il2CppInspectorPlugins/tree/master/Loaders/miHoYo))
+  - Obfuscation of symbols by Beebyte, via automated comparative analysis of an unobfuscated Mono or IL2CPP binary (requires [Beebyte Deobfuscator plugin](https://github.com/OsOmE1/Beebyte-Deobfusctator))
   - ROT encryption of API export names
   - Deobfuscated metadata and binary files can be saved back to disk
 
@@ -88,8 +91,6 @@ Nice to have:
 Class library targets .NET Core 3.1. Built with Visual Studio 2019.
 
 **NOTE**: Il2CppInspector is not a decompiler. It can provide you with the structure of an application and function addresses for every method so that you can easily jump straight to methods of interest in your disassembler. It does not attempt to recover the entire source code of the application.
-
-![Il2CppInspector GUI](docs/GUI_Preview.png)
 
 ### Build instructions
 
@@ -188,6 +189,8 @@ File format and architecture are automatically detected.
   -f, --flatten               Flatten the namespace hierarchy into a single folder rather than using per-namespace subfolders. Only used when layout is per-namespace or per-class. Ignored for tree layout
 
   -n, --suppress-metadata     Diff tidying: suppress method pointers, field offsets and type indices from C# output. Useful for comparing two versions of a binary for changes with a diff tool
+
+  --suppress-dll-metadata     Diff tidying: suppress method pointers, field offsets and type indices attributes from DLL output. Useful for comparing two versions of a binary for changes
 
   -k, --must-compile          Compilation tidying: try really hard to make code that compiles. Suppress generation of code for items with CompilerGenerated attribute. Comment out attributes without parameterless constructors or all-optional constructor arguments. Don't emit
                               add/remove/raise on events. Specify AttributeTargets.All on classes with AttributeUsage attribute. Force auto-properties to have get accessors. Force regular properties to have bodies. Suppress global::Locale classes. Generate dummy parameterless
@@ -617,11 +620,25 @@ For multiple plugins:
 
 Plugins will be executed in the order specified.
 
+Core plugins (those that are part of Il2CppInspector's base functionality) are always enabled when using the CLI, but can be disabled in the GUI.
+
+When using the CLI, core plugins always execute first by default. You can force the core plugins to execute in a different order by specifying their names in the desired execution order. For example:
+
+`Il2CppInspector.exe --plugins "analytics --output foo.csv"`
+
+will run the core plugins first then the `analytics` example plugin, but:
+
+`Il2CppInspector.exe --plugins "analytics --output foo.csv" "xor"`
+
+will cause the `xor` core plugin to run after `analytics`.
+
 For help on a specific plugin, specify the plugin name with no arguments:
 
 `Il2CppInspector.exe --plugins myplugin`
 
 To get more plugins, click _Get Plugins_ in the Manage Plugins window in the GUI, visit the [Il2CppInspectorPlugins repository](https://github.com/djkaty/Il2CppInspectorPlugins) or use the `get-plugins.ps1` or `get-plugins.sh` scripts to update to the latest plugin releases.
+
+![Il2CppInspector Plugins](docs/Plugins_Preview.png)
 
 ### Creating plugins
 
