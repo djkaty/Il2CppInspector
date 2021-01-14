@@ -58,6 +58,8 @@ You can read more about how IL2CPP works in my series IL2CPP Reverse Engineering
 
 [How to create, use and debug IL2CPP DLL injection projects](https://katyscode.wordpress.com/2020/11/27/il2cppinspector-tutorial-how-to-create-use-and-debug-il2cpp-dll-injection-projects/)
 
+[Working with code in IL2CPP DLL injection projects](https://katyscode.wordpress.com/2021/01/14/il2cppinspector-tutorial-working-with-code-in-il2cpp-dll-injection-projects/)
+
 [Il2CppInspector Plugin Development Wiki](https://github.com/djkaty/Il2CppInspector/wiki/Plugins%3A-Getting-Started)
 
 #### Reverse engineering walkthroughs
@@ -449,8 +451,11 @@ void Run()
 }
 ```
 
-A more detailed tutorial can be found here: 
+More detailed tutorials can be found here: 
+
 [How to create, use and debug IL2CPP DLL injection projects](https://katyscode.wordpress.com/2020/11/27/il2cppinspector-tutorial-how-to-create-use-and-debug-il2cpp-dll-injection-projects/)
+
+[Working with code in IL2CPP DLL injection projects](https://katyscode.wordpress.com/2021/01/14/il2cppinspector-tutorial-working-with-code-in-il2cpp-dll-injection-projects/)
 
 ### Creating a Visual Studio C# code stubs solution
 
