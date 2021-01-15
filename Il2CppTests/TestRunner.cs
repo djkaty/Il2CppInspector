@@ -208,6 +208,9 @@ namespace Il2CppInspector
                 var resultPath = Path.Combine(resultFolder, file);
                 Assert.That(File.Exists(resultPath), $"File does not exist ({file})");
 
+                var expectedPath = Path.Combine(expectedFolder, file);
+                Assert.That(File.Exists(expectedPath), $"Expected result file does not exist ({file})");
+
                 var resultData = File.ReadAllBytes(resultPath);
                 var expectedData = File.ReadAllBytes(Path.Combine(expectedFolder, file));
 
@@ -228,7 +231,10 @@ namespace Il2CppInspector
             if (!EnableCompare)
                 return;
 
-            var expected = File.ReadAllLines(testPath + @"\..\..\TestExpectedResults\" + Path.GetFileName(testPath) + expectedFilenameSuffix);
+            var expectedPath = testPath + @"\..\..\TestExpectedResults\" + Path.GetFileName(testPath) + expectedFilenameSuffix;
+            Assert.That(File.Exists(expectedPath), $"Expected result file does not exist ({Path.GetFileName(expectedPath)})");
+
+            var expected = File.ReadAllLines(expectedPath);
             var actual = File.ReadAllLines(testPath + @"\" + actualFilename);
 
             var extraInExpected = expected.Except(actual);
