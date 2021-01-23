@@ -351,7 +351,10 @@ namespace Il2CppInspector.Outputs
             var text = new StringBuilder();
 
             foreach (var asm in assemblies) {
-                text.Append($"// Image {asm.Index}: {asm.ShortName} - Assembly: {asm.FullName} - Types {asm.ImageDefinition.typeStart}-{asm.ImageDefinition.typeStart + asm.ImageDefinition.typeCount - 1}\n");
+                text.Append($"// Image {asm.Index}: {asm.ShortName} - Assembly: {asm.FullName}");
+                if (!SuppressMetadata)
+                    text.Append($" - Types {asm.ImageDefinition.typeStart}-{asm.ImageDefinition.typeStart + asm.ImageDefinition.typeCount - 1}");
+                text.AppendLine();
 
                 // Assembly-level attributes
                 if (outputAssemblyAttributes)
