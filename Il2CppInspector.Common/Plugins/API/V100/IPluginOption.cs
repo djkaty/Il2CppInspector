@@ -166,8 +166,12 @@ namespace Il2CppInspector.PluginAPI.V100
             if (Required && string.IsNullOrWhiteSpace(path))
                 throw new ArgumentException("Path name is required");
 
+            // Only validate a non-required path name if it is non-empty
+            if (!Required && string.IsNullOrEmpty(path))
+                return;
+
             // Throws an exception if the path is invalid (file or folder may or may not exist)
-            var fullPath = Path.GetFullPath(path ?? "");
+            var fullPath = Path.GetFullPath(path);
             var fileName = Path.GetFileName(fullPath);
 
             if (IsFolder) {
