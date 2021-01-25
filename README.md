@@ -66,6 +66,13 @@ You can read more about how IL2CPP works in my series IL2CPP Reverse Engineering
 
 [Using Il2CppInspector's type model to extract protobuf-net definitions (Case Study: Fall Guys)](https://katyscode.wordpress.com/2020/08/10/practical-il2cpp-protobuf/)
 
+[Enable loading of League of Legends: Wild Rift](https://katyscode.wordpress.com/2021/01/15/reverse-engineering-adventures-league-of-legends-wild-rift-il2cpp/) - covers XOR decryption, XOR string decryption, API export ROT decryption, data obfuscation of binary metadata
+
+[Enable loading of Honkai Impact (3 parts)](https://katyscode.wordpress.com/2021/01/17/reverse-engineering-adventures-honkai-impact-3rd-houkai-3-il2cpp-part-1/) - covers finding functions in an image, data obfuscation of global-metadata.dat, IDA decompiler techniques, how to write a plugin
+
+[VMProtect control flow obfuscation in Honkai Impact](https://katyscode.wordpress.com/2021/01/23/reverse-engineering-adventures-vmprotect-control-flow-obfuscation-case-study-string-algorithm-cryptanalysis-in-honkai-impact-3rd/) - covers extrapolating the code path from a function with control flow flattening using x64dbg and the IDA decompiler
+
+[Reverse engineering Genshin Impact with PowerShell](https://katyscode.wordpress.com/2021/01/24/reverse-engineering-adventures-brute-force-function-search-or-how-to-crack-genshin-impact-with-powershell/) - covers writing a test harness to find a function in an obfuscated binary via brute-force attack / reverse fuzzing
 
 ### Other features
 
