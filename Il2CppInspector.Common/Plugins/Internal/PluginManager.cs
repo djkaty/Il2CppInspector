@@ -110,6 +110,18 @@ namespace Il2CppInspector
     // Singleton for managing external plugins
     public partial class PluginManager
     {
+        // Global enable/disable flag for entire plugin system
+        // If set to false, all plugins will be unloaded
+        // Disable this if you want to create standalone apps using the API but without plugins
+        private static bool _enabled = true;
+        public static bool Enabled {
+            get => _enabled;
+            set {
+                _enabled = value;
+                Reload();
+            }
+        }
+
         // All of the detected plugins, including invalid/incompatible/non-loaded plugins
         public ObservableCollection<ManagedPlugin> ManagedPlugins { get; } = new ObservableCollection<ManagedPlugin>();
 
@@ -176,6 +188,10 @@ namespace Il2CppInspector
 
             if (reset)
                 AsInstance.ManagedPlugins.Clear();
+
+            // Do nothing if plugin system disabled except unload every plugin
+            if (!Enabled)
+                return;
 
             // Don't allow the user to start the application if there's no plugins folder
             if (!Directory.Exists(pluginFolder)) {
