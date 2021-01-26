@@ -195,6 +195,10 @@ namespace Il2CppInspector.CLI
             if (!PluginOptions.ParsePluginOptions(options.PluginOptions, PluginOptions.GetPluginOptionTypes()))
                 return 1;
 
+            // Show which plugins are in use
+            foreach (var plugin in PluginManager.EnabledPlugins)
+                Console.WriteLine("Using plugin: " + plugin.Name);
+
             // Make sure at least one output is specified if the user has restricted outputs
             if (options.SpecifiedOutputsOnly
                 && options.CSharpOutPath == null
