@@ -67,6 +67,7 @@ namespace Il2CppInspector.Outputs
         // Our custom attributes
         private TypeDef addressAttribute;
         private TypeDef fieldOffsetAttribute;
+        private TypeDef staticFieldOffsetAttribute;
         private TypeDef attributeAttribute;
         private TypeDef metadataOffsetAttribute;
         private TypeDef metadataPreviewAttribute;
@@ -117,6 +118,10 @@ namespace Il2CppInspector.Outputs
             fieldOffsetAttribute = createAttribute("FieldOffsetAttribute");
             fieldOffsetAttribute.Fields.Add(new FieldDefUser("Offset", stringField, FieldAttributes.Public));
             fieldOffsetAttribute.AddDefaultConstructor(attributeCtorRef);
+
+            staticFieldOffsetAttribute = createAttribute("StaticFieldOffsetAttribute");
+            staticFieldOffsetAttribute.Fields.Add(new FieldDefUser("Offset", stringField, FieldAttributes.Public));
+            staticFieldOffsetAttribute.AddDefaultConstructor(attributeCtorRef);
 
             attributeAttribute = createAttribute("AttributeAttribute");
             attributeAttribute.Fields.Add(new FieldDefUser("Name", stringField, FieldAttributes.Public));
@@ -233,7 +238,9 @@ namespace Il2CppInspector.Outputs
 
             // Field offset
             if (!field.IsStatic)
-                mField.AddAttribute(module, fieldOffsetAttribute, ("Offset", $"0x{field.Offset:X}"));
+                mField.AddAttribute(module, fieldOffsetAttribute, ("Offset", $"0x{field.Offset:X2}"));
+            else if (!field.IsLiteral)
+                mField.AddAttribute(module, staticFieldOffsetAttribute, ("Offset", $"0x{field.Offset:X2}"));
 
             // Add token attribute
             mField.AddAttribute(module, tokenAttribute, ("Token", $"0x{field.MetadataToken:X8}"));
