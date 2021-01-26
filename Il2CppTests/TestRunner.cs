@@ -93,8 +93,7 @@ namespace Il2CppInspector
                             Console.WriteLine($"Setting option: {key} = {value}");
 
                             // Null default values must be castable to object
-                            var targetType = ourPlugin[key]?.GetType() ?? typeof(object);
-                            ourPlugin[key] = Convert.ChangeType(value, targetType);
+                            ourPlugin.Plugin.Options.Single(o => o.Name == key).SetFromString(value);
                         }
                     }
                 }
