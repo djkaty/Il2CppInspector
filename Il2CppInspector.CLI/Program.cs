@@ -25,6 +25,13 @@ namespace Il2CppInspector.CLI
 {
     public class App
     {
+        // Default file paths for output modules
+        private const string CsOutDefault = "types.cs";
+        private const string PyOutDefault = "il2cpp.py";
+        private const string CppOutDefault = "cpp";
+        private const string JsonOutDefault = "metadata.json";
+        private const string DllOutDefault = "dll";
+
         private class Options
         {
             [Option('i', "bin", Required = false, Separator = ',', HelpText = "IL2CPP binary, APK, AAB, XAPK, IPA, Zip or Linux process map text input file(s) (single file or comma-separated list for split APKs)", Default = new[] { "libil2cpp.so" })]
@@ -36,19 +43,22 @@ namespace Il2CppInspector.CLI
             [Option("image-base", Required = false, HelpText = "For ELF memory dumps, the image base address in hex (ignored for standard ELF files and other file formats)")]
             public string ElfImageBaseString { get; set; }
 
-            [Option('c', "cs-out", Required = false, HelpText = "C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)", Default = "types.cs")]
+            [Option("select-outputs", Required = false, HelpText = "Only generate outputs specified on the command line (use --cs-out, --py-out, --cpp-out, --json-out, --dll-out to select outputs). If not specified, all outputs are generated")]
+            public bool SpecifiedOutputsOnly { get; set; }
+
+            [Option('c', "cs-out", Required = false, HelpText = "(Default: " + CsOutDefault + ") C# output file (when using single-file layout) or path (when using per namespace, assembly or class layout)")]
             public string CSharpOutPath { get; set; }
 
-            [Option('p', "py-out", Required = false, HelpText = "Python script output file", Default = "il2cpp.py")]
+            [Option('p', "py-out", Required = false, HelpText = "(Default: " + PyOutDefault + ") Python script output file")]
             public string PythonOutFile { get; set; }
 
-            [Option('h', "cpp-out", Required = false, HelpText = "C++ scaffolding / DLL injection project output path", Default = "cpp")]
+            [Option('h', "cpp-out", Required = false, HelpText = "(Default: " + CppOutDefault + ") C++ scaffolding / DLL injection project output path")]
             public string CppOutPath { get; set; }
 
-            [Option('o', "json-out", Required = false, HelpText = "JSON metadata output file", Default = "metadata.json")]
+            [Option('o', "json-out", Required = false, HelpText = "(Default: " + JsonOutDefault + ") JSON metadata output file")]
             public string JsonOutPath { get; set; }
 
-            [Option('d', "dll-out", Required = false, HelpText = ".NET assembly shim DLLs output path", Default = "dll")]
+            [Option('d', "dll-out", Required = false, HelpText = "(Default: " + DllOutDefault + ") .NET assembly shim DLLs output path")]
             public string DllOutPath { get; set; }
 
             [Option("metadata-out", Required = false, HelpText = "IL2CPP metadata file output (for extracted or decrypted metadata; ignored otherwise)")]
@@ -178,12 +188,24 @@ namespace Il2CppInspector.CLI
             }
             catch (Exception ex) when (ex is InvalidOperationException || ex is DirectoryNotFoundException) {
                 Console.Error.WriteLine(ex.Message);
-                Environment.Exit(1);
+                return 1;
             }
 
             // Check plugin options are valid
             if (!PluginOptions.ParsePluginOptions(options.PluginOptions, PluginOptions.GetPluginOptionTypes()))
                 return 1;
+
+            // Make sure at least one output is specified if the user has restricted outputs
+            if (options.SpecifiedOutputsOnly
+                && options.CSharpOutPath == null
+                && options.PythonOutFile == null
+                && options.CppOutPath == null
+                && options.JsonOutPath == null
+                && options.DllOutPath == null) {
+                Console.Error.WriteLine("At least one output must be specified when using --select-outputs.");
+                Console.Error.WriteLine("Use --cs-out, --py-out, --cpp-out, --json-out and/or --dll-out, or omit --select-outputs to generate all output types");
+                return 1;
+            }
 
             // Check script target is valid
             if (!PythonScript.GetAvailableTargets().Contains(options.ScriptTarget)) {
@@ -345,95 +367,121 @@ namespace Il2CppInspector.CLI
                 }
             }
 
+            // Determine which outputs to generate
+            var GenerateCS = !string.IsNullOrEmpty(options.CSharpOutPath);
+            var GeneratePython = !string.IsNullOrEmpty(options.PythonOutFile);
+            var GenerateCpp = !string.IsNullOrEmpty(options.CppOutPath) || GeneratePython;
+            var GenerateJSON = !string.IsNullOrEmpty(options.JsonOutPath) || GeneratePython;
+            var GenerateDLL = !string.IsNullOrEmpty(options.DllOutPath);
+
+            if (!options.SpecifiedOutputsOnly)
+                GenerateCS = GeneratePython = GenerateCpp = GenerateJSON = GenerateDLL = true;
+
+            // Set defaults for outputs where the user hasn't specified a path
+            options.CSharpOutPath = options.CSharpOutPath ?? CsOutDefault;
+            options.PythonOutFile = options.PythonOutFile ?? PyOutDefault;
+            options.CppOutPath = options.CppOutPath ?? CppOutDefault;
+            options.JsonOutPath = options.JsonOutPath ?? JsonOutDefault;
+            options.DllOutPath = options.DllOutPath ?? DllOutDefault;
+
+            var NeedAppModel = GeneratePython | GenerateJSON | GenerateCpp;
+
             // Write output files for each binary
             int imageIndex = 0;
             foreach (var il2cpp in il2cppInspectors) {
                 Console.WriteLine($"Processing image {imageIndex} - {il2cpp.BinaryImage.Arch} / {il2cpp.BinaryImage.Bits}-bit");
 
-                // Create model
+                // Create type model
                 TypeModel model;
                 using (new Benchmark("Create .NET type model"))
                     model = new TypeModel(il2cpp);
 
-                AppModel appModel;
-                using (new Benchmark("Create C++ application model")) {
-                    appModel = new AppModel(model, makeDefaultBuild: false).Build(options.UnityVersion, options.CppCompiler);
-                }
+                // Create application model only if needed
+                AppModel appModel = null;
+                if (NeedAppModel)
+                    using (new Benchmark("Create C++ application model")) {
+                        appModel = new AppModel(model, makeDefaultBuild: false).Build(options.UnityVersion, options.CppCompiler);
+                    }
 
                 // C# signatures output
-                using (new Benchmark("Generate C# code")) {
-                    var writer = new CSharpCodeStubs(model) {
-                        ExcludedNamespaces = options.ExcludedNamespaces.ToList(),
-                        SuppressMetadata = options.SuppressMetadata,
-                        MustCompile = options.MustCompile
-                    };
+                if (GenerateCS)
+                    using (new Benchmark("Generate C# code")) {
+                        var writer = new CSharpCodeStubs(model) {
+                            ExcludedNamespaces = options.ExcludedNamespaces.ToList(),
+                            SuppressMetadata = options.SuppressMetadata,
+                            MustCompile = options.MustCompile
+                        };
 
-                    var csOut = getOutputPath(options.CSharpOutPath, "cs", imageIndex);
+                        var csOut = getOutputPath(options.CSharpOutPath, "cs", imageIndex);
 
-                    if (options.CreateSolution)
-                        writer.WriteSolution(csOut, unityPath, unityAssembliesPath);
+                        if (options.CreateSolution)
+                            writer.WriteSolution(csOut, unityPath, unityAssembliesPath);
 
-                    else
-                        switch (options.LayoutSchema.ToLower(), options.SortOrder.ToLower()) {
-                            case ("single", "index"):
-                                writer.WriteSingleFile(csOut, t => t.Index);
-                                break;
-                            case ("single", "name"):
-                                writer.WriteSingleFile(csOut, t => t.Name);
-                                break;
+                        else
+                            switch (options.LayoutSchema.ToLower(), options.SortOrder.ToLower()) {
+                                case ("single", "index"):
+                                    writer.WriteSingleFile(csOut, t => t.Index);
+                                    break;
+                                case ("single", "name"):
+                                    writer.WriteSingleFile(csOut, t => t.Name);
+                                    break;
 
-                            case ("namespace", "index"):
-                                writer.WriteFilesByNamespace(csOut, t => t.Index, options.FlattenHierarchy);
-                                break;
-                            case ("namespace", "name"):
-                                writer.WriteFilesByNamespace(csOut, t => t.Name, options.FlattenHierarchy);
-                                break;
+                                case ("namespace", "index"):
+                                    writer.WriteFilesByNamespace(csOut, t => t.Index, options.FlattenHierarchy);
+                                    break;
+                                case ("namespace", "name"):
+                                    writer.WriteFilesByNamespace(csOut, t => t.Name, options.FlattenHierarchy);
+                                    break;
 
-                            case ("assembly", "index"):
-                                writer.WriteFilesByAssembly(csOut, t => t.Index, options.SeparateAssemblyAttributesFiles);
-                                break;
-                            case ("assembly", "name"):
-                                writer.WriteFilesByAssembly(csOut, t => t.Name, options.SeparateAssemblyAttributesFiles);
-                                break;
+                                case ("assembly", "index"):
+                                    writer.WriteFilesByAssembly(csOut, t => t.Index, options.SeparateAssemblyAttributesFiles);
+                                    break;
+                                case ("assembly", "name"):
+                                    writer.WriteFilesByAssembly(csOut, t => t.Name, options.SeparateAssemblyAttributesFiles);
+                                    break;
 
-                            case ("class", _):
-                                writer.WriteFilesByClass(csOut, options.FlattenHierarchy);
-                                break;
+                                case ("class", _):
+                                    writer.WriteFilesByClass(csOut, options.FlattenHierarchy);
+                                    break;
 
-                            case ("tree", _):
-                                writer.WriteFilesByClassTree(csOut, options.SeparateAssemblyAttributesFiles);
-                                break;
-                        }
+                                case ("tree", _):
+                                    writer.WriteFilesByClassTree(csOut, options.SeparateAssemblyAttributesFiles);
+                                    break;
+                            }
 
-                    if (writer.GetAndClearLastException() is Exception ex)
-                        Console.WriteLine("An error occurred: " + ex.Message);
-                }
+                        if (writer.GetAndClearLastException() is Exception ex)
+                            Console.WriteLine("An error occurred: " + ex.Message);
+                    }
 
                 // C++ output
-                using (new Benchmark("Generate C++ code")) {
-                    new CppScaffolding(appModel).Write(getOutputPath(options.CppOutPath, "", imageIndex));
-                }
+                if (GenerateCpp)
+                    using (new Benchmark("Generate C++ code")) {
+                        new CppScaffolding(appModel).Write(getOutputPath(options.CppOutPath, "", imageIndex));
+                    }
 
                 // JSON output
-                using (new Benchmark("Generate JSON metadata")) {
-                    new JSONMetadata(appModel).Write(getOutputPath(options.JsonOutPath, "json", imageIndex));
-                }
+                if (GenerateJSON)
+                    using (new Benchmark("Generate JSON metadata")) {
+                        new JSONMetadata(appModel).Write(getOutputPath(options.JsonOutPath, "json", imageIndex));
+                    }
 
                 // Python script output
-                using (new Benchmark($"Generate {options.ScriptTarget} Python script")) {
-                    new PythonScript(appModel).WriteScriptToFile(
-                        getOutputPath(options.PythonOutFile, "py", imageIndex),
-                        options.ScriptTarget,
-                        Path.Combine(getOutputPath(options.CppOutPath, "", imageIndex), "appdata/il2cpp-types.h"),
-                        getOutputPath(options.JsonOutPath, "json", imageIndex));
-                }
+                if (GeneratePython)
+                    using (new Benchmark($"Generate {options.ScriptTarget} Python script")) {
+                        new PythonScript(appModel).WriteScriptToFile(
+                            getOutputPath(options.PythonOutFile, "py", imageIndex),
+                            options.ScriptTarget,
+                            Path.Combine(getOutputPath(options.CppOutPath, "", imageIndex), "appdata/il2cpp-types.h"),
+                            getOutputPath(options.JsonOutPath, "json", imageIndex));
+                    }
 
                 // DLL output
-                using (new Benchmark("Generate .NET assembly shim DLLs"))
-                    new AssemblyShims(model) {
-                        SuppressMetadata = options.SuppressDllMetadata
-                    }
-                    .Write(getOutputPath(options.DllOutPath, "", imageIndex));
+                if (GenerateDLL)
+                    using (new Benchmark("Generate .NET assembly shim DLLs"))
+                        new AssemblyShims(model) {
+                            SuppressMetadata = options.SuppressDllMetadata
+                        }
+                        .Write(getOutputPath(options.DllOutPath, "", imageIndex));
 
                 imageIndex++;
             }
