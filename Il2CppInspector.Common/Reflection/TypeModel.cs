@@ -60,12 +60,15 @@ namespace Il2CppInspector.Reflection
         // Get a type by its fully qualified name including generic type arguments, array brackets etc.
         // In other words, rather than only being able to fetch a type definition such as in Assembly.GetType(),
         // this method can also find reference types, types created from TypeRefs and constructed types from MethodSpecs
-        public TypeInfo GetType(string fullName) => Types.FirstOrDefault(t => fullName == t.Namespace + "." + t.Name);
+        public TypeInfo GetType(string fullName) => Types.FirstOrDefault(
+            t => fullName == t.Namespace + (!string.IsNullOrEmpty(t.Namespace)? "." : "") + t.Name);
 
         // Get a concrete instantiation of a generic method from its fully qualified name and type arguments
         public MethodBase GetGenericMethod(string fullName, params TypeInfo[] typeArguments) =>
-            GenericMethods.Values.First(m => fullName == m.DeclaringType.Namespace + "." + m.DeclaringType.Name + "." + m.Name
-            && m.GetGenericArguments().SequenceEqual(typeArguments));
+            GenericMethods.Values.First(
+                m => fullName == m.DeclaringType.Namespace + (!string.IsNullOrEmpty(m.DeclaringType.Namespace)? "." : "")
+                                    + m.DeclaringType.Name + "." + m.Name
+                && m.GetGenericArguments().SequenceEqual(typeArguments));
 
         // Create type model
         public TypeModel(Il2CppInspector package) {
