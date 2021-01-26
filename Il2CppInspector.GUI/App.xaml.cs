@@ -78,6 +78,7 @@ namespace Il2CppInspectorGUI
             public object Value { get; set; }
             [JsonIgnore]
             public Func<bool> If { get; set; }
+            public void SetFromString(string value) { }
         }
 
         // Application startup
@@ -149,6 +150,8 @@ namespace Il2CppInspectorGUI
                     managedPlugin.Enabled = savedState.Enabled;
 
                     // Set options
+                    // TODO: Use IPluginOption.SetFromString() instead
+
                     if (savedState.Plugin.Options != null) {
                         var options = new Dictionary<string, object>();
 

@@ -43,6 +43,11 @@ namespace Il2CppInspector.PluginAPI.V100
         /// based on the settings of other options or any other desired criteria
         /// </summary>
         public Func<bool> If { get; set; }
+
+        /// <summary>
+        /// Set an option from a string value
+        /// </summary>
+        public void SetFromString(string value);
     }
 
     /// <summary>
@@ -113,6 +118,11 @@ namespace Il2CppInspector.PluginAPI.V100
         }
 
         /// <summary>
+        /// Set an option from a string value
+        /// </summary>
+        public abstract void SetFromString(string value);
+
+        /// <summary>
         /// This can be set to a predicate that determines whether the option is enabled in the GUI
         /// By default, enable all options unless overridden
         /// </summary>
@@ -154,6 +164,8 @@ namespace Il2CppInspector.PluginAPI.V100
             if (Required && string.IsNullOrWhiteSpace(text))
                 throw new ArgumentException("Text cannot be empty");
         }
+
+        public override void SetFromString(string value) => Value = value;
     }
 
     /// <summary>
@@ -220,6 +232,8 @@ namespace Il2CppInspector.PluginAPI.V100
         public Dictionary<string, string> AllowedExtensions = new Dictionary<string, string> {
             ["*"] = "All files"
         };
+
+        public override void SetFromString(string value) => Value = value;
     }
 
     /// <summary>
@@ -228,6 +242,8 @@ namespace Il2CppInspector.PluginAPI.V100
     public class PluginOptionBoolean : PluginOption<bool>
     {
         protected sealed override void InternalValidate(bool value) { }
+
+        public override void SetFromString(string value) => Value = bool.Parse(value);
     }
 
     /// <summary>
@@ -248,6 +264,10 @@ namespace Il2CppInspector.PluginAPI.V100
         object IPluginOptionNumber.Value { get => Value; set => Value = (T) value; }
 
         protected sealed override void InternalValidate(T value) { }
+
+        public override void SetFromString(string value) {
+            Value = (T) Convert.ChangeType(Convert.ToInt64(value, Style == PluginOptionNumberStyle.Hex? 16 : 10), typeof(T));
+        }
     }
 
     /// <summary>
@@ -272,6 +292,13 @@ namespace Il2CppInspector.PluginAPI.V100
             // Allow Choices to be null so that setting Value first on init doesn't throw an exception
             if (!Choices?.Keys.Contains(value) ?? false)
                 throw new ArgumentException("Specified choice is not one of the available choices");
+        }
+
+        public override void SetFromString(string value) {
+            if (typeof(T).IsEnum)
+                Value = (T) Enum.Parse(typeof(T), value);
+            else
+                Value = (T) Convert.ChangeType(value, typeof(T));
         }
     }
 }

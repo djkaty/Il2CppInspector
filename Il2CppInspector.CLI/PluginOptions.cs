@@ -197,6 +197,8 @@ namespace Il2CppInspector.CLI
                     var targetProp = plugin.Options.First(x => x.Name == prop.Name);
                     var value = prop.GetValue(optionsObject);
 
+                    // TODO: Use IPluginOption.SetFromString() instead
+
                     // Validate hex strings
                     if (targetProp is IPluginOptionNumber n && n.Style == PluginOptionNumberStyle.Hex) {
                         try {
