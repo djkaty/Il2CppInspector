@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -151,9 +152,22 @@ namespace Il2CppInspector.Reflection
                 }
 
                 // Logical OR a series of flags together
-                var flagValue = Convert.ToInt64(value);
-                var setFlags = values.Where(x => (Convert.ToInt64(x.Value) & flagValue) == Convert.ToInt64(x.Value)).Select(x => typeName + "." + x.Key);
-                return string.Join(" | ", setFlags);
+
+                // Values like 0x8000_0000_0000_0000 can't be cast to Int64
+                // but values like 0xffff_ffff can't be cast to UInt64 (due to sign extension)
+                // so we're just going to have to try to find a type that doesn't make it explode
+                if (value is byte || value is ushort || value is uint || value is ulong) {
+                    var flagValue = Convert.ToUInt64(value);
+                    var setFlags = values.Where(x => (Convert.ToUInt64(x.Value) & flagValue) == Convert.ToUInt64(x.Value)).Select(x => typeName + "." + x.Key);
+                    return string.Join(" | ", setFlags);
+                }
+                else if (value is sbyte || value is short || value is int || value is long) {
+                    var flagValue = Convert.ToInt64(value);
+                    var setFlags = values.Where(x => (Convert.ToInt64(x.Value) & flagValue) == Convert.ToInt64(x.Value)).Select(x => typeName + "." + x.Key);
+                    return string.Join(" | ", setFlags);
+                } else {
+                    throw new ArgumentException("Unsupported enum underlying type");
+                }
             }
             // Structs and generic type parameters must use 'default' rather than 'null'
             return value?.ToString() ?? (type.IsValueType || type.IsGenericParameter? "default" : "null");
