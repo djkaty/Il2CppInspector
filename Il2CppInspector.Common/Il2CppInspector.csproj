@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>Il2CppInspector.Common</AssemblyName>
     <Authors>Katy Coe</Authors>
-    <Version>2020.2.1</Version>
+    <Version>2021.1</Version>
     <Company>Noisy Cow Studios</Company>
     <Product>Il2CppInspector Shared Library</Product>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
