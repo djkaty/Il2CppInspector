@@ -205,7 +205,7 @@ namespace Il2CppInspector.Outputs
             var results = new ConcurrentBag<Dictionary<TypeInfo, StringBuilder>>();
 
             // Generate each type
-            Parallel.ForEach(types, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount / 2 },
+            Parallel.ForEach(types, new ParallelOptions { MaxDegreeOfParallelism = Math.Max(Environment.ProcessorCount / 2, 1) },
                 () => new Dictionary<TypeInfo, StringBuilder>(),
                 (type, _, dict) => {
                     // Skip namespace and any children if requested
