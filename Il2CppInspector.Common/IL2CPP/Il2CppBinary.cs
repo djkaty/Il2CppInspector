@@ -164,6 +164,7 @@ namespace Il2CppInspector
         public bool FindRegistrationStructs(double metadataVersion) {
             Image.Version = metadataVersion;
 
+            StatusUpdate("Searching for binary metadata");
             if (!((FindMetadataFromSymbols() ?? FindMetadataFromCode() ?? FindMetadataFromData()) is (ulong code, ulong meta)))
                 return false;
 

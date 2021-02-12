@@ -92,6 +92,7 @@ namespace Il2CppInspector
 
                 // < 27: mscorlib.dll is always the first CodeGenModule
                 // >= 27: mscorlib.dll is always the last CodeGenModule (Assembly-CSharp.dll is always the first but non-Unity builds don't have this DLL)
+                //        NOTE: winrt.dll + other DLLs can come after mscorlib.dll so we can't use its location to get an accurate module count
                 var offsets = FindAllStrings(imageBytes, "mscorlib.dll\0");
                 vas = offsets.Select(o => Image.MapFileOffsetToVA(o));
 
@@ -101,9 +102,20 @@ namespace Il2CppInspector
 
                 // We'll work back one pointer width at a time trying to find the first CodeGenModule
                 // Let's hope there aren't more than 200 DLLs in any given application :)
-                for (int backtrack = 0; backtrack < 200 && (codeRegVas?.Count() ?? 0) != 1; backtrack++) {
+                var maxCodeGenModules = 200;
+
+                for (int backtrack = 0; backtrack < maxCodeGenModules && (codeRegVas?.Count() ?? 0) != 1; backtrack++) {
                     // Unwind from CodeGenModules + x -> CodeRegistration + y
                     codeRegVas = FindAllMappedWords(imageBytes, vas);
+
+                    // The previous word must be the number of CodeGenModules
+                    if (codeRegVas.Count() == 1) {
+                        var codeGenModuleCount = Image.ReadMappedWord(codeRegVas.First() - ptrSize);
+
+                        // Basic validity check
+                        if (codeGenModuleCount <= 0 || codeGenModuleCount > maxCodeGenModules)
+                            codeRegVas = Enumerable.Empty<ulong>();
+                    }
 
                     // Move to the previous CodeGenModule if the above fails
                     vas = vas.Select(va => va - ptrSize);
