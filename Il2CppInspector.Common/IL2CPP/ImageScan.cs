@@ -138,6 +138,14 @@ namespace Il2CppInspector
                     Image.Version = 24.3;
                     codeRegistration -= ptrSize * 2; // two extra words for WindowsRuntimeFactory
                 }
+
+                if (Image.Version == 27 && cr.reversePInvokeWrapperCount > 0x30000)
+                {
+                    // If reversePInvokeWrapperCount is a pointer, then it's because we're actually on 27.1 and there's a genericAdjustorThunks pointer interfering.
+                    // We need to bump version to 27.1 and back up one more pointer.
+                    Image.Version = 27.1;
+                    codeRegistration -= ptrSize;
+                }
             }
 
             // Find CodeRegistration
