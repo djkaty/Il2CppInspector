@@ -121,8 +121,12 @@ namespace Il2CppInspector
 
             // Set width of long (convert to sizeof(int) for 32-bit files)
             if (stream[0].Bits == 32) {
-                stream[0].AddPrimitiveMapping(typeof(long), typeof(int));
-                stream[0].AddPrimitiveMapping(typeof(ulong), typeof(uint));
+                try {
+                    stream[0].AddPrimitiveMapping(typeof(long), typeof(int));
+                } catch (ArgumentException) { }
+                try {
+                    stream[0].AddPrimitiveMapping(typeof(ulong), typeof(uint));
+                } catch (ArgumentException) { }
             }
             
             return (Il2CppBinary) Activator.CreateInstance(type, stream[0], statusCallback);
