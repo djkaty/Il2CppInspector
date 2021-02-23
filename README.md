@@ -59,15 +59,17 @@ You can read more about how IL2CPP works in my series IL2CPP Reverse Engineering
 
 #### Il2CppInspector guides
 
+[Il2CppInspector Plugin Development Wiki](https://github.com/djkaty/Il2CppInspector/wiki/Plugins%3A-Getting-Started)
+
 [How to create, use and debug IL2CPP DLL injection projects](https://katyscode.wordpress.com/2020/11/27/il2cppinspector-tutorial-how-to-create-use-and-debug-il2cpp-dll-injection-projects/)
 
 [Working with code in IL2CPP DLL injection projects](https://katyscode.wordpress.com/2021/01/14/il2cppinspector-tutorial-working-with-code-in-il2cpp-dll-injection-projects/)
 
-[Il2CppInspector Plugin Development Wiki](https://github.com/djkaty/Il2CppInspector/wiki/Plugins%3A-Getting-Started)
+[Using Il2CppInspector's type model to extract protobuf-net definitions (Case Study: Fall Guys)](https://katyscode.wordpress.com/2020/08/10/practical-il2cpp-protobuf/)
 
 #### Reverse engineering walkthroughs
 
-[Using Il2CppInspector's type model to extract protobuf-net definitions (Case Study: Fall Guys)](https://katyscode.wordpress.com/2020/08/10/practical-il2cpp-protobuf/)
+[Finding loaders for obfuscated global-metadata.dat files](https://katyscode.wordpress.com/2021/02/23/il2cpp-finding-obfuscated-global-metadata/) - explains how to find the loader, deobfuscation and/or decryption code for `global-metadata.dat` in almost any IL2CPP application
 
 [Enable loading of League of Legends: Wild Rift](https://katyscode.wordpress.com/2021/01/15/reverse-engineering-adventures-league-of-legends-wild-rift-il2cpp/) - covers XOR decryption, XOR string decryption, API export ROT decryption, data obfuscation of binary metadata
 
