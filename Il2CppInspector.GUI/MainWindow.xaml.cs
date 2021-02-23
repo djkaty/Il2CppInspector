@@ -43,6 +43,10 @@ namespace Il2CppInspectorGUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string bugReportSuffixText =Environment.NewLine + Environment.NewLine
+                + "If you believe this is a bug in Il2CppInspector, please use the CLI version to generate the complete output and paste it when filing a bug report."
+                + " Do not send a screenshot of this error!";
+
         public MainWindow() {
             InitializeComponent();
 
@@ -122,7 +126,7 @@ namespace Il2CppInspectorGUI
                 areaBusyIndicator.Visibility = Visibility.Hidden;
                 grdFirstPage.Visibility = Visibility.Visible;
                 if (app.LastException is Exception e)
-                    MessageBox.Show(this, e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(this, e.Message + bugReportSuffixText, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -159,7 +163,7 @@ namespace Il2CppInspectorGUI
                 areaBusyIndicator.Visibility = Visibility.Hidden;
                 btnSelectBinaryFile.Visibility = Visibility.Visible;
                 if (app.LastException is Exception e)
-                    MessageBox.Show(this, e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(this, e.Message + bugReportSuffixText, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -198,7 +202,7 @@ namespace Il2CppInspectorGUI
                 areaBusyIndicator.Visibility = Visibility.Hidden;
                 grdFirstPage.Visibility = Visibility.Visible;
                 if (app.LastException is Exception e)
-                    MessageBox.Show(this, e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(this, e.Message + bugReportSuffixText, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
