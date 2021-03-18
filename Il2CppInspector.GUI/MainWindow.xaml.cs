@@ -47,6 +47,8 @@ namespace Il2CppInspectorGUI
                 + "If you believe this is a bug in Il2CppInspector, please use the CLI version to generate the complete output and paste it when filing a bug report."
                 + " Do not send a screenshot of this error!";
 
+        private string packageDirectory, packageFileName;
+
         public MainWindow() {
             InitializeComponent();
 
@@ -186,6 +188,10 @@ namespace Il2CppInspectorGUI
         private async Task LoadPackageAsync(string filename) => await LoadPackageAsync(new[] { filename });
         private async Task LoadPackageAsync(IEnumerable<string> filenames) {
             var app = (App) Application.Current;
+
+            //Save filename and path to variables
+            packageDirectory = Path.GetDirectoryName(filenames.First()) + @"\";
+            packageFileName = Path.GetFileNameWithoutExtension(filenames.First()) ;
 
             areaBusyIndicator.Visibility = Visibility.Visible;
             grdFirstPage.Visibility = Visibility.Hidden;
@@ -423,8 +429,18 @@ namespace Il2CppInspectorGUI
         /// <summary>
         /// Perform export
         /// </summary>
+
+        private async void BtnQuickExport_OnClick(object sender, RoutedEventArgs e) {
+            Export(true);
+        }
+
         private async void BtnExport_OnClick(object sender, RoutedEventArgs e) {
-            var model = (AppModel) lstImages.SelectedItem;
+            Export(false);
+        }
+
+        private async void Export(bool quickExport)
+        {
+            var model = (AppModel)lstImages.SelectedItem;
 
             var unityPath = txtUnityPath.Text;
             var unityAssembliesPath = txtUnityScriptPath.Text;
@@ -432,11 +448,11 @@ namespace Il2CppInspectorGUI
             var sortOrder = rdoSortIndex.IsChecked == true ? "index" :
                             rdoSortName.IsChecked == true ? "name" :
                             "unknown";
-            var layout =    rdoLayoutSingle.IsChecked == true? "single" :
-                            rdoLayoutAssembly.IsChecked == true? "assembly" :
-                            rdoLayoutNamespace.IsChecked == true? "namespace" :
-                            rdoLayoutClass.IsChecked == true? "class" :
-                            rdoLayoutTree.IsChecked == true? "tree" :
+            var layout =    rdoLayoutSingle.IsChecked == true ? "single" :
+                            rdoLayoutAssembly.IsChecked == true ? "assembly" :
+                            rdoLayoutNamespace.IsChecked == true ? "namespace" :
+                            rdoLayoutClass.IsChecked == true ? "class" :
+                            rdoLayoutTree.IsChecked == true ? "tree" :
                             "unknown";
 
             switch (this) {
@@ -478,16 +494,17 @@ namespace Il2CppInspectorGUI
                         OverwritePrompt = true
                     };
 
-                    if (needsFolder && saveFolderDialog.ShowDialog() == false)
+                    if (!quickExport && needsFolder && saveFolderDialog.ShowDialog() == false)
                         return;
-                    if (!needsFolder && saveFileDialog.ShowDialog() == false)
+                    if (!quickExport && !needsFolder && saveFileDialog.ShowDialog() == false)
                         return;
-
 
                     txtBusyStatus.Text = createSolution ? "Creating Visual Studio solution..." : "Exporting C# type definitions...";
                     areaBusyIndicator.Visibility = Visibility.Visible;
 
                     var outPath = needsFolder ? saveFolderDialog.SelectedPath : saveFileDialog.FileName;
+                    if (quickExport)
+                        outPath = packageDirectory + packageFileName + (needsFolder ? " VS solution" : " " + saveFileDialog.FileName);
 
                     await Task.Run(() => {
                         if (createSolution)
@@ -536,10 +553,12 @@ namespace Il2CppInspectorGUI
                         OverwritePrompt = true
                     };
 
-                    if (pySaveFileDialog.ShowDialog() == false)
+                    if (!quickExport && pySaveFileDialog.ShowDialog() == false)
                         return;
 
                     var pyOutFile = pySaveFileDialog.FileName;
+                    if (quickExport)
+                        pyOutFile = packageDirectory + packageFileName + " " + pySaveFileDialog.FileName;
 
                     areaBusyIndicator.Visibility = Visibility.Visible;
                     var selectedPyUnityVersion = ((UnityHeaders) cboPyUnityVersion.SelectedItem)?.VersionRange.Min;
@@ -561,10 +580,12 @@ namespace Il2CppInspectorGUI
                         UseDescriptionForTitle = true
                     };
 
-                    if (cppSaveFolderDialog.ShowDialog() == false)
+                    if (!quickExport && cppSaveFolderDialog.ShowDialog() == false)
                         return;
 
                     var cppOutPath = cppSaveFolderDialog.SelectedPath;
+                    if (quickExport)
+                        cppOutPath = packageDirectory + packageFileName + " cpp";
 
                     areaBusyIndicator.Visibility = Visibility.Visible;
                     var selectedCppUnityVersion = ((UnityHeaders) cboCppUnityVersion.SelectedItem)?.VersionRange.Min;
@@ -588,10 +609,12 @@ namespace Il2CppInspectorGUI
                         OverwritePrompt = true
                     };
 
-                    if (jsonSaveFileDialog.ShowDialog() == false)
+                    if (!quickExport && jsonSaveFileDialog.ShowDialog() == false)
                         return;
 
                     var jsonOutFile = jsonSaveFileDialog.FileName;
+                    if (quickExport)
+                        jsonOutFile = packageDirectory + packageFileName + " " + jsonSaveFileDialog.FileName;
 
                     areaBusyIndicator.Visibility = Visibility.Visible;
                     var selectedJsonUnityVersion = ((UnityHeaders) cboJsonUnityVersion.SelectedItem)?.VersionRange.Min;
@@ -612,10 +635,13 @@ namespace Il2CppInspectorGUI
                         UseDescriptionForTitle = true
                     };
 
-                    if (dllSaveFolderDialog.ShowDialog() == false)
+                    if (!quickExport && dllSaveFolderDialog.ShowDialog() == false)
                         return;
 
                     var dllOutPath = dllSaveFolderDialog.SelectedPath;
+                    if (quickExport)
+                        dllOutPath = packageDirectory + packageFileName + " DLLs";
+
                     var suppressMetadata = cbSuppressDllMetadata.IsChecked == true;
 
                     areaBusyIndicator.Visibility = Visibility.Visible;
@@ -630,7 +656,10 @@ namespace Il2CppInspectorGUI
             }
 
             areaBusyIndicator.Visibility = Visibility.Hidden;
-            MessageBox.Show(this, "Export completed successfully", "Export complete", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (quickExport)
+                MessageBox.Show(this, "Export completed successfully to: " + packageDirectory, "Export complete", MessageBoxButton.OK, MessageBoxImage.Information);
+            else
+                MessageBox.Show(this, "Export completed successfully", "Export complete", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private IEnumerable<string> constructExcludedNamespaces(IEnumerable<CheckboxNode> nodes) {
