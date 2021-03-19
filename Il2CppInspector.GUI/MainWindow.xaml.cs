@@ -47,7 +47,7 @@ namespace Il2CppInspectorGUI
                 + "If you believe this is a bug in Il2CppInspector, please use the CLI version to generate the complete output and paste it when filing a bug report."
                 + " Do not send a screenshot of this error!";
 
-        private string packageDirectory, packageFileName;
+        private string outputDirectory;
 
         public MainWindow() {
             InitializeComponent();
@@ -116,6 +116,9 @@ namespace Il2CppInspectorGUI
         private async Task LoadMetadataAsync(string filename) {
             var app = (App) Application.Current;
 
+            //Save path to variables
+            outputDirectory = Path.GetDirectoryName(filename) + @"\";
+
             areaBusyIndicator.Visibility = Visibility.Visible;
             grdFirstPage.Visibility = Visibility.Hidden;
 
@@ -149,6 +152,9 @@ namespace Il2CppInspectorGUI
         // Load the binary file
         private async Task LoadBinaryAsync(string filename) {
             var app = (App) Application.Current;
+
+            //Save path to variables
+            outputDirectory = Path.GetDirectoryName(filename) + @"\";
 
             areaBusyIndicator.Visibility = Visibility.Visible;
             btnSelectBinaryFile.Visibility = Visibility.Hidden;
@@ -189,9 +195,8 @@ namespace Il2CppInspectorGUI
         private async Task LoadPackageAsync(IEnumerable<string> filenames) {
             var app = (App) Application.Current;
 
-            //Save filename and path to variables
-            packageDirectory = Path.GetDirectoryName(filenames.First()) + @"\";
-            packageFileName = Path.GetFileNameWithoutExtension(filenames.First()) ;
+            //Save path to variables
+            outputDirectory = Path.GetDirectoryName(filenames.First()) + @"\" + Path.GetFileNameWithoutExtension(filenames.First()) + " ";
 
             areaBusyIndicator.Visibility = Visibility.Visible;
             grdFirstPage.Visibility = Visibility.Hidden;
@@ -504,7 +509,7 @@ namespace Il2CppInspectorGUI
 
                     var outPath = needsFolder ? saveFolderDialog.SelectedPath : saveFileDialog.FileName;
                     if (quickExport)
-                        outPath = packageDirectory + packageFileName + (needsFolder ? " VS solution" : " " + saveFileDialog.FileName);
+                        outPath = outputDirectory + (needsFolder ? "VS solution" : saveFileDialog.FileName);
 
                     await Task.Run(() => {
                         if (createSolution)
@@ -558,7 +563,7 @@ namespace Il2CppInspectorGUI
 
                     var pyOutFile = pySaveFileDialog.FileName;
                     if (quickExport)
-                        pyOutFile = packageDirectory + packageFileName + " " + pySaveFileDialog.FileName;
+                        pyOutFile = outputDirectory + pySaveFileDialog.FileName;
 
                     areaBusyIndicator.Visibility = Visibility.Visible;
                     var selectedPyUnityVersion = ((UnityHeaders) cboPyUnityVersion.SelectedItem)?.VersionRange.Min;
@@ -585,7 +590,7 @@ namespace Il2CppInspectorGUI
 
                     var cppOutPath = cppSaveFolderDialog.SelectedPath;
                     if (quickExport)
-                        cppOutPath = packageDirectory + packageFileName + " cpp";
+                        cppOutPath = outputDirectory + "C++ scaffolding";
 
                     areaBusyIndicator.Visibility = Visibility.Visible;
                     var selectedCppUnityVersion = ((UnityHeaders) cboCppUnityVersion.SelectedItem)?.VersionRange.Min;
@@ -614,7 +619,7 @@ namespace Il2CppInspectorGUI
 
                     var jsonOutFile = jsonSaveFileDialog.FileName;
                     if (quickExport)
-                        jsonOutFile = packageDirectory + packageFileName + " " + jsonSaveFileDialog.FileName;
+                        jsonOutFile = outputDirectory + jsonSaveFileDialog.FileName;
 
                     areaBusyIndicator.Visibility = Visibility.Visible;
                     var selectedJsonUnityVersion = ((UnityHeaders) cboJsonUnityVersion.SelectedItem)?.VersionRange.Min;
@@ -640,7 +645,7 @@ namespace Il2CppInspectorGUI
 
                     var dllOutPath = dllSaveFolderDialog.SelectedPath;
                     if (quickExport)
-                        dllOutPath = packageDirectory + packageFileName + " DLLs";
+                        dllOutPath = outputDirectory + "DLLs";
 
                     var suppressMetadata = cbSuppressDllMetadata.IsChecked == true;
 
@@ -657,7 +662,7 @@ namespace Il2CppInspectorGUI
 
             areaBusyIndicator.Visibility = Visibility.Hidden;
             if (quickExport)
-                MessageBox.Show(this, "Export completed successfully to: " + packageDirectory, "Export complete", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(this, "Export completed successfully to: " + outputDirectory, "Export complete", MessageBoxButton.OK, MessageBoxImage.Information);
             else
                 MessageBox.Show(this, "Export completed successfully", "Export complete", MessageBoxButton.OK, MessageBoxImage.Information);
         }
