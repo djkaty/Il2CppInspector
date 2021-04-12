@@ -276,6 +276,13 @@ namespace Il2CppInspector
             CodeRegistration = Image.ReadMappedObject<Il2CppCodeRegistration>(codeRegistration);
             MetadataRegistration = Image.ReadMappedObject<Il2CppMetadataRegistration>(metadataRegistration);
 
+            // genericAdjustorThunks was inserted before invokerPointersCount in 24.5 and 27.1
+            // pointer expected if we need to bump version
+            if (Image.Version == 24.4 && CodeRegistration.invokerPointersCount > 0x100000) {
+                Image.Version = 24.5;
+                CodeRegistration = Image.ReadMappedObject<Il2CppCodeRegistration>(codeRegistration);
+            }
+
             // Plugin hook to pre-process binary
             isModified |= PluginHooks.PreProcessBinary(this).IsStreamModified;
 

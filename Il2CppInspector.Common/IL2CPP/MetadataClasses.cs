@@ -100,13 +100,13 @@ namespace Il2CppInspector
         [Version(Min = 16)]
         public int assembliesCount;
 
-        [Version(Min = 19, Max = 24.4)]
+        [Version(Min = 19, Max = 24.5)]
         public int metadataUsageListsOffset; // Il2CppMetadataUsageList
-        [Version(Min = 19, Max = 24.4)]
+        [Version(Min = 19, Max = 24.5)]
         public int metadataUsageListsCount;
-        [Version(Min = 19, Max = 24.4)]
+        [Version(Min = 19, Max = 24.5)]
         public int metadataUsagePairsOffset; // Il2CppMetadataUsagePair
-        [Version(Min = 19, Max = 24.4)]
+        [Version(Min = 19, Max = 24.5)]
         public int metadataUsagePairsCount;
         [Version(Min = 19)]
         public int fieldRefsOffset; // Il2CppFieldRef
@@ -240,7 +240,7 @@ namespace Il2CppInspector
         public int customAttributeIndex;
 
         public int byvalTypeIndex;
-        [Version(Max = 24.4)]
+        [Version(Max = 24.5)]
         public int byrefTypeIndex;
 
         public int declaringTypeIndex;
