@@ -236,6 +236,10 @@ namespace Il2CppInspector
             var expected = File.ReadAllLines(expectedPath);
             var actual = File.ReadAllLines(testPath + @"\" + actualFilename);
 
+            // Ignore single-line comments in source code files
+            var ext = Path.GetExtension(expectedPath).ToLower();
+            var excludeComments = ext == ".cs" || ext == ".cpp" || ext == ".h";
+
             var extraInExpected = expected.Except(actual);
             var extraInActual = actual.Except(expected);
 
@@ -248,9 +252,9 @@ namespace Il2CppInspector
             // We don't use Linq to strip whitespace lines or CollectionAssert to compare,
             // as we want to be able to determine the exact line number of the first mismatch
             for (int expLine = 0, actLine = 0; expLine < expected.Length || actLine < actual.Length; expLine++, actLine++) {
-                while (expLine < expected.Length && string.IsNullOrWhiteSpace(expected[expLine]))
+                while (expLine < expected.Length && (string.IsNullOrWhiteSpace(expected[expLine]) || (excludeComments && expected[expLine].StartsWith("//"))))
                     expLine++;
-                while (actLine < actual.Length && string.IsNullOrWhiteSpace(actual[actLine]))
+                while (actLine < actual.Length && (string.IsNullOrWhiteSpace(actual[actLine]) || (excludeComments && actual[actLine].StartsWith("//"))))
                     actLine++;
 
                 if (expLine < expected.Length && actLine < actual.Length)
