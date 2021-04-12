@@ -221,14 +221,10 @@ namespace Il2CppInspector
             int size = 0;
             foreach (var i in type.GetTypeInfo().GetFields())
             {
-                // Only process fields for our selected object versioning
-                var versionAttr = i.GetCustomAttribute<VersionAttribute>(false);
-                if (versionAttr != null) {
-                    if (versionAttr.Min != -1 && versionAttr.Min > metadataVersion)
-                        continue;
-                    if (versionAttr.Max != -1 && versionAttr.Max < metadataVersion)
-                        continue;
-                }
+                // Only process fields for our selected object versioning (always process if none supplied)
+                var versions = i.GetCustomAttributes<VersionAttribute>(false).Select(v => (v.Min, v.Max)).ToList();
+                if (versions.Any() && !versions.Any(v => (v.Min <= metadataVersion || v.Min == -1) && (v.Max >= metadataVersion || v.Max == -1)))
+                    continue;
 
                 if (i.FieldType == typeof(long) || i.FieldType == typeof(ulong))
                     size += longSizeBytes;
