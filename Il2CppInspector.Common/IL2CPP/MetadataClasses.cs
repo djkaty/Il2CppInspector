@@ -12,25 +12,22 @@ namespace Il2CppInspector
     // Unity 4.6.1p5 - first release, no global-metadata.dat
     // Unity 5.2.0f3 -> v15
     // Unity 5.3.0f4 -> v16
-    // Unity 5.3.1f1 -> v16
     // Unity 5.3.2f1 -> v19
     // Unity 5.3.3f1 -> v20
-    // Unity 5.3.4f1 -> v20
     // Unity 5.3.5f1 -> v21
-    // Unity 5.4.0f3 -> v21
     // Unity 5.5.0f3 -> v22
     // Unity 5.6.0f3 -> v23
-    // Unity 5.6.4f1 -> v23
-    // Unity 2019.1.0f3 -> v24
-    // Unity 2018.2.0f2 -> v24
+    // Unity 2017.1.0f3 -> v24
     // Unity 2018.3.0f2 -> v24.1
     // Unity 2019.1.0f2 -> v24.2
-    // Unity 2019.2.8f1 -> v24.2
     // Unity 2019.3.7f1 -> v24.3
     // Unity 2019.4.15f1 -> v24.4
+    // Unity 2019.4.21f1 -> v24.5
     // Unity 2020.1.0f1 -> v24.3
     // Unity 2020.1.11f1 -> v24.4
     // Unity 2020.2.0f1 -> v27
+    // Unity 2020.2.4f1 -> v27.1
+    // Unity 2021.1.0f1 -> v27.2
     // https://unity3d.com/get-unity/download/archive
     // Metadata version is written at the end of Unity.IL2CPP.MetadataCacheWriter.WriteLibIl2CppMetadata or WriteMetadata (Unity.IL2CPP.dll)
 

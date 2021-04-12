@@ -37,8 +37,10 @@ namespace Il2CppInspector
 
         public ulong genericMethodPointersCount;
         public ulong genericMethodPointers;
-        [Version(Min = 27.1)] 
+        [Version(Min = 24.5, Max = 24.5)]
+        [Version(Min = 27.1)]
         public ulong genericAdjustorThunks;
+
         public ulong invokerPointersCount;
         public ulong invokerPointers;
 
@@ -84,8 +86,10 @@ namespace Il2CppInspector
         public ulong moduleName;
         public ulong methodPointerCount;
         public ulong methodPointers;
+        [Version(Min = 24.5, Max = 24.5)]
         [Version(Min = 27.1)] 
         public long adjustorThunkCount;
+        [Version(Min = 24.5, Max = 24.5)]
         [Version(Min = 27.1)]
         public ulong adjustorThunks; //Pointer
         public ulong invokerIndices;
@@ -198,7 +202,7 @@ namespace Il2CppInspector
 
         public uint attrs => (uint) bits & 0xffff; /* param attributes or field flags */
         public Il2CppTypeEnum type => (Il2CppTypeEnum)((bits >> 16) & 0xff);
-        // TODO: Unity 2021.1: num_mods becomes 1 bit shorter, shifting byref and pinned right 1 bit, valuetype bit added
+        // TODO: Unity 2021.1 (v27.2): num_mods becomes 1 bit shorter, shifting byref and pinned right 1 bit, valuetype bit added
         public uint num_mods => (uint) (bits >> 24) & 0x3f; /* max 64 modifiers follow at the end */
         public bool byref => ((bits >> 30) & 1) == 1;
         public bool pinned => (bits >> 31) == 1; /* valid when included in a local var signature */
@@ -256,6 +260,7 @@ namespace Il2CppInspector
     {
         public int methodIndex;
         public int invokerIndex;
+        [Version(Min = 24.5, Max = 24.5)]
         [Version(Min = 27.1)] 
         public int adjustorThunk;
     }
