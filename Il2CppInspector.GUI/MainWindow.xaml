@@ -192,6 +192,19 @@
                     </Style>
                 </DockPanel.Style>
 
+                <!-- Quick Export button -->
+                <Button Name="btnQuickExport" Click="BtnQuickExport_OnClick" DockPanel.Dock="Bottom" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="18" Width="120" Content="Quick Export">
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource LightBoxButton}" TargetType="{x:Type Button}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=areaBusyIndicator, Path=Visibility}" Value="Visible">
+                                    <Setter Property="Button.IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                
                 <!-- Export button -->
                 <Button Name="btnExport" Click="BtnExport_OnClick" DockPanel.Dock="Bottom" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="18" Width="120" Content="Export">
                     <Button.Style>
