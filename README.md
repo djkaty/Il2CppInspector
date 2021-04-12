@@ -707,18 +707,20 @@ Unity version | IL2CPP version | Support
 5.3.0-5.3.1 | 16 | Working
 5.3.2 | 19 | Working
 5.3.3-5.3.4 | 20 | Working
-5.3.5-5.4.x | 21 | Working
-5.5.x | 22 | Working
-5.6.x | 23 | Working
-2017.1.x-2018.2.x | 24.0 | Working
-2018.3.x-2018.4.x | 24.1 | Working
-2019.1.x-2019.3.6 | 24.2 | Working
+5.3.5-5.4.6 | 21 | Working
+5.5.0-5.5.6 | 22 | Working
+5.6.0-5.6.7 | 23 | Working
+2017.1.0-2018.2.21 | 24 | Working
+2018.3.0-2018.4.x | 24.1 | Working
+2019.1.0-2019.3.6 | 24.2 | Working
 2019.3.7-2019.4.14 | 24.3 | Working
-2019.4.15+ | 24.4 | Working
+2019.4.15-2019.4.20 | 24.4 | Working
+2019.4.21-2019.4.x | 24.5 | Working
 2020.1.0-2020.1.10 | 24.3 | Working
 2020.1.11-2020.1.17 | 24.4 | Working
-2020.2.0+ | 27 | Working
-2021.1 (alpha) | 27 | Partial
+2020.2.0-2020.2.3 | 27 | Working
+2020.2.4-2020.3.x | 27.1 | Working
+2021.1.0-2021.1.x | 27.2 | Partial
 
 Please refer to the companion repository https://github.com/nneonneo/Il2CppVersions if you would like to track the changes between each IL2CPP release version.
 
