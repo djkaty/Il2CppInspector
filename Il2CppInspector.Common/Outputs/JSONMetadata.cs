@@ -73,6 +73,7 @@ namespace Il2CppInspector.Outputs
                 writeObject(() => {
                     writeTypedFunctionName(method.MethodCodeAddress, method.CppFnPtrType.ToSignatureString(), method.CppFnPtrType.Name);
                     writeDotNetSignature(method.Method);
+                    writeDeclaredTypeNamespace(method.Method);
                 });
             }
         }
@@ -259,6 +260,10 @@ namespace Il2CppInspector.Outputs
 
         private void writeDotNetSignature(MethodBase method) {
             writer.WriteString("dotNetSignature", method.ToString().ToEscapedString());
+        }
+
+        private void writeDeclaredTypeNamespace(MethodBase method) {
+            writer.WriteString("declared_type_namespace", method.DeclaringType.Namespace);
         }
 
         private void writeDotNetTypeName(TypeInfo type) {
