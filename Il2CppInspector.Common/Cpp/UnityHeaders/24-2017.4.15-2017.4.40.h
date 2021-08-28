@@ -1868,7 +1868,7 @@ struct Il2CppDecimal
         } v;
         uint64_t Lo64;
     } v;
-} Il2CppClass;
+};
 typedef struct Il2CppDouble
 {
     uint32_t mantLo : 32;
