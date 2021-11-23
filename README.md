@@ -1,4 +1,16 @@
-#### _**[Project maintainer is on hiatus until May 2021. Critical bug fixes and compatibility updates only during this time window]**_
+# Development of Il2CppInspector is suspended
+
+It is with great regret that I have to announce that development work on Il2CppInspector has been halted for the foreseeable future.
+
+The reason for this is that due to health and changes in my personal life, I simply do not have time to commit to working on the project anymore. This is very frustrating for me but there is little I can really do about it.
+
+Please feel free to fork the project and make improvements! You can also continue to post issues as I would like to have a compendium of bugs and problems saved in case that I or someone else does have the opportunity to get back to working on this. Please note though, that I won't be responding to issues or PRs going forward for the foreseeable future.
+
+If you need IL2CPP tooling, I recommend my friend and colleague's excellent project [Cpp2IL](https://github.com/SamboyCoding/Cpp2IL) which is a work-in-progress tool to convert IL2CPP binaries directly back into IL code which can be easily viewed in dnSpy etc. This is a mammoth task so please do go and support his work on this amazing project!
+
+Happy hacking,
+
+Katy.
 
 # Il2CppInspector 2021.1
 
