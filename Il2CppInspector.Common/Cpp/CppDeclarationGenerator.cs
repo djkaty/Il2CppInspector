@@ -520,7 +520,8 @@ namespace Il2CppInspector.Cpp
             TypeNamer = TypeNamespace.MakeNamer<TypeInfo>((ti) => {
                 if (ti.IsArray)
                     return TypeNamer.GetName(ti.ElementType) + "__Array";
-                var name = ti.Name.ToCIdentifier();
+                var name = ti.Namespace + (String.IsNullOrEmpty(ti.Namespace) ? "" : ".") + ti.Name;
+                name = name.ToCIdentifier();
                 name = Regex.Replace(name, "__+", "_");
                 // Work around a dumb IDA bug: enums can't be named the same as certain "built-in" types
                 // like KeyCode, Position, ErrorType. This only applies to enums, not structs.
