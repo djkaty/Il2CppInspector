@@ -47,6 +47,9 @@ namespace Il2CppInspector.Reflection
             // Attribute type ranges weren't included before v21 (customASttributeGenerators was though)
             if (pkg.Version < 21)
                 yield break;
+            
+            if(pkg.Version >= 29)
+                yield break; //TODO v29 attributes
 
             var range = pkg.AttributeTypeRanges[customAttributeIndex];
             for (var i = range.start; i < range.start + range.count; i++) {
