@@ -301,6 +301,10 @@ namespace Il2CppInspector.Reflection
             if (Package.Version <= 24.0)
                 return customAttributeIndex;
 
+            if (Package.Version >= 29)
+                //V29 changed this
+                return -1;
+
             // From v24.1 onwards, token was added to Il2CppCustomAttributeTypeRange and each Il2CppImageDefinition noted the CustomAttributeTypeRanges for the image
             if (!Package.AttributeIndicesByToken[asm.ImageDefinition.customAttributeStart].TryGetValue((uint) token, out var index))
                 return -1;

@@ -102,10 +102,18 @@ namespace Il2CppInspector
                     value = Metadata.ReadInt16();
                     break;
                 case Il2CppTypeEnum.IL2CPP_TYPE_U4:
-                    value = Metadata.ReadUInt32();
+                    //V29 uses the new compressed uint format
+                    if (Metadata.Version >= 29)
+                        value = Metadata.ReadUnityCompressedUInt(out _);
+                    else
+                        value = Metadata.ReadUInt32();
                     break;
                 case Il2CppTypeEnum.IL2CPP_TYPE_I4:
-                    value = Metadata.ReadInt32();
+                    //V29 uses the new compressed int format
+                    if (Metadata.Version >= 29)
+                        value = Metadata.ReadUnityCompressedInt(out _);
+                    else
+                        value = Metadata.ReadInt32();
                     break;
                 case Il2CppTypeEnum.IL2CPP_TYPE_U8:
                     value = Metadata.ReadUInt64();
@@ -120,15 +128,20 @@ namespace Il2CppInspector
                     value = Metadata.ReadDouble();
                     break;
                 case Il2CppTypeEnum.IL2CPP_TYPE_STRING:
-                    var uiLen = Metadata.ReadInt32();
+                    int uiLen;
+                    if (Metadata.Version >= 29)
+                        //As of v29 string length is compressed
+                        uiLen = Metadata.ReadUnityCompressedInt(out _);
+                    else
+                        uiLen = Metadata.ReadInt32();
                     value = Encoding.UTF8.GetString(Metadata.ReadBytes(uiLen));
                     break;
             }
+
             return ((ulong) pValue, value);
         }
 
-        private List<MetadataUsage> buildMetadataUsages()
-        {
+        private List<MetadataUsage> buildMetadataUsages() {
             // No metadata usages for versions < 19
             if (Version < 19)
                 return null;
@@ -139,10 +152,8 @@ namespace Il2CppInspector
 
             // Version >= 19 && < 27
             var usages = new Dictionary<uint, MetadataUsage>();
-            foreach (var metadataUsageList in Metadata.MetadataUsageLists)
-            {
-                for (var i = 0; i < metadataUsageList.count; i++)
-                {
+            foreach (var metadataUsageList in Metadata.MetadataUsageLists) {
+                for (var i = 0; i < metadataUsageList.count; i++) {
                     var metadataUsagePair = Metadata.MetadataUsagePairs[metadataUsageList.start + i];
                     usages.TryAdd(metadataUsagePair.destinationindex, MetadataUsage.FromEncodedIndex(this, metadataUsagePair.encodedSourceIndex));
                 }
@@ -159,8 +170,7 @@ namespace Il2CppInspector
             return usages.Values.ToList();
         }
 
-        private List<MetadataUsage> buildLateBindingMetadataUsages()
-        {
+        private List<MetadataUsage> buildLateBindingMetadataUsages() {
             // plagiarism. noun - https://www.lexico.com/en/definition/plagiarism
             //   the practice of taking someone else's work or ideas and passing them off as one's own.
             // Synonyms: copying, piracy, theft, strealing, infringement of copyright
@@ -233,11 +243,11 @@ namespace Il2CppInspector
 
             // Get all field default values
             foreach (var fdv in Metadata.FieldDefaultValues)
-                FieldDefaultValue.Add(fdv.fieldIndex, ((ulong,object)) getDefaultValue(fdv.typeIndex, fdv.dataIndex));
+                FieldDefaultValue.Add(fdv.fieldIndex, ((ulong, object)) getDefaultValue(fdv.typeIndex, fdv.dataIndex));
 
             // Get all parameter default values
             foreach (var pdv in Metadata.ParameterDefaultValues)
-                ParameterDefaultValue.Add(pdv.parameterIndex, ((ulong,object)) getDefaultValue(pdv.typeIndex, pdv.dataIndex));
+                ParameterDefaultValue.Add(pdv.parameterIndex, ((ulong, object)) getDefaultValue(pdv.typeIndex, pdv.dataIndex));
 
             // Get all field offsets
             if (Binary.FieldOffsets != null) {
@@ -262,7 +272,7 @@ namespace Il2CppInspector
                         }
 
                         for (var f = 0; f < def.field_count; f++)
-                            offsets.Add(def.fieldStart + f, available? BinaryImage.ReadUInt32() : 0);
+                            offsets.Add(def.fieldStart + f, available ? BinaryImage.ReadUInt32() : 0);
                     }
                 }
 
@@ -292,9 +302,7 @@ namespace Il2CppInspector
 
             // Get sorted list of function pointers from all sources
             // TODO: This does not include IL2CPP API functions
-            var sortedFunctionPointers = (Version <= 24.1)?
-            Binary.GlobalMethodPointers.Select(a => getDecodedAddress(a)).ToList() :
-            Binary.ModuleMethodPointers.SelectMany(module => module.Value).Select(a => getDecodedAddress(a)).ToList();
+            var sortedFunctionPointers = (Version <= 24.1) ? Binary.GlobalMethodPointers.Select(a => getDecodedAddress(a)).ToList() : Binary.ModuleMethodPointers.SelectMany(module => module.Value).Select(a => getDecodedAddress(a)).ToList();
 
             sortedFunctionPointers.AddRange(CustomAttributeGenerators);
             sortedFunctionPointers.AddRange(MethodInvokePointers);
@@ -310,7 +318,7 @@ namespace Il2CppInspector
             FunctionAddresses.Add(sortedFunctionPointers[^1], sortedFunctionPointers[^1]);
 
             // Organize custom attribute indices
-            if (Version >= 24.1) {
+            if (Version >= 24.1 && Version < 29) {
                 AttributeIndicesByToken = new Dictionary<int, Dictionary<uint, int>>();
                 foreach (var image in Images) {
                     var attsByToken = new Dictionary<uint, int>();
@@ -319,6 +327,7 @@ namespace Il2CppInspector
                         var token = AttributeTypeRanges[index].token;
                         attsByToken.Add(token, index);
                     }
+
                     if (image.customAttributeCount > 0)
                         AttributeIndicesByToken.Add(image.customAttributeStart, attsByToken);
                 }
@@ -376,6 +385,7 @@ namespace Il2CppInspector
             if (GenericMethodPointers.TryGetValue(spec, out var start)) {
                 return (start, FunctionAddresses[start]);
             }
+
             return null;
         }
 
@@ -398,10 +408,12 @@ namespace Il2CppInspector
                 if (usage.SourceIndex != 0)
                     res[i] = usage;
             }
+
             return res;
         }
 
         #region Loaders
+
         // Finds and extracts the metadata and IL2CPP binary from one or more APK files, or one AAB or IPA file into MemoryStreams
         // Returns null if package not recognized or does not contain an IL2CPP application
         public static (MemoryStream Metadata, MemoryStream Binary)? GetStreamsFromPackage(IEnumerable<ZipArchive> zipStreams, bool silent = false) {
@@ -422,7 +434,6 @@ namespace Il2CppInspector
 
                 // We can't close the files because we might have to read from them after the foreach
                 foreach (var zip in zipStreams) {
-
                     // Check for Android APK (split APKs will only fill one of these two variables)
                     var metadataFile = zip.Entries.FirstOrDefault(f => f.FullName == "assets/bin/Data/Managed/Metadata/global-metadata.dat");
                     binaryFiles.AddRange(zip.Entries.Where(f => f.FullName.StartsWith("lib/") && f.Name == "libil2cpp.so"));
@@ -489,6 +500,7 @@ namespace Il2CppInspector
                             binarySourceStream.CopyTo(archiveFileStream);
                         }
                     }
+
                     binaryMemoryStream.Position = 0;
                 }
 
@@ -523,6 +535,7 @@ namespace Il2CppInspector
                             apkStream.CopyTo(bytes);
                             apkFiles.Add(bytes);
                         }
+
                         return GetStreamsFromPackage(apkFiles.Select(f => new ZipArchive(f, ZipArchiveMode.Read)));
                     }
                 }
@@ -546,13 +559,12 @@ namespace Il2CppInspector
         // Load from a binary file and metadata file
         public static List<Il2CppInspector> LoadFromFile(string binaryFile, string metadataFile, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null, bool silent = false)
             => LoadFromStream(new FileStream(binaryFile, FileMode.Open, FileAccess.Read, FileShare.Read),
-                                new MemoryStream(File.ReadAllBytes(metadataFile)),
-                                loadOptions, statusCallback, silent);
+                new MemoryStream(File.ReadAllBytes(metadataFile)),
+                loadOptions, statusCallback, silent);
 
         // Load from a binary stream and metadata stream
         // Must be a seekable stream otherwise we catch a System.IO.NotSupportedException
         public static List<Il2CppInspector> LoadFromStream(Stream binaryStream, MemoryStream metadataStream, LoadOptions loadOptions = null, EventHandler<string> statusCallback = null, bool silent = false) {
-
             // Silent operation if requested
             var stdout = Console.Out;
             if (silent)
@@ -594,7 +606,6 @@ namespace Il2CppInspector
         }
 
         public static List<Il2CppInspector> LoadFromStream(IFileFormatStream stream, Metadata metadata, EventHandler<string> statusCallback = null) {
-
             var processors = new List<Il2CppInspector>();
             foreach (var image in stream.Images) {
                 Console.WriteLine("Container format: " + image.Format);
@@ -630,6 +641,7 @@ namespace Il2CppInspector
         // Savers
         public void SaveMetadataToFile(string pathname) => Metadata.SaveToFile(pathname);
         public void SaveBinaryToFile(string pathname) => Binary.SaveToFile(pathname);
+
         #endregion
     }
 }
