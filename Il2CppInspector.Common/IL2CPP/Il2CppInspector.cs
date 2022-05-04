@@ -144,17 +144,10 @@ namespace Il2CppInspector
                 for (var i = 0; i < metadataUsageList.count; i++)
                 {
                     var metadataUsagePair = Metadata.MetadataUsagePairs[metadataUsageList.start + i];
-                    usages.TryAdd(metadataUsagePair.destinationindex, MetadataUsage.FromEncodedIndex(this, metadataUsagePair.encodedSourceIndex));
+                    var fixedPair = MetadataUsage.FromUsagePairMihoyo(this, metadataUsagePair);
+                    usages.TryAdd(fixedPair.DestinationIndex, fixedPair);
                 }
             }
-
-            // Metadata usages (addresses)
-            // Unfortunately the value supplied in MetadataRegistration.matadataUsagesCount seems to be incorrect,
-            // so we have to calculate the correct number of usages above before reading the usage address list from the binary
-            var count = usages.Keys.Max() + 1;
-            var addresses = Binary.Image.ReadMappedArray<ulong>(Binary.MetadataRegistration.metadataUsages, (int) count);
-            foreach (var usage in usages)
-                usage.Value.SetAddress(addresses[usage.Key]);
 
             return usages.Values.ToList();
         }

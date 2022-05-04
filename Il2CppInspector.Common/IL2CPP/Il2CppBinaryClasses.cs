@@ -137,6 +137,21 @@ namespace Il2CppInspector
         [Version(Min = 19)]
         public ulong metadataUsages;
     }
+
+    public class MihoyoUsages
+    {
+        public ulong typeInfoUsageCount;
+        public ulong typeInfoUsage;
+
+        public ulong methodDefRefUsageCount;
+        public ulong methodDefRefUsage;
+
+        public ulong fieldInfoUsageCount;
+        public ulong fieldInfoUsage;
+
+        public ulong stringLiteralUsageCount;
+        public ulong stringLiteralUsage;
+    }
 #pragma warning restore CS0649
 
     // From blob.h / il2cpp-blob.h
