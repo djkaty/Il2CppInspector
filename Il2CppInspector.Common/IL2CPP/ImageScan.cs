@@ -79,7 +79,8 @@ namespace Il2CppInspector
 
         // Scan the image for the needed data structures
         private (ulong, ulong) ImageScan(Metadata metadata) {
-            return (0x188132170, 0x18813CA00);
+            // return (codeRegistration, metadataRegistration);
+            return (0x1881205C0, 0x18812AE50);
         }
     }
 }
