@@ -17,11 +17,16 @@ namespace Il2CppInspector
         // Adapted from https://stackoverflow.com/a/332667
         private int FindBytes(byte[] blob, byte[] signature, int requiredAlignment = 1, int startOffset = 0) {
             var firstMatchByte = Array.IndexOf(blob, signature[0], startOffset);
-            var test = new byte[signature.Length];
 
             while (firstMatchByte >= 0 && firstMatchByte <= blob.Length - signature.Length) {
-                Buffer.BlockCopy(blob, firstMatchByte, test, 0, signature.Length);
-                if (test.SequenceEqual(signature) && firstMatchByte % requiredAlignment == 0)
+                var isEqual = true;
+                for (var i = 0; i < signature.Length; i++) {
+                    if (blob[firstMatchByte + i] != signature[i]) {
+                        isEqual = false;
+                        break;
+                    }
+                }
+                if (isEqual && firstMatchByte % requiredAlignment == 0)
                     return firstMatchByte;
 
                 firstMatchByte = Array.IndexOf(blob, signature[0], firstMatchByte + 1);
@@ -84,7 +89,7 @@ namespace Il2CppInspector
 
             var ptrSize = (uint) Image.Bits / 8;
             ulong codeRegistration = 0;
-            IEnumerable<ulong> vas;
+            ulong[] vas = null;
 
             // Find CodeRegistration
             // >= 24.2
@@ -94,11 +99,11 @@ namespace Il2CppInspector
                 // >= 27: mscorlib.dll is always the last CodeGenModule (Assembly-CSharp.dll is always the first but non-Unity builds don't have this DLL)
                 //        NOTE: winrt.dll + other DLLs can come after mscorlib.dll so we can't use its location to get an accurate module count
                 var offsets = FindAllStrings(imageBytes, "mscorlib.dll\0");
-                vas = offsets.Select(o => Image.MapFileOffsetToVA(o));
+                vas = offsets.Select(o => Image.MapFileOffsetToVA(o)).ToArray();
 
                 // Unwind from string pointer -> CodeGenModule -> CodeGenModules + x
-                vas = FindAllPointerChains(imageBytes, vas, 2);
-                IEnumerable<ulong> codeRegVas = null;
+                vas = FindAllPointerChains(imageBytes, vas, 2).ToArray();
+                ulong[] codeRegVas = null;
 
                 // We'll work back one pointer width at a time trying to find the first CodeGenModule
                 // Let's hope there aren't more than 200 DLLs in any given application :)
@@ -106,7 +111,7 @@ namespace Il2CppInspector
 
                 for (int backtrack = 0; backtrack < maxCodeGenModules && (codeRegVas?.Count() ?? 0) != 1; backtrack++) {
                     // Unwind from CodeGenModules + x -> CodeRegistration + y
-                    codeRegVas = FindAllMappedWords(imageBytes, vas);
+                    codeRegVas = FindAllMappedWords(imageBytes, vas).ToArray();
 
                     // The previous word must be the number of CodeGenModules
                     if (codeRegVas.Count() == 1) {
@@ -114,11 +119,11 @@ namespace Il2CppInspector
 
                         // Basic validity check
                         if (codeGenModuleCount <= 0 || codeGenModuleCount > maxCodeGenModules)
-                            codeRegVas = Enumerable.Empty<ulong>();
+                            codeRegVas = Array.Empty<ulong>();
                     }
 
                     // Move to the previous CodeGenModule if the above fails
-                    vas = vas.Select(va => va - ptrSize);
+                    vas = vas.Select(va => va - ptrSize).ToArray();
                 }
 
                 if (!codeRegVas.Any())
@@ -152,7 +157,7 @@ namespace Il2CppInspector
             // <= 24.1
             else {
                 // The first item in CodeRegistration is the total number of method pointers
-                vas = FindAllMappedWords(imageBytes, (ulong) metadata.Methods.Count(m => (uint) m.methodIndex != 0xffff_ffff));
+                vas = FindAllMappedWords(imageBytes, (ulong) metadata.Methods.Count(m => (uint) m.methodIndex != 0xffff_ffff)).ToArray();
 
                 if (!vas.Any())
                     return (0, 0);
@@ -178,7 +183,7 @@ namespace Il2CppInspector
             // Find TypeDefinitionsSizesCount (4th last field) then work back to the start of the struct
             // This saves us from guessing where metadataUsagesCount is later
             var mrSize = (ulong) metadata.Sizeof(typeof(Il2CppMetadataRegistration), Image.Version, Image.Bits / 8);
-            vas = FindAllMappedWords(imageBytes, (ulong) metadata.Types.Length).Select(a => a - mrSize + ptrSize * 4);
+            vas = FindAllMappedWords(imageBytes, (ulong) metadata.Types.Length).Select(a => a - mrSize + ptrSize * 4).ToArray();
 
             // >= 19 && < 27
             if (Image.Version < 27)

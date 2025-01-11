@@ -30,15 +30,16 @@ namespace Il2CppInspector
         public Il2CppEventDefinition[] Events { get; set; }
         public Il2CppGenericContainer[] GenericContainers { get; set; }
         public Il2CppGenericParameter[] GenericParameters { get; set; }
-        public Il2CppCustomAttributeTypeRange[] AttributeTypeRanges { get; set; }
+        public Il2CppCustomAttributeTypeRange[] AttributeTypeRanges { get; set; } //Removed in v29
         public Il2CppInterfaceOffsetPair[] InterfaceOffsets { get; set; }
         public Il2CppMetadataUsageList[] MetadataUsageLists { get; set; }
         public Il2CppMetadataUsagePair[] MetadataUsagePairs { get; set; }
         public Il2CppFieldRef[] FieldRefs { get; set; }
+        public Il2CppCustomAttributeDataRange[] AttributeDataRanges { get; set; } //Added in v29
 
         public int[] InterfaceUsageIndices { get; set; }
         public int[] NestedTypeIndices { get; set; }
-        public int[] AttributeTypeIndices { get; set; }
+        public int[] AttributeTypeIndices { get; set; } //Removed in v29
         public int[] GenericConstraintIndices { get; set; }
         public uint[] VTableMethodIndices { get; set; }
         public string[] StringLiterals { get; set; }
@@ -87,7 +88,7 @@ namespace Il2CppInspector
             // Set object versioning for Bin2Object from metadata version
             Version = Header.version;
 
-            if (Version < 16 || Version > 27) {
+            if (Version < 16 || Version > 29) {
                 throw new InvalidOperationException($"The supplied metadata file is not of a supported version ({Header.version}).");
             }
 
@@ -170,9 +171,12 @@ namespace Il2CppInspector
             if (Version >= 19) {
                 FieldRefs = ReadArray<Il2CppFieldRef>(Header.fieldRefsOffset, Header.fieldRefsCount / Sizeof(typeof(Il2CppFieldRef)));
             }
-            if (Version >= 21) {
+            if (Version >= 21 && Version < 29) {
                 AttributeTypeIndices = ReadArray<int>(Header.attributeTypesOffset, Header.attributeTypesCount / sizeof(int));
                 AttributeTypeRanges = ReadArray<Il2CppCustomAttributeTypeRange>(Header.attributesInfoOffset, Header.attributesInfoCount / Sizeof(typeof(Il2CppCustomAttributeTypeRange)));
+            }
+            if (Version >= 29) {
+                AttributeDataRanges = ReadArray<Il2CppCustomAttributeDataRange>(Header.attributeDataRangeOffset, Header.attributeDataRangeCount / Sizeof(typeof(Il2CppCustomAttributeDataRange)));
             }
 
             // Get all metadata strings

@@ -56,11 +56,18 @@ namespace Il2CppInspector
         [Version(Min = 21, Max = 22)]
         public ulong guids; // Il2CppGuid
 
-        // Added in metadata v22
-        [Version(Min = 22)]
+        // Added in metadata v22, removed in v29
+        [Version(Min = 22, Max = 27.2f)]
         public ulong unresolvedVirtualCallCount;
+
+        [Version(Min = 29)]
+        public ulong unresolvedIndirectCallCount;
         [Version(Min = 22)]
         public ulong unresolvedVirtualCallPointers;
+        [Version(Min = 29)]
+        public ulong unresolvedInstanceCallPointers;
+        [Version(Min = 29)]
+        public ulong unresolvedStaticCallPointers;
 
         // Added in metadata v23
         [Version(Min = 23)]
@@ -101,7 +108,8 @@ namespace Il2CppInspector
         public ulong rgctxs;
         public ulong debuggerMetadata;
 
-        // Added in metadata v27
+        // Added in metadata v27, removed in v29
+        [Version(Min = 27, Max = 27.2)]
         public ulong customAttributeCacheGenerator; // CustomAttributesCacheGenerator*
         public ulong moduleInitializer; // Il2CppMethodPointer
         public ulong staticConstructorTypeIndices; // TypeDefinitionIndex*

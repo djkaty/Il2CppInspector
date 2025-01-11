@@ -117,14 +117,25 @@ namespace Il2CppInspector
         [Version(Min = 20)]
         public int referencedAssembliesCount;
 
-        [Version(Min = 21)]
+        //Removed in v29
+        [Version(Min = 21, Max=27.2f)]
         public int attributesInfoOffset; // Il2CppCustomAttributeTypeRange
-        [Version(Min = 21)]
+        [Version(Min = 21, Max=27.2f)]
         public int attributesInfoCount;
-        [Version(Min = 21)]
+        [Version(Min = 21, Max=27.2f)]
         public int attributeTypesOffset; // TypeIndex
-        [Version(Min = 21)]
+        [Version(Min = 21, Max=27.2f)]
         public int attributeTypesCount;
+        
+        //Added in v29 - new attribute data
+        [Version(Min = 29f)] 
+        public int attributeDataOffset; //uint8_t
+        [Version(Min = 29f)] 
+        public int attributeDataCount;
+        [Version(Min = 29f)] 
+        public int attributeDataRangeOffset; //Il2CppCustomAttributeDataRange
+        [Version(Min = 29f)]
+        public int attributeDataRangeCount; 
 
         // Added in metadata v22
         [Version(Min = 22)]
@@ -425,6 +436,13 @@ namespace Il2CppInspector
 
         public int start;
         public int count;
+    }
+    
+    //Added in v29
+    public class Il2CppCustomAttributeDataRange
+    {
+        public uint token;
+        public uint startOffset;
     }
 
     public class Il2CppInterfaceOffsetPair
